@@ -1364,8 +1364,13 @@ retry:
     if (ctxt->query != NULL)
 	p += snprintf( p, blen - (p - bp), "?%s", ctxt->query);
 
-    p += snprintf( p, blen - (p - bp), " HTTP/1.0\r\nHost: %s\r\n", 
+    if (ctxt->port == 80) {
+        p += snprintf( p, blen - (p - bp), " HTTP/1.0\r\nHost: %s\r\n", 
 		    ctxt->hostname);
+    } else {
+        p += snprintf( p, blen - (p - bp), " HTTP/1.0\r\nHost: %s:%d\r\n",
+		    ctxt->hostname, ctxt->port);
+    }
 
 #ifdef HAVE_ZLIB_H
     p += snprintf(p, blen - (p - bp), "Accept-Encoding: gzip\r\n");
@@ -1585,7 +1590,7 @@ xmlNanoHTTPSave(void *ctxt, const char *filename) {
     if (!strcmp(filename, "-")) 
         fd = 0;
     else {
-        fd = open(filename, O_CREAT | O_WRONLY);
+        fd = open(filename, O_CREAT | O_WRONLY, 0666);
 	if (fd < 0) {
 	    xmlNanoHTTPClose(ctxt);
 	    return(-1);

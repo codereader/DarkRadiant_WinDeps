@@ -711,7 +711,7 @@ html40ElementTable[] = {
 { "em",		0, 3, 0, 0, 0, 0, 1, "emphasis",
 	DECL html_inline, NULL, DECL html_attrs, NULL, NULL
 },
-{ "embed",	0, 1, 2, 0, 1, 1, 1, "generic embedded object ",
+{ "embed",	0, 1, 0, 0, 1, 1, 1, "generic embedded object ",
 	EMPTY, NULL, DECL embed_attrs, NULL, NULL
 },
 { "fieldset",	0, 0, 0, 0, 0, 0, 0, "form control group ",
@@ -2772,8 +2772,13 @@ htmlParseCharData(htmlParserCtxtPtr ctxt) {
     cur = CUR_CHAR(l);
     while (((cur != '<') || (ctxt->token == '<')) &&
            ((cur != '&') || (ctxt->token == '&')) && 
-	   (IS_CHAR(cur))) {
-	COPY_BUF(l,buf,nbchar,cur);
+	   (cur != 0)) {
+	if (!(IS_CHAR(cur))) {
+	    htmlParseErrInt(ctxt, XML_ERR_INVALID_CHAR,
+	                "Invalid char in CDATA 0x%X\n", cur);
+	} else {
+	    COPY_BUF(l,buf,nbchar,cur);
+	}
 	if (nbchar >= HTML_PARSER_BIG_BUFFER_SIZE) {
 	    /*
 	     * Ok the segment is to be consumed as chars.
