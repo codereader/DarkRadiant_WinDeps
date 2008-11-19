@@ -2143,6 +2143,7 @@ htmlNewDocNoDtD(const xmlChar *URI, const xmlChar *ExternalID) {
     cur->refs = NULL;
     cur->_private = NULL;
     cur->charset = XML_CHAR_ENCODING_UTF8;
+    cur->properties = XML_DOC_HTML | XML_DOC_USERBUILT;
     if ((ExternalID != NULL) ||
 	(URI != NULL))
 	xmlCreateIntSubset(cur, BAD_CAST "html", ExternalID, URI);
@@ -2767,6 +2768,7 @@ htmlParseCharData(htmlParserCtxtPtr ctxt) {
     xmlChar buf[HTML_PARSER_BIG_BUFFER_SIZE + 5];
     int nbchar = 0;
     int cur, l;
+    int chunk = 0;
 
     SHRINK;
     cur = CUR_CHAR(l);
@@ -2797,6 +2799,12 @@ htmlParseCharData(htmlParserCtxtPtr ctxt) {
 	    nbchar = 0;
 	}
 	NEXTL(l);
+        chunk++;
+        if (chunk > HTML_PARSER_BUFFER_SIZE) {
+            chunk = 0;
+            SHRINK;
+            GROW;
+        }
 	cur = CUR_CHAR(l);
 	if (cur == 0) {
 	    SHRINK;
@@ -3482,6 +3490,7 @@ htmlParseStartTag(htmlParserCtxtPtr ctxt) {
 	             "htmlParseStartTag: misplaced <html> tag\n",
 		     name, NULL);
 	discardtag = 1;
+	ctxt->depth++;
     }
     if ((ctxt->nameNr != 1) && 
 	(xmlStrEqual(name, BAD_CAST"head"))) {
@@ -3489,6 +3498,7 @@ htmlParseStartTag(htmlParserCtxtPtr ctxt) {
 	             "htmlParseStartTag: misplaced <head> tag\n",
 		     name, NULL);
 	discardtag = 1;
+	ctxt->depth++;
     }
     if (xmlStrEqual(name, BAD_CAST"body")) {
 	int indx;
@@ -3498,6 +3508,7 @@ htmlParseStartTag(htmlParserCtxtPtr ctxt) {
 		             "htmlParseStartTag: misplaced <body> tag\n",
 			     name, NULL);
 		discardtag = 1;
+		ctxt->depth++;
 	    }
 	}
     }
@@ -3648,7 +3659,6 @@ htmlParseEndTag(htmlParserCtxtPtr ctxt)
     name = htmlParseHTMLName(ctxt);
     if (name == NULL)
         return (0);
-
     /*
      * We should definitely be at the ending "S? '>'" part
      */
@@ -3667,6 +3677,18 @@ htmlParseEndTag(htmlParserCtxtPtr ctxt)
 	}
     } else
         NEXT;
+
+    /*
+     * if we ignored misplaced tags in htmlParseStartTag don't pop them
+     * out now.
+     */
+    if ((ctxt->depth > 0) &&
+        (xmlStrEqual(name, BAD_CAST "html") ||
+         xmlStrEqual(name, BAD_CAST "body") ||
+	 xmlStrEqual(name, BAD_CAST "head"))) {
+	ctxt->depth--;
+	return (0);
+    }
 
     /*
      * If the name read is not one of the element in the parsing stack
@@ -4098,6 +4120,8 @@ htmlParseElement(htmlParserCtxtPtr ctxt) {
 
 int
 htmlParseDocument(htmlParserCtxtPtr ctxt) {
+    xmlChar start[4];
+    xmlCharEncoding enc;
     xmlDtdPtr dtd;
 
     xmlInitParser();
@@ -4116,6 +4140,23 @@ htmlParseDocument(htmlParserCtxtPtr ctxt) {
      */
     if ((ctxt->sax) && (ctxt->sax->setDocumentLocator))
         ctxt->sax->setDocumentLocator(ctxt->userData, &xmlDefaultSAXLocator);
+
+    if ((ctxt->encoding == (const xmlChar *)XML_CHAR_ENCODING_NONE) &&
+        ((ctxt->input->end - ctxt->input->cur) >= 4)) {
+	/*
+	 * Get the 4 first bytes and decode the charset
+	 * if enc != XML_CHAR_ENCODING_NONE
+	 * plug some encoding conversion routines.
+	 */
+	start[0] = RAW;
+	start[1] = NXT(1);
+	start[2] = NXT(2);
+	start[3] = NXT(3);
+	enc = xmlDetectCharEncoding(&start[0], 4);
+	if (enc != XML_CHAR_ENCODING_NONE) {
+	    xmlSwitchEncoding(ctxt, enc);
+	}
+    }
 
     /*
      * Wipe out everything which is before the first '<'
@@ -4136,10 +4177,10 @@ htmlParseDocument(htmlParserCtxtPtr ctxt) {
     while (((CUR == '<') && (NXT(1) == '!') &&
             (NXT(2) == '-') && (NXT(3) == '-')) ||
 	   ((CUR == '<') && (NXT(1) == '?'))) {
-        htmlParseComment(ctxt);	   
-        htmlParsePI(ctxt);	   
+        htmlParseComment(ctxt);
+        htmlParsePI(ctxt);
 	SKIP_BLANKS;
-    }	   
+    }
 
 
     /*
@@ -5958,8 +5999,12 @@ htmlDoRead(htmlParserCtxtPtr ctxt, const char *URL, const char *encoding,
         xmlCharEncodingHandlerPtr hdlr;
 
 	hdlr = xmlFindCharEncodingHandler(encoding);
-	if (hdlr != NULL)
+	if (hdlr != NULL) {
 	    xmlSwitchToEncoding(ctxt, hdlr);
+	    if (ctxt->input->encoding != NULL)
+	      xmlFree((xmlChar *) ctxt->input->encoding);
+            ctxt->input->encoding = xmlStrdup((xmlChar *)encoding);
+        }
     }
     if ((URL != NULL) && (ctxt->input != NULL) &&
         (ctxt->input->filename == NULL))
