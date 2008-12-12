@@ -121,6 +121,13 @@ static inline int vorbis_ftoi(double f){  /* yes, double!  Otherwise,
 
 typedef ogg_int16_t vorbis_fpu_control;
 
+// greebo: Win64 doesn't support inline assembly
+#if defined(_WIN64)
+	#include <emmintrin.h>  
+	static __inline int vorbis_ftoi(double f){
+		return _mm_cvtsd_si32(_mm_load_sd(&f));
+	}
+#elif
 static __inline int vorbis_ftoi(double f){
 	int i;
 	__asm{
@@ -129,6 +136,7 @@ static __inline int vorbis_ftoi(double f){
 	}
 	return i;
 }
+#endif
 
 static __inline void vorbis_fpu_setround(vorbis_fpu_control *fpu){
 }
