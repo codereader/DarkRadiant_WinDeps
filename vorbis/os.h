@@ -127,7 +127,7 @@ typedef ogg_int16_t vorbis_fpu_control;
 	static __inline int vorbis_ftoi(double f){
 		return _mm_cvtsd_si32(_mm_load_sd(&f));
 	}
-#elif
+#else
 static __inline int vorbis_ftoi(double f){
 	int i;
 	__asm{
