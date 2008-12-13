@@ -21,8 +21,12 @@
  * Modified by the GLib Team and others 1997-2000.  See the AUTHORS
  * file for a list of people on the GLib Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GLib at ftp://ftp.gtk.org/pub/gtk/. 
+ * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
+
+#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#error "Only <glib.h> can be included directly."
+#endif
 
 #ifndef __G_ARRAY_H__
 #define __G_ARRAY_H__
@@ -61,7 +65,7 @@ struct _GPtrArray
 #define g_array_append_val(a,v)	  g_array_append_vals (a, &(v), 1)
 #define g_array_prepend_val(a,v)  g_array_prepend_vals (a, &(v), 1)
 #define g_array_insert_val(a,i,v) g_array_insert_vals (a, i, &(v), 1)
-#define g_array_index(a,t,i)      (((t*) (a)->data) [(i)])
+#define g_array_index(a,t,i)      (((t*) (void *) (a)->data) [(i)])
 
 GArray* g_array_new               (gboolean          zero_terminated,
 				   gboolean          clear_,
@@ -160,8 +164,6 @@ void        g_byte_array_sort_with_data    (GByteArray       *array,
 					    GCompareDataFunc  compare_func,
 					    gpointer          user_data);
 
-
 G_END_DECLS
 
 #endif /* __G_ARRAY_H__ */
-

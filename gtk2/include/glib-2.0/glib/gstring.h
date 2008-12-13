@@ -21,8 +21,12 @@
  * Modified by the GLib Team and others 1997-2000.  See the AUTHORS
  * file for a list of people on the GLib Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GLib at ftp://ftp.gtk.org/pub/gtk/. 
+ * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
+
+#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#error "Only <glib.h> can be included directly."
+#endif
 
 #ifndef __G_STRING_H__
 #define __G_STRING_H__
@@ -129,6 +133,10 @@ void         g_string_append_vprintf    (GString	 *string,
 void         g_string_append_printf     (GString	 *string,
 					 const gchar	 *format,
 					 ...) G_GNUC_PRINTF (2, 3);
+GString *    g_string_append_uri_escaped(GString         *string,
+					 const char      *unescaped,
+					 const char      *reserved_chars_allowed,
+					 gboolean         allow_utf8);
 
 /* -- optimize g_strig_append_c --- */
 #ifdef G_CAN_INLINE
@@ -168,4 +176,3 @@ GString*     g_string_up                (GString	 *string);
 G_END_DECLS
 
 #endif /* __G_STRING_H__ */
-

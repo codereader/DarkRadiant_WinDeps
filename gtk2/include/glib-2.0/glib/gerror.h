@@ -18,6 +18,10 @@
  *   Boston, MA 02111-1307, USA.
  */
 
+#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#error "Only <glib.h> can be included directly."
+#endif
+
 #ifndef __G_ERROR_H__
 #define __G_ERROR_H__
 
@@ -59,6 +63,11 @@ void     g_set_error           (GError       **err,
                                 const gchar   *format,
                                 ...) G_GNUC_PRINTF (4, 5);
 
+void     g_set_error_literal   (GError       **err,
+                                GQuark         domain,
+                                gint           code,
+                                const gchar   *message);
+
 /* if (dest) *dest = src; also has some sanity checks.
  */
 void     g_propagate_error     (GError       **dest,
@@ -67,8 +76,17 @@ void     g_propagate_error     (GError       **dest,
 /* if (err && *err) { g_error_free(*err); *err = NULL; } */
 void     g_clear_error         (GError       **err);
 
+/* if (err) prefix the formatted string to the ->message */
+void     g_prefix_error               (GError       **err,
+                                       const gchar   *format,
+                                       ...) G_GNUC_PRINTF (2, 3);
+
+/* g_propagate_error then g_error_prefix on dest */
+void     g_propagate_prefixed_error   (GError       **dest,
+                                       GError        *src,
+                                       const gchar   *format,
+                                       ...) G_GNUC_PRINTF (3, 4);
 
 G_END_DECLS
 
 #endif /* __G_ERROR_H__ */
-

@@ -33,7 +33,6 @@ typedef struct _PangoLayout      PangoLayout;
 typedef struct _PangoLayoutClass PangoLayoutClass;
 typedef struct _PangoLayoutLine  PangoLayoutLine;
 
-/* For backwards compatiblity */
 typedef PangoGlyphItem PangoLayoutRun;
 
 typedef enum {
@@ -122,6 +121,9 @@ G_CONST_RETURN PangoFontDescription *pango_layout_get_font_description (PangoLay
 void           pango_layout_set_width            (PangoLayout                *layout,
 						  int                         width);
 int            pango_layout_get_width            (PangoLayout                *layout);
+void           pango_layout_set_height           (PangoLayout                *layout,
+						  int                         height);
+int            pango_layout_get_height           (PangoLayout                *layout);
 void           pango_layout_set_wrap             (PangoLayout                *layout,
 						  PangoWrapMode               wrap);
 PangoWrapMode  pango_layout_get_wrap             (PangoLayout                *layout);
@@ -200,6 +202,7 @@ void     pango_layout_get_size             (PangoLayout    *layout,
 void     pango_layout_get_pixel_size       (PangoLayout    *layout,
 					    int            *width,
 					    int            *height);
+int      pango_layout_get_baseline         (PangoLayout    *layout);
 
 int              pango_layout_get_line_count       (PangoLayout    *layout);
 PangoLayoutLine *pango_layout_get_line             (PangoLayout    *layout,
@@ -244,14 +247,16 @@ typedef struct _PangoLayoutIter PangoLayoutIter;
 GType            pango_layout_iter_get_type (void) G_GNUC_CONST;
 
 PangoLayoutIter *pango_layout_get_iter  (PangoLayout     *layout);
+PangoLayoutIter *pango_layout_iter_copy (PangoLayoutIter *iter);
 void             pango_layout_iter_free (PangoLayoutIter *iter);
 
-int              pango_layout_iter_get_index (PangoLayoutIter *iter);
-PangoLayoutRun  *pango_layout_iter_get_run   (PangoLayoutIter *iter);
+int              pango_layout_iter_get_index  (PangoLayoutIter *iter);
+PangoLayoutRun  *pango_layout_iter_get_run    (PangoLayoutIter *iter);
 PangoLayoutRun  *pango_layout_iter_get_run_readonly   (PangoLayoutIter *iter);
-PangoLayoutLine *pango_layout_iter_get_line  (PangoLayoutIter *iter);
+PangoLayoutLine *pango_layout_iter_get_line   (PangoLayoutIter *iter);
 PangoLayoutLine *pango_layout_iter_get_line_readonly  (PangoLayoutIter *iter);
 gboolean         pango_layout_iter_at_last_line (PangoLayoutIter *iter);
+PangoLayout     *pango_layout_iter_get_layout (PangoLayoutIter *iter);
 
 gboolean pango_layout_iter_next_char    (PangoLayoutIter *iter);
 gboolean pango_layout_iter_next_cluster (PangoLayoutIter *iter);

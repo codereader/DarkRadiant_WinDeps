@@ -19,6 +19,10 @@
  *   Boston, MA 02111-1307, USA.
  */
 
+#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#error "Only <glib.h> can be included directly."
+#endif
+
 #ifndef __G_UNICODE_H__
 #define __G_UNICODE_H__
 
@@ -187,7 +191,20 @@ typedef enum
   G_UNICODE_SCRIPT_CUNEIFORM,          /* Xsux */
   G_UNICODE_SCRIPT_PHOENICIAN,         /* Phnx */
   G_UNICODE_SCRIPT_PHAGS_PA,           /* Phag */
-  G_UNICODE_SCRIPT_NKO                 /* Nkoo */
+  G_UNICODE_SCRIPT_NKO,                /* Nkoo */
+
+  /* Unicode-5.1 additions */
+  G_UNICODE_SCRIPT_KAYAH_LI,           /* Kali */
+  G_UNICODE_SCRIPT_LEPCHA,             /* Lepc */
+  G_UNICODE_SCRIPT_REJANG,             /* Rjng */
+  G_UNICODE_SCRIPT_SUNDANESE,          /* Sund */
+  G_UNICODE_SCRIPT_SAURASHTRA,         /* Saur */
+  G_UNICODE_SCRIPT_CHAM,               /* Cham */
+  G_UNICODE_SCRIPT_OL_CHIKI,           /* Olck */
+  G_UNICODE_SCRIPT_VAI,                /* Vaii */
+  G_UNICODE_SCRIPT_CARIAN,             /* Cari */
+  G_UNICODE_SCRIPT_LYCIAN,             /* Lyci */
+  G_UNICODE_SCRIPT_LYDIAN              /* Lydi */
 } GUnicodeScript;
 
 /* Returns TRUE if current locale uses UTF-8 charset.  If CHARSET is
@@ -381,7 +398,6 @@ GUnicodeScript g_unichar_get_script (gunichar ch) G_GNUC_CONST;
 /* private */
 
 gchar *_g_utf8_make_valid (const gchar *name);
-
 
 G_END_DECLS
 

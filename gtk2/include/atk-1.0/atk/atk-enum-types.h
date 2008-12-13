@@ -1,6 +1,10 @@
 
 /* Generated data (by glib-mkenums) */
 
+#if defined(ATK_DISABLE_SINGLE_INCLUDES) && !defined (__ATK_H_INSIDE__) && !defined (ATK_COMPILATION)
+#error "Only <atk/atk.h> can be included directly."
+#endif
+
 #ifndef __ATK_ENUM_TYPES_H__
 #define __ATK_ENUM_TYPES_H__
 

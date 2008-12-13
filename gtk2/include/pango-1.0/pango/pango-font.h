@@ -371,11 +371,10 @@ struct _PangoFontClass
 
 #endif /* PANGO_ENABLE_BACKEND */
 
-#if defined(PANGO_ENABLE_ENGINE) || defined(PANGO_ENABLE_BACKEND)
 #define PANGO_GLYPH_EMPTY           ((PangoGlyph)0x0FFFFFFF)
+#define PANGO_GLYPH_INVALID_INPUT   ((PangoGlyph)0xFFFFFFFF)
 #define PANGO_GLYPH_UNKNOWN_FLAG    ((PangoGlyph)0x10000000)
 #define PANGO_GET_UNKNOWN_GLYPH(wc) ((PangoGlyph)(wc)|PANGO_GLYPH_UNKNOWN_FLAG)
-#endif
 
 
 G_END_DECLS

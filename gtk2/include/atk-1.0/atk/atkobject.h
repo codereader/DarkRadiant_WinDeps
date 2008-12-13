@@ -17,16 +17,18 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#if defined(ATK_DISABLE_SINGLE_INCLUDES) && !defined (__ATK_H_INSIDE__) && !defined (ATK_COMPILATION)
+#error "Only <atk/atk.h> can be included directly."
+#endif
+
 #ifndef __ATK_OBJECT_H__
 #define __ATK_OBJECT_H__
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
 
 #include <glib-object.h>
 #include <atk/atkstate.h>
 #include <atk/atkrelationtype.h>
+
+G_BEGIN_DECLS
 
 /*
  * AtkObject represents the minimum information all accessible objects
@@ -541,8 +543,10 @@ AtkObject*              atk_object_ref_accessible_child           (AtkObject *ac
                                                                    gint        i);
 AtkRelationSet*         atk_object_ref_relation_set               (AtkObject *accessible);
 AtkRole                 atk_object_get_role                       (AtkObject *accessible);
+#ifndef ATK_DISABLE_DEPRECATED
 AtkLayer                atk_object_get_layer                      (AtkObject *accessible);
 gint                    atk_object_get_mdi_zorder                 (AtkObject *accessible);
+#endif /* ATK_DISABLE_DEPRECATED */
 AtkAttributeSet*        atk_object_get_attributes                 (AtkObject *accessible);
 AtkStateSet*            atk_object_ref_state_set                  (AtkObject *accessible);
 gint                    atk_object_get_index_in_parent            (AtkObject *accessible);
@@ -640,9 +644,6 @@ G_CONST_RETURN gchar* atk_role_get_localized_name              (AtkRole     role
  *    cpos = atk_text_get_caret_position (ATK_TEXT (accessible));
  */
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
-
+G_END_DECLS
 
 #endif /* __ATK_OBJECT_H__ */

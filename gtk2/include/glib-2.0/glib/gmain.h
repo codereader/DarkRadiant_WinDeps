@@ -17,6 +17,10 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#error "Only <glib.h> can be included directly."
+#endif
+
 #ifndef __G_MAIN_H__
 #define __G_MAIN_H__
 
@@ -110,8 +114,7 @@ struct _GSourceFuncs
  *
  * So, unless you really know what you are doing, it's best not to try
  * to use the main loop polling stuff for your own needs on
- * Win32. It's really only written for the GIMP's needs so
- * far.
+ * Windows.
  */
 typedef struct _GPollFD GPollFD;
 typedef gint	(*GPollFunc)	(GPollFD *ufds,

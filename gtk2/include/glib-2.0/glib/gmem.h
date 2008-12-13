@@ -21,8 +21,12 @@
  * Modified by the GLib Team and others 1997-2000.  See the AUTHORS
  * file for a list of people on the GLib Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GLib at ftp://ftp.gtk.org/pub/gtk/. 
+ * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
+
+#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#error "Only <glib.h> can be included directly."
+#endif
 
 #ifndef __G_MEM_H__
 #define __G_MEM_H__
@@ -44,15 +48,15 @@ typedef struct _GMemVTable GMemVTable;
 
 /* Memory allocation functions
  */
-gpointer g_malloc         (gulong	 n_bytes) G_GNUC_MALLOC;
-gpointer g_malloc0        (gulong	 n_bytes) G_GNUC_MALLOC;
+gpointer g_malloc         (gsize	 n_bytes) G_GNUC_MALLOC G_GNUC_ALLOC_SIZE(1);
+gpointer g_malloc0        (gsize	 n_bytes) G_GNUC_MALLOC G_GNUC_ALLOC_SIZE(1);
 gpointer g_realloc        (gpointer	 mem,
-			   gulong	 n_bytes) G_GNUC_WARN_UNUSED_RESULT;
+			   gsize	 n_bytes) G_GNUC_WARN_UNUSED_RESULT;
 void	 g_free	          (gpointer	 mem);
-gpointer g_try_malloc     (gulong	 n_bytes) G_GNUC_MALLOC;
-gpointer g_try_malloc0    (gulong	 n_bytes) G_GNUC_MALLOC;
+gpointer g_try_malloc     (gsize	 n_bytes) G_GNUC_MALLOC G_GNUC_ALLOC_SIZE(1);
+gpointer g_try_malloc0    (gsize	 n_bytes) G_GNUC_MALLOC G_GNUC_ALLOC_SIZE(1);
 gpointer g_try_realloc    (gpointer	 mem,
-			   gulong	 n_bytes) G_GNUC_WARN_UNUSED_RESULT;
+			   gsize	 n_bytes) G_GNUC_WARN_UNUSED_RESULT;
 
 
 /* Convenience memory allocators
@@ -123,7 +127,7 @@ typedef struct _GMemChunk  GMemChunk;
 #define G_ALLOC_AND_FREE  2
 GMemChunk* g_mem_chunk_new     (const gchar *name,
 				gint         atom_size,
-				gulong       area_size,
+				gsize        area_size,
 				gint         type);
 void       g_mem_chunk_destroy (GMemChunk   *mem_chunk);
 gpointer   g_mem_chunk_alloc   (GMemChunk   *mem_chunk);

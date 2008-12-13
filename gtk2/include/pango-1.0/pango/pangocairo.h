@@ -22,9 +22,7 @@
 #ifndef __PANGOCAIRO_H__
 #define __PANGOCAIRO_H__
 
-#include <pango/pango-context.h>
-#include <pango/pango-fontmap.h>
-#include <pango/pango-layout.h>
+#include <pango/pango.h>
 #include <cairo.h>
 
 G_BEGIN_DECLS
@@ -70,12 +68,15 @@ GType         pango_cairo_font_map_get_type          (void) G_GNUC_CONST;
 PangoFontMap *pango_cairo_font_map_new               (void);
 PangoFontMap *pango_cairo_font_map_new_for_font_type (cairo_font_type_t fonttype);
 PangoFontMap *pango_cairo_font_map_get_default       (void);
+void          pango_cairo_font_map_set_default       (PangoCairoFontMap *fontmap);
 cairo_font_type_t pango_cairo_font_map_get_font_type (PangoCairoFontMap *fontmap);
 
 void          pango_cairo_font_map_set_resolution (PangoCairoFontMap *fontmap,
 						   double             dpi);
 double        pango_cairo_font_map_get_resolution (PangoCairoFontMap *fontmap);
+#ifndef PANGO_DISABLE_DEPRECATED
 PangoContext *pango_cairo_font_map_create_context (PangoCairoFontMap *fontmap);
+#endif
 
 /*
  * PangoCairoFont
@@ -106,6 +107,7 @@ PangoCairoShapeRendererFunc pango_cairo_context_get_shape_renderer (PangoContext
 
 /* Convenience
  */
+PangoContext *pango_cairo_create_context (cairo_t   *cr);
 PangoLayout *pango_cairo_create_layout (cairo_t     *cr);
 void         pango_cairo_update_layout (cairo_t     *cr,
 					PangoLayout *layout);
@@ -116,6 +118,9 @@ void         pango_cairo_update_layout (cairo_t     *cr,
 void pango_cairo_show_glyph_string (cairo_t          *cr,
 				    PangoFont        *font,
 				    PangoGlyphString *glyphs);
+void pango_cairo_show_glyph_item   (cairo_t          *cr,
+				    const char       *text,
+				    PangoGlyphItem   *glyph_item);
 void pango_cairo_show_layout_line  (cairo_t          *cr,
 				    PangoLayoutLine  *line);
 void pango_cairo_show_layout       (cairo_t          *cr,

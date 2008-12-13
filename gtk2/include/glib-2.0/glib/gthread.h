@@ -21,8 +21,12 @@
  * Modified by the GLib Team and others 1997-2000.  See the AUTHORS
  * file for a list of people on the GLib Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GLib at ftp://ftp.gtk.org/pub/gtk/. 
+ * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
+
+#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#error "Only <glib.h> can be included directly."
+#endif
 
 #ifndef __G_THREAD_H__
 #define __G_THREAD_H__
@@ -360,21 +364,21 @@ extern void glib_dummy_decl (void);
 #    define G_LOCK(name)                G_STMT_START{             \
         g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,                   \
                "file %s: line %d (%s): locking: %s ",             \
-               __FILE__,        __LINE__, G_GNUC_PRETTY_FUNCTION, \
+               __FILE__,        __LINE__, G_STRFUNC,              \
                #name);                                            \
         g_static_mutex_lock (&G_LOCK_NAME (name));                \
      }G_STMT_END
 #    define G_UNLOCK(name)              G_STMT_START{             \
         g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,                   \
                "file %s: line %d (%s): unlocking: %s ",           \
-               __FILE__,        __LINE__, G_GNUC_PRETTY_FUNCTION, \
+               __FILE__,        __LINE__, G_STRFUNC,              \
                #name);                                            \
        g_static_mutex_unlock (&G_LOCK_NAME (name));               \
      }G_STMT_END
 #    define G_TRYLOCK(name)                                       \
         (g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,                  \
                "file %s: line %d (%s): try locking: %s ",         \
-               __FILE__,        __LINE__, G_GNUC_PRETTY_FUNCTION, \
+               __FILE__,        __LINE__, G_STRFUNC,              \
                #name), g_static_mutex_trylock (&G_LOCK_NAME (name)))
 #  else  /* !G_DEBUG_LOCKS */
 #    define G_LOCK(name) g_static_mutex_lock       (&G_LOCK_NAME (name))
@@ -389,7 +393,6 @@ extern void glib_dummy_decl (void);
 #  define G_UNLOCK(name)
 #  define G_TRYLOCK(name)               (TRUE)
 #endif  /* !G_THREADS_ENABLED */
-
 
 G_END_DECLS
 

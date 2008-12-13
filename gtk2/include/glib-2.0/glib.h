@@ -21,11 +21,13 @@
  * Modified by the GLib Team and others 1997-2000.  See the AUTHORS
  * file for a list of people on the GLib Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GLib at ftp://ftp.gtk.org/pub/gtk/. 
+ * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
 
 #ifndef __G_LIB_H__
 #define __G_LIB_H__
+
+#define __GLIB_H_INSIDE__
 
 #include <glib/galloca.h>
 #include <glib/garray.h>
@@ -35,6 +37,7 @@
 #include <glib/gbase64.h>
 #include <glib/gbookmarkfile.h>
 #include <glib/gcache.h>
+#include <glib/gchecksum.h>
 #include <glib/gcompletion.h>
 #include <glib/gconvert.h>
 #include <glib/gdataset.h>
@@ -66,19 +69,24 @@
 #include <glib/gscanner.h>
 #include <glib/gsequence.h>
 #include <glib/gshell.h>
+#include <glib/gslice.h>
 #include <glib/gslist.h>
 #include <glib/gspawn.h>
 #include <glib/gstrfuncs.h>
 #include <glib/gstring.h>
+#include <glib/gtestutils.h>
 #include <glib/gthread.h>
 #include <glib/gthreadpool.h>
 #include <glib/gtimer.h>
 #include <glib/gtree.h>
 #include <glib/gtypes.h>
 #include <glib/gunicode.h>
+#include <glib/gurifuncs.h>
 #include <glib/gutils.h>
 #ifdef G_PLATFORM_WIN32
 #include <glib/gwin32.h>
 #endif
+
+#undef __GLIB_H_INSIDE__
 
 #endif /* __G_LIB_H__ */

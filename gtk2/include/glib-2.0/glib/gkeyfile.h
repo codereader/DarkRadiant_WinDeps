@@ -20,6 +20,10 @@
  *   Boston, MA 02111-1307, USA.
  */
 
+#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#error "Only <glib.h> can be included directly."
+#endif
+
 #ifndef __G_KEY_FILE_H__
 #define __G_KEY_FILE_H__
 
@@ -192,7 +196,7 @@ void      g_key_file_set_integer_list       (GKeyFile             *key_file,
 					     const gchar          *key,
 					     gint                  list[],
 					     gsize                 length);
-void      g_key_file_set_comment            (GKeyFile             *key_file,
+gboolean  g_key_file_set_comment            (GKeyFile             *key_file,
                                              const gchar          *group_name,
                                              const gchar          *key,
                                              const gchar          *comment,
@@ -202,15 +206,15 @@ gchar    *g_key_file_get_comment            (GKeyFile             *key_file,
                                              const gchar          *key,
                                              GError              **error) G_GNUC_MALLOC;
 
-void      g_key_file_remove_comment         (GKeyFile             *key_file,
+gboolean  g_key_file_remove_comment         (GKeyFile             *key_file,
                                              const gchar          *group_name,
                                              const gchar          *key,
 					     GError              **error);
-void      g_key_file_remove_key             (GKeyFile             *key_file,
+gboolean  g_key_file_remove_key             (GKeyFile             *key_file,
 					     const gchar          *group_name,
 					     const gchar          *key,
 					     GError              **error);
-void      g_key_file_remove_group           (GKeyFile             *key_file,
+gboolean  g_key_file_remove_group           (GKeyFile             *key_file,
 					     const gchar          *group_name,
 					     GError              **error);
 

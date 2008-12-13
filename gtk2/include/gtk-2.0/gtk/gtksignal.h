@@ -21,20 +21,18 @@
  * Modified by the GTK+ Team and others 1997-2000.  See the AUTHORS
  * file for a list of people on the GTK+ Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
+ * GTK+ at ftp://ftp.gtk.org/pub/gtk/.
  */
+
+#ifndef GTK_DISABLE_DEPRECATED
 
 #ifndef __GTK_SIGNAL_H__
 #define __GTK_SIGNAL_H__
 
-
-#include <gtk/gtkenums.h>
-#include <gtk/gtkobject.h>
+#include <gtk/gtk.h>
 #include <gtk/gtkmarshal.h>
 
 G_BEGIN_DECLS
-  
-#ifndef GTK_DISABLE_DEPRECATED
 
 #define	gtk_signal_default_marshaller	g_cclosure_marshal_VOID__VOID
 
@@ -48,13 +46,13 @@ G_BEGIN_DECLS
 #define	gtk_signal_emit_stop(object,signal_id)                                         \
    g_signal_stop_emission ((object), (signal_id), 0)
 #define	gtk_signal_connect(object,name,func,func_data)                                 \
-   gtk_signal_connect_full ((object), (name), (func), 0, (func_data), 0, 0, 0)
+   gtk_signal_connect_full ((object), (name), (func), NULL, (func_data), NULL, 0, 0)
 #define	gtk_signal_connect_after(object,name,func,func_data)                           \
-   gtk_signal_connect_full ((object), (name), (func), 0, (func_data), 0, 0, 1)
+   gtk_signal_connect_full ((object), (name), (func), NULL, (func_data), NULL, 0, 1)
 #define	gtk_signal_connect_object(object,name,func,slot_object)                        \
-   gtk_signal_connect_full ((object), (name), (func), 0, (slot_object), 0, 1, 0)
+   gtk_signal_connect_full ((object), (name), (func), NULL, (slot_object), NULL, 1, 0)
 #define	gtk_signal_connect_object_after(object,name,func,slot_object)                  \
-   gtk_signal_connect_full ((object), (name), (func), 0, (slot_object), 0, 1, 1)
+   gtk_signal_connect_full ((object), (name), (func), NULL, (slot_object), NULL, 1, 1)
 #define	gtk_signal_disconnect(object,handler_id)                                       \
    g_signal_handler_disconnect ((object), (handler_id))
 #define	gtk_signal_handler_block(object,handler_id)                                    \
@@ -123,7 +121,7 @@ gulong	gtk_signal_connect_full			(GtkObject	    *object,
 						 GtkSignalFunc	     func,
 						 GtkCallbackMarshal  unsupported,
 						 gpointer	     data,
-						 GtkDestroyNotify    destroy_func,
+						 GDestroyNotify      destroy_func,
 						 gint		     object_signal,
 						 gint		     after);
 void	gtk_signal_emitv			(GtkObject	    *object,
@@ -144,8 +142,8 @@ void	gtk_signal_compat_matched		(GtkObject	    *object,
 						 GSignalMatchType    match,
 						 guint               action);
 
-#endif /* GTK_DISABLE_DEPRECATED */
-
 G_END_DECLS
 
 #endif /* __GTK_SIGNAL_H__ */
+
+#endif /* GTK_DISABLE_DEPRECATED */
