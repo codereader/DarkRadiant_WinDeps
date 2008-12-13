@@ -64,6 +64,24 @@ typedef unsigned __int64 guint64;
 #define G_GINT64_FORMAT "I64i"
 #define G_GUINT64_FORMAT "I64u"
 
+#if defined(_WIN64) || defined(_M_X64) || defined(_M_AMD64)
+
+#define GLIB_SIZEOF_VOID_P 8
+#define GLIB_SIZEOF_LONG   4
+#define GLIB_SIZEOF_SIZE_T 8
+
+typedef signed long long gssize;
+typedef unsigned long long gsize;
+#define G_GSIZE_MODIFIER "I64"
+#define G_GSSIZE_FORMAT "I64d"
+#define G_GSIZE_FORMAT "I64u"
+
+#define G_MAXSIZE	G_MAXUINT64
+#define G_MINSSIZE	G_MININT64
+#define G_MAXSSIZE	G_MAXINT64
+
+#else
+
 #define GLIB_SIZEOF_VOID_P 4
 #define GLIB_SIZEOF_LONG   4
 #define GLIB_SIZEOF_SIZE_T 4
@@ -78,16 +96,40 @@ typedef unsigned int gsize;
 #define G_MINSSIZE	G_MININT
 #define G_MAXSSIZE	G_MAXINT
 
+#endif
+
 typedef gint64 goffset;
 #define G_MINOFFSET	G_MININT64
 #define G_MAXOFFSET	G_MAXINT64
 
+#ifndef _WIN64
 
 #define GPOINTER_TO_INT(p)	((gint)   (p))
 #define GPOINTER_TO_UINT(p)	((guint)  (p))
 
 #define GINT_TO_POINTER(i)	((gpointer)  (i))
 #define GUINT_TO_POINTER(u)	((gpointer)  (u))
+
+typedef signed int gintptr;
+typedef unsigned int guintptr;
+
+#else
+
+#define GPOINTER_TO_INT(p)	((gint)  (gint64) (p))
+#define GPOINTER_TO_UINT(p)	((guint) (guint64) (p))
+
+#define GINT_TO_POINTER(i)	((gpointer) (gint64) (i))
+#define GUINT_TO_POINTER(u)	((gpointer) (guint64) (u))
+
+#ifndef _MSC_VER
+typedef signed long long gintptr;
+typedef unsigned long long guintptr;
+#else
+typedef signed __int64 gintptr;
+typedef unsigned __int64 guintptr;
+#endif
+
+#endif
 
 #ifdef NeXT /* @#%@! NeXTStep */
 # define g_ATEXIT(proc)	(!atexit (proc))
@@ -98,11 +140,12 @@ typedef gint64 goffset;
 #define g_memmove(dest,src,len) G_STMT_START { memmove ((dest), (src), (len)); } G_STMT_END
 
 #define GLIB_MAJOR_VERSION 2
-#define GLIB_MINOR_VERSION 14
-#define GLIB_MICRO_VERSION 4
+#define GLIB_MINOR_VERSION 18
+#define GLIB_MICRO_VERSION 3
 
 #define G_OS_WIN32
 #define G_PLATFORM_WIN32
+
 
 #ifndef _MSC_VER
 #define G_VA_COPY	va_copy
@@ -134,6 +177,11 @@ typedef gint64 goffset;
 #endif
 
 #define G_HAVE_GNUC_VARARGS 1
+#else /* _MSC_VER */
+/* varargs macros available since msvc8 (vs2005) */
+#  if _MSC_VER >= 1400
+#    define G_HAVE_ISO_VARARGS 1
+#   endif
 #endif /* not _MSC_VER */
 #define G_HAVE_GROWING_STACK 0
 
@@ -152,7 +200,11 @@ typedef struct _GMutex* GStaticMutex;
 typedef union _GSystemThread GSystemThread;
 union _GSystemThread
 {
+#ifndef _WIN64
   char   data[4];
+#else
+  char   data[8];
+#endif
   double dummy_double;
   void  *dummy_pointer;
   long   dummy_long;
@@ -189,6 +241,13 @@ union _GSystemThread
 
 #define G_MODULE_SUFFIX "dll"
 
+/* A GPid is an abstraction for a process "handle". It is *not* an
+ * abstraction for a process identifier in general. GPid is used in
+ * GLib only for descendant processes spawned with the g_spawn*
+ * functions. On POSIX there is no "process handle" concept as such,
+ * but on Windows a GPid is a handle to a process, a kind of pointer,
+ * not a process identifier.
+ */
 typedef void * GPid;
 
 G_END_DECLS
