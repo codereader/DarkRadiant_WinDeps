@@ -201,7 +201,7 @@ XMLPUBFUN void XMLCALL xmlCheckVersion(int version);
  *
  * Whether the deprecated APIs are compiled in for compatibility
  */
-#if 1
+#if 0
 #define LIBXML_LEGACY_ENABLED
 #endif
 
@@ -300,7 +300,7 @@ XMLPUBFUN void XMLCALL xmlCheckVersion(int version);
  *
  * Whether the runtime debugging is configured in
  */
-#if 1
+#if 0
 #define LIBXML_DEBUG_RUNTIME
 #endif
 
