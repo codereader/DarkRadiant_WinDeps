@@ -24,6 +24,8 @@
 #ifndef __GTK_SOURCE_VIEW_H__
 #define __GTK_SOURCE_VIEW_H__
 
+#include "config.h"
+
 #include <gtk/gtk.h>
 #include <gtk/gtktextview.h>
 
@@ -110,92 +112,92 @@ typedef enum
 } GtkSourceDrawSpacesFlags;
 
 
-GType		 gtk_source_view_get_type 		(void) G_GNUC_CONST;
+GTKSOURCEVIEW_DLL_EXPORT GType		 gtk_source_view_get_type 		(void) G_GNUC_CONST;
 
 /* Constructors */
-GtkWidget 	*gtk_source_view_new 			(void);
-GtkWidget 	*gtk_source_view_new_with_buffer	(GtkSourceBuffer *buffer);
+GTKSOURCEVIEW_DLL_EXPORT GtkWidget 	*gtk_source_view_new 			(void);
+GTKSOURCEVIEW_DLL_EXPORT GtkWidget 	*gtk_source_view_new_with_buffer	(GtkSourceBuffer *buffer);
 
 /* Properties */
-void 		 gtk_source_view_set_show_line_numbers 	(GtkSourceView   *view,
+GTKSOURCEVIEW_DLL_EXPORT void 		 gtk_source_view_set_show_line_numbers 	(GtkSourceView   *view,
 							 gboolean         show);
-gboolean 	 gtk_source_view_get_show_line_numbers 	(GtkSourceView   *view);
+GTKSOURCEVIEW_DLL_EXPORT gboolean 	 gtk_source_view_get_show_line_numbers 	(GtkSourceView   *view);
 
-void 		 gtk_source_view_set_tab_width          (GtkSourceView   *view,
+GTKSOURCEVIEW_DLL_EXPORT void 		 gtk_source_view_set_tab_width          (GtkSourceView   *view,
 							 guint            width);
-guint            gtk_source_view_get_tab_width          (GtkSourceView   *view);
+GTKSOURCEVIEW_DLL_EXPORT guint            gtk_source_view_get_tab_width          (GtkSourceView   *view);
 
-void		 gtk_source_view_set_indent_width 	(GtkSourceView   *view,
+GTKSOURCEVIEW_DLL_EXPORT void		 gtk_source_view_set_indent_width 	(GtkSourceView   *view,
 							 gint             width);
-gint		 gtk_source_view_get_indent_width	(GtkSourceView   *view);
+GTKSOURCEVIEW_DLL_EXPORT gint		 gtk_source_view_get_indent_width	(GtkSourceView   *view);
 
-void		 gtk_source_view_set_auto_indent 	(GtkSourceView   *view,
+GTKSOURCEVIEW_DLL_EXPORT void		 gtk_source_view_set_auto_indent 	(GtkSourceView   *view,
 							 gboolean         enable);
-gboolean	 gtk_source_view_get_auto_indent 	(GtkSourceView   *view);
+GTKSOURCEVIEW_DLL_EXPORT gboolean	 gtk_source_view_get_auto_indent 	(GtkSourceView   *view);
 
-void		 gtk_source_view_set_insert_spaces_instead_of_tabs
+GTKSOURCEVIEW_DLL_EXPORT void		 gtk_source_view_set_insert_spaces_instead_of_tabs
 							(GtkSourceView   *view,
 							 gboolean         enable);
-gboolean	 gtk_source_view_get_insert_spaces_instead_of_tabs
+GTKSOURCEVIEW_DLL_EXPORT gboolean	 gtk_source_view_get_insert_spaces_instead_of_tabs
 							(GtkSourceView   *view);
 
-void		 gtk_source_view_set_indent_on_tab 	(GtkSourceView   *view,
+GTKSOURCEVIEW_DLL_EXPORT void		 gtk_source_view_set_indent_on_tab 	(GtkSourceView   *view,
 							 gboolean         enable);
-gboolean	 gtk_source_view_get_indent_on_tab 	(GtkSourceView   *view);
+GTKSOURCEVIEW_DLL_EXPORT gboolean	 gtk_source_view_get_indent_on_tab 	(GtkSourceView   *view);
 
-void		 gtk_source_view_set_highlight_current_line
+GTKSOURCEVIEW_DLL_EXPORT void		 gtk_source_view_set_highlight_current_line
 							(GtkSourceView   *view,
 							 gboolean         show);
-gboolean 	 gtk_source_view_get_highlight_current_line
+GTKSOURCEVIEW_DLL_EXPORT gboolean 	 gtk_source_view_get_highlight_current_line
 							(GtkSourceView   *view);
 
-void		 gtk_source_view_set_show_right_margin 	(GtkSourceView   *view,
+GTKSOURCEVIEW_DLL_EXPORT void		 gtk_source_view_set_show_right_margin 	(GtkSourceView   *view,
 							 gboolean         show);
-gboolean 	 gtk_source_view_get_show_right_margin 	(GtkSourceView   *view);
+GTKSOURCEVIEW_DLL_EXPORT gboolean 	 gtk_source_view_get_show_right_margin 	(GtkSourceView   *view);
 
-void		 gtk_source_view_set_right_margin_position
+GTKSOURCEVIEW_DLL_EXPORT void		 gtk_source_view_set_right_margin_position
 					 		(GtkSourceView   *view,
 							 guint            pos);
-guint		 gtk_source_view_get_right_margin_position
+GTKSOURCEVIEW_DLL_EXPORT guint		 gtk_source_view_get_right_margin_position
 					 		(GtkSourceView   *view);
 
-void 		 gtk_source_view_set_show_line_marks    (GtkSourceView   *view,
+GTKSOURCEVIEW_DLL_EXPORT void 		 gtk_source_view_set_show_line_marks    (GtkSourceView   *view,
 							 gboolean         show);
 gboolean	 gtk_source_view_get_show_line_marks    (GtkSourceView   *view);
 
-void             gtk_source_view_set_mark_category_pixbuf
+GTKSOURCEVIEW_DLL_EXPORT void             gtk_source_view_set_mark_category_pixbuf
 							(GtkSourceView   *view,
 							 const gchar     *category,
 							 GdkPixbuf       *pixbuf);
-GdkPixbuf	*gtk_source_view_get_mark_category_pixbuf
+GTKSOURCEVIEW_DLL_EXPORT GdkPixbuf	*gtk_source_view_get_mark_category_pixbuf
 							(GtkSourceView   *view,
 				       			 const gchar     *category);
 
-void             gtk_source_view_set_mark_category_background
+GTKSOURCEVIEW_DLL_EXPORT void             gtk_source_view_set_mark_category_background
 							(GtkSourceView   *view,
 							 const gchar     *category,
 							 const GdkColor  *color);
-gboolean         gtk_source_view_get_mark_category_background
+GTKSOURCEVIEW_DLL_EXPORT gboolean         gtk_source_view_get_mark_category_background
 							(GtkSourceView   *view,
 							 const gchar     *category,
 							 GdkColor        *dest);
 
-void             gtk_source_view_set_mark_category_priority
+GTKSOURCEVIEW_DLL_EXPORT void             gtk_source_view_set_mark_category_priority
 							(GtkSourceView   *view,
 							 const gchar     *category,
 							 gint priority);
-gint		 gtk_source_view_get_mark_category_priority
+GTKSOURCEVIEW_DLL_EXPORT gint		 gtk_source_view_get_mark_category_priority
 							(GtkSourceView   *view,
 				       			 const gchar     *category);
 
-void		 gtk_source_view_set_smart_home_end	(GtkSourceView             *view,
+GTKSOURCEVIEW_DLL_EXPORT void		 gtk_source_view_set_smart_home_end	(GtkSourceView             *view,
 							 GtkSourceSmartHomeEndType  smart_he);
-GtkSourceSmartHomeEndType
+GTKSOURCEVIEW_DLL_EXPORT GtkSourceSmartHomeEndType
 		 gtk_source_view_get_smart_home_end	(GtkSourceView   *view);
 
-void		 gtk_source_view_set_draw_spaces	(GtkSourceView   *view,
+GTKSOURCEVIEW_DLL_EXPORT void		 gtk_source_view_set_draw_spaces	(GtkSourceView   *view,
 							 GtkSourceDrawSpacesFlags flags);
-GtkSourceDrawSpacesFlags
+GTKSOURCEVIEW_DLL_EXPORT GtkSourceDrawSpacesFlags
 		gtk_source_view_get_draw_spaces		(GtkSourceView   *view);
 
 G_END_DECLS

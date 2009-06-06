@@ -21,6 +21,8 @@
 #ifndef __GTK_SOURCE_STYLE_SCHEME_H__
 #define __GTK_SOURCE_STYLE_SCHEME_H__
 
+#include "config.h"
+
 #include <gtk/gtkwidget.h>
 #include <gtksourceview/gtksourcestyle.h>
 
@@ -52,26 +54,26 @@ struct _GtkSourceStyleSchemeClass
 	void (*_gtk_source_reserved2) (void);
 };
 
-GType			 gtk_source_style_scheme_get_type	(void) G_GNUC_CONST;
+GTKSOURCEVIEW_DLL_EXPORT GType			 gtk_source_style_scheme_get_type	(void) G_GNUC_CONST;
 
-GtkSourceStyleScheme	*_gtk_source_style_scheme_new		(const gchar          *id,
+GTKSOURCEVIEW_DLL_EXPORT GtkSourceStyleScheme	*_gtk_source_style_scheme_new		(const gchar          *id,
 								 const gchar          *name);
 
-const gchar             *gtk_source_style_scheme_get_id         (GtkSourceStyleScheme *scheme);
-const gchar             *gtk_source_style_scheme_get_name       (GtkSourceStyleScheme *scheme);
-const gchar             *gtk_source_style_scheme_get_description(GtkSourceStyleScheme *scheme);
+GTKSOURCEVIEW_DLL_EXPORT const gchar             *gtk_source_style_scheme_get_id         (GtkSourceStyleScheme *scheme);
+GTKSOURCEVIEW_DLL_EXPORT const gchar             *gtk_source_style_scheme_get_name       (GtkSourceStyleScheme *scheme);
+GTKSOURCEVIEW_DLL_EXPORT const gchar             *gtk_source_style_scheme_get_description(GtkSourceStyleScheme *scheme);
 
-G_CONST_RETURN gchar* G_CONST_RETURN *
+GTKSOURCEVIEW_DLL_EXPORT G_CONST_RETURN gchar* G_CONST_RETURN *
 			 gtk_source_style_scheme_get_authors	(GtkSourceStyleScheme *scheme);
 
-const gchar             *gtk_source_style_scheme_get_filename	(GtkSourceStyleScheme *scheme);
+GTKSOURCEVIEW_DLL_EXPORT const gchar             *gtk_source_style_scheme_get_filename	(GtkSourceStyleScheme *scheme);
 
-GtkSourceStyle		*gtk_source_style_scheme_get_style	(GtkSourceStyleScheme *scheme,
+GTKSOURCEVIEW_DLL_EXPORT GtkSourceStyle		*gtk_source_style_scheme_get_style	(GtkSourceStyleScheme *scheme,
 								 const gchar          *style_id);
-GtkSourceStyleScheme	*_gtk_source_style_scheme_new_from_file (const gchar          *filename);
-GtkSourceStyleScheme	*_gtk_source_style_scheme_get_default	(void);
-const gchar		*_gtk_source_style_scheme_get_parent_id	(GtkSourceStyleScheme *scheme);
-void			 _gtk_source_style_scheme_set_parent	(GtkSourceStyleScheme *scheme,
+GTKSOURCEVIEW_DLL_EXPORT GtkSourceStyleScheme	*_gtk_source_style_scheme_new_from_file (const gchar          *filename);
+GTKSOURCEVIEW_DLL_EXPORT GtkSourceStyleScheme	*_gtk_source_style_scheme_get_default	(void);
+GTKSOURCEVIEW_DLL_EXPORT const gchar		*_gtk_source_style_scheme_get_parent_id	(GtkSourceStyleScheme *scheme);
+GTKSOURCEVIEW_DLL_EXPORT void			 _gtk_source_style_scheme_set_parent	(GtkSourceStyleScheme *scheme,
 								 GtkSourceStyleScheme *parent_scheme);
 
 /* private */

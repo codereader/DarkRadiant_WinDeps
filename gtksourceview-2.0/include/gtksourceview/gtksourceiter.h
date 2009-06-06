@@ -24,6 +24,8 @@
 
 #include <gtk/gtktextiter.h>
 
+#include "config.h"
+
 G_BEGIN_DECLS
 
 typedef enum
@@ -34,14 +36,14 @@ typedef enum
 	/* Possible future plans: SEARCH_REGEXP */
 } GtkSourceSearchFlags;
 
-gboolean gtk_source_iter_forward_search 	(const GtkTextIter   *iter,
+gboolean GTKSOURCEVIEW_DLL_EXPORT gtk_source_iter_forward_search 	(const GtkTextIter   *iter,
 						 const gchar         *str,
 						 GtkSourceSearchFlags flags,
 						 GtkTextIter         *match_start,
 						 GtkTextIter         *match_end,
 						 const GtkTextIter   *limit);
 
-gboolean gtk_source_iter_backward_search 	(const GtkTextIter   *iter,
+gboolean GTKSOURCEVIEW_DLL_EXPORT gtk_source_iter_backward_search 	(const GtkTextIter   *iter,
 						 const gchar         *str,
 						 GtkSourceSearchFlags flags,
 						 GtkTextIter         *match_start,

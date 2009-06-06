@@ -21,6 +21,8 @@
 #ifndef __GTK_SOURCE_LANGUAGE_H__
 #define __GTK_SOURCE_LANGUAGE_H__
 
+#include "config.h"
+
 #include <glib.h>
 #include <glib-object.h>
 #include <gtk/gtk.h>
@@ -55,26 +57,26 @@ struct _GtkSourceLanguageClass
 	void (*_gtk_source_reserved2) (void);
 };
 
-GType             gtk_source_language_get_type 		(void) G_GNUC_CONST;
+GTKSOURCEVIEW_DLL_EXPORT GType             gtk_source_language_get_type 		(void) G_GNUC_CONST;
 
-const gchar 	 *gtk_source_language_get_id		(GtkSourceLanguage *language);
+GTKSOURCEVIEW_DLL_EXPORT const gchar 	 *gtk_source_language_get_id		(GtkSourceLanguage *language);
 
-const gchar 	 *gtk_source_language_get_name		(GtkSourceLanguage *language);
+GTKSOURCEVIEW_DLL_EXPORT const gchar 	 *gtk_source_language_get_name		(GtkSourceLanguage *language);
 
-const gchar	 *gtk_source_language_get_section	(GtkSourceLanguage *language);
+GTKSOURCEVIEW_DLL_EXPORT const gchar	 *gtk_source_language_get_section	(GtkSourceLanguage *language);
 
-gboolean	  gtk_source_language_get_hidden 	(GtkSourceLanguage *language);
+GTKSOURCEVIEW_DLL_EXPORT gboolean	  gtk_source_language_get_hidden 	(GtkSourceLanguage *language);
 
-const gchar	 *gtk_source_language_get_metadata	(GtkSourceLanguage *language,
+GTKSOURCEVIEW_DLL_EXPORT const gchar	 *gtk_source_language_get_metadata	(GtkSourceLanguage *language,
 							 const gchar       *name);
 
-gchar		**gtk_source_language_get_mime_types	(GtkSourceLanguage *language);
+GTKSOURCEVIEW_DLL_EXPORT gchar		**gtk_source_language_get_mime_types	(GtkSourceLanguage *language);
 
-gchar		**gtk_source_language_get_globs		(GtkSourceLanguage *language);
+GTKSOURCEVIEW_DLL_EXPORT gchar		**gtk_source_language_get_globs		(GtkSourceLanguage *language);
 
-gchar		**gtk_source_language_get_style_ids 	(GtkSourceLanguage *language);
+GTKSOURCEVIEW_DLL_EXPORT gchar		**gtk_source_language_get_style_ids 	(GtkSourceLanguage *language);
 
-const char       *gtk_source_language_get_style_name	(GtkSourceLanguage *language,
+GTKSOURCEVIEW_DLL_EXPORT const char       *gtk_source_language_get_style_name	(GtkSourceLanguage *language,
 							 const char        *style_id);
 
 G_END_DECLS

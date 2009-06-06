@@ -21,6 +21,8 @@
 #ifndef __GTK_SOURCE_LANGUAGE_MANAGER_H__
 #define __GTK_SOURCE_LANGUAGE_MANAGER_H__
 
+#include "config.h"
+
 #include <gtksourceview/gtksourcelanguage.h>
 
 G_BEGIN_DECLS
@@ -56,25 +58,25 @@ struct _GtkSourceLanguageManagerClass
 };
 
 
-GType			  gtk_source_language_manager_get_type			(void) G_GNUC_CONST;
+GTKSOURCEVIEW_DLL_EXPORT GType			  gtk_source_language_manager_get_type			(void) G_GNUC_CONST;
 
-GtkSourceLanguageManager *gtk_source_language_manager_new			(void);
+GTKSOURCEVIEW_DLL_EXPORT GtkSourceLanguageManager *gtk_source_language_manager_new			(void);
 
-GtkSourceLanguageManager *gtk_source_language_manager_get_default		(void);
+GTKSOURCEVIEW_DLL_EXPORT GtkSourceLanguageManager *gtk_source_language_manager_get_default		(void);
 
-G_CONST_RETURN gchar* G_CONST_RETURN *
+GTKSOURCEVIEW_DLL_EXPORT G_CONST_RETURN gchar* G_CONST_RETURN *
 			  gtk_source_language_manager_get_search_path		(GtkSourceLanguageManager *lm);
 
-void			  gtk_source_language_manager_set_search_path		(GtkSourceLanguageManager *lm,
+GTKSOURCEVIEW_DLL_EXPORT void			  gtk_source_language_manager_set_search_path		(GtkSourceLanguageManager *lm,
 										 gchar                   **dirs);
 
-G_CONST_RETURN gchar* G_CONST_RETURN *
+GTKSOURCEVIEW_DLL_EXPORT G_CONST_RETURN gchar* G_CONST_RETURN *
 			  gtk_source_language_manager_get_language_ids		(GtkSourceLanguageManager *lm);
 
-GtkSourceLanguage	 *gtk_source_language_manager_get_language		(GtkSourceLanguageManager *lm,
+GTKSOURCEVIEW_DLL_EXPORT GtkSourceLanguage	 *gtk_source_language_manager_get_language		(GtkSourceLanguageManager *lm,
 										 const gchar              *id);
 
-GtkSourceLanguage	 *gtk_source_language_manager_guess_language		(GtkSourceLanguageManager *lm,
+GTKSOURCEVIEW_DLL_EXPORT GtkSourceLanguage	 *gtk_source_language_manager_guess_language		(GtkSourceLanguageManager *lm,
 										 const gchar		  *filename,
 										 const gchar		  *content_type);
 

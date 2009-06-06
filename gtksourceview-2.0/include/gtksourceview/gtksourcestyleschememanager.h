@@ -21,6 +21,8 @@
 #ifndef __GTK_SOURCE_STYLE_SCHEME_MANAGER_H__
 #define __GTK_SOURCE_STYLE_SCHEME_MANAGER_H__
 
+#include "config.h"
+
 #include <gtksourceview/gtksourcestylescheme.h>
 
 G_BEGIN_DECLS
@@ -56,32 +58,32 @@ struct _GtkSourceStyleSchemeManagerClass
 };
 
 
-GType			 gtk_source_style_scheme_manager_get_type		(void) G_GNUC_CONST;
+GTKSOURCEVIEW_DLL_EXPORT GType			 gtk_source_style_scheme_manager_get_type		(void) G_GNUC_CONST;
 
-GtkSourceStyleSchemeManager *
+GTKSOURCEVIEW_DLL_EXPORT GtkSourceStyleSchemeManager *
 			 gtk_source_style_scheme_manager_new			(void);
 
-GtkSourceStyleSchemeManager *
+GTKSOURCEVIEW_DLL_EXPORT GtkSourceStyleSchemeManager *
 			 gtk_source_style_scheme_manager_get_default		(void);
 
-void			 gtk_source_style_scheme_manager_set_search_path	(GtkSourceStyleSchemeManager	*manager,
+GTKSOURCEVIEW_DLL_EXPORT void			 gtk_source_style_scheme_manager_set_search_path	(GtkSourceStyleSchemeManager	*manager,
 						    				 gchar			       **path);
 
-void 			 gtk_source_style_scheme_manager_append_search_path    (GtkSourceStyleSchemeManager	*manager,
+GTKSOURCEVIEW_DLL_EXPORT void 			 gtk_source_style_scheme_manager_append_search_path    (GtkSourceStyleSchemeManager	*manager,
 						    				 const gchar			*path);
 
-void 			 gtk_source_style_scheme_manager_prepend_search_path   (GtkSourceStyleSchemeManager	*manager,
+GTKSOURCEVIEW_DLL_EXPORT void 			 gtk_source_style_scheme_manager_prepend_search_path   (GtkSourceStyleSchemeManager	*manager,
 						    				 const gchar			*path);
 
-G_CONST_RETURN gchar* G_CONST_RETURN *
+GTKSOURCEVIEW_DLL_EXPORT G_CONST_RETURN gchar* G_CONST_RETURN *
 			 gtk_source_style_scheme_manager_get_search_path	(GtkSourceStyleSchemeManager	*manager);
 
-void			 gtk_source_style_scheme_manager_force_rescan		(GtkSourceStyleSchemeManager	*manager);
+GTKSOURCEVIEW_DLL_EXPORT void			 gtk_source_style_scheme_manager_force_rescan		(GtkSourceStyleSchemeManager	*manager);
 
-G_CONST_RETURN gchar* G_CONST_RETURN *
+GTKSOURCEVIEW_DLL_EXPORT G_CONST_RETURN gchar* G_CONST_RETURN *
 			 gtk_source_style_scheme_manager_get_scheme_ids		(GtkSourceStyleSchemeManager	*manager);
 
-GtkSourceStyleScheme	*gtk_source_style_scheme_manager_get_scheme		(GtkSourceStyleSchemeManager	*manager,
+GTKSOURCEVIEW_DLL_EXPORT GtkSourceStyleScheme	*gtk_source_style_scheme_manager_get_scheme		(GtkSourceStyleSchemeManager	*manager,
 										 const gchar			*scheme_id);
 
 G_END_DECLS
