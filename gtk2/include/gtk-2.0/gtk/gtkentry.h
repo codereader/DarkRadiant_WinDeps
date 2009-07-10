@@ -1,6 +1,10 @@
 /* GTK - The GIMP Toolkit
  * Copyright (C) 1995-1997 Peter Mattis, Spencer Kimball and Josh MacDonald
  *
+ * Copyright (C) 2004-2006 Christian Hammond
+ * Copyright (C) 2008 Cody Russell
+ * Copyright (C) 2008 Red Hat, Inc.
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -32,12 +36,13 @@
 #define __GTK_ENTRY_H__
 
 
-#include <gdk/gdk.h>
 #include <gtk/gtkeditable.h>
 #include <gtk/gtkimcontext.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkentrycompletion.h>
-#include <pango/pango.h>
+#include <gtk/gtkimage.h>
+#include <gtk/gtkselection.h>
+
 
 G_BEGIN_DECLS
 
@@ -48,6 +53,11 @@ G_BEGIN_DECLS
 #define GTK_IS_ENTRY_CLASS(klass)       (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_ENTRY))
 #define GTK_ENTRY_GET_CLASS(obj)        (G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_ENTRY, GtkEntryClass))
 
+typedef enum
+{
+  GTK_ENTRY_ICON_PRIMARY,
+  GTK_ENTRY_ICON_SECONDARY
+} GtkEntryIconPosition;
 
 typedef struct _GtkEntry       GtkEntry;
 typedef struct _GtkEntryClass  GtkEntryClass;
@@ -124,21 +134,21 @@ struct _GtkEntryClass
 
   /* Action signals
    */
-  void (* activate)           (GtkEntry       *entry);
-  void (* move_cursor)        (GtkEntry       *entry,
-			       GtkMovementStep step,
-			       gint            count,
-			       gboolean        extend_selection);
-  void (* insert_at_cursor)   (GtkEntry       *entry,
-			       const gchar    *str);
-  void (* delete_from_cursor) (GtkEntry       *entry,
-			       GtkDeleteType   type,
-			       gint            count);
-  void (* backspace)          (GtkEntry       *entry);
-  void (* cut_clipboard)      (GtkEntry       *entry);
-  void (* copy_clipboard)     (GtkEntry       *entry);
-  void (* paste_clipboard)    (GtkEntry       *entry);
-  void (* toggle_overwrite)   (GtkEntry       *entry);
+  void (* activate)           (GtkEntry             *entry);
+  void (* move_cursor)        (GtkEntry             *entry,
+			       GtkMovementStep       step,
+			       gint                  count,
+			       gboolean              extend_selection);
+  void (* insert_at_cursor)   (GtkEntry             *entry,
+			       const gchar          *str);
+  void (* delete_from_cursor) (GtkEntry             *entry,
+			       GtkDeleteType         type,
+			       gint                  count);
+  void (* backspace)          (GtkEntry             *entry);
+  void (* cut_clipboard)      (GtkEntry             *entry);
+  void (* copy_clipboard)     (GtkEntry             *entry);
+  void (* paste_clipboard)    (GtkEntry             *entry);
+  void (* toggle_overwrite)   (GtkEntry             *entry);
 
   /* hook to add other objects beside the entry (like in GtkSpinButton) */
   void (* get_text_area_size) (GtkEntry       *entry,
@@ -148,8 +158,8 @@ struct _GtkEntryClass
 			       gint           *height);
 
   /* Padding for future expansion */
-  void (*_gtk_reserved2) (void);
-  void (*_gtk_reserved3) (void);
+  void (*_gtk_reserved1)      (void);
+  void (*_gtk_reserved2)      (void);
 };
 
 GType      gtk_entry_get_type       		(void) G_GNUC_CONST;
@@ -160,6 +170,7 @@ gboolean   gtk_entry_get_visibility             (GtkEntry      *entry);
 void       gtk_entry_set_invisible_char         (GtkEntry      *entry,
                                                  gunichar       ch);
 gunichar   gtk_entry_get_invisible_char         (GtkEntry      *entry);
+void       gtk_entry_unset_invisible_char       (GtkEntry      *entry);
 void       gtk_entry_set_has_frame              (GtkEntry      *entry,
                                                  gboolean       setting);
 gboolean   gtk_entry_get_has_frame              (GtkEntry      *entry);
@@ -211,6 +222,72 @@ gint       gtk_entry_text_index_to_layout_index (GtkEntry      *entry,
 void           gtk_entry_set_cursor_hadjustment (GtkEntry      *entry,
                                                  GtkAdjustment *adjustment);
 GtkAdjustment* gtk_entry_get_cursor_hadjustment (GtkEntry      *entry);
+
+/* Progress API
+ */
+void           gtk_entry_set_progress_fraction   (GtkEntry     *entry,
+                                                  gdouble       fraction);
+gdouble        gtk_entry_get_progress_fraction   (GtkEntry     *entry);
+
+void           gtk_entry_set_progress_pulse_step (GtkEntry     *entry,
+                                                  gdouble       fraction);
+gdouble        gtk_entry_get_progress_pulse_step (GtkEntry     *entry);
+
+void           gtk_entry_progress_pulse          (GtkEntry     *entry);
+
+/* Setting and managing icons
+ */
+void           gtk_entry_set_icon_from_pixbuf            (GtkEntry             *entry,
+							  GtkEntryIconPosition  icon_pos,
+							  GdkPixbuf            *pixbuf);
+void           gtk_entry_set_icon_from_stock             (GtkEntry             *entry,
+							  GtkEntryIconPosition  icon_pos,
+							  const gchar          *stock_id);
+void           gtk_entry_set_icon_from_icon_name         (GtkEntry             *entry,
+							  GtkEntryIconPosition  icon_pos,
+							  const gchar          *icon_name);
+void           gtk_entry_set_icon_from_gicon             (GtkEntry             *entry,
+							  GtkEntryIconPosition  icon_pos,
+							  GIcon                *icon);
+GtkImageType gtk_entry_get_icon_storage_type             (GtkEntry             *entry,
+							  GtkEntryIconPosition  icon_pos);
+GdkPixbuf*   gtk_entry_get_icon_pixbuf                   (GtkEntry             *entry,
+							  GtkEntryIconPosition  icon_pos);
+const gchar* gtk_entry_get_icon_stock                    (GtkEntry             *entry,
+							  GtkEntryIconPosition  icon_pos);
+const gchar* gtk_entry_get_icon_name                     (GtkEntry             *entry,
+							  GtkEntryIconPosition  icon_pos);
+GIcon*       gtk_entry_get_icon_gicon                    (GtkEntry             *entry,
+							  GtkEntryIconPosition  icon_pos);
+void         gtk_entry_set_icon_activatable              (GtkEntry             *entry,
+							  GtkEntryIconPosition  icon_pos,
+							  gboolean              activatable);
+gboolean     gtk_entry_get_icon_activatable              (GtkEntry             *entry,
+							  GtkEntryIconPosition  icon_pos);
+void         gtk_entry_set_icon_sensitive                (GtkEntry             *entry,
+							  GtkEntryIconPosition  icon_pos,
+							  gboolean              sensitive);
+gboolean     gtk_entry_get_icon_sensitive                (GtkEntry             *entry,
+							  GtkEntryIconPosition  icon_pos);
+gint         gtk_entry_get_icon_at_pos                   (GtkEntry             *entry,
+							  gint                  x,
+							  gint                  y);
+void         gtk_entry_set_icon_tooltip_text             (GtkEntry             *entry,
+							  GtkEntryIconPosition  icon_pos,
+							  const gchar          *tooltip);
+gchar *      gtk_entry_get_icon_tooltip_text             (GtkEntry             *entry,
+                                                          GtkEntryIconPosition  icon_pos);
+void         gtk_entry_set_icon_tooltip_markup           (GtkEntry             *entry,
+							  GtkEntryIconPosition  icon_pos,
+							  const gchar          *tooltip);
+gchar *      gtk_entry_get_icon_tooltip_markup           (GtkEntry             *entry,
+                                                          GtkEntryIconPosition  icon_pos);
+void         gtk_entry_set_icon_drag_source              (GtkEntry             *entry,
+							  GtkEntryIconPosition  icon_pos,
+							  GtkTargetList        *target_list,
+							  GdkDragAction         actions);
+gint         gtk_entry_get_current_icon_drag_source      (GtkEntry             *entry);
+
 
 /* Deprecated compatibility functions
  */

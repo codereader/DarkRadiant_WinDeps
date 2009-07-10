@@ -32,7 +32,6 @@
 #define __GTK_SCROLLBAR_H__
 
 
-#include <gdk/gdk.h>
 #include <gtk/gtkrange.h>
 
 
@@ -66,8 +65,7 @@ struct _GtkScrollbarClass
 };
 
 
-GType gtk_scrollbar_get_type (void) G_GNUC_CONST;
-
+GType       gtk_scrollbar_get_type (void) G_GNUC_CONST;
 
 G_END_DECLS
 

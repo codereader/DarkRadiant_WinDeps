@@ -156,12 +156,21 @@ typedef enum {
  * @G_FILE_CREATE_NONE: No flags set.
  * @G_FILE_CREATE_PRIVATE: Create a file that can only be
  *    accessed by the current user.
+ * @G_FILE_CREATE_REPLACE_DESTINATION: Replace the destination
+ *    as if it didn't exist before. Don't try to keep any old
+ *    permissions, replace instead of following links. This
+ *    is generally useful if you're doing a "copy over" 
+ *    rather than a "save new version of" replace operation.
+ *    You can think of it as "unlink destination" before
+ *    writing to it, although the implementation may not
+ *    be exactly like that. Since 2.20
  *
  * Flags used when an operation may create a file.
  */
 typedef enum {
   G_FILE_CREATE_NONE    = 0,
-  G_FILE_CREATE_PRIVATE = (1 << 0)
+  G_FILE_CREATE_PRIVATE = (1 << 0),
+  G_FILE_CREATE_REPLACE_DESTINATION = (1 << 1)
 } GFileCreateFlags;
 
 
@@ -198,6 +207,7 @@ typedef enum {
  * @G_FILE_COPY_NOFOLLOW_SYMLINKS: Don't follow symlinks.
  * @G_FILE_COPY_ALL_METADATA: Copy all file metadata instead of just default set used for copy (see #GFileInfo).
  * @G_FILE_COPY_NO_FALLBACK_FOR_MOVE: Don't use copy and delete fallback if native move not supported.
+ * @G_FILE_COPY_TARGET_DEFAULT_PERMS: Leaves target file with default perms, instead of setting the source file perms.
  *
  * Flags used when copying or moving files.
  */
@@ -207,7 +217,8 @@ typedef enum {
   G_FILE_COPY_BACKUP               = (1 << 1),
   G_FILE_COPY_NOFOLLOW_SYMLINKS    = (1 << 2),
   G_FILE_COPY_ALL_METADATA         = (1 << 3),
-  G_FILE_COPY_NO_FALLBACK_FOR_MOVE = (1 << 4)
+  G_FILE_COPY_NO_FALLBACK_FOR_MOVE = (1 << 4),
+  G_FILE_COPY_TARGET_DEFAULT_PERMS = (1 << 5)
 } GFileCopyFlags;
 
 
@@ -326,7 +337,11 @@ typedef enum {
  * @G_IO_ERROR_WOULD_BLOCK: Operation would block.
  * @G_IO_ERROR_HOST_NOT_FOUND: Host couldn't be found (remote operations).
  * @G_IO_ERROR_WOULD_MERGE: Operation would merge files.
- * @G_IO_ERROR_FAILED_HANDLED: Operation failed and a helper program has already interacted with the user. Do not display any error dialog.
+ * @G_IO_ERROR_FAILED_HANDLED: Operation failed and a helper program has 
+ *     already interacted with the user. Do not display any error dialog.
+ * @G_IO_ERROR_TOO_MANY_OPEN_FILES: The current process has too many files 
+ *     open and can't open any more. Duplicate descriptors do count toward 
+ *     this limit. Since 2.20
  *
  * Error codes returned by GIO functions.
  *
@@ -362,7 +377,8 @@ typedef enum {
   G_IO_ERROR_WOULD_BLOCK,
   G_IO_ERROR_HOST_NOT_FOUND,
   G_IO_ERROR_WOULD_MERGE,
-  G_IO_ERROR_FAILED_HANDLED
+  G_IO_ERROR_FAILED_HANDLED,
+  G_IO_ERROR_TOO_MANY_OPEN_FILES
 } GIOErrorEnum;
 
 

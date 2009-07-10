@@ -31,10 +31,10 @@
 #ifndef __GTK_WINDOW_H__
 #define __GTK_WINDOW_H__
 
-#include <gdk/gdk.h>
+
 #include <gtk/gtkaccelgroup.h>
 #include <gtk/gtkbin.h>
-#include <gtk/gtkenums.h>
+
 
 G_BEGIN_DECLS
 
@@ -292,6 +292,8 @@ void       gtk_window_set_default_icon_list        (GList      *list);
 GList*     gtk_window_get_default_icon_list        (void);
 void       gtk_window_set_default_icon             (GdkPixbuf  *icon);
 void       gtk_window_set_default_icon_name        (const gchar *name);
+G_CONST_RETURN
+gchar     *gtk_window_get_default_icon_name        (void);
 gboolean   gtk_window_set_default_icon_from_file   (const gchar *filename,
 						    GError     **err);
 
@@ -419,6 +421,9 @@ void            _gtk_window_unset_focus_and_default (GtkWindow *window,
 
 void            _gtk_window_set_is_active          (GtkWindow *window,
 						    gboolean   is_active);
+
+void            _gtk_window_set_is_toplevel        (GtkWindow *window,
+						    gboolean   is_toplevel);
 
 typedef void (*GtkWindowKeysForeachFunc) (GtkWindow      *window,
 					  guint           keyval,

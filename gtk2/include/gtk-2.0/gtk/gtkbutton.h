@@ -32,9 +32,7 @@
 #define __GTK_BUTTON_H__
 
 
-#include <gdk/gdk.h>
 #include <gtk/gtkbin.h>
-#include <gtk/gtkenums.h>
 #include <gtk/gtkimage.h>
 
 

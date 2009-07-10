@@ -55,19 +55,26 @@ struct _GtkStatusIconClass
 {
   GObjectClass parent_class;
 
-  void     (* activate)     (GtkStatusIcon *status_icon);
-  void     (* popup_menu)   (GtkStatusIcon *status_icon,
-			     guint          button,
-			     guint32        activate_time);
-  gboolean (* size_changed) (GtkStatusIcon *status_icon,
-			     gint           size);
+  void     (* activate)             (GtkStatusIcon  *status_icon);
+  void     (* popup_menu)           (GtkStatusIcon  *status_icon,
+                                     guint           button,
+                                     guint32         activate_time);
+  gboolean (* size_changed)         (GtkStatusIcon  *status_icon,
+                                     gint            size);
+  gboolean (* button_press_event)   (GtkStatusIcon  *status_icon,
+                                     GdkEventButton *event);
+  gboolean (* button_release_event) (GtkStatusIcon  *status_icon,
+                                     GdkEventButton *event);
+  gboolean (* scroll_event)         (GtkStatusIcon  *status_icon,
+                                     GdkEventScroll *event);
+  gboolean (* query_tooltip)        (GtkStatusIcon  *status_icon,
+                                     gint            x,
+                                     gint            y,
+                                     gboolean        keyboard_mode,
+                                     GtkTooltip     *tooltip);
 
   void (*__gtk_reserved1);
   void (*__gtk_reserved2);
-  void (*__gtk_reserved3);
-  void (*__gtk_reserved4);
-  void (*__gtk_reserved5);
-  void (*__gtk_reserved6);
 };
 
 GType                 gtk_status_icon_get_type           (void) G_GNUC_CONST;
@@ -103,9 +110,16 @@ void                  gtk_status_icon_set_screen         (GtkStatusIcon      *st
                                                           GdkScreen          *screen);
 GdkScreen            *gtk_status_icon_get_screen         (GtkStatusIcon      *status_icon);
 
+#ifndef GTK_DISABLE_DEPRECATED
 void                  gtk_status_icon_set_tooltip        (GtkStatusIcon      *status_icon,
-							  const gchar        *tooltip_text);
-
+                                                          const gchar        *tooltip_text);
+#endif
+void                  gtk_status_icon_set_has_tooltip    (GtkStatusIcon      *status_icon,
+                                                          gboolean            has_tooltip);
+void                  gtk_status_icon_set_tooltip_text   (GtkStatusIcon      *status_icon,
+                                                          const gchar        *text);
+void                  gtk_status_icon_set_tooltip_markup (GtkStatusIcon      *status_icon,
+                                                          const gchar        *markup);
 void                  gtk_status_icon_set_visible        (GtkStatusIcon      *status_icon,
 							  gboolean            visible);
 gboolean              gtk_status_icon_get_visible        (GtkStatusIcon      *status_icon);
@@ -125,6 +139,9 @@ gboolean              gtk_status_icon_get_geometry       (GtkStatusIcon      *st
 							  GdkScreen         **screen,
 							  GdkRectangle       *area,
 							  GtkOrientation     *orientation);
+gboolean              gtk_status_icon_get_has_tooltip    (GtkStatusIcon      *status_icon);
+gchar                *gtk_status_icon_get_tooltip_text   (GtkStatusIcon      *status_icon);
+gchar                *gtk_status_icon_get_tooltip_markup (GtkStatusIcon      *status_icon);
 
 guint32               gtk_status_icon_get_x11_window_id  (GtkStatusIcon      *status_icon);
 

@@ -129,7 +129,7 @@ typedef struct _GFileInfoClass   GFileInfoClass;
  * G_FILE_ATTRIBUTE_STANDARD_COPY_NAME:
  *
  * A key in the "standard" namespace for getting the copy name of the file.
- * The copy name is an optional version of the name. If availible its always
+ * The copy name is an optional version of the name. If available it's always
  * in UTF8, and corresponds directly to the original filename (only transcoded to
  * UTF8). This is useful if you want to copy the file to another filesystem that
  * might have a different encoding. If the filename is not a valid string in the
@@ -190,6 +190,18 @@ typedef struct _GFileInfoClass   GFileInfoClass;
  * Corresponding #GFileAttributeType is %G_FILE_ATTRIBUTE_TYPE_UINT64.
  **/
 #define G_FILE_ATTRIBUTE_STANDARD_SIZE "standard::size"                     /* uint64 */
+
+/**
+ * G_FILE_ATTRIBUTE_ALLOCATED_SIZE:
+ *
+ * A key in the "standard" namespace for getting the amount of disk space
+ * that is consumed by the file (in bytes).  This will generally be larger
+ * than the file size (due to block size overhead) but can occasionally be
+ * smaller (for example, for sparse files).
+ *
+ * Corresponding #GFileAttributeType is %G_FILE_ATTRIBUTE_TYPE_UINT64.
+ **/
+#define G_FILE_ATTRIBUTE_STANDARD_ALLOCATED_SIZE "standard::allocated-size" /* uint64 */
 
 /**
  * G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET:
@@ -607,6 +619,21 @@ typedef struct _GFileInfoClass   GFileInfoClass;
  * #GFileAttributeType is %G_FILE_ATTRIBUTE_TYPE_BOOLEAN.
  **/
 #define G_FILE_ATTRIBUTE_THUMBNAILING_FAILED "thumbnail::failed"         /* boolean */
+
+/* Preview */
+
+/**
+ * G_FILE_ATTRIBUTE_PREVIEW_ICON:
+ *
+ * A key in the "preview" namespace for getting a #GIcon that can be
+ * used to get preview of the file. For example, it may be a low
+ * resolution thumbnail without metadata. Corresponding
+ * #GFileAttributeType is %G_FILE_ATTRIBUTE_TYPE_OBJECT.  The value
+ * for this key should contain a #GIcon.
+ *
+ * Since: 2.20
+ **/
+#define G_FILE_ATTRIBUTE_PREVIEW_ICON "preview::icon"         /* object (GIcon) */
 
 /* File system info (for g_file_get_filesystem_info) */
 

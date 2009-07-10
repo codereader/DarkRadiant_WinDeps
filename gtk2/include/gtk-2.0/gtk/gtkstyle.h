@@ -34,7 +34,7 @@
 
 #include <gdk/gdk.h>
 #include <gtk/gtkenums.h>
-#include <pango/pango.h>
+
 
 G_BEGIN_DECLS
 
@@ -862,6 +862,19 @@ GType      gtk_border_get_type (void) G_GNUC_CONST;
 GtkBorder *gtk_border_new      (void) G_GNUC_MALLOC;
 GtkBorder *gtk_border_copy     (const GtkBorder *border_);
 void       gtk_border_free     (GtkBorder       *border_);
+
+void gtk_style_get_style_property (GtkStyle    *style,
+                                   GType        widget_type,
+                                   const gchar *property_name,
+                                   GValue      *value);
+void gtk_style_get_valist         (GtkStyle    *style,
+                                   GType        widget_type,
+                                   const gchar *first_property_name,
+                                   va_list      var_args);
+void gtk_style_get                (GtkStyle    *style,
+                                   GType        widget_type,
+                                   const gchar *first_property_name,
+                                   ...) G_GNUC_NULL_TERMINATED;
 
 /* --- private API --- */
 const GValue* _gtk_style_peek_property_value (GtkStyle           *style,

@@ -25,14 +25,15 @@
 #ifndef __GTK_PRINT_OPERATION_H__
 #define __GTK_PRINT_OPERATION_H__
 
+
 #include <cairo.h>
 #include <gtk/gtkmain.h>
-#include <gtk/gtkenums.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkpagesetup.h>
 #include <gtk/gtkprintsettings.h>
 #include <gtk/gtkprintcontext.h>
 #include <gtk/gtkprintoperationpreview.h>
+
 
 G_BEGIN_DECLS
 
@@ -171,6 +172,8 @@ GtkPrintStatus          gtk_print_operation_get_status             (GtkPrintOper
 G_CONST_RETURN gchar *  gtk_print_operation_get_status_string      (GtkPrintOperation  *op);
 gboolean                gtk_print_operation_is_finished            (GtkPrintOperation  *op);
 void                    gtk_print_operation_cancel                 (GtkPrintOperation  *op);
+void                    gtk_print_operation_draw_page_finish       (GtkPrintOperation  *op);
+void                    gtk_print_operation_set_defer_drawing      (GtkPrintOperation  *op);
 
 GtkPageSetup           *gtk_print_run_page_setup_dialog            (GtkWindow          *parent,
 								    GtkPageSetup       *page_setup,

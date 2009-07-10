@@ -32,12 +32,10 @@
 #define __GTK_VBOX_H__
 
 
-#include <gdk/gdk.h>
 #include <gtk/gtkbox.h>
 
 
 G_BEGIN_DECLS
-
 
 #define GTK_TYPE_VBOX		 (gtk_vbox_get_type ())
 #define GTK_VBOX(obj)		 (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_VBOX, GtkVBox))
@@ -61,12 +59,10 @@ struct _GtkVBoxClass
 };
 
 
-GType	   gtk_vbox_get_type (void) G_GNUC_CONST;
-GtkWidget* gtk_vbox_new	     (gboolean homogeneous,
-			      gint spacing);
-
+GType       gtk_vbox_get_type (void) G_GNUC_CONST;
+GtkWidget * gtk_vbox_new      (gboolean homogeneous,
+                               gint     spacing);
 
 G_END_DECLS
-
 
 #endif /* __GTK_VBOX_H__ */

@@ -54,9 +54,15 @@ GType gtk_dest_defaults_get_type (void) G_GNUC_CONST;
 GType gtk_target_flags_get_type (void) G_GNUC_CONST;
 #define GTK_TYPE_TARGET_FLAGS (gtk_target_flags_get_type ())
 
+/* enumerations from "gtkentry.h" */
+GType gtk_entry_icon_position_get_type (void) G_GNUC_CONST;
+#define GTK_TYPE_ENTRY_ICON_POSITION (gtk_entry_icon_position_get_type ())
+
 /* enumerations from "gtkenums.h" */
 GType gtk_anchor_type_get_type (void) G_GNUC_CONST;
 #define GTK_TYPE_ANCHOR_TYPE (gtk_anchor_type_get_type ())
+GType gtk_arrow_placement_get_type (void) G_GNUC_CONST;
+#define GTK_TYPE_ARROW_PLACEMENT (gtk_arrow_placement_get_type ())
 GType gtk_arrow_type_get_type (void) G_GNUC_CONST;
 #define GTK_TYPE_ARROW_TYPE (gtk_arrow_type_get_type ())
 GType gtk_attach_options_get_type (void) G_GNUC_CONST;

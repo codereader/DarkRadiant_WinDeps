@@ -137,6 +137,10 @@
 #define G_STRINGIFY(macro_or_string)	G_STRINGIFY_ARG (macro_or_string)
 #define	G_STRINGIFY_ARG(contents)	#contents
 
+#define G_PASTE_ARGS(identifier1,identifier2) identifier1 ## identifier2
+#define G_PASTE(identifier1,identifier2)      G_PASTE_ARGS (identifier1, identifier2)
+#define G_STATIC_ASSERT(expr) typedef struct { char Compile_Time_Assertion[(expr) ? 1 : -1]; } G_PASTE (_GStaticAssert_, __LINE__)
+
 /* Provide a string identifying the current code position */
 #if defined(__GNUC__) && (__GNUC__ < 3) && !defined(__cplusplus)
 #  define G_STRLOC	__FILE__ ":" G_STRINGIFY (__LINE__) ":" __PRETTY_FUNCTION__ "()"
@@ -212,7 +216,7 @@
 
 #if defined(__GNUC__)  && __GNUC__ >= 4
 #  define G_STRUCT_OFFSET(struct_type, member) \
-      ((glong) __builtin_offsetof (struct_type, member))
+      ((glong) offsetof (struct_type, member))
 #else
 #  define G_STRUCT_OFFSET(struct_type, member)	\
       ((glong) ((guint8*) &((struct_type*) 0)->member))
