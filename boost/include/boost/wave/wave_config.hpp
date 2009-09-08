@@ -5,7 +5,7 @@
     
     http://www.boost.org/
 
-    Copyright (c) 2001-2008 Hartmut Kaiser. Distributed under the Boost
+    Copyright (c) 2001-2009 Hartmut Kaiser. Distributed under the Boost
     Software License, Version 1.0. (See accompanying file
     LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
@@ -16,7 +16,7 @@
 #include <boost/config.hpp>
 #include <boost/detail/workaround.hpp>
 #include <boost/version.hpp>
-#include <boost/spirit/version.hpp>
+#include <boost/spirit/include/classic_version.hpp>
 #include <boost/wave/wave_version.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -158,63 +158,66 @@
 #endif 
 
 ///////////////////////////////////////////////////////////////////////////////
+//  Configure Wave thread support, Boost.Spirit and Boost.Pool are configured 
+//  based on these settings automatically
+//
+//  If BOOST_WAVE_SUPPORT_THREADING is not defined, Wave will use the global 
+//  Boost build settings (BOOST_HAS_THREADS), if it is defined its value
+//  defines, whether threading will be enabled or not (should be set to '0' 
+//  or '1').
+#if !defined(BOOST_WAVE_SUPPORT_THREADING)
+#if defined(BOOST_HAS_THREADS)
+#define BOOST_WAVE_SUPPORT_THREADING 1
+#else
+#define BOOST_WAVE_SUPPORT_THREADING 0
+#endif
+#endif
+
+#if BOOST_WAVE_SUPPORT_THREADING != 0 
+#define BOOST_SPIRIT_THREADSAFE 1
+#define PHOENIX_THREADSAFE 1
+#else
+// disable thread support in Boost.Pool
+#define BOOST_NO_MT 1
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
 //  Define the string type to be used to store the token values and the file 
 //  names inside a file_position template class
 //
 #if !defined(BOOST_WAVE_STRINGTYPE)
 
+// VC7 isn't able to compile the flex_string class, fall back to std::string 
+// CW up to 8.3 chokes as well *sigh*
+// Tru64/CXX has linker problems when using flex_string
 #if BOOST_WORKAROUND(BOOST_MSVC, <= 1300) || \
     BOOST_WORKAROUND(__MWERKS__, < 0x3200) || \
     (defined(__DECCXX) && defined(__alpha)) || \
     defined(BOOST_WAVE_STRINGTYPE_USE_STDSTRING)
     
-// VC7 isn't able to compile the flex_string class, fall back to std::string 
-// CW up to 8.3 chokes as well *sigh*
-// Tru64/CXX has linker problems when using flex_string
 #define BOOST_WAVE_STRINGTYPE std::string
+
 #if !defined(BOOST_WAVE_STRINGTYPE_USE_STDSTRING)
 #define BOOST_WAVE_STRINGTYPE_USE_STDSTRING 1
 #endif
 
 #else
+
 // use the following, if you have a fast std::allocator<char>
-#define BOOST_WAVE_STRINGTYPE boost::wave::util::flex_string< \
-        char, std::char_traits<char>, std::allocator<char>, \
-        boost::wave::util::CowString</*char, */\
-            boost::wave::util::AllocatorStringStorage<char> \
-        > \
-    > \
+#define BOOST_WAVE_STRINGTYPE boost::wave::util::flex_string<                 \
+        char, std::char_traits<char>, std::allocator<char>,                   \
+        boost::wave::util::CowString<                                         \
+            boost::wave::util::AllocatorStringStorage<char>                   \
+        >                                                                     \
+    >                                                                         \
     /**/
-    
-/* #define BOOST_WAVE_STRINGTYPE boost::wave::util::flex_string< \
-        char, std::char_traits<char>, boost::fast_pool_allocator<char>, \
-        boost::wave::util::CowString<char, \
-            boost::wave::util::AllocatorStringStorage<char, \
-              boost::fast_pool_allocator<char> \
-            > \
-        > \
-    > \
-*/    /**/
     
 //  This include is needed for the flex_string class used in the 
 //  BOOST_WAVE_STRINGTYPE above.
 #include <boost/wave/util/flex_string.hpp>
 
-//  This include is needed for the boost::fast_allocator class used in the 
-//  BOOST_WAVE_STRINGTYPE above.
-// #include <boost/pool/pool_alloc.hpp>
-
-// Use the following, if you want to incorporate Maxim Yegorushkin's
-// const_string library (http://sourceforge.net/projects/conststring/), which
-// may be even faster than using the flex_string class from above
-//#define BOOST_WAVE_STRINGTYPE boost::const_string<char>
-//
-//#include <boost/const_string/const_string.hpp>
-//#include <boost/const_string/io.hpp>
-//#include <boost/const_string/concatenation.hpp>
-
-#endif // BOOST_WORKAROUND(_MSC_VER, <= 1300)
-#endif
+#endif // BOOST_WORKAROUND(_MSC_VER, <= 1300) et.al.
+#endif // !defined(BOOST_WAVE_STRINGTYPE)
 
 ///////////////////////////////////////////////////////////////////////////////
 //  The following definition forces the Spirit tree code to use list's instead
@@ -354,7 +357,7 @@
 //  Decide, whether to support long long integers in the preprocessor.
 //
 //  The C++ standard requires the preprocessor to use one of the following 
-//  types for integer literals: long or unsigned long depending on a optional 
+//  types for integer literals: long or unsigned long depending on an optional 
 //  suffix ('u', 'l', 'ul', or 'lu')
 //
 //  Sometimes it's required to preprocess integer literals bigger than that
@@ -388,36 +391,12 @@ namespace boost { namespace wave
 }}
 
 ///////////////////////////////////////////////////////////////////////////////
-//  Configure Wave thread support, Boost.Spirit and Boost.Pool are configured 
-//  based on these settings automatically
-//
-//  If BOOST_WAVE_SUPPORT_THREADING is not defined, Wave will use the global 
-//  Boost build settings (BOOST_HAS_THREADS), if it is defined its value
-//  defines, whether threading will be enabled or not (should be set to '0' 
-//  or '1').
-#if !defined(BOOST_WAVE_SUPPORT_THREADING)
-#if defined(BOOST_HAS_THREADS)
-#define BOOST_WAVE_SUPPORT_THREADING 1
-#else
-#define BOOST_WAVE_SUPPORT_THREADING 0
-#endif
-#endif
-
-#if BOOST_WAVE_SUPPORT_THREADING != 0 
-#define BOOST_SPIRIT_THREADSAFE 1
-#define PHOENIX_THREADSAFE 1
-#else
-// disable thread support in Boost.Pool
-#define BOOST_NO_MT 1
-#endif
-
-///////////////////////////////////////////////////////////////////////////////
 //  Wave needs at least 4 parameters for phoenix actors
 #if !defined(PHOENIX_LIMIT)
 #define PHOENIX_LIMIT 6
 #endif
 #if PHOENIX_LIMIT < 6
-// boost/spirit/attribute.hpp sets PHOENIX_LIMIT to 3! 
+// boost/home/classic/spirit/classic_attribute.hpp sets PHOENIX_LIMIT to 3! 
 #error "Boost.Wave: the constant PHOENIX_LIMIT must be at least defined to 6" \
 " to compile the library."
 #endif

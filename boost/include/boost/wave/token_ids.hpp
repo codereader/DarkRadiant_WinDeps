@@ -5,7 +5,7 @@
     
     http://www.boost.org/
 
-    Copyright (c) 2001-2008 Hartmut Kaiser. Distributed under the Boost
+    Copyright (c) 2001-2009 Hartmut Kaiser. Distributed under the Boost
     Software License, Version 1.0. (See accompanying file
     LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
@@ -27,7 +27,7 @@
 #if !defined(BOOST_WAVE_TOKEN_IDS_DEFINED)
 #define BOOST_WAVE_TOKEN_IDS_DEFINED
 
-#if defined (__FreeBSD__) && defined (T_DIVIDE)
+#if (defined (__FreeBSD__) || defined (__DragonFly__)) && defined (T_DIVIDE) 
 #undef T_DIVIDE
 #endif
 
@@ -295,7 +295,7 @@ enum token_id {
     T_PLACEHOLDER = TOKEN_FROM_ID(T_LAST_TOKEN+2, WhiteSpaceTokenType),
     T_PLACEMARKER = TOKEN_FROM_ID(T_LAST_TOKEN+3, InternalTokenType),
     T_PARAMETERBASE = TOKEN_FROM_ID(T_LAST_TOKEN+4, ParameterTokenType),
-    T_EXTPARAMETERBASE = TOKEN_FROM_ID(T_LAST_TOKEN+5, ExtParameterTokenType)
+    T_EXTPARAMETERBASE = TOKEN_FROM_ID(T_LAST_TOKEN+4, ExtParameterTokenType)
 };
 
 ///////////////////////////////////////////////////////////////////////////////
