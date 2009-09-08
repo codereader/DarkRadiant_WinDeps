@@ -1,6 +1,6 @@
 /* Multiply indexed container.
  *
- * Copyright 2003-2007 Joaquín M López Muñoz.
+ * Copyright 2003-2009 Joaquin M Lopez Munoz.
  * Distributed under the Boost Software License, Version 1.0.
  * (See accompanying file LICENSE_1_0.txt or copy at
  * http://www.boost.org/LICENSE_1_0.txt)
@@ -193,6 +193,14 @@ public:
     BOOST_MULTI_INDEX_CHECK_INVARIANT;
   }    
 
+  explicit multi_index_container(const allocator_type& al):
+    bfm_allocator(al),
+    super(ctor_args_list(),bfm_allocator::member),
+    node_count(0)
+  {
+    BOOST_MULTI_INDEX_CHECK_INVARIANT;
+  }
+
   template<typename InputIterator>
   multi_index_container(
     InputIterator first,InputIterator last,
@@ -259,11 +267,10 @@ public:
   }
 
   multi_index_container<Value,IndexSpecifierList,Allocator>& operator=(
-    const multi_index_container<Value,IndexSpecifierList,Allocator>& x)
+    multi_index_container<Value,IndexSpecifierList,Allocator> x)
   {
     BOOST_MULTI_INDEX_CHECK_INVARIANT;
-    multi_index_container<Value,IndexSpecifierList,Allocator> tmp(x);
-    this->swap(tmp);
+    this->swap(x);
     return *this;
   }
 
@@ -515,9 +522,9 @@ BOOST_MULTI_INDEX_PROTECTED_IF_MEMBER_TEMPLATE_FRIENDS:
 
   void erase_(node_type* x)
   {
+    --node_count;
     super::erase_(x);
     deallocate_node(x);
-    --node_count;
   }
 
   void delete_node_(node_type* x)
