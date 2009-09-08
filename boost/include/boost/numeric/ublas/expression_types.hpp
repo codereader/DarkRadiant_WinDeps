@@ -217,13 +217,13 @@ namespace boost { namespace numeric { namespace ublas {
         }
         template<class A>
         BOOST_UBLAS_INLINE
-        const vector_indirect<const E, A> operator () (const indirect_array<A> &ia) const {
-            return vector_indirect<const E, A>  (operator () (), ia);
+        const vector_indirect<const E, indirect_array<A> > operator () (const indirect_array<A> &ia) const {
+            return vector_indirect<const E, indirect_array<A> >  (operator () (), ia);
         }
         template<class A>
         BOOST_UBLAS_INLINE
-        vector_indirect<E, A> operator () (const indirect_array<A> &ia) {
-            return vector_indirect<E, A> (operator () (), ia);
+        vector_indirect<E, indirect_array<A> > operator () (const indirect_array<A> &ia) {
+            return vector_indirect<E, indirect_array<A> > (operator () (), ia);
         }
 
         BOOST_UBLAS_INLINE
@@ -244,13 +244,13 @@ namespace boost { namespace numeric { namespace ublas {
         }
         template<class A>
         BOOST_UBLAS_INLINE
-        const vector_indirect<const E, A> project (const indirect_array<A> &ia) const {
-            return vector_indirect<const E, A> (operator () (), ia);
+        const vector_indirect<const E, indirect_array<A> > project (const indirect_array<A> &ia) const {
+            return vector_indirect<const E, indirect_array<A> > (operator () (), ia);
         }
         template<class A>
         BOOST_UBLAS_INLINE
-        vector_indirect<E, A> project (const indirect_array<A> &ia) {
-            return vector_indirect<E, A> (operator () (), ia);
+        vector_indirect<E, indirect_array<A> > project (const indirect_array<A> &ia) {
+            return vector_indirect<E, indirect_array<A> > (operator () (), ia);
         }
 #endif
     };
@@ -291,6 +291,8 @@ namespace boost { namespace numeric { namespace ublas {
     template<class E>
     class matrix_expression:
         public ublas_expression<E> {
+    private:
+        typedef matrix_expression<E> self_type;
     public:
         static const unsigned complexity = 0;
         typedef E expression_type;
@@ -371,13 +373,13 @@ namespace boost { namespace numeric { namespace ublas {
         }
         template<class A>
         BOOST_UBLAS_INLINE
-        const matrix_indirect<const E, A> operator () (const indirect_array<A> &ia1, const indirect_array<A> &ia2) const {
-            return matrix_indirect<const E, A> (operator () (), ia1, ia2);
+        const matrix_indirect<const E, indirect_array<A> > operator () (const indirect_array<A> &ia1, const indirect_array<A> &ia2) const {
+            return matrix_indirect<const E, indirect_array<A> > (operator () (), ia1, ia2);
         }
         template<class A>
         BOOST_UBLAS_INLINE
-        matrix_indirect<E, A> operator () (const indirect_array<A> &ia1, const indirect_array<A> &ia2) {
-            return matrix_indirect<E, A> (operator () (), ia1, ia2);
+        matrix_indirect<E, indirect_array<A> > operator () (const indirect_array<A> &ia1, const indirect_array<A> &ia2) {
+            return matrix_indirect<E, indirect_array<A> > (operator () (), ia1, ia2);
         }
 
         BOOST_UBLAS_INLINE
@@ -398,13 +400,13 @@ namespace boost { namespace numeric { namespace ublas {
         }
         template<class A>
         BOOST_UBLAS_INLINE
-        const matrix_indirect<const E, A> project (const indirect_array<A> &ia1, const indirect_array<A> &ia2) const {
-            return matrix_indirect<const E, A> (operator () (), ia1, ia2);
+        const matrix_indirect<const E, indirect_array<A> > project (const indirect_array<A> &ia1, const indirect_array<A> &ia2) const {
+            return matrix_indirect<const E, indirect_array<A> > (operator () (), ia1, ia2);
         }
         template<class A>
         BOOST_UBLAS_INLINE
-        matrix_indirect<E, A> project (const indirect_array<A> &ia1, const indirect_array<A> &ia2) {
-            return matrix_indirect<E, A> (operator () (), ia1, ia2);
+        matrix_indirect<E, indirect_array<A> > project (const indirect_array<A> &ia1, const indirect_array<A> &ia2) {
+            return matrix_indirect<E, indirect_array<A> > (operator () (), ia1, ia2);
         }
 #endif
     };
