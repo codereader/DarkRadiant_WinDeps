@@ -5,7 +5,7 @@
     Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
     http://www.boost.org/LICENSE_1_0.txt).
 
-    See http://opensource.adobe.com/gil for most recent version including documentation.
+    See http://stlab.adobe.com/gil for most recent version including documentation.
 */
 
 /*************************************************************************************************/
@@ -256,15 +256,15 @@ namespace detail {
 
 template <std::size_t K>
 struct static_copy_bytes {
-	void operator()(const unsigned char* from, unsigned char* to) const {
-		*to = *from;
-		static_copy_bytes<K-1>()(++from,++to);
-	}
+    void operator()(const unsigned char* from, unsigned char* to) const {
+        *to = *from;
+        static_copy_bytes<K-1>()(++from,++to);
+    }
 };
 
 template <>
 struct static_copy_bytes<0> {
-	void operator()(const unsigned char* from, unsigned char* to) const {}
+    void operator()(const unsigned char* , unsigned char*) const {}
 };
 
 template <typename Derived, typename BitField, int NumBits, bool Mutable>
@@ -308,17 +308,17 @@ protected:
     static const integer_t max_val    = (1<<NumBits) - 1;
 
 #ifdef GIL_NONWORD_POINTER_ALIGNMENT_SUPPORTED
-	const bitfield_t& get_data()                      const { return *static_cast<const bitfield_t*>(_data_ptr); }
-	void              set_data(const bitfield_t& val) const {        *static_cast<      bitfield_t*>(_data_ptr) = val; }
+    const bitfield_t& get_data()                      const { return *static_cast<const bitfield_t*>(_data_ptr); }
+    void              set_data(const bitfield_t& val) const {        *static_cast<      bitfield_t*>(_data_ptr) = val; }
 #else
-	bitfield_t get_data() const {
-		bitfield_t ret;
-		static_copy_bytes<sizeof(bitfield_t) >()(gil_reinterpret_cast_c<const unsigned char*>(_data_ptr),gil_reinterpret_cast<unsigned char*>(&ret));
-		return ret;
-	}
-	void set_data(const bitfield_t& val) const {
-		static_copy_bytes<sizeof(bitfield_t) >()(gil_reinterpret_cast_c<const unsigned char*>(&val),gil_reinterpret_cast<unsigned char*>(_data_ptr));
-	}
+    bitfield_t get_data() const {
+        bitfield_t ret;
+        static_copy_bytes<sizeof(bitfield_t) >()(gil_reinterpret_cast_c<const unsigned char*>(_data_ptr),gil_reinterpret_cast<unsigned char*>(&ret));
+        return ret;
+    }
+    void set_data(const bitfield_t& val) const {
+        static_copy_bytes<sizeof(bitfield_t) >()(gil_reinterpret_cast_c<const unsigned char*>(&val),gil_reinterpret_cast<unsigned char*>(_data_ptr));
+    }
 #endif
 
 private:
@@ -425,7 +425,7 @@ namespace std {
 /// \ingroup PackedChannelReferenceModel
 /// \brief swap for packed_channel_reference
 template <typename BF, int FB, int NB, bool M, typename R> inline
-void swap(boost::gil::packed_channel_reference<BF,FB,NB,M> x, R& y) { 
+void swap(const boost::gil::packed_channel_reference<BF,FB,NB,M> x, R& y) { 
     boost::gil::swap_proxy<typename boost::gil::packed_channel_reference<BF,FB,NB,M>::value_type>(x,y); 
 }
 
@@ -433,7 +433,7 @@ void swap(boost::gil::packed_channel_reference<BF,FB,NB,M> x, R& y) {
 /// \ingroup PackedChannelReferenceModel
 /// \brief swap for packed_channel_reference
 template <typename BF, int FB, int NB, bool M> inline
-void swap(typename boost::gil::packed_channel_reference<BF,FB,NB,M>::value_type& x, boost::gil::packed_channel_reference<BF,FB,NB,M> y) { 
+void swap(typename boost::gil::packed_channel_reference<BF,FB,NB,M>::value_type& x, const boost::gil::packed_channel_reference<BF,FB,NB,M> y) { 
     boost::gil::swap_proxy<typename boost::gil::packed_channel_reference<BF,FB,NB,M>::value_type>(x,y); 
 }
 
@@ -441,7 +441,7 @@ void swap(typename boost::gil::packed_channel_reference<BF,FB,NB,M>::value_type&
 /// \ingroup PackedChannelReferenceModel
 /// \brief swap for packed_channel_reference
 template <typename BF, int FB, int NB, bool M> inline
-void swap(boost::gil::packed_channel_reference<BF,FB,NB,M> x, boost::gil::packed_channel_reference<BF,FB,NB,M> y) { 
+void swap(const boost::gil::packed_channel_reference<BF,FB,NB,M> x, const boost::gil::packed_channel_reference<BF,FB,NB,M> y) { 
     boost::gil::swap_proxy<typename boost::gil::packed_channel_reference<BF,FB,NB,M>::value_type>(x,y); 
 }
 }   // namespace std
@@ -545,7 +545,7 @@ namespace std {
 /// \ingroup PackedChannelDynamicReferenceModel
 /// \brief swap for packed_dynamic_channel_reference
 template <typename BF, int NB, bool M, typename R> inline
-void swap(boost::gil::packed_dynamic_channel_reference<BF,NB,M> x, R& y) { 
+void swap(const boost::gil::packed_dynamic_channel_reference<BF,NB,M> x, R& y) { 
     boost::gil::swap_proxy<typename boost::gil::packed_dynamic_channel_reference<BF,NB,M>::value_type>(x,y); 
 }
 
@@ -553,7 +553,7 @@ void swap(boost::gil::packed_dynamic_channel_reference<BF,NB,M> x, R& y) {
 /// \ingroup PackedChannelDynamicReferenceModel
 /// \brief swap for packed_dynamic_channel_reference
 template <typename BF, int NB, bool M> inline
-void swap(typename boost::gil::packed_dynamic_channel_reference<BF,NB,M>::value_type& x, boost::gil::packed_dynamic_channel_reference<BF,NB,M> y) { 
+void swap(typename boost::gil::packed_dynamic_channel_reference<BF,NB,M>::value_type& x, const boost::gil::packed_dynamic_channel_reference<BF,NB,M> y) { 
     boost::gil::swap_proxy<typename boost::gil::packed_dynamic_channel_reference<BF,NB,M>::value_type>(x,y); 
 }
 
@@ -561,7 +561,7 @@ void swap(typename boost::gil::packed_dynamic_channel_reference<BF,NB,M>::value_
 /// \ingroup PackedChannelDynamicReferenceModel
 /// \brief swap for packed_dynamic_channel_reference
 template <typename BF, int NB, bool M> inline
-void swap(boost::gil::packed_dynamic_channel_reference<BF,NB,M> x, boost::gil::packed_dynamic_channel_reference<BF,NB,M> y) { 
+void swap(const boost::gil::packed_dynamic_channel_reference<BF,NB,M> x, const boost::gil::packed_dynamic_channel_reference<BF,NB,M> y) { 
     boost::gil::swap_proxy<typename boost::gil::packed_dynamic_channel_reference<BF,NB,M>::value_type>(x,y); 
 }
 }   // namespace std
