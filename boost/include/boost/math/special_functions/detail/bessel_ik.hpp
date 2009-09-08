@@ -6,6 +6,11 @@
 #ifndef BOOST_MATH_BESSEL_IK_HPP
 #define BOOST_MATH_BESSEL_IK_HPP
 
+#ifdef _MSC_VER
+#pragma once
+#endif
+
+#include <boost/math/special_functions/round.hpp>
 #include <boost/math/special_functions/gamma.hpp>
 #include <boost/math/special_functions/sin_pi.hpp>
 #include <boost/math/constants/constants.hpp>
@@ -44,11 +49,11 @@ int temme_ik(T v, T x, T* K, T* K1, const Policy& pol)
     b = exp(v * a);
     sigma = -a * v;
     c = abs(v) < tools::epsilon<T>() ?
-       1 : boost::math::sin_pi(v) / (v * pi<T>());
+       T(1) : T(boost::math::sin_pi(v) / (v * pi<T>()));
     d = abs(sigma) < tools::epsilon<T>() ?
-        1 : sinh(sigma) / sigma;
+        T(1) : T(sinh(sigma) / sigma);
     gamma1 = abs(v) < tools::epsilon<T>() ?
-        -euler<T>() : (0.5f / v) * (gp - gm) * c;
+        T(-euler<T>()) : T((0.5f / v) * (gp - gm) * c);
     gamma2 = (2 + gp + gm) * c / 2;
 
     // initial values
@@ -230,7 +235,7 @@ int bessel_ik(T v, T x, T* I, T* K, int kind, const Policy& pol)
         v = -v;                             // v is non-negative from here
         kind |= need_k;
     }
-    n = tools::real_cast<unsigned>(v + 0.5f);
+    n = iround(v, pol);
     u = v - n;                              // -1/2 <= u < 1/2
     BOOST_MATH_INSTRUMENT_VARIABLE(n);
     BOOST_MATH_INSTRUMENT_VARIABLE(u);
@@ -329,3 +334,4 @@ int bessel_ik(T v, T x, T* I, T* K, int kind, const Policy& pol)
 }}} // namespaces
 
 #endif // BOOST_MATH_BESSEL_IK_HPP
+

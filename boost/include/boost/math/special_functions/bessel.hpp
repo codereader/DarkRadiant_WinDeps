@@ -10,6 +10,10 @@
 #ifndef BOOST_MATH_BESSEL_HPP
 #define BOOST_MATH_BESSEL_HPP
 
+#ifdef _MSC_VER
+#pragma once
+#endif
+
 #include <boost/math/special_functions/detail/bessel_jy.hpp>
 #include <boost/math/special_functions/detail/bessel_jn.hpp>
 #include <boost/math/special_functions/detail/bessel_yn.hpp>
@@ -20,6 +24,8 @@
 #include <boost/math/special_functions/sin_pi.hpp>
 #include <boost/math/special_functions/cos_pi.hpp>
 #include <boost/math/special_functions/sinc.hpp>
+#include <boost/math/special_functions/trunc.hpp>
+#include <boost/math/special_functions/round.hpp>
 #include <boost/math/tools/rational.hpp>
 #include <boost/math/tools/promotion.hpp>
 
@@ -122,8 +128,8 @@ T cyl_bessel_j_imp(T v, T x, const bessel_no_int_tag& t, const Policy& pol)
       // better have integer v:
       if(floor(v) == v)
       {
-         T r = cyl_bessel_j_imp(v, -x, t, pol);
-         if(tools::real_cast<int>(v) & 1)
+         T r = cyl_bessel_j_imp(v, T(-x), t, pol);
+         if(iround(v, pol) & 1)
             r = -r;
          return r;
       }
@@ -159,7 +165,7 @@ inline T cyl_bessel_j_imp(T v, T x, const bessel_maybe_int_tag&, const Policy& p
       if(fabs(x) > asymptotic_bessel_j_limit<T>(v, tag_type()))
          return asymptotic_bessel_j_large_x_2(v, x);
       else
-         return bessel_jn(tools::real_cast<int>(v), x, pol);
+         return bessel_jn(iround(v, pol), x, pol);
    }
    return cyl_bessel_j_imp(v, x, bessel_no_int_tag(), pol);
 }
@@ -203,7 +209,7 @@ inline T sph_bessel_j_imp(unsigned n, T x, const Policy& pol)
    // Default case is just a naive evaluation of the definition:
    //
    return sqrt(constants::pi<T>() / (2 * x)) 
-      * cyl_bessel_j_imp(T(n)+T(0.5f), x, bessel_no_int_tag(), pol);
+      * cyl_bessel_j_imp(T(T(n)+T(0.5f)), x, bessel_no_int_tag(), pol);
 }
 
 template <class T, class Policy>
@@ -221,8 +227,8 @@ T cyl_bessel_i_imp(T v, T x, const Policy& pol)
       // better have integer v:
       if(floor(v) == v)
       {
-         T r = cyl_bessel_i_imp(v, -x, pol);
-         if(tools::real_cast<int>(v) & 1)
+         T r = cyl_bessel_i_imp(v, T(-x), pol);
+         if(iround(v, pol) & 1)
             r = -r;
          return r;
       }
@@ -238,8 +244,12 @@ T cyl_bessel_i_imp(T v, T x, const Policy& pol)
    if(v == 0.5f)
    {
       // common special case, note try and avoid overflow in exp(x):
-      T e = exp(x / 2);
-      return e * (e / sqrt(2 * x * constants::pi<T>()));
+      if(x >= tools::log_max_value<T>())
+      {
+         T e = exp(x / 2);
+         return e * (e / sqrt(2 * x * constants::pi<T>()));
+      }
+      return sqrt(2 / (x * constants::pi<T>())) * sinh(x);
    }
    if(policies::digits<T, Policy>() <= 64)
    {
@@ -286,7 +296,7 @@ inline T cyl_bessel_k_imp(T v, T x, const bessel_maybe_int_tag&, const Policy& p
    BOOST_MATH_STD_USING
    if((floor(v) == v))
    {
-      return bessel_kn(tools::real_cast<int>(v), x, pol);
+      return bessel_kn(itrunc(v), x, pol);
    }
    return cyl_bessel_k_imp(v, x, bessel_no_int_tag(), pol);
 }
@@ -301,6 +311,10 @@ template <class T, class Policy>
 inline T cyl_neumann_imp(T v, T x, const bessel_no_int_tag&, const Policy& pol)
 {
    static const char* function = "boost::math::cyl_neumann<%1%>(%1%,%1%)";
+
+   BOOST_MATH_INSTRUMENT_VARIABLE(v);
+   BOOST_MATH_INSTRUMENT_VARIABLE(x);
+
    if(x <= 0)
    {
       return (v == 0) && (x == 0) ?
@@ -326,19 +340,30 @@ inline T cyl_neumann_imp(T v, T x, const bessel_maybe_int_tag&, const Policy& po
 {
    BOOST_MATH_STD_USING
    typedef typename bessel_asymptotic_tag<T, Policy>::type tag_type;
+
+   BOOST_MATH_INSTRUMENT_VARIABLE(v);
+   BOOST_MATH_INSTRUMENT_VARIABLE(x);
+
    if(floor(v) == v)
    {
       if((fabs(x) > asymptotic_bessel_y_limit<T>(tag_type())) && (fabs(x) > 5 * abs(v)))
       {
          T r = asymptotic_bessel_y_large_x_2(static_cast<T>(abs(v)), x);
-         if((v < 0) && (tools::real_cast<int>(v) & 1))
+         if((v < 0) && (itrunc(v, pol) & 1))
             r = -r;
+         BOOST_MATH_INSTRUMENT_VARIABLE(r);
          return r;
       }
       else
-         return bessel_yn(tools::real_cast<int>(v), x, pol);
+      {
+         T r = bessel_yn(itrunc(v, pol), x, pol);
+         BOOST_MATH_INSTRUMENT_VARIABLE(r);
+         return r;
+      }
    }
-   return cyl_neumann_imp<T>(v, x, bessel_no_int_tag(), pol);
+   T r = cyl_neumann_imp<T>(v, x, bessel_no_int_tag(), pol);
+   BOOST_MATH_INSTRUMENT_VARIABLE(r);
+   return r;
 }
 
 template <class T, class Policy>
@@ -346,6 +371,10 @@ inline T cyl_neumann_imp(int v, T x, const bessel_int_tag&, const Policy& pol)
 {
    BOOST_MATH_STD_USING
    typedef typename bessel_asymptotic_tag<T, Policy>::type tag_type;
+
+   BOOST_MATH_INSTRUMENT_VARIABLE(v);
+   BOOST_MATH_INSTRUMENT_VARIABLE(x);
+
    if((fabs(x) > asymptotic_bessel_y_limit<T>(tag_type())) && (fabs(x) > 5 * abs(v)))
    {
       T r = asymptotic_bessel_y_large_x_2(static_cast<T>(abs(v)), x);
@@ -354,7 +383,7 @@ inline T cyl_neumann_imp(int v, T x, const bessel_int_tag&, const Policy& pol)
       return r;
    }
    else
-      return bessel_yn(tools::real_cast<int>(v), x, pol);
+      return bessel_yn(v, x, pol);
 }
 
 template <class T, class Policy>
@@ -374,7 +403,7 @@ inline T sph_neumann_imp(unsigned v, T x, const Policy& pol)
    if(x < 2 * tools::min_value<T>())
       return -policies::raise_overflow_error<T>(function, 0, pol);
 
-   T result = cyl_neumann_imp(T(v)+0.5f, x, bessel_no_int_tag(), pol);
+   T result = cyl_neumann_imp(T(T(v)+0.5f), x, bessel_no_int_tag(), pol);
    T tx = sqrt(constants::pi<T>() / (2 * x));
 
    if((tx > 1) && (tools::max_value<T>() / tx < result))
@@ -482,3 +511,4 @@ inline typename detail::bessel_traits<T, T, policies::policy<> >::result_type sp
 } // namespace boost
 
 #endif // BOOST_MATH_BESSEL_HPP
+

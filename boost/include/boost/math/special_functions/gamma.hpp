@@ -8,6 +8,10 @@
 #ifndef BOOST_MATH_SF_GAMMA_HPP
 #define BOOST_MATH_SF_GAMMA_HPP
 
+#ifdef _MSC_VER
+#pragma once
+#endif
+
 #include <boost/config.hpp>
 #ifdef BOOST_MSVC
 # pragma warning(push)
@@ -23,12 +27,12 @@
 #include <boost/math/tools/series.hpp>
 #include <boost/math/tools/fraction.hpp>
 #include <boost/math/tools/precision.hpp>
-#include <boost/math/tools/real_cast.hpp>
 #include <boost/math/tools/promotion.hpp>
 #include <boost/math/policies/error_handling.hpp>
 #include <boost/math/constants/constants.hpp>
 #include <boost/math/special_functions/math_fwd.hpp>
 #include <boost/math/special_functions/log1p.hpp>
+#include <boost/math/special_functions/trunc.hpp>
 #include <boost/math/special_functions/powm1.hpp>
 #include <boost/math/special_functions/sqrt1pm1.hpp>
 #include <boost/math/special_functions/lanczos.hpp>
@@ -40,8 +44,9 @@
 #include <boost/assert.hpp>
 #include <boost/mpl/greater.hpp>
 #include <boost/mpl/equal_to.hpp>
+#include <boost/mpl/greater.hpp>
 
-#include <cmath>
+#include <boost/config/no_tr1/cmath.hpp>
 #include <algorithm>
 
 #ifdef BOOST_MATH_INSTRUMENT
@@ -138,30 +143,33 @@ T gamma_imp(T z, const Policy& pol, const L& l)
 #endif
    static const char* function = "boost::math::tgamma<%1%>(%1%)";
 
-   if((z <= 0) && (floor(z) == z))
-      return policies::raise_pole_error<T>(function, "Evaluation of tgamma at a negative integer %1%.", z, pol);
-   if(z <= -20)
+   if(z <= 0)
    {
-      result = gamma_imp(-z, pol, l) * sinpx(z);
-      if((fabs(result) < 1) && (tools::max_value<T>() * fabs(result) < boost::math::constants::pi<T>()))
-         return policies::raise_overflow_error<T>(function, "Result of tgamma is too large to represent.", pol);
-      result = -boost::math::constants::pi<T>() / result;
-      if(result == 0)
-         return policies::raise_underflow_error<T>(function, "Result of tgamma is too small to represent.", pol);
-      if((boost::math::fpclassify)(result) == FP_SUBNORMAL)
-         return policies::raise_denorm_error<T>(function, "Result of tgamma is denormalized.", result, pol);
-      return result;
-   }
+      if(floor(z) == z)
+         return policies::raise_pole_error<T>(function, "Evaluation of tgamma at a negative integer %1%.", z, pol);
+      if(z <= -20)
+      {
+         result = gamma_imp(T(-z), pol, l) * sinpx(z);
+         if((fabs(result) < 1) && (tools::max_value<T>() * fabs(result) < boost::math::constants::pi<T>()))
+            return policies::raise_overflow_error<T>(function, "Result of tgamma is too large to represent.", pol);
+         result = -boost::math::constants::pi<T>() / result;
+         if(result == 0)
+            return policies::raise_underflow_error<T>(function, "Result of tgamma is too small to represent.", pol);
+         if((boost::math::fpclassify)(result) == (int)FP_SUBNORMAL)
+            return policies::raise_denorm_error<T>(function, "Result of tgamma is denormalized.", result, pol);
+         return result;
+      }
 
-   // shift z to > 1:
-   while(z < 1)
-   {
-      result /= z;
-      z += 1;
+      // shift z to > 1:
+      while(z < 0)
+      {
+         result /= z;
+         z += 1;
+      }
    }
    if((floor(z) == z) && (z < max_factorial<T>::value))
    {
-      result *= unchecked_factorial<T>(tools::real_cast<unsigned>(z) - 1);
+      result *= unchecked_factorial<T>(itrunc(z, pol) - 1);
    }
    else
    {
@@ -229,13 +237,19 @@ T lgamma_imp(T z, const Policy& pol, const L& l, int* sign = 0)
    {
       typedef typename policies::precision<T, Policy>::type precision_type;
       typedef typename mpl::if_<
-         mpl::less_equal<precision_type, mpl::int_<64> >,
+         mpl::and_<
+            mpl::less_equal<precision_type, mpl::int_<64> >, 
+            mpl::greater<precision_type, mpl::int_<0> > 
+         >,
          mpl::int_<64>,
          typename mpl::if_<
-            mpl::less_equal<precision_type, mpl::int_<113> >,
+            mpl::and_<
+               mpl::less_equal<precision_type, mpl::int_<113> >,
+               mpl::greater<precision_type, mpl::int_<0> > 
+            >,
             mpl::int_<113>, mpl::int_<0> >::type
           >::type tag_type;
-      result = lgamma_small_imp(z, z - 1, z - 2, tag_type(), pol, l);
+      result = lgamma_small_imp<T>(z, z - 1, z - 2, tag_type(), pol, l);
    }
    else if((z >= 3) && (z < 100))
    {
@@ -246,10 +260,9 @@ T lgamma_imp(T z, const Policy& pol, const L& l, int* sign = 0)
    {
       // regular evaluation:
       T zgh = static_cast<T>(z + L::g() - boost::math::constants::half<T>());
-      T l = L::lanczos_sum_expG_scaled(z);
       result = log(zgh) - 1;
       result *= z - 0.5f;
-      result += log(l);
+      result += log(L::lanczos_sum_expG_scaled(z));
    }
 
    if(sign)
@@ -348,7 +361,7 @@ T gamma_imp(T z, const Policy& pol, const lanczos::undefined_lanczos& l)
       result = -boost::math::constants::pi<T>() / result;
       if(result == 0)
          return policies::raise_underflow_error<T>(function, "Result of tgamma is too small to represent.", pol);
-      if((boost::math::fpclassify)(result) == FP_SUBNORMAL)
+      if((boost::math::fpclassify)(result) == (int)FP_SUBNORMAL)
          return policies::raise_denorm_error<T>(function, "Result of tgamma is denormalized.", result, pol);
       return result;
    }
@@ -366,7 +379,7 @@ T gamma_imp(T z, const Policy& pol, const lanczos::undefined_lanczos& l)
    BOOST_MATH_INSTRUMENT_CODE(prefix);
    if((floor(z) == z) && (z < max_factorial<T>::value))
    {
-      prefix *= unchecked_factorial<T>(tools::real_cast<unsigned>(z) - 1);
+      prefix *= unchecked_factorial<T>(itrunc(z, pol) - 1);
    }
    else
    {
@@ -459,7 +472,7 @@ T tgammap1m1_imp(T dz, Policy const& pol, const L& l)
       {
          // Use expm1 on lgamma:
          result = boost::math::expm1(-boost::math::log1p(dz, pol) 
-            + lgamma_small_imp(dz+2, dz + 1, dz, tag_type(), pol, l));
+            + lgamma_small_imp<T>(dz+2, dz + 1, dz, tag_type(), pol, l));
          BOOST_MATH_INSTRUMENT_CODE(result);
       }
    }
@@ -468,7 +481,7 @@ T tgammap1m1_imp(T dz, Policy const& pol, const L& l)
       if(dz < 2)
       {
          // Use expm1 on lgamma:
-         result = boost::math::expm1(lgamma_small_imp(dz+1, dz, dz-1, tag_type(), pol, l), pol);
+         result = boost::math::expm1(lgamma_small_imp<T>(dz+1, dz, dz-1, tag_type(), pol, l), pol);
          BOOST_MATH_INSTRUMENT_CODE(result);
       }
       else
@@ -580,7 +593,7 @@ T full_igamma_prefix(T a, T z, const Policy& pol)
    // This error handling isn't very good: it happens after the fact
    // rather than before it...
    //
-   if((boost::math::fpclassify)(prefix) == FP_INFINITE)
+   if((boost::math::fpclassify)(prefix) == (int)FP_INFINITE)
       policies::raise_overflow_error<T>("boost::math::detail::full_igamma_prefix<%1%>(%1%, %1%)", "Result of incomplete gamma function is too large to represent.", pol);
 
    return prefix;
@@ -1091,7 +1104,7 @@ T tgamma_delta_ratio_imp(T z, T delta, const Policy& pol)
          //
          if((z <= max_factorial<T>::value) && (z + delta <= max_factorial<T>::value))
          {
-            return unchecked_factorial<T>(tools::real_cast<unsigned>(z) - 1) / unchecked_factorial<T>(tools::real_cast<unsigned>(z + delta) - 1);
+            return unchecked_factorial<T>((unsigned)itrunc(z, pol) - 1) / unchecked_factorial<T>((unsigned)itrunc(T(z + delta)) - 1);
          }
       }
       if(fabs(delta) < 20)
@@ -1181,7 +1194,7 @@ inline typename tools::promote_args<T>::type
 
 template <class T1, class T2, class Policy>
 inline typename tools::promote_args<T1, T2>::type
-   tgamma(T1 a, T2 z, const Policy& pol, const mpl::false_)
+   tgamma(T1 a, T2 z, const Policy&, const mpl::false_)
 {
    BOOST_FPU_EXCEPTION_GUARD
    typedef typename tools::promote_args<T1, T2>::type result_type;
@@ -1217,7 +1230,7 @@ inline typename tools::promote_args<T>::type
 
 template <class T, class Policy>
 inline typename tools::promote_args<T>::type 
-   lgamma(T z, int* sign, const Policy& pol)
+   lgamma(T z, int* sign, const Policy&)
 {
    BOOST_FPU_EXCEPTION_GUARD
    typedef typename tools::promote_args<T>::type result_type;
@@ -1303,7 +1316,7 @@ inline typename tools::promote_args<T1, T2>::type
 //
 template <class T1, class T2, class Policy>
 inline typename tools::promote_args<T1, T2>::type
-   tgamma_lower(T1 a, T2 z, const Policy& pol)
+   tgamma_lower(T1 a, T2 z, const Policy&)
 {
    BOOST_FPU_EXCEPTION_GUARD
    typedef typename tools::promote_args<T1, T2>::type result_type;
@@ -1361,7 +1374,7 @@ inline typename tools::promote_args<T1, T2>::type
 //
 template <class T1, class T2, class Policy>
 inline typename tools::promote_args<T1, T2>::type
-   gamma_p(T1 a, T2 z, const Policy& pol)
+   gamma_p(T1 a, T2 z, const Policy&)
 {
    BOOST_FPU_EXCEPTION_GUARD
    typedef typename tools::promote_args<T1, T2>::type result_type;
@@ -1411,7 +1424,7 @@ inline typename tools::promote_args<T1, T2>::type
 }
 template <class T1, class T2, class Policy>
 inline typename tools::promote_args<T1, T2>::type 
-   tgamma_ratio(T1 a, T2 b, const Policy& pol)
+   tgamma_ratio(T1 a, T2 b, const Policy&)
 {
    typedef typename tools::promote_args<T1, T2>::type result_type;
    typedef typename policies::evaluation<result_type, Policy>::type value_type;
@@ -1422,7 +1435,7 @@ inline typename tools::promote_args<T1, T2>::type
       policies::discrete_quantile<>,
       policies::assert_undefined<> >::type forwarding_policy;
 
-   return policies::checked_narrowing_cast<result_type, forwarding_policy>(detail::tgamma_delta_ratio_imp(static_cast<value_type>(a), static_cast<value_type>(b) - static_cast<value_type>(a), forwarding_policy()), "boost::math::tgamma_delta_ratio<%1%>(%1%, %1%)");
+   return policies::checked_narrowing_cast<result_type, forwarding_policy>(detail::tgamma_delta_ratio_imp(static_cast<value_type>(a), static_cast<value_type>(static_cast<value_type>(b) - static_cast<value_type>(a)), forwarding_policy()), "boost::math::tgamma_delta_ratio<%1%>(%1%, %1%)");
 }
 template <class T1, class T2>
 inline typename tools::promote_args<T1, T2>::type 
@@ -1433,7 +1446,7 @@ inline typename tools::promote_args<T1, T2>::type
 
 template <class T1, class T2, class Policy>
 inline typename tools::promote_args<T1, T2>::type 
-   gamma_p_derivative(T1 a, T2 x, const Policy& pol)
+   gamma_p_derivative(T1 a, T2 x, const Policy&)
 {
    BOOST_FPU_EXCEPTION_GUARD
    typedef typename tools::promote_args<T1, T2>::type result_type;
@@ -1466,6 +1479,7 @@ inline typename tools::promote_args<T1, T2>::type
 #include <boost/math/special_functions/erf.hpp>
 
 #endif // BOOST_MATH_SF_GAMMA_HPP
+
 
 
 

@@ -54,11 +54,17 @@ namespace policies{
 #ifndef BOOST_MATH_EVALUATION_ERROR_POLICY
 #define BOOST_MATH_EVALUATION_ERROR_POLICY throw_on_error
 #endif
+#ifndef BOOST_MATH_ROUNDING_ERROR_POLICY
+#define BOOST_MATH_ROUNDING_ERROR_POLICY throw_on_error
+#endif
 #ifndef BOOST_MATH_UNDERFLOW_ERROR_POLICY
 #define BOOST_MATH_UNDERFLOW_ERROR_POLICY ignore_error
 #endif
 #ifndef BOOST_MATH_DENORM_ERROR_POLICY
 #define BOOST_MATH_DENORM_ERROR_POLICY ignore_error
+#endif
+#ifndef BOOST_MATH_INDETERMINATE_RESULT_ERROR_POLICY
+#define BOOST_MATH_INDETERMINATE_RESULT_ERROR_POLICY ignore_error
 #endif
 #ifndef BOOST_MATH_DIGITS10_POLICY
 #define BOOST_MATH_DIGITS10_POLICY 0
@@ -86,7 +92,8 @@ namespace policies{
 #define BOOST_MATH_MAX_ROOT_ITERATION_POLICY 200
 #endif
 
-#if !defined(__BORLANDC__)
+#if !defined(__BORLANDC__) \
+   && !(defined(__GNUC__) && (__GNUC__ == 3) && (__GNUC_MINOR__ <= 2))
 #define BOOST_MATH_META_INT(type, name, Default)\
    template <type N = Default> struct name : public boost::mpl::int_<N>{};\
    namespace detail{\
@@ -100,7 +107,7 @@ namespace policies{
       BOOST_STATIC_CONSTANT(bool, value = sizeof(test(static_cast<T*>(0))) == 1);\
    };\
    }\
-   template <class T> struct is_##name : public boost::mpl::bool_<detail::is_##name##_imp<T>::value>{};
+   template <class T> struct is_##name : public boost::mpl::bool_< ::boost::math::policies::detail::is_##name##_imp<T>::value>{};
 
 #define BOOST_MATH_META_BOOL(name, Default)\
    template <bool N = Default> struct name : public boost::mpl::bool_<N>{};\
@@ -115,7 +122,7 @@ namespace policies{
       BOOST_STATIC_CONSTANT(bool, value = sizeof(test(static_cast<T*>(0))) == 1);\
    };\
    }\
-   template <class T> struct is_##name : public boost::mpl::bool_<detail::is_##name##_imp<T>::value>{};
+   template <class T> struct is_##name : public boost::mpl::bool_< ::boost::math::policies::detail::is_##name##_imp<T>::value>{};
 #else
 #define BOOST_MATH_META_INT(Type, name, Default)\
    template <Type N = Default> struct name : public boost::mpl::int_<N>{};\
@@ -131,10 +138,10 @@ namespace policies{
    template <class T> struct is_##name##_imp\
    {\
       static T inst;\
-      BOOST_STATIC_CONSTANT(bool, value = sizeof(detail::is_##name##_tester<T>::test(inst)) == 1);\
+      BOOST_STATIC_CONSTANT(bool, value = sizeof( ::boost::math::policies::detail::is_##name##_tester<T>::test(inst)) == 1);\
    };\
    }\
-   template <class T> struct is_##name : public boost::mpl::bool_<detail::is_##name##_imp<T>::value>\
+   template <class T> struct is_##name : public boost::mpl::bool_< ::boost::math::policies::detail::is_##name##_imp<T>::value>\
    {\
       template <class U> struct apply{ typedef is_##name<U> type; };\
    };
@@ -153,10 +160,10 @@ namespace policies{
    template <class T> struct is_##name##_imp\
    {\
       static T inst;\
-      BOOST_STATIC_CONSTANT(bool, value = sizeof(detail::is_##name##_tester<T>::test(inst)) == 1);\
+      BOOST_STATIC_CONSTANT(bool, value = sizeof( ::boost::math::policies::detail::is_##name##_tester<T>::test(inst)) == 1);\
    };\
    }\
-   template <class T> struct is_##name : public boost::mpl::bool_<detail::is_##name##_imp<T>::value>\
+   template <class T> struct is_##name : public boost::mpl::bool_< ::boost::math::policies::detail::is_##name##_imp<T>::value>\
    {\
       template <class U> struct apply{ typedef is_##name<U> type;  };\
    };
@@ -178,6 +185,8 @@ BOOST_MATH_META_INT(error_policy_type, overflow_error, BOOST_MATH_OVERFLOW_ERROR
 BOOST_MATH_META_INT(error_policy_type, underflow_error, BOOST_MATH_UNDERFLOW_ERROR_POLICY)
 BOOST_MATH_META_INT(error_policy_type, denorm_error, BOOST_MATH_DENORM_ERROR_POLICY)
 BOOST_MATH_META_INT(error_policy_type, evaluation_error, BOOST_MATH_EVALUATION_ERROR_POLICY)
+BOOST_MATH_META_INT(error_policy_type, rounding_error, BOOST_MATH_ROUNDING_ERROR_POLICY)
+BOOST_MATH_META_INT(error_policy_type, indeterminate_result_error, BOOST_MATH_INDETERMINATE_RESULT_ERROR_POLICY)
 
 //
 // Policy types for internal promotion:
@@ -276,13 +285,13 @@ char test_is_default_arg(const default_policy*);
 template <class T>
 struct is_valid_policy_imp 
 {
-   BOOST_STATIC_CONSTANT(bool, value = sizeof(test_is_valid_arg(static_cast<T*>(0))) == 1);
+   BOOST_STATIC_CONSTANT(bool, value = sizeof(::boost::math::policies::detail::test_is_valid_arg(static_cast<T*>(0))) == 1);
 };
 
 template <class T>
 struct is_default_policy_imp
 {
-   BOOST_STATIC_CONSTANT(bool, value = sizeof(test_is_default_arg(static_cast<T*>(0))) == 1);
+   BOOST_STATIC_CONSTANT(bool, value = sizeof(::boost::math::policies::detail::test_is_default_arg(static_cast<T*>(0))) == 1);
 };
 
 template <class T> struct is_valid_policy 
@@ -398,6 +407,8 @@ public:
    typedef typename detail::find_arg<arg_list, is_underflow_error<mpl::_1>, underflow_error<> >::type underflow_error_type;
    typedef typename detail::find_arg<arg_list, is_denorm_error<mpl::_1>, denorm_error<> >::type denorm_error_type;
    typedef typename detail::find_arg<arg_list, is_evaluation_error<mpl::_1>, evaluation_error<> >::type evaluation_error_type;
+   typedef typename detail::find_arg<arg_list, is_rounding_error<mpl::_1>, rounding_error<> >::type rounding_error_type;
+   typedef typename detail::find_arg<arg_list, is_indeterminate_result_error<mpl::_1>, indeterminate_result_error<> >::type indeterminate_result_error_type;
 private:
    //
    // Now work out the precision:
@@ -440,6 +451,8 @@ public:
    typedef underflow_error<> underflow_error_type;
    typedef denorm_error<> denorm_error_type;
    typedef evaluation_error<> evaluation_error_type;
+   typedef rounding_error<> rounding_error_type;
+   typedef indeterminate_result_error<> indeterminate_result_error_type;
 #if BOOST_MATH_DIGITS10_POLICY == 0
    typedef digits2<> precision_type;
 #else
@@ -463,6 +476,8 @@ public:
    typedef underflow_error<> underflow_error_type;
    typedef denorm_error<> denorm_error_type;
    typedef evaluation_error<> evaluation_error_type;
+   typedef rounding_error<> rounding_error_type;
+   typedef indeterminate_result_error<> indeterminate_result_error_type;
 #if BOOST_MATH_DIGITS10_POLICY == 0
    typedef digits2<> precision_type;
 #else
@@ -500,6 +515,8 @@ private:
    typedef typename detail::find_arg<arg_list, is_underflow_error<mpl::_1>, typename Policy::underflow_error_type >::type underflow_error_type;
    typedef typename detail::find_arg<arg_list, is_denorm_error<mpl::_1>, typename Policy::denorm_error_type >::type denorm_error_type;
    typedef typename detail::find_arg<arg_list, is_evaluation_error<mpl::_1>, typename Policy::evaluation_error_type >::type evaluation_error_type;
+   typedef typename detail::find_arg<arg_list, is_rounding_error<mpl::_1>, typename Policy::rounding_error_type >::type rounding_error_type;
+   typedef typename detail::find_arg<arg_list, is_indeterminate_result_error<mpl::_1>, typename Policy::indeterminate_result_error_type >::type indeterminate_result_error_type;
    //
    // Now work out the precision:
    //
@@ -534,6 +551,8 @@ private:
       underflow_error_type,
       denorm_error_type,
       evaluation_error_type,
+      rounding_error_type,
+      indeterminate_result_error_type,
       precision_type,
       promote_float_type,
       promote_double_type,
@@ -572,6 +591,23 @@ template <>
 struct normalise<policy<>, 
           promote_float<false>, 
           promote_double<false>, 
+          discrete_quantile<>,
+          assert_undefined<>,
+          default_policy,
+          default_policy,
+          default_policy,
+          default_policy,
+          default_policy,
+          default_policy,
+          default_policy>
+{
+   typedef policy<detail::forwarding_arg1, detail::forwarding_arg2> type;
+};
+
+template <>
+struct normalise<policy<detail::forwarding_arg1, detail::forwarding_arg2>,
+          promote_float<false>,
+          promote_double<false>,
           discrete_quantile<>,
           assert_undefined<>,
           default_policy,
@@ -656,6 +692,13 @@ inline typename normalise<policy<>, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10>::ty
 { 
    typedef typename normalise<policy<>, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10>::type result_type;
    return result_type(); 
+}
+
+template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10, class A11>
+inline typename normalise<policy<>, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11>::type make_policy(const A1&, const A2&, const A3&, const A4&, const A5&, const A6&, const A7&, const A8&, const A9&, const A10&, const A11&)
+{
+   typedef typename normalise<policy<>, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11>::type result_type;
+   return result_type();
 }
 
 //
@@ -789,7 +832,7 @@ inline int digits_imp(mpl::false_ const&)
 } // namespace detail
 
 template <class T, class Policy>
-inline int digits()
+inline int digits(BOOST_MATH_EXPLICIT_TEMPLATE_TYPE(T))
 {
    typedef mpl::bool_< std::numeric_limits<T>::is_specialized > tag_type;
    return detail::digits_imp<T, Policy>(tag_type());
@@ -828,7 +871,7 @@ double test_is_policy(...);
 template <class P>
 struct is_policy_imp
 {
-   BOOST_STATIC_CONSTANT(bool, value = (sizeof(test_is_policy(static_cast<P*>(0))) == 1));
+   BOOST_STATIC_CONSTANT(bool, value = (sizeof(::boost::math::policies::detail::test_is_policy(static_cast<P*>(0))) == 1));
 };
 
 }
@@ -839,5 +882,6 @@ struct is_policy : public mpl::bool_< ::boost::math::policies::detail::is_policy
 }}} // namespaces
 
 #endif // BOOST_MATH_POLICY_HPP
+
 
 

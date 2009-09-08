@@ -12,6 +12,10 @@
 #ifndef BOOST_MATH_SF_DETAIL_BESSEL_JY_ASYM_HPP
 #define BOOST_MATH_SF_DETAIL_BESSEL_JY_ASYM_HPP
 
+#ifdef _MSC_VER
+#pragma once
+#endif
+
 #include <boost/math/special_functions/factorials.hpp>
 
 namespace boost{ namespace math{ namespace detail{
@@ -204,7 +208,7 @@ inline T asymptotic_bessel_j_limit(const T& v, const mpl::int_<0>&)
 {
    // default case:
    BOOST_MATH_STD_USING
-   T v2 = (std::max)(T(3), v * v);
+   T v2 = (std::max)(T(3), T(v * v));
    return v2 / pow(100 * tools::epsilon<T>() / T(2e-5f), T(0.17f));
 }
 template <class T>
@@ -295,3 +299,4 @@ T asymptotic_bessel_i_large_x(T v, T x, const Policy& pol)
 }}} // namespaces
 
 #endif
+

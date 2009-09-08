@@ -6,6 +6,10 @@
 #ifndef BOOST_MATH_SP_FACTORIALS_HPP
 #define BOOST_MATH_SP_FACTORIALS_HPP
 
+#ifdef _MSC_VER
+#pragma once
+#endif
+
 #include <boost/math/special_functions/gamma.hpp>
 #include <boost/math/special_functions/math_fwd.hpp>
 #include <boost/math/special_functions/detail/unchecked_factorial.hpp>
@@ -18,7 +22,7 @@
 #ifdef BOOST_MSVC
 #pragma warning(pop)
 #endif
-#include <cmath>
+#include <boost/config/no_tr1/cmath.hpp>
 
 namespace boost { namespace math
 {
@@ -26,6 +30,7 @@ namespace boost { namespace math
 template <class T, class Policy>
 inline T factorial(unsigned i, const Policy& pol)
 {
+   BOOST_STATIC_ASSERT(!boost::is_integral<T>::value);
    BOOST_MATH_STD_USING // Aid ADL for floor.
 
    if(i <= max_factorial<T>::value)
@@ -62,6 +67,7 @@ inline double factorial<double>(unsigned i)
 template <class T, class Policy>
 T double_factorial(unsigned i, const Policy& pol)
 {
+   BOOST_STATIC_ASSERT(!boost::is_integral<T>::value);
    BOOST_MATH_STD_USING  // ADL lookup of std names
    if(i & 1)
    {
@@ -104,6 +110,7 @@ namespace detail{
 template <class T, class Policy>
 T rising_factorial_imp(T x, int n, const Policy& pol)
 {
+   BOOST_STATIC_ASSERT(!boost::is_integral<T>::value);
    if(x < 0)
    {
       //
@@ -139,6 +146,7 @@ T rising_factorial_imp(T x, int n, const Policy& pol)
 template <class T, class Policy>
 inline T falling_factorial_imp(T x, unsigned n, const Policy& pol)
 {
+   BOOST_STATIC_ASSERT(!boost::is_integral<T>::value);
    BOOST_MATH_STD_USING // ADL of std names
    if(x == 0)
       return 0;
@@ -159,7 +167,7 @@ inline T falling_factorial_imp(T x, unsigned n, const Policy& pol)
       // handle it, split the product up into three parts:
       //
       T xp1 = x + 1;
-      unsigned n2 = tools::real_cast<unsigned>(floor(xp1));
+      unsigned n2 = itrunc((T)floor(xp1), pol);
       if(n2 == xp1)
          return 0;
       T result = boost::math::tgamma_delta_ratio(xp1, -static_cast<T>(n2), pol);
@@ -222,3 +230,4 @@ inline typename tools::promote_args<RT>::type
 } // namespace boost
 
 #endif // BOOST_MATH_SP_FACTORIALS_HPP
+

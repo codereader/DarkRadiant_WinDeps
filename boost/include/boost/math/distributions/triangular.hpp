@@ -106,12 +106,21 @@ namespace boost{ namespace math
       RealType upper,
       RealType* result, const Policy& pol)
     {
-      if(check_triangular_lower(function, lower, result, pol)
-        && check_triangular_mode(function, mode, result, pol)
-        && check_triangular_upper(function, upper, result, pol)
-        && (lower < upper) // lower == upper NOT useful.
-        )
-      {
+      if ((check_triangular_lower(function, lower, result, pol) == false)
+        || (check_triangular_mode(function, mode, result, pol) == false)
+        || (check_triangular_upper(function, upper, result, pol) == false))
+      { // Some parameter not finite.
+        return false;
+      }
+      else if (lower >= upper) // lower == upper NOT useful.
+      { // lower >= upper.
+        *result = policies::raise_domain_error<RealType>(
+          function,
+          "lower parameter is %1%, but must be less than upper!", lower, pol);
+        return false;
+      }
+      else
+      { // Check lower <= mode <= upper.
         if (mode < lower)
         {
           *result = policies::raise_domain_error<RealType>(
@@ -119,21 +128,14 @@ namespace boost{ namespace math
             "mode parameter is %1%, but must be >= than lower!", lower, pol);
           return false;
         }
-        if (mode > upper )
+        if (mode > upper)
         {
           *result = policies::raise_domain_error<RealType>(
             function,
             "mode parameter is %1%, but must be <= than upper!", upper, pol);
           return false;
         }
-        return true;
-      }
-      else
-      { // upper and lower have each been checked before, so must be lower >= upper.
-        *result = policies::raise_domain_error<RealType>(
-          function,
-          "lower parameter is %1%, but must be less than upper!", lower, pol);
-        return false;
+        return true; // All OK.
       }
     } // bool check_triangular
   } // namespace detail
@@ -212,11 +214,11 @@ namespace boost{ namespace math
     }
     if (x == lower)
     { // (mode - lower) == 0 which would lead to divide by zero!
-      return (mode == lower) ? 2 / (upper - lower) : 0;
+      return (mode == lower) ? 2 / (upper - lower) : RealType(0);
     }
     else if (x == upper)
     {
-      return (mode == upper) ? 2 / (upper - lower) : 0;
+      return (mode == upper) ? 2 / (upper - lower) : RealType(0);
     }
     else if (x <= mode)
     {
