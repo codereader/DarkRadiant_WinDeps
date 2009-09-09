@@ -1156,7 +1156,8 @@ namespace boost
 #else
             throw_exception(bad_lexical_cast());
 #endif
-            return Target(); // normally never reached (throw_exception)
+            // greebo: Commented this out to silence VC++ warning
+			// return Target(); // normally never reached (throw_exception)
         }
     }
 
