@@ -4,6 +4,7 @@
 	Version="9,00"
 	Name="giomm-2.4"
 	ProjectGUID="{EE6C0430-C2C9-425C-8EBA-963FAC3E9832}"
+	RootNamespace="giomm-2.4"
 	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
@@ -44,7 +45,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/vd2"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;../..;../../glib;../../gio;&quot;$(SolutionDir)\glibmm&quot;"
+				AdditionalIncludeDirectories=".;../..;../../glib;../../gio;&quot;$(SolutionDir)\glibmm&quot;;&quot;$(SolutionDir)\..\..\gtk2\include&quot;;&quot;$(SolutionDir)\..\..\gtk2\include\glib-2.0&quot;;&quot;$(SolutionDir)\..\..\libsigc++&quot;;&quot;$(SolutionDir)\..\..\libsigc++\MSVC_Net2008&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;GIOMM_BUILD"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -66,12 +67,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="glib-2.0.lib gobject-2.0.lib gmodule-2.0.lib gio-2.0.lib sigc-vc90-d-2_0.lib"
-				OutputFile="$(OutDir)\giomm-vc90-d-2_4.dll"
-				AdditionalLibraryDirectories="D:\Data\baumannm\darkmod\darkradiant\w32deps\gtk2\lib;&quot;D:\Data\baumannm\darkmod\darkradiant\gtkmm\libsigc++\libsigc++-2.2.8\MSVC_Net2008\Debug&quot;"
+				OutputFile="$(SolutionDir)\..\..\..\w32deps\gtkmm\bin\giomm-vc90-d-2_4.dll"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w32deps\gtkmm\lib&quot;;&quot;$(SolutionDir)\..\..\..\w32deps\gtk2\lib&quot;"
 				ModuleDefinitionFile="$(ConfigurationName)\$(InputName).def"
 				GenerateDebugInformation="true"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				ImportLibrary="$(SolutionDir)\..\..\..\w32deps\gtkmm\lib\$(TargetName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -123,7 +125,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/vd2"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;../..;../../glib;../../gio;&quot;$(SolutionDir)\glibmm&quot;;&quot;C:\Games\darkradiant\w32deps\gtk2\include\glib-2.0&quot;;&quot;C:\Games\darkradiant\w32deps\gtk2\lib\glib-2.0\include&quot;;&quot;D:\Saftware\gtkmm_compile_package.v3\libsigc++\libsigc++-2.2.8&quot;"
+				AdditionalIncludeDirectories=".;../..;../../glib;../../gio;&quot;$(SolutionDir)\glibmm&quot;;&quot;$(SolutionDir)\..\..\gtk2\include&quot;;&quot;$(SolutionDir)\..\..\gtk2\include\glib-2.0&quot;;&quot;$(SolutionDir)\..\..\libsigc++&quot;;&quot;$(SolutionDir)\..\..\libsigc++\MSVC_Net2008&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;GIOMM_BUILD"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -140,17 +142,18 @@
 			<Tool
 				Name="VCPreLinkEventTool"
 				Description="Generate giomm def file"
-				CommandLine="$(SolutionDir)gendef\$(ConfigurationName)\gendef $(ConfigurationName)\$(InputName).def $(TargetFileName) $(IntDir)\*.obj"
+				CommandLine="$(SolutionDir)\gendef\$(PlatformName)\$(ConfigurationName)\gendef $(PlatformName)\$(ConfigurationName)\$(InputName).def $(TargetFileName) $(IntDir)\*.obj"
 			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="glib-2.0.lib gobject-2.0.lib gmodule-2.0.lib gio-2.0.lib sigc-vc90-d-2_0.lib"
-				OutputFile="$(OutDir)\giomm-vc90-d-2_4.dll"
-				AdditionalLibraryDirectories="C:\Games\darkradiant\w64deps\gtkmm\lib;C:\Games\darkradiant\w64deps\gtk2\lib"
-				ModuleDefinitionFile="$(ConfigurationName)\$(InputName).def"
+				OutputFile="$(SolutionDir)\..\..\..\w64deps\gtkmm\bin\giomm-vc90-d-2_4.dll"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w64deps\gtkmm\lib&quot;;&quot;$(SolutionDir)\..\..\..\w64deps\gtk2\lib&quot;"
+				ModuleDefinitionFile="$(PlatformName)\$(ConfigurationName)\$(InputName).def"
 				GenerateDebugInformation="true"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				ImportLibrary="$(SolutionDir)\..\..\..\w64deps\gtkmm\lib\$(TargetName).lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -201,7 +204,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/vd2"
-				AdditionalIncludeDirectories=".;../..;../../glib;../../gio;&quot;$(SolutionDir)\glibmm&quot;"
+				AdditionalIncludeDirectories=".;../..;../../glib;../../gio;&quot;$(SolutionDir)\glibmm&quot;;&quot;$(SolutionDir)\..\..\gtk2\include&quot;;&quot;$(SolutionDir)\..\..\gtk2\include\glib-2.0&quot;;&quot;$(SolutionDir)\..\..\libsigc++&quot;;&quot;$(SolutionDir)\..\..\libsigc++\MSVC_Net2008&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;GIOMM_BUILD"
 				RuntimeLibrary="2"
 				WarningLevel="3"
@@ -221,11 +224,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="glib-2.0.lib gobject-2.0.lib gmodule-2.0.lib gio-2.0.lib sigc-vc90-2_0.lib"
-				OutputFile="$(OutDir)\giomm-vc90-2_4.dll"
-				AdditionalLibraryDirectories="D:\Data\baumannm\darkmod\darkradiant\w32deps\gtk2\lib;&quot;D:\Data\baumannm\darkmod\darkradiant\gtkmm\libsigc++\libsigc++-2.2.8\MSVC_Net2008\Release&quot;"
+				OutputFile="$(SolutionDir)\..\..\..\w32deps\gtkmm\bin\giomm-vc90-2_4.dll"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w32deps\gtkmm\lib&quot;;&quot;$(SolutionDir)\..\..\..\w32deps\gtk2\lib&quot;"
 				ModuleDefinitionFile="$(ConfigurationName)\$(InputName).def"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				ImportLibrary="$(SolutionDir)\..\..\..\w32deps\gtkmm\lib\$(TargetName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -276,7 +280,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/vd2"
-				AdditionalIncludeDirectories=".;../..;../../glib;../../gio;&quot;$(SolutionDir)\glibmm&quot;;&quot;C:\Games\darkradiant\w32deps\gtk2\include\glib-2.0&quot;;&quot;C:\Games\darkradiant\w32deps\gtk2\lib\glib-2.0\include&quot;;&quot;D:\Saftware\gtkmm_compile_package.v3\libsigc++\libsigc++-2.2.8&quot;"
+				AdditionalIncludeDirectories=".;../..;../../glib;../../gio;&quot;$(SolutionDir)\glibmm&quot;;&quot;$(SolutionDir)\..\..\gtk2\include&quot;;&quot;$(SolutionDir)\..\..\gtk2\include\glib-2.0&quot;;&quot;$(SolutionDir)\..\..\libsigc++&quot;;&quot;$(SolutionDir)\..\..\libsigc++\MSVC_Net2008&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;GIOMM_BUILD"
 				RuntimeLibrary="2"
 				WarningLevel="3"
@@ -291,16 +295,17 @@
 			<Tool
 				Name="VCPreLinkEventTool"
 				Description="Generate giomm def file"
-				CommandLine="$(SolutionDir)gendef\$(ConfigurationName)\gendef $(ConfigurationName)\$(InputName).def $(TargetFileName) $(IntDir)\*.obj"
+				CommandLine="$(SolutionDir)\gendef\$(PlatformName)\$(ConfigurationName)\gendef $(PlatformName)\$(ConfigurationName)\$(InputName).def $(TargetFileName) $(IntDir)\*.obj"
 			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="glib-2.0.lib gobject-2.0.lib gmodule-2.0.lib gio-2.0.lib sigc-vc90-2_0.lib"
-				OutputFile="$(OutDir)\giomm-vc90-2_4.dll"
-				AdditionalLibraryDirectories="C:\Games\darkradiant\w64deps\gtkmm\lib;C:\Games\darkradiant\w64deps\gtk2\lib"
-				ModuleDefinitionFile="$(ConfigurationName)\$(InputName).def"
+				OutputFile="$(SolutionDir)\..\..\..\w64deps\gtkmm\bin\giomm-vc90-2_4.dll"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w64deps\gtkmm\lib&quot;;&quot;$(SolutionDir)\..\..\..\w64deps\gtk2\lib&quot;"
+				ModuleDefinitionFile="$(PlatformName)\$(ConfigurationName)\$(InputName).def"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				ImportLibrary="$(SolutionDir)\..\..\..\w64deps\gtkmm\lib\$(TargetName).lib"
 				TargetMachine="17"
 			/>
 			<Tool

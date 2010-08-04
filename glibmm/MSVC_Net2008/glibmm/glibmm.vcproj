@@ -46,7 +46,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/vd2"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;../..;../../glib"
+				AdditionalIncludeDirectories=".;../..;../../glib;&quot;$(SolutionDir)\glibmm&quot;;&quot;$(SolutionDir)\..\..\gtk2\include&quot;;&quot;$(SolutionDir)\..\..\gtk2\include\glib-2.0&quot;;&quot;$(SolutionDir)\..\..\libsigc++&quot;;&quot;$(SolutionDir)\..\..\libsigc++\MSVC_Net2008&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;GLIBMM_BUILD"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -72,13 +72,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="glib-2.0.lib gobject-2.0.lib gmodule-2.0.lib sigc-vc90-d-2_0.lib"
-				OutputFile="$(OutDir)/glibmm-vc90-d-2_4.dll"
-				AdditionalLibraryDirectories="D:\Data\baumannm\darkmod\darkradiant\w32deps\gtk2\lib;&quot;D:\Data\baumannm\darkmod\darkradiant\gtkmm\libsigc++\libsigc++-2.2.8\MSVC_Net2008\Debug&quot;"
+				OutputFile="$(SolutionDir)\..\..\..\w32deps\gtkmm\bin\glibmm-vc90-d-2_4.dll"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w32deps\gtkmm\lib&quot;;&quot;$(SolutionDir)\..\..\..\w32deps\gtk2\lib&quot;"
 				GenerateManifest="true"
 				ModuleDefinitionFile="$(ConfigurationName)\$(InputName).def"
 				GenerateDebugInformation="true"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				ImportLibrary="$(SolutionDir)\..\..\..\w32deps\gtkmm\lib\$(TargetName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -130,7 +131,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/vd2"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;../..;../../glib;&quot;C:\Games\darkradiant\w32deps\gtk2\include\glib-2.0&quot;;&quot;C:\Games\darkradiant\w32deps\gtk2\lib\glib-2.0\include&quot;;&quot;D:\Saftware\gtkmm_compile_package.v3\libsigc++\libsigc++-2.2.8&quot;"
+				AdditionalIncludeDirectories=".;../..;../../glib;&quot;$(SolutionDir)\glibmm&quot;;&quot;$(SolutionDir)\..\..\gtk2\include&quot;;&quot;$(SolutionDir)\..\..\gtk2\include\glib-2.0&quot;;&quot;$(SolutionDir)\..\..\libsigc++&quot;;&quot;$(SolutionDir)\..\..\libsigc++\MSVC_Net2008&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;GLIBMM_BUILD"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -150,19 +151,20 @@
 			<Tool
 				Name="VCPreLinkEventTool"
 				Description="Generate glibmm def file"
-				CommandLine="$(SolutionDir)gendef\$(ConfigurationName)\gendef $(ConfigurationName)\$(InputName).def $(TargetFileName) $(IntDir)\*.obj"
+				CommandLine="$(SolutionDir)gendef\$(PlatformName)\$(ConfigurationName)\gendef $(PlatformName)\$(ConfigurationName)\$(InputName).def $(TargetFileName) $(IntDir)\*.obj"
 				ExcludedFromBuild="false"
 			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="glib-2.0.lib gobject-2.0.lib gmodule-2.0.lib sigc-vc90-d-2_0.lib"
-				OutputFile="$(OutDir)/glibmm-vc90-d-2_4.dll"
-				AdditionalLibraryDirectories="C:\Games\darkradiant\w64deps\gtkmm\lib;C:\Games\darkradiant\w64deps\gtk2\lib"
+				OutputFile="$(SolutionDir)\..\..\..\w64deps\gtkmm\bin\glibmm-vc90-d-2_4.dll"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w64deps\gtkmm\lib&quot;;&quot;$(SolutionDir)\..\..\..\w64deps\gtk2\lib&quot;"
 				GenerateManifest="true"
-				ModuleDefinitionFile="$(ConfigurationName)\$(InputName).def"
+				ModuleDefinitionFile="$(PlatformName)\$(ConfigurationName)\$(InputName).def"
 				GenerateDebugInformation="true"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				ImportLibrary="$(SolutionDir)\..\..\..\w64deps\gtkmm\lib\$(TargetName).lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -213,7 +215,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/vd2"
-				AdditionalIncludeDirectories=".;../..;../../glib"
+				AdditionalIncludeDirectories=".;../..;../../glib;&quot;$(SolutionDir)\glibmm&quot;;&quot;$(SolutionDir)\..\..\gtk2\include&quot;;&quot;$(SolutionDir)\..\..\gtk2\include\glib-2.0&quot;;&quot;$(SolutionDir)\..\..\libsigc++&quot;;&quot;$(SolutionDir)\..\..\libsigc++\MSVC_Net2008&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;GLIBMM_BUILD"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
@@ -237,12 +239,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="glib-2.0.lib gobject-2.0.lib gmodule-2.0.lib sigc-vc90-2_0.lib"
-				OutputFile="$(OutDir)\glibmm-vc90-2_4.dll"
-				AdditionalLibraryDirectories="D:\Data\baumannm\darkmod\darkradiant\w32deps\gtk2\lib;&quot;D:\Data\baumannm\darkmod\darkradiant\gtkmm\libsigc++\libsigc++-2.2.8\MSVC_Net2008\Release&quot;"
+				OutputFile="$(SolutionDir)\..\..\..\w32deps\gtkmm\bin\glibmm-vc90-2_4.dll"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w32deps\gtkmm\lib&quot;;&quot;$(SolutionDir)\..\..\..\w32deps\gtk2\lib&quot;"
 				GenerateManifest="true"
 				ModuleDefinitionFile="$(ConfigurationName)\$(InputName).def"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				ImportLibrary="$(SolutionDir)\..\..\..\w32deps\gtkmm\lib\$(TargetName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -293,7 +296,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/vd2"
-				AdditionalIncludeDirectories=".;../..;../../glib;&quot;C:\Games\darkradiant\w32deps\gtk2\include\glib-2.0&quot;;&quot;C:\Games\darkradiant\w32deps\gtk2\lib\glib-2.0\include&quot;;&quot;D:\Saftware\gtkmm_compile_package.v3\libsigc++\libsigc++-2.2.8&quot;"
+				AdditionalIncludeDirectories=".;../..;../../glib;&quot;$(SolutionDir)\glibmm&quot;;&quot;$(SolutionDir)\..\..\gtk2\include&quot;;&quot;$(SolutionDir)\..\..\gtk2\include\glib-2.0&quot;;&quot;$(SolutionDir)\..\..\libsigc++&quot;;&quot;$(SolutionDir)\..\..\libsigc++\MSVC_Net2008&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;GLIBMM_BUILD"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
@@ -311,18 +314,19 @@
 			<Tool
 				Name="VCPreLinkEventTool"
 				Description="Generate glibmm def file"
-				CommandLine="$(SolutionDir)gendef\$(ConfigurationName)\gendef $(ConfigurationName)\$(InputName).def $(TargetFileName) $(IntDir)\*.obj"
+				CommandLine="$(SolutionDir)gendef\$(PlatformName)\$(ConfigurationName)\gendef $(PlatformName)\$(ConfigurationName)\$(InputName).def $(TargetFileName) $(IntDir)\*.obj"
 				ExcludedFromBuild="false"
 			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="glib-2.0.lib gobject-2.0.lib gmodule-2.0.lib sigc-vc90-2_0.lib"
-				OutputFile="$(OutDir)\glibmm-vc90-2_4.dll"
-				AdditionalLibraryDirectories="C:\Games\darkradiant\w64deps\gtkmm\lib;C:\Games\darkradiant\w64deps\gtk2\lib"
+				OutputFile="$(SolutionDir)\..\..\..\w64deps\gtkmm\bin\glibmm-vc90-2_4.dll"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w64deps\gtkmm\lib&quot;;&quot;$(SolutionDir)\..\..\..\w64deps\gtk2\lib&quot;"
 				GenerateManifest="true"
-				ModuleDefinitionFile="$(ConfigurationName)\$(InputName).def"
+				ModuleDefinitionFile="$(PlatformName)\$(ConfigurationName)\$(InputName).def"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				ImportLibrary="$(SolutionDir)\..\..\..\w64deps\gtkmm\lib\$(TargetName).lib"
 				TargetMachine="17"
 			/>
 			<Tool
