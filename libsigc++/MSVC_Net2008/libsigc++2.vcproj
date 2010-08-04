@@ -4,6 +4,7 @@
 	Version="9,00"
 	Name="libsigc++"
 	ProjectGUID="{83997EF6-02D6-4CDB-8B3C-DBCA3018CC72}"
+	RootNamespace="libsigc++"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -65,81 +66,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/sigc-vc90-d-2_0.dll"
+				OutputFile="$(SolutionPath)\..\..\..\..\w32deps\gtkmm\bin\sigc-vc90-d-2_0.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=""
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="Release"
-			IntermediateDirectory="Release"
-			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;SIGC_BUILD"
-				RuntimeLibrary="2"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				OutputFile="$(OutDir)\sigc-vc90-2_0.dll"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
+				ImportLibrary="$(SolutionPath)\..\..\..\..\w32deps\gtkmm\lib\$(TargetName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -211,12 +143,84 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/sigc-vc90-d-2_0.dll"
+				OutputFile="$(SolutionPath)\..\..\..\..\w64deps\gtkmm\bin\sigc-vc90-d-2_0.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=""
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				ImportLibrary="$(SolutionPath)\..\..\..\..\w64deps\gtkmm\lib\$(TargetName).lib"
 				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="Release"
+			IntermediateDirectory="Release"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;SIGC_BUILD"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				OutputFile="$(SolutionPath)\..\..\..\..\w32deps\gtkmm\bin\sigc-vc90-2_0.dll"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="$(SolutionPath)\..\..\..\..\w32deps\gtkmm\lib\$(TargetName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -285,9 +289,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)\sigc-vc90-2_0.dll"
+				OutputFile="$(SolutionPath)\..\..\..\..\w64deps\gtkmm\bin\sigc-vc90-2_0.dll"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				ImportLibrary="$(SolutionPath)\..\..\..\..\w64deps\gtkmm\lib\$(TargetName).lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -340,16 +345,6 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=".;.."
-						RuntimeLibrary="2"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug|x64"
 					>
 					<Tool
@@ -358,6 +353,16 @@
 						RuntimeLibrary="3"
 						UsePrecompiledHeader="0"
 						DebugInformationFormat="3"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=".;.."
+						RuntimeLibrary="2"
+						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -386,16 +391,6 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=".;.."
-						RuntimeLibrary="2"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug|x64"
 					>
 					<Tool
@@ -404,6 +399,16 @@
 						RuntimeLibrary="3"
 						UsePrecompiledHeader="0"
 						DebugInformationFormat="3"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=".;.."
+						RuntimeLibrary="2"
+						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -432,16 +437,6 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=".;.."
-						RuntimeLibrary="2"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug|x64"
 					>
 					<Tool
@@ -450,6 +445,16 @@
 						RuntimeLibrary="3"
 						UsePrecompiledHeader="0"
 						DebugInformationFormat="3"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=".;.."
+						RuntimeLibrary="2"
+						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -478,16 +483,6 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=".;.."
-						RuntimeLibrary="2"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug|x64"
 					>
 					<Tool
@@ -496,6 +491,16 @@
 						RuntimeLibrary="3"
 						UsePrecompiledHeader="0"
 						DebugInformationFormat="3"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=".;.."
+						RuntimeLibrary="2"
+						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -524,16 +529,6 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=".;.."
-						RuntimeLibrary="2"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug|x64"
 					>
 					<Tool
@@ -542,6 +537,16 @@
 						RuntimeLibrary="3"
 						UsePrecompiledHeader="0"
 						DebugInformationFormat="3"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=".;.."
+						RuntimeLibrary="2"
+						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -570,16 +575,6 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=".;.."
-						RuntimeLibrary="2"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug|x64"
 					>
 					<Tool
@@ -588,6 +583,16 @@
 						RuntimeLibrary="3"
 						UsePrecompiledHeader="0"
 						DebugInformationFormat="3"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=".;.."
+						RuntimeLibrary="2"
+						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -616,16 +621,6 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=".;.."
-						RuntimeLibrary="2"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug|x64"
 					>
 					<Tool
@@ -634,6 +629,16 @@
 						RuntimeLibrary="3"
 						UsePrecompiledHeader="0"
 						DebugInformationFormat="3"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=".;.."
+						RuntimeLibrary="2"
+						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -666,11 +671,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\sigc++\adaptors\bind.h"
+				RelativePath="..\sigc++\bind.h"
 				>
 			</File>
 			<File
-				RelativePath="..\sigc++\bind.h"
+				RelativePath="..\sigc++\adaptors\bind.h"
 				>
 			</File>
 			<File
@@ -718,11 +723,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\sigc++\adaptors\hide.h"
+				RelativePath="..\sigc++\hide.h"
 				>
 			</File>
 			<File
-				RelativePath="..\sigc++\hide.h"
+				RelativePath="..\sigc++\adaptors\hide.h"
 				>
 			</File>
 			<File
@@ -762,19 +767,19 @@
 				>
 			</File>
 			<File
-				RelativePath="..\sigc++\retype.h"
-				>
-			</File>
-			<File
 				RelativePath="..\sigc++\adaptors\retype.h"
 				>
 			</File>
 			<File
-				RelativePath="..\sigc++\adaptors\retype_return.h"
+				RelativePath="..\sigc++\retype.h"
 				>
 			</File>
 			<File
 				RelativePath="..\sigc++\retype_return.h"
+				>
+			</File>
+			<File
+				RelativePath="..\sigc++\adaptors\retype_return.h"
 				>
 			</File>
 			<File
