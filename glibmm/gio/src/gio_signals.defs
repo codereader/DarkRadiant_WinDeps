@@ -1,0 +1,590 @@
+;; From GAsyncResult
+
+;; From GCancellable
+
+(define-signal cancelled
+  (of-object "GCancellable")
+  (return-type "void")
+  (when "last")
+)
+
+;; From GBufferedInputStream
+
+(define-property base-stream
+  (of-object "GBufferedInputStream")
+  (prop-type "GParamObject")
+  (docs "The underlying base stream on which the io ops will be done.")
+  (readable #t)
+  (writable #t)
+  (construct-only #t)
+)
+
+(define-property close-base-stream
+  (of-object "GBufferedInputStream")
+  (prop-type "GParamBoolean")
+  (docs "If the base stream should be closed when the filter stream is closed.")
+  (readable #t)
+  (writable #t)
+  (construct-only #t)
+)
+
+(define-property buffer-size
+  (of-object "GBufferedInputStream")
+  (prop-type "GParamUInt")
+  (docs "The size of the backend buffer")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+;; From GBufferedOutputStream
+
+(define-property base-stream
+  (of-object "GBufferedOutputStream")
+  (prop-type "GParamObject")
+  (docs "The underlying base stream on which the io ops will be done.")
+  (readable #t)
+  (writable #t)
+  (construct-only #t)
+)
+
+(define-property close-base-stream
+  (of-object "GBufferedOutputStream")
+  (prop-type "GParamBoolean")
+  (docs "If the base stream should be closed when the filter stream is closed.")
+  (readable #t)
+  (writable #t)
+  (construct-only #t)
+)
+
+(define-property buffer-size
+  (of-object "GBufferedOutputStream")
+  (prop-type "GParamUInt")
+  (docs "The size of the backend buffer")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property auto-grow
+  (of-object "GBufferedOutputStream")
+  (prop-type "GParamBoolean")
+  (docs "Whether the buffer should automatically grow")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+;; From GDataInputStream
+
+(define-property base-stream
+  (of-object "GDataInputStream")
+  (prop-type "GParamObject")
+  (docs "The underlying base stream on which the io ops will be done.")
+  (readable #t)
+  (writable #t)
+  (construct-only #t)
+)
+
+(define-property close-base-stream
+  (of-object "GDataInputStream")
+  (prop-type "GParamBoolean")
+  (docs "If the base stream should be closed when the filter stream is closed.")
+  (readable #t)
+  (writable #t)
+  (construct-only #t)
+)
+
+(define-property buffer-size
+  (of-object "GDataInputStream")
+  (prop-type "GParamUInt")
+  (docs "The size of the backend buffer")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property byte-order
+  (of-object "GDataInputStream")
+  (prop-type "GParamEnum")
+  (docs "The byte order")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property newline-type
+  (of-object "GDataInputStream")
+  (prop-type "GParamEnum")
+  (docs "The accepted types of line ending")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+;; From GDataOutputStream
+
+(define-property base-stream
+  (of-object "GDataOutputStream")
+  (prop-type "GParamObject")
+  (docs "The underlying base stream on which the io ops will be done.")
+  (readable #t)
+  (writable #t)
+  (construct-only #t)
+)
+
+(define-property close-base-stream
+  (of-object "GDataOutputStream")
+  (prop-type "GParamBoolean")
+  (docs "If the base stream should be closed when the filter stream is closed.")
+  (readable #t)
+  (writable #t)
+  (construct-only #t)
+)
+
+(define-property byte-order
+  (of-object "GDataOutputStream")
+  (prop-type "GParamEnum")
+  (docs "The byte order")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+;; From GDrive
+
+(define-signal changed
+  (of-object "GDrive")
+  (return-type "void")
+  (when "last")
+)
+
+(define-signal disconnected
+  (of-object "GDrive")
+  (return-type "void")
+  (when "last")
+)
+
+(define-signal eject-button
+  (of-object "GDrive")
+  (return-type "void")
+  (when "last")
+)
+
+;; From GFile
+
+;; From GFileEnumerator
+
+(define-property container
+  (of-object "GFileEnumerator")
+  (prop-type "GParamObject")
+  (docs "The container that is being enumerated")
+  (readable #f)
+  (writable #t)
+  (construct-only #t)
+)
+
+;; From GFileInfo
+
+;; From GFileIcon
+
+(define-property file
+  (of-object "GFileIcon")
+  (prop-type "GParamObject")
+  (docs "The file containing the icon")
+  (readable #t)
+  (writable #t)
+  (construct-only #t)
+)
+
+;; From GFileMonitor
+
+(define-signal changed
+  (of-object "GFileMonitor")
+  (return-type "void")
+  (when "last")
+  (parameters
+    '("GFile*" "p0")
+    '("GFile*" "p1")
+    '("GFileMonitorEvent" "p2")
+  )
+)
+
+(define-property rate-limit
+  (of-object "GFileMonitor")
+  (prop-type "GParamInt")
+  (docs "The limit of the monitor to watch for changes, in milliseconds")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property cancelled
+  (of-object "GFileMonitor")
+  (prop-type "GParamBoolean")
+  (docs "Whether the monitor has been cancelled")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+;; From GFilenameCompleter
+
+(define-signal got-completion-data
+  (of-object "GFilenameCompleter")
+  (return-type "void")
+  (when "last")
+)
+
+;; From GFileInputStream
+
+;; From GFileOutputStream
+
+;; From GFilterInputStream
+
+(define-property base-stream
+  (of-object "GFilterInputStream")
+  (prop-type "GParamObject")
+  (docs "The underlying base stream on which the io ops will be done.")
+  (readable #t)
+  (writable #t)
+  (construct-only #t)
+)
+
+(define-property close-base-stream
+  (of-object "GFilterInputStream")
+  (prop-type "GParamBoolean")
+  (docs "If the base stream should be closed when the filter stream is closed.")
+  (readable #t)
+  (writable #t)
+  (construct-only #t)
+)
+
+;; From GFilterOutputStream
+
+(define-property base-stream
+  (of-object "GFilterOutputStream")
+  (prop-type "GParamObject")
+  (docs "The underlying base stream on which the io ops will be done.")
+  (readable #t)
+  (writable #t)
+  (construct-only #t)
+)
+
+(define-property close-base-stream
+  (of-object "GFilterOutputStream")
+  (prop-type "GParamBoolean")
+  (docs "If the base stream should be closed when the filter stream is closed.")
+  (readable #t)
+  (writable #t)
+  (construct-only #t)
+)
+
+;; From GUnixInputStream
+
+(define-property fd
+  (of-object "GUnixInputStream")
+  (prop-type "GParamInt")
+  (docs "The file descriptor to read from")
+  (readable #t)
+  (writable #t)
+  (construct-only #t)
+)
+
+(define-property close-fd
+  (of-object "GUnixInputStream")
+  (prop-type "GParamBoolean")
+  (docs "Whether to close the file descriptor when the stream is closed")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+;; From GUnixOutputStream
+
+(define-property fd
+  (of-object "GUnixOutputStream")
+  (prop-type "GParamInt")
+  (docs "The file descriptor to write to")
+  (readable #t)
+  (writable #t)
+  (construct-only #t)
+)
+
+(define-property close-fd
+  (of-object "GUnixOutputStream")
+  (prop-type "GParamBoolean")
+  (docs "Whether to close the file descriptor when the stream is closed")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+;; From GInputStream
+
+;; From GLoadableIcon
+
+;; From GMemoryInputStream
+
+;; From GMemoryOutputStream
+
+;; From GMount
+
+(define-signal changed
+  (of-object "GMount")
+  (return-type "void")
+  (when "last")
+)
+
+(define-signal unmounted
+  (of-object "GMount")
+  (return-type "void")
+  (when "last")
+)
+
+;; From GMountOperation
+
+(define-signal ask-password
+  (of-object "GMountOperation")
+  (return-type "void")
+  (when "last")
+  (parameters
+    '("const-gchar*" "p0")
+    '("const-gchar*" "p1")
+    '("const-gchar*" "p2")
+    '("GAskPasswordFlags" "p3")
+  )
+)
+
+;; p1 is actually a gchar**, 
+;; but that is equivalent (by typedef) to gchar**,
+;; and the declaration in gmountoperation.h adds a const.
+;; murrayc
+(define-signal ask-question
+  (of-object "GMountOperation")
+  (return-type "void")
+  (when "last")
+  (parameters
+    '("const-gchar*" "p0")
+    '("const-gchar**" "p1")
+  )
+)
+
+(define-signal reply
+  (of-object "GMountOperation")
+  (return-type "void")
+  (when "last")
+  (parameters
+    '("GMountOperationResult" "p0")
+  )
+)
+
+(define-signal aborted
+  (of-object "GMountOperation")
+  (return-type "void")
+  (when "last")
+)
+
+(define-property username
+  (of-object "GMountOperation")
+  (prop-type "GParamString")
+  (docs "The user name")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property password
+  (of-object "GMountOperation")
+  (prop-type "GParamString")
+  (docs "The password")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property anonymous
+  (of-object "GMountOperation")
+  (prop-type "GParamBoolean")
+  (docs "Whether to use an anonymous user")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property domain
+  (of-object "GMountOperation")
+  (prop-type "GParamString")
+  (docs "The domain of the mount operation")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property password-save
+  (of-object "GMountOperation")
+  (prop-type "GParamEnum")
+  (docs "How passwords should be saved")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property choice
+  (of-object "GMountOperation")
+  (prop-type "GParamInt")
+  (docs "The users choice")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+;; From GSeekable
+
+;; From GSimpleAsyncResult
+
+;; From GThemedIcon
+
+(define-property name
+  (of-object "GThemedIcon")
+  (prop-type "GParamString")
+  (docs "The name of the icon")
+  (readable #f)
+  (writable #t)
+  (construct-only #t)
+)
+
+(define-property names
+  (of-object "GThemedIcon")
+  (prop-type "GParamBoxed")
+  (docs "An array containing the icon names")
+  (readable #t)
+  (writable #t)
+  (construct-only #t)
+)
+
+(define-property use-default-fallbacks
+  (of-object "GThemedIcon")
+  (prop-type "GParamBoolean")
+  (docs "Whether to use default fallbacks found by shortening the name at '-' characters. Ignores names after the first if multiple names are given.")
+  (readable #t)
+  (writable #t)
+  (construct-only #t)
+)
+
+;; From GVolume
+
+(define-signal changed
+  (of-object "GVolume")
+  (return-type "void")
+  (when "last")
+)
+
+(define-signal removed
+  (of-object "GVolume")
+  (return-type "void")
+  (when "last")
+)
+
+;; From GVolumeMonitor
+
+(define-signal volume-added
+  (of-object "GVolumeMonitor")
+  (return-type "void")
+  (when "last")
+  (parameters
+    '("GVolume*" "p0")
+  )
+)
+
+(define-signal volume-removed
+  (of-object "GVolumeMonitor")
+  (return-type "void")
+  (when "last")
+  (parameters
+    '("GVolume*" "p0")
+  )
+)
+
+(define-signal volume-changed
+  (of-object "GVolumeMonitor")
+  (return-type "void")
+  (when "last")
+  (parameters
+    '("GVolume*" "p0")
+  )
+)
+
+(define-signal mount-added
+  (of-object "GVolumeMonitor")
+  (return-type "void")
+  (when "last")
+  (parameters
+    '("GMount*" "p0")
+  )
+)
+
+(define-signal mount-removed
+  (of-object "GVolumeMonitor")
+  (return-type "void")
+  (when "last")
+  (parameters
+    '("GMount*" "p0")
+  )
+)
+
+(define-signal mount-pre-unmount
+  (of-object "GVolumeMonitor")
+  (return-type "void")
+  (when "last")
+  (parameters
+    '("GMount*" "p0")
+  )
+)
+
+(define-signal mount-changed
+  (of-object "GVolumeMonitor")
+  (return-type "void")
+  (when "last")
+  (parameters
+    '("GMount*" "p0")
+  )
+)
+
+(define-signal drive-connected
+  (of-object "GVolumeMonitor")
+  (return-type "void")
+  (when "last")
+  (parameters
+    '("GDrive*" "p0")
+  )
+)
+
+(define-signal drive-disconnected
+  (of-object "GVolumeMonitor")
+  (return-type "void")
+  (when "last")
+  (parameters
+    '("GDrive*" "p0")
+  )
+)
+
+(define-signal drive-changed
+  (of-object "GVolumeMonitor")
+  (return-type "void")
+  (when "last")
+  (parameters
+    '("GDrive*" "p0")
+  )
+)
+
+(define-signal drive-eject-button
+  (of-object "GVolumeMonitor")
+  (return-type "void")
+  (when "last")
+  (parameters
+    '("GDrive*" "p0")
+  )
+)
+
+
