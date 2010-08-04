@@ -21,5 +21,15 @@ Finally, to check out the winbuild folder:
 This way, the VC++ projects place their binaries in the correct location in the w32deps/w64deps folder and you can compile
 DarkRadiant right off the bat.
 
+== Compile order for gtkmm ==
+
+See: http://live.gnome.org/gtkmm/MSWindows/BuildingGtkmm
+
+1. libsigc++
+2. glibmm
+3. cairomm
+4. pangomm
+5. gtkmm
+
 More detailed instructions when I've found some more time. :)
 --greebo
