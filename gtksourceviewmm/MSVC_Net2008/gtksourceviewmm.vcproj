@@ -66,13 +66,13 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
-				Description=""
-				CommandLine=""
+				Description="Generate gtksourceview def"
+				CommandLine="$(SolutionDir)\gendef\$(ConfigurationName)\gendef $(ConfigurationName)\$(InputName).def $(TargetFileName) $(IntDir)\*.obj"
 				ExcludedFromBuild="false"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="glib-2.0.lib gobject-2.0.lib gmodule-2.0.lib sigc-vc90-d-2_0.lib"
+				AdditionalDependencies="glib-2.0.lib gobject-2.0.lib gmodule-2.0.lib sigc-vc90-d-2_0.lib glibmm-vc90-d-2_4.lib gtkmm-vc90-d-2_4.lib"
 				OutputFile="$(SolutionDir)\..\..\..\w32deps\gtksourceviewmm\bin\gtksourceviewmm-vc90-d-2_2.dll"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w32deps\gtkmm\lib&quot;;&quot;$(SolutionDir)\..\..\..\w32deps\gtk2\lib&quot;"
 				GenerateManifest="true"
@@ -152,13 +152,13 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
-				Description="Generate glibmm def file"
-				CommandLine="$(SolutionDir)gendef\$(PlatformName)\$(ConfigurationName)\gendef $(PlatformName)\$(ConfigurationName)\$(InputName).def $(TargetFileName) $(IntDir)\*.obj"
+				Description="Generate gtksourceview def"
+				CommandLine="$(SolutionDir)\gendef\$(PlatformName)\$(ConfigurationName)\gendef $(PlatformName)\$(ConfigurationName)\$(InputName).def $(TargetFileName) $(IntDir)\*.obj"
 				ExcludedFromBuild="false"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="glib-2.0.lib gobject-2.0.lib gmodule-2.0.lib sigc-vc90-d-2_0.lib"
+				AdditionalDependencies="glib-2.0.lib gobject-2.0.lib gmodule-2.0.lib sigc-vc90-d-2_0.lib glibmm-vc90-d-2_4.lib gtkmm-vc90-d-2_4.lib"
 				OutputFile="$(SolutionDir)\..\..\..\w64deps\gtksourceviewmm\bin\gtksourceviewmm-vc90-d-2_2.dll"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w64deps\gtkmm\lib&quot;;&quot;$(SolutionDir)\..\..\..\w64deps\gtk2\lib&quot;"
 				GenerateManifest="true"
@@ -235,13 +235,13 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
-				Description="Generate glibmm def file"
-				CommandLine="$(SolutionDir)gendef\$(ConfigurationName)\gendef $(ConfigurationName)\$(InputName).def $(TargetFileName) $(IntDir)\*.obj"
+				Description="Generate gtksourceview def"
+				CommandLine="$(SolutionDir)\gendef\$(ConfigurationName)\gendef $(ConfigurationName)\$(InputName).def $(TargetFileName) $(IntDir)\*.obj"
 				ExcludedFromBuild="false"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="glib-2.0.lib gobject-2.0.lib gmodule-2.0.lib sigc-vc90-2_0.lib"
+				AdditionalDependencies="glib-2.0.lib gobject-2.0.lib gmodule-2.0.lib sigc-vc90-2_0.lib glibmm-vc90-2_4.lib gtkmm-vc90-2_4.lib"
 				OutputFile="$(SolutionDir)\..\..\..\w32deps\gtksourceviewmm\bin\gtksourceviewmm-vc90-2_2.dll"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w32deps\gtkmm\lib&quot;;&quot;$(SolutionDir)\..\..\..\w32deps\gtk2\lib&quot;"
 				GenerateManifest="true"
@@ -317,13 +317,13 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
-				Description="Generate glibmm def file"
-				CommandLine="$(SolutionDir)gendef\$(PlatformName)\$(ConfigurationName)\gendef $(PlatformName)\$(ConfigurationName)\$(InputName).def $(TargetFileName) $(IntDir)\*.obj"
+				Description="Generate gtksourceview def"
+				CommandLine="$(SolutionDir)\gendef\$(PlatformName)\$(ConfigurationName)\gendef $(PlatformName)\$(ConfigurationName)\$(InputName).def $(TargetFileName) $(IntDir)\*.obj"
 				ExcludedFromBuild="false"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="glib-2.0.lib gobject-2.0.lib gmodule-2.0.lib sigc-vc90-2_0.lib"
+				AdditionalDependencies="glib-2.0.lib gobject-2.0.lib gmodule-2.0.lib sigc-vc90-2_0.lib glibmm-vc90-2_4.lib gtkmm-vc90-2_4.lib"
 				OutputFile="$(SolutionDir)\..\..\..\w64deps\gtksourceviewmm\bin\gtksourceviewmm-vc90-2_2.dll"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w64deps\gtkmm\lib&quot;;&quot;$(SolutionDir)\..\..\..\w64deps\gtk2\lib&quot;"
 				GenerateManifest="true"
