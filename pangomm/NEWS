@@ -1,0 +1,46 @@
+2.14.1:
+
+* Windows build: Use the new DLL naming convention, like boost.
+  (Armin Burgmeier)
+* Documentation:
+  - Corrected the index page for DevHelp.
+    (Deng Xiyue) Bug #559896
+
+2.14.0:
+
+* Language: Added get_scripts().
+  (Murray Cumming)
+* README and COPYING fixes.
+  (Deng Xiyue)
+* Fixed the Windows build with Visual Studio Express.
+  (Armin Burgmeier)
+
+2.13.8:
+
+* Context: Added set_font_map() because the C function is now 
+  public (non backend-only) API.
+* LayoutRun/GlyphItem: Added split() and letter().
+* Renderer: Added draw_glyph_item().
+* CairoFontMap:: Added set_default().
+  (Murray Cumming)
+* Build: Updated the MS Visual Studio 2005 build.
+  (Armin Burgmeier)
+
+2.13.7:
+
+* Build: Require a correct version of pango.
+  (Sebastian Bacher)
+* Documentation: Correct some mentions of pangomm-2.4 to pangomm-1.4.
+  (Deng Xiyue)
+
+2.13.6:
+
+* Layout: Added get_height(), set_height(), get_baseline().
+* LayoutIter: Added get_layout().
+* Renderer: Added get_layout() and get_layout_line().
+  (Murray Cumming)
+
+2.13.5:
+
+This is a first version of pangomm in its own tarball.
+The API and ABI are not changed.
