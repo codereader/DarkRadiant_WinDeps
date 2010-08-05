@@ -73,6 +73,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="gtk-win32-2.0.lib glib-2.0.lib gobject-2.0.lib gmodule-2.0.lib sigc-vc90-d-2_0.lib atkmm-vc90-d-1_6.lib glibmm-vc90-d-2_4.lib gdkmm-vc90-2_4.lib gtkmm-vc90-d-2_4.lib libgtksourceview.lib"
+				ShowProgress="0"
 				OutputFile="$(SolutionDir)\..\..\..\w32deps\gtksourceviewmm\bin\gtksourceviewmm-vc90-d-2_2.dll"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w32deps\gtkmm\lib&quot;;&quot;$(SolutionDir)\..\..\..\w32deps\gtk2\lib&quot;;&quot;$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\lib&quot;"
 				GenerateManifest="true"
