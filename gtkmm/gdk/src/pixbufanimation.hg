@@ -1,0 +1,63 @@
+/* $Id: pixbufanimation.hg,v 1.1 2003/01/21 13:38:37 murrayc Exp $ */
+
+/* box.h
+ *
+ * Copyright (C) 1998-2002 The gtkmm Development Team
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free
+ * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+#include <glibmm/object.h>
+#include <gdkmm/pixbuf.h>
+#include <gdkmm/pixbufanimationiter.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+
+_DEFS(gdkmm,gdk)
+_PINCLUDE(glibmm/private/object_p.h)
+
+
+namespace Gdk
+{
+
+/** The gdk-pixbuf library provides a simple mechanism to load and represent animations. 
+ * An animation is conceptually a series of frames to be displayed over time. 
+ * Each frame is the same size. The animation may not be represented as a series of frames internally; 
+ * for example, it may be stored as a sprite and instructions for moving the sprite around a background. 
+ * To display an animation you don't need to understand its representation, however; you just ask 
+ * gdk-pixbuf what should be displayed at a given point in time.
+ */
+class PixbufAnimation : public Glib::Object
+{
+  _CLASS_GOBJECT(PixbufAnimation, GdkPixbufAnimation, GDK_PIXBUF_ANIMATION, Glib::Object, GObject)
+  _IGNORE(gdk_pixbuf_animation_ref, gdk_pixbuf_animation_unref)
+protected:
+
+public:
+
+  #ifdef GLIBMM_EXCEPTIONS_ENABLED
+  static Glib::RefPtr<PixbufAnimation> create_from_file(const Glib::ustring& filename);
+  #else
+  static Glib::RefPtr<PixbufAnimation> create_from_file(const Glib::ustring& filename, std::auto_ptr<Glib::Error>& error);
+  #endif //GLIBMM_EXCEPTIONS_ENABLED
+
+  _WRAP_METHOD(int get_width() const, gdk_pixbuf_animation_get_width)
+  _WRAP_METHOD(int get_height() const, gdk_pixbuf_animation_get_height)
+  _WRAP_METHOD(bool is_static_image() const, gdk_pixbuf_animation_is_static_image)
+  _WRAP_METHOD(Glib::RefPtr<Pixbuf> get_static_image(), gdk_pixbuf_animation_get_static_image, refreturn)
+  _WRAP_METHOD(Glib::RefPtr<PixbufAnimationIter> get_iter(const GTimeVal* start_time), gdk_pixbuf_animation_get_iter, refreturn)
+};
+
+} /* namespace Gdk */
+

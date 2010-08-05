@@ -1,0 +1,139 @@
+/* $Id: radioaction.hg,v 1.8 2006/01/29 12:21:43 murrayc Exp $ */
+
+/* Copyright (C) 2003 The gtkmm Development Team
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free
+ * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+#include <gtkmm/toggleaction.h>
+#include <gtkmm/radiobuttongroup.h>
+
+_DEFS(gtkmm,gtk)
+_PINCLUDE(gtkmm/private/toggleaction_p.h)
+
+
+namespace Gtk
+{
+
+/** An action of which only one in a group can be active.
+ *
+ * A Gtk::RadioAction is similar to Gtk::RadioMenuItem. A number of 
+ * radio actions can be linked together so that only one may be active 
+ * at any one time.
+ */
+class RadioAction : public Gtk::ToggleAction
+{
+  _CLASS_GOBJECT(RadioAction, GtkRadioAction, GTK_RADIO_ACTION, Gtk::ToggleAction, GtkToggleAction)
+public:
+  typedef RadioButtonGroup Group;
+  
+protected:
+  //TODO: Remove the default constructor, because name may not be NULL.
+  _CTOR_DEFAULT
+
+  /**
+   * Creates a radio action.
+   *
+   * @param group    The radio group this action belongs to.
+   * @param name     A unique name for the action.
+   * @param stock_id The stock icon to display in widgets representing the
+   *                 action.
+   * @param label    The label displayed in menu items and on buttons.
+   * @param tooltip  A tooltip for the action.
+   */
+  explicit RadioAction(Group& group, const Glib::ustring& name, const StockID& stock_id = StockID(), const Glib::ustring& label = Glib::ustring(), const Glib::ustring& tooltip = Glib::ustring());
+
+  /** Creates a radio action with an icon name.
+   * The radio action's icon will reflect the specified icon name in the
+   * user's icon theme.
+   *
+   * @param group    The radio group this action belongs to.
+   * @param name     A unique name for the action.
+   * @param icon_name An IconTheme icon name used for widgets representing the
+   *                  action.
+   * @param label    The label displayed in menu items and on buttons.
+   * @param tooltip  A tooltip for the action.
+   */
+  explicit RadioAction(Group& group, const Glib::ustring& name, const Glib::ustring& icon_name, const Glib::ustring& label = Glib::ustring(), const Glib::ustring& tooltip = Glib::ustring());
+
+public:
+  //Note that gtk_recent_action_new() does not allow name to be NULL, which suggests that we should not have a default constructor,
+  //but it's OK to set the name later:
+  _WRAP_CREATE()
+
+  /** Creates a radio action.
+   *
+   * @param group    The radio group this action belongs to.
+   * @param name     A unique name for the action.
+   * @param label    The label displayed in menu items and on buttons.
+   * @param tooltip  A tooltip for the action.
+   *
+   * @return A new RadioAction.
+   */
+  static Glib::RefPtr<RadioAction> create(Group& group, const Glib::ustring& name, const Glib::ustring& label = Glib::ustring(), const Glib::ustring& tooltip = Glib::ustring());
+
+  /** Creates a radio action with a stock ID.
+   * The stock ID is used to set a default icon, text and accelerator for
+   * the radio action.
+   *
+   * @param group    The radio group this action belongs to.
+   * @param name     A unique name for the action.
+   * @param stock_id The stock icon to display in widgets representing the
+   *                 action.
+   * @param label    The label displayed in menu items and on buttons.
+   * @param tooltip  A tooltip for the action.
+   *
+   * @return A new RadioAction.
+   */
+  static Glib::RefPtr<RadioAction> create(Group& group, const Glib::ustring& name, const Gtk::StockID& stock_id, const Glib::ustring& label = Glib::ustring(), const Glib::ustring& tooltip = Glib::ustring());
+
+  /** Creates a radio action with an icon name.
+   * The radio action's icon will reflect the specified icon name in the
+   * user's icon theme.
+   *
+   * @param group    The radio group this action belongs to.
+   * @param name     A unique name for the action.
+   * @param icon_name An IconTheme icon name used for widgets representing the
+   *                  action.
+   * @param label    The label displayed in menu items and on buttons.
+   * @param tooltip  A tooltip for the action.
+   *
+   * @return A new RadioAction.
+   */
+  static Glib::RefPtr<RadioAction> create_with_icon_name(Group& group, const Glib::ustring& name, const Glib::ustring& icon_name, const Glib::ustring& label, const Glib::ustring& tooltip);
+
+  _WRAP_METHOD(Group get_group(), gtk_radio_action_get_group)
+   void set_group(Group& group);
+  _IGNORE(gtk_radio_action_set_group)
+  
+  _WRAP_METHOD(int get_current_value() const, gtk_radio_action_get_current_value)
+  _WRAP_METHOD(void set_current_value(int current_value), gtk_radio_action_set_current_value)
+
+  #m4 _CONVERSION(`GtkRadioAction*',`const Glib::RefPtr<RadioAction>&',`Glib::wrap($3, true)')
+
+  /** The changed signal is emitted on every member of a radio group when the
+   * active member is changed. The signal is emitted after the activate signals
+   * for the previous and current active members.
+   *
+   * @param current the member of this action's group which has just been activated.
+   */
+  _WRAP_SIGNAL(void changed(const Glib::RefPtr<RadioAction>& current), changed)
+
+  _WRAP_PROPERTY("value", int)
+  _WRAP_PROPERTY("current-value", int)
+};
+
+} // namespace Gtk
+
