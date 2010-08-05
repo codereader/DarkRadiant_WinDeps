@@ -248,7 +248,7 @@ void SourceView_Class::undo_callback(GtkSourceView* self)
 
 Glib::ObjectBase* SourceView_Class::wrap_new(GObject* o)
 {
-  return manage(new SourceView((GtkSourceView*)(o)));
+	return Gtk::manage(new SourceView((GtkSourceView*)(o)));
 
 }
 
