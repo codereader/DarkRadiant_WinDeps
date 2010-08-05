@@ -1,0 +1,185 @@
+/* sourceview.hg
+ * 
+ * Copyright (C) 2004-2005 Jae Jang
+ * Copyright (C) 2005-2006 Rob Page
+ * Copyright (C) 2005-2006 Dodji Seketeli
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the Free
+ * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+/// \file
+/// \brief SourceView class
+
+#include <gtkmm/textview.h>
+#include <gtksourceviewmm/sourcebuffer.h>
+
+_DEFS(gtksourceviewmm,gtksourceview)
+_PINCLUDE(gtkmm/private/textview_p.h)
+
+namespace gtksourceview
+{
+
+_WRAP_ENUM(SourceSmartHomeEndType, GtkSourceSmartHomeEndType)
+
+/// \brief Multi-line source editing widget.
+///
+/// It displays a Gtk::SourceBuffer.
+class SourceView : public Gtk::TextView
+{
+  _CLASS_GTKOBJECT(SourceView, GtkSourceView, GTK_SOURCE_VIEW, Gtk::TextView, GtkTextView)
+
+public:
+  //_CTOR_DEFAULT(gtk_source_view_new_val) ;
+  //_WRAP_CTOR (SourceView (const Glib::RefPtr<SourceBuffer> &buffer), gtk_source_view_new_with_buffer)
+
+  /// \brief default constructor
+  explicit SourceView () ;
+
+  /// \brief constructor.
+  ///
+  /// create an instance of SourceView displaying a given buffer
+  /// \param buffer the buffer to display in the SourceView
+  explicit SourceView (const Glib::RefPtr<SourceBuffer> &buffer) ;
+
+
+  _WRAP_CREATE()
+  _WRAP_CREATE(const Glib::RefPtr<SourceBuffer> &buffer)
+
+  /// \brief get the source buffer associated to the current instance
+  ///
+  /// \return the source buffer associated to the current instance
+  Glib::RefPtr<const SourceBuffer> get_source_buffer () const ;
+
+  /// \brief get the source buffer associated to the current instance
+  ///
+  /// \return the source buffer associated to the current instance
+  Glib::RefPtr<SourceBuffer> get_source_buffer () ;
+
+  /// \brief set the source buffer to be displayed by the SourceView
+  ///
+  /// \param source_buffer the source buffer to set
+  void set_source_buffer (const Glib::RefPtr<SourceBuffer> &source_buffer) ;
+
+  /// \brief display line numbers beside the text, or not
+  ///
+  /// \param show if true, line numbers will be displayed beside test text.
+  _WRAP_METHOD(void set_show_line_numbers(bool show=true), gtk_source_view_set_show_line_numbers)
+
+  /// \brief test whether line numbers are displayed beside the text
+  ///
+  /// \return true if line numbers are displayed beside the text, false otherwise
+  _WRAP_METHOD(bool get_show_line_numbers() const, gtk_source_view_get_show_line_numbers)
+
+  /// \brief set tabs width
+  ///
+  /// \param width the new tab width
+  _WRAP_METHOD(void set_tab_width(guint width), gtk_source_view_set_tab_width)
+
+  /// \brief get tab width
+  ///
+  /// \return the tab width
+  _WRAP_METHOD(guint get_tab_width() const, gtk_source_view_get_tab_width)
+
+  /// \brief set automatic text indention or not
+  ///
+  /// \param enable if true, automatic text indentation is activated
+  _WRAP_METHOD(void set_auto_indent(bool enable=true), gtk_source_view_set_auto_indent)
+
+  /// \brief test whether automatic text indentation is activated
+  ///
+  /// \return true if automatic text indentation is activated, false otherwise
+  _WRAP_METHOD(bool get_auto_indent() const, gtk_source_view_get_auto_indent)
+
+  /// \brief activate (or de-activate) the replacement of any inserted tabulator character by a group of space character
+  ///
+  /// \param enable if true, any tabulator character inserted is replaced by a group of space character
+  _WRAP_METHOD(void set_insert_spaces_instead_of_tabs(bool enable=true), gtk_source_view_set_insert_spaces_instead_of_tabs)
+
+  /// \brief test whether the replacement of any inserted tabulator character by a group of space character is activated
+  ///
+  /// \return true if the replacement of any inserted tabulator character by a group of space character is activated, false otherwise
+  _WRAP_METHOD(bool get_insert_spaces_instead_of_tabs() const, gtk_source_view_get_insert_spaces_instead_of_tabs)
+
+  /// \brief activate (or de-activate) the display of a margin
+  ///
+  /// \param show if true, activate the display of a margin
+  _WRAP_METHOD(void set_show_right_margin(bool show = true), gtk_source_view_set_show_right_margin)
+
+  /// \brief test if a margin is displayed
+  ///
+  /// \return true if a margin is displayed, false otherwise
+  _WRAP_METHOD(bool get_show_right_margin() const, gtk_source_view_get_show_right_margin)
+
+  /// \brief do highlight the currently selected line, or not
+  ///
+  /// \param highlight if true, do highlight the currently selected line
+  _WRAP_METHOD(void set_highlight_current_line(bool highlight=true), gtk_source_view_set_highlight_current_line)
+
+  /// \brief test if the currently selected line is to be hightlighted
+  ///
+  /// \return true if the currently selected line is to be highlighted, false otherwise
+  _WRAP_METHOD(bool get_highlight_current_line() const, gtk_source_view_get_highlight_current_line)
+  
+  /// \brief  set the position of the right margin
+  ///
+  /// \param margin the position (in pixels) of the right margin
+  _WRAP_METHOD(void set_right_margin_position(guint margin), gtk_source_view_set_right_margin_position)
+
+  /// \brief get the position of the right margin
+  ///
+  /// \return the position of the right margin
+  _WRAP_METHOD(guint get_right_margin_position() const, gtk_source_view_get_right_margin_position)
+
+  /// \brief activate whether if HOME and END keys will move to the first/last non space character of the line before moving to the start/end
+  ///
+  /// if true, HOME and END keys will move to the first/last non space character of the line before moving to the start/end
+  _WRAP_METHOD(void set_smart_home_end(SourceSmartHomeEndType smart_he), gtk_source_view_set_smart_home_end)
+
+  /// \brief test whether if HOME and END keys will move to the first/last non space character of the line before moving to the start/end
+  ///
+  /// \return true if HOME and END keys will move to the first/last non space character of the line before moving to the start/end, false otherwise
+  _WRAP_METHOD(SourceSmartHomeEndType get_smart_home_end() const, gtk_source_view_get_smart_home_end)
+
+  _WRAP_METHOD(void set_show_line_marks(bool show = true), gtk_source_view_set_show_line_marks)
+  _WRAP_METHOD(bool get_show_line_marks() const, gtk_source_view_get_show_line_marks)
+  _WRAP_METHOD(void set_indent_on_tab(bool show = true), gtk_source_view_set_indent_on_tab)
+  _WRAP_METHOD(bool get_indent_on_tab() const, gtk_source_view_get_indent_on_tab)
+  _WRAP_METHOD(void set_indent_width(gint width), gtk_source_view_set_indent_width)
+  _WRAP_METHOD(gint get_indent_width() const, gtk_source_view_get_indent_width)
+  _WRAP_METHOD(void set_mark_category_priority(const Glib::ustring& category, gint priority), gtk_source_view_set_mark_category_priority)
+  _WRAP_METHOD(gint get_mark_category_priority(const Glib::ustring& category) const, gtk_source_view_get_mark_category_priority)
+  _WRAP_METHOD(void set_mark_category_pixbuf(const Glib::ustring& category, const Glib::RefPtr<Gdk::Pixbuf>& pixbuf), gtk_source_view_set_mark_category_pixbuf)
+  _WRAP_METHOD(Glib::RefPtr<Gdk::Pixbuf> get_mark_category_pixbuf(const Glib::ustring& category), gtk_source_view_get_mark_category_pixbuf, refreturn)
+  _WRAP_METHOD(Glib::RefPtr<const Gdk::Pixbuf> get_mark_category_pixbuf(const Glib::ustring& category) const, gtk_source_view_get_mark_category_pixbuf, refreturn, constversion)
+
+  _WRAP_SIGNAL(void redo(), "redo")
+  _WRAP_SIGNAL(void undo(), "undo")
+
+  _WRAP_PROPERTY("show-line-numbers", bool)
+  _WRAP_PROPERTY("show-line-marks", bool)
+  _WRAP_PROPERTY("tab-width", guint)
+  _WRAP_PROPERTY("indent-width", int)
+  _WRAP_PROPERTY("auto_indent", bool)
+  _WRAP_PROPERTY("insert_spaces_instead_of_tabs", bool)
+  _WRAP_PROPERTY("show-right-margin", bool)
+  _WRAP_PROPERTY("right-margin-position", guint)
+  _WRAP_PROPERTY("smart_home_end", SourceSmartHomeEndType)
+  _WRAP_PROPERTY("highlight_current_line", bool)
+  _WRAP_PROPERTY("indent_on_tab", bool)
+
+};
+
+} /* namespace gtksourceview */
+

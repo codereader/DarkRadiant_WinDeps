@@ -1,0 +1,7 @@
+(include gtksourceview_methods.defs)
+(include gtksourceview_others.defs)
+(include gtksourceview_enums.defs)
+(include gtksourceview_signals.defs)
+
+
+
