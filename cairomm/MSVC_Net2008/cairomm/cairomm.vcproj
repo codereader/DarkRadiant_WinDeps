@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;../.."
+				AdditionalIncludeDirectories=".;../..;&quot;$(SolutionDir)\..\..\..\w32deps\gtk2\include\cairo&quot;;&quot;$(SolutionDir)\..\..\libsigc++&quot;;&quot;$(SolutionDir)\..\..\libsigc++\MSVC_Net2008&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;CAIROMM_BUILD"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -71,91 +71,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="cairo.lib sigc-vc90-d-2_0.lib"
-				OutputFile="$(OutDir)/cairomm-vc90-d-1_0.dll"
-				AdditionalLibraryDirectories="D:\Data\baumannm\darkmod\darkradiant\w32deps\gtk2\lib;&quot;D:\Data\baumannm\darkmod\darkradiant\gtkmm\libsigc++\libsigc++-2.2.8\MSVC_Net2008\Debug&quot;"
+				OutputFile="$(SolutionDir)\..\..\..\w32deps\gtkmm\bin\cairomm-vc90-d-1_0.dll"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w32deps\gtkmm\lib&quot;;&quot;$(SolutionDir)\..\..\..\w32deps\gtk2\lib&quot;"
 				GenerateManifest="true"
 				ModuleDefinitionFile="$(ConfigurationName)\$(InputName).def"
 				GenerateDebugInformation="true"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="Release"
-			IntermediateDirectory="Release"
-			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories=".;../.."
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;CAIROMM_BUILD"
-				RuntimeLibrary="2"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-				Description="Generate cairomm def file"
-				CommandLine="$(SolutionDir)gendef\$(ConfigurationName)\gendef $(ConfigurationName)\$(InputName).def $(TargetFileName) $(IntDir)\*.obj"
-				ExcludedFromBuild="false"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="cairo.lib sigc-vc90-2_0.lib"
-				OutputFile="$(OutDir)\cairomm-vc90-1_0.dll"
-				AdditionalLibraryDirectories="D:\Data\baumannm\darkmod\darkradiant\w32deps\gtk2\lib;&quot;D:\Data\baumannm\darkmod\darkradiant\gtkmm\libsigc++\libsigc++-2.2.8\MSVC_Net2008\Release&quot;"
-				GenerateManifest="true"
-				ModuleDefinitionFile="$(ConfigurationName)\$(InputName).def"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
+				ImportLibrary="$(SolutionDir)\..\..\..\w32deps\gtkmm\lib\$(TargetName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -206,11 +129,92 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;../..;&quot;D:\Saftware\gtkmm_compile_package.v3\libsigc++\libsigc++-2.2.8&quot;;C:\Games\darkradiant\w32deps\gtk2\include\cairo"
+				AdditionalIncludeDirectories=".;../..;&quot;$(SolutionDir)\..\..\..\w32deps\gtk2\include\cairo&quot;;&quot;$(SolutionDir)\..\..\libsigc++&quot;;&quot;$(SolutionDir)\..\..\libsigc++\MSVC_Net2008&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;CAIROMM_BUILD"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+				Description="Generate cairomm def file"
+				CommandLine="$(SolutionDir)\gendef\$(PlatformName)\$(ConfigurationName)\gendef $(PlatformName)\$(ConfigurationName)\$(InputName).def $(TargetFileName) $(IntDir)\*.obj"
+				ExcludedFromBuild="false"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="cairo.lib sigc-vc90-d-2_0.lib"
+				OutputFile="$(SolutionDir)\..\..\..\w64deps\gtkmm\bin\cairomm-vc90-d-1_0.dll"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w64deps\gtkmm\lib&quot;;&quot;$(SolutionDir)\..\..\..\w64deps\gtk2\lib&quot;"
+				GenerateManifest="true"
+				ModuleDefinitionFile="$(PlatformName)\$(ConfigurationName)\$(InputName).def"
+				GenerateDebugInformation="true"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="$(SolutionDir)\..\..\..\w64deps\gtkmm\lib\$(TargetName).lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="Release"
+			IntermediateDirectory="Release"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories=".;../..;&quot;$(SolutionDir)\..\..\..\w32deps\gtk2\include\cairo&quot;;&quot;$(SolutionDir)\..\..\libsigc++&quot;;&quot;$(SolutionDir)\..\..\libsigc++\MSVC_Net2008&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;CAIROMM_BUILD"
+				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -231,15 +235,14 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="cairo.lib sigc-vc90-d-2_0.lib"
-				OutputFile="$(OutDir)/cairomm-vc90-d-1_0.dll"
-				AdditionalLibraryDirectories="C:\Games\darkradiant\w64deps\gtk2\lib;C:\Games\darkradiant\w64deps\gtkmm\lib"
+				AdditionalDependencies="cairo.lib sigc-vc90-2_0.lib"
+				OutputFile="$(SolutionDir)\..\..\..\w32deps\gtkmm\bin\cairomm-vc90-1_0.dll"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w32deps\gtkmm\lib&quot;;&quot;$(SolutionDir)\..\..\..\w32deps\gtk2\lib&quot;"
 				GenerateManifest="true"
 				ModuleDefinitionFile="$(ConfigurationName)\$(InputName).def"
-				GenerateDebugInformation="true"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				TargetMachine="17"
+				ImportLibrary="$(SolutionDir)\..\..\..\w32deps\gtkmm\lib\$(TargetName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -289,7 +292,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories=".;../..;&quot;D:\Saftware\gtkmm_compile_package.v3\libsigc++\libsigc++-2.2.8&quot;;C:\Games\darkradiant\w32deps\gtk2\include\cairo"
+				AdditionalIncludeDirectories=".;../..;&quot;$(SolutionDir)\..\..\..\w32deps\gtk2\include\cairo&quot;;&quot;$(SolutionDir)\..\..\libsigc++&quot;;&quot;$(SolutionDir)\..\..\libsigc++\MSVC_Net2008&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;CAIROMM_BUILD"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
@@ -307,18 +310,19 @@
 			<Tool
 				Name="VCPreLinkEventTool"
 				Description="Generate cairomm def file"
-				CommandLine="$(SolutionDir)gendef\$(ConfigurationName)\gendef $(ConfigurationName)\$(InputName).def $(TargetFileName) $(IntDir)\*.obj"
+				CommandLine="$(SolutionDir)\gendef\$(PlatformName)\$(ConfigurationName)\gendef $(PlatformName)\$(ConfigurationName)\$(InputName).def $(TargetFileName) $(IntDir)\*.obj"
 				ExcludedFromBuild="false"
 			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="cairo.lib sigc-vc90-2_0.lib"
-				OutputFile="$(OutDir)\cairomm-vc90-1_0.dll"
-				AdditionalLibraryDirectories="C:\Games\darkradiant\w64deps\gtk2\lib;C:\Games\darkradiant\w64deps\gtkmm\lib"
+				OutputFile="$(SolutionDir)\..\..\..\w64deps\gtkmm\bin\cairomm-vc90-1_0.dll"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w64deps\gtkmm\lib&quot;;&quot;$(SolutionDir)\..\..\..\w64deps\gtk2\lib&quot;"
 				GenerateManifest="true"
-				ModuleDefinitionFile="$(ConfigurationName)\$(InputName).def"
+				ModuleDefinitionFile="$(PlatformName)\$(ConfigurationName)\$(InputName).def"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				ImportLibrary="$(SolutionDir)\..\..\..\w64deps\gtkmm\lib\$(TargetName).lib"
 				TargetMachine="17"
 			/>
 			<Tool

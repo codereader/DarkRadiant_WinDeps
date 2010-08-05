@@ -18,6 +18,13 @@ Finally, to check out the winbuild folder:
 8. Right-click your C:\Games folder >> SVN Checkout...
 7. Select https://darkradiant.svn.sourceforge.net/svnroot/darkradiant/trunk/winbuild to C:\Games\DarkRadiant\winbuild
 
+The folder structure should then look like this:
+
+ C:\Games\DarkRadiant
+ C:\Games\DarkRadiant\w32deps
+ C:\Games\DarkRadiant\w64deps [optional for x64 builds]
+ C:\Games\DarkRadiant\winbuild
+
 This way, the VC++ projects place their binaries in the correct location in the w32deps/w64deps folder and you can compile
 DarkRadiant right off the bat.
 
