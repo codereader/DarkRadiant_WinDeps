@@ -163,7 +163,7 @@ GTKSOURCEVIEW_DLL_EXPORT guint		 gtk_source_view_get_right_margin_position
 
 GTKSOURCEVIEW_DLL_EXPORT void 		 gtk_source_view_set_show_line_marks    (GtkSourceView   *view,
 							 gboolean         show);
-gboolean	 gtk_source_view_get_show_line_marks    (GtkSourceView   *view);
+GTKSOURCEVIEW_DLL_EXPORT gboolean	 gtk_source_view_get_show_line_marks    (GtkSourceView   *view);
 
 GTKSOURCEVIEW_DLL_EXPORT void             gtk_source_view_set_mark_category_pixbuf
 							(GtkSourceView   *view,
