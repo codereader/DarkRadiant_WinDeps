@@ -43,12 +43,11 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions=" /MP"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)/../../w32deps/libxml2/include&quot;;&quot;$(SolutionDir)/../../w32deps/libiconv/include&quot;;&quot;$(SolutionDir)/../../w32deps/gtkglext/&quot;;&quot;$(SolutionDir)/../../w32deps/gtkglext/gdk&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/include/glib-2.0&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/lib/glib-2.0/include&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/include/gtk-2.0&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/include/cairo&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/include/pango-1.0&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/lib/gtk-2.0/include&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/lib/gtkglext-1.0/include&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/include/atk-1.0&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)../gdkglext&quot;;&quot;$(SolutionDir)/../../gtk2/include&quot;;&quot;$(SolutionDir)/../../gtk2/include/cairo&quot;;&quot;$(SolutionDir)/../../gtk2/include/glib-2.0&quot;;&quot;$(SolutionDir)/../../gtk2/include/gtk-2.0&quot;;&quot;$(SolutionDir)/../../gtk2/include/pango-1.0&quot;;&quot;$(SolutionDir)/../../gtkglext&quot;;&quot;$(SolutionDir)/../../gtkglext/gdk&quot;;&quot;$(SolutionDir)/../../glibmm/glib&quot;;&quot;$(SolutionDir)/../../glibmm/MSVC_Net2008/glibmm&quot;;&quot;$(SolutionDir)/../../gtkmm/gdk&quot;;&quot;$(SolutionDir)/../../gtkmm/MSVC_Net2008/gdkmm&quot;;&quot;$(SolutionDir)/../../cairomm&quot;;&quot;$(SolutionDir)/../../pangomm/pango&quot;;&quot;$(SolutionDir)/../../libsigc++&quot;;&quot;$(SolutionDir)/../../libsigc++/MSVC_Net2008&quot;"
 				PreprocessorDefinitions="WIN32;_CRT_SECURE_NO_DEPRECATE;GTK_GL_COMPILATION;"
 				RuntimeLibrary="3"
 				WarningLevel="3"
 				DebugInformationFormat="3"
-				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -58,14 +57,17 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
+				Description="Generate gdkglextmm def file"
+				CommandLine="$(SolutionDir)\gendef\$(PlatformName)\$(ConfigurationName)\gendef $(SolutionDir)\gendef\$(PlatformName)\$(ConfigurationName)\$(ProjectName).def $(TargetFileName) $(IntDir)\*.obj"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="glib-2.0.lib gtk-win32-2.0.lib gdk-win32-2.0.lib gobject-2.0.lib gdk_pixbuf-2.0.lib opengl32.lib glu32.lib"
+				AdditionalDependencies="glib-2.0.lib gtk-win32-2.0.lib gdk-win32-2.0.lib gobject-2.0.lib gdk_pixbuf-2.0.lib opengl32.lib glu32.lib glibmm-vc90-d-2_4.lib sigc-vc90-d-2_0.lib"
 				OutputFile="$(SolutionDir)\..\..\..\w32deps\gtkglextmm\bin\gtkglextmm-vc90-d-1_2.dll"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\w32deps\gtk2\lib&quot;;&quot;$(SolutionDir)\..\..\build\libs\$(PlatformName)\&quot;"
-				ModuleDefinitionFile="$(SolutionDir)\..\..\w32deps\gtkglext\gtk\gtkglext.def"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w32deps\gtk2\lib&quot;;&quot;$(SolutionDir)\..\..\..\w32deps\gtkmm\lib&quot;"
+				ModuleDefinitionFile="$(SolutionDir)\gendef\$(PlatformName)\$(ConfigurationName)\$(ProjectName).def"
 				GenerateDebugInformation="true"
+				ImportLibrary="$(SolutionDir)\..\..\..\w32deps\gtkglextmm\lib\$(TargetName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -114,12 +116,11 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)/../../w32deps/gtkglext/&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/include/glib-2.0&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/lib/glib-2.0/include&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/include/gtk-2.0&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/include/cairo&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/include/pango-1.0&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/lib/gtk-2.0/include&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/lib/gtkglext-1.0/include&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/include/atk-1.0&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)../gdkglext&quot;;&quot;$(SolutionDir)/../../gtk2/include&quot;;&quot;$(SolutionDir)/../../gtk2/include/cairo&quot;;&quot;$(SolutionDir)/../../gtk2/include/glib-2.0&quot;;&quot;$(SolutionDir)/../../gtk2/include/gtk-2.0&quot;;&quot;$(SolutionDir)/../../gtk2/include/pango-1.0&quot;;&quot;$(SolutionDir)/../../gtkglext&quot;;&quot;$(SolutionDir)/../../gtkglext/gdk&quot;;&quot;$(SolutionDir)/../../glibmm/glib&quot;;&quot;$(SolutionDir)/../../glibmm/MSVC_Net2008/glibmm&quot;;&quot;$(SolutionDir)/../../gtkmm/gdk&quot;;&quot;$(SolutionDir)/../../gtkmm/MSVC_Net2008/gdkmm&quot;;&quot;$(SolutionDir)/../../cairomm&quot;;&quot;$(SolutionDir)/../../pangomm/pango&quot;;&quot;$(SolutionDir)/../../libsigc++&quot;;&quot;$(SolutionDir)/../../libsigc++/MSVC_Net2008&quot;"
 				PreprocessorDefinitions="WIN32;_CRT_SECURE_NO_DEPRECATE;GTK_GL_COMPILATION"
 				RuntimeLibrary="3"
 				WarningLevel="3"
 				DebugInformationFormat="3"
-				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -129,14 +130,17 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
+				Description="Generate gdkglextmm def file"
+				CommandLine="$(SolutionDir)\gendef\$(PlatformName)\$(ConfigurationName)\gendef $(SolutionDir)\gendef\$(PlatformName)\$(ConfigurationName)\$(ProjectName).def $(TargetFileName) $(IntDir)\*.obj"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="glib-2.0.lib gtk-win32-2.0.lib gdk-win32-2.0.lib gobject-2.0.lib gdk_pixbuf-2.0.lib opengl32.lib glu32.lib"
+				AdditionalDependencies="glib-2.0.lib gtk-win32-2.0.lib gdk-win32-2.0.lib gobject-2.0.lib gdk_pixbuf-2.0.lib opengl32.lib glu32.lib glibmm-vc90-d-2_4.lib sigc-vc90-d-2_0.lib"
 				OutputFile="$(SolutionDir)\..\..\..\w64deps\gtkglextmm\bin\gtkglextmm-vc90-d-1_2.dll"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\w64deps\gtk2\lib&quot;;&quot;$(SolutionDir)\..\..\build\libs\$(PlatformName)\&quot;"
-				ModuleDefinitionFile="$(SolutionDir)\..\..\w32deps\gtkglext\gtk\gtkglext.def"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w64deps\gtk2\lib&quot;;&quot;$(SolutionDir)\..\..\..\w64deps\gtkmm\lib&quot;"
+				ModuleDefinitionFile="$(SolutionDir)\gendef\$(PlatformName)\$(ConfigurationName)\$(ProjectName).def"
 				GenerateDebugInformation="true"
+				ImportLibrary="$(SolutionDir)\..\..\..\w64deps\gtkglextmm\lib\$(TargetName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -185,11 +189,10 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions=" /MP"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)/../../w32deps/libxml2/include&quot;;&quot;$(SolutionDir)/../../w32deps/libiconv/include&quot;;&quot;$(SolutionDir)/../../w32deps/gtkglext/&quot;;&quot;$(SolutionDir)/../../w32deps/gtkglext/gdk&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/include/glib-2.0&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/lib/glib-2.0/include&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/include/gtk-2.0&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/include/cairo&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/include/pango-1.0&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/lib/gtk-2.0/include&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/lib/gtkglext-1.0/include&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/include/atk-1.0&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)../gdkglext&quot;;&quot;$(SolutionDir)/../../gtk2/include&quot;;&quot;$(SolutionDir)/../../gtk2/include/cairo&quot;;&quot;$(SolutionDir)/../../gtk2/include/glib-2.0&quot;;&quot;$(SolutionDir)/../../gtk2/include/gtk-2.0&quot;;&quot;$(SolutionDir)/../../gtk2/include/pango-1.0&quot;;&quot;$(SolutionDir)/../../gtkglext&quot;;&quot;$(SolutionDir)/../../gtkglext/gdk&quot;;&quot;$(SolutionDir)/../../glibmm/glib&quot;;&quot;$(SolutionDir)/../../glibmm/MSVC_Net2008/glibmm&quot;;&quot;$(SolutionDir)/../../gtkmm/gdk&quot;;&quot;$(SolutionDir)/../../gtkmm/MSVC_Net2008/gdkmm&quot;;&quot;$(SolutionDir)/../../cairomm&quot;;&quot;$(SolutionDir)/../../pangomm/pango&quot;;&quot;$(SolutionDir)/../../libsigc++&quot;;&quot;$(SolutionDir)/../../libsigc++/MSVC_Net2008&quot;"
 				PreprocessorDefinitions="NDEBUG;WIN32;_CRT_SECURE_NO_DEPRECATE;GTK_GL_COMPILATION;"
 				RuntimeLibrary="2"
 				WarningLevel="3"
-				CompileAs="1"
 				DisableSpecificWarnings="4996"
 			/>
 			<Tool
@@ -200,14 +203,17 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
+				Description="Generate gdkglextmm def file"
+				CommandLine="$(SolutionDir)\gendef\$(PlatformName)\$(ConfigurationName)\gendef $(SolutionDir)\gendef\$(PlatformName)\$(ConfigurationName)\$(ProjectName).def $(TargetFileName) $(IntDir)\*.obj"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="glib-2.0.lib gtk-win32-2.0.lib gdk-win32-2.0.lib gobject-2.0.lib gdk_pixbuf-2.0.lib opengl32.lib glu32.lib"
+				AdditionalDependencies="glib-2.0.lib gtk-win32-2.0.lib gdk-win32-2.0.lib gobject-2.0.lib gdk_pixbuf-2.0.lib opengl32.lib glu32.lib glibmm-vc90-2_4.lib sigc-vc90-2_0.lib"
 				OutputFile="$(SolutionDir)\..\..\..\w32deps\gtkglextmm\bin\gtkglextmm-vc90-1_2.dll"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\w32deps\gtk2\lib&quot;;&quot;$(SolutionDir)\..\..\build\libs\$(PlatformName)\&quot;"
-				ModuleDefinitionFile="$(SolutionDir)\..\..\w32deps\gtkglext\gtk\gtkglext.def"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w32deps\gtk2\lib&quot;;&quot;$(SolutionDir)\..\..\..\w32deps\gtkmm\lib&quot;"
+				ModuleDefinitionFile="$(SolutionDir)\gendef\$(PlatformName)\$(ConfigurationName)\$(ProjectName).def"
 				GenerateDebugInformation="true"
+				ImportLibrary="$(SolutionDir)\..\..\..\w32deps\gtkglextmm\lib\$(TargetName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -256,11 +262,10 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)/../../w32deps/gtkglext/&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/include/glib-2.0&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/lib/glib-2.0/include&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/include/gtk-2.0&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/include/cairo&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/include/pango-1.0&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/lib/gtk-2.0/include&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/lib/gtkglext-1.0/include&quot;;&quot;$(SolutionDir)/../../w32deps/gtk2/include/atk-1.0&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)../gdkglext&quot;;&quot;$(SolutionDir)/../../gtk2/include&quot;;&quot;$(SolutionDir)/../../gtk2/include/cairo&quot;;&quot;$(SolutionDir)/../../gtk2/include/glib-2.0&quot;;&quot;$(SolutionDir)/../../gtk2/include/gtk-2.0&quot;;&quot;$(SolutionDir)/../../gtk2/include/pango-1.0&quot;;&quot;$(SolutionDir)/../../gtkglext&quot;;&quot;$(SolutionDir)/../../gtkglext/gdk&quot;;&quot;$(SolutionDir)/../../glibmm/glib&quot;;&quot;$(SolutionDir)/../../glibmm/MSVC_Net2008/glibmm&quot;;&quot;$(SolutionDir)/../../gtkmm/gdk&quot;;&quot;$(SolutionDir)/../../gtkmm/MSVC_Net2008/gdkmm&quot;;&quot;$(SolutionDir)/../../cairomm&quot;;&quot;$(SolutionDir)/../../pangomm/pango&quot;;&quot;$(SolutionDir)/../../libsigc++&quot;;&quot;$(SolutionDir)/../../libsigc++/MSVC_Net2008&quot;"
 				PreprocessorDefinitions="NDEBUG;WIN32;_CRT_SECURE_NO_DEPRECATE;GTK_GL_COMPILATION;"
 				RuntimeLibrary="2"
 				WarningLevel="3"
-				CompileAs="1"
 				DisableSpecificWarnings="4996"
 			/>
 			<Tool
@@ -271,14 +276,17 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
+				Description="Generate gdkglextmm def file"
+				CommandLine="$(SolutionDir)\gendef\$(PlatformName)\$(ConfigurationName)\gendef $(SolutionDir)\gendef\$(PlatformName)\$(ConfigurationName)\$(ProjectName).def $(TargetFileName) $(IntDir)\*.obj"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="glib-2.0.lib gtk-win32-2.0.lib gdk-win32-2.0.lib gobject-2.0.lib gdk_pixbuf-2.0.lib opengl32.lib glu32.lib"
+				AdditionalDependencies="glib-2.0.lib gtk-win32-2.0.lib gdk-win32-2.0.lib gobject-2.0.lib gdk_pixbuf-2.0.lib opengl32.lib glu32.lib glibmm-vc90-2_4.lib sigc-vc90-2_0.lib"
 				OutputFile="$(SolutionDir)\..\..\..\w64deps\gtkglextmm\bin\gtkglextmm-vc90-1_2.dll"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\w64deps\gtk2\lib&quot;;&quot;$(SolutionDir)\..\..\build\libs\$(PlatformName)\&quot;"
-				ModuleDefinitionFile="$(SolutionDir)\..\..\w32deps\gtkglext\gtk\gtkglext.def"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w64deps\gtk2\lib&quot;;&quot;$(SolutionDir)\..\..\..\w64deps\gtkmm\lib&quot;"
+				ModuleDefinitionFile="$(SolutionDir)\gendef\$(PlatformName)\$(ConfigurationName)\$(ProjectName).def"
 				GenerateDebugInformation="true"
+				ImportLibrary="$(SolutionDir)\..\..\..\w64deps\gtkglextmm\lib\$(TargetName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
