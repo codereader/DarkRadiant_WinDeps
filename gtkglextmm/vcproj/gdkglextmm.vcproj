@@ -21,9 +21,9 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)\..\..\..\w32deps\gtkglextmm\bin"
-			IntermediateDirectory="$(SolutionDir)\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)\$(PlatformName)\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
-			BuildLogFile="$(SolutionDir)\$(PlatformName)\$(ConfigurationName)\BuildLog.htm"
+			BuildLogFile="$(SolutionDir)\$(PlatformName)\$(ConfigurationName)\$(ProjectName)\BuildLog.htm"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -62,9 +62,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="glib-2.0.lib gtk-win32-2.0.lib gdk-win32-2.0.lib gobject-2.0.lib gdk_pixbuf-2.0.lib opengl32.lib glu32.lib glibmm-vc90-d-2_4.lib sigc-vc90-d-2_0.lib"
-				OutputFile="$(SolutionDir)\..\..\..\w32deps\gtkglextmm\bin\gtkglextmm-vc90-d-1_2.dll"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w32deps\gtk2\lib&quot;;&quot;$(SolutionDir)\..\..\..\w32deps\gtkmm\lib&quot;"
+				AdditionalDependencies="glib-2.0.lib gtk-win32-2.0.lib gdk-win32-2.0.lib gobject-2.0.lib gdk_pixbuf-2.0.lib opengl32.lib glu32.lib glibmm-vc90-d-2_4.lib gdkmm-vc90-d-2_4.lib pangomm-vc90-d-1_4.lib sigc-vc90-d-2_0.lib libgdkglext.lib libgtkglext.lib"
+				OutputFile="$(SolutionDir)\..\..\..\w32deps\gtkglextmm\bin\gdkglextmm-vc90-d-1_2.dll"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w32deps\gtk2\lib&quot;;&quot;$(SolutionDir)\..\..\..\w32deps\gtkmm\lib&quot;;&quot;$(SolutionDir)\..\..\..\w32deps\gtkglext\lib&quot;"
 				ModuleDefinitionFile="$(SolutionDir)\gendef\$(PlatformName)\$(ConfigurationName)\$(ProjectName).def"
 				GenerateDebugInformation="true"
 				ImportLibrary="$(SolutionDir)\..\..\..\w32deps\gtkglextmm\lib\$(TargetName).lib"
@@ -94,9 +94,9 @@
 		<Configuration
 			Name="Debug|x64"
 			OutputDirectory="$(SolutionDir)\..\..\..\w32deps\gtkglextmm\bin"
-			IntermediateDirectory="$(SolutionDir)\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)\$(PlatformName)\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
-			BuildLogFile="$(SolutionDir)\$(PlatformName)\$(ConfigurationName)\BuildLog.htm"
+			BuildLogFile="$(SolutionDir)\$(PlatformName)\$(ConfigurationName)\$(ProjectName)\BuildLog.htm"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -135,9 +135,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="glib-2.0.lib gtk-win32-2.0.lib gdk-win32-2.0.lib gobject-2.0.lib gdk_pixbuf-2.0.lib opengl32.lib glu32.lib glibmm-vc90-d-2_4.lib sigc-vc90-d-2_0.lib"
-				OutputFile="$(SolutionDir)\..\..\..\w64deps\gtkglextmm\bin\gtkglextmm-vc90-d-1_2.dll"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w64deps\gtk2\lib&quot;;&quot;$(SolutionDir)\..\..\..\w64deps\gtkmm\lib&quot;"
+				AdditionalDependencies="glib-2.0.lib gtk-win32-2.0.lib gdk-win32-2.0.lib gobject-2.0.lib gdk_pixbuf-2.0.lib opengl32.lib glu32.lib glibmm-vc90-d-2_4.lib gdkmm-vc90-d-2_4.lib pangomm-vc90-d-1_4.lib sigc-vc90-d-2_0.lib libgdkglext.lib libgtkglext.lib"
+				OutputFile="$(SolutionDir)\..\..\..\w64deps\gtkglextmm\bin\gdkglextmm-vc90-d-1_2.dll"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w64deps\gtk2\lib&quot;;&quot;$(SolutionDir)\..\..\..\w64deps\gtkmm\lib&quot;;&quot;$(SolutionDir)\..\..\..\w64deps\gtkglext\lib&quot;"
 				ModuleDefinitionFile="$(SolutionDir)\gendef\$(PlatformName)\$(ConfigurationName)\$(ProjectName).def"
 				GenerateDebugInformation="true"
 				ImportLibrary="$(SolutionDir)\..\..\..\w64deps\gtkglextmm\lib\$(TargetName).lib"
@@ -167,9 +167,9 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)\..\..\..\w32deps\gtkglextmm\bin"
-			IntermediateDirectory="$(SolutionDir)\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)\$(PlatformName)\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
-			BuildLogFile="$(SolutionDir)\$(PlatformName)\$(ConfigurationName)\BuildLog.htm"
+			BuildLogFile="$(SolutionDir)\$(PlatformName)\$(ConfigurationName)\$(ProjectName)\BuildLog.htm"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -208,9 +208,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="glib-2.0.lib gtk-win32-2.0.lib gdk-win32-2.0.lib gobject-2.0.lib gdk_pixbuf-2.0.lib opengl32.lib glu32.lib glibmm-vc90-2_4.lib sigc-vc90-2_0.lib"
-				OutputFile="$(SolutionDir)\..\..\..\w32deps\gtkglextmm\bin\gtkglextmm-vc90-1_2.dll"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w32deps\gtk2\lib&quot;;&quot;$(SolutionDir)\..\..\..\w32deps\gtkmm\lib&quot;"
+				AdditionalDependencies="glib-2.0.lib gtk-win32-2.0.lib gdk-win32-2.0.lib gobject-2.0.lib gdk_pixbuf-2.0.lib opengl32.lib glu32.lib glibmm-vc90-2_4.lib gdkmm-vc90-2_4.lib pangomm-vc90-1_4.lib sigc-vc90-2_0.lib libgdkglext.lib libgtkglext.lib"
+				OutputFile="$(SolutionDir)\..\..\..\w32deps\gtkglextmm\bin\gdkglextmm-vc90-1_2.dll"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w32deps\gtk2\lib&quot;;&quot;$(SolutionDir)\..\..\..\w32deps\gtkmm\lib&quot;;&quot;$(SolutionDir)\..\..\..\w32deps\gtkglext\lib&quot;"
 				ModuleDefinitionFile="$(SolutionDir)\gendef\$(PlatformName)\$(ConfigurationName)\$(ProjectName).def"
 				GenerateDebugInformation="true"
 				ImportLibrary="$(SolutionDir)\..\..\..\w32deps\gtkglextmm\lib\$(TargetName).lib"
@@ -240,9 +240,9 @@
 		<Configuration
 			Name="Release|x64"
 			OutputDirectory="$(SolutionDir)\..\..\..\w32deps\gtkglextmm\bin"
-			IntermediateDirectory="$(SolutionDir)\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)\$(PlatformName)\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
-			BuildLogFile="$(SolutionDir)\$(PlatformName)\$(ConfigurationName)\BuildLog.htm"
+			BuildLogFile="$(SolutionDir)\$(PlatformName)\$(ConfigurationName)\$(ProjectName)\BuildLog.htm"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -281,9 +281,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="glib-2.0.lib gtk-win32-2.0.lib gdk-win32-2.0.lib gobject-2.0.lib gdk_pixbuf-2.0.lib opengl32.lib glu32.lib glibmm-vc90-2_4.lib sigc-vc90-2_0.lib"
-				OutputFile="$(SolutionDir)\..\..\..\w64deps\gtkglextmm\bin\gtkglextmm-vc90-1_2.dll"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w64deps\gtk2\lib&quot;;&quot;$(SolutionDir)\..\..\..\w64deps\gtkmm\lib&quot;"
+				AdditionalDependencies="glib-2.0.lib gtk-win32-2.0.lib gdk-win32-2.0.lib gobject-2.0.lib gdk_pixbuf-2.0.lib opengl32.lib glu32.lib glibmm-vc90-2_4.lib gdkmm-vc90-2_4.lib pangomm-vc90-1_4.lib sigc-vc90-2_0.lib libgdkglext.lib libgtkglext.lib"
+				OutputFile="$(SolutionDir)\..\..\..\w64deps\gtkglextmm\bin\gdkglextmm-vc90-1_2.dll"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\..\..\..\w64deps\gtk2\lib&quot;;&quot;$(SolutionDir)\..\..\..\w64deps\gtkmm\lib&quot;;&quot;$(SolutionDir)\..\..\..\w64deps\gtkglext\lib&quot;"
 				ModuleDefinitionFile="$(SolutionDir)\gendef\$(PlatformName)\$(ConfigurationName)\$(ProjectName).def"
 				GenerateDebugInformation="true"
 				ImportLibrary="$(SolutionDir)\..\..\..\w64deps\gtkglextmm\lib\$(TargetName).lib"
