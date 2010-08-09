@@ -42,7 +42,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions=" /MP"
+				AdditionalOptions="/vd2"
 				AdditionalIncludeDirectories="&quot;$(SolutionDir)../gdkglext&quot;;&quot;$(SolutionDir)/../../gtk2/include&quot;;&quot;$(SolutionDir)/../../gtk2/include/atk-1.0&quot;;&quot;$(SolutionDir)/../../gtk2/include/cairo&quot;;&quot;$(SolutionDir)/../../gtk2/include/glib-2.0&quot;;&quot;$(SolutionDir)/../../gtk2/include/gtk-2.0&quot;;&quot;$(SolutionDir)/../../gtk2/include/pango-1.0&quot;;&quot;$(SolutionDir)/../../gtkglext&quot;;&quot;$(SolutionDir)/../../gtkglext/gdk&quot;;&quot;$(SolutionDir)/../../glibmm/glib&quot;;&quot;$(SolutionDir)/../../glibmm/MSVC_Net2008/glibmm&quot;;&quot;$(SolutionDir)/../../gtkmm/atk&quot;;&quot;$(SolutionDir)/../../gtkmm/gdk&quot;;&quot;$(SolutionDir)/../../gtkmm/gtk&quot;;&quot;$(SolutionDir)/../../gtkmm/MSVC_Net2008/gtkmm&quot;;&quot;$(SolutionDir)/../../gtkmm/MSVC_Net2008/gdkmm&quot;;&quot;$(SolutionDir)/../../cairomm&quot;;&quot;$(SolutionDir)/../../pangomm/pango&quot;;&quot;$(SolutionDir)/../../libsigc++&quot;;&quot;$(SolutionDir)/../../libsigc++/MSVC_Net2008&quot;;&quot;$(SolutionDir)/../../gtkglextmm/gtkglext&quot;"
 				PreprocessorDefinitions="WIN32;_CRT_SECURE_NO_DEPRECATE;GTK_GL_COMPILATION;"
 				RuntimeLibrary="3"
@@ -116,6 +116,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/vd2"
 				AdditionalIncludeDirectories="&quot;$(SolutionDir)../gdkglext&quot;;&quot;$(SolutionDir)/../../gtk2/include&quot;;&quot;$(SolutionDir)/../../gtk2/include/atk-1.0&quot;;&quot;$(SolutionDir)/../../gtk2/include/cairo&quot;;&quot;$(SolutionDir)/../../gtk2/include/glib-2.0&quot;;&quot;$(SolutionDir)/../../gtk2/include/gtk-2.0&quot;;&quot;$(SolutionDir)/../../gtk2/include/pango-1.0&quot;;&quot;$(SolutionDir)/../../gtkglext&quot;;&quot;$(SolutionDir)/../../gtkglext/gdk&quot;;&quot;$(SolutionDir)/../../glibmm/glib&quot;;&quot;$(SolutionDir)/../../glibmm/MSVC_Net2008/glibmm&quot;;&quot;$(SolutionDir)/../../gtkmm/atk&quot;;&quot;$(SolutionDir)/../../gtkmm/gdk&quot;;&quot;$(SolutionDir)/../../gtkmm/gtk&quot;;&quot;$(SolutionDir)/../../gtkmm/MSVC_Net2008/gtkmm&quot;;&quot;$(SolutionDir)/../../gtkmm/MSVC_Net2008/gdkmm&quot;;&quot;$(SolutionDir)/../../cairomm&quot;;&quot;$(SolutionDir)/../../pangomm/pango&quot;;&quot;$(SolutionDir)/../../libsigc++&quot;;&quot;$(SolutionDir)/../../libsigc++/MSVC_Net2008&quot;;&quot;$(SolutionDir)/../../gtkglextmm/gtkglext&quot;"
 				PreprocessorDefinitions="WIN32;_CRT_SECURE_NO_DEPRECATE;GTK_GL_COMPILATION"
 				RuntimeLibrary="3"
@@ -188,7 +189,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions=" /MP"
+				AdditionalOptions="/vd2 /MP"
 				AdditionalIncludeDirectories="&quot;$(SolutionDir)../gdkglext&quot;;&quot;$(SolutionDir)/../../gtk2/include&quot;;&quot;$(SolutionDir)/../../gtk2/include/atk-1.0&quot;;&quot;$(SolutionDir)/../../gtk2/include/cairo&quot;;&quot;$(SolutionDir)/../../gtk2/include/glib-2.0&quot;;&quot;$(SolutionDir)/../../gtk2/include/gtk-2.0&quot;;&quot;$(SolutionDir)/../../gtk2/include/pango-1.0&quot;;&quot;$(SolutionDir)/../../gtkglext&quot;;&quot;$(SolutionDir)/../../gtkglext/gdk&quot;;&quot;$(SolutionDir)/../../glibmm/glib&quot;;&quot;$(SolutionDir)/../../glibmm/MSVC_Net2008/glibmm&quot;;&quot;$(SolutionDir)/../../gtkmm/atk&quot;;&quot;$(SolutionDir)/../../gtkmm/gdk&quot;;&quot;$(SolutionDir)/../../gtkmm/gtk&quot;;&quot;$(SolutionDir)/../../gtkmm/MSVC_Net2008/gtkmm&quot;;&quot;$(SolutionDir)/../../gtkmm/MSVC_Net2008/gdkmm&quot;;&quot;$(SolutionDir)/../../cairomm&quot;;&quot;$(SolutionDir)/../../pangomm/pango&quot;;&quot;$(SolutionDir)/../../libsigc++&quot;;&quot;$(SolutionDir)/../../libsigc++/MSVC_Net2008&quot;;&quot;$(SolutionDir)/../../gtkglextmm/gtkglext&quot;"
 				PreprocessorDefinitions="NDEBUG;WIN32;_CRT_SECURE_NO_DEPRECATE;GTK_GL_COMPILATION;"
 				RuntimeLibrary="2"
@@ -262,6 +263,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/vd2 /MP"
 				AdditionalIncludeDirectories="&quot;$(SolutionDir)../gdkglext&quot;;&quot;$(SolutionDir)/../../gtk2/include&quot;;&quot;$(SolutionDir)/../../gtk2/include/atk-1.0&quot;;&quot;$(SolutionDir)/../../gtk2/include/cairo&quot;;&quot;$(SolutionDir)/../../gtk2/include/glib-2.0&quot;;&quot;$(SolutionDir)/../../gtk2/include/gtk-2.0&quot;;&quot;$(SolutionDir)/../../gtk2/include/pango-1.0&quot;;&quot;$(SolutionDir)/../../gtkglext&quot;;&quot;$(SolutionDir)/../../gtkglext/gdk&quot;;&quot;$(SolutionDir)/../../glibmm/glib&quot;;&quot;$(SolutionDir)/../../glibmm/MSVC_Net2008/glibmm&quot;;&quot;$(SolutionDir)/../../gtkmm/atk&quot;;&quot;$(SolutionDir)/../../gtkmm/gdk&quot;;&quot;$(SolutionDir)/../../gtkmm/gtk&quot;;&quot;$(SolutionDir)/../../gtkmm/MSVC_Net2008/gtkmm&quot;;&quot;$(SolutionDir)/../../gtkmm/MSVC_Net2008/gdkmm&quot;;&quot;$(SolutionDir)/../../cairomm&quot;;&quot;$(SolutionDir)/../../pangomm/pango&quot;;&quot;$(SolutionDir)/../../libsigc++&quot;;&quot;$(SolutionDir)/../../libsigc++/MSVC_Net2008&quot;;&quot;$(SolutionDir)/../../gtkglextmm/gtkglext&quot;"
 				PreprocessorDefinitions="NDEBUG;WIN32;_CRT_SECURE_NO_DEPRECATE;GTK_GL_COMPILATION;"
 				RuntimeLibrary="2"
