@@ -32,11 +32,16 @@ DarkRadiant right off the bat.
 
 See: http://live.gnome.org/gtkmm/MSWindows/BuildingGtkmm
 
-1. libsigc++
-2. glibmm
-3. cairomm
-4. pangomm
-5. gtkmm
+ 1. libsigc++
+ 2. glibmm
+ 3. cairomm
+ 4. pangomm
+ 5. gtkmm
+ 6. win_iconv
+ 7. libxml2
+ 8. gtksourceview
+ 9. gtksourceviewmm
+10. gtkglextmm
 
 More detailed instructions when I've found some more time. :)
 --greebo
