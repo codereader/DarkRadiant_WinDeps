@@ -13,20 +13,8 @@ msbuild pangomm\MSVC_Net2010\pangomm.sln /p:configuration=release /p:platform=Wi
 msbuild gtkmm\MSVC_Net2010\gtkmm.sln /p:configuration=debug /p:platform=Win32  /m
 msbuild gtkmm\MSVC_Net2010\gtkmm.sln /p:configuration=release /p:platform=Win32  /m
 
-msbuild win_iconv\vcproj\win_iconv.sln /p:configuration=debug /p:platform=Win32  /m
-msbuild win_iconv\vcproj\win_iconv.sln /p:configuration=release /p:platform=Win32  /m
-
-msbuild libxml2\vcproj\libxml2.sln /p:configuration=debug /p:platform=Win32  /m
-msbuild libxml2\vcproj\libxml2.sln /p:configuration=release /p:platform=Win32  /m
-
-msbuild gtksourceview\vcproj\libgtksourceview.sln /p:configuration=debug /p:platform=Win32  /m
-msbuild gtksourceview\vcproj\libgtksourceview.sln /p:configuration=release /p:platform=Win32  /m
-
 msbuild gtksourceviewmm\MSVC_Net2010\gtksourceviewmm.sln /p:configuration=debug /p:platform=Win32  /m
 msbuild gtksourceviewmm\MSVC_Net2010\gtksourceviewmm.sln /p:configuration=release /p:platform=Win32  /m
-
-msbuild gtkglext\MSVC_Net2010\gdkglext.sln /p:configuration=debug /p:platform=Win32  /m
-msbuild gtkglext\MSVC_Net2010\gdkglext.sln /p:configuration=release /p:platform=Win32  /m
 
 msbuild gtkglextmm\MSVC_Net2010\gtkglextmm.sln /p:configuration=debug /p:platform=Win32  /m
 msbuild gtkglextmm\MSVC_Net2010\gtkglextmm.sln /p:configuration=release /p:platform=Win32  /m
