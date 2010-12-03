@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>libgdkglext</ProjectName>
+    <ProjectGuid>{C001FB56-998C-414A-A87D-BD48043CFD48}</ProjectGuid>
+    <RootNamespace>libzlib</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\..\..\..\w32deps\gtkglext\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)\..\..\..\w64deps\gtkglext\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\..\..\..\w32deps\gtkglext\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\..\..\..\w64deps\gtkglext\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\$(Platform)\$(Configuration)\</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <BuildLog>
+      <Path>$(SolutionDir)\$(Platform)\$(Configuration)\BuildLog.htm</Path>
+    </BuildLog>
+    <ClCompile>
+      <AdditionalOptions> /MP %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../../w32deps/libxml2/include;$(SolutionDir)/../../../w32deps/win_iconv/include;$(SolutionDir)/../;$(SolutionDir)/../gdk;$(SolutionDir)/../../../w32deps/gtk2/include/glib-2.0;$(SolutionDir)/../../../w32deps/gtk2/lib/glib-2.0/include;$(SolutionDir)/../../../w32deps/gtk2/include/gtk-2.0;$(SolutionDir)/../../../w32deps/gtk2/include/cairo;$(SolutionDir)/../../../w32deps/gtk2/include/pango-1.0;$(SolutionDir)/../../../w32deps/gtk2/lib/gtk-2.0/include;$(SolutionDir)/../../../w32deps/gtk2/include/atk-1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_DEPRECATE;GDK_GL_COMPILATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>glib-2.0.lib;gtk-win32-2.0.lib;gdk-win32-2.0.lib;gobject-2.0.lib;gdk_pixbuf-2.0.lib;opengl32.lib;glu32.lib;pango-1.0.lib;pangowin32-1.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(SolutionDir)\..\..\..\w32deps\gtkglext\bin\libgdkglext.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w32deps\gtk2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>$(SolutionDir)\..\gdk\gdkglext.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>$(SolutionDir)\..\..\..\w32deps\gtkglext\lib\$(TargetName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <BuildLog>
+      <Path>$(SolutionDir)\$(Platform)\$(Configuration)\BuildLog.htm</Path>
+    </BuildLog>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../../w32deps/libxml2/include;$(SolutionDir)/../../../w32deps/win_iconv/include;$(SolutionDir)/../;$(SolutionDir)/../gdk;$(SolutionDir)/../../../w32deps/gtk2/include/glib-2.0;$(SolutionDir)/../../../w32deps/gtk2/lib/glib-2.0/include;$(SolutionDir)/../../../w32deps/gtk2/include/gtk-2.0;$(SolutionDir)/../../../w32deps/gtk2/include/cairo;$(SolutionDir)/../../../w32deps/gtk2/include/pango-1.0;$(SolutionDir)/../../../w32deps/gtk2/lib/gtk-2.0/include;$(SolutionDir)/../../../w32deps/gtk2/include/atk-1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_DEPRECATE;GDK_GL_COMPILATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>glib-2.0.lib;gtk-win32-2.0.lib;gdk-win32-2.0.lib;gobject-2.0.lib;gdk_pixbuf-2.0.lib;opengl32.lib;glu32.lib;pango-1.0.lib;pangowin32-1.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(SolutionDir)\..\..\..\w64deps\gtkglext\bin\libgdkglext.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w64deps\gtk2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>$(SolutionDir)\..\gdk\gdkglext.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>$(SolutionDir)\..\..\..\w64deps\gtkglext\lib\$(TargetName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <BuildLog>
+      <Path>$(SolutionDir)\$(Platform)\$(Configuration)\BuildLog.htm</Path>
+    </BuildLog>
+    <ClCompile>
+      <AdditionalOptions> /MP %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../../w32deps/libxml2/include;$(SolutionDir)/../../../w32deps/win_iconv/include;$(SolutionDir)/../;$(SolutionDir)/../gdk;$(SolutionDir)/../../../w32deps/gtk2/include/glib-2.0;$(SolutionDir)/../../../w32deps/gtk2/lib/glib-2.0/include;$(SolutionDir)/../../../w32deps/gtk2/include/gtk-2.0;$(SolutionDir)/../../../w32deps/gtk2/include/cairo;$(SolutionDir)/../../../w32deps/gtk2/include/pango-1.0;$(SolutionDir)/../../../w32deps/gtk2/lib/gtk-2.0/include;$(SolutionDir)/../../../w32deps/gtk2/include/atk-1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;WIN32;_CRT_SECURE_NO_DEPRECATE;GDK_GL_COMPILATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>glib-2.0.lib;gtk-win32-2.0.lib;gdk-win32-2.0.lib;gobject-2.0.lib;gdk_pixbuf-2.0.lib;opengl32.lib;glu32.lib;pango-1.0.lib;pangowin32-1.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(SolutionDir)\..\..\..\w32deps\gtkglext\bin\libgdkglext.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w32deps\gtk2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>$(SolutionDir)\..\gdk\gdkglext.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>$(SolutionDir)\..\..\..\w32deps\gtkglext\lib\$(TargetName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <BuildLog>
+      <Path>$(SolutionDir)\$(Platform)\$(Configuration)\BuildLog.htm</Path>
+    </BuildLog>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../../w32deps/libxml2/include;$(SolutionDir)/../../../w32deps/win_iconv/include;$(SolutionDir)/../;$(SolutionDir)/../gdk;$(SolutionDir)/../../../w32deps/gtk2/include/glib-2.0;$(SolutionDir)/../../../w32deps/gtk2/lib/glib-2.0/include;$(SolutionDir)/../../../w32deps/gtk2/include/gtk-2.0;$(SolutionDir)/../../../w32deps/gtk2/include/cairo;$(SolutionDir)/../../../w32deps/gtk2/include/pango-1.0;$(SolutionDir)/../../../w32deps/gtk2/lib/gtk-2.0/include;$(SolutionDir)/../../../w32deps/gtk2/include/atk-1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;WIN32;_CRT_SECURE_NO_DEPRECATE;GDK_GL_COMPILATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>glib-2.0.lib;gtk-win32-2.0.lib;gdk-win32-2.0.lib;gobject-2.0.lib;gdk_pixbuf-2.0.lib;opengl32.lib;glu32.lib;pango-1.0.lib;pangowin32-1.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(SolutionDir)\..\..\..\w64deps\gtkglext\bin\libgdkglext.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w64deps\gtk2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>$(SolutionDir)\..\gdk\gdkglext.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>$(SolutionDir)\..\..\..\w64deps\gtkglext\lib\$(TargetName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\gdk\gdkgl.h" />
+    <ClInclude Include="..\gdk\gdkglconfig.h" />
+    <ClInclude Include="..\gdk\gdkglcontext.h" />
+    <ClInclude Include="..\gdk\gdkgldebug.h" />
+    <ClInclude Include="..\gdk\gdkgldefs.h" />
+    <ClInclude Include="..\gdk\gdkgldrawable.h" />
+    <ClInclude Include="..\gdk\gdkglenumtypes.h" />
+    <ClInclude Include="..\gdk\gdkglext-config.h" />
+    <ClInclude Include="..\gdk\gdkglfont.h" />
+    <ClInclude Include="..\gdk\gdkglglext.h" />
+    <ClInclude Include="..\gdk\gdkglinit.h" />
+    <ClInclude Include="..\gdk\gdkglpixmap.h" />
+    <ClInclude Include="..\gdk\gdkglprivate.h" />
+    <ClInclude Include="..\gdk\gdkglquery.h" />
+    <ClInclude Include="..\gdk\gdkglshapes.h" />
+    <ClInclude Include="..\gdk\gdkgltokens.h" />
+    <ClInclude Include="..\gdk\gdkgltypes.h" />
+    <ClInclude Include="..\gdk\gdkglversion.h" />
+    <ClInclude Include="..\gdk\gdkglwindow.h" />
+    <ClInclude Include="..\gdk\win32\gdkglconfig-win32.h" />
+    <ClInclude Include="..\gdk\win32\gdkglcontext-win32.h" />
+    <ClInclude Include="..\gdk\win32\gdkglpixmap-win32.h" />
+    <ClInclude Include="..\gdk\win32\gdkglprivate-win32.h" />
+    <ClInclude Include="..\gdk\win32\gdkglwglext.h" />
+    <ClInclude Include="..\gdk\win32\gdkglwin32.h" />
+    <ClInclude Include="..\gdk\win32\gdkglwindow-win32.h" />
+    <ClInclude Include="..\gdk\glext\common-header.h" />
+    <ClInclude Include="..\gdk\glext\glext-extra.h" />
+    <ClInclude Include="..\gdk\glext\glext.h" />
+    <ClInclude Include="..\gdk\glext\glxext-extra.h" />
+    <ClInclude Include="..\gdk\glext\glxext.h" />
+    <ClInclude Include="..\gdk\glext\wglext-extra.h" />
+    <ClInclude Include="..\gdk\glext\wglext.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\gdk\gdkglconfig.c" />
+    <ClCompile Include="..\gdk\gdkglcontext.c" />
+    <ClCompile Include="..\gdk\gdkgldrawable.c" />
+    <ClCompile Include="..\gdk\gdkglenumtypes.c" />
+    <ClCompile Include="..\gdk\gdkglglext.c" />
+    <ClCompile Include="..\gdk\gdkglinit.c" />
+    <ClCompile Include="..\gdk\gdkglpixmap.c" />
+    <ClCompile Include="..\gdk\gdkglquery.c" />
+    <ClCompile Include="..\gdk\gdkglshapes.c" />
+    <ClCompile Include="..\gdk\gdkglversion.c" />
+    <ClCompile Include="..\gdk\gdkglwindow.c" />
+    <ClCompile Include="..\gdk\win32\gdkglconfig-win32.c" />
+    <ClCompile Include="..\gdk\win32\gdkglcontext-win32.c" />
+    <ClCompile Include="..\gdk\win32\gdkgldrawable-win32.c" />
+    <ClCompile Include="..\gdk\win32\gdkglfont-win32.c" />
+    <ClCompile Include="..\gdk\win32\gdkglpixmap-win32.c" />
+    <ClCompile Include="..\gdk\win32\gdkglquery-win32.c" />
+    <ClCompile Include="..\gdk\win32\gdkglwglext.c" />
+    <ClCompile Include="..\gdk\win32\gdkglwindow-win32.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\gdk\gdkglext-gtk20.def" />
+    <None Include="..\gdk\glext\gen-gdkglglext-c.pl" />
+    <None Include="..\gdk\glext\gen-gdkglglext-h.pl" />
+    <None Include="..\gdk\glext\gen-gdkglglxext-c.pl" />
+    <None Include="..\gdk\glext\gen-gdkglglxext-h.pl" />
+    <None Include="..\gdk\glext\gen-gdkglwglext-c.pl" />
+    <None Include="..\gdk\glext\gen-gdkglwglext-h.pl" />
+    <None Include="..\gdk\glext\list-ext.pl" />
+    <None Include="..\gdk\gdkglext.def" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
