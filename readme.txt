@@ -2,8 +2,9 @@
 
 The winbuild folder contains all the sources needed to build the Win32/Win64 dependency binaries, like gtkmm, gtkglextmm, etc. 
 
-There should be VC++ project files in each of the subdirectories, which work best when the winbuild folder is checked out as subfolder
-to the trunk/darkradiant working copy, next to your w32deps/w64deps directories, as indicated on the wiki:
+There should be VC++ project files in each of the subdirectories (e.g. MSVC_Net2010 for VC++ 2010), 
+which work best when the winbuild folder is checked out as subfolder to the trunk/darkradiant working copy, 
+next to your w32deps/w64deps directories, as indicated on the wiki:
 
 1. Get TortoiseSVN
 2. Right-click your C:\Games (or likewise) folder and select SVN Checkout...
@@ -28,9 +29,12 @@ The folder structure should then look like this:
 This way, the VC++ projects place their binaries in the correct location in the w32deps/w64deps folder and you can compile
 DarkRadiant right off the bat.
 
-== Compile order for gtkmm ==
+== Compile Scripts / Compile order for gtkmm ==
 
-See: http://live.gnome.org/gtkmm/MSWindows/BuildingGtkmm
+For VC++ 2010 you can use the shell script in the winbuild folder. Open a VC++ 2010 Command Prompt and head to the
+winbuild directory, then call the rebuild_all.x86.cmd file (for building the 32 bits libraries, release & debug).
+
+For other VC++ versions, you'll need to build stuff on your own. Use this build order (http://live.gnome.org/gtkmm/MSWindows/BuildingGtkmm)
 
  1. libsigc++
  2. glibmm
