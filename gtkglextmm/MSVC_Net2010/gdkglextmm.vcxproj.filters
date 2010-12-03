@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="gdkmm">
+      <UniqueIdentifier>{c95d5983-71f1-41c8-9ba1-90fc65ee76ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gdkmm\gl">
+      <UniqueIdentifier>{4e48bdc5-edab-4125-bbd2-d9f77f4a09bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gdkmm\gl\private">
+      <UniqueIdentifier>{443d0a5a-2966-4655-8824-39fa0ae8f6e6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\gdkglext\gdkmm\gl\config.cc">
+      <Filter>gdkmm\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gdkglext\gdkmm\gl\context.cc">
+      <Filter>gdkmm\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gdkglext\gdkmm\gl\drawable.cc">
+      <Filter>gdkmm\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gdkglext\gdkmm\gl\font.cc">
+      <Filter>gdkmm\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gdkglext\gdkmm\gl\init.cc">
+      <Filter>gdkmm\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gdkglext\gdkmm\gl\pixmap.cc">
+      <Filter>gdkmm\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gdkglext\gdkmm\gl\pixmapext.cc">
+      <Filter>gdkmm\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gdkglext\gdkmm\gl\query.cc">
+      <Filter>gdkmm\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gdkglext\gdkmm\gl\tokens.cc">
+      <Filter>gdkmm\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gdkglext\gdkmm\gl\version.cc">
+      <Filter>gdkmm\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gdkglext\gdkmm\gl\window.cc">
+      <Filter>gdkmm\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gdkglext\gdkmm\gl\windowext.cc">
+      <Filter>gdkmm\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gdkglext\gdkmm\gl\wrap_init.cc">
+      <Filter>gdkmm\gl</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\gdkglext\gdkmm\gl\config.h">
+      <Filter>gdkmm\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gdkglext\gdkmm\gl\context.h">
+      <Filter>gdkmm\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gdkglext\gdkmm\gl\defs.h">
+      <Filter>gdkmm\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gdkglext\gdkmm\gl\drawable.h">
+      <Filter>gdkmm\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gdkglext\gdkmm\gl\font.h">
+      <Filter>gdkmm\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gdkglext\gdkmm\gl\init.h">
+      <Filter>gdkmm\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gdkglext\gdkmm\gl\pixmap.h">
+      <Filter>gdkmm\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gdkglext\gdkmm\gl\pixmapext.h">
+      <Filter>gdkmm\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gdkglext\gdkmm\gl\query.h">
+      <Filter>gdkmm\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gdkglext\gdkmm\gl\tokens.h">
+      <Filter>gdkmm\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gdkglext\gdkmm\gl\version.h">
+      <Filter>gdkmm\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gdkglext\gdkmm\gl\window.h">
+      <Filter>gdkmm\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gdkglext\gdkmm\gl\windowext.h">
+      <Filter>gdkmm\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gdkglext\gdkmm\gl\wrap_init.h">
+      <Filter>gdkmm\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gdkglext\gdkmm\gl\private\config_p.h">
+      <Filter>gdkmm\gl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gdkglext\gdkmm\gl\private\context_p.h">
+      <Filter>gdkmm\gl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gdkglext\gdkmm\gl\private\drawable_p.h">
+      <Filter>gdkmm\gl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gdkglext\gdkmm\gl\private\pixmap_p.h">
+      <Filter>gdkmm\gl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gdkglext\gdkmm\gl\private\tokens_p.h">
+      <Filter>gdkmm\gl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gdkglext\gdkmm\gl\private\window_p.h">
+      <Filter>gdkmm\gl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gdkglext\gdkglmm.h" />
+  </ItemGroup>
+</Project>

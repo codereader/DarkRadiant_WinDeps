@@ -1,0 +1,211 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>gtkglextmm-1.2</ProjectName>
+    <ProjectGuid>{E0851752-875E-411F-B667-C47AD8930165}</ProjectGuid>
+    <RootNamespace>libzlib</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\..\..\..\w32deps\gtkglextmm\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)\..\..\..\w32deps\gtkglextmm\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\..\..\..\w32deps\gtkglextmm\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\..\..\..\w32deps\gtkglextmm\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">gtkglextmm-vc100-d-1_2</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">gtkglextmm-vc100-d-1_2</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">gtkglextmm-vc100-1_2</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">gtkglextmm-vc100-1_2</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <BuildLog>
+      <Path>$(SolutionDir)\$(Platform)\$(Configuration)\$(ProjectName)\BuildLog.htm</Path>
+    </BuildLog>
+    <ClCompile>
+      <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(SolutionDir)../gdkglext;$(SolutionDir)/../../gtk2/include;$(SolutionDir)/../../gtk2/include/atk-1.0;$(SolutionDir)/../../gtk2/include/cairo;$(SolutionDir)/../../gtk2/include/glib-2.0;$(SolutionDir)/../../gtk2/include/gtk-2.0;$(SolutionDir)/../../gtk2/include/pango-1.0;$(SolutionDir)/../../gtkglext;$(SolutionDir)/../../gtkglext/gdk;$(SolutionDir)/../../glibmm/glib;$(SolutionDir)/../../glibmm/MSVC_Net2010/glibmm;$(SolutionDir)/../../gtkmm/atk;$(SolutionDir)/../../gtkmm/gdk;$(SolutionDir)/../../gtkmm/gtk;$(SolutionDir)/../../gtkmm/MSVC_Net2010/gtkmm;$(SolutionDir)/../../gtkmm/MSVC_Net2010/gdkmm;$(SolutionDir)/../../cairomm;$(SolutionDir)/../../pangomm/pango;$(SolutionDir)/../../libsigc++;$(SolutionDir)/../../libsigc++/MSVC_Net2010;$(SolutionDir)/../../gtkglextmm/gtkglext;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_DEPRECATE;GTK_GL_COMPILATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <PreLinkEvent>
+      <Message>Generate gtkglextmm def file</Message>
+      <Command>$(SolutionDir)\gendef\$(Platform)\$(Configuration)\gendef $(SolutionDir)\gendef\$(Platform)\$(Configuration)\$(ProjectName).def $(TargetFileName) $(IntDir)*.obj</Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalDependencies>glib-2.0.lib;gtk-win32-2.0.lib;gdk-win32-2.0.lib;gobject-2.0.lib;gdk_pixbuf-2.0.lib;opengl32.lib;glu32.lib;atkmm-vc100-d-1_6.lib;glibmm-vc100-d-2_4.lib;gtkmm-vc100-d-2_4.lib;sigc-vc100-d-2_0.lib;gdkglextmm-vc100-d-1_2.lib;libgdkglext.lib;libgtkglext.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(SolutionDir)\..\..\..\w32deps\gtkglextmm\bin\$(TargetName).dll</OutputFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w32deps\gtk2\lib;$(SolutionDir)\..\..\..\w32deps\gtkmm\lib;$(SolutionDir)\..\..\..\w32deps\gtkglext\lib;$(SolutionDir)\..\..\..\w32deps\gtkglextmm\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>$(SolutionDir)\gendef\$(Platform)\$(Configuration)\$(ProjectName).def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>$(SolutionDir)\..\..\..\w32deps\gtkglextmm\lib\$(TargetName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <BuildLog>
+      <Path>$(SolutionDir)\$(Platform)\$(Configuration)\$(ProjectName)\BuildLog.htm</Path>
+    </BuildLog>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(SolutionDir)../gdkglext;$(SolutionDir)/../../gtk2/include;$(SolutionDir)/../../gtk2/include/atk-1.0;$(SolutionDir)/../../gtk2/include/cairo;$(SolutionDir)/../../gtk2/include/glib-2.0;$(SolutionDir)/../../gtk2/include/gtk-2.0;$(SolutionDir)/../../gtk2/include/pango-1.0;$(SolutionDir)/../../gtkglext;$(SolutionDir)/../../gtkglext/gdk;$(SolutionDir)/../../glibmm/glib;$(SolutionDir)/../../glibmm/MSVC_Net2010/glibmm;$(SolutionDir)/../../gtkmm/atk;$(SolutionDir)/../../gtkmm/gdk;$(SolutionDir)/../../gtkmm/gtk;$(SolutionDir)/../../gtkmm/MSVC_Net2010/gtkmm;$(SolutionDir)/../../gtkmm/MSVC_Net2010/gdkmm;$(SolutionDir)/../../cairomm;$(SolutionDir)/../../pangomm/pango;$(SolutionDir)/../../libsigc++;$(SolutionDir)/../../libsigc++/MSVC_Net2010;$(SolutionDir)/../../gtkglextmm/gtkglext;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_DEPRECATE;GTK_GL_COMPILATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <PreLinkEvent>
+      <Message>Generate gtkglextmm def file</Message>
+      <Command>$(SolutionDir)\gendef\$(Platform)\$(Configuration)\gendef $(SolutionDir)\gendef\$(Platform)\$(Configuration)\$(ProjectName).def $(TargetFileName) $(IntDir)*.obj</Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalDependencies>glib-2.0.lib;gtk-win32-2.0.lib;gdk-win32-2.0.lib;gobject-2.0.lib;gdk_pixbuf-2.0.lib;opengl32.lib;glu32.lib;atkmm-vc100-d-1_6.lib;glibmm-vc100-d-2_4.lib;gtkmm-vc100-d-2_4.lib;sigc-vc100-d-2_0.lib;gdkglextmm-vc100-d-1_2.lib;libgdkglext.lib;libgtkglext.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(SolutionDir)\..\..\..\w64deps\gtkglextmm\bin\$(TargetName).dll</OutputFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w64deps\gtk2\lib;$(SolutionDir)\..\..\..\w64deps\gtkmm\lib;$(SolutionDir)\..\..\..\w64deps\gtkglext\lib;$(SolutionDir)\..\..\..\w64deps\gtkglextmm\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>$(SolutionDir)\gendef\$(Platform)\$(Configuration)\$(ProjectName).def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>$(SolutionDir)\..\..\..\w64deps\gtkglextmm\lib\$(TargetName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <BuildLog>
+      <Path>$(SolutionDir)\$(Platform)\$(Configuration)\$(ProjectName)\BuildLog.htm</Path>
+    </BuildLog>
+    <ClCompile>
+      <AdditionalOptions>/vd2 /MP %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(SolutionDir)../gdkglext;$(SolutionDir)/../../gtk2/include;$(SolutionDir)/../../gtk2/include/atk-1.0;$(SolutionDir)/../../gtk2/include/cairo;$(SolutionDir)/../../gtk2/include/glib-2.0;$(SolutionDir)/../../gtk2/include/gtk-2.0;$(SolutionDir)/../../gtk2/include/pango-1.0;$(SolutionDir)/../../gtkglext;$(SolutionDir)/../../gtkglext/gdk;$(SolutionDir)/../../glibmm/glib;$(SolutionDir)/../../glibmm/MSVC_Net2010/glibmm;$(SolutionDir)/../../gtkmm/atk;$(SolutionDir)/../../gtkmm/gdk;$(SolutionDir)/../../gtkmm/gtk;$(SolutionDir)/../../gtkmm/MSVC_Net2010/gtkmm;$(SolutionDir)/../../gtkmm/MSVC_Net2010/gdkmm;$(SolutionDir)/../../cairomm;$(SolutionDir)/../../pangomm/pango;$(SolutionDir)/../../libsigc++;$(SolutionDir)/../../libsigc++/MSVC_Net2010;$(SolutionDir)/../../gtkglextmm/gtkglext;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;WIN32;_CRT_SECURE_NO_DEPRECATE;GTK_GL_COMPILATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <PreLinkEvent>
+      <Message>Generate gtkglextmm def file</Message>
+      <Command>$(SolutionDir)\gendef\$(Platform)\$(Configuration)\gendef $(SolutionDir)\gendef\$(Platform)\$(Configuration)\$(ProjectName).def $(TargetFileName) $(IntDir)*.obj</Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalDependencies>glib-2.0.lib;gtk-win32-2.0.lib;gdk-win32-2.0.lib;gobject-2.0.lib;gdk_pixbuf-2.0.lib;opengl32.lib;glu32.lib;atkmm-vc100-1_6.lib;glibmm-vc100-2_4.lib;gtkmm-vc100-2_4.lib;sigc-vc100-2_0.lib;gdkglextmm-vc100-1_2.lib;libgdkglext.lib;libgtkglext.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(SolutionDir)\..\..\..\w32deps\gtkglextmm\bin\$(TargetName).dll</OutputFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w32deps\gtk2\lib;$(SolutionDir)\..\..\..\w32deps\gtkmm\lib;$(SolutionDir)\..\..\..\w32deps\gtkglext\lib;$(SolutionDir)\..\..\..\w32deps\gtkglextmm\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>$(SolutionDir)\gendef\$(Platform)\$(Configuration)\$(ProjectName).def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>$(SolutionDir)\..\..\..\w32deps\gtkglextmm\lib\$(TargetName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <BuildLog>
+      <Path>$(SolutionDir)\$(Platform)\$(Configuration)\$(ProjectName)\BuildLog.htm</Path>
+    </BuildLog>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/vd2 /MP %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(SolutionDir)../gdkglext;$(SolutionDir)/../../gtk2/include;$(SolutionDir)/../../gtk2/include/atk-1.0;$(SolutionDir)/../../gtk2/include/cairo;$(SolutionDir)/../../gtk2/include/glib-2.0;$(SolutionDir)/../../gtk2/include/gtk-2.0;$(SolutionDir)/../../gtk2/include/pango-1.0;$(SolutionDir)/../../gtkglext;$(SolutionDir)/../../gtkglext/gdk;$(SolutionDir)/../../glibmm/glib;$(SolutionDir)/../../glibmm/MSVC_Net2010/glibmm;$(SolutionDir)/../../gtkmm/atk;$(SolutionDir)/../../gtkmm/gdk;$(SolutionDir)/../../gtkmm/gtk;$(SolutionDir)/../../gtkmm/MSVC_Net2010/gtkmm;$(SolutionDir)/../../gtkmm/MSVC_Net2010/gdkmm;$(SolutionDir)/../../cairomm;$(SolutionDir)/../../pangomm/pango;$(SolutionDir)/../../libsigc++;$(SolutionDir)/../../libsigc++/MSVC_Net2010;$(SolutionDir)/../../gtkglextmm/gtkglext;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;WIN32;_CRT_SECURE_NO_DEPRECATE;GTK_GL_COMPILATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <PreLinkEvent>
+      <Message>Generate gtkglextmm def file</Message>
+      <Command>$(SolutionDir)\gendef\$(Platform)\$(Configuration)\gendef $(SolutionDir)\gendef\$(Platform)\$(Configuration)\$(ProjectName).def $(TargetFileName) $(IntDir)*.obj</Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalDependencies>glib-2.0.lib;gtk-win32-2.0.lib;gdk-win32-2.0.lib;gobject-2.0.lib;gdk_pixbuf-2.0.lib;opengl32.lib;glu32.lib;atkmm-vc100-1_6.lib;glibmm-vc100-2_4.lib;gtkmm-vc100-2_4.lib;sigc-vc100-2_0.lib;gdkglextmm-vc100-1_2.lib;libgdkglext.lib;libgtkglext.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(SolutionDir)\..\..\..\w64deps\gtkglextmm\bin\$(TargetName).dll</OutputFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w64deps\gtk2\lib;$(SolutionDir)\..\..\..\w64deps\gtkmm\lib;$(SolutionDir)\..\..\..\w64deps\gtkglext\lib;$(SolutionDir)\..\..\..\w64deps\gtkglextmm\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>$(SolutionDir)\gendef\$(Platform)\$(Configuration)\$(ProjectName).def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ImportLibrary>$(SolutionDir)\..\..\..\w64deps\gtkglextmm\lib\$(TargetName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\gtkglext\gtkmm\gl\defs.h" />
+    <ClInclude Include="..\gtkglext\gtkmm\gl\drawingarea.h" />
+    <ClInclude Include="..\gtkglext\gtkmm\gl\init.h" />
+    <ClInclude Include="..\gtkglext\gtkmm\gl\version.h" />
+    <ClInclude Include="..\gtkglext\gtkmm\gl\widget.h" />
+    <ClInclude Include="..\gtkglext\gtkglmm.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\gtkglext\gtkmm\gl\drawingarea.cc" />
+    <ClCompile Include="..\gtkglext\gtkmm\gl\init.cc" />
+    <ClCompile Include="..\gtkglext\gtkmm\gl\version.cc" />
+    <ClCompile Include="..\gtkglext\gtkmm\gl\widget.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="gdkglextmm.vcxproj">
+      <Project>{4e702226-8b59-422e-bc79-070a699cb2fc}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
