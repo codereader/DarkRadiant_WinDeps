@@ -1,0 +1,266 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>gtksourceviewmm-2.2.0</ProjectName>
+    <ProjectGuid>{58B2B53C-C4FF-47FD-817B-095E45B7F7D4}</ProjectGuid>
+    <RootNamespace>glibmm</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)</IntDir>
+    <PreLinkEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</PreLinkEventUseInBuild>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Configuration)</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Configuration)</IntDir>
+    <PreLinkEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</PreLinkEventUseInBuild>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)</IntDir>
+    <PreLinkEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</PreLinkEventUseInBuild>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Configuration)</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Configuration)</IntDir>
+    <PreLinkEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</PreLinkEventUseInBuild>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">gtksourceviewmm-vc100-2_2</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">gtksourceviewmm-vc100-2_2</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">gtksourceviewmm-vc100-d-2_2</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">gtksourceviewmm-vc100-d-2_2</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.;$(SolutionDir)\..\gtksourceview;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\atk-1.0;$(SolutionDir)\..\..\gtk2\include\cairo;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\gtk2\include\gtk-2.0;$(SolutionDir)\..\..\gtk2\include\pango-1.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\gtkmm\atk;$(SolutionDir)\..\..\gtkmm\gtk;$(SolutionDir)\..\..\gtkmm\gdk;$(SolutionDir)\..\..\gtkmm\MSVC_Net2010\gtkmm;$(SolutionDir)\..\..\gtkmm\MSVC_Net2010\gdkmm;$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\include;$(SolutionDir)\..\..\pangomm\pango;$(SolutionDir)\..\..\cairomm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;GLIBMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <PreLinkEvent>
+      <Message>Generate gtksourceview def</Message>
+      <Command>$(SolutionDir)\gendef\$(Configuration)\gendef $(Configuration)\$(ProjectName).def $(TargetFileName) $(IntDir)*.obj</Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalDependencies>gtk-win32-2.0.lib;glib-2.0.lib;gobject-2.0.lib;gmodule-2.0.lib;sigc-vc100-d-2_0.lib;atkmm-vc100-d-1_6.lib;glibmm-vc100-d-2_4.lib;gdkmm-vc100-d-2_4.lib;gtkmm-vc100-d-2_4.lib;libgtksourceview.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ShowProgress>NotSet</ShowProgress>
+      <OutputFile>$(SolutionDir)\..\..\..\w32deps\gtksourceviewmm\bin\$(TargetName).dll</OutputFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w32deps\gtkmm\lib;$(SolutionDir)\..\..\..\w32deps\gtk2\lib;$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>$(Configuration)\$(ProjectName).def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(SolutionDir)\..\..\..\w32deps\gtksourceviewmm\lib\$(TargetName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.;$(SolutionDir)\..\gtksourceview;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\atk-1.0;$(SolutionDir)\..\..\gtk2\include\cairo;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\gtk2\include\gtk-2.0;$(SolutionDir)\..\..\gtk2\include\pango-1.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\gtkmm\atk;$(SolutionDir)\..\..\gtkmm\gtk;$(SolutionDir)\..\..\gtkmm\gdk;$(SolutionDir)\..\..\gtkmm\MSVC_Net2010\gtkmm;$(SolutionDir)\..\..\gtkmm\MSVC_Net2010\gdkmm;$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\include;$(SolutionDir)\..\..\pangomm\pango;$(SolutionDir)\..\..\cairomm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;GLIBMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <PreLinkEvent>
+      <Message>Generate gtksourceview def</Message>
+      <Command>$(SolutionDir)\gendef\$(Platform)\$(Configuration)\gendef $(Platform)\$(Configuration)\$(ProjectName).def $(TargetFileName) $(IntDir)*.obj</Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalDependencies>gtk-win32-2.0.lib;glib-2.0.lib;gobject-2.0.lib;gmodule-2.0.lib;sigc-vc100-d-2_0.lib;atkmm-vc100-d-1_6.lib;glibmm-vc100-d-2_4.lib;gdkmm-vc100-d-2_4.lib;gtkmm-vc100-d-2_4.lib;libgtksourceview.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(SolutionDir)\..\..\..\w64deps\gtksourceviewmm\bin\$(TargetName).dll</OutputFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w64deps\gtkmm\lib;$(SolutionDir)\..\..\..\w64deps\gtk2\lib;$(SolutionDir)\..\..\..\w64deps\gtksourceview-2.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>$(Platform)\$(Configuration)\$(ProjectName).def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(SolutionDir)\..\..\..\w64deps\gtksourceviewmm\lib\$(TargetName).lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>.;$(SolutionDir)\..\gtksourceview;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\atk-1.0;$(SolutionDir)\..\..\gtk2\include\cairo;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\gtk2\include\gtk-2.0;$(SolutionDir)\..\..\gtk2\include\pango-1.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\gtkmm\atk;$(SolutionDir)\..\..\gtkmm\gtk;$(SolutionDir)\..\..\gtkmm\gdk;$(SolutionDir)\..\..\gtkmm\MSVC_Net2010\gtkmm;$(SolutionDir)\..\..\gtkmm\MSVC_Net2010\gdkmm;$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\include;$(SolutionDir)\..\..\pangomm\pango;$(SolutionDir)\..\..\cairomm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;GLIBMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <PreLinkEvent>
+      <Message>Generate gtksourceview def</Message>
+      <Command>$(SolutionDir)\gendef\$(Configuration)\gendef $(Configuration)\$(ProjectName).def $(TargetFileName) $(IntDir)*.obj</Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalDependencies>gtk-win32-2.0.lib;glib-2.0.lib;gobject-2.0.lib;gmodule-2.0.lib;atkmm-vc100-1_6.lib;sigc-vc100-2_0.lib;glibmm-vc100-2_4.lib;gdkmm-vc100-2_4.lib;gtkmm-vc100-2_4.lib;libgtksourceview.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(SolutionDir)\..\..\..\w32deps\gtksourceviewmm\bin\$(TargetName).dll</OutputFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w32deps\gtkmm\lib;$(SolutionDir)\..\..\..\w32deps\gtk2\lib;$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>$(Configuration)\$(ProjectName).def</ModuleDefinitionFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(SolutionDir)\..\..\..\w32deps\gtksourceviewmm\lib\$(TargetName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>.;$(SolutionDir)\..\gtksourceview;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\atk-1.0;$(SolutionDir)\..\..\gtk2\include\cairo;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\gtk2\include\gtk-2.0;$(SolutionDir)\..\..\gtk2\include\pango-1.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\gtkmm\atk;$(SolutionDir)\..\..\gtkmm\gtk;$(SolutionDir)\..\..\gtkmm\gdk;$(SolutionDir)\..\..\gtkmm\MSVC_Net2010\gtkmm;$(SolutionDir)\..\..\gtkmm\MSVC_Net2010\gdkmm;$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\include;$(SolutionDir)\..\..\pangomm\pango;$(SolutionDir)\..\..\cairomm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;GLIBMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <PreLinkEvent>
+      <Message>Generate gtksourceview def</Message>
+      <Command>$(SolutionDir)\gendef\$(Platform)\$(Configuration)\gendef $(Platform)\$(Configuration)\$(ProjectName).def $(TargetFileName) $(IntDir)*.obj</Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalDependencies>gtk-win32-2.0.lib;glib-2.0.lib;gobject-2.0.lib;gmodule-2.0.lib;atkmm-vc100-1_6.lib;sigc-vc100-2_0.lib;glibmm-vc100-2_4.lib;gdkmm-vc100-2_4.lib;gtkmm-vc100-2_4.lib;libgtksourceview.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(SolutionDir)\..\..\..\w64deps\gtksourceviewmm\bin\$(TargetName).dll</OutputFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w64deps\gtkmm\lib;$(SolutionDir)\..\..\..\w64deps\gtk2\lib;$(SolutionDir)\..\..\..\w64deps\gtksourceview-2.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>$(Platform)\$(Configuration)\$(ProjectName).def</ModuleDefinitionFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(SolutionDir)\..\..\..\w64deps\gtksourceviewmm\lib\$(TargetName).lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\gtksourceview\gtksourceviewmm\init.cc" />
+    <ClCompile Include="..\gtksourceview\gtksourceviewmm\sourcebuffer.cc" />
+    <ClCompile Include="..\gtksourceview\gtksourceviewmm\sourceiter.cc" />
+    <ClCompile Include="..\gtksourceview\gtksourceviewmm\sourcelanguage.cc" />
+    <ClCompile Include="..\gtksourceview\gtksourceviewmm\sourcelanguagemanager.cc" />
+    <ClCompile Include="..\gtksourceview\gtksourceviewmm\sourcemark.cc" />
+    <ClCompile Include="..\gtksourceview\gtksourceviewmm\sourcestyle.cc" />
+    <ClCompile Include="..\gtksourceview\gtksourceviewmm\sourcestylescheme.cc" />
+    <ClCompile Include="..\gtksourceview\gtksourceviewmm\sourcestyleschememanager.cc" />
+    <ClCompile Include="..\gtksourceview\gtksourceviewmm\sourceview.cc" />
+    <ClCompile Include="..\gtksourceview\gtksourceviewmm\wrap_init.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\gtksourceview\gtksourceviewmm\init.h" />
+    <ClInclude Include="..\gtksourceview\gtksourceviewmm\sourcebuffer.h" />
+    <ClInclude Include="..\gtksourceview\gtksourceviewmm\sourceiter.h" />
+    <ClInclude Include="..\gtksourceview\gtksourceviewmm\sourcelanguage.h" />
+    <ClInclude Include="..\gtksourceview\gtksourceviewmm\sourcelanguagemanager.h" />
+    <ClInclude Include="..\gtksourceview\gtksourceviewmm\sourcemark.h" />
+    <ClInclude Include="..\gtksourceview\gtksourceviewmm\sourcestyle.h" />
+    <ClInclude Include="..\gtksourceview\gtksourceviewmm\sourcestylescheme.h" />
+    <ClInclude Include="..\gtksourceview\gtksourceviewmm\sourcestyleschememanager.h" />
+    <ClInclude Include="..\gtksourceview\gtksourceviewmm\sourceview.h" />
+    <ClInclude Include="..\gtksourceview\gtksourceviewmm\wrap_init.h" />
+    <ClInclude Include="..\gtksourceview\gtksourceviewmm\private\sourcebuffer_p.h" />
+    <ClInclude Include="..\gtksourceview\gtksourceviewmm\private\sourceiter_p.h" />
+    <ClInclude Include="..\gtksourceview\gtksourceviewmm\private\sourcelanguage_p.h" />
+    <ClInclude Include="..\gtksourceview\gtksourceviewmm\private\sourcelanguagemanager_p.h" />
+    <ClInclude Include="..\gtksourceview\gtksourceviewmm\private\sourcemark_p.h" />
+    <ClInclude Include="..\gtksourceview\gtksourceviewmm\private\sourcestyle_p.h" />
+    <ClInclude Include="..\gtksourceview\gtksourceviewmm\private\sourcestylescheme_p.h" />
+    <ClInclude Include="..\gtksourceview\gtksourceviewmm\private\sourcestyleschememanager_p.h" />
+    <ClInclude Include="..\gtksourceview\gtksourceviewmm\private\sourceview_p.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
