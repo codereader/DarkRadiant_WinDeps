@@ -92,7 +92,7 @@
 #endif
 #include "rangeobject.h"
 #include "stringobject.h"
-#include "memoryobject.h"
+/* #include "memoryobject.h" */
 #include "bufferobject.h"
 #include "bytesobject.h"
 #include "bytearrayobject.h"
@@ -107,7 +107,6 @@
 #include "classobject.h"
 #include "fileobject.h"
 #include "cobject.h"
-#include "pycapsule.h"
 #include "traceback.h"
 #include "sliceobject.h"
 #include "cellobject.h"
@@ -135,10 +134,8 @@
 #include "compile.h"
 #include "eval.h"
 
-#include "pyctype.h"
 #include "pystrtod.h"
 #include "pystrcmp.h"
-#include "dtoa.h"
 
 /* _Py_Mangle is defined in compile.c */
 PyAPI_FUNC(PyObject*) _Py_Mangle(PyObject *p, PyObject *name);
@@ -150,8 +147,13 @@ PyAPI_FUNC(PyObject*) _Py_Mangle(PyObject *p, PyObject *name);
    Set ml_flags in the PyMethodDef to METH_NOARGS. */
 #define PyArg_NoArgs(v)		PyArg_Parse(v, "")
 
-/* Argument must be a char or an int in [-128, 127] or [0, 255]. */
+/* Convert a possibly signed character to a nonnegative int */
+/* XXX This assumes characters are 8 bits wide */
+#ifdef __CHAR_UNSIGNED__
+#define Py_CHARMASK(c)		(c)
+#else
 #define Py_CHARMASK(c)		((unsigned char)((c) & 0xff))
+#endif
 
 #include "pyfpe.h"
 
