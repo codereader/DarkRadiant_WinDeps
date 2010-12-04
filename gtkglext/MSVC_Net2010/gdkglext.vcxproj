@@ -74,6 +74,10 @@
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">libgdkglext-vc100-d-1_2</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">libgdkglext-vc100-d-1_2</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">libgdkglext-vc100-1_2</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">libgdkglext-vc100-1_2</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <BuildLog>
@@ -88,10 +92,12 @@
       <DebugInformationFormat>
       </DebugInformationFormat>
       <CompileAs>CompileAsC</CompileAs>
+      <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <AdditionalDependencies>glib-2.0.lib;gtk-win32-2.0.lib;gdk-win32-2.0.lib;gobject-2.0.lib;gdk_pixbuf-2.0.lib;opengl32.lib;glu32.lib;pango-1.0.lib;pangowin32-1.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(SolutionDir)\..\..\..\w32deps\gtkglext\bin\libgdkglext.dll</OutputFile>
+      <OutputFile>$(SolutionDir)\..\..\..\w32deps\gtkglext\bin\$(TargetName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w32deps\gtk2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>$(SolutionDir)\..\gdk\gdkglext.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -113,10 +119,12 @@
       <DebugInformationFormat>
       </DebugInformationFormat>
       <CompileAs>CompileAsC</CompileAs>
+      <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <AdditionalDependencies>glib-2.0.lib;gtk-win32-2.0.lib;gdk-win32-2.0.lib;gobject-2.0.lib;gdk_pixbuf-2.0.lib;opengl32.lib;glu32.lib;pango-1.0.lib;pangowin32-1.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(SolutionDir)\..\..\..\w64deps\gtkglext\bin\libgdkglext.dll</OutputFile>
+      <OutputFile>$(SolutionDir)\..\..\..\w64deps\gtkglext\bin\$(TargetName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w64deps\gtk2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>$(SolutionDir)\..\gdk\gdkglext.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -137,10 +145,12 @@
       </DebugInformationFormat>
       <CompileAs>CompileAsC</CompileAs>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <AdditionalDependencies>glib-2.0.lib;gtk-win32-2.0.lib;gdk-win32-2.0.lib;gobject-2.0.lib;gdk_pixbuf-2.0.lib;opengl32.lib;glu32.lib;pango-1.0.lib;pangowin32-1.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(SolutionDir)\..\..\..\w32deps\gtkglext\bin\libgdkglext.dll</OutputFile>
+      <OutputFile>$(SolutionDir)\..\..\..\w32deps\gtkglext\bin\$(TargetName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w32deps\gtk2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>$(SolutionDir)\..\gdk\gdkglext.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -163,10 +173,12 @@
       </DebugInformationFormat>
       <CompileAs>CompileAsC</CompileAs>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <AdditionalDependencies>glib-2.0.lib;gtk-win32-2.0.lib;gdk-win32-2.0.lib;gobject-2.0.lib;gdk_pixbuf-2.0.lib;opengl32.lib;glu32.lib;pango-1.0.lib;pangowin32-1.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(SolutionDir)\..\..\..\w64deps\gtkglext\bin\libgdkglext.dll</OutputFile>
+      <OutputFile>$(SolutionDir)\..\..\..\w64deps\gtkglext\bin\$(TargetName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w64deps\gtk2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>$(SolutionDir)\..\gdk\gdkglext.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
