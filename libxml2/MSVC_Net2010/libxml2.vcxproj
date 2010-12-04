@@ -94,7 +94,7 @@
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libiconv.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libiconv-vc100-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(SolutionDir)\..\..\..\w32deps\libxml2\bin\$(TargetName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w32deps\win_iconv\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>$(SolutionDir)\..\..\..\w32deps\libxml2\lib\$(TargetName).lib</ImportLibrary>
@@ -120,7 +120,7 @@
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libiconv.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libiconv-vc100-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(SolutionDir)\..\..\..\w64deps\libxml2\bin\$(TargetName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w64deps\win_iconv\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>$(SolutionDir)\..\..\..\w64deps\libxml2\lib\$(TargetName).lib</ImportLibrary>
@@ -145,10 +145,12 @@
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libiconv.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libiconv-vc100.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(SolutionDir)\..\..\..\w32deps\libxml2\bin\$(TargetName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w32deps\win_iconv\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>$(SolutionDir)\..\..\..\w32deps\libxml2\lib\$(TargetName).lib</ImportLibrary>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -172,7 +174,7 @@
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libiconv.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libiconv-vc100.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(SolutionDir)\..\..\..\w64deps\libxml2\bin\$(TargetName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w64deps\win_iconv\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>$(SolutionDir)\..\..\..\w64deps\libxml2\lib\$(TargetName).lib</ImportLibrary>
