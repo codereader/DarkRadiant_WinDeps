@@ -29,12 +29,22 @@ The folder structure should then look like this:
 This way, the VC++ projects place their binaries in the correct location in the w32deps/w64deps folder and you can compile
 DarkRadiant right off the bat.
 
-== Compile Scripts / Compile order for gtkmm ==
+== Compile Scripts (VC++ 2010) ==
 
 For VC++ 2010 you can use the shell script in the winbuild folder. Open a VC++ 2010 Command Prompt and head to the
-winbuild directory, then call the rebuild_all.x86.cmd file (for building the 32 bits libraries, release & debug).
+winbuild directory, then call the batch file corresponding to your compiler version.
 
-For other VC++ versions, you'll need to build stuff on your own. Use this build order (http://live.gnome.org/gtkmm/MSWindows/BuildingGtkmm)
+* build_all.x86.cmd => Compiles all 32 bit gtkmm libraries, including gtksourceviewmm and gtkglextmm (Debug & Release versions).
+* build_all.x64.cmd => Compiles all 64 bit gtkmm libraries, including gtksourceviewmm and gtkglextmm (Debug & Release versions).
+* build_c_libs.x86.cmd => Compiles all 32 bit C-libraries like win_iconv, libxml2, gtkglext and gtksourceview (Debug & Release versions).
+* build_c_libs.x64.cmd => Compiles all 64 bit C-libraries like win_iconv, libxml2, gtkglext and gtksourceview (Debug & Release versions).
+
+The 32 bit shell scripts will place the *.lib files directly into your w32deps folder, the 64 bit ones put their files into w64deps.
+
+== Compile order for gtkmm (VC++ 2008) ==
+
+When using the older VC++ 2008, you'll need to build stuff manually (or tweak the scripts above). 
+Use this build order as found on http://live.gnome.org/gtkmm/MSWindows/BuildingGtkmm.
 
  1. libsigc++
  2. glibmm

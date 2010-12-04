@@ -1,8 +1,8 @@
 msbuild win_iconv\vcproj\win_iconv.sln /p:configuration=debug /p:platform=x64  /m
 msbuild win_iconv\vcproj\win_iconv.sln /p:configuration=release /p:platform=x64  /m
 
-msbuild libxml2\vcproj\libxml2.sln /p:configuration=debug /p:platform=x64  /m
-msbuild libxml2\vcproj\libxml2.sln /p:configuration=release /p:platform=x64  /m
+msbuild libxml2\MSVC_Net2010\libxml2.sln /p:configuration=debug /p:platform=x64  /m
+msbuild libxml2\MSVC_Net2010\libxml2.sln /p:configuration=release /p:platform=x64  /m
 
 msbuild gtksourceview\vcproj\libgtksourceview.sln /p:configuration=debug /p:platform=x64  /m
 msbuild gtksourceview\vcproj\libgtksourceview.sln /p:configuration=release /p:platform=x64  /m
