@@ -117,7 +117,7 @@
       <Command>$(SolutionDir)\gendef\$(Configuration)\gendef $(Configuration)\$(ProjectName).def $(TargetFileName) $(IntDir)*.obj</Command>
     </PreLinkEvent>
     <Link>
-      <AdditionalDependencies>gtk-win32-2.0.lib;glib-2.0.lib;gobject-2.0.lib;gmodule-2.0.lib;sigc-vc100-d-2_0.lib;atkmm-vc100-d-1_6.lib;glibmm-vc100-d-2_4.lib;gdkmm-vc100-d-2_4.lib;gtkmm-vc100-d-2_4.lib;libgtksourceview.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gtk-win32-2.0.lib;glib-2.0.lib;gobject-2.0.lib;gmodule-2.0.lib;sigc-vc100-d-2_0.lib;atkmm-vc100-d-1_6.lib;glibmm-vc100-d-2_4.lib;gdkmm-vc100-d-2_4.lib;gtkmm-vc100-d-2_4.lib;libgtksourceview-vc100-d-2_0.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>NotSet</ShowProgress>
       <OutputFile>$(SolutionDir)\..\..\..\w32deps\gtksourceviewmm\bin\$(TargetName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w32deps\gtkmm\lib;$(SolutionDir)\..\..\..\w32deps\gtk2\lib;$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -153,7 +153,7 @@
       <Command>$(SolutionDir)\gendef\$(Platform)\$(Configuration)\gendef $(Platform)\$(Configuration)\$(ProjectName).def $(TargetFileName) $(IntDir)*.obj</Command>
     </PreLinkEvent>
     <Link>
-      <AdditionalDependencies>gtk-win32-2.0.lib;glib-2.0.lib;gobject-2.0.lib;gmodule-2.0.lib;sigc-vc100-d-2_0.lib;atkmm-vc100-d-1_6.lib;glibmm-vc100-d-2_4.lib;gdkmm-vc100-d-2_4.lib;gtkmm-vc100-d-2_4.lib;libgtksourceview.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gtk-win32-2.0.lib;glib-2.0.lib;gobject-2.0.lib;gmodule-2.0.lib;sigc-vc100-d-2_0.lib;atkmm-vc100-d-1_6.lib;glibmm-vc100-d-2_4.lib;gdkmm-vc100-d-2_4.lib;gtkmm-vc100-d-2_4.lib;libgtksourceview-vc100-d-2_0.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(SolutionDir)\..\..\..\w64deps\gtksourceviewmm\bin\$(TargetName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w64deps\gtkmm\lib;$(SolutionDir)\..\..\..\w64deps\gtk2\lib;$(SolutionDir)\..\..\..\w64deps\gtksourceview-2.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>$(Platform)\$(Configuration)\$(ProjectName).def</ModuleDefinitionFile>
@@ -183,7 +183,7 @@
       <Command>$(SolutionDir)\gendef\$(Configuration)\gendef $(Configuration)\$(ProjectName).def $(TargetFileName) $(IntDir)*.obj</Command>
     </PreLinkEvent>
     <Link>
-      <AdditionalDependencies>gtk-win32-2.0.lib;glib-2.0.lib;gobject-2.0.lib;gmodule-2.0.lib;atkmm-vc100-1_6.lib;sigc-vc100-2_0.lib;glibmm-vc100-2_4.lib;gdkmm-vc100-2_4.lib;gtkmm-vc100-2_4.lib;libgtksourceview.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gtk-win32-2.0.lib;glib-2.0.lib;gobject-2.0.lib;gmodule-2.0.lib;atkmm-vc100-1_6.lib;sigc-vc100-2_0.lib;glibmm-vc100-2_4.lib;gdkmm-vc100-2_4.lib;gtkmm-vc100-2_4.lib;libgtksourceview-vc100-2_0.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(SolutionDir)\..\..\..\w32deps\gtksourceviewmm\bin\$(TargetName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w32deps\gtkmm\lib;$(SolutionDir)\..\..\..\w32deps\gtk2\lib;$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>$(Configuration)\$(ProjectName).def</ModuleDefinitionFile>
@@ -214,7 +214,7 @@
       <Command>$(SolutionDir)\gendef\$(Platform)\$(Configuration)\gendef $(Platform)\$(Configuration)\$(ProjectName).def $(TargetFileName) $(IntDir)*.obj</Command>
     </PreLinkEvent>
     <Link>
-      <AdditionalDependencies>gtk-win32-2.0.lib;glib-2.0.lib;gobject-2.0.lib;gmodule-2.0.lib;atkmm-vc100-1_6.lib;sigc-vc100-2_0.lib;glibmm-vc100-2_4.lib;gdkmm-vc100-2_4.lib;gtkmm-vc100-2_4.lib;libgtksourceview.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gtk-win32-2.0.lib;glib-2.0.lib;gobject-2.0.lib;gmodule-2.0.lib;atkmm-vc100-1_6.lib;sigc-vc100-2_0.lib;glibmm-vc100-2_4.lib;gdkmm-vc100-2_4.lib;gtkmm-vc100-2_4.lib;libgtksourceview-vc100-2_0.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(SolutionDir)\..\..\..\w64deps\gtksourceviewmm\bin\$(TargetName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w64deps\gtkmm\lib;$(SolutionDir)\..\..\..\w64deps\gtk2\lib;$(SolutionDir)\..\..\..\w64deps\gtksourceview-2.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>$(Platform)\$(Configuration)\$(ProjectName).def</ModuleDefinitionFile>
