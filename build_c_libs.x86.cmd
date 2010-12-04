@@ -1,5 +1,5 @@
-msbuild win_iconv\vcproj\win_iconv.sln /p:configuration=debug /p:platform=Win32  /m
-msbuild win_iconv\vcproj\win_iconv.sln /p:configuration=release /p:platform=Win32  /m
+msbuild win_iconv\MSVC_Net2010\win_iconv.sln /p:configuration=debug /p:platform=Win32  /m
+msbuild win_iconv\MSVC_Net2010\win_iconv.sln /p:configuration=release /p:platform=Win32  /m
 
 msbuild libxml2\MSVC_Net2010\libxml2.sln /p:configuration=debug /p:platform=Win32  /m
 msbuild libxml2\MSVC_Net2010\libxml2.sln /p:configuration=release /p:platform=Win32  /m
