@@ -9,3 +9,6 @@ msbuild gtksourceview\MSVC_Net2010\libgtksourceview.sln /p:configuration=release
 
 msbuild gtkglext\MSVC_Net2010\gdkglext.sln /p:configuration=debug /p:platform=Win32  /m
 msbuild gtkglext\MSVC_Net2010\gdkglext.sln /p:configuration=release /p:platform=Win32  /m
+
+msbuild libzlib\MSVC_Net2010\libzlib.sln /p:configuration=debug /p:platform=Win32  /m
+msbuild libzlib\MSVC_Net2010\libzlib.sln /p:configuration=release /p:platform=Win32  /m
