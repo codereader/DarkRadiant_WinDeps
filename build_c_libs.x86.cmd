@@ -12,3 +12,6 @@ msbuild gtkglext\MSVC_Net2010\gdkglext.sln /p:configuration=release /p:platform=
 
 msbuild libzlib\MSVC_Net2010\libzlib.sln /p:configuration=debug /p:platform=Win32  /m
 msbuild libzlib\MSVC_Net2010\libzlib.sln /p:configuration=release /p:platform=Win32  /m
+
+msbuild libvorbis\MSVC_Net2010\libvorbis.sln /p:configuration=debug /p:platform=Win32  /m
+msbuild libvorbis\MSVC_Net2010\libvorbis.sln /p:configuration=release /p:platform=Win32  /m
