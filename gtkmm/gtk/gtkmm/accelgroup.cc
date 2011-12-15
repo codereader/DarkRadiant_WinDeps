@@ -208,23 +208,17 @@ const Glib::Class& AccelGroup_Class::init()
   return *this;
 }
 
+
 void AccelGroup_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->accel_changed = &accel_changed_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void AccelGroup_Class::accel_changed_callback(GtkAccelGroup* self, guint p0, GdkModifierType p1, GClosure* p2)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -257,7 +251,7 @@ void AccelGroup_Class::accel_changed_callback(GtkAccelGroup* self, guint p0, Gdk
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -266,7 +260,6 @@ void AccelGroup_Class::accel_changed_callback(GtkAccelGroup* self, guint p0, Gdk
   if(base && base->accel_changed)
     (*base->accel_changed)(self, p0, p1, p2);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* AccelGroup_Class::wrap_new(GObject* object)
@@ -295,6 +288,7 @@ AccelGroup::AccelGroup(GtkAccelGroup* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 AccelGroup::~AccelGroup()
 {}
 
@@ -305,6 +299,7 @@ GType AccelGroup::get_type()
 {
   return accelgroup_class_.init().get_type();
 }
+
 
 GType AccelGroup::get_base_type()
 {
@@ -326,6 +321,7 @@ Glib::RefPtr<AccelGroup> AccelGroup::create()
 {
   return Glib::RefPtr<AccelGroup>( new AccelGroup() );
 }
+
 bool AccelGroup::get_is_locked() const
 {
   return gtk_accel_group_get_is_locked(const_cast<GtkAccelGroup*>(gobj()));
@@ -380,7 +376,21 @@ Glib::SignalProxy3< void,guint,Gdk::ModifierType,GClosure* > AccelGroup::signal_
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> AccelGroup::property_is_locked() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "is-locked");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<Gdk::ModifierType> AccelGroup::property_modifier_mask() const
+{
+  return Glib::PropertyProxy_ReadOnly<Gdk::ModifierType>(this, "modifier-mask");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+
 void Gtk::AccelGroup::on_accel_changed(guint keyval, Gdk::ModifierType modifier, GClosure* accel_closure)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -390,10 +400,6 @@ void Gtk::AccelGroup::on_accel_changed(guint keyval, Gdk::ModifierType modifier,
   if(base && base->accel_changed)
     (*base->accel_changed)(gobj(),keyval,((GdkModifierType)(modifier)),accel_closure);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

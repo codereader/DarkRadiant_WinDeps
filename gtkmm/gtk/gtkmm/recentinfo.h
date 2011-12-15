@@ -24,22 +24,24 @@
  */
 
 #include <gdkmm/pixbuf.h>
-
-#include <time.h>
+#include <ctime>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
+extern "C"
+{
 typedef struct _GtkRecentInfo GtkRecentInfo;
-#endif //DOXYGEN_SHOULD_SKIP_THIS
+void gtk_recent_info_unref(GtkRecentInfo* info);
+}
+#endif /* !DOXYGEN_SHOULD_SKIP_THIS */
 
 namespace Gtk
 {
 
-
 /** Contains informations found when looking up an entry of the
  * recently used files list.
  *
- * @newin2p10
+ * @newin{2,10}
  *
  * @ingroup RecentFiles
  */
@@ -52,8 +54,14 @@ class RecentInfo
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 
-  // For use with Glib::RefPtr<> only.
+  /** Increment the reference count for this object.
+   * You should never need to do this manually - use the object via a RefPtr instead.
+   */
   void reference()   const;
+
+  /** Decrement the reference count for this object.
+   * You should never need to do this manually - use the object via a RefPtr instead.
+   */
   void unreference() const;
 
   ///Provides access to the underlying C instance.
@@ -78,79 +86,84 @@ private:
 
 public:
 
-  bool equal(const RecentInfo& other) const;
+
+//TODO: Deprecate this? Why? Document the deprecation.
+//#ifndef DOXYGEN_SHOULD_SKIP_THIS
+//# if (!defined(GTKMM_DISABLE_DEPRECATED) || defined(GTKMM_COMPILATION))
   /// Tests whether the RecentInfo is valid.
   operator bool() const;
+//# endif
+//#endif
 
   
   /** Gets the URI of the resource.
+   * 
+   * @newin{2,10}
    * @return The URI of the resource.  The returned string is
    * owned by the recent manager, and should not be freed.
-   * 
-   * @newin2p10.
    */
   Glib::ustring get_uri() const;
   
   /** Gets the name of the resource.  If none has been defined, the basename
    * of the resource is obtained.
+   * 
+   * @newin{2,10}
    * @return The display name of the resource.  The returned string
    * is owned by the recent manager, and should not be freed.
-   * 
-   * @newin2p10.
    */
   Glib::ustring get_display_name() const;
   
   /** Gets the (short) description of the resource.
+   * 
+   * @newin{2,10}
    * @return The description of the resource.  The returned string
    * is owned by the recent manager, and should not be freed.
-   * 
-   * @newin2p10.
    */
   Glib::ustring get_description() const;
   
   /** Gets the MIME type of the resource.
+   * 
+   * @newin{2,10}
    * @return The MIME type of the resource.  The returned string
    * is owned by the recent manager, and should not be freed.
-   * 
-   * @newin2p10.
    */
   Glib::ustring get_mime_type() const;
-  
+
   
   /** Gets the timestamp (seconds from system's Epoch) when the resource
    * was added to the recently used resources list.
+   * 
+   * @newin{2,10}
    * @return The number of seconds elapsed from system's Epoch when
    * the resource was added to the list, or -1 on failure.
-   * 
-   * @newin2p10.
    */
   time_t get_added() const;
   
   /** Gets the timestamp (seconds from system's Epoch) when the resource
    * was last modified.
+   * 
+   * @newin{2,10}
    * @return The number of seconds elapsed from system's Epoch when
    * the resource was last modified, or -1 on failure.
-   * 
-   * @newin2p10.
    */
   time_t get_modified() const;
   
   /** Gets the timestamp (seconds from system's Epoch) when the resource
    * was last visited.
+   * 
+   * @newin{2,10}
    * @return The number of seconds elapsed from system's Epoch when
    * the resource was last visited, or -1 on failure.
-   * 
-   * @newin2p10.
    */
   time_t get_visited() const;
-  
+
   
   /** Gets the value of the "private" flag.  Resources in the recently used
    * list that have this flag set to <tt>true</tt> should only be displayed by the
    * applications that have registered them.
-   * @return <tt>true</tt> if the private flag was found, <tt>false</tt> otherwise.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return <tt>true</tt> if the private flag was found, <tt>false</tt> otherwise.
    */
   bool get_private_hint() const;
 
@@ -160,124 +173,153 @@ public:
    * 
    * If the command line contains any escape characters defined inside the
    * storage specification, they will be expanded.
+   * 
+   * @newin{2,10}
    * @param app_name The name of the application that has registered this item.
    * @param app_exec Return location for the string containing the command line.
    * @param count Return location for the number of times this item was registered.
    * @param time Return location for the timestamp this item was last registered
    * for this application.
    * @return <tt>true</tt> if an application with @a app_name has registered this
-   * resource inside the recently used list, or <tt>false</tt> otherwise.  You should
-   * free the returned command line using Glib::free().
-   * 
-   * @newin2p10.
+   * resource inside the recently used list, or <tt>false</tt> otherwise. The
+   *  @a app_exec string is owned by the Gtk::RecentInfo and should not be
+   * modified or freed.
    */
-  bool get_application_info(const Glib::ustring& app_name, Glib::StringArrayHandle& app_exec, guint& count, time_t& time) const;
-  Glib::StringArrayHandle get_applications() const;
+
+  bool get_application_info(const Glib::ustring& app_name, std::string& app_exec,
+                            guint& count, time_t& time_) const;
+
   
-  //_WRAP_METHOD(Glib::StringArrayHandle get_applications(unsigned& length) const, gtk_recent_info_get_applications)
+  /** Retrieves the list of applications that have registered this resource.
+   * 
+   * @newin{2,10}
+   * @param length Return location for the length of the returned list.
+   * @return A newly allocated <tt>0</tt>-terminated array of strings.
+   * Use Glib::strfreev() to free it.
+   */
+
+  Glib::StringArrayHandle get_applications() const;
+
   
   /** Gets the name of the last application that have registered the
    * recently used resource represented by @a info.
-   * @return An application name.  Use Glib::free() to free it.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return An application name.  Use Glib::free() to free it.
    */
   Glib::ustring last_application() const;
   
   /** Checks whether an application registered this resource using @a app_name.
+   * 
+   * @newin{2,10}
    * @param app_name A string containing an application name.
    * @return <tt>true</tt> if an application with name @a app_name was found,
    * <tt>false</tt> otherwise.
-   * 
-   * @newin2p10.
    */
   bool has_application(const Glib::ustring& app_name) const;
+
   
+  /** Returns all groups registered for the recently used item @a info.  The
+   * array of returned group names will be <tt>0</tt> terminated, so length might
+   * optionally be <tt>0</tt>.
+   * 
+   * @newin{2,10}
+   * @param length Return location for the number of groups returned.
+   * @return A newly allocated <tt>0</tt> terminated array of strings.
+   * Use Glib::strfreev() to free it.
+   */
+
   Glib::StringArrayHandle get_groups() const;
-  
-  //_WRAP_METHOD(Glib::StringArrayHandle get_groups(unsigned& length) const, gtk_recent_info_get_groups)
+
   
   /** Checks whether @a group_name appears inside the groups registered for the
    * recently used item @a info.
+   * 
+   * @newin{2,10}
    * @param group_name Name of a group.
    * @return <tt>true</tt> if the group was found.
-   * 
-   * @newin2p10.
    */
   bool has_group(const Glib::ustring& group) const;
-  
+
   
   /** Retrieves the icon of size @a size associated to the resource MIME type.
-   * @param size The size of the icon in pixels.
-   * @return A Gdk::Pixbuf containing the icon, or <tt>0</tt>. Use
-   * Glib::object_unref() when finished using the icon.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @param size The size of the icon in pixels.
+   * @return A Gdk::Pixbuf containing the icon,
+   * or <tt>0</tt>. Use Glib::object_unref() when finished using the icon.
    */
   Glib::RefPtr<Gdk::Pixbuf> get_icon(int size);
   
   /** Retrieves the icon of size @a size associated to the resource MIME type.
-   * @param size The size of the icon in pixels.
-   * @return A Gdk::Pixbuf containing the icon, or <tt>0</tt>. Use
-   * Glib::object_unref() when finished using the icon.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @param size The size of the icon in pixels.
+   * @return A Gdk::Pixbuf containing the icon,
+   * or <tt>0</tt>. Use Glib::object_unref() when finished using the icon.
    */
   Glib::RefPtr<const Gdk::Pixbuf> get_icon(int size) const;
-  
+
   
   /** Computes a valid UTF-8 string that can be used as the name of the item in a
    * menu or list.  For example, calling this function on an item that refers to
    * "file:///foo/bar.txt" will yield "bar.txt".
+   * 
+   * @newin{2,10}
    * @return A newly-allocated string in UTF-8 encoding; free it with
    * Glib::free().
-   * 
-   * @newin2p10.
    */
   Glib::ustring get_short_name() const;
   
   /** Gets a displayable version of the resource's URI.  If the resource
    * is local, it returns a local path; if the resource is not local,
-   * it returns the UTF-8 encoded content of gtk_recent_info_get_uri().
+   * it returns the UTF-8 encoded content of get_uri().
+   * 
+   * @newin{2,10}
    * @return A newly allocated UTF-8 string containing the
    * resource's URI or <tt>0</tt>. Use Glib::free() when done using it.
-   * 
-   * @newin2p10.
    */
   Glib::ustring get_uri_display() const;
-  
+
   
   /** Gets the number of days elapsed since the last update of the resource
    * pointed by @a info.
-   * @return A positive integer containing the number of days elapsed
-   * since the time this resource was last modified.  
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return A positive integer containing the number of days elapsed
+   * since the time this resource was last modified.
    */
   int get_age() const;
   
   /** Checks whether the resource is local or not by looking at the
    * scheme of its URI.
-   * @return <tt>true</tt> if the resource is local.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return <tt>true</tt> if the resource is local.
    */
   bool is_local() const;
   
   /** Checks whether the resource pointed by @a info still exists.  At
    * the moment this check is done only on resources pointing to local files.
-   * @return <tt>true</tt> if the resource exists
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return <tt>true</tt> if the resource exists.
    */
   bool exists() const;
 
-  
-  //_WRAP_METHOD(bool match(const RecentInfo& b) const, gtk_recent_info_match)
+
+  /** Checks whether two Gtk::RecentInfo structures point to the same
+   * resource.
+   * 
+   * @newin{2,10}
+   * @param info_b A Gtk::RecentInfo.
+   * @return <tt>true</tt> if both Gtk::RecentInfo structures point to se same
+   * resource, <tt>false</tt> otherwise.
+   */
+  bool equal(const RecentInfo& b) const;
 
 
 };
-
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
@@ -287,14 +329,15 @@ struct RecentInfoTraits
   typedef const GtkRecentInfo* CType;
   typedef GtkRecentInfo* CTypeNonConst;
 
-  static CType to_c_type(const CppType& obj) { return Glib::unwrap(obj); }
-  static CType to_c_type(const CType& obj) { return obj; }
-  static CppType to_cpp_type(const CType& obj); //Implemented in the .cpp file
-  static void release_c_type(const CType& /* obj */) { /* gtk_recent_info_unref(const_cast<CTypeNonConst>(obj)); */}
+  static inline CType to_c_type(const CppType& obj) { return Glib::unwrap(obj); }
+  static inline CType to_c_type(const CType& obj) { return obj; }
+  static CppType to_cpp_type(const CType& obj);
+  static inline void release_c_type(const CType& obj)
+    { gtk_recent_info_unref(const_cast<CTypeNonConst>(obj)); }
 };
-#endif
+#endif /* !DOXYGEN_SHOULD_SKIP_THIS */
 
-//TODO: We normally put these inside the class:
+// TODO: These are almost impossible to use without RefPtr<>::operator*()
 
 /** @relates Gtk::RecentInfo */
 inline bool operator==(const RecentInfo& lhs, const RecentInfo& rhs)
@@ -311,8 +354,8 @@ namespace Glib
 
 // This is needed so Glib::RefPtr<Gtk::RecentInfo> can be used with
 // Glib::Value and Gtk::TreeModelColumn:
-template<>
-class Value<Glib::RefPtr<Gtk::RecentInfo> >: public ValueBase_Boxed
+template <>
+class Value< Glib::RefPtr<Gtk::RecentInfo> > : public ValueBase_Boxed
 {
 public:
   typedef Glib::RefPtr<Gtk::RecentInfo> CppType;

@@ -27,8 +27,15 @@
 
 #include <glibmm/interface.h>
 #include <gtkmm/enums.h>
-//#include <gtk/gtktoolshell.h>
-#include <gtk/gtk.h>
+#include <gtkmm/sizegroup.h>
+
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+extern "C"
+{
+typedef struct _GtkToolShellIface GtkToolShellIface;
+}
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -45,7 +52,7 @@ namespace Gtk
 /** A base class for containers containing ToolItem widgets.
  * This interface allows container widgets to provide additional information when embedding ToolItem widgets. 
  *
- * @newin2p14
+ * @newin{2,14}
  */
 
 class ToolShell : public Glib::Interface
@@ -100,7 +107,7 @@ public:
   ///Provides access to the underlying C GObject.
   GtkToolShell*       gobj()       { return reinterpret_cast<GtkToolShell*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const GtkToolShell* gobj() const { return reinterpret_cast<GtkToolShell*>(gobject_); }
 
 private:
@@ -110,34 +117,35 @@ public:
   
   /** Retrieves the icon size for the tool shell. Tool items must not call this
    * function directly, but rely on Gtk::ToolItem::get_icon_size() instead.
-   * @return The current size for icons of @a shell
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The current size for icons of @a shell.
    */
   IconSize get_icon_size() const;
   
   /** Retrieves the current orientation for the tool shell. Tool items must not
    * call this function directly, but rely on Gtk::ToolItem::get_orientation()
    * instead.
-   * @return The current orientation of @a shell
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The current orientation of @a shell.
    */
   Orientation get_orientation() const;
   
   /** Retrieves whether the tool shell has text, icons, or both. Tool items must
    * not call this function directly, but rely on gtk_tool_item_get_style()
    * instead.
-   * @return The current style of @a shell
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The current style of @a shell.
    */
   ToolbarStyle get_style() const;
   
-  /** Return value: The relief style of buttons on @a shell.
-   * @return The relief style of buttons on @a shell.
+  /** Returns the relief style of buttons on @a shell. Tool items must not call this
+   * function directly, but rely on Gtk::ToolItem::get_relief_style() instead.
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The relief style of buttons on @a shell.
    */
   ReliefStyle get_relief_style() const;
   
@@ -148,49 +156,80 @@ public:
    * Tool items must not call this function directly, but rely on
    * Gtk::ToolItem::rebuild_menu() instead.
    * 
-   * @newin2p14
+   * @newin{2,14}
    */
   void rebuild_menu();
+  
+  /** Retrieves the current text orientation for the tool shell. Tool items must not
+   * call this function directly, but rely on Gtk::ToolItem::get_text_orientation()
+   * instead.
+   * 
+   * @newin{2,20}
+   * @return The current text orientation of @a shell.
+   */
+  Orientation get_text_orientation() const;
+  
+  /** Retrieves the current text alignment for the tool shell. Tool items must not
+   * call this function directly, but rely on Gtk::ToolItem::get_text_alignment()
+   * instead.
+   * 
+   * @newin{2,20}
+   * @return The current text alignment of @a shell.
+   */
+  float get_text_alignment() const;
+  
+  /** Retrieves the current ellipsize mode for the tool shell. Tool items must not
+   * call this function directly, but rely on Gtk::ToolItem::get_ellipsize_mode()
+   * instead.
+   * 
+   * @newin{2,20}
+   * @return The current ellipsize mode of @a shell.
+   */
+  Pango::EllipsizeMode get_ellipsize_mode() const;
 
+  
+  /** Retrieves the current text size group for the tool shell. Tool items must not
+   * call this function directly, but rely on Gtk::ToolItem::get_text_size_group()
+   * instead.
+   * 
+   * @newin{2,20}
+   * @return The current text size group of @a shell.
+   */
+  Glib::RefPtr<SizeGroup> get_text_size_group();
+  
+  /** Retrieves the current text size group for the tool shell. Tool items must not
+   * call this function directly, but rely on Gtk::ToolItem::get_text_size_group()
+   * instead.
+   * 
+   * @newin{2,20}
+   * @return The current text size group of @a shell.
+   */
+  Glib::RefPtr<const SizeGroup> get_text_size_group() const;
  
 protected:
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual IconSize get_icon_size_vfunc();
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual IconSize get_icon_size_vfunc();
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual Orientation get_orientation_vfunc();
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual Orientation get_orientation_vfunc();
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual ToolbarStyle get_style_vfunc();
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual ToolbarStyle get_style_vfunc();
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual ReliefStyle get_relief_style_vfunc();
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual ReliefStyle get_relief_style_vfunc();
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void rebuild_menu_vfunc();
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void rebuild_menu_vfunc();
+
+  //TODO: Add the other vfuncs when we can break ABI.
 
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

@@ -4,7 +4,8 @@
 #define _PANGOMM_FONT_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: font.hg,v 1.2 2006/06/08 20:39:39 murrayc Exp $ */
 
@@ -13,16 +14,16 @@
  * Copyright (C) 1998-1999 The gtkmm Development Team 
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
+ * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
@@ -95,6 +96,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -113,15 +116,19 @@ private:
 
 public:
   
-  /** Return value: a newly-allocated Pango::FontDescription object.
+  /** Returns a description of the font, with font size set in points.
+   * Use describe_with_absolute_size() if you want the font
+   * size in device units.
    * @return A newly-allocated Pango::FontDescription object.
    */
   FontDescription describe() const;
   
-  /** Return value: a newly-allocated Pango::FontDescription object.
-   * @return A newly-allocated Pango::FontDescription object.
+  /** Returns a description of the font, with absolute font size set
+   * (in device units). Use describe() if you want the font
+   * size in points.
    * 
-   * Since: 1.14.
+   * @newin{1,14}
+   * @return A newly-allocated Pango::FontDescription object.
    */
   FontDescription describe_with_absolute_size() const;
   
@@ -163,16 +170,32 @@ public:
 
   
   /** Gets the font map for which the font was created.
-   * @return The Pango::FontMap for the font, or <tt>0</tt> if @a font is <tt>0</tt>.
    * 
-   * Since: 1.10.
+   * Note that the font maintains a <firstterm>weak</firstterm> reference
+   * to the font map, so if all references to font map are dropped, the font
+   * map will be finalized even if there are fonts created with the font
+   * map that are still alive.  In that case this function will return <tt>0</tt>.
+   * It is the responsibility of the user to ensure that the font map is kept
+   * alive.  In most uses this is not an issue as a Pango::Context holds
+   * a reference to the font map.
+   * 
+   * @newin{1,10}
+   * @return The Pango::FontMap for the font, or <tt>0</tt> if @a font is <tt>0</tt>.
    */
   Glib::RefPtr<FontMap> get_font_map();
   
   /** Gets the font map for which the font was created.
-   * @return The Pango::FontMap for the font, or <tt>0</tt> if @a font is <tt>0</tt>.
    * 
-   * Since: 1.10.
+   * Note that the font maintains a <firstterm>weak</firstterm> reference
+   * to the font map, so if all references to font map are dropped, the font
+   * map will be finalized even if there are fonts created with the font
+   * map that are still alive.  In that case this function will return <tt>0</tt>.
+   * It is the responsibility of the user to ensure that the font map is kept
+   * alive.  In most uses this is not an issue as a Pango::Context holds
+   * a reference to the font map.
+   * 
+   * @newin{1,10}
+   * @return The Pango::FontMap for the font, or <tt>0</tt> if @a font is <tt>0</tt>.
    */
   Glib::RefPtr<const FontMap> get_font_map() const;
 
@@ -193,17 +216,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

@@ -27,22 +27,20 @@ public:
 
   const Glib::Class& init();
 
+
   static void class_init_function(void* g_class, void* class_data);
 
   static Glib::ObjectBase* wrap_new(GObject*);
 
 protected:
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   //Callbacks (default signal handlers):
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
   static void realize_callback(GtkStyle* self);
   static void unrealize_callback(GtkStyle* self);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
   //Callbacks (virtual functions):
-#ifdef GLIBMM_VFUNCS_ENABLED
   static void realize_vfunc_callback(GtkStyle* self);
   static void unrealize_vfunc_callback(GtkStyle* self);
   static void copy_vfunc_callback(GtkStyle* self, GtkStyle* src);
@@ -71,7 +69,6 @@ protected:
   static void draw_expander_vfunc_callback(GtkStyle* self, GdkWindow* window, GtkStateType state_type, GdkRectangle* area, GtkWidget* widget, const gchar* detail, gint x, gint y, GtkExpanderStyle expander_style);
   static void draw_layout_vfunc_callback(GtkStyle* self, GdkWindow* window, GtkStateType state_type, gboolean use_text, GdkRectangle* area, GtkWidget* widget, const gchar* detail, gint x, gint y, PangoLayout* layout);
   static void draw_resize_grip_vfunc_callback(GtkStyle* self, GdkWindow* window, GtkStateType state_type, GdkRectangle* area, GtkWidget* widget, const gchar* detail, GdkWindowEdge edge, gint x, gint y, gint width, gint height);
-#endif //GLIBMM_VFUNCS_ENABLED
 };
 
 

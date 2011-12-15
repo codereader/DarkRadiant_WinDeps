@@ -31,17 +31,10 @@
 namespace Gtk
 {
 
-#ifdef GLIBMM_PROPERTIES_ENABLED
 Glib::PropertyProxy_Base CellRendererToggle::_property_renderable()
 {
   return property_active();
 }
-#else
-Glib::ustring CellRendererToggle::_property_renderable()
-{
-  return "active";
-}
-#endif //#GLIBMM_PROPERTIES_ENABLED
 
 } //namespace Gtk
 
@@ -122,23 +115,17 @@ const Glib::Class& CellRendererToggle_Class::init()
   return *this;
 }
 
+
 void CellRendererToggle_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->toggled = &toggled_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void CellRendererToggle_Class::toggled_callback(GtkCellRendererToggle* self, const gchar* p0)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -171,7 +158,7 @@ void CellRendererToggle_Class::toggled_callback(GtkCellRendererToggle* self, con
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -180,7 +167,6 @@ void CellRendererToggle_Class::toggled_callback(GtkCellRendererToggle* self, con
   if(base && base->toggled)
     (*base->toggled)(self, p0);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* CellRendererToggle_Class::wrap_new(GObject* o)
@@ -216,6 +202,7 @@ GType CellRendererToggle::get_type()
   return cellrenderertoggle_class_.init().get_type();
 }
 
+
 GType CellRendererToggle::get_base_type()
 {
   return gtk_cell_renderer_toggle_get_type();
@@ -250,6 +237,16 @@ bool CellRendererToggle::get_active() const
 void CellRendererToggle::set_active(bool setting)
 {
 gtk_cell_renderer_toggle_set_active(gobj(), static_cast<int>(setting)); 
+}
+
+bool CellRendererToggle::get_activatable() const
+{
+  return gtk_cell_renderer_toggle_get_activatable(const_cast<GtkCellRendererToggle*>(gobj()));
+}
+
+void CellRendererToggle::set_activatable(bool setting)
+{
+gtk_cell_renderer_toggle_set_activatable(gobj(), static_cast<int>(setting)); 
 }
 
 
@@ -288,6 +285,20 @@ Glib::PropertyProxy_ReadOnly<bool> CellRendererToggle::property_active() const
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<bool> CellRendererToggle::property_inconsistent() 
+{
+  return Glib::PropertyProxy<bool>(this, "inconsistent");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> CellRendererToggle::property_inconsistent() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "inconsistent");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
 Glib::PropertyProxy<bool> CellRendererToggle::property_radio() 
 {
   return Glib::PropertyProxy<bool>(this, "radio");
@@ -316,7 +327,6 @@ Glib::PropertyProxy_ReadOnly<int> CellRendererToggle::property_indicator_size() 
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::CellRendererToggle::on_toggled(const Glib::ustring& path)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -326,10 +336,6 @@ void Gtk::CellRendererToggle::on_toggled(const Glib::ustring& path)
   if(base && base->toggled)
     (*base->toggled)(gobj(),path.c_str());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

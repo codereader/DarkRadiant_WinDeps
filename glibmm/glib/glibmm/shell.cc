@@ -86,17 +86,9 @@ Glib::ShellError::Code Glib::ShellError::code() const
   return static_cast<Code>(Glib::Error::code());
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void Glib::ShellError::throw_func(GError* gobject)
 {
   throw Glib::ShellError(gobject);
 }
-#else
-//When not using exceptions, we just pass the Exception object around without throwing it:
-std::auto_ptr<Glib::Error> Glib::ShellError::throw_func(GError* gobject)
-{
-  return std::auto_ptr<Glib::Error>(new Glib::ShellError(gobject));
-}
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 

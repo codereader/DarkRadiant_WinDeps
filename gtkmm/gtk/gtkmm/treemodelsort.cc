@@ -121,23 +121,14 @@ const Glib::Class& TreeModelSort_Class::init()
   return *this;
 }
 
+
 void TreeModelSort_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* TreeModelSort_Class::wrap_new(GObject* object)
@@ -166,6 +157,7 @@ TreeModelSort::TreeModelSort(GtkTreeModelSort* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 TreeModelSort::~TreeModelSort()
 {}
 
@@ -176,6 +168,7 @@ GType TreeModelSort::get_type()
 {
   return treemodelsort_class_.init().get_type();
 }
+
 
 GType TreeModelSort::get_base_type()
 {
@@ -197,6 +190,7 @@ Glib::RefPtr<TreeModelSort> TreeModelSort::create(const Glib::RefPtr<TreeModel>&
 {
   return Glib::RefPtr<TreeModelSort>( new TreeModelSort(model) );
 }
+
 Glib::RefPtr<TreeModel> TreeModelSort::get_model()
 {
 
@@ -238,11 +232,12 @@ bool TreeModelSort::iter_is_valid(const iterator& iter) const
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly< Glib::RefPtr<TreeModel> > TreeModelSort::property_model() const
+{
+  return Glib::PropertyProxy_ReadOnly< Glib::RefPtr<TreeModel> >(this, "model");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
 
 } // namespace Gtk

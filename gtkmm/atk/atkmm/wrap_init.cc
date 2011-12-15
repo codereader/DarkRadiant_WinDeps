@@ -1,5 +1,5 @@
 
-#include <glib.h>
+#include <glibmm.h>
 
 // Disable the 'const' function attribute of the get_type() functions.
 // GCC would optimize them out because we don't use the return value.

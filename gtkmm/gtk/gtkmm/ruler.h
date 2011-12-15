@@ -4,12 +4,15 @@
 #define _GTKMM_RULER_H
 
 
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+
 #include <glibmm.h>
 
 /* $Id: ruler.hg,v 1.1 2003/01/21 13:40:35 murrayc Exp $ */
 
 /* ruler.h
- * 
+ *
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -68,6 +71,9 @@ namespace Gtk
  * Gtk::VRuler.  Users should only instantiate those types.
  *
  * @ingroup Widgets
+ *
+ * @deprecated This has been removed from gtkmm-3.0 because it was unmaintained and too specialized.
+ * There is no replacement other than using the original GtkRuler and Gtk::Ruler source files in your application. 
  */
 
 class Ruler : public Widget
@@ -101,6 +107,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -113,28 +121,21 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
 
+  
 protected:
   Ruler();
 
 public:
-  
 
-  MetricType get_metric() const; 
 
   /** Sets the desired metric of the ruler.  The possible choices are:
    * <ul><li>Gtk::PIXELS
@@ -142,35 +143,57 @@ public:
    * <li>Gtk::CENTIMETERS
    * </ul>The default metric is Gtk::PIXELS.
    */
-  
-  void set_metric(MetricType metric = PIXELS);
+  void set_metric(MetricType metric =  PIXELS);
+
   
   /** Gets the units used for a Gtk::Ruler. See set_metric().
-   * @return The units currently used for @a ruler.
+   * @return The units currently used for @a ruler
+   * 
+   *  @a Deprecated: 2.24: Gtk::Ruler has been removed from GTK 3 for being
+   * unmaintained and too specialized. There is no replacement.
+   */
+  MetricType get_metric() const;
+  
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+  /** Gets the units used for a Gtk::Ruler. See set_metric().
+   * @deprecated Use the const version
+   * @return The units currently used for @a ruler
+   * 
+   *  @a Deprecated: 2.24: Gtk::Ruler has been removed from GTK 3 for being
+   * unmaintained and too specialized. There is no replacement.
    */
   MetricType get_metric();
+#endif // GTKMM_DISABLE_DEPRECATED
 
+
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+//TODO: Remove these when we can break ABI:
+
+  /** @deprecated Use get_range() instead.
+   */
    double get_range_lower() const;
-    double get_range_upper() const;
  
+  /** @deprecated Use get_range() instead.
+   */
+   double get_range_upper() const;
+ #endif // GTKMM_DISABLE_DEPRECATED
+
+
   /** sets the range of the ruler.
    * <i>upper</i> and <i>lower</i> arguments denote the extents of the Ruler.
    * <i>max_size</i> is the largest number displayed by the ruler.
    * <i>position</i> gives the initial value of the ruler.
    * Rulers do not have sane defaults so this function should always be called.
    */
-  
-  /** This sets the range of the ruler.
-   * @param lower The lower limit of the ruler.
-   * @param upper The upper limit of the ruler.
-   * @param position The mark on the ruler.
-   * @param max_size The maximum size of the ruler used when calculating the space to
-   * leave for the text.
-   */
   void set_range(double lower, double upper, double position, double max_size);
   
   /** Retrieves values indicating the range and current position of a Gtk::Ruler.
    * See set_range().
+   * 
+   *  @a Deprecated: 2.24: Gtk::Ruler has been removed from GTK 3 for being
+   * unmaintained and too specialized. There is no replacement.
    * @param lower Location to store lower limit of the ruler, or <tt>0</tt>.
    * @param upper Location to store upper limit of the ruler, or <tt>0</tt>.
    * @param position Location to store the current position of the mark on the ruler, or <tt>0</tt>.
@@ -179,21 +202,19 @@ public:
    */
   void get_range(double& lower, double& upper, double& position, double& max_size);
 
-  /// draw tick marks on the ruler
-  
+
+  /** draw tick marks on the ruler
+   */
   void draw_ticks();
 
-  /// draw a position indicator on the ruler
-  
+
+  /** draw a position indicator on the ruler
+   */
   void draw_pos();
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void draw_ticks_vfunc();
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void draw_ticks_vfunc();
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void draw_pos_vfunc();
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void draw_pos_vfunc();
 
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -276,6 +297,26 @@ public:
   Glib::PropertyProxy_ReadOnly<double> property_max_size() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The metric used for the ruler.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<MetricType> property_metric() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The metric used for the ruler.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<MetricType> property_metric() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
 
 };
 
@@ -283,6 +324,9 @@ public:
 /** Vertical Ruler
  *
  * @ingroup Widgets
+ *
+ * @deprecated This has been removed from gtkmm-3.0 because it was unmaintained and too specialized.
+ * There is no replacement other than using the original GtkRuler and Gtk::Ruler source files in your application. 
  */
 
 class VRuler : public Ruler
@@ -316,6 +360,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -328,24 +374,19 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
 
+  
 public:
   VRuler();
-  
+
 
 };
 
@@ -353,6 +394,9 @@ public:
 /** Horizontal Ruler
  *
  * @ingroup Widgets
+ *
+ * @deprecated This has been removed from gtkmm-3.0 because it was unmaintained and too specialized.
+ * There is no replacement other than using the original GtkRuler and Gtk::Ruler source files in your application. 
  */
 
 class HRuler : public Ruler
@@ -386,6 +430,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -398,24 +444,19 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
 
+  
 public:
   HRuler();
-  
+
 
 };
 
@@ -462,6 +503,9 @@ namespace Glib
    */
   Gtk::HRuler* wrap(GtkHRuler* object, bool take_copy = false);
 } //namespace Glib
+
+
+#endif // GTKMM_DISABLE_DEPRECATED
 
 
 #endif /* _GTKMM_RULER_H */

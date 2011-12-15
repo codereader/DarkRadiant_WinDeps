@@ -27,6 +27,7 @@
 #include <glibmm/optionentry.h>
 #include <glibmm/optioncontext.h>
 #include <glibmm/utility.h>
+#include <glibmm/exceptionhandler.h>
 //#include <glibmm/containers.h>
 #include <glib.h> // g_malloc
 
@@ -36,56 +37,249 @@ namespace Glib
 namespace //anonymous
 {
 
+//A pointer to an OptionArgCallback instance is stored in CppOptionEntry::cpparg_
+//when a callback function shall parse the command option's value.
+class OptionArgCallback
+{
+public:
+  explicit OptionArgCallback(const OptionGroup::SlotOptionArgString& slot)
+  : slot_string_(new OptionGroup::SlotOptionArgString(slot)), slot_filename_(0)
+  { }
+
+  explicit OptionArgCallback(const OptionGroup::SlotOptionArgFilename& slot)
+  : slot_string_(0), slot_filename_(new OptionGroup::SlotOptionArgFilename(slot))
+  { }
+
+  bool is_filename_option() const
+  { return slot_filename_ != 0; }
+  
+  const OptionGroup::SlotOptionArgString* get_slot_string() const
+  { return slot_string_; }
+  
+  const OptionGroup::SlotOptionArgFilename* get_slot_filename() const
+  { return slot_filename_; }
+
+  ~OptionArgCallback()
+  {
+    delete slot_string_;
+    delete slot_filename_;
+  }
+
+private:
+  //One of these slot pointers is 0 and the other one points to a slot.
+  OptionGroup::SlotOptionArgString* slot_string_;
+  OptionGroup::SlotOptionArgFilename* slot_filename_;
+
+  //Not copyable
+  OptionArgCallback(const OptionArgCallback&);
+  OptionArgCallback& operator=(const OptionArgCallback&);
+};
+
 extern "C"
 {
 
-static gboolean g_callback_pre_parse(GOptionContext* context, GOptionGroup* /* group */, gpointer data, GError** /* TODO error */)
+static gboolean g_callback_pre_parse(GOptionContext* context,
+  GOptionGroup* /* group */, gpointer data, GError** error)
 {
   OptionContext cppContext(context, false /* take_ownership */);
-  //OptionGroup cppGroup(group, true /* take_copy */); //Maybe this should be option_group.
 
   OptionGroup* option_group = static_cast<OptionGroup*>(data);
-  if(option_group)
-    return option_group->on_pre_parse(cppContext, *option_group);
-  else
-    return false;
-}
-
-static gboolean g_callback_post_parse(GOptionContext* context, GOptionGroup* /* group */, gpointer data, GError** /* TODO error */)
-{
-  OptionContext cppContext(context, false /* take_ownership */);
-  //OptionGroup cppGroup(group, true /* take_copy */); //Maybe this should be option_group.
-
-  OptionGroup* option_group = static_cast<OptionGroup*>(data);
-  if(option_group)
+  if(!option_group)
   {
-    return option_group->on_post_parse(cppContext, *option_group);
-  }
-  else
+    OptionError(OptionError::FAILED, "Glib::OptionGroup: g_callback_pre_parse(): "
+      "No OptionGroup pointer available").propagate(error);
     return false;
+  }
+
+  try
+  {
+    return option_group->on_pre_parse(cppContext, *option_group);
+  }
+  catch(Glib::Error& err)
+  {
+    err.propagate(error);
+  }
+  catch(...)
+  {
+    Glib::exception_handlers_invoke();
+  }
+  return false;
 }
 
-static void g_callback_error(GOptionContext* context, GOptionGroup* /* group */, gpointer data, GError** /* TODO error*/)
+static void g_callback_error(GOptionContext* context,
+  GOptionGroup* /* group */, gpointer data, GError** /* TODO error */)
 {
+  // TODO GError** error is input data containing information on an error that
+  // has occurred before this function is called. When API can be broken,
+  // the function prototype of on_error ought to be changed to
+  // void on_error(OptionContext& context, Error& error).
+
   OptionContext cppContext(context, false /* take_ownership */);
-  //OptionGroup cppGroup(group); //Maybe this should be option_group.
 
   OptionGroup* option_group = static_cast<OptionGroup*>(data);
   if(option_group)
     return option_group->on_error(cppContext, *option_group);
 }
 
+const gchar* OptionGroup_Translate_glibmm_callback(const gchar* string,
+  gpointer data)
+{
+  Glib::OptionGroup::SlotTranslate* the_slot =
+    static_cast<Glib::OptionGroup::SlotTranslate*>(data);
+
+  try
+  {
+    // The C docs says that the char* belongs to Glib.
+    return g_strdup((*the_slot)(Glib::ustring(string)).c_str());
+  }
+  catch(...)
+  {
+    Glib::exception_handlers_invoke();
+  }
+
+  return 0;
+}
+
+static void OptionGroup_Translate_glibmm_callback_destroy(void* data)
+{
+  delete static_cast<Glib::OptionGroup::SlotTranslate*>(data);
+}
+
 } /* extern "C" */
 
 } //anonymous namespace
 
+//static
+gboolean OptionGroup::post_parse_callback(GOptionContext* context,
+  GOptionGroup* /* group */, gpointer data, GError** error)
+{
+  OptionContext cppContext(context, false /* take_ownership */);
+
+  OptionGroup* option_group = static_cast<OptionGroup*>(data);
+  if(!option_group)
+  {
+    OptionError(OptionError::FAILED, "Glib::OptionGroup::post_parse_callback(): "
+      "No OptionGroup pointer available").propagate(error);
+    return false;
+  }
+
+  //The C args have now been given values by g_option_context_parse().
+  //Convert C values to C++ values:
+  for(type_map_entries::iterator iter = option_group->map_entries_.begin();
+      iter != option_group->map_entries_.end(); ++iter)
+  {
+    CppOptionEntry& cpp_entry = iter->second;
+    cpp_entry.convert_c_to_cpp();
+  }
+
+  try
+  {
+    return option_group->on_post_parse(cppContext, *option_group);
+  }
+  catch(Glib::Error& err)
+  {
+    err.propagate(error);
+  }
+  catch(...)
+  {
+    Glib::exception_handlers_invoke();
+  }
+  return false;
+}
+
+//static
+gboolean OptionGroup::option_arg_callback(const gchar* option_name, const gchar* value,
+  gpointer data, GError** error)
+{
+  const Glib::ustring cpp_option_name(option_name);
+  const OptionGroup* const option_group = static_cast<const OptionGroup*>(data);
+  if(!option_group)
+  {
+    OptionError(OptionError::FAILED, "Glib::OptionGroup::option_arg_callback(): "
+      "No OptionGroup pointer available for option " + cpp_option_name).propagate(error);
+    return false;
+  }
+
+  //option_name is either a single dash followed by a single letter (for a
+  //short name) or two dashes followed by a long option name.
+  OptionGroup::type_map_entries::const_iterator iterFind = option_group->map_entries_.end();
+  if(option_name[1] == '-')
+  {
+    //Long option name.
+    const Glib::ustring long_option_name = Glib::ustring(option_name+2);
+    iterFind = option_group->map_entries_.find(long_option_name);
+  }
+  else
+  {
+    //Short option name.
+    const gchar short_option_name = option_name[1];
+    for(iterFind = option_group->map_entries_.begin();
+        iterFind != option_group->map_entries_.end(); ++iterFind)
+    {
+      const OptionGroup::CppOptionEntry& cppOptionEntry = iterFind->second;
+      if (cppOptionEntry.entry_ &&
+          cppOptionEntry.entry_->get_short_name() == short_option_name)
+        break;
+    }
+  }
+
+  if(iterFind == option_group->map_entries_.end())
+  {
+    OptionError(OptionError::UNKNOWN_OPTION, "Glib::OptionGroup::option_arg_callback(): "
+      "Unknown option " + cpp_option_name).propagate(error);
+    return false;
+  }
+
+  const OptionGroup::CppOptionEntry& cppOptionEntry = iterFind->second;
+  if (cppOptionEntry.carg_type_ != G_OPTION_ARG_CALLBACK)
+  {
+    OptionError(OptionError::FAILED, "Glib::OptionGroup::option_arg_callback() "
+      "called for non-callback option " + cpp_option_name).propagate(error);
+    return false;
+  }
+
+  const bool has_value = (value != 0);
+  const OptionArgCallback* const option_arg =
+    static_cast<const OptionArgCallback*>(cppOptionEntry.cpparg_);
+  try
+  {
+    if (option_arg->is_filename_option())
+    {
+      const OptionGroup::SlotOptionArgFilename* the_slot = option_arg->get_slot_filename();
+      const std::string cpp_value(value ? value : "");
+      return (*the_slot)(cpp_option_name, cpp_value, has_value);
+    }
+    else
+    {
+      const OptionGroup::SlotOptionArgString* the_slot = option_arg->get_slot_string();
+      const Glib::ustring cpp_value(value ? value : "");
+      return (*the_slot)(cpp_option_name, cpp_value, has_value);
+    }
+  }
+  catch(Glib::Error& err)
+  {
+    err.propagate(error);
+  }
+  catch(...)
+  {
+    Glib::exception_handlers_invoke();
+  }
+  return false;
+}
 
 OptionGroup::OptionGroup(const Glib::ustring& name, const Glib::ustring& description, const Glib::ustring& help_description)
-: gobject_( g_option_group_new(name.c_str(), description.c_str(), help_description.c_str(), this, 0 /* destroy_func */) ),
+: gobject_( g_option_group_new(name.c_str(), description.c_str(), help_description.c_str(),
+            this /* user_data */, 0 /* destroy_func */) ),
   has_ownership_(true)
 {
+  //g_callback_pre_parse(), post_parse_callback(), g_callback_error(), and
+  //option_arg_callback() depend on user_data being this. The first three
+  //functions get a GOptionGroup*, but it would not be correct to use it for
+  //creating a new OptionGroup. They must call their virtual functions in the
+  //original OptionGroup instance.
+
   //Connect callbacks, so that derived classes can override the virtual methods:
-  g_option_group_set_parse_hooks(gobj(), &g_callback_pre_parse, &g_callback_post_parse);
+  g_option_group_set_parse_hooks(gobj(), &g_callback_pre_parse, &post_parse_callback);
   g_option_group_set_error_hook(gobj(), &g_callback_error);
 }
 
@@ -138,6 +332,11 @@ void OptionGroup::add_entry(const OptionEntry& entry, int& arg)
   add_entry_with_wrapper(entry, G_OPTION_ARG_INT, &arg);
 }
 
+void OptionGroup::add_entry(const OptionEntry& entry, double& arg)
+{
+  add_entry_with_wrapper(entry, G_OPTION_ARG_DOUBLE, &arg);
+}
+
 void OptionGroup::add_entry(const OptionEntry& entry, Glib::ustring& arg)
 {
   add_entry_with_wrapper(entry, G_OPTION_ARG_STRING, &arg);
@@ -157,7 +356,30 @@ void OptionGroup::add_entry_filename(const OptionEntry& entry, vecstrings& arg)
 {
   add_entry_with_wrapper(entry, G_OPTION_ARG_FILENAME_ARRAY, &arg);
 }
- 
+
+// When the command argument value is to be parsed by a user-supplied function
+// (indicated by G_OPTION_ARG_CALLBACK), the FLAG_FILENAME in 'entry' is ignored.
+// set_c_arg_default() clears or sets it as required in a copy of 'entry'.
+//
+// The glib API is inconsistent here. The choice between UTF-8 and filename
+// encoding is done with G_OPTION_ARG_STRING, G_OPTION_ARG_FILENAME,
+// G_OPTION_ARG_STRING_ARRAY, and G_OPTION_ARG_FILENAME_ARRAY, which in glibmm
+// are set by OptionGroup::add_entry[_filename]. But when a callback function
+// is chosen, there is only G_OPTION_ARG_CALLBACK, and the encoding is chosen
+// with G_OPTION_FLAG_FILENAME. Other option flags are set by OptionEntry::set_flags().
+
+void OptionGroup::add_entry(const OptionEntry& entry, const SlotOptionArgString& slot)
+{
+  //The OptionArgCallback is deleted in release_c_arg().
+  add_entry_with_wrapper(entry, G_OPTION_ARG_CALLBACK, new OptionArgCallback(slot));
+}
+
+void OptionGroup::add_entry_filename(const OptionEntry& entry, const SlotOptionArgFilename& slot)
+{
+  //The OptionArgCallback is deleted in release_c_arg().
+  add_entry_with_wrapper(entry, G_OPTION_ARG_CALLBACK, new OptionArgCallback(slot));
+}
+
 void OptionGroup::add_entry_with_wrapper(const OptionEntry& entry, GOptionArg arg_type, void* cpp_arg)
 {
   const Glib::ustring name = entry.get_long_name();
@@ -165,6 +387,10 @@ void OptionGroup::add_entry_with_wrapper(const OptionEntry& entry, GOptionArg ar
   if( iterFind == map_entries_.end() ) //If we have not added this entry already
   {
     CppOptionEntry cppEntry;
+    //g_option_group_add_entry() does not take its own copy, so we must keep the instance alive.
+    cppEntry.entry_ = new OptionEntry(entry);
+    //cppEntry.entry_ is deleted in release_c_arg(), via the destructor.
+
     cppEntry.carg_type_ = arg_type;
     cppEntry.allocate_c_arg();
     cppEntry.set_c_arg_default(cpp_arg);
@@ -172,10 +398,6 @@ void OptionGroup::add_entry_with_wrapper(const OptionEntry& entry, GOptionArg ar
     cppEntry.cpparg_ = cpp_arg;
 
     //Give the information to the C API:
-
-    cppEntry.entry_ = new OptionEntry(entry); //g_option_group_add_entry() does not take its own copy, so we must keep the instance alive. */
-    //cppEntry.entry_ is deleted in release_c_arg(), via the destructor.
-
     cppEntry.entry_->gobj()->arg = arg_type;
     cppEntry.entry_->gobj()->arg_data = cppEntry.carg_;
 
@@ -183,6 +405,13 @@ void OptionGroup::add_entry_with_wrapper(const OptionEntry& entry, GOptionArg ar
     map_entries_[name] = cppEntry;
 
     add_entry(*(cppEntry.entry_));
+  }
+  else if( arg_type == G_OPTION_ARG_CALLBACK )
+  {
+    //Delete the OptionArgCallback instance that was allocated by add_entry()
+    //or add_entry_filename().
+    OptionArgCallback* option_arg = static_cast<OptionArgCallback*>(cpp_arg);
+    delete option_arg;
   }
 }
 
@@ -194,24 +423,22 @@ bool OptionGroup::on_pre_parse(OptionContext& /* context */, OptionGroup& /* gro
 
 bool OptionGroup::on_post_parse(OptionContext& /* context */, OptionGroup& /* group */)
 {
-  //Call this at the start of overrides.
-
-  //TODO: Maybe put this in the C callback:
-
-  //The C args have now been given values by GOption.
-  //Convert C values to C++ values:
-
-  for(type_map_entries::iterator iter = map_entries_.begin(); iter != map_entries_.end(); ++iter)
-  {
-    CppOptionEntry& cpp_entry = iter->second;
-    cpp_entry.convert_c_to_cpp();
-  }
-
   return true;
 }
 
 void OptionGroup::on_error(OptionContext& /* context */, OptionGroup& /* group */)
 {
+}
+
+void OptionGroup::set_translate_func(const SlotTranslate& slot)
+{
+  // Create a copy of the slot. A pointer to this will be passed through the
+  // callback's data parameter.  It will be deleted when
+  // OptionGroup_Translate_glibmm_callback_destroy() is called.
+  SlotTranslate* slot_copy = new SlotTranslate(slot);
+  g_option_group_set_translate_func(gobj(),
+    &OptionGroup_Translate_glibmm_callback, slot_copy,
+    &OptionGroup_Translate_glibmm_callback_destroy);
 }
 
 
@@ -224,7 +451,8 @@ void OptionGroup::CppOptionEntry::allocate_c_arg()
   //Create an instance of the appropriate C type.
   //This will be destroyed in the OptionGroup destructor.
   //
-  //We must also call set_c_arg_default() to give these C types the specified defaults based on the C++-typed arguments.
+  //We must also call set_c_arg_default() to give these C types the specified
+  //defaults based on the C++-typed arguments.
   switch(carg_type_)
   {
     case G_OPTION_ARG_STRING: //The char* will be for UTF8 strins.
@@ -246,6 +474,14 @@ void OptionGroup::CppOptionEntry::allocate_c_arg()
 
       break;
     }
+    case G_OPTION_ARG_DOUBLE:
+    {
+      double* typed_arg = new double;
+      *typed_arg = 0.0;
+      carg_ = typed_arg;
+
+      break;
+    }
     case G_OPTION_ARG_STRING_ARRAY:
     case G_OPTION_ARG_FILENAME_ARRAY:
     {
@@ -263,6 +499,33 @@ void OptionGroup::CppOptionEntry::allocate_c_arg()
 
       break;
     }
+    case G_OPTION_ARG_CALLBACK:
+    {
+      //The C arg pointer is a function pointer, cast to void*.
+      union {
+        void* dp;
+        GOptionArgFunc fp;
+      } u;
+      u.fp = &OptionGroup::option_arg_callback;
+      carg_ = u.dp;
+
+      // With all compiler warnings turned on and a high optimization level
+      // it's difficult to cast a function pointer to a void*. See bug 589197.
+      // A few results with g++ 4.4.5 with the flags -pedantic -O2 -Werror:
+      //
+      // carg_ = reinterpret_cast<void*>(&OptionGroup::option_arg_callback);
+      // error: ISO C++ forbids casting between pointer-to-function and pointer-to-object
+      //
+      // *reinterpret_cast<GOptionArgFunc*>(&carg_) = &OptionGroup::option_arg_callback;
+      // *(OptionArgFunc*)&carg_ = &OptionGroup::option_arg_callback;
+      // error: dereferencing type-punned pointer will break strict-aliasing rules
+      //
+      // If any compiler dislikes the union, the following code is worth testing:
+      // carg_ = reinterpret_cast<void*>(
+      //         reinterpret_cast<unsigned long>(&OptionGroup::option_arg_callback));
+
+      break;
+    }
     default:
     {
       break;
@@ -277,6 +540,11 @@ void OptionGroup::CppOptionEntry::set_c_arg_default(void* cpp_arg)
     case G_OPTION_ARG_INT:
     {
       *static_cast<int*>(carg_) = *static_cast<int*>(cpp_arg);
+      break;
+    }
+    case G_OPTION_ARG_DOUBLE:
+    {
+      *static_cast<double*>(carg_) = *static_cast<double*>(cpp_arg);
       break;
     }
     case G_OPTION_ARG_NONE:
@@ -344,6 +612,22 @@ void OptionGroup::CppOptionEntry::set_c_arg_default(void* cpp_arg)
       }
       break;
     }
+    case G_OPTION_ARG_CALLBACK:
+    {
+      //No value to set here. The arg pointer is a function pointer.
+
+      //Set or clear FLAG_FILENAME in *entry_.
+      const OptionArgCallback* const option_arg = static_cast<const OptionArgCallback*>(cpp_arg);
+      if (option_arg->is_filename_option())
+      {
+        entry_->set_flags(entry_->get_flags() | OptionEntry::FLAG_FILENAME);
+      }
+      else
+      {
+        entry_->set_flags(entry_->get_flags() & ~OptionEntry::FLAG_FILENAME);
+      }
+      break;
+    }
     default:
     {
       break;
@@ -375,6 +659,13 @@ void OptionGroup::CppOptionEntry::release_c_arg()
 
         break;
       }
+      case G_OPTION_ARG_DOUBLE:
+      {
+        double* typed_arg = static_cast<double*>(carg_);
+        delete typed_arg;
+
+        break;
+      }
       case G_OPTION_ARG_STRING_ARRAY:
       case G_OPTION_ARG_FILENAME_ARRAY:
       {
@@ -388,11 +679,18 @@ void OptionGroup::CppOptionEntry::release_c_arg()
 
         break;
       }
+      case G_OPTION_ARG_CALLBACK:
+      {
+        //Delete the OptionArgCallback instance that was allocated by add_entry()
+        //or add_entry_filename().
+        OptionArgCallback* option_arg = static_cast<OptionArgCallback*>(cpparg_);
+        delete option_arg;
+        cpparg_ = 0;
+
+        break;
+      }
       default:
       {
-        /* TODO:
-        G_OPTION_ARG_CALLBACK,
-        */
         break;
       }
     }
@@ -437,7 +735,12 @@ void OptionGroup::CppOptionEntry::convert_c_to_cpp()
       *((int*)cpparg_) = *(static_cast<int*>(carg_));
       break;
     }
-        case G_OPTION_ARG_STRING_ARRAY:
+    case G_OPTION_ARG_DOUBLE:
+    {
+      *((double*)cpparg_) = *(static_cast<double*>(carg_));
+      break;
+    }
+    case G_OPTION_ARG_STRING_ARRAY:
     {
       char*** typed_arg = static_cast<char***>(carg_);
       vecustrings* typed_cpp_arg = static_cast<vecustrings*>(cpparg_);
@@ -503,11 +806,14 @@ void OptionGroup::CppOptionEntry::convert_c_to_cpp()
       *(static_cast<bool*>(cpparg_)) = *(static_cast<gboolean*>(carg_));
       break;
     }
+    case G_OPTION_ARG_CALLBACK:
+    {
+      //Nothing to convert here. That's a task for the callback function
+      //(the SlotOptionArgString or SlotOptionArgFilename).
+      break;
+    }
     default:
     {
-      /* TODO:
-      G_OPTION_ARG_CALLBACK,
-      */
       break;
     }
   }

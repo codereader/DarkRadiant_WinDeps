@@ -70,23 +70,14 @@ const Glib::Class& SeparatorMenuItem_Class::init()
   return *this;
 }
 
+
 void SeparatorMenuItem_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* SeparatorMenuItem_Class::wrap_new(GObject* o)
@@ -122,6 +113,7 @@ GType SeparatorMenuItem::get_type()
   return separatormenuitem_class_.init().get_type();
 }
 
+
 GType SeparatorMenuItem::get_base_type()
 {
   return gtk_separator_menu_item_get_type();
@@ -137,13 +129,6 @@ SeparatorMenuItem::SeparatorMenuItem()
   
 
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

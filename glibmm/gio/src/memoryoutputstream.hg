@@ -29,9 +29,9 @@ _PINCLUDE(giomm/private/outputstream_p.h)
 namespace Gio
 {
 
-//TODO: Proper documentation:
-
 /** Streaming output operations on memory chunks
+ *
+ * This class uses arbitrary memory chunks as output for GIO streaming output operations. 
  *
  * @ingroup Streams
  *
@@ -45,14 +45,25 @@ class MemoryOutputStream :
   _IMPLEMENTS_INTERFACE(Seekable)
 protected:
   // TODO: more C++-like interface using sigc++
-  _WRAP_CTOR(MemoryOutputStream(gpointer data, gsize len, GReallocFunc realloc_fn, GDestroyNotify destroy), g_memory_output_stream_new)
+  _WRAP_CTOR(MemoryOutputStream(void* data, gsize size, GReallocFunc realloc_function, GDestroyNotify destroy_function), g_memory_output_stream_new)
 
 public:
   // TODO: more C++-like interface using sigc++
-  _WRAP_CREATE(gpointer data, gsize len, GReallocFunc realloc_fn, GDestroyNotify destroy)
-  _WRAP_METHOD(gpointer get_data(), g_memory_output_stream_get_data)
+  _WRAP_CREATE(void* data, gsize size, GReallocFunc realloc_function, GDestroyNotify destroy_function)
+
+  _WRAP_METHOD(void* get_data(), g_memory_output_stream_get_data)
+  _WRAP_METHOD(const void* get_data() const, g_memory_output_stream_get_data, constversion)
+  _WRAP_METHOD(void* steal_data(), g_memory_output_stream_steal_data)
+
   _WRAP_METHOD(gsize get_size() const, g_memory_output_stream_get_size)
   _WRAP_METHOD(gsize get_data_size() const, g_memory_output_stream_get_data_size)
+  
+  _WRAP_PROPERTY("data", void*)
+  _WRAP_PROPERTY("data-size", gulong)
+  //Too C-like:   _WRAP_PROPERTY("destroy-function", void*)
+  //Too C-like:   _WRAP_PROPERTY("realloc-function"         gpointer              : Read / Write / Construct Only
+  _WRAP_PROPERTY("size", gulong)
+  
 };
 
 } // namespace Gio

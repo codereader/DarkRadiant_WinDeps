@@ -43,7 +43,7 @@ namespace Gtk
 namespace Gtk
 {
 
-/** @addtogroup gtkmmEnums Enums and Flags */
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
 
 /**
  * @ingroup gtkmmEnums
@@ -164,15 +164,11 @@ public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 private:
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static void throw_func(GError* gobject);
-#else
-  //When not using exceptions, we just pass the Exception object around without throwing it:
-  static std::auto_ptr<Glib::Error> throw_func(GError* gobject);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   friend void wrap_init(); // uses throw_func()
-#endif
+
+  #endif //DOXYGEN_SHOULD_SKIP_THIS
 };
 
 } // namespace Gtk
@@ -199,21 +195,21 @@ namespace Gtk
 /** @defgroup Printing Printing
  */
 
-/** PrintOperation is the high-level, portable printing API. It looks a bit different than other 
- * GTK+ dialogs such as the FileChooser, since some platforms don't expose enough infrastructure 
- * to implement a good print dialog. On such platforms, PrintOperation uses the native print 
+/** PrintOperation is the high-level, portable printing API. It looks a bit different than other
+ * GTK+ dialogs such as the FileChooser, since some platforms don't expose enough infrastructure
+ * to implement a good print dialog. On such platforms, PrintOperation uses the native print
  * dialog. On platforms which do not provide a native print dialog, GTK+ uses its own, see PrintUnixDialog.
  *
- * The typical way to use the high-level printing API is to create a PrintOperation object 
- * when the user chooses to print. Then you set some properties on it,such as the page size, any PrintSettings 
+ * The typical way to use the high-level printing API is to create a PrintOperation object
+ * when the user chooses to print. Then you set some properties on it,such as the page size, any PrintSettings
  * from previous print operations, the number of  pages, the current page, etc.
  *
- * Then you start the print operation by calling run(). It will then show a dialog to 
- * let the user select a printer and options. When the user finishes the dialog various signals will be 
- * emitted by the PrintOperation for you to handle, the main one being draw_page. You should then 
+ * Then you start the print operation by calling run(). It will then show a dialog to
+ * let the user select a printer and options. When the user finishes the dialog various signals will be
+ * emitted by the PrintOperation for you to handle, the main one being draw_page. You should then
  * render the page on the provided PrintContext using Cairo.
  *
- * @newin2p10
+ * @newin{2,10}
  *
  * @ingroup Printing
  */
@@ -250,6 +246,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -279,15 +277,16 @@ public:
    * but it can be overridden on a per-page basis by connecting
    * to the Gtk::PrintOperation::request-page-setup signal.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param default_page_setup A Gtk::PageSetup, or <tt>0</tt>.
    */
   void set_default_page_setup(const Glib::RefPtr<PageSetup>& default_page_setup);
   
-  /** Returns: the default page setup
-   * @return The default page setup 
+  /** Returns the default page setup, see
+   * set_default_page_setup().
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The default page setup.
    */
   Glib::RefPtr<PageSetup> get_default_page_setup() const;
 
@@ -296,15 +295,19 @@ public:
    * re-establish print settings from a previous print operation,
    * see run().
    * 
-   * @newin2p10
-   * @param print_settings Gtk::PrintSettings, or <tt>0</tt>.
+   * @newin{2,10}
+   * @param print_settings Gtk::PrintSettings.
    */
   void set_print_settings(const Glib::RefPtr<PrintSettings>& print_settings);
   
-  /** Return value: the current print settings of @a op.
-   * @return The current print settings of @a op.
+  /** Returns the current print settings.
    * 
-   * @newin2p10.
+   * Note that the return value is <tt>0</tt> until either
+   * set_print_settings() or
+   * run() have been called.
+   * 
+   * @newin{2,10}
+   * @return The current print settings of @a op.
    */
   Glib::RefPtr<PrintSettings> get_print_settings() const;
 
@@ -315,14 +318,14 @@ public:
    * If you don't set a job name, GTK+ picks a default one by 
    * numbering successive print jobs.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param job_name A string that identifies the print job.
    */
   void set_job_name(const Glib::ustring& job_name);
   
   /** Sets the number of pages in the document. 
    * 
-   * This <emphasis>must</emphasis> be set to a positive number
+   * This <em>must</em> be set to a positive number
    * before the rendering starts. It may be set in a 
    * Gtk::PrintOperation::begin-print signal hander.
    * 
@@ -332,7 +335,7 @@ public:
    * the user chooses to print all pages, the last ::draw-page signal 
    * will be for page @a n_pages - 1.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param n_pages The number of pages.
    */
   void set_n_pages(int n_pages);
@@ -344,7 +347,7 @@ public:
    * 
    * Note that this only makes sense for pre-paginated documents.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param current_page The current page, 0-based.
    */
   void set_current_page(int current_page);
@@ -356,16 +359,16 @@ public:
    * sheet). Otherwise, the origin is at the top left corner of the
    * imageable area (i.e. inside the margins).
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param full_page <tt>true</tt> to set up the Gtk::PrintContext for the full page.
    */
-  void set_use_full_page(bool use_full_page = true);
+  void set_use_full_page(bool use_full_page =  true);
   
   /** Sets up the transformation for the cairo context obtained from
    * Gtk::PrintContext in such a way that distances are measured in 
    * units of @a unit.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param unit The unit to use.
    */
   void set_unit(Unit unit);
@@ -379,7 +382,7 @@ public:
    * by letting the user pick the "Print to PDF" item from the list
    * of printers in the print dialog.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param filename The filename for the exported file.
    */
   void set_export_filename(const std::string& filename);
@@ -392,41 +395,37 @@ public:
    * This function is often implemented using some form of polling, so it should
    * not be enabled unless needed.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param track_status <tt>true</tt> to track status after printing.
    */
-  void set_track_print_status(bool track_status = true);
+  void set_track_print_status(bool track_status =  true);
   
   /** If @a show_progress is <tt>true</tt>, the print operation will show a 
    * progress dialog during the print operation.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param show_progress <tt>true</tt> to show a progress dialog.
    */
-  void set_show_progress (bool show_progress = true);
+  void set_show_progress(bool show_progress =  true);
   
   /** Sets whether the run() may return
    * before the print operation is completed. Note that
    * some platforms may not allow asynchronous operation.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param allow_async <tt>true</tt> to allow asynchronous operation.
    */
-  void set_allow_async(bool allow_async = true);
+  void set_allow_async(bool allow_async =  true);
   
   /** Sets the label for the tab holding custom widgets.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param label The label to use, or <tt>0</tt> to use the default label.
    */
   void set_custom_tab_label(const Glib::ustring& label);
 
    
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   PrintOperationResult run(PrintOperationAction action = PRINT_OPERATION_ACTION_PRINT_DIALOG);
-  #else
-  PrintOperationResult run(PrintOperationAction action, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Runs the print operation, by first letting the user modify
@@ -484,8 +483,10 @@ public:
    * 
    * Note that run() can only be called once on a
    * given Gtk::PrintOperation.
+   * 
+   * @newin{2,10}
    * @param action The action to start.
-   * @param parent Transient parent of the dialog, or <tt>0</tt>.
+   * @param parent Transient parent of the dialog.
    * @return The result of the print operation. A return value of 
    * Gtk::PRINT_OPERATION_RESULT_APPLY indicates that the printing was
    * completed successfully. In this case, it is a good idea to obtain 
@@ -494,28 +495,27 @@ public:
    * Gtk::PRINT_OPERATION_RESULT_IN_PROGRESS means the operation is running
    * asynchronously, and will emit the Gtk::PrintOperation::done signal when 
    * done.
-   * 
-   * @newin2p10.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   PrintOperationResult run(PrintOperationAction action, Window& parent);
-#else
-  PrintOperationResult run(PrintOperationAction action, Window& parent, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
   
-  /** Return value: the status of the print operation
-   * @return The status of the print operation
+  /** Returns the status of the print operation. 
+   * Also see get_status_string().
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The status of the print operation.
    */
   PrintStatus get_status() const;
   
-  /** Return value: a string representation of the status
-   * @return A string representation of the status
-   * of the print operation
+  /** Returns a string representation of the status of the 
+   * print operation. The string is translated and suitable
+   * for displaying the print status e.g. in a Gtk::Statusbar.
    * 
-   * @newin2p10.
+   * Use get_status() to obtain a status
+   * value that is suitable for programmatic use. 
+   * 
+   * @newin{2,10}
+   * @return A string representation of the status
+   * of the print operation.
    */
   Glib::ustring get_status_string() const;
   
@@ -525,7 +525,7 @@ public:
    * signal handler to stop the currently running print 
    * operation.
    * 
-   * @newin2p10
+   * @newin{2,10}
    */
   void cancel();
   
@@ -536,9 +536,9 @@ public:
    * @note when you enable print status tracking the print operation
    * can be in a non-finished state even after done has been called, as
    * the operation status then tracks the print job status on the printer.
-   * @return <tt>true</tt>, if the print operation is finished.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return <tt>true</tt>, if the print operation is finished.
    */
   bool is_finished() const;
 
@@ -551,7 +551,7 @@ public:
    * has to be called by application. In another case it is called by the library
    * itself.
    * 
-   * @newin2p16
+   * @newin{2,16}
    */
   void draw_page_finish();
   
@@ -561,9 +561,73 @@ public:
    * 
    * This function must be called in the callback of "draw-page" signal.
    * 
-   * @newin2p16
+   * @newin{2,16}
    */
   void set_defer_drawing();
+
+
+  /** Sets whether selection is supported by Gtk::PrintOperation.
+   * 
+   * @newin{2,18}
+   * @param support_selection <tt>true</tt> to support selection.
+   */
+  void set_support_selection(bool support_selection =  true);
+  
+  /** Gets the value of Gtk::PrintOperation::support-selection property.
+   * 
+   * @newin{2,18}
+   * @return Whether the application supports print of selection.
+   */
+  bool get_support_selection() const;
+  
+  /** Sets whether there is a selection to print.
+   * 
+   * Application has to set number of pages to which the selection
+   * will draw by set_n_pages() in a callback of
+   * Gtk::PrintOperation::begin-print.
+   * 
+   * @newin{2,18}
+   * @param has_selection <tt>true</tt> indicates that a selection exists.
+   */
+  void set_has_selection(bool has_selection =  true);
+  
+  /** Gets the value of Gtk::PrintOperation::has-selection property.
+   * 
+   * @newin{2,18}
+   * @return Whether there is a selection.
+   */
+  bool get_has_selection() const;
+
+  
+  /** Embed page size combo box and orientation combo box into page setup page.
+   * Selected page setup is stored as default page setup in Gtk::PrintOperation.
+   * 
+   * @newin{2,18}
+   * @param embed <tt>true</tt> to embed page setup selection in the Gtk::PrintDialog.
+   */
+  void set_embed_page_setup(bool embed =  true);
+  
+  /** Gets the value of Gtk::PrintOperation::embed-page-setup property.
+   * 
+   * @newin{2,18}
+   * @return Whether page setup selection combos are embedded.
+   */
+  bool get_embed_page_setup() const;
+  
+  /** Returns the number of pages that will be printed.
+   * 
+   * Note that this value is set during print preparation phase
+   * (Gtk::PRINT_STATUS_PREPARING), so this function should never be
+   * called before the data generation phase (Gtk::PRINT_STATUS_GENERATING_DATA).
+   * You can connect to the Gtk::PrintOperation::status-changed signal
+   * and call get_n_pages_to_print() when
+   * print status is Gtk::PRINT_STATUS_GENERATING_DATA.
+   * This is typically used to track the progress of print operation.
+   * 
+   * @newin{2,18}
+   * @return The number of pages that will be printed.
+   */
+  int get_n_pages_to_print() const;
 
   
   //TODO: point out in the docs that the PrintOperationResult enum may also indicate
@@ -649,6 +713,17 @@ public:
    */
 
   Glib::SignalProxy3< bool,const Glib::RefPtr<PrintOperationPreview>&,const Glib::RefPtr<PrintContext>&,Window* > signal_preview();
+
+
+  //TODO: Remove no_default_handler when we can break ABI.
+   
+
+  /**
+   * @par Prototype:
+   * <tt>void on_my_%update_custom_widget(Gtk::Widget* widget, const Glib::RefPtr<PageSetup>& setup, const Glib::RefPtr<PrintSettings>& settings)</tt>
+   */
+
+  Glib::SignalProxy3< void,Gtk::Widget*,const Glib::RefPtr<PageSetup>&,const Glib::RefPtr<PrintSettings>& > signal_update_custom_widget();
 
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -769,6 +844,26 @@ public:
    * the value of the property changes.
    */
   Glib::PropertyProxy_ReadOnly<bool> property_use_full_page() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** TRUE if the print operation will continue to report on the print job status after the print data has been sent to the printer or print server.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_track_print_status() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** TRUE if the print operation will continue to report on the print job status after the print data has been sent to the printer or print server.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_track_print_status() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -893,21 +988,86 @@ public:
   Glib::PropertyProxy_ReadOnly<Glib::ustring> property_custom_tab_label() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** TRUE if the print operation will support print of selection.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_support_selection() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** TRUE if the print operation will support print of selection.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_support_selection() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** TRUE if a selection exists.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_has_selection() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** TRUE if a selection exists.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_has_selection() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** TRUE if page setup combos are embedded in GtkPrintDialog.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_embed_page_setup() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** TRUE if page setup combos are embedded in GtkPrintDialog.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_embed_page_setup() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The number of pages that will be printed.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<int> property_n_pages_to_print() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_done(PrintOperationResult result);
   virtual void on_begin_print(const Glib::RefPtr<PrintContext>& context);
   virtual bool on_paginate(const Glib::RefPtr<PrintContext>& context);
@@ -918,22 +1078,21 @@ protected:
   virtual Widget* on_create_custom_widget();
   virtual void on_custom_widget_apply(Widget* widget);
   virtual bool on_preview(const Glib::RefPtr<PrintOperationPreview>& preview, const Glib::RefPtr<PrintContext>& context, Window* parent);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };
 
   //TODO: Make these static members of a class instead of non-class functions?
 
-  //Note: gtk_run_page_setup_dialog() can take a null page_setup object, but the application should always 
+  //Note: gtk_run_page_setup_dialog() can take a null page_setup object, but the application should always
   //store and reuse a page_setup object, so I see no need to provide an overload for that. murrayc.
   //TODO: The parent parameter may also be null, so maybe we should add an overload for that.
 
-  /** Runs a page setup dialog, letting the user modify the values from page_setup. 
-   * If the user cancels the dialog, the returned PageSetup is identical to that passed in @a page_setup, 
+  /** Runs a page setup dialog, letting the user modify the values from page_setup.
+   * If the user cancels the dialog, the returned PageSetup is identical to that passed in @a page_setup,
    * otherwise it contains the modifications done in the dialog.
-   * 
-   * Note that this function may use a recursive mainloop to show the page setup dialog. 
+   *
+   * Note that this function may use a recursive mainloop to show the page setup dialog.
    * See run_page_setup_dialog_async() if this is a problem.
    *
    * @param parent Transient parent.
@@ -946,17 +1105,32 @@ protected:
   Glib::RefPtr<PageSetup> run_page_setup_dialog(Window& parent,
                                                 const Glib::RefPtr<const PageSetup>& page_setup,
                                                 const Glib::RefPtr<const PrintSettings>& print_settings);
-  //TODO: Add overloads that don't take page_setup.
 
-  /** For example, 
+  /** Runs a page setup dialog, letting the user modify the values from page_setup.
+   * If the user cancels the dialog, the returned PageSetup is identical to that passed in @a page_setup,
+   * otherwise it contains the modifications done in the dialog.
+   *
+   * Note that this function may use a recursive mainloop to show the page setup dialog.
+   * See run_page_setup_dialog_async() if this is a problem.
+   *
+   * @param parent Transient parent.
+   * @param settings Print settings.
+   * @result A new PageSetup object.
+   *
+   * @since 2.22
+   */
+  Glib::RefPtr<PageSetup> run_page_setup_dialog(Window& parent,
+                                                const Glib::RefPtr<const PrintSettings>& print_settings);
+
+  /** For example,
    * void on_setup_done(const Glib::RefPtr<PageSetup>& page_setup);
    */
   typedef sigc::slot< void, const Glib::RefPtr<PageSetup>& > SlotPrintSetupDone;
 
   /** Runs a page setup dialog, letting the user modify the values from page_setup.
    *
-   * In contrast to run_page_setup_dialog(), this function returns after showing the 
-   * page setup dialog on platforms that support this, and calls the @a slot from a 
+   * In contrast to run_page_setup_dialog(), this function returns after showing the
+   * page setup dialog on platforms that support this, and calls the @a slot from a
    * signal handler for the ::response signal of the dialog.
    *
    * @param parent Transient parent.
@@ -969,6 +1143,24 @@ protected:
    */
   void run_page_setup_dialog_async(Window& parent,
                                    const Glib::RefPtr<const PageSetup>& page_setup,
+                                   const Glib::RefPtr<const PrintSettings>& print_settings,
+                                   const SlotPrintSetupDone& slot);
+
+  /** Runs a page setup dialog, letting the user modify the values from page_setup.
+   *
+   * In contrast to run_page_setup_dialog(), this function returns after showing the
+   * page setup dialog on platforms that support this, and calls the @a slot from a
+   * signal handler for the ::response signal of the dialog.
+   *
+   * @param parent Transient parent.
+   * @param page_setup An existing GtkPageSetup.
+   * @param settings Print settings.
+   * @result A new PageSetup object.
+   * @param slot
+   *
+   * @since 2.22
+   */
+  void run_page_setup_dialog_async(Window& parent,
                                    const Glib::RefPtr<const PrintSettings>& print_settings,
                                    const SlotPrintSetupDone& slot);
 

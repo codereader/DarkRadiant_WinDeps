@@ -60,6 +60,12 @@ namespace
 {
 } // anonymous namespace
 
+// static
+GType Glib::Value<Gtk::PackDirection>::value_type()
+{
+  return gtk_pack_direction_get_type();
+}
+
 
 namespace Glib
 {
@@ -98,23 +104,14 @@ const Glib::Class& MenuBar_Class::init()
   return *this;
 }
 
+
 void MenuBar_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* MenuBar_Class::wrap_new(GObject* o)
@@ -150,17 +147,61 @@ GType MenuBar::get_type()
   return menubar_class_.init().get_type();
 }
 
+
 GType MenuBar::get_base_type()
 {
   return gtk_menu_bar_get_type();
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+PackDirection MenuBar::get_pack_direction() const
+{
+  return ((PackDirection)(gtk_menu_bar_get_pack_direction(const_cast<GtkMenuBar*>(gobj()))));
+}
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
+void MenuBar::set_pack_direction(PackDirection pack_dir)
+{
+gtk_menu_bar_set_pack_direction(gobj(), ((GtkPackDirection)(pack_dir))); 
+}
+
+PackDirection MenuBar::get_child_pack_direction() const
+{
+  return ((PackDirection)(gtk_menu_bar_get_child_pack_direction(const_cast<GtkMenuBar*>(gobj()))));
+}
+
+void MenuBar::set_child_pack_direction(PackDirection child_pack_dir)
+{
+gtk_menu_bar_set_child_pack_direction(gobj(), ((GtkPackDirection)(child_pack_dir))); 
+}
+
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<PackDirection> MenuBar::property_pack_direction() 
+{
+  return Glib::PropertyProxy<PackDirection>(this, "pack-direction");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<PackDirection> MenuBar::property_pack_direction() const
+{
+  return Glib::PropertyProxy_ReadOnly<PackDirection>(this, "pack-direction");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<PackDirection> MenuBar::property_child_pack_direction() 
+{
+  return Glib::PropertyProxy<PackDirection>(this, "child-pack-direction");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<PackDirection> MenuBar::property_child_pack_direction() const
+{
+  return Glib::PropertyProxy_ReadOnly<PackDirection>(this, "child-pack-direction");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
 
 } // namespace Gtk

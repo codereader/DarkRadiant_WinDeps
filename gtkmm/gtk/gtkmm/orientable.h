@@ -27,7 +27,14 @@
 
 #include <glibmm/interface.h>
 #include <gtkmm/enums.h>
-#include <gtk/gtk.h>
+
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+extern "C"
+{
+typedef struct _GtkOrientableIface GtkOrientableIface;
+}
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -47,7 +54,7 @@ namespace Gtk
  * GtkScale/GtkHScale/GtkVScale). GtkOrientable is more flexible in that it 
  * allows the orientation to be changed at runtime, allowing the widgets to 'flip'.
  *
- * @newin2p16
+ * @newin{2,16}
  */
 
 class Orientable : public Glib::Interface
@@ -102,7 +109,7 @@ public:
   ///Provides access to the underlying C GObject.
   GtkOrientable*       gobj()       { return reinterpret_cast<GtkOrientable*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const GtkOrientable* gobj() const { return reinterpret_cast<GtkOrientable*>(gobject_); }
 
 private:
@@ -112,15 +119,15 @@ public:
   
   /** Sets the orientation of the @a orientable.
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param orientation The orientable's new orientation.
    */
   void set_orientation(Orientation orientation);
   
   /** Retrieves the orientation of the @a orientable.
-   * @return The orientation of the @a orientable.
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @return The orientation of the @a orientable.
    */
   Orientation get_orientation() const;
 
@@ -149,17 +156,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

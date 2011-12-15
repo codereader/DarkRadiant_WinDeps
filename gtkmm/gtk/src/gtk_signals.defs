@@ -1,394 +1,3 @@
-;; From AtkObject
-
-(define-signal children-changed
-  (of-object "AtkObject")
-  (return-type "void")
-  (when "last")
-  (parameters
-    '("guint" "p0")
-    '("gpointer" "p1")
-  )
-)
-
-(define-signal focus-event
-  (of-object "AtkObject")
-  (return-type "void")
-  (when "last")
-  (parameters
-    '("gboolean" "p0")
-  )
-)
-
-(define-signal property-change
-  (of-object "AtkObject")
-  (return-type "void")
-  (when "last")
-  (parameters
-    '("gpointer" "p0")
-  )
-)
-
-(define-signal state-change
-  (of-object "AtkObject")
-  (return-type "void")
-  (when "last")
-  (parameters
-    '("const-gchar*" "p0")
-    '("gboolean" "p1")
-  )
-)
-
-(define-signal visible-data-changed
-  (of-object "AtkObject")
-  (return-type "void")
-  (when "last")
-)
-
-(define-signal active-descendant-changed
-  (of-object "AtkObject")
-  (return-type "void")
-  (when "last")
-  (parameters
-    '("gpointer" "p0")
-  )
-)
-
-(define-property accessible-name
-  (of-object "AtkObject")
-  (prop-type "GParamString")
-  (docs "Object instance's name formatted for assistive technology access")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property accessible-description
-  (of-object "AtkObject")
-  (prop-type "GParamString")
-  (docs "Description of an object, formatted for assistive technology access")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property accessible-parent
-  (of-object "AtkObject")
-  (prop-type "GParamObject")
-  (docs "Is used to notify that the parent has changed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property accessible-value
-  (of-object "AtkObject")
-  (prop-type "GParamDouble")
-  (docs "Is used to notify that the value has changed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property accessible-role
-  (of-object "AtkObject")
-  (prop-type "GParamInt")
-  (docs "The accessible role of this object")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property accessible-component-layer
-  (of-object "AtkObject")
-  (prop-type "GParamInt")
-  (docs "The accessible layer of this object")
-  (readable #t)
-  (writable #f)
-  (construct-only #f)
-)
-
-(define-property accessible-component-mdi-zorder
-  (of-object "AtkObject")
-  (prop-type "GParamInt")
-  (docs "The accessible MDI value of this object")
-  (readable #t)
-  (writable #f)
-  (construct-only #f)
-)
-
-(define-property accessible-table-caption
-  (of-object "AtkObject")
-  (prop-type "GParamString")
-  (docs "Is used to notify that the table caption has changed; this property should not be used. accessible-table-caption-object should be used instead")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property accessible-table-column-description
-  (of-object "AtkObject")
-  (prop-type "GParamString")
-  (docs "Is used to notify that the table column description has changed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property accessible-table-column-header
-  (of-object "AtkObject")
-  (prop-type "GParamObject")
-  (docs "Is used to notify that the table column header has changed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property accessible-table-row-description
-  (of-object "AtkObject")
-  (prop-type "GParamString")
-  (docs "Is used to notify that the table row description has changed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property accessible-table-row-header
-  (of-object "AtkObject")
-  (prop-type "GParamObject")
-  (docs "Is used to notify that the table row header has changed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property accessible-table-summary
-  (of-object "AtkObject")
-  (prop-type "GParamObject")
-  (docs "Is used to notify that the table summary has changed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property accessible-table-caption-object
-  (of-object "AtkObject")
-  (prop-type "GParamObject")
-  (docs "Is used to notify that the table caption has changed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property accessible-hypertext-nlinks
-  (of-object "AtkObject")
-  (prop-type "GParamInt")
-  (docs "The number of links which the current AtkHypertext has")
-  (readable #t)
-  (writable #f)
-  (construct-only #f)
-)
-
-;; From AtkComponent
-
-(define-signal bounds-changed
-  (of-object "AtkComponent")
-  (return-type "void")
-  (when "last")
-  (parameters
-    '("AtkRectangle*" "p0")
-  )
-)
-
-;; From AtkAction
-
-;; From AtkEditableText
-
-;; From AtkHyperlink
-
-(define-signal link-activated
-  (of-object "AtkHyperlink")
-  (return-type "void")
-  (when "last")
-)
-
-(define-property selected-link
-  (of-object "AtkHyperlink")
-  (prop-type "GParamBoolean")
-  (docs "Specifies whether the AtkHyperlink object is selected")
-  (readable #t)
-  (writable #f)
-  (construct-only #f)
-)
-
-(define-property number-of-anchors
-  (of-object "AtkHyperlink")
-  (prop-type "GParamInt")
-  (docs "The number of anchors associated with the AtkHyperlink object")
-  (readable #t)
-  (writable #f)
-  (construct-only #f)
-)
-
-(define-property end-index
-  (of-object "AtkHyperlink")
-  (prop-type "GParamInt")
-  (docs "The end index of the AtkHyperlink object")
-  (readable #t)
-  (writable #f)
-  (construct-only #f)
-)
-
-(define-property start-index
-  (of-object "AtkHyperlink")
-  (prop-type "GParamInt")
-  (docs "The start index of the AtkHyperlink object")
-  (readable #t)
-  (writable #f)
-  (construct-only #f)
-)
-
-;; From AtkHypertext
-
-(define-signal link-selected
-  (of-object "AtkHypertext")
-  (return-type "void")
-  (when "last")
-  (parameters
-    '("gint" "p0")
-  )
-)
-
-;; From AtkImage
-
-;; From AtkSelection
-
-(define-signal selection-changed
-  (of-object "AtkSelection")
-  (return-type "void")
-  (when "last")
-)
-
-;; From AtkTable
-
-(define-signal row-inserted
-  (of-object "AtkTable")
-  (return-type "void")
-  (when "last")
-  (parameters
-    '("gint" "p0")
-    '("gint" "p1")
-  )
-)
-
-(define-signal column-inserted
-  (of-object "AtkTable")
-  (return-type "void")
-  (when "last")
-  (parameters
-    '("gint" "p0")
-    '("gint" "p1")
-  )
-)
-
-(define-signal row-deleted
-  (of-object "AtkTable")
-  (return-type "void")
-  (when "last")
-  (parameters
-    '("gint" "p0")
-    '("gint" "p1")
-  )
-)
-
-(define-signal column-deleted
-  (of-object "AtkTable")
-  (return-type "void")
-  (when "last")
-  (parameters
-    '("gint" "p0")
-    '("gint" "p1")
-  )
-)
-
-(define-signal row-reordered
-  (of-object "AtkTable")
-  (return-type "void")
-  (when "last")
-)
-
-(define-signal column-reordered
-  (of-object "AtkTable")
-  (return-type "void")
-  (when "last")
-)
-
-(define-signal model-changed
-  (of-object "AtkTable")
-  (return-type "void")
-  (when "last")
-)
-
-;; From AtkText
-
-(define-signal text-changed
-  (of-object "AtkText")
-  (return-type "void")
-  (when "last")
-  (parameters
-    '("gint" "p0")
-    '("gint" "p1")
-  )
-)
-
-(define-signal text-caret-moved
-  (of-object "AtkText")
-  (return-type "void")
-  (when "last")
-  (parameters
-    '("gint" "p0")
-  )
-)
-
-(define-signal text-selection-changed
-  (of-object "AtkText")
-  (return-type "void")
-  (when "last")
-)
-
-(define-signal text-attributes-changed
-  (of-object "AtkText")
-  (return-type "void")
-  (when "last")
-)
-
-;; From AtkValue
-
-;; From AtkRegistry
-
-;; From AtkRelation
-
-(define-property relation-type
-  (of-object "AtkRelation")
-  (prop-type "GParamEnum")
-  (docs "The type of the relation")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property target
-  (of-object "AtkRelation")
-  (prop-type "GParamValueArray")
-  (docs "An array of the targets for the relation")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-;; From AtkRelationSet
-
-;; From AtkStateSet
-
 ;; From GdkColormap
 
 ;; From GdkDragContext
@@ -585,6 +194,49 @@
 ;; From GdkVisual
 
 ;; From GdkWindow
+
+(define-signal pick-embedded-child
+  (of-object "GdkWindow")
+  (return-type "GdkWindow*")
+  (when "last")
+  (parameters
+    '("gdouble" "p0")
+    '("gdouble" "p1")
+  )
+)
+
+(define-signal to-embedder
+  (of-object "GdkWindow")
+  (return-type "void")
+  (when "last")
+  (parameters
+    '("gdouble" "p0")
+    '("gdouble" "p1")
+    '("gpointer" "p2")
+    '("gpointer" "p3")
+  )
+)
+
+(define-signal from-embedder
+  (of-object "GdkWindow")
+  (return-type "void")
+  (when "last")
+  (parameters
+    '("gdouble" "p0")
+    '("gdouble" "p1")
+    '("gpointer" "p2")
+    '("gpointer" "p3")
+  )
+)
+
+(define-property cursor
+  (of-object "GdkWindow")
+  (prop-type "GParamBoxed")
+  (docs "Cursor")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
 
 ;; From GtkAboutDialog
 
@@ -795,6 +447,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkAboutDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkAboutDialog")
   (prop-type "GParamUInt")
@@ -845,15 +506,6 @@
   (prop-type "GParamString")
   (docs "Unique identifier for the window to be used when restoring a session")
   (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property startup-id
-  (of-object "GtkAboutDialog")
-  (prop-type "GParamString")
-  (docs "Unique startup identifier for the window used by startup-notification")
-  (readable #f)
   (writable #t)
   (construct-only #f)
 )
@@ -1071,6 +723,24 @@
   (docs "Whether the input focus is within this GtkWindow")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property startup-id
+  (of-object "GtkAboutDialog")
+  (prop-type "GParamString")
+  (docs "Unique startup identifier for the window used by startup-notification")
+  (readable #f)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property mnemonics-visible
+  (of-object "GtkAboutDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether mnemonics are currently visible in this window")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -1460,6 +1130,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkAccelLabel")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property xalign
   (of-object "GtkAccelLabel")
   (prop-type "GParamFloat")
@@ -1658,6 +1337,15 @@
   (construct-only #f)
 )
 
+(define-property track-visited-links
+  (of-object "GtkAccelLabel")
+  (prop-type "GParamBoolean")
+  (docs "Whether visited links should be tracked")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property accel-closure
   (of-object "GtkAccelLabel")
   (prop-type "GParamBoxed")
@@ -1814,6 +1502,15 @@
   (of-object "GtkAction")
   (prop-type "GParamObject")
   (docs "The GtkActionGroup this GtkAction is associated with, or NULL (for internal use).")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property always-show-image
+  (of-object "GtkAction")
+  (prop-type "GParamBoolean")
+  (docs "Whether the image will always be shown")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -2192,6 +1889,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkAlignment")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkAlignment")
   (prop-type "GParamUInt")
@@ -2500,6 +2206,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkArrow")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property xalign
   (of-object "GtkArrow")
   (prop-type "GParamFloat")
@@ -2763,6 +2478,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkAspectFrame")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkAspectFrame")
   (prop-type "GParamUInt")
@@ -2882,13 +2606,13 @@
 
 ;; From GtkAssistant
 
-(define-signal cancel
+(define-signal close
   (of-object "GtkAssistant")
   (return-type "void")
   (when "last")
 )
 
-(define-signal close
+(define-signal cancel
   (of-object "GtkAssistant")
   (return-type "void")
   (when "last")
@@ -3116,6 +2840,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkAssistant")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkAssistant")
   (prop-type "GParamUInt")
@@ -3166,15 +2899,6 @@
   (prop-type "GParamString")
   (docs "Unique identifier for the window to be used when restoring a session")
   (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property startup-id
-  (of-object "GtkAssistant")
-  (prop-type "GParamString")
-  (docs "Unique startup identifier for the window used by startup-notification")
-  (readable #f)
   (writable #t)
   (construct-only #f)
 )
@@ -3395,6 +3119,24 @@
   (construct-only #f)
 )
 
+(define-property startup-id
+  (of-object "GtkAssistant")
+  (prop-type "GParamString")
+  (docs "Unique startup identifier for the window used by startup-notification")
+  (readable #f)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property mnemonics-visible
+  (of-object "GtkAssistant")
+  (prop-type "GParamBoolean")
+  (docs "Whether mnemonics are currently visible in this window")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 ;; From GtkBin
 
 (define-property user-data
@@ -3601,6 +3343,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkBin")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -3849,6 +3600,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkBox")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkBox")
   (prop-type "GParamUInt")
@@ -3907,6 +3667,12 @@
 
 ;; From GtkButton
 
+(define-signal activate
+  (of-object "GtkButton")
+  (return-type "void")
+  (when "first")
+)
+
 (define-signal pressed
   (of-object "GtkButton")
   (return-type "void")
@@ -3932,12 +3698,6 @@
 )
 
 (define-signal leave
-  (of-object "GtkButton")
-  (return-type "void")
-  (when "first")
-)
-
-(define-signal activate
   (of-object "GtkButton")
   (return-type "void")
   (when "first")
@@ -4165,6 +3925,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkButton")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -4494,6 +4263,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkButtonBox")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkButtonBox")
   (prop-type "GParamUInt")
@@ -4542,7 +4320,7 @@
 (define-property layout-style
   (of-object "GtkButtonBox")
   (prop-type "GParamEnum")
-  (docs "How to layout the buttons in the box. Possible values are default, spread, edge, start and end")
+  (docs "How to lay out the buttons in the box. Possible values are: default, spread, edge, start and end")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -4796,6 +4574,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkCalendar")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -5116,6 +4903,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkCheckButton")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkCheckButton")
   (prop-type "GParamUInt")
@@ -5236,7 +5032,7 @@
 (define-property inconsistent
   (of-object "GtkCheckButton")
   (prop-type "GParamBoolean")
-  (docs "If the toggle button is in an in between state")
+  (docs "If the toggle button is in an 'in between' state")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -5484,6 +5280,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkCheckMenuItem")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkCheckMenuItem")
   (prop-type "GParamUInt")
@@ -5568,7 +5373,7 @@
 (define-property inconsistent
   (of-object "GtkCheckMenuItem")
   (prop-type "GParamBoolean")
-  (docs "Whether to display an inconsistent state")
+  (docs "Whether to display an 'inconsistent' state")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -5932,6 +5737,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkCList")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkCList")
   (prop-type "GParamUInt")
@@ -6026,6 +5840,29 @@
   (of-object "GtkCList")
   (prop-type "GParamEnum")
   (docs "")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+;; From GtkCellEditable
+
+(define-signal editing-done
+  (of-object "GtkCellEditable")
+  (return-type "void")
+  (when "last")
+)
+
+(define-signal remove-widget
+  (of-object "GtkCellEditable")
+  (return-type "void")
+  (when "last")
+)
+
+(define-property editing-canceled
+  (of-object "GtkCellEditable")
+  (prop-type "GParamBoolean")
+  (docs "Indicates that editing has been canceled")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -6464,7 +6301,7 @@
 (define-property font
   (of-object "GtkCellRendererAccel")
   (prop-type "GParamString")
-  (docs "Font description as a string, e.g. Sans Italic 12")
+  (docs "Font description as a string, e.g. 'Sans Italic 12'")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -7052,7 +6889,7 @@
 (define-property font
   (of-object "GtkCellRendererCombo")
   (prop-type "GParamString")
-  (docs "Font description as a string, e.g. Sans Italic 12")
+  (docs "Font description as a string, e.g. 'Sans Italic 12'")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -7831,7 +7668,7 @@
 (define-property font
   (of-object "GtkCellRendererText")
   (prop-type "GParamString")
-  (docs "Font description as a string, e.g. Sans Italic 12")
+  (docs "Font description as a string, e.g. 'Sans Italic 12'")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -9000,7 +8837,7 @@
 (define-property font
   (of-object "GtkCellRendererSpin")
   (prop-type "GParamString")
-  (docs "Font description as a string, e.g. Sans Italic 12")
+  (docs "Font description as a string, e.g. 'Sans Italic 12'")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -9321,6 +9158,179 @@
   (construct-only #f)
 )
 
+;; From GtkCellRendererSpinner
+
+(define-property user-data
+  (of-object "GtkCellRendererSpinner")
+  (prop-type "GParamPointer")
+  (docs "Anonymous User Data Pointer")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property mode
+  (of-object "GtkCellRendererSpinner")
+  (prop-type "GParamEnum")
+  (docs "Editable mode of the CellRenderer")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property visible
+  (of-object "GtkCellRendererSpinner")
+  (prop-type "GParamBoolean")
+  (docs "Display the cell")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property sensitive
+  (of-object "GtkCellRendererSpinner")
+  (prop-type "GParamBoolean")
+  (docs "Display the cell sensitive")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property xalign
+  (of-object "GtkCellRendererSpinner")
+  (prop-type "GParamFloat")
+  (docs "The x-align")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property yalign
+  (of-object "GtkCellRendererSpinner")
+  (prop-type "GParamFloat")
+  (docs "The y-align")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property xpad
+  (of-object "GtkCellRendererSpinner")
+  (prop-type "GParamUInt")
+  (docs "The xpad")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property ypad
+  (of-object "GtkCellRendererSpinner")
+  (prop-type "GParamUInt")
+  (docs "The ypad")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property width
+  (of-object "GtkCellRendererSpinner")
+  (prop-type "GParamInt")
+  (docs "The fixed width")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property height
+  (of-object "GtkCellRendererSpinner")
+  (prop-type "GParamInt")
+  (docs "The fixed height")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property is-expander
+  (of-object "GtkCellRendererSpinner")
+  (prop-type "GParamBoolean")
+  (docs "Row has children")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property is-expanded
+  (of-object "GtkCellRendererSpinner")
+  (prop-type "GParamBoolean")
+  (docs "Row is an expander row, and is expanded")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property cell-background
+  (of-object "GtkCellRendererSpinner")
+  (prop-type "GParamString")
+  (docs "Cell background color as a string")
+  (readable #f)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property cell-background-gdk
+  (of-object "GtkCellRendererSpinner")
+  (prop-type "GParamBoxed")
+  (docs "Cell background color as a GdkColor")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property cell-background-set
+  (of-object "GtkCellRendererSpinner")
+  (prop-type "GParamBoolean")
+  (docs "Whether this tag affects the cell background color")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property editing
+  (of-object "GtkCellRendererSpinner")
+  (prop-type "GParamBoolean")
+  (docs "Whether the cell renderer is currently in editing mode")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+(define-property active
+  (of-object "GtkCellRendererSpinner")
+  (prop-type "GParamBoolean")
+  (docs "Whether the spinner is active (ie. shown) in the cell")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property pulse
+  (of-object "GtkCellRendererSpinner")
+  (prop-type "GParamUInt")
+  (docs "Pulse of the spinner")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property size
+  (of-object "GtkCellRendererSpinner")
+  (prop-type "GParamEnum")
+  (docs "The GtkIconSize value that specifies the size of the rendered spinner")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 ;; From GtkClipboard
 
 (define-signal owner-change
@@ -9562,6 +9572,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkColorButton")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -9933,6 +9952,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkColorSelection")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkColorSelection")
   (prop-type "GParamUInt")
@@ -10232,6 +10260,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkCombo")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkCombo")
   (prop-type "GParamUInt")
@@ -10322,6 +10359,584 @@
   (construct-only #f)
 )
 
+;; From GtkColorSelectionDialog
+
+(define-property name
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamString")
+  (docs "The name of the widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property parent
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamObject")
+  (docs "The parent widget of this widget. Must be a Container widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property width-request
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamInt")
+  (docs "Override for width request of the widget, or -1 if natural request should be used")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property height-request
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamInt")
+  (docs "Override for height request of the widget, or -1 if natural request should be used")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property visible
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is visible")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property sensitive
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget responds to input")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property app-paintable
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether the application will paint directly on the widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property can-focus
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget can accept the input focus")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property has-focus
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget has the input focus")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property is-focus
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is the focus widget within the toplevel")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property can-default
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget can be the default widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property has-default
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is the default widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property receives-default
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "If TRUE, the widget will receive the default action when it is focused")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property composite-child
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is part of a composite widget")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+(define-property style
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamObject")
+  (docs "The style of the widget, which contains information about how it will look (colors etc)")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property events
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamFlags")
+  (docs "The event mask that decides what kind of GdkEvents this widget gets")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property extension-events
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamEnum")
+  (docs "The mask that decides what kind of extension events this widget gets")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property no-show-all
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether gtk_widget_show_all() should not affect this widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property has-tooltip
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether this widget has a tooltip")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property tooltip-markup
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamString")
+  (docs "The contents of the tooltip for this widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property tooltip-text
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamString")
+  (docs "The contents of the tooltip for this widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property window
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamObject")
+  (docs "The widget's window if it is realized")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property halign
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamEnum")
+  (docs "How to position in extra horizontal space")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property valign
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamEnum")
+  (docs "How to position in extra vertical space")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property margin-left
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamInt")
+  (docs "Pixels of extra space on the left side")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property margin-right
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamInt")
+  (docs "Pixels of extra space on the right side")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property margin-top
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamInt")
+  (docs "Pixels of extra space on the top side")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property margin-bottom
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamInt")
+  (docs "Pixels of extra space on the bottom side")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property margin
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamInt")
+  (docs "Pixels of extra space on all four sides")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property border-width
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamUInt")
+  (docs "The width of the empty border outside the containers children")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property resize-mode
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamEnum")
+  (docs "Specify how resize events are handled")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property child
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamObject")
+  (docs "Can be used to add a new child to the container")
+  (readable #f)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property type
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamEnum")
+  (docs "The type of the window")
+  (readable #t)
+  (writable #t)
+  (construct-only #t)
+)
+
+(define-property title
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamString")
+  (docs "The title of the window")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property role
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamString")
+  (docs "Unique identifier for the window to be used when restoring a session")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property resizable
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "If TRUE, users can resize the window")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property modal
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "If TRUE, the window is modal (other windows are not usable while this one is up)")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property window-position
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamEnum")
+  (docs "The initial position of the window")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property default-width
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamInt")
+  (docs "The default width of the window, used when initially showing the window")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property default-height
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamInt")
+  (docs "The default height of the window, used when initially showing the window")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property destroy-with-parent
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "If this window should be destroyed when the parent is destroyed")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property icon
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamObject")
+  (docs "Icon for this window")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property icon-name
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamString")
+  (docs "Name of the themed icon for this window")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property screen
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamObject")
+  (docs "The screen where this window will be displayed")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property type-hint
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamEnum")
+  (docs "Hint to help the desktop environment understand what kind of window this is and how to treat it.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property skip-taskbar-hint
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "TRUE if the window should not be in the task bar.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property skip-pager-hint
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "TRUE if the window should not be in the pager.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property urgency-hint
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "TRUE if the window should be brought to the user's attention.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property accept-focus
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "TRUE if the window should receive the input focus.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property focus-on-map
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "TRUE if the window should receive the input focus when mapped.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property decorated
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether the window should be decorated by the window manager")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property deletable
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether the window frame should have a close button")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property gravity
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamEnum")
+  (docs "The window gravity of the window")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property transient-for
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamObject")
+  (docs "The transient parent of the dialog")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property opacity
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamDouble")
+  (docs "The opacity of the window, from 0 to 1")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property is-active
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether the toplevel is the current active window")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+(define-property has-toplevel-focus
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether the input focus is within this GtkWindow")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+(define-property startup-id
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamString")
+  (docs "Unique startup identifier for the window used by startup-notification")
+  (readable #f)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property mnemonics-visible
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether mnemonics are currently visible in this window")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property color-selection
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamObject")
+  (docs "The color selection embedded in the dialog.")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+(define-property ok-button
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamObject")
+  (docs "The OK button of the dialog.")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+(define-property cancel-button
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamObject")
+  (docs "The cancel button of the dialog.")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+(define-property help-button
+  (of-object "GtkColorSelectionDialog")
+  (prop-type "GParamObject")
+  (docs "The help button of the dialog.")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
 ;; From GtkComboBox
 
 (define-signal popup
@@ -10349,6 +10964,15 @@
   (parameters
     '("GtkScrollType" "p0")
   )
+)
+
+(define-property editing-canceled
+  (of-object "GtkComboBox")
+  (prop-type "GParamBoolean")
+  (docs "Indicates that editing has been canceled")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
 )
 
 (define-property user-data
@@ -10558,6 +11182,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkComboBox")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkComboBox")
   (prop-type "GParamUInt")
@@ -10679,6 +11312,422 @@
   (of-object "GtkComboBox")
   (prop-type "GParamEnum")
   (docs "Whether the dropdown button is sensitive when the model is empty")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+;; From GtkComboBoxEntry
+
+(define-property editing-canceled
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamBoolean")
+  (docs "Indicates that editing has been canceled")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property name
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamString")
+  (docs "The name of the widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property parent
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamObject")
+  (docs "The parent widget of this widget. Must be a Container widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property width-request
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamInt")
+  (docs "Override for width request of the widget, or -1 if natural request should be used")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property height-request
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamInt")
+  (docs "Override for height request of the widget, or -1 if natural request should be used")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property visible
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is visible")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property sensitive
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget responds to input")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property app-paintable
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamBoolean")
+  (docs "Whether the application will paint directly on the widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property can-focus
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget can accept the input focus")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property has-focus
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget has the input focus")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property is-focus
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is the focus widget within the toplevel")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property can-default
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget can be the default widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property has-default
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is the default widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property receives-default
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamBoolean")
+  (docs "If TRUE, the widget will receive the default action when it is focused")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property composite-child
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is part of a composite widget")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+(define-property style
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamObject")
+  (docs "The style of the widget, which contains information about how it will look (colors etc)")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property events
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamFlags")
+  (docs "The event mask that decides what kind of GdkEvents this widget gets")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property extension-events
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamEnum")
+  (docs "The mask that decides what kind of extension events this widget gets")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property no-show-all
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamBoolean")
+  (docs "Whether gtk_widget_show_all() should not affect this widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property has-tooltip
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamBoolean")
+  (docs "Whether this widget has a tooltip")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property tooltip-markup
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamString")
+  (docs "The contents of the tooltip for this widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property tooltip-text
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamString")
+  (docs "The contents of the tooltip for this widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property window
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamObject")
+  (docs "The widget's window if it is realized")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property halign
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamEnum")
+  (docs "How to position in extra horizontal space")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property valign
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamEnum")
+  (docs "How to position in extra vertical space")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property margin-left
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamInt")
+  (docs "Pixels of extra space on the left side")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property margin-right
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamInt")
+  (docs "Pixels of extra space on the right side")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property margin-top
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamInt")
+  (docs "Pixels of extra space on the top side")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property margin-bottom
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamInt")
+  (docs "Pixels of extra space on the bottom side")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property margin
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamInt")
+  (docs "Pixels of extra space on all four sides")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property border-width
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamUInt")
+  (docs "The width of the empty border outside the containers children")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property resize-mode
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamEnum")
+  (docs "Specify how resize events are handled")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property child
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamObject")
+  (docs "Can be used to add a new child to the container")
+  (readable #f)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property model
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamObject")
+  (docs "The model for the combo box")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property wrap-width
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamInt")
+  (docs "Wrap width for laying out the items in a grid")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property row-span-column
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamInt")
+  (docs "TreeModel column containing the row span values")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property column-span-column
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamInt")
+  (docs "TreeModel column containing the column span values")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property active
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamInt")
+  (docs "The item which is currently active")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property add-tearoffs
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamBoolean")
+  (docs "Whether dropdowns should have a tearoff menu item")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property tearoff-title
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamString")
+  (docs "A title that may be displayed by the window manager when the popup is torn-off")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property has-frame
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamBoolean")
+  (docs "Whether the combo box draws a frame around the child")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property focus-on-click
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamBoolean")
+  (docs "Whether the combo box grabs focus when it is clicked with the mouse")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property popup-shown
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamBoolean")
+  (docs "Whether the combo's dropdown is shown")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+(define-property button-sensitivity
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamEnum")
+  (docs "Whether the dropdown button is sensitive when the model is empty")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property text-column
+  (of-object "GtkComboBoxEntry")
+  (prop-type "GParamInt")
+  (docs "A column in the data source model to get the strings from")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -10923,6 +11972,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkContainer")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -11217,6 +12275,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkCTree")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -11582,6 +12649,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkCellView")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property background
   (of-object "GtkCellView")
   (prop-type "GParamString")
@@ -11830,6 +12906,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkCurve")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -12102,6 +13187,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkDialog")
   (prop-type "GParamUInt")
@@ -12152,15 +13246,6 @@
   (prop-type "GParamString")
   (docs "Unique identifier for the window to be used when restoring a session")
   (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property startup-id
-  (of-object "GtkDialog")
-  (prop-type "GParamString")
-  (docs "Unique startup identifier for the window used by startup-notification")
-  (readable #f)
   (writable #t)
   (construct-only #f)
 )
@@ -12378,6 +13463,24 @@
   (docs "Whether the input focus is within this GtkWindow")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property startup-id
+  (of-object "GtkDialog")
+  (prop-type "GParamString")
+  (docs "Unique startup identifier for the window used by startup-notification")
+  (readable #f)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property mnemonics-visible
+  (of-object "GtkDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether mnemonics are currently visible in this window")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -12599,6 +13702,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkDrawingArea")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 ;; From GtkEditable
 
 (define-signal changed
@@ -12705,6 +13817,15 @@
   )
 )
 
+(define-signal preedit-changed
+  (of-object "GtkEntry")
+  (return-type "void")
+  (when "last")
+  (parameters
+    '("const-gchar*" "p0")
+  )
+)
+
 (define-signal icon-press
   (of-object "GtkEntry")
   (return-type "void")
@@ -12723,6 +13844,15 @@
     '("GtkEntryIconPosition" "p0")
     '("const-GdkEventButton*" "p1")
   )
+)
+
+(define-property editing-canceled
+  (of-object "GtkEntry")
+  (prop-type "GParamBoolean")
+  (docs "Indicates that editing has been canceled")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
 )
 
 (define-property user-data
@@ -12932,6 +14062,24 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkEntry")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property buffer
+  (of-object "GtkEntry")
+  (prop-type "GParamObject")
+  (docs "Text buffer object which actually stores entry text")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property cursor-position
   (of-object "GtkEntry")
   (prop-type "GParamInt")
@@ -12971,7 +14119,7 @@
 (define-property visibility
   (of-object "GtkEntry")
   (prop-type "GParamBoolean")
-  (docs "FALSE displays the invisible char instead of the actual text (password mode)")
+  (docs "FALSE displays the 'invisible char' instead of the actual text (password mode)")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -12998,7 +14146,7 @@
 (define-property invisible-char
   (of-object "GtkEntry")
   (prop-type "GParamUnichar")
-  (docs "The character to use when masking entry contents (in password mode)")
+  (docs "The character to use when masking entry contents (in 'password mode')")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -13404,6 +14552,56 @@
   (construct-only #f)
 )
 
+;; From GtkEntryBuffer
+
+(define-signal inserted-text
+  (of-object "GtkEntryBuffer")
+  (return-type "void")
+  (when "first")
+  (parameters
+    '("guint" "p0")
+    '("const-gchar*" "p1")
+    '("guint" "p2")
+  )
+)
+
+(define-signal deleted-text
+  (of-object "GtkEntryBuffer")
+  (return-type "void")
+  (when "first")
+  (parameters
+    '("guint" "p0")
+    '("guint" "p1")
+  )
+)
+
+(define-property text
+  (of-object "GtkEntryBuffer")
+  (prop-type "GParamString")
+  (docs "The contents of the buffer")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property length
+  (of-object "GtkEntryBuffer")
+  (prop-type "GParamUInt")
+  (docs "Length of the text currently in the buffer")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+(define-property max-length
+  (of-object "GtkEntryBuffer")
+  (prop-type "GParamInt")
+  (docs "Maximum number of characters for this entry. Zero if no maximum")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 ;; From GtkEventBox
 
 (define-property user-data
@@ -13610,6 +14808,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkEventBox")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -13873,6 +15080,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkExpander")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkExpander")
   (prop-type "GParamUInt")
@@ -13954,12 +15170,161 @@
   (construct-only #f)
 )
 
+(define-property label-fill
+  (of-object "GtkExpander")
+  (prop-type "GParamBoolean")
+  (docs "Whether the label widget should fill all available horizontal space")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 ;; From GtkFileFilter
 
 (define-property user-data
   (of-object "GtkFileFilter")
   (prop-type "GParamPointer")
   (docs "Anonymous User Data Pointer")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+;; From GtkFileChooser
+
+(define-signal selection-changed
+  (of-object "GtkFileChooser")
+  (return-type "void")
+  (when "last")
+)
+
+(define-signal current-folder-changed
+  (of-object "GtkFileChooser")
+  (return-type "void")
+  (when "last")
+)
+
+(define-signal update-preview
+  (of-object "GtkFileChooser")
+  (return-type "void")
+  (when "last")
+)
+
+(define-signal file-activated
+  (of-object "GtkFileChooser")
+  (return-type "void")
+  (when "last")
+)
+
+(define-signal confirm-overwrite
+  (of-object "GtkFileChooser")
+  (return-type "GtkFileChooserConfirmation")
+  (when "last")
+)
+
+(define-property action
+  (of-object "GtkFileChooser")
+  (prop-type "GParamEnum")
+  (docs "The type of operation that the file selector is performing")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property create-folders
+  (of-object "GtkFileChooser")
+  (prop-type "GParamBoolean")
+  (docs "Whether a file chooser not in open mode will offer the user to create new folders.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property do-overwrite-confirmation
+  (of-object "GtkFileChooser")
+  (prop-type "GParamBoolean")
+  (docs "Whether a file chooser in save mode will present an overwrite confirmation dialog if necessary.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property extra-widget
+  (of-object "GtkFileChooser")
+  (prop-type "GParamObject")
+  (docs "Application supplied widget for extra options.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property file-system-backend
+  (of-object "GtkFileChooser")
+  (prop-type "GParamString")
+  (docs "Name of file system backend to use")
+  (readable #f)
+  (writable #t)
+  (construct-only #t)
+)
+
+(define-property filter
+  (of-object "GtkFileChooser")
+  (prop-type "GParamObject")
+  (docs "The current filter for selecting which files are displayed")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property local-only
+  (of-object "GtkFileChooser")
+  (prop-type "GParamBoolean")
+  (docs "Whether the selected file(s) should be limited to local file: URLs")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property preview-widget
+  (of-object "GtkFileChooser")
+  (prop-type "GParamObject")
+  (docs "Application supplied widget for custom previews.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property preview-widget-active
+  (of-object "GtkFileChooser")
+  (prop-type "GParamBoolean")
+  (docs "Whether the application supplied widget for custom previews should be shown.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property select-multiple
+  (of-object "GtkFileChooser")
+  (prop-type "GParamBoolean")
+  (docs "Whether to allow multiple files to be selected")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property show-hidden
+  (of-object "GtkFileChooser")
+  (prop-type "GParamBoolean")
+  (docs "Whether the hidden files and folders should be displayed")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property use-preview-label
+  (of-object "GtkFileChooser")
+  (prop-type "GParamBoolean")
+  (docs "Whether to display a stock label with the name of the previewed file.")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -13973,15 +15338,6 @@
   (when "first")
 )
 
-(define-property preview-widget
-  (of-object "GtkFileChooserButton")
-  (prop-type "GParamObject")
-  (docs "Application supplied widget for custom previews.")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
 (define-property action
   (of-object "GtkFileChooserButton")
   (prop-type "GParamEnum")
@@ -13991,28 +15347,28 @@
   (construct-only #f)
 )
 
-(define-property filter
+(define-property create-folders
+  (of-object "GtkFileChooserButton")
+  (prop-type "GParamBoolean")
+  (docs "Whether a file chooser not in open mode will offer the user to create new folders.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property do-overwrite-confirmation
+  (of-object "GtkFileChooserButton")
+  (prop-type "GParamBoolean")
+  (docs "Whether a file chooser in save mode will present an overwrite confirmation dialog if necessary.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property extra-widget
   (of-object "GtkFileChooserButton")
   (prop-type "GParamObject")
-  (docs "The current filter for selecting which files are displayed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property show-hidden
-  (of-object "GtkFileChooserButton")
-  (prop-type "GParamBoolean")
-  (docs "Whether the hidden files and folders should be displayed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property preview-widget-active
-  (of-object "GtkFileChooserButton")
-  (prop-type "GParamBoolean")
-  (docs "Whether the application supplied widget for custom previews should be shown.")
+  (docs "Application supplied widget for extra options.")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -14027,19 +15383,10 @@
   (construct-only #t)
 )
 
-(define-property extra-widget
+(define-property filter
   (of-object "GtkFileChooserButton")
   (prop-type "GParamObject")
-  (docs "Application supplied widget for extra options.")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property select-multiple
-  (of-object "GtkFileChooserButton")
-  (prop-type "GParamBoolean")
-  (docs "Whether to allow multiple files to be selected")
+  (docs "The current filter for selecting which files are displayed")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -14063,10 +15410,37 @@
   (construct-only #f)
 )
 
-(define-property do-overwrite-confirmation
+(define-property preview-widget
+  (of-object "GtkFileChooserButton")
+  (prop-type "GParamObject")
+  (docs "Application supplied widget for custom previews.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property preview-widget-active
   (of-object "GtkFileChooserButton")
   (prop-type "GParamBoolean")
-  (docs "Whether a file chooser in save mode will present an overwrite confirmation dialog if necessary.")
+  (docs "Whether the application supplied widget for custom previews should be shown.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property select-multiple
+  (of-object "GtkFileChooserButton")
+  (prop-type "GParamBoolean")
+  (docs "Whether to allow multiple files to be selected")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property show-hidden
+  (of-object "GtkFileChooserButton")
+  (prop-type "GParamBoolean")
+  (docs "Whether the hidden files and folders should be displayed")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -14285,6 +15659,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkFileChooserButton")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -14371,15 +15754,6 @@
 
 ;; From GtkFileChooserDialog
 
-(define-property preview-widget
-  (of-object "GtkFileChooserDialog")
-  (prop-type "GParamObject")
-  (docs "Application supplied widget for custom previews.")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
 (define-property action
   (of-object "GtkFileChooserDialog")
   (prop-type "GParamEnum")
@@ -14389,28 +15763,28 @@
   (construct-only #f)
 )
 
-(define-property filter
+(define-property create-folders
+  (of-object "GtkFileChooserDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether a file chooser not in open mode will offer the user to create new folders.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property do-overwrite-confirmation
+  (of-object "GtkFileChooserDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether a file chooser in save mode will present an overwrite confirmation dialog if necessary.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property extra-widget
   (of-object "GtkFileChooserDialog")
   (prop-type "GParamObject")
-  (docs "The current filter for selecting which files are displayed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property show-hidden
-  (of-object "GtkFileChooserDialog")
-  (prop-type "GParamBoolean")
-  (docs "Whether the hidden files and folders should be displayed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property preview-widget-active
-  (of-object "GtkFileChooserDialog")
-  (prop-type "GParamBoolean")
-  (docs "Whether the application supplied widget for custom previews should be shown.")
+  (docs "Application supplied widget for extra options.")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -14425,19 +15799,10 @@
   (construct-only #t)
 )
 
-(define-property extra-widget
+(define-property filter
   (of-object "GtkFileChooserDialog")
   (prop-type "GParamObject")
-  (docs "Application supplied widget for extra options.")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property select-multiple
-  (of-object "GtkFileChooserDialog")
-  (prop-type "GParamBoolean")
-  (docs "Whether to allow multiple files to be selected")
+  (docs "The current filter for selecting which files are displayed")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -14452,10 +15817,37 @@
   (construct-only #f)
 )
 
-(define-property do-overwrite-confirmation
+(define-property preview-widget
+  (of-object "GtkFileChooserDialog")
+  (prop-type "GParamObject")
+  (docs "Application supplied widget for custom previews.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property preview-widget-active
   (of-object "GtkFileChooserDialog")
   (prop-type "GParamBoolean")
-  (docs "Whether a file chooser in save mode will present an overwrite confirmation dialog if necessary.")
+  (docs "Whether the application supplied widget for custom previews should be shown.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property select-multiple
+  (of-object "GtkFileChooserDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether to allow multiple files to be selected")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property show-hidden
+  (of-object "GtkFileChooserDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether the hidden files and folders should be displayed")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -14677,6 +16069,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkFileChooserDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkFileChooserDialog")
   (prop-type "GParamUInt")
@@ -14727,15 +16128,6 @@
   (prop-type "GParamString")
   (docs "Unique identifier for the window to be used when restoring a session")
   (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property startup-id
-  (of-object "GtkFileChooserDialog")
-  (prop-type "GParamString")
-  (docs "Unique startup identifier for the window used by startup-notification")
-  (readable #f)
   (writable #t)
   (construct-only #f)
 )
@@ -14956,6 +16348,24 @@
   (construct-only #f)
 )
 
+(define-property startup-id
+  (of-object "GtkFileChooserDialog")
+  (prop-type "GParamString")
+  (docs "Unique startup identifier for the window used by startup-notification")
+  (readable #f)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property mnemonics-visible
+  (of-object "GtkFileChooserDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether mnemonics are currently visible in this window")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property has-separator
   (of-object "GtkFileChooserDialog")
   (prop-type "GParamBoolean")
@@ -14967,15 +16377,6 @@
 
 ;; From GtkFileChooserWidget
 
-(define-property preview-widget
-  (of-object "GtkFileChooserWidget")
-  (prop-type "GParamObject")
-  (docs "Application supplied widget for custom previews.")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
 (define-property action
   (of-object "GtkFileChooserWidget")
   (prop-type "GParamEnum")
@@ -14985,28 +16386,28 @@
   (construct-only #f)
 )
 
-(define-property filter
+(define-property create-folders
+  (of-object "GtkFileChooserWidget")
+  (prop-type "GParamBoolean")
+  (docs "Whether a file chooser not in open mode will offer the user to create new folders.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property do-overwrite-confirmation
+  (of-object "GtkFileChooserWidget")
+  (prop-type "GParamBoolean")
+  (docs "Whether a file chooser in save mode will present an overwrite confirmation dialog if necessary.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property extra-widget
   (of-object "GtkFileChooserWidget")
   (prop-type "GParamObject")
-  (docs "The current filter for selecting which files are displayed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property show-hidden
-  (of-object "GtkFileChooserWidget")
-  (prop-type "GParamBoolean")
-  (docs "Whether the hidden files and folders should be displayed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property preview-widget-active
-  (of-object "GtkFileChooserWidget")
-  (prop-type "GParamBoolean")
-  (docs "Whether the application supplied widget for custom previews should be shown.")
+  (docs "Application supplied widget for extra options.")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -15021,19 +16422,10 @@
   (construct-only #t)
 )
 
-(define-property extra-widget
+(define-property filter
   (of-object "GtkFileChooserWidget")
   (prop-type "GParamObject")
-  (docs "Application supplied widget for extra options.")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property select-multiple
-  (of-object "GtkFileChooserWidget")
-  (prop-type "GParamBoolean")
-  (docs "Whether to allow multiple files to be selected")
+  (docs "The current filter for selecting which files are displayed")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -15057,10 +16449,37 @@
   (construct-only #f)
 )
 
-(define-property do-overwrite-confirmation
+(define-property preview-widget
+  (of-object "GtkFileChooserWidget")
+  (prop-type "GParamObject")
+  (docs "Application supplied widget for custom previews.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property preview-widget-active
   (of-object "GtkFileChooserWidget")
   (prop-type "GParamBoolean")
-  (docs "Whether a file chooser in save mode will present an overwrite confirmation dialog if necessary.")
+  (docs "Whether the application supplied widget for custom previews should be shown.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property select-multiple
+  (of-object "GtkFileChooserWidget")
+  (prop-type "GParamBoolean")
+  (docs "Whether to allow multiple files to be selected")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property show-hidden
+  (of-object "GtkFileChooserWidget")
+  (prop-type "GParamBoolean")
+  (docs "Whether the hidden files and folders should be displayed")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -15279,6 +16698,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkFileChooserWidget")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -15536,6 +16964,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkFileSelection")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkFileSelection")
   (prop-type "GParamUInt")
@@ -15586,15 +17023,6 @@
   (prop-type "GParamString")
   (docs "Unique identifier for the window to be used when restoring a session")
   (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property startup-id
-  (of-object "GtkFileSelection")
-  (prop-type "GParamString")
-  (docs "Unique startup identifier for the window used by startup-notification")
-  (readable #f)
   (writable #t)
   (construct-only #f)
 )
@@ -15812,6 +17240,24 @@
   (docs "Whether the input focus is within this GtkWindow")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property startup-id
+  (of-object "GtkFileSelection")
+  (prop-type "GParamString")
+  (docs "Unique startup identifier for the window used by startup-notification")
+  (readable #f)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property mnemonics-visible
+  (of-object "GtkFileSelection")
+  (prop-type "GParamBoolean")
+  (docs "Whether mnemonics are currently visible in this window")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -16057,6 +17503,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkFixed")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -16317,6 +17772,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkFontButton")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -16700,6 +18164,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkFontSelection")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkFontSelection")
   (prop-type "GParamUInt")
@@ -16981,6 +18454,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkFontSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkFontSelectionDialog")
   (prop-type "GParamUInt")
@@ -17031,15 +18513,6 @@
   (prop-type "GParamString")
   (docs "Unique identifier for the window to be used when restoring a session")
   (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property startup-id
-  (of-object "GtkFontSelectionDialog")
-  (prop-type "GParamString")
-  (docs "Unique startup identifier for the window used by startup-notification")
-  (readable #f)
   (writable #t)
   (construct-only #f)
 )
@@ -17260,6 +18733,24 @@
   (construct-only #f)
 )
 
+(define-property startup-id
+  (of-object "GtkFontSelectionDialog")
+  (prop-type "GParamString")
+  (docs "Unique startup identifier for the window used by startup-notification")
+  (readable #f)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property mnemonics-visible
+  (of-object "GtkFontSelectionDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether mnemonics are currently visible in this window")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property has-separator
   (of-object "GtkFontSelectionDialog")
   (prop-type "GParamBoolean")
@@ -17475,6 +18966,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkFrame")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -17786,6 +19286,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkHandleBox")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkHandleBox")
   (prop-type "GParamUInt")
@@ -18081,6 +19590,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkImage")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -18464,6 +19982,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkImageMenuItem")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkImageMenuItem")
   (prop-type "GParamUInt")
@@ -18567,6 +20094,302 @@
   (of-object "GtkImageMenuItem")
   (prop-type "GParamBoolean")
   (docs "Whether the image will always be shown")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+;; From GtkInfoBar
+
+(define-signal response
+  (of-object "GtkInfoBar")
+  (return-type "void")
+  (when "last")
+  (parameters
+    '("gint" "p0")
+  )
+)
+
+(define-signal close
+  (of-object "GtkInfoBar")
+  (return-type "void")
+  (when "last")
+)
+
+(define-property orientation
+  (of-object "GtkInfoBar")
+  (prop-type "GParamEnum")
+  (docs "The orientation of the orientable")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property user-data
+  (of-object "GtkInfoBar")
+  (prop-type "GParamPointer")
+  (docs "Anonymous User Data Pointer")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property name
+  (of-object "GtkInfoBar")
+  (prop-type "GParamString")
+  (docs "The name of the widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property parent
+  (of-object "GtkInfoBar")
+  (prop-type "GParamObject")
+  (docs "The parent widget of this widget. Must be a Container widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property width-request
+  (of-object "GtkInfoBar")
+  (prop-type "GParamInt")
+  (docs "Override for width request of the widget, or -1 if natural request should be used")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property height-request
+  (of-object "GtkInfoBar")
+  (prop-type "GParamInt")
+  (docs "Override for height request of the widget, or -1 if natural request should be used")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property visible
+  (of-object "GtkInfoBar")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is visible")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property sensitive
+  (of-object "GtkInfoBar")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget responds to input")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property app-paintable
+  (of-object "GtkInfoBar")
+  (prop-type "GParamBoolean")
+  (docs "Whether the application will paint directly on the widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property can-focus
+  (of-object "GtkInfoBar")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget can accept the input focus")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property has-focus
+  (of-object "GtkInfoBar")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget has the input focus")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property is-focus
+  (of-object "GtkInfoBar")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is the focus widget within the toplevel")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property can-default
+  (of-object "GtkInfoBar")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget can be the default widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property has-default
+  (of-object "GtkInfoBar")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is the default widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property receives-default
+  (of-object "GtkInfoBar")
+  (prop-type "GParamBoolean")
+  (docs "If TRUE, the widget will receive the default action when it is focused")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property composite-child
+  (of-object "GtkInfoBar")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is part of a composite widget")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+(define-property style
+  (of-object "GtkInfoBar")
+  (prop-type "GParamObject")
+  (docs "The style of the widget, which contains information about how it will look (colors etc)")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property events
+  (of-object "GtkInfoBar")
+  (prop-type "GParamFlags")
+  (docs "The event mask that decides what kind of GdkEvents this widget gets")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property extension-events
+  (of-object "GtkInfoBar")
+  (prop-type "GParamEnum")
+  (docs "The mask that decides what kind of extension events this widget gets")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property no-show-all
+  (of-object "GtkInfoBar")
+  (prop-type "GParamBoolean")
+  (docs "Whether gtk_widget_show_all() should not affect this widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property has-tooltip
+  (of-object "GtkInfoBar")
+  (prop-type "GParamBoolean")
+  (docs "Whether this widget has a tooltip")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property tooltip-markup
+  (of-object "GtkInfoBar")
+  (prop-type "GParamString")
+  (docs "The contents of the tooltip for this widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property tooltip-text
+  (of-object "GtkInfoBar")
+  (prop-type "GParamString")
+  (docs "The contents of the tooltip for this widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property window
+  (of-object "GtkInfoBar")
+  (prop-type "GParamObject")
+  (docs "The widget's window if it is realized")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkInfoBar")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property border-width
+  (of-object "GtkInfoBar")
+  (prop-type "GParamUInt")
+  (docs "The width of the empty border outside the containers children")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property resize-mode
+  (of-object "GtkInfoBar")
+  (prop-type "GParamEnum")
+  (docs "Specify how resize events are handled")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property child
+  (of-object "GtkInfoBar")
+  (prop-type "GParamObject")
+  (docs "Can be used to add a new child to the container")
+  (readable #f)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property spacing
+  (of-object "GtkInfoBar")
+  (prop-type "GParamInt")
+  (docs "The amount of space between children")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property homogeneous
+  (of-object "GtkInfoBar")
+  (prop-type "GParamBoolean")
+  (docs "Whether the children should all be the same size")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property message-type
+  (of-object "GtkInfoBar")
+  (prop-type "GParamEnum")
+  (docs "The type of message")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -18799,6 +20622,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkInputDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkInputDialog")
   (prop-type "GParamUInt")
@@ -18849,15 +20681,6 @@
   (prop-type "GParamString")
   (docs "Unique identifier for the window to be used when restoring a session")
   (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property startup-id
-  (of-object "GtkInputDialog")
-  (prop-type "GParamString")
-  (docs "Unique startup identifier for the window used by startup-notification")
-  (readable #f)
   (writable #t)
   (construct-only #f)
 )
@@ -19078,6 +20901,24 @@
   (construct-only #f)
 )
 
+(define-property startup-id
+  (of-object "GtkInputDialog")
+  (prop-type "GParamString")
+  (docs "Unique startup identifier for the window used by startup-notification")
+  (readable #f)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property mnemonics-visible
+  (of-object "GtkInputDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether mnemonics are currently visible in this window")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property has-separator
   (of-object "GtkInputDialog")
   (prop-type "GParamBoolean")
@@ -19293,6 +21134,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkInvisible")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -19532,6 +21382,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkItem")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkItem")
   (prop-type "GParamUInt")
@@ -19560,12 +21419,6 @@
 )
 
 ;; From GtkIconView
-
-(define-signal selection-changed
-  (of-object "GtkIconView")
-  (return-type "void")
-  (when "first")
-)
 
 (define-signal set-scroll-adjustments
   (of-object "GtkIconView")
@@ -19606,6 +21459,12 @@
   (parameters
     '("GtkTreePath*" "p0")
   )
+)
+
+(define-signal selection-changed
+  (of-object "GtkIconView")
+  (return-type "void")
+  (when "first")
 )
 
 (define-signal select-cursor-item
@@ -19833,6 +21692,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkIconView")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkIconView")
   (prop-type "GParamUInt")
@@ -19897,6 +21765,15 @@
 )
 
 (define-property orientation
+  (of-object "GtkIconView")
+  (prop-type "GParamEnum")
+  (docs "How the text and icon of each item are positioned relative to each other")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property item-orientation
   (of-object "GtkIconView")
   (prop-type "GParamEnum")
   (docs "How the text and icon of each item are positioned relative to each other")
@@ -19986,6 +21863,15 @@
   (construct-only #f)
 )
 
+(define-property item-padding
+  (of-object "GtkIconView")
+  (prop-type "GParamInt")
+  (docs "Padding around icon view items")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 ;; From GtkLabel
 
 (define-signal move-cursor
@@ -20011,6 +21897,21 @@
   (when "last")
   (parameters
     '("GtkMenu*" "p0")
+  )
+)
+
+(define-signal activate-current-link
+  (of-object "GtkLabel")
+  (return-type "void")
+  (when "last")
+)
+
+(define-signal activate-link
+  (of-object "GtkLabel")
+  (return-type "gboolean")
+  (when "last")
+  (parameters
+    '("const-gchar*" "p0")
   )
 )
 
@@ -20221,6 +22122,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkLabel")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property xalign
   (of-object "GtkLabel")
   (prop-type "GParamFloat")
@@ -20414,6 +22324,15 @@
   (of-object "GtkLabel")
   (prop-type "GParamInt")
   (docs "The desired maximum width of the label, in characters")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property track-visited-links
+  (of-object "GtkLabel")
+  (prop-type "GParamBoolean")
+  (docs "Whether visited links should be tracked")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -20635,6 +22554,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkLayout")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -20925,6 +22853,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkLinkButton")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -21287,6 +23224,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkList")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkList")
   (prop-type "GParamUInt")
@@ -21605,6 +23551,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkListItem")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkListItem")
   (prop-type "GParamUInt")
@@ -21850,6 +23805,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkMenu")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkMenu")
   (prop-type "GParamUInt")
@@ -21944,6 +23908,15 @@
   (of-object "GtkMenu")
   (prop-type "GParamInt")
   (docs "The monitor the menu will be popped up on")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property reserve-toggle-size
+  (of-object "GtkMenu")
+  (prop-type "GParamBoolean")
+  (docs "A boolean that indicates whether the menu reserves space for toggles and icons")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -22155,6 +24128,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkMenuBar")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -22466,6 +24448,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkMenuItem")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -22804,6 +24795,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkMenuShell")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkMenuShell")
   (prop-type "GParamUInt")
@@ -23070,6 +25070,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkMenuToolButton")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -23399,6 +25408,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkMessageDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkMessageDialog")
   (prop-type "GParamUInt")
@@ -23449,15 +25467,6 @@
   (prop-type "GParamString")
   (docs "Unique identifier for the window to be used when restoring a session")
   (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property startup-id
-  (of-object "GtkMessageDialog")
-  (prop-type "GParamString")
-  (docs "Unique startup identifier for the window used by startup-notification")
-  (readable #f)
   (writable #t)
   (construct-only #f)
 )
@@ -23678,6 +25687,24 @@
   (construct-only #f)
 )
 
+(define-property startup-id
+  (of-object "GtkMessageDialog")
+  (prop-type "GParamString")
+  (docs "Unique startup identifier for the window used by startup-notification")
+  (readable #f)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property mnemonics-visible
+  (of-object "GtkMessageDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether mnemonics are currently visible in this window")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property has-separator
   (of-object "GtkMessageDialog")
   (prop-type "GParamBoolean")
@@ -23747,6 +25774,15 @@
   (docs "The image")
   (readable #t)
   (writable #t)
+  (construct-only #f)
+)
+
+(define-property message-area
+  (of-object "GtkMessageDialog")
+  (prop-type "GParamObject")
+  (docs "GtkVBox that holds the dialog's primary and secondary labels")
+  (readable #t)
+  (writable #f)
   (construct-only #f)
 )
 
@@ -23959,6 +25995,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkMisc")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property xalign
   (of-object "GtkMisc")
   (prop-type "GParamFloat")
@@ -23997,15 +26042,6 @@
 
 ;; From GtkNotebook
 
-(define-signal move-focus-out
-  (of-object "GtkNotebook")
-  (return-type "void")
-  (when "last")
-  (parameters
-    '("GtkDirectionType" "p0")
-  )
-)
-
 (define-signal switch-page
   (of-object "GtkNotebook")
   (return-type "void")
@@ -24040,6 +26076,15 @@
   (when "last")
   (parameters
     '("gint" "p0")
+  )
+)
+
+(define-signal move-focus-out
+  (of-object "GtkNotebook")
+  (return-type "void")
+  (when "last")
+  (parameters
+    '("GtkDirectionType" "p0")
   )
 )
 
@@ -24301,6 +26346,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkNotebook")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkNotebook")
   (prop-type "GParamUInt")
@@ -24448,6 +26502,512 @@
   (of-object "GtkObject")
   (prop-type "GParamPointer")
   (docs "Anonymous User Data Pointer")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+;; From GtkOffscreenWindow
+
+(define-property user-data
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamPointer")
+  (docs "Anonymous User Data Pointer")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property name
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamString")
+  (docs "The name of the widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property parent
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamObject")
+  (docs "The parent widget of this widget. Must be a Container widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property width-request
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamInt")
+  (docs "Override for width request of the widget, or -1 if natural request should be used")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property height-request
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamInt")
+  (docs "Override for height request of the widget, or -1 if natural request should be used")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property visible
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is visible")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property sensitive
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget responds to input")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property app-paintable
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "Whether the application will paint directly on the widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property can-focus
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget can accept the input focus")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property has-focus
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget has the input focus")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property is-focus
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is the focus widget within the toplevel")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property can-default
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget can be the default widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property has-default
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is the default widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property receives-default
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "If TRUE, the widget will receive the default action when it is focused")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property composite-child
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is part of a composite widget")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+(define-property style
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamObject")
+  (docs "The style of the widget, which contains information about how it will look (colors etc)")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property events
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamFlags")
+  (docs "The event mask that decides what kind of GdkEvents this widget gets")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property extension-events
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamEnum")
+  (docs "The mask that decides what kind of extension events this widget gets")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property no-show-all
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "Whether gtk_widget_show_all() should not affect this widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property has-tooltip
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "Whether this widget has a tooltip")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property tooltip-markup
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamString")
+  (docs "The contents of the tooltip for this widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property tooltip-text
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamString")
+  (docs "The contents of the tooltip for this widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property window
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamObject")
+  (docs "The widget's window if it is realized")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property border-width
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamUInt")
+  (docs "The width of the empty border outside the containers children")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property resize-mode
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamEnum")
+  (docs "Specify how resize events are handled")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property child
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamObject")
+  (docs "Can be used to add a new child to the container")
+  (readable #f)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property type
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamEnum")
+  (docs "The type of the window")
+  (readable #t)
+  (writable #t)
+  (construct-only #t)
+)
+
+(define-property title
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamString")
+  (docs "The title of the window")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property role
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamString")
+  (docs "Unique identifier for the window to be used when restoring a session")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property allow-shrink
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "If TRUE, the window has no mimimum size. Setting this to TRUE is 99% of the time a bad idea")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property allow-grow
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "If TRUE, users can expand the window beyond its minimum size")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property resizable
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "If TRUE, users can resize the window")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property modal
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "If TRUE, the window is modal (other windows are not usable while this one is up)")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property window-position
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamEnum")
+  (docs "The initial position of the window")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property default-width
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamInt")
+  (docs "The default width of the window, used when initially showing the window")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property default-height
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamInt")
+  (docs "The default height of the window, used when initially showing the window")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property destroy-with-parent
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "If this window should be destroyed when the parent is destroyed")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property icon
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamObject")
+  (docs "Icon for this window")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property icon-name
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamString")
+  (docs "Name of the themed icon for this window")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property screen
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamObject")
+  (docs "The screen where this window will be displayed")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property type-hint
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamEnum")
+  (docs "Hint to help the desktop environment understand what kind of window this is and how to treat it.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property skip-taskbar-hint
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "TRUE if the window should not be in the task bar.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property skip-pager-hint
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "TRUE if the window should not be in the pager.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property urgency-hint
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "TRUE if the window should be brought to the user's attention.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property accept-focus
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "TRUE if the window should receive the input focus.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property focus-on-map
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "TRUE if the window should receive the input focus when mapped.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property decorated
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "Whether the window should be decorated by the window manager")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property deletable
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "Whether the window frame should have a close button")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property gravity
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamEnum")
+  (docs "The window gravity of the window")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property transient-for
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamObject")
+  (docs "The transient parent of the dialog")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property opacity
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamDouble")
+  (docs "The opacity of the window, from 0 to 1")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property is-active
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "Whether the toplevel is the current active window")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+(define-property has-toplevel-focus
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "Whether the input focus is within this GtkWindow")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+(define-property startup-id
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamString")
+  (docs "Unique startup identifier for the window used by startup-notification")
+  (readable #f)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property mnemonics-visible
+  (of-object "GtkOffscreenWindow")
+  (prop-type "GParamBoolean")
+  (docs "Whether mnemonics are currently visible in this window")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -24683,6 +27243,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkOptionMenu")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -25077,6 +27646,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkPaned")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkPaned")
   (prop-type "GParamUInt")
@@ -25125,7 +27703,7 @@
 (define-property min-position
   (of-object "GtkPaned")
   (prop-type "GParamInt")
-  (docs "Smallest possible value for the position property")
+  (docs "Smallest possible value for the 'position' property")
   (readable #t)
   (writable #f)
   (construct-only #f)
@@ -25134,7 +27712,7 @@
 (define-property max-position
   (of-object "GtkPaned")
   (prop-type "GParamInt")
-  (docs "Largest possible value for the position property")
+  (docs "Largest possible value for the 'position' property")
   (readable #t)
   (writable #f)
   (construct-only #f)
@@ -25346,6 +27924,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkPixmap")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -25600,6 +28187,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkPlug")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkPlug")
   (prop-type "GParamUInt")
@@ -25650,15 +28246,6 @@
   (prop-type "GParamString")
   (docs "Unique identifier for the window to be used when restoring a session")
   (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property startup-id
-  (of-object "GtkPlug")
-  (prop-type "GParamString")
-  (docs "Unique startup identifier for the window used by startup-notification")
-  (readable #f)
   (writable #t)
   (construct-only #f)
 )
@@ -25876,6 +28463,24 @@
   (docs "Whether the input focus is within this GtkWindow")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property startup-id
+  (of-object "GtkPlug")
+  (prop-type "GParamString")
+  (docs "Unique startup identifier for the window used by startup-notification")
+  (readable #f)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property mnemonics-visible
+  (of-object "GtkPlug")
+  (prop-type "GParamBoolean")
+  (docs "Whether mnemonics are currently visible in this window")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -26103,6 +28708,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkPreview")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -26349,6 +28963,17 @@
   (when "last")
 )
 
+(define-signal update-custom-widget
+  (of-object "GtkPrintOperation")
+  (return-type "void")
+  (when "last")
+  (parameters
+    '("GtkWidget*" "p0")
+    '("GtkPageSetup*" "p1")
+    '("GtkPrintSettings*" "p2")
+  )
+)
+
 (define-signal custom-widget-apply
   (of-object "GtkPrintOperation")
   (return-type "void")
@@ -26492,6 +29117,42 @@
   (docs "Label for the tab containing custom widgets.")
   (readable #t)
   (writable #t)
+  (construct-only #f)
+)
+
+(define-property embed-page-setup
+  (of-object "GtkPrintOperation")
+  (prop-type "GParamBoolean")
+  (docs "TRUE if page setup combos are embedded in GtkPrintDialog")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property has-selection
+  (of-object "GtkPrintOperation")
+  (prop-type "GParamBoolean")
+  (docs "TRUE if a selection exists.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property support-selection
+  (of-object "GtkPrintOperation")
+  (prop-type "GParamBoolean")
+  (docs "TRUE if the print operation will support print of selection.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property n-pages-to-print
+  (of-object "GtkPrintOperation")
+  (prop-type "GParamInt")
+  (docs "The number of pages that will be printed.")
+  (readable #t)
+  (writable #f)
   (construct-only #f)
 )
 
@@ -26725,6 +29386,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkPageSetupUnixDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkPageSetupUnixDialog")
   (prop-type "GParamUInt")
@@ -26775,15 +29445,6 @@
   (prop-type "GParamString")
   (docs "Unique identifier for the window to be used when restoring a session")
   (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property startup-id
-  (of-object "GtkPageSetupUnixDialog")
-  (prop-type "GParamString")
-  (docs "Unique startup identifier for the window used by startup-notification")
-  (readable #f)
   (writable #t)
   (construct-only #f)
 )
@@ -27001,6 +29662,24 @@
   (docs "Whether the input focus is within this GtkWindow")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property startup-id
+  (of-object "GtkPageSetupUnixDialog")
+  (prop-type "GParamString")
+  (docs "Unique startup identifier for the window used by startup-notification")
+  (readable #f)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property mnemonics-visible
+  (of-object "GtkPageSetupUnixDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether mnemonics are currently visible in this window")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -27222,6 +29901,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkPrintUnixDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkPrintUnixDialog")
   (prop-type "GParamUInt")
@@ -27272,15 +29960,6 @@
   (prop-type "GParamString")
   (docs "Unique identifier for the window to be used when restoring a session")
   (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property startup-id
-  (of-object "GtkPrintUnixDialog")
-  (prop-type "GParamString")
-  (docs "Unique startup identifier for the window used by startup-notification")
-  (readable #f)
   (writable #t)
   (construct-only #f)
 )
@@ -27501,6 +30180,24 @@
   (construct-only #f)
 )
 
+(define-property startup-id
+  (of-object "GtkPrintUnixDialog")
+  (prop-type "GParamString")
+  (docs "Unique startup identifier for the window used by startup-notification")
+  (readable #f)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property mnemonics-visible
+  (of-object "GtkPrintUnixDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether mnemonics are currently visible in this window")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property has-separator
   (of-object "GtkPrintUnixDialog")
   (prop-type "GParamBoolean")
@@ -27543,6 +30240,42 @@
   (docs "The GtkPrinter which is selected")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property manual-capabilities
+  (of-object "GtkPrintUnixDialog")
+  (prop-type "GParamFlags")
+  (docs "Capabilities the application can handle")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property support-selection
+  (of-object "GtkPrintUnixDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether the dialog supports selection")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property has-selection
+  (of-object "GtkPrintUnixDialog")
+  (prop-type "GParamBoolean")
+  (docs "Whether the application has a selection")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property embed-page-setup
+  (of-object "GtkPrintUnixDialog")
+  (prop-type "GParamBoolean")
+  (docs "TRUE if page setup combos are embedded in GtkPrintUnixDialog")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -27752,6 +30485,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkProgress")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -27997,6 +30739,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkProgressBar")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -28359,6 +31110,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkRadioButton")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkRadioButton")
   (prop-type "GParamUInt")
@@ -28479,7 +31239,7 @@
 (define-property inconsistent
   (of-object "GtkRadioButton")
   (prop-type "GParamBoolean")
-  (docs "If the toggle button is in an in between state")
+  (docs "If the toggle button is in an 'in between' state")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -28727,6 +31487,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkRadioToolButton")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -28997,6 +31766,15 @@
   (of-object "GtkRadioAction")
   (prop-type "GParamObject")
   (docs "The GtkActionGroup this GtkAction is associated with, or NULL (for internal use).")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property always-show-image
+  (of-object "GtkRadioAction")
+  (prop-type "GParamBoolean")
+  (docs "Whether the image will always be shown")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -29280,6 +32058,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkRadioMenuItem")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkRadioMenuItem")
   (prop-type "GParamUInt")
@@ -29364,7 +32151,7 @@
 (define-property inconsistent
   (of-object "GtkRadioMenuItem")
   (prop-type "GParamBoolean")
-  (docs "Whether to display an inconsistent state")
+  (docs "Whether to display an 'inconsistent' state")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -29640,6 +32427,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkRange")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property update-policy
   (of-object "GtkRange")
   (prop-type "GParamEnum")
@@ -29714,6 +32510,15 @@
 
 ;; From GtkRecentAction
 
+(define-property filter
+  (of-object "GtkRecentAction")
+  (prop-type "GParamObject")
+  (docs "The current filter for selecting which resources are displayed")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property limit
   (of-object "GtkRecentAction")
   (prop-type "GParamInt")
@@ -29732,33 +32537,6 @@
   (construct-only #f)
 )
 
-(define-property filter
-  (of-object "GtkRecentAction")
-  (prop-type "GParamObject")
-  (docs "The current filter for selecting which resources are displayed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property show-not-found
-  (of-object "GtkRecentAction")
-  (prop-type "GParamBoolean")
-  (docs "Whether the items pointing to unavailable resources should be displayed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property sort-type
-  (of-object "GtkRecentAction")
-  (prop-type "GParamEnum")
-  (docs "The sorting order of the items displayed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
 (define-property recent-manager
   (of-object "GtkRecentAction")
   (prop-type "GParamObject")
@@ -29766,24 +32544,6 @@
   (readable #f)
   (writable #t)
   (construct-only #t)
-)
-
-(define-property show-tips
-  (of-object "GtkRecentAction")
-  (prop-type "GParamBoolean")
-  (docs "Whether there should be a tooltip on the item")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property show-private
-  (of-object "GtkRecentAction")
-  (prop-type "GParamBoolean")
-  (docs "Whether the private items should be displayed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
 )
 
 (define-property select-multiple
@@ -29799,6 +32559,42 @@
   (of-object "GtkRecentAction")
   (prop-type "GParamBoolean")
   (docs "Whether there should be an icon near the item")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property show-not-found
+  (of-object "GtkRecentAction")
+  (prop-type "GParamBoolean")
+  (docs "Whether the items pointing to unavailable resources should be displayed")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property show-private
+  (of-object "GtkRecentAction")
+  (prop-type "GParamBoolean")
+  (docs "Whether the private items should be displayed")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property show-tips
+  (of-object "GtkRecentAction")
+  (prop-type "GParamBoolean")
+  (docs "Whether there should be a tooltip on the item")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property sort-type
+  (of-object "GtkRecentAction")
+  (prop-type "GParamEnum")
+  (docs "The sorting order of the items displayed")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -29939,6 +32735,15 @@
   (construct-only #f)
 )
 
+(define-property always-show-image
+  (of-object "GtkRecentAction")
+  (prop-type "GParamBoolean")
+  (docs "Whether the image will always be shown")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property show-numbers
   (of-object "GtkRecentAction")
   (prop-type "GParamBoolean")
@@ -29950,16 +32755,25 @@
 
 ;; From GtkRecentChooser
 
+(define-signal item-activated
+  (of-object "GtkRecentChooser")
+  (return-type "void")
+  (when "last")
+)
+
 (define-signal selection-changed
   (of-object "GtkRecentChooser")
   (return-type "void")
   (when "last")
 )
 
-(define-signal item-activated
+(define-property filter
   (of-object "GtkRecentChooser")
-  (return-type "void")
-  (when "last")
+  (prop-type "GParamObject")
+  (docs "The current filter for selecting which resources are displayed")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
 )
 
 (define-property limit
@@ -29980,33 +32794,6 @@
   (construct-only #f)
 )
 
-(define-property filter
-  (of-object "GtkRecentChooser")
-  (prop-type "GParamObject")
-  (docs "The current filter for selecting which resources are displayed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property show-not-found
-  (of-object "GtkRecentChooser")
-  (prop-type "GParamBoolean")
-  (docs "Whether the items pointing to unavailable resources should be displayed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property sort-type
-  (of-object "GtkRecentChooser")
-  (prop-type "GParamEnum")
-  (docs "The sorting order of the items displayed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
 (define-property recent-manager
   (of-object "GtkRecentChooser")
   (prop-type "GParamObject")
@@ -30014,24 +32801,6 @@
   (readable #f)
   (writable #t)
   (construct-only #t)
-)
-
-(define-property show-tips
-  (of-object "GtkRecentChooser")
-  (prop-type "GParamBoolean")
-  (docs "Whether there should be a tooltip on the item")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property show-private
-  (of-object "GtkRecentChooser")
-  (prop-type "GParamBoolean")
-  (docs "Whether the private items should be displayed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
 )
 
 (define-property select-multiple
@@ -30052,7 +32821,52 @@
   (construct-only #f)
 )
 
+(define-property show-not-found
+  (of-object "GtkRecentChooser")
+  (prop-type "GParamBoolean")
+  (docs "Whether the items pointing to unavailable resources should be displayed")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property show-private
+  (of-object "GtkRecentChooser")
+  (prop-type "GParamBoolean")
+  (docs "Whether the private items should be displayed")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property show-tips
+  (of-object "GtkRecentChooser")
+  (prop-type "GParamBoolean")
+  (docs "Whether there should be a tooltip on the item")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property sort-type
+  (of-object "GtkRecentChooser")
+  (prop-type "GParamEnum")
+  (docs "The sorting order of the items displayed")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 ;; From GtkRecentChooserMenu
+
+(define-property filter
+  (of-object "GtkRecentChooserMenu")
+  (prop-type "GParamObject")
+  (docs "The current filter for selecting which resources are displayed")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
 
 (define-property limit
   (of-object "GtkRecentChooserMenu")
@@ -30072,13 +32886,13 @@
   (construct-only #f)
 )
 
-(define-property filter
+(define-property recent-manager
   (of-object "GtkRecentChooserMenu")
   (prop-type "GParamObject")
-  (docs "The current filter for selecting which resources are displayed")
-  (readable #t)
+  (docs "The RecentManager object to use")
+  (readable #f)
   (writable #t)
-  (construct-only #f)
+  (construct-only #t)
 )
 
 (define-property related-action
@@ -30090,46 +32904,28 @@
   (construct-only #f)
 )
 
+(define-property select-multiple
+  (of-object "GtkRecentChooserMenu")
+  (prop-type "GParamBoolean")
+  (docs "Whether to allow multiple items to be selected")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property show-icons
+  (of-object "GtkRecentChooserMenu")
+  (prop-type "GParamBoolean")
+  (docs "Whether there should be an icon near the item")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property show-not-found
   (of-object "GtkRecentChooserMenu")
   (prop-type "GParamBoolean")
   (docs "Whether the items pointing to unavailable resources should be displayed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property sort-type
-  (of-object "GtkRecentChooserMenu")
-  (prop-type "GParamEnum")
-  (docs "The sorting order of the items displayed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property recent-manager
-  (of-object "GtkRecentChooserMenu")
-  (prop-type "GParamObject")
-  (docs "The RecentManager object to use")
-  (readable #f)
-  (writable #t)
-  (construct-only #t)
-)
-
-(define-property show-tips
-  (of-object "GtkRecentChooserMenu")
-  (prop-type "GParamBoolean")
-  (docs "Whether there should be a tooltip on the item")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property use-action-appearance
-  (of-object "GtkRecentChooserMenu")
-  (prop-type "GParamBoolean")
-  (docs "Whether to use the related actions appearance properties")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -30144,19 +32940,28 @@
   (construct-only #f)
 )
 
-(define-property select-multiple
+(define-property show-tips
   (of-object "GtkRecentChooserMenu")
   (prop-type "GParamBoolean")
-  (docs "Whether to allow multiple items to be selected")
+  (docs "Whether there should be a tooltip on the item")
   (readable #t)
   (writable #t)
   (construct-only #f)
 )
 
-(define-property show-icons
+(define-property sort-type
+  (of-object "GtkRecentChooserMenu")
+  (prop-type "GParamEnum")
+  (docs "The sorting order of the items displayed")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property use-action-appearance
   (of-object "GtkRecentChooserMenu")
   (prop-type "GParamBoolean")
-  (docs "Whether there should be an icon near the item")
+  (docs "Whether to use the related actions appearance properties")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -30366,6 +33171,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkRecentChooserMenu")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -30468,6 +33282,15 @@
   (construct-only #f)
 )
 
+(define-property reserve-toggle-size
+  (of-object "GtkRecentChooserMenu")
+  (prop-type "GParamBoolean")
+  (docs "A boolean that indicates whether the menu reserves space for toggles and icons")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property show-numbers
   (of-object "GtkRecentChooserMenu")
   (prop-type "GParamBoolean")
@@ -30479,46 +33302,10 @@
 
 ;; From GtkRecentChooserWidget
 
-(define-property local-only
-  (of-object "GtkRecentChooserWidget")
-  (prop-type "GParamBoolean")
-  (docs "Whether the selected resource(s) should be limited to local file: URIs")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property recent-manager
-  (of-object "GtkRecentChooserWidget")
-  (prop-type "GParamObject")
-  (docs "The RecentManager object to use")
-  (readable #f)
-  (writable #t)
-  (construct-only #t)
-)
-
 (define-property filter
   (of-object "GtkRecentChooserWidget")
   (prop-type "GParamObject")
   (docs "The current filter for selecting which resources are displayed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property show-private
-  (of-object "GtkRecentChooserWidget")
-  (prop-type "GParamBoolean")
-  (docs "Whether the private items should be displayed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property select-multiple
-  (of-object "GtkRecentChooserWidget")
-  (prop-type "GParamBoolean")
-  (docs "Whether to allow multiple items to be selected")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -30533,10 +33320,64 @@
   (construct-only #f)
 )
 
+(define-property local-only
+  (of-object "GtkRecentChooserWidget")
+  (prop-type "GParamBoolean")
+  (docs "Whether the selected resource(s) should be limited to local file: URIs")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property orientation
+  (of-object "GtkRecentChooserWidget")
+  (prop-type "GParamEnum")
+  (docs "The orientation of the orientable")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property recent-manager
+  (of-object "GtkRecentChooserWidget")
+  (prop-type "GParamObject")
+  (docs "The RecentManager object to use")
+  (readable #f)
+  (writable #t)
+  (construct-only #t)
+)
+
+(define-property select-multiple
+  (of-object "GtkRecentChooserWidget")
+  (prop-type "GParamBoolean")
+  (docs "Whether to allow multiple items to be selected")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property show-icons
   (of-object "GtkRecentChooserWidget")
   (prop-type "GParamBoolean")
   (docs "Whether there should be an icon near the item")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property show-not-found
+  (of-object "GtkRecentChooserWidget")
+  (prop-type "GParamBoolean")
+  (docs "Whether the items pointing to unavailable resources should be displayed")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property show-private
+  (of-object "GtkRecentChooserWidget")
+  (prop-type "GParamBoolean")
+  (docs "Whether the private items should be displayed")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -30555,24 +33396,6 @@
   (of-object "GtkRecentChooserWidget")
   (prop-type "GParamEnum")
   (docs "The sorting order of the items displayed")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property orientation
-  (of-object "GtkRecentChooserWidget")
-  (prop-type "GParamEnum")
-  (docs "The orientation of the orientable")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property show-not-found
-  (of-object "GtkRecentChooserWidget")
-  (prop-type "GParamBoolean")
-  (docs "Whether the items pointing to unavailable resources should be displayed")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -30782,6 +33605,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkRecentChooserWidget")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -31094,6 +33926,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkRuler")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property lower
   (of-object "GtkRuler")
   (prop-type "GParamDouble")
@@ -31366,6 +34207,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkScale")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property update-policy
   (of-object "GtkScale")
   (prop-type "GParamEnum")
@@ -31488,10 +34338,10 @@
   (when "last")
 )
 
-(define-property use-action-appearance
+(define-property orientation
   (of-object "GtkScaleButton")
-  (prop-type "GParamBoolean")
-  (docs "Whether to use the related actions appearance properties")
+  (prop-type "GParamEnum")
+  (docs "The orientation of the orientable")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -31506,10 +34356,10 @@
   (construct-only #f)
 )
 
-(define-property orientation
+(define-property use-action-appearance
   (of-object "GtkScaleButton")
-  (prop-type "GParamEnum")
-  (docs "The orientation of the orientable")
+  (prop-type "GParamBoolean")
+  (docs "Whether to use the related actions appearance properties")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -31719,6 +34569,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkScaleButton")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -32084,6 +34943,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkScrollbar")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property update-policy
   (of-object "GtkScrollbar")
   (prop-type "GParamEnum")
@@ -32158,6 +35026,15 @@
 
 ;; From GtkScrolledWindow
 
+(define-signal move-focus-out
+  (of-object "GtkScrolledWindow")
+  (return-type "void")
+  (when "last")
+  (parameters
+    '("GtkDirectionType" "p0")
+  )
+)
+
 (define-signal scroll-child
   (of-object "GtkScrolledWindow")
   (return-type "gboolean")
@@ -32165,15 +35042,6 @@
   (parameters
     '("GtkScrollType" "p0")
     '("gboolean" "p1")
-  )
-)
-
-(define-signal move-focus-out
-  (of-object "GtkScrolledWindow")
-  (return-type "void")
-  (when "last")
-  (parameters
-    '("GtkDirectionType" "p0")
   )
 )
 
@@ -32384,6 +35252,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkScrolledWindow")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkScrolledWindow")
   (prop-type "GParamUInt")
@@ -32450,7 +35327,7 @@
 (define-property window-placement
   (of-object "GtkScrolledWindow")
   (prop-type "GParamEnum")
-  (docs "Where the contents are located with respect to the scrollbars. This property only takes effect if window-placement-set is TRUE.")
+  (docs "Where the contents are located with respect to the scrollbars. This property only takes effect if 'window-placement-set' is TRUE.")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -32459,7 +35336,7 @@
 (define-property window-placement-set
   (of-object "GtkScrolledWindow")
   (prop-type "GParamBoolean")
-  (docs "Whether window-placement should be used to determine the location of the contents with respect to the scrollbars.")
+  (docs "Whether 'window-placement' should be used to determine the location of the contents with respect to the scrollbars.")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -32692,21 +35569,30 @@
   (construct-only #f)
 )
 
-;; From GtkSeparatorToolItem
-
-(define-property use-action-appearance
-  (of-object "GtkSeparatorToolItem")
+(define-property double-buffered
+  (of-object "GtkSeparator")
   (prop-type "GParamBoolean")
-  (docs "Whether to use the related actions appearance properties")
+  (docs "Whether or not the widget is double buffered")
   (readable #t)
   (writable #t)
   (construct-only #f)
 )
 
+;; From GtkSeparatorToolItem
+
 (define-property related-action
   (of-object "GtkSeparatorToolItem")
   (prop-type "GParamObject")
   (docs "The action this activatable will activate and receive updates from")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property use-action-appearance
+  (of-object "GtkSeparatorToolItem")
+  (prop-type "GParamBoolean")
+  (docs "Whether to use the related actions appearance properties")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -32916,6 +35802,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkSeparatorToolItem")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -33452,15 +36347,6 @@
   (construct-only #f)
 )
 
-(define-property gtk-button-images
-  (of-object "GtkSettings")
-  (prop-type "GParamBoolean")
-  (docs "Whether images should be shown on buttons")
-  (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
 (define-property gtk-toolbar-style
   (of-object "GtkSettings")
   (prop-type "GParamEnum")
@@ -33473,7 +36359,25 @@
 (define-property gtk-toolbar-icon-size
   (of-object "GtkSettings")
   (prop-type "GParamEnum")
-  (docs "Size of icons in default toolbars")
+  (docs "The size of icons in default toolbars.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property gtk-auto-mnemonics
+  (of-object "GtkSettings")
+  (prop-type "GParamBoolean")
+  (docs "Whether mnemonics should be automatically shown and hidden when the user presses the mnemonic activator.")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property gtk-button-images
+  (of-object "GtkSettings")
+  (prop-type "GParamBoolean")
+  (docs "Whether images should be shown on buttons")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -33747,6 +36651,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkSocket")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkSocket")
   (prop-type "GParamUInt")
@@ -33770,6 +36683,233 @@
   (prop-type "GParamObject")
   (docs "Can be used to add a new child to the container")
   (readable #f)
+  (writable #t)
+  (construct-only #f)
+)
+
+;; From GtkSpinner
+
+(define-property user-data
+  (of-object "GtkSpinner")
+  (prop-type "GParamPointer")
+  (docs "Anonymous User Data Pointer")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property name
+  (of-object "GtkSpinner")
+  (prop-type "GParamString")
+  (docs "The name of the widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property parent
+  (of-object "GtkSpinner")
+  (prop-type "GParamObject")
+  (docs "The parent widget of this widget. Must be a Container widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property width-request
+  (of-object "GtkSpinner")
+  (prop-type "GParamInt")
+  (docs "Override for width request of the widget, or -1 if natural request should be used")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property height-request
+  (of-object "GtkSpinner")
+  (prop-type "GParamInt")
+  (docs "Override for height request of the widget, or -1 if natural request should be used")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property visible
+  (of-object "GtkSpinner")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is visible")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property sensitive
+  (of-object "GtkSpinner")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget responds to input")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property app-paintable
+  (of-object "GtkSpinner")
+  (prop-type "GParamBoolean")
+  (docs "Whether the application will paint directly on the widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property can-focus
+  (of-object "GtkSpinner")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget can accept the input focus")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property has-focus
+  (of-object "GtkSpinner")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget has the input focus")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property is-focus
+  (of-object "GtkSpinner")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is the focus widget within the toplevel")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property can-default
+  (of-object "GtkSpinner")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget can be the default widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property has-default
+  (of-object "GtkSpinner")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is the default widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property receives-default
+  (of-object "GtkSpinner")
+  (prop-type "GParamBoolean")
+  (docs "If TRUE, the widget will receive the default action when it is focused")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property composite-child
+  (of-object "GtkSpinner")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is part of a composite widget")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+(define-property style
+  (of-object "GtkSpinner")
+  (prop-type "GParamObject")
+  (docs "The style of the widget, which contains information about how it will look (colors etc)")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property events
+  (of-object "GtkSpinner")
+  (prop-type "GParamFlags")
+  (docs "The event mask that decides what kind of GdkEvents this widget gets")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property extension-events
+  (of-object "GtkSpinner")
+  (prop-type "GParamEnum")
+  (docs "The mask that decides what kind of extension events this widget gets")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property no-show-all
+  (of-object "GtkSpinner")
+  (prop-type "GParamBoolean")
+  (docs "Whether gtk_widget_show_all() should not affect this widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property has-tooltip
+  (of-object "GtkSpinner")
+  (prop-type "GParamBoolean")
+  (docs "Whether this widget has a tooltip")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property tooltip-markup
+  (of-object "GtkSpinner")
+  (prop-type "GParamString")
+  (docs "The contents of the tooltip for this widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property tooltip-text
+  (of-object "GtkSpinner")
+  (prop-type "GParamString")
+  (docs "The contents of the tooltip for this widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property window
+  (of-object "GtkSpinner")
+  (prop-type "GParamObject")
+  (docs "The widget's window if it is realized")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkSpinner")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property active
+  (of-object "GtkSpinner")
+  (prop-type "GParamBoolean")
+  (docs "Whether the spinner is active")
+  (readable #t)
   (writable #t)
   (construct-only #f)
 )
@@ -33810,6 +36950,15 @@
   (parameters
     '("GtkScrollType" "p0")
   )
+)
+
+(define-property editing-canceled
+  (of-object "GtkSpinButton")
+  (prop-type "GParamBoolean")
+  (docs "Indicates that editing has been canceled")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
 )
 
 (define-property user-data
@@ -34019,6 +37168,24 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkSpinButton")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property buffer
+  (of-object "GtkSpinButton")
+  (prop-type "GParamObject")
+  (docs "Text buffer object which actually stores entry text")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property cursor-position
   (of-object "GtkSpinButton")
   (prop-type "GParamInt")
@@ -34058,7 +37225,7 @@
 (define-property visibility
   (of-object "GtkSpinButton")
   (prop-type "GParamBoolean")
-  (docs "FALSE displays the invisible char instead of the actual text (password mode)")
+  (docs "FALSE displays the 'invisible char' instead of the actual text (password mode)")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -34085,7 +37252,7 @@
 (define-property invisible-char
   (of-object "GtkSpinButton")
   (prop-type "GParamUnichar")
-  (docs "The character to use when masking entry contents (in password mode)")
+  (docs "The character to use when masking entry contents (in 'password mode')")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -34689,6 +37856,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkStatusbar")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkStatusbar")
   (prop-type "GParamUInt")
@@ -34944,6 +38120,15 @@
   (construct-only #f)
 )
 
+(define-property title
+  (of-object "GtkStatusIcon")
+  (prop-type "GParamString")
+  (docs "The title of this tray icon")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 ;; From GtkStyle
 
 (define-signal realize
@@ -35167,6 +38352,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkTable")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkTable")
   (prop-type "GParamUInt")
@@ -35241,19 +38435,19 @@
 
 ;; From GtkTearoffMenuItem
 
-(define-property use-action-appearance
+(define-property related-action
   (of-object "GtkTearoffMenuItem")
-  (prop-type "GParamBoolean")
-  (docs "Whether to use the related actions appearance properties")
+  (prop-type "GParamObject")
+  (docs "The action this activatable will activate and receive updates from")
   (readable #t)
   (writable #t)
   (construct-only #f)
 )
 
-(define-property related-action
+(define-property use-action-appearance
   (of-object "GtkTearoffMenuItem")
-  (prop-type "GParamObject")
-  (docs "The action this activatable will activate and receive updates from")
+  (prop-type "GParamBoolean")
+  (docs "Whether to use the related actions appearance properties")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -35463,6 +38657,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkTearoffMenuItem")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -35782,6 +38985,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkTipsQuery")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property xalign
   (of-object "GtkTipsQuery")
   (prop-type "GParamFloat")
@@ -35980,6 +39192,15 @@
   (construct-only #f)
 )
 
+(define-property track-visited-links
+  (of-object "GtkTipsQuery")
+  (prop-type "GParamBoolean")
+  (docs "Whether visited links should be tracked")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property emit-always
   (of-object "GtkTipsQuery")
   (prop-type "GParamBoolean")
@@ -36024,19 +39245,19 @@
   (when "first")
 )
 
-(define-property use-action-appearance
+(define-property related-action
   (of-object "GtkToggleButton")
-  (prop-type "GParamBoolean")
-  (docs "Whether to use the related actions appearance properties")
+  (prop-type "GParamObject")
+  (docs "The action this activatable will activate and receive updates from")
   (readable #t)
   (writable #t)
   (construct-only #f)
 )
 
-(define-property related-action
+(define-property use-action-appearance
   (of-object "GtkToggleButton")
-  (prop-type "GParamObject")
-  (docs "The action this activatable will activate and receive updates from")
+  (prop-type "GParamBoolean")
+  (docs "Whether to use the related actions appearance properties")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -36249,6 +39470,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkToggleButton")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkToggleButton")
   (prop-type "GParamUInt")
@@ -36369,7 +39599,7 @@
 (define-property inconsistent
   (of-object "GtkToggleButton")
   (prop-type "GParamBoolean")
-  (docs "If the toggle button is in an in between state")
+  (docs "If the toggle button is in an 'in between' state")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -36640,6 +39870,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkToolbar")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkToolbar")
   (prop-type "GParamUInt")
@@ -36737,19 +39976,19 @@
   )
 )
 
-(define-property use-action-appearance
+(define-property related-action
   (of-object "GtkToolItem")
-  (prop-type "GParamBoolean")
-  (docs "Whether to use the related actions appearance properties")
+  (prop-type "GParamObject")
+  (docs "The action this activatable will activate and receive updates from")
   (readable #t)
   (writable #t)
   (construct-only #f)
 )
 
-(define-property related-action
+(define-property use-action-appearance
   (of-object "GtkToolItem")
-  (prop-type "GParamObject")
-  (docs "The action this activatable will activate and receive updates from")
+  (prop-type "GParamBoolean")
+  (docs "Whether to use the related actions appearance properties")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -36959,6 +40198,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkToolItem")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -37016,6 +40264,587 @@
   (construct-only #f)
 )
 
+;; From GtkToolItemGroup
+
+(define-property user-data
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamPointer")
+  (docs "Anonymous User Data Pointer")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property name
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamString")
+  (docs "The name of the widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property parent
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamObject")
+  (docs "The parent widget of this widget. Must be a Container widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property width-request
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamInt")
+  (docs "Override for width request of the widget, or -1 if natural request should be used")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property height-request
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamInt")
+  (docs "Override for height request of the widget, or -1 if natural request should be used")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property visible
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is visible")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property sensitive
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget responds to input")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property app-paintable
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamBoolean")
+  (docs "Whether the application will paint directly on the widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property can-focus
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget can accept the input focus")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property has-focus
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget has the input focus")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property is-focus
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is the focus widget within the toplevel")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property can-default
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget can be the default widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property has-default
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is the default widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property receives-default
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamBoolean")
+  (docs "If TRUE, the widget will receive the default action when it is focused")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property composite-child
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is part of a composite widget")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+(define-property style
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamObject")
+  (docs "The style of the widget, which contains information about how it will look (colors etc)")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property events
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamFlags")
+  (docs "The event mask that decides what kind of GdkEvents this widget gets")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property extension-events
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamEnum")
+  (docs "The mask that decides what kind of extension events this widget gets")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property no-show-all
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamBoolean")
+  (docs "Whether gtk_widget_show_all() should not affect this widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property has-tooltip
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamBoolean")
+  (docs "Whether this widget has a tooltip")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property tooltip-markup
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamString")
+  (docs "The contents of the tooltip for this widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property tooltip-text
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamString")
+  (docs "The contents of the tooltip for this widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property window
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamObject")
+  (docs "The widget's window if it is realized")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property border-width
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamUInt")
+  (docs "The width of the empty border outside the containers children")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property resize-mode
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamEnum")
+  (docs "Specify how resize events are handled")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property child
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamObject")
+  (docs "Can be used to add a new child to the container")
+  (readable #f)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property label
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamString")
+  (docs "The human-readable title of this item group")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property label-widget
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamObject")
+  (docs "A widget to display in place of the usual label")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property collapsed
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamBoolean")
+  (docs "Whether the group has been collapsed and items are hidden")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property ellipsize
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamEnum")
+  (docs "Ellipsize for item group headers")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property header-relief
+  (of-object "GtkToolItemGroup")
+  (prop-type "GParamEnum")
+  (docs "Relief of the group header button")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+;; From GtkToolPalette
+
+(define-signal set-scroll-adjustments
+  (of-object "GtkToolPalette")
+  (return-type "void")
+  (when "last")
+  (parameters
+    '("GtkAdjustment*" "p0")
+    '("GtkAdjustment*" "p1")
+  )
+)
+
+(define-property orientation
+  (of-object "GtkToolPalette")
+  (prop-type "GParamEnum")
+  (docs "The orientation of the orientable")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property user-data
+  (of-object "GtkToolPalette")
+  (prop-type "GParamPointer")
+  (docs "Anonymous User Data Pointer")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property name
+  (of-object "GtkToolPalette")
+  (prop-type "GParamString")
+  (docs "The name of the widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property parent
+  (of-object "GtkToolPalette")
+  (prop-type "GParamObject")
+  (docs "The parent widget of this widget. Must be a Container widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property width-request
+  (of-object "GtkToolPalette")
+  (prop-type "GParamInt")
+  (docs "Override for width request of the widget, or -1 if natural request should be used")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property height-request
+  (of-object "GtkToolPalette")
+  (prop-type "GParamInt")
+  (docs "Override for height request of the widget, or -1 if natural request should be used")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property visible
+  (of-object "GtkToolPalette")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is visible")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property sensitive
+  (of-object "GtkToolPalette")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget responds to input")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property app-paintable
+  (of-object "GtkToolPalette")
+  (prop-type "GParamBoolean")
+  (docs "Whether the application will paint directly on the widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property can-focus
+  (of-object "GtkToolPalette")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget can accept the input focus")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property has-focus
+  (of-object "GtkToolPalette")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget has the input focus")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property is-focus
+  (of-object "GtkToolPalette")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is the focus widget within the toplevel")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property can-default
+  (of-object "GtkToolPalette")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget can be the default widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property has-default
+  (of-object "GtkToolPalette")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is the default widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property receives-default
+  (of-object "GtkToolPalette")
+  (prop-type "GParamBoolean")
+  (docs "If TRUE, the widget will receive the default action when it is focused")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property composite-child
+  (of-object "GtkToolPalette")
+  (prop-type "GParamBoolean")
+  (docs "Whether the widget is part of a composite widget")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+(define-property style
+  (of-object "GtkToolPalette")
+  (prop-type "GParamObject")
+  (docs "The style of the widget, which contains information about how it will look (colors etc)")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property events
+  (of-object "GtkToolPalette")
+  (prop-type "GParamFlags")
+  (docs "The event mask that decides what kind of GdkEvents this widget gets")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property extension-events
+  (of-object "GtkToolPalette")
+  (prop-type "GParamEnum")
+  (docs "The mask that decides what kind of extension events this widget gets")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property no-show-all
+  (of-object "GtkToolPalette")
+  (prop-type "GParamBoolean")
+  (docs "Whether gtk_widget_show_all() should not affect this widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property has-tooltip
+  (of-object "GtkToolPalette")
+  (prop-type "GParamBoolean")
+  (docs "Whether this widget has a tooltip")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property tooltip-markup
+  (of-object "GtkToolPalette")
+  (prop-type "GParamString")
+  (docs "The contents of the tooltip for this widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property tooltip-text
+  (of-object "GtkToolPalette")
+  (prop-type "GParamString")
+  (docs "The contents of the tooltip for this widget")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property window
+  (of-object "GtkToolPalette")
+  (prop-type "GParamObject")
+  (docs "The widget's window if it is realized")
+  (readable #t)
+  (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkToolPalette")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property border-width
+  (of-object "GtkToolPalette")
+  (prop-type "GParamUInt")
+  (docs "The width of the empty border outside the containers children")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property resize-mode
+  (of-object "GtkToolPalette")
+  (prop-type "GParamEnum")
+  (docs "Specify how resize events are handled")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property child
+  (of-object "GtkToolPalette")
+  (prop-type "GParamObject")
+  (docs "Can be used to add a new child to the container")
+  (readable #f)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property icon-size
+  (of-object "GtkToolPalette")
+  (prop-type "GParamEnum")
+  (docs "Size of icons in this tool palette")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property icon-size-set
+  (of-object "GtkToolPalette")
+  (prop-type "GParamBoolean")
+  (docs "Whether the icon-size property has been set")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property toolbar-style
+  (of-object "GtkToolPalette")
+  (prop-type "GParamEnum")
+  (docs "Style of items in the tool palette")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 ;; From GtkToolButton
 
 (define-signal clicked
@@ -37024,19 +40853,19 @@
   (when "first")
 )
 
-(define-property use-action-appearance
+(define-property related-action
   (of-object "GtkToolButton")
-  (prop-type "GParamBoolean")
-  (docs "Whether to use the related actions appearance properties")
+  (prop-type "GParamObject")
+  (docs "The action this activatable will activate and receive updates from")
   (readable #t)
   (writable #t)
   (construct-only #f)
 )
 
-(define-property related-action
+(define-property use-action-appearance
   (of-object "GtkToolButton")
-  (prop-type "GParamObject")
-  (docs "The action this activatable will activate and receive updates from")
+  (prop-type "GParamBoolean")
+  (docs "Whether to use the related actions appearance properties")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -37246,6 +41075,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkToolButton")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -37627,7 +41465,7 @@
 (define-property font
   (of-object "GtkTextTag")
   (prop-type "GParamString")
-  (docs "Font description as a string, e.g. Sans Italic 12")
+  (docs "Font description as a string, e.g. 'Sans Italic 12'")
   (readable #t)
   (writable #t)
   (construct-only #f)
@@ -38298,6 +42136,15 @@
   (when "last")
 )
 
+(define-signal preedit-changed
+  (of-object "GtkTextView")
+  (return-type "void")
+  (when "last")
+  (parameters
+    '("const-gchar*" "p0")
+  )
+)
+
 (define-property user-data
   (of-object "GtkTextView")
   (prop-type "GParamPointer")
@@ -38502,6 +42349,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkTextView")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -38810,6 +42666,15 @@
   (construct-only #f)
 )
 
+(define-property always-show-image
+  (of-object "GtkToggleAction")
+  (prop-type "GParamBoolean")
+  (docs "Whether the image will always be shown")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property draw-as-radio
   (of-object "GtkToggleAction")
   (prop-type "GParamBoolean")
@@ -39061,6 +42926,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkToggleToolButton")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkToggleToolButton")
   (prop-type "GParamUInt")
@@ -39199,31 +43073,30 @@
   (when "first")
 )
 
+;; From GtkTreeSortable
+
+(define-signal sort-column-changed
+  (of-object "GtkTreeSortable")
+  (return-type "void")
+  (when "last")
+)
+
 ;; From GtkTreeModel
 
-(define-signal row-inserted
+(define-signal row-changed
   (of-object "GtkTreeModel")
   (return-type "void")
-  (when "first")
+  (when "last")
   (parameters
     '("GtkTreePath*" "p0")
     '("GtkTreeIter*" "p1")
   )
 )
 
-(define-signal row-deleted
+(define-signal row-inserted
   (of-object "GtkTreeModel")
   (return-type "void")
   (when "first")
-  (parameters
-    '("GtkTreePath*" "p0")
-  )
-)
-
-(define-signal row-changed
-  (of-object "GtkTreeModel")
-  (return-type "void")
-  (when "last")
   (parameters
     '("GtkTreePath*" "p0")
     '("GtkTreeIter*" "p1")
@@ -39240,6 +43113,15 @@
   )
 )
 
+(define-signal row-deleted
+  (of-object "GtkTreeModel")
+  (return-type "void")
+  (when "first")
+  (parameters
+    '("GtkTreePath*" "p0")
+  )
+)
+
 (define-signal rows-reordered
   (of-object "GtkTreeModel")
   (return-type "void")
@@ -39247,7 +43129,7 @@
   (parameters
     '("GtkTreePath*" "p0")
     '("GtkTreeIter*" "p1")
-    '("gpointer" "p2")
+    '("gint*" "p2")
   )
 )
 
@@ -39266,6 +43148,18 @@
   (of-object "GtkTreeModelFilter")
   (prop-type "GParamBoxed")
   (docs "The virtual root (relative to the child model) for this filtermodel")
+  (readable #t)
+  (writable #t)
+  (construct-only #t)
+)
+
+
+;; From GtkTreeModelSort
+
+(define-property model
+  (of-object "GtkTreeModelSort")
+  (prop-type "GParamObject")
+  (docs "The model for the TreeModelSort to sort")
   (readable #t)
   (writable #t)
   (construct-only #t)
@@ -39611,6 +43505,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkTreeView")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -39973,6 +43876,15 @@
   (construct-only #f)
 )
 
+(define-property sort-column-id
+  (of-object "GtkTreeViewColumn")
+  (prop-type "GParamInt")
+  (docs "Logical sort column ID this column sorts on when selected for sorting")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 ;; From GtkUIManager
 
 (define-signal add-widget
@@ -40265,6 +44177,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkViewport")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkViewport")
   (prop-type "GParamUInt")
@@ -40552,6 +44473,15 @@
   (docs "The widget's window if it is realized")
   (readable #t)
   (writable #f)
+  (construct-only #f)
+)
+
+(define-property double-buffered
+  (of-object "GtkVolumeButton")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
   (construct-only #f)
 )
 
@@ -41521,15 +45451,14 @@
   (construct-only #f)
 )
 
-(define-property window
+(define-property double-buffered
   (of-object "GtkWidget")
-  (prop-type "GParamObject")
-  (docs "The widget's window if it is realized")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
   (readable #t)
-  (writable #f)
+  (writable #t)
   (construct-only #f)
 )
-
 
 ;; From GtkWindow
 
@@ -41776,6 +45705,15 @@
   (construct-only #f)
 )
 
+(define-property double-buffered
+  (of-object "GtkWindow")
+  (prop-type "GParamBoolean")
+  (docs "Whether or not the widget is double buffered")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)
+
 (define-property border-width
   (of-object "GtkWindow")
   (prop-type "GParamUInt")
@@ -41817,15 +45755,6 @@
   (prop-type "GParamString")
   (docs "The title of the window")
   (readable #t)
-  (writable #t)
-  (construct-only #f)
-)
-
-(define-property startup-id
-  (of-object "GtkWindow")
-  (prop-type "GParamString")
-  (docs "Unique startup identifier for the window used by startup-notification")
-  (readable #f)
   (writable #t)
   (construct-only #f)
 )
@@ -42055,3 +45984,20 @@
   (construct-only #f)
 )
 
+(define-property startup-id
+  (of-object "GtkWindow")
+  (prop-type "GParamString")
+  (docs "Unique startup identifier for the window used by startup-notification")
+  (readable #f)
+  (writable #t)
+  (construct-only #f)
+)
+
+(define-property mnemonics-visible
+  (of-object "GtkWindow")
+  (prop-type "GParamBoolean")
+  (docs "Whether mnemonics are currently visible in this window")
+  (readable #t)
+  (writable #t)
+  (construct-only #f)
+)

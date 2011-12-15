@@ -108,23 +108,17 @@ const Glib::Class& Viewport_Class::init()
   return *this;
 }
 
+
 void Viewport_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->set_scroll_adjustments = &set_scroll_adjustments_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Viewport_Class::set_scroll_adjustments_callback(GtkViewport* self, GtkAdjustment* p0, GtkAdjustment* p1)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -158,7 +152,7 @@ void Viewport_Class::set_scroll_adjustments_callback(GtkViewport* self, GtkAdjus
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -167,7 +161,6 @@ void Viewport_Class::set_scroll_adjustments_callback(GtkViewport* self, GtkAdjus
   if(base && base->set_scroll_adjustments)
     (*base->set_scroll_adjustments)(self, p0, p1);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Viewport_Class::wrap_new(GObject* o)
@@ -202,6 +195,7 @@ GType Viewport::get_type()
 {
   return viewport_class_.init().get_type();
 }
+
 
 GType Viewport::get_base_type()
 {
@@ -269,6 +263,36 @@ ShadowType Viewport::get_shadow_type() const
   return ((ShadowType)(gtk_viewport_get_shadow_type(const_cast<GtkViewport*>(gobj()))));
 }
 
+Glib::RefPtr<Gdk::Window> Viewport::get_bin_window()
+{
+
+  Glib::RefPtr<Gdk::Window> retvalue = Glib::wrap((GdkWindowObject*)(gtk_viewport_get_bin_window(gobj())));
+  if(retvalue)
+    retvalue->reference(); //The function does not do a ref for us.
+  return retvalue;
+
+}
+
+Glib::RefPtr<const Gdk::Window> Viewport::get_bin_window() const
+{
+  return const_cast<Viewport*>(this)->get_bin_window();
+}
+
+Glib::RefPtr<Gdk::Window> Viewport::get_view_window()
+{
+
+  Glib::RefPtr<Gdk::Window> retvalue = Glib::wrap((GdkWindowObject*)(gtk_viewport_get_view_window(gobj())));
+  if(retvalue)
+    retvalue->reference(); //The function does not do a ref for us.
+  return retvalue;
+
+}
+
+Glib::RefPtr<const Gdk::Window> Viewport::get_view_window() const
+{
+  return const_cast<Viewport*>(this)->get_view_window();
+}
+
 
 Glib::SignalProxy2< void,Gtk::Adjustment*,Gtk::Adjustment* > Viewport::signal_set_scroll_adjustments()
 {
@@ -319,7 +343,6 @@ Glib::PropertyProxy_ReadOnly<ShadowType> Viewport::property_shadow_type() const
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::Viewport::on_set_scroll_adjustments(Gtk::Adjustment* hadjustment, Gtk::Adjustment* vadjustment)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -329,10 +352,6 @@ void Gtk::Viewport::on_set_scroll_adjustments(Gtk::Adjustment* hadjustment, Gtk:
   if(base && base->set_scroll_adjustments)
     (*base->set_scroll_adjustments)(gobj(),(GtkAdjustment*)Glib::unwrap(hadjustment),(GtkAdjustment*)Glib::unwrap(vadjustment));
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

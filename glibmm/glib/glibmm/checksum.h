@@ -76,7 +76,7 @@ private:
   
 public:
 
-  /** @addtogroup glibmmEnums Enums and Flags */
+  /** @addtogroup glibmmEnums glibmm Enums and Flags */
 
 /**
    * @class ChecksumType:
@@ -114,13 +114,15 @@ enum ChecksumType
   operator bool() const;
 
   
-  /** Resets the state of the @a checksum back to it's initial state.
+  /** Resets the state of the @a checksum back to its initial state.
    * 
    * @newin{2,18}
    */
   void reset();
   
-  
+  //TODO: length should really be gssize, not gsize, when we can break ABI:
+ 
+
   /** Feeds @a data into an existing Checksum. The checksum must still be
    * open, that is g_checksum_get_string() or g_checksum_get_digest() must
    * not have been called on @a checksum.
@@ -150,18 +152,20 @@ enum ChecksumType
    * @param digest_len An inout parameter. The caller initializes it to the size of @a buffer.
    * After the call it contains the length of the digest.
    */
-  void get_digest(guint8 *buffer, gsize *digest_len) const;
+  void get_digest(guint8 * buffer, gsize * digest_len) const;
 
   
   /** Gets the digest as an hexadecimal string.
    * 
    * Once this function has been called the Checksum can no longer be
    * updated with g_checksum_update().
+   * 
+   * The hexadecimal characters will be lower case.
+   * 
+   * @newin{2,16}
    * @return The hexadecimal representation of the checksum. The
    * returned string is owned by the checksum and should not be modified
    * or freed.
-   * 
-   * @newin{2,16}.
    */
   std::string get_string() const;
 
@@ -169,13 +173,15 @@ enum ChecksumType
   /** Computes the checksum for a binary @a data of @a length. This is a
    * convenience wrapper for g_checksum_new(), g_checksum_get_string()
    * and g_checksum_free().
+   * 
+   * The hexadecimal string returned will be in lower case.
+   * 
+   * @newin{2,16}
    * @param checksum_type A ChecksumType.
    * @param data Binary blob to compute the digest of.
    * @param length Length of @a data.
    * @return The digest of the binary data as a string in hexadecimal.
    * The returned string should be freed with g_free() when done using it.
-   * 
-   * @newin{2,16}.
    */
   static std::string compute_checksum(ChecksumType type, const guchar* data, gsize length);
 

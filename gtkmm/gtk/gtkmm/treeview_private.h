@@ -1,6 +1,6 @@
 #ifndef _GTKMM_TREEVIEW_PRIVATE_H
 #define _GTKMM_TREEVIEW_PRIVATE_H
-/* $Id: treeview_private.h 1082 2009-01-19 17:55:19Z murrayc $ */
+/* $Id$ */
 
 
 /* treeview.h

@@ -36,18 +36,14 @@ static void SignalProxy_PopupPosition_gtk_callback(GtkMenu*, int* x, int* y, gbo
   int  temp_y = (y) ? *y : 0;
   bool temp_push_in = (push_in) ? bool(*push_in) : false;
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     (*the_slot)(temp_x, temp_y, temp_push_in);
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   if(x) *x = temp_x;
   if(y) *y = temp_y;
@@ -146,23 +142,14 @@ const Glib::Class& Menu_Class::init()
   return *this;
 }
 
+
 void Menu_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Menu_Class::wrap_new(GObject* o)
@@ -197,6 +184,7 @@ GType Menu::get_type()
 {
   return menu_class_.init().get_type();
 }
+
 
 GType Menu::get_base_type()
 {
@@ -324,6 +312,16 @@ int Menu::get_monitor() const
   return gtk_menu_get_monitor(const_cast<GtkMenu*>(gobj()));
 }
 
+void Menu::set_reserve_toggle_size(bool reserve_toggle_size)
+{
+gtk_menu_set_reserve_toggle_size(gobj(), static_cast<int>(reserve_toggle_size)); 
+}
+
+bool Menu::get_reserve_toggle_size() const
+{
+  return gtk_menu_get_reserve_toggle_size(const_cast<GtkMenu*>(gobj()));
+}
+
 void Menu::attach_to_widget(Widget& attach_widget, GtkMenuDetachFunc detacher)
 {
 gtk_menu_attach_to_widget(gobj(), (attach_widget).gobj(), detacher); 
@@ -428,12 +426,19 @@ Glib::PropertyProxy_ReadOnly<int> Menu::property_monitor() const
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
 
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<bool> Menu::property_reserve_toggle_size() 
+{
+  return Glib::PropertyProxy<bool>(this, "reserve-toggle-size");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> Menu::property_reserve_toggle_size() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "reserve-toggle-size");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
 
 } // namespace Gtk

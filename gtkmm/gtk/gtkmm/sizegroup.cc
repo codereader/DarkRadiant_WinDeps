@@ -92,23 +92,14 @@ const Glib::Class& SizeGroup_Class::init()
   return *this;
 }
 
+
 void SizeGroup_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* SizeGroup_Class::wrap_new(GObject* object)
@@ -137,6 +128,7 @@ SizeGroup::SizeGroup(GtkSizeGroup* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 SizeGroup::~SizeGroup()
 {}
 
@@ -148,6 +140,7 @@ GType SizeGroup::get_type()
   return sizegroup_class_.init().get_type();
 }
 
+
 GType SizeGroup::get_base_type()
 {
   return gtk_size_group_get_type();
@@ -158,6 +151,7 @@ Glib::RefPtr<SizeGroup> SizeGroup::create(SizeGroupMode mode)
 {
   return Glib::RefPtr<SizeGroup>( new SizeGroup(mode) );
 }
+
 void SizeGroup::set_mode(SizeGroupMode mode)
 {
 gtk_size_group_set_mode(gobj(), ((GtkSizeGroupMode)(mode))); 
@@ -226,13 +220,6 @@ Glib::PropertyProxy_ReadOnly<bool> SizeGroup::property_ignore_hidden() const
   return Glib::PropertyProxy_ReadOnly<bool>(this, "ignore-hidden");
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

@@ -100,13 +100,30 @@ public:
 private:
 
 protected:
-  explicit BufferedOutputStream(const Glib::RefPtr<OutputStream>& base_stream);
-  explicit BufferedOutputStream(const Glib::RefPtr<OutputStream>& base_stream, gsize size);
+    explicit BufferedOutputStream(const Glib::RefPtr<OutputStream>& base_stream);
+
+  
+  //Note that we rename the size parameter to buffer_size because that is the actual name of the property.
+    explicit BufferedOutputStream(const Glib::RefPtr<OutputStream>& base_stream, gsize buffer_size);
+
+
 public:
+  /** Creates a new buffered output stream for a base stream.
+   *
+   * @param base_stream An InputStream.
+   * @result an OutputStream for the given base stream.
+	 */
   
   static Glib::RefPtr<BufferedOutputStream> create(const Glib::RefPtr<OutputStream>& base_stream);
 
-  static Glib::RefPtr<BufferedOutputStream> create_sized(const Glib::RefPtr<OutputStream>& base_stream, gsize size);
+  
+  /** Creates a new buffered output stream with a given buffer size. 
+   *
+   * @param base_stream An InputStream.
+   * @param size A size.
+   * @result an OutputStream with an internal buffer set to size. 
+	 */
+  static Glib::RefPtr<BufferedOutputStream> create_sized(const Glib::RefPtr<OutputStream>& base_stream, gsize buffer_size);
 
   
   /** Gets the size of the buffer in the @a stream.
@@ -126,7 +143,7 @@ public:
    * the data to the underlying stream.
    * @param auto_grow A <tt>bool</tt>.
    */
-  void set_auto_grow(bool auto_grow=true);
+  void set_auto_grow(bool auto_grow = true);
   
   /** Checks if the buffer automatically grows as data is added.
    * @return <tt>true</tt> if the @a stream's buffer automatically grows,
@@ -179,17 +196,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

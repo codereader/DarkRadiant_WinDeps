@@ -29,7 +29,6 @@
 
 #include <glibmm/object.h>
 #include <gdkmm/screen.h>
-#include <gdk/gdk.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -45,7 +44,7 @@ namespace Gdk
 
 class Screen;
 
-/** @addtogroup gdkmmEnums Enums and Flags */
+/** @addtogroup gdkmmEnums gdkmm Enums and Flags */
 
 /**
  * @ingroup gdkmmEnums
@@ -135,6 +134,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -155,7 +156,7 @@ protected:
 
 public:
    
-  /** Get the system'sdefault visual for the default GDK screen.
+  /** Get the system's default visual for the default GDK screen.
    * This is the visual for the root window of the display.
    * The return value should not be freed.
    * @return System visual.
@@ -186,10 +187,11 @@ public:
    */
   static Glib::RefPtr<Visual> get_best(VisualType visual_type);
    
-  /** Combines gdk_visual_get_best_with_depth() and gdk_visual_get_best_with_type().
+  /** Combines get_best_with_depth() and get_best_with_type().
    * @param depth A bit depth.
    * @param visual_type A visual type.
-   * @return Best visual with both @a depth and @a visual_type, or <tt>0</tt> if none.
+   * @return Best visual with both @a depth and
+   *  @a visual_type, or <tt>0</tt> if none.
    */
   static Glib::RefPtr<Visual> get_best(int depth, VisualType visual_type);
 
@@ -208,35 +210,104 @@ public:
 
    
   /** Gets the screen to which this visual belongs
-   * @return The screen to which this visual belongs.
    * 
-   * @newin2p2.
+   * @newin{2,2}
+   * @return The screen to which this visual belongs.
    */
   Glib::RefPtr<Screen> get_screen();
    
   /** Gets the screen to which this visual belongs
-   * @return The screen to which this visual belongs.
    * 
-   * @newin2p2.
+   * @newin{2,2}
+   * @return The screen to which this visual belongs.
    */
   Glib::RefPtr<const Screen> get_screen() const;
+   
+   
+  /** Returns the type of visual this is (PseudoColor, TrueColor, etc).
+   * 
+   * @newin{2,22}
+   * @return A Gdk::VisualType stating the type of @a visual.
+   */
+  VisualType get_visual_type() const;
+   
+  /** Returns the bit depth of this visual.
+   * 
+   * @newin{2,22}
+   * @return The bit depth of this visual.
+   */
+  int get_depth() const;
+   
+  /** Returns the byte order of this visual.
+   * 
+   * @newin{2,22}
+   * @return A Gdk::ByteOrder stating the byte order of @a visual.
+   */
+  ByteOrder get_byte_order();
+   
+  /** Returns the size of a colormap for this visual.
+   * 
+   * @newin{2,22}
+   * @return The size of a colormap that is suitable for @a visual.
+   */
+  int get_colormap_size() const;
+   
+  /** Returns the number of significant bits per red, green and blue value.
+   * 
+   * @newin{2,22}
+   * @return The number of significant bits per color value for @a visual.
+   */
+  int get_bits_per_rgb() const;
+   
+  /** Obtains values that are needed to calculate red pixel values in TrueColor
+   * and DirectColor.  The "mask" is the significant bits within the pixel.
+   * The "shift" is the number of bits left we must shift a primary for it
+   * to be in position (according to the "mask").  Finally, "precision" refers
+   * to how much precision the pixel value contains for a particular primary.
+   * 
+   * @newin{2,22}
+   * @param mask A pointer to a #guint32 to be filled in, or <tt>0</tt>.
+   * @param shift A pointer to a <tt>int</tt> to be filled in, or <tt>0</tt>.
+   * @param precision A pointer to a <tt>int</tt> to be filled in, or <tt>0</tt>.
+   */
+  void get_red_pixel_details(guint32& mask, int& shift, int& precision) const;
+   
+  /** Obtains values that are needed to calculate green pixel values in TrueColor
+   * and DirectColor.  The "mask" is the significant bits within the pixel.
+   * The "shift" is the number of bits left we must shift a primary for it
+   * to be in position (according to the "mask").  Finally, "precision" refers
+   * to how much precision the pixel value contains for a particular primary.
+   * 
+   * @newin{2,22}
+   * @param mask A pointer to a #guint32 to be filled in, or <tt>0</tt>.
+   * @param shift A pointer to a <tt>int</tt> to be filled in, or <tt>0</tt>.
+   * @param precision A pointer to a <tt>int</tt> to be filled in, or <tt>0</tt>.
+   */
+  void get_green_pixel_details(guint32& mask, int& shift, int& precision) const;
+   
+  /** Obtains values that are needed to calculate blue pixel values in TrueColor
+   * and DirectColor.  The "mask" is the significant bits within the pixel.
+   * The "shift" is the number of bits left we must shift a primary for it
+   * to be in position (according to the "mask").  Finally, "precision" refers
+   * to how much precision the pixel value contains for a particular primary.
+   * 
+   * @newin{2,22}
+   * @param mask A pointer to a #guint32 to be filled in, or <tt>0</tt>.
+   * @param shift A pointer to a <tt>int</tt> to be filled in, or <tt>0</tt>.
+   * @param precision A pointer to a <tt>int</tt> to be filled in, or <tt>0</tt>.
+   */
+  void get_blue_pixel_details(guint32& mask, int& shift, int& precision) const;
 
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

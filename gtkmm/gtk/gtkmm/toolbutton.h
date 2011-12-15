@@ -6,10 +6,7 @@
 
 #include <glibmm.h>
 
-/* $Id: toolbutton.hg,v 1.10 2006/04/12 11:11:25 murrayc Exp $ */
-
-/* box.h
- * 
+/*
  * Copyright (C) 2003 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -44,7 +41,7 @@ namespace Gtk
 // TODO: Inherit/Implement Activatable when we can break ABI.
 
 /** A Gtk::ToolItem subclass that displays buttons.
- * 
+ *
  * A ToolButton is are Gtk::ToolItem containing a button.
  * @ingroup Widgets
  */
@@ -80,6 +77,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -92,18 +91,12 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_clicked();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -113,14 +106,15 @@ public:
   /** Creates a new ToolButton.
    */
   ToolButton();
- 
+
   /** Creates a new ToolButton from a StockID.
    *
    * The ToolButton will be created according to the @a stock_id properties.
-   * 
+   *
    * @param stock_id The StockID which determines the look of the ToolButton.
    */
-  explicit ToolButton(const Gtk::StockID& stock_id);
+    explicit ToolButton(const Gtk::StockID& stock_id);
+
 
   /** Creates a new ToolButton with a label.
    *
@@ -137,24 +131,26 @@ public:
    * @param icon_widget The widget placed as the ToolButton's icon.
    * @param label The string used to display the label for this ToolButton.
    */
-  explicit ToolButton(Widget& icon_widget, const Glib::ustring& label = Glib::ustring());
+    explicit ToolButton(Widget& icon_widget, const Glib::ustring& label =  Glib::ustring());
 
-  
+
   /** Sets @a label as the label used for the tool button. The "label" property
    * only has an effect if not overridden by a non-<tt>0</tt> "label_widget" property.
    * If both the "label_widget" and "label" properties are <tt>0</tt>, the label
    * is determined by the "stock_id" property. If the "stock_id" property is also
    * <tt>0</tt>, @a button will not have a label.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param label A string that will be used as label, or <tt>0</tt>.
    */
   void set_label(const Glib::ustring& label);
   
-  /** Return value: The label, or <tt>0</tt>
-   * @return The label, or <tt>0</tt>
+  /** Returns the label used by the tool button, or <tt>0</tt> if the tool button
+   * doesn't have a label. or uses a the label from a stock item. The returned
+   * string is owned by GTK+, and must not be modified or freed.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return The label, or <tt>0</tt>.
    */
   Glib::ustring get_label() const;
   
@@ -167,16 +163,17 @@ public:
    * Labels shown on tool buttons never have mnemonics on them; this property
    * only affects the menu item on the overflow menu.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param use_underline Whether the button label has the form "_Open".
    */
-  void set_use_underline(bool use_underline = true);
+  void set_use_underline(bool use_underline =  true);
   
-  /** Return value: <tt>true</tt> if underscores in the label property are used as
+  /** Returns whether underscores in the label property are used as mnemonics
+   * on menu items on the overflow menu. See set_use_underline().
+   * 
+   * @newin{2,4}
    * @return <tt>true</tt> if underscores in the label property are used as
    * mnemonics on menu items on the overflow menu.
-   * 
-   * @newin2p4.
    */
   bool get_use_underline() const;
   
@@ -184,15 +181,16 @@ public:
    *     The stock_id property only has an effect if not
    *     overridden by "label" and "icon_widget" properties.
    * 
-   *     @a newin2p4
+   *     @newin{2,4}
    * @param stock_id A name of a stock item, or <tt>0</tt>.
    */
   void set_stock_id(const Gtk::StockID& stock_id);
   
-  /** Return value: the name of the stock item for @a button.
-   * @return The name of the stock item for @a button.
+  /** Returns the name of the stock item. See set_stock_id().
+   * The returned string is owned by GTK+ and must not be freed or modifed.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return The name of the stock item for @a button.
    */
   Glib::ustring get_stock_id() const;
   
@@ -202,16 +200,17 @@ public:
    * overridden by non-<tt>0</tt> "label", "icon_widget" and "stock_id"
    * properties.
    * 
-   * @newin2p8
+   * @newin{2,8}
    * @param icon_name The name of the themed icon.
    */
   void set_icon_name(const Glib::ustring& icon_name);
   
-  /** Returns: the icon name or <tt>0</tt> if the tool button has
-   * @return The icon name or <tt>0</tt> if the tool button has
-   * no themed icon
+  /** Returns the name of the themed icon for the tool button,
+   * see set_icon_name().
    * 
-   * @newin2p8.
+   * @newin{2,8}
+   * @return The icon name or <tt>0</tt> if the tool button has
+   * no themed icon.
    */
   Glib::ustring get_icon_name() const;
   
@@ -219,24 +218,26 @@ public:
    * <tt>0</tt> the icon is determined by the "stock_id" property. If the
    * "stock_id" property is also <tt>0</tt>, @a button will not have an icon.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param icon_widget The widget used as icon, or <tt>0</tt>.
    */
   void set_icon_widget(Widget& icon_widget);
   
-  /** Return the widget used as icon widget on @a button. See
-   * set_icon_widget().
-   * @return The widget used as icon on @a button, or <tt>0</tt>.
+  /** Return the widget used as icon widget on @a button.
+   * See set_icon_widget().
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return The widget used as icon
+   * on @a button, or <tt>0</tt>.
    */
   Widget* get_icon_widget();
   
-  /** Return the widget used as icon widget on @a button. See
-   * set_icon_widget().
-   * @return The widget used as icon on @a button, or <tt>0</tt>.
+  /** Return the widget used as icon widget on @a button.
+   * See set_icon_widget().
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return The widget used as icon
+   * on @a button, or <tt>0</tt>.
    */
   const Widget* get_icon_widget() const;
   
@@ -246,22 +247,26 @@ public:
    * determined by the "stock_id" property is used as label. If
    * "stock_id" is also <tt>0</tt>, @a button does not have a label.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param label_widget The widget used as label, or <tt>0</tt>.
    */
   void set_label_widget(Widget& label_widget);
   
-  /** Return value: The widget used as label on @a button, or <tt>0</tt>.
-   * @return The widget used as label on @a button, or <tt>0</tt>.
+  /** Returns the widget used as label on @a button.
+   * See set_label_widget().
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return The widget used as label
+   * on @a button, or <tt>0</tt>.
    */
   Widget* get_label_widget();
   
-  /** Return value: The widget used as label on @a button, or <tt>0</tt>.
-   * @return The widget used as label on @a button, or <tt>0</tt>.
+  /** Returns the widget used as label on @a button.
+   * See set_label_widget().
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return The widget used as label
+   * on @a button, or <tt>0</tt>.
    */
   const Widget* get_label_widget() const;
 
@@ -297,7 +302,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If set
+/** If set, an underline in the label property indicates that the next character should be used for the mnemonic accelerator key in the overflow menu.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -307,7 +312,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If set
+/** If set, an underline in the label property indicates that the next character should be used for the mnemonic accelerator key in the overflow menu.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -357,6 +362,26 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The name of the themed icon displayed on the item.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<Glib::ustring> property_icon_name() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The name of the themed icon displayed on the item.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_icon_name() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
 /** Icon widget to display in the item.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
@@ -375,7 +400,7 @@ public:
    */
   Glib::PropertyProxy_ReadOnly<Gtk::Widget> property_icon_widget() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
-              
+
 
 };
 

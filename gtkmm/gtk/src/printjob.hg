@@ -35,7 +35,7 @@ namespace Gtk
  * Use send() to send the finished job to the printer.If you don't use cairo then 
  * PrintJob also supports printing of manually generated postscript, via set_source_file().
  * 
- * @newin2p10
+ * @newin{2,10}
  *
  * @ingroup Printing
  */
@@ -65,26 +65,19 @@ public:
   #m4 _CONVERSION(`cairo_surface_t*',`Cairo::RefPtr<const Cairo::Surface>',`Cairo::RefPtr<Cairo::Surface>(new Cairo::Surface($3, false /* take reference */))')
 
   _WRAP_METHOD(Cairo::RefPtr<Cairo::Surface> get_surface(), gtk_print_job_get_surface, errthrow)
-  _WRAP_METHOD(Cairo::RefPtr<const Cairo::Surface> get_surface() const, gtk_print_job_get_surface, constversion, errthrow)
+  _WRAP_METHOD(Cairo::RefPtr<const Cairo::Surface> get_surface() const, gtk_print_job_get_surface, errthrow)
 
   _WRAP_METHOD(void set_track_print_status(bool track_status = true), gtk_print_job_set_track_print_status)
   _WRAP_METHOD(bool get_track_print_status() const, gtk_print_job_get_track_print_status)
 
   _IGNORE(gtk_print_job_send)
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   /** For example, 
    * void on_print_job_complete(const Glib::RefPtr<PrintJob>& job);
    *
    * @throws exception
    */
   typedef sigc::slot< void, const Glib::RefPtr<PrintJob>& > SlotPrintJobComplete;
-  #else
-  /** For example, 
-   * void on_print_job_complete(const Glib::RefPtr<PrintJob>& job, std::auto_ptr<Glib::Error>& error);
-   */
-  typedef sigc::slot< void, const Glib::RefPtr<PrintJob>&, std::auto_ptr<Glib::Error>& > SlotPrintJobComplete;
-  #endif
 
   /** Sends the print job off to the printer.
    * @param slot A function to call when the job completes or an error occurs.
@@ -97,6 +90,7 @@ public:
   _WRAP_PROPERTY("printer", Glib::RefPtr<Printer>)
   _WRAP_PROPERTY("settings", Glib::RefPtr<PrintSettings>)
   _WRAP_PROPERTY("page_setup", Glib::RefPtr<PageSetup>)
+  _WRAP_PROPERTY("track-print-status", bool)
 };
 
 } // namespace Gtk

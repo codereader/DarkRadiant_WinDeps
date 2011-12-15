@@ -31,13 +31,11 @@
 namespace Gtk
 {
 
-#ifdef GLIBMM_PROPERTIES_ENABLED
 Glib::PropertyProxy_Base CellRendererAccel::_property_renderable()
 {
   //Renderering just this one property would probably not be meaningful.
   return property_accel_key();
 }
-#endif //GLIBMM_PROPERTIES_ENABLED
 
 } //namespace Gtk
 
@@ -114,6 +112,12 @@ static const Glib::SignalProxyInfo CellRendererAccel_signal_accel_cleared_info =
 
 } // anonymous namespace
 
+// static
+GType Glib::Value<Gtk::CellRendererAccelMode>::value_type()
+{
+  return gtk_cell_renderer_accel_mode_get_type();
+}
+
 
 namespace Glib
 {
@@ -152,24 +156,18 @@ const Glib::Class& CellRendererAccel_Class::init()
   return *this;
 }
 
+
 void CellRendererAccel_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->accel_edited = &accel_edited_callback;
   klass->accel_cleared = &accel_cleared_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void CellRendererAccel_Class::accel_edited_callback(GtkCellRendererAccel* self, const gchar* p0, guint p1, GdkModifierType p2, guint p3)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -203,7 +201,7 @@ void CellRendererAccel_Class::accel_edited_callback(GtkCellRendererAccel* self, 
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -244,7 +242,7 @@ void CellRendererAccel_Class::accel_cleared_callback(GtkCellRendererAccel* self,
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -253,7 +251,6 @@ void CellRendererAccel_Class::accel_cleared_callback(GtkCellRendererAccel* self,
   if(base && base->accel_cleared)
     (*base->accel_cleared)(self, p0);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* CellRendererAccel_Class::wrap_new(GObject* o)
@@ -288,6 +285,7 @@ GType CellRendererAccel::get_type()
 {
   return cellrendereraccel_class_.init().get_type();
 }
+
 
 GType CellRendererAccel::get_base_type()
 {
@@ -360,8 +358,21 @@ Glib::PropertyProxy_ReadOnly<guint> CellRendererAccel::property_keycode() const
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
 
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<CellRendererAccelMode> CellRendererAccel::property_accel_mode() 
+{
+  return Glib::PropertyProxy<CellRendererAccelMode>(this, "accel-mode");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<CellRendererAccelMode> CellRendererAccel::property_accel_mode() const
+{
+  return Glib::PropertyProxy_ReadOnly<CellRendererAccelMode>(this, "accel-mode");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+
 void Gtk::CellRendererAccel::on_accel_edited(const Glib::ustring& path_string, guint accel_key, Gdk::ModifierType accel_mods, guint hardware_keycode)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -380,10 +391,6 @@ void Gtk::CellRendererAccel::on_accel_cleared(const Glib::ustring& path_string)
   if(base && base->accel_cleared)
     (*base->accel_cleared)(gobj(),path_string.c_str());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

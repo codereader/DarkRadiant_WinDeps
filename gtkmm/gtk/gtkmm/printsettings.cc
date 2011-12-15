@@ -35,18 +35,14 @@ static void proxy_foreach_callback(const gchar* key, const gchar* value, void* d
   typedef Gtk::PrintSettings::SlotForeach SlotType;
   SlotType& slot = *static_cast<SlotType*>(data);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     slot(Glib::convert_const_gchar_ptr_to_ustring(key), Glib::convert_const_gchar_ptr_to_ustring(value));
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
 } // anonymous namespace
@@ -84,53 +80,29 @@ const Glib::ustring PrintSettings::Keys::OUTPUT_URI = GTK_PRINT_SETTINGS_OUTPUT_
 const Glib::ustring PrintSettings::Keys::WIN32_DRIVER_VERSION = GTK_PRINT_SETTINGS_WIN32_DRIVER_VERSION;
 const Glib::ustring PrintSettings::Keys::WIN32_DRIVER_EXTRA = GTK_PRINT_SETTINGS_WIN32_DRIVER_EXTRA;
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::RefPtr<PrintSettings> PrintSettings::create_from_key_file(const Glib::KeyFile& key_file)
-#else
-Glib::RefPtr<PrintSettings> PrintSettings::create_from_key_file(const Glib::KeyFile& key_file, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   Glib::RefPtr<PrintSettings> result = PrintSettings::create();
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   result->load_from_key_file(key_file);
-  #else
-  result->load_from_key_file(key_file, error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return result;
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::RefPtr<PrintSettings> PrintSettings::create_from_key_file(const Glib::KeyFile& key_file, const Glib::ustring& group_name)
-#else
-Glib::RefPtr<PrintSettings> PrintSettings::create_from_key_file(const Glib::KeyFile& key_file, const Glib::ustring& group_name, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   Glib::RefPtr<PrintSettings> result = PrintSettings::create();
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   result->load_from_key_file(key_file, group_name);
-  #else
-  result->load_from_key_file(key_file, group_name, error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return result;
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::RefPtr<PrintSettings> PrintSettings::create_from_file(const std::string& file_name)
-#else
-Glib::RefPtr<PrintSettings> PrintSettings::create_from_file(const std::string& file_name, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   Glib::RefPtr<PrintSettings> result = PrintSettings::create();
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   result->load_from_file(file_name);
-  #else
-  result->load_from_file(file_name, error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return result;
 }
@@ -189,21 +161,12 @@ void PrintSettings::set_page_ranges(const Glib::ArrayHandle<PrintSettings::PageR
 }
 
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool PrintSettings::load_from_key_file(const Glib::KeyFile& key_file)
-#else
-bool PrintSettings::load_from_key_file(const Glib::KeyFile& key_file, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = gtk_print_settings_load_key_file(gobj(), const_cast<GKeyFile*>((key_file).gobj()), NULL, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
@@ -297,23 +260,14 @@ const Glib::Class& PrintSettings_Class::init()
   return *this;
 }
 
+
 void PrintSettings_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* PrintSettings_Class::wrap_new(GObject* object)
@@ -342,6 +296,7 @@ PrintSettings::PrintSettings(GtkPrintSettings* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 PrintSettings::~PrintSettings()
 {}
 
@@ -352,6 +307,7 @@ GType PrintSettings::get_type()
 {
   return printsettings_class_.init().get_type();
 }
+
 
 GType PrintSettings::get_base_type()
 {
@@ -373,66 +329,40 @@ Glib::RefPtr<PrintSettings> PrintSettings::create()
 {
   return Glib::RefPtr<PrintSettings>( new PrintSettings() );
 }
+
 Glib::RefPtr<PrintSettings> PrintSettings::copy() const
 {
   return Glib::wrap(gtk_print_settings_copy(const_cast<GtkPrintSettings*>(gobj())));
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool PrintSettings::load_from_file(const std::string& file_name)
-#else
-bool PrintSettings::load_from_file(const std::string& file_name, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = gtk_print_settings_load_file(gobj(), file_name.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool PrintSettings::load_from_key_file(const Glib::KeyFile& key_file, const Glib::ustring& group_name)
-#else
-bool PrintSettings::load_from_key_file(const Glib::KeyFile& key_file, const Glib::ustring& group_name, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = gtk_print_settings_load_key_file(gobj(), const_cast<GKeyFile*>((key_file).gobj()), group_name.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool PrintSettings::save_to_file(const std::string& file_name) const
-#else
-bool PrintSettings::save_to_file(const std::string& file_name, std::auto_ptr<Glib::Error>& error) const
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = gtk_print_settings_to_file(const_cast<GtkPrintSettings*>(gobj()), file_name.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
@@ -762,13 +692,6 @@ void PrintSettings::set_output_bin(const Glib::ustring& output_bin)
 {
 gtk_print_settings_set_output_bin(gobj(), output_bin.c_str()); 
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

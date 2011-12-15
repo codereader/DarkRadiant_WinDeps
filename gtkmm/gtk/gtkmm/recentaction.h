@@ -54,7 +54,7 @@ namespace Gtk
  *
  * See also the methods in the RecentChooser base class.
  *
- * @newin2p12
+ * @newin{2,12}
  *
  * @ingroup RecentFiles
  */
@@ -91,6 +91,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -115,8 +117,10 @@ protected:
   //Note that the order of the parameters is not the same as gtk_recent_action_new(), because 
   //a) we want to be consistent with Action, ToggleAction, etc.
   //b) this allows us to use the StockID parameter to distinguish the create() overloads.
-  explicit RecentAction(const Glib::ustring& name, const StockID& stock_id = StockID(), const Glib::ustring& label = Glib::ustring(), const Glib::ustring& tooltip = Glib::ustring());
-  explicit RecentAction(const Glib::ustring& name, const StockID& stock_id, const Glib::ustring& label, const Glib::ustring& tooltip, const Glib::RefPtr<RecentManager>& manager);
+    explicit RecentAction(const Glib::ustring& name, const StockID& stock_id =  StockID(), const Glib::ustring& label =  Glib::ustring(), const Glib::ustring& tooltip =  Glib::ustring());
+
+    explicit RecentAction(const Glib::ustring& name, const StockID& stock_id, const Glib::ustring& label, const Glib::ustring& tooltip, const Glib::RefPtr<RecentManager>& recent_manager);
+
 
 public:
   //Note that gtk_recent_action_new() does not allow name to be NULL, which suggests that we should not have a default constructor,
@@ -130,13 +134,13 @@ public:
   static Glib::RefPtr<RecentAction> create(const Glib::ustring& name, const Gtk::StockID& stock_id, const Glib::ustring& label =  Glib::ustring(), const Glib::ustring& tooltip =  Glib::ustring());
 
   
-  static Glib::RefPtr<RecentAction> create(const Glib::ustring& name, const Gtk::StockID& stock_id, const Glib::ustring& label, const Glib::ustring& tooltip, const Glib::RefPtr<RecentManager>& manager);
+  static Glib::RefPtr<RecentAction> create(const Glib::ustring& name, const Gtk::StockID& stock_id, const Glib::ustring& label, const Glib::ustring& tooltip, const Glib::RefPtr<RecentManager>& recent_manager);
 
 
-  /** Return value: <tt>true</tt> if numbers should be shown.
-   * @return <tt>true</tt> if numbers should be shown.
+  /** Returns the value set by Gtk::RecentChooserMenu::set_show_numbers().
    * 
-   * @newin2p12.
+   * @newin{2,12}
+   * @return <tt>true</tt> if numbers should be shown.
    */
   bool get_show_numbers();
   
@@ -145,10 +149,10 @@ public:
    * a unique character for a mnemonic to be used inside the menu item's
    * label. Only the first ten items get a number to avoid clashes.
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param show_numbers <tt>true</tt> if the shown items should be numbered.
    */
-  void set_show_numbers(bool show_numbers = true);
+  void set_show_numbers(bool show_numbers =  true);
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** Whether the items should be displayed with a number.
@@ -175,17 +179,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

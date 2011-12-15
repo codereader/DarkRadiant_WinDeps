@@ -19,10 +19,53 @@
  */
 
 #include <gdk/gdk.h>
+#include <gdkmm/cursor.h>
+#include <gdkmm/display.h>
+#include <gdkmm/window.h>
 
 namespace Gdk
 {
 
+std::vector<TimeCoord> Device::get_history(const Glib::RefPtr<Window>& window, guint32 start, guint32 stop) const
+{
+  GdkTimeCoord** coords = 0;
+  int events_count = 0;
+
+  // we don't care about returned value - false means that either getting history is unsupported or no motion events happened.
+  // it is undistinguishable.
+  gdk_device_get_history(const_cast<GdkDevice*>(gobj()), Glib::unwrap(window), start, stop, &coords, &events_count);
+  return Glib::ArrayHandler<TimeCoord, TimeCoordPtrTraits>::array_to_vector(coords, events_count, Glib::OWNERSHIP_DEEP);
+}
+
+void Device::get_position(int& x, int& y) const
+{
+  gdk_device_get_position(const_cast<GdkDevice*>(gobj()), 0, &x, &y);
+}
+
+void Device::get_position(Glib::RefPtr<Screen>& screen, int& x, int& y) const
+{
+  GdkScreen* cScreen = 0;
+  gdk_device_get_position(const_cast<GdkDevice*>(gobj()), &cScreen, &x, &y);
+  screen = Glib::wrap(cScreen, true);
+}
+
+Glib::RefPtr<Window> Device::get_window_at_position()
+{
+  Glib::RefPtr<Window> retvalue = Glib::wrap(gdk_device_get_window_at_position(gobj(), 0, 0));
+  if(retvalue)
+    retvalue->reference(); //The function does not do a ref for us.
+  return retvalue;
+}
+
+Glib::RefPtr<const Window> Device::get_window_at_position() const
+{
+  return const_cast<Device*>(this)->get_window_at_position();
+}
+
+GrabStatus Device::grab(const Glib::RefPtr<Window>& window, GrabOwnership grab_ownership, bool owner_events, EventMask event_mask, guint32 time_)
+{
+  return static_cast<GrabStatus>(gdk_device_grab(gobj(), Glib::unwrap(window), static_cast<GdkGrabOwnership>(grab_ownership), static_cast<int>(owner_events), static_cast<GdkEventMask>(event_mask), 0, time_));
+}
 
 } // namespace Gdk
 

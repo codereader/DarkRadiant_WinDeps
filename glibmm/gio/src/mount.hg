@@ -18,9 +18,13 @@
  */
 
 //#include <giomm/drive.h>
-#include <giomm/file.h>
-#include <giomm/volume.h>
+//#include <giomm/file.h>
+//#include <giomm/volume.h>
 #include <glibmm/interface.h>
+#include <giomm/asyncresult.h>
+#include <giomm/cancellable.h>
+#include <giomm/mountoperation.h>
+#include <giomm/icon.h>
 
 
 _DEFS(giomm,gio)
@@ -30,12 +34,15 @@ _PINCLUDE(glibmm/private/interface_p.h)
 typedef struct _GMountIface GMountIface;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-
 namespace Gio
 {
 
+_WRAP_ENUM(MountUnmountFlags, GMountUnmountFlags, NO_GTYPE)
+_WRAP_ENUM(MountMountFlags, GMountMountFlags, NO_GTYPE)
+
+class File;
 class Drive;
-//class Volume;
+class Volume;
 
 /** The Mount interface represents user-visible mounts.
  * Mount is a "mounted" filesystem that you can access. Mounted is in quotes because it's not the same as a unix mount: 
@@ -74,31 +81,17 @@ public:
   _WRAP_METHOD(bool can_unmount() const, g_mount_can_unmount)
   _WRAP_METHOD(bool can_eject() const, g_mount_can_eject)
 
-  /** Unmounts a mount. 
-   * This is an asynchronous operation, and is finished by calling unmount_finish() with the AsyncResult data returned in the callback slot.
-   *
-   * @param slot A callback which will be called when the operation is completed or canceled.
-   * @param cancellable A cancellable object which can be used to cancel the operation.
-   * @param flags Flags affecting the unmount.
-   */
   void unmount(const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
-
-  /** Unmounts a mount. 
-   * This is an asynchronous operation, and is finished by calling unmount_finish() with the AsyncResult data returned in the callback slot.
-   *
-   * @param slot A callback which will be called when the operation is completed or canceled.
-   * @param flags Flags affecting the unmount.
-   */
   void unmount(const SlotAsyncReady& slot, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
-
-  /** Unmounts a mount.
-   *
-   * @param cancellable A cancellable object which can be used to cancel the operation.
-   */
   void unmount(MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  void unmount(const Glib::RefPtr<MountOperation>& mount_operation, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  void unmount(const Glib::RefPtr<MountOperation>& mount_operation, const SlotAsyncReady& slot, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  void unmount(const Glib::RefPtr<MountOperation>& mount_operation, const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
   _IGNORE(g_mount_unmount)
+  _IGNORE(g_mount_unmount_with_operation)
 
-  _WRAP_METHOD(bool unmount_finish(const Glib::RefPtr<AsyncResult>& result), g_mount_unmount_finish, errthrow)
+  _WRAP_METHOD(bool unmount_finish(const Glib::RefPtr<AsyncResult>& result), g_mount_unmount_with_operation_finish, errthrow)
+  _IGNORE(g_mount_unmount_finish)
 
   /** Remounts a mount.
    * This is an asynchronous operation, and is finished by calling mount_finish() with the AsyncResult data returned in the callback slot.
@@ -147,32 +140,17 @@ public:
 
   _WRAP_METHOD(bool remount_finish(const Glib::RefPtr<AsyncResult>& result), g_mount_remount_finish, errthrow)
 
-  /** Ejects a mount. 
-   * This is an asynchronous operation, and is finished by calling eject_finish() with the AsyncResult data returned in the callback slot.
-   *
-   * @param slot A callback which will be called when the operation is completed or canceled.
-   * @param cancellable A cancellable object which can be used to cancel the operation.
-   * @param flags Flags affecting the unmount if required for eject.
-   */
   void eject(const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
-
-  /** Ejects a mount. 
-   * This is an asynchronous operation, and is finished by calling eject_finish() with the AsyncResult data returned in the callback slot.
-   *
-   * @param slot A callback which will be called when the operation is completed or canceled.
-   * @param flags Flags affecting the unmount if required for eject.
-   */
   void eject(const SlotAsyncReady& slot, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
-
-  /** Ejects a mount. 
-   *
-   * @param flags Flags affecting the unmount if required for eject.
-   */
   void eject(MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  void eject(const Glib::RefPtr<MountOperation>& mount_operation, const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  void eject(const Glib::RefPtr<MountOperation>& mount_operation, const SlotAsyncReady& slot, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  void eject(const Glib::RefPtr<MountOperation>& mount_operation, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
   _IGNORE(g_mount_eject)
+  _IGNORE(g_mount_eject_with_operation)
 
-  _WRAP_METHOD(bool eject_finish(const Glib::RefPtr<AsyncResult>& result), g_mount_eject_finish, errthrow)
-
+  _WRAP_METHOD(bool eject_finish(const Glib::RefPtr<AsyncResult>& result), g_mount_eject_with_operation_finish, errthrow)
+  _IGNORE(g_mount_eject_finish)
 
 
 
@@ -219,13 +197,8 @@ public:
   void guess_content_type(bool force_rescan = true);
   _IGNORE(g_mount_guess_content_type)
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   void guess_content_type_sync(const Glib::RefPtr<Cancellable>& cancellable, bool force_rescan = true);
   void guess_content_type_sync(bool force_rescan = true);
-#else
-  void guess_content_type_sync(const Glib::RefPtr<Cancellable>& cancellable, bool force_rescan, std::auto_ptr<Glib::Error>& error);
-  void guess_content_type_sync(bool force_rescan, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   _IGNORE(g_mount_guess_content_type_sync)
 
   #m4 _CONVERSION(`gchar**',`Glib::StringArrayHandle',`Glib::StringArrayHandle($3, Glib::OWNERSHIP_DEEP)')
@@ -237,9 +210,12 @@ public:
   _WRAP_METHOD(void shadow(), g_mount_shadow)
   _WRAP_METHOD(void unshadow(), g_mount_unshadow)
 
+  _WRAP_METHOD(Glib::RefPtr<File> get_default_location() const, g_mount_get_default_location)
+
 
   _WRAP_SIGNAL(void changed(), changed)
   _WRAP_SIGNAL(void unmounted(), unmounted)
+  _WRAP_SIGNAL(void pre_unmount(), pre_unmount, no_default_handler)
 
   //There are no properties.
 };

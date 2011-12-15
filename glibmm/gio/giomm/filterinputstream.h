@@ -40,9 +40,9 @@ namespace Gio
 namespace Gio
 {
 
-//TODO: Proper documentation.
-
 /** Filter Input Stream.
+ * This is a base class for input stream implementations that perform some kind of filtering operation on a base stream. 
+ & Typical examples of filtering operations are character set conversion, compression and byte order flipping. 
  *
  * @ingroup Streams
  *
@@ -109,9 +109,16 @@ public:
   Glib::RefPtr<const InputStream> get_base_stream() const;
 
   
+  /** Returns whether the base stream will be closed when @a stream is
+   * closed.
+   * @return <tt>true</tt> if the base stream will be closed.
+   */
   bool get_close_base_stream() const;
   
-  void set_close_base_stream(bool close_base = true);
+  /** Sets whether the base stream will be closed when @a stream is closed.
+   * @param close_base <tt>true</tt> to close the base stream.
+   */
+  void set_close_base_stream(bool close_base =  true);
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The underlying base stream on which the io ops will be done.
@@ -139,17 +146,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

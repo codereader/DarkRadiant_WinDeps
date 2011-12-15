@@ -43,8 +43,8 @@ Volume::mount(const Glib::RefPtr<MountOperation>& mount_operation, const SlotAsy
 
   g_volume_mount(gobj(),
                  static_cast<GMountMountFlags>(flags),
-                 mount_operation->gobj(),
-                 cancellable->gobj(),
+                 Glib::unwrap(mount_operation),
+                 Glib::unwrap(cancellable),
                  &SignalProxy_async_callback,
                  slot_copy);
 
@@ -60,8 +60,8 @@ Volume::mount(const Glib::RefPtr<MountOperation>& mount_operation, const SlotAsy
 
   g_volume_mount(gobj(),
                  static_cast<GMountMountFlags>(flags),
-                 mount_operation->gobj(),
-                 NULL, // cancellable
+                 Glib::unwrap(mount_operation),
+                 0, // cancellable
                  &SignalProxy_async_callback,
                  slot_copy);
 }
@@ -71,10 +71,10 @@ Volume::mount(const Glib::RefPtr<MountOperation>& mount_operation, MountMountFla
 {
   g_volume_mount(gobj(),
                  static_cast<GMountMountFlags>(flags),
-                 mount_operation->gobj(),
-                 NULL, // cancellable
-                 NULL,
-                 NULL);
+                 Glib::unwrap(mount_operation),
+                 0, // cancellable
+                 0,
+                 0);
 }
 
 void
@@ -82,10 +82,10 @@ Volume::mount(MountMountFlags flags)
 {
   g_volume_mount(gobj(),
                  static_cast<GMountMountFlags>(flags),
-                 NULL,
-                 NULL, // cancellable
-                 NULL,
-                 NULL);
+                 0,
+                 0, // cancellable
+                 0,
+                 0);
 }
 
 
@@ -96,11 +96,12 @@ void Volume::eject(const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& 
   // and deleted in the callback.
   SlotAsyncReady* slot_copy = new SlotAsyncReady(slot);
 
-  g_volume_eject(gobj(),
-                 static_cast<GMountUnmountFlags>(flags), 
-                 cancellable->gobj(),
-                 &SignalProxy_async_callback,
-                 slot_copy);
+  g_volume_eject_with_operation(gobj(),
+                                static_cast<GMountUnmountFlags>(flags), 
+                                0, // mount_operation
+                                Glib::unwrap(cancellable),
+                                &SignalProxy_async_callback,
+                                slot_copy);
 }
 
 void Volume::eject(const SlotAsyncReady& slot, MountUnmountFlags flags)
@@ -110,20 +111,62 @@ void Volume::eject(const SlotAsyncReady& slot, MountUnmountFlags flags)
   // and deleted in the callback.
   SlotAsyncReady* slot_copy = new SlotAsyncReady(slot);
 
-  g_volume_eject(gobj(),
-                 static_cast<GMountUnmountFlags>(flags), 
-                 NULL,
-                 &SignalProxy_async_callback,
-                 slot_copy);
+  g_volume_eject_with_operation(gobj(),
+                                static_cast<GMountUnmountFlags>(flags), 
+                                0, // mount_operation
+                                0, // cancellable
+                                &SignalProxy_async_callback,
+                                slot_copy);
 }
 
 void Volume::eject(MountUnmountFlags flags)
 {
-  g_volume_eject(gobj(),
-                 static_cast<GMountUnmountFlags>(flags), 
-                 NULL,
-                 NULL,
-                 NULL);
+  g_volume_eject_with_operation(gobj(),
+                                static_cast<GMountUnmountFlags>(flags), 
+                                0, // mount_operation
+                                0, // cancellable
+                                0, // callback
+                                0); // data
+}
+
+void Volume::eject(const Glib::RefPtr<MountOperation>& mount_operation, const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, MountUnmountFlags flags)
+{
+  // Create a copy of the slot.
+  // A pointer to it will be passed through the callback's data parameter
+  // and deleted in the callback.
+  SlotAsyncReady* slot_copy = new SlotAsyncReady(slot);
+
+  g_volume_eject_with_operation(gobj(),
+                                static_cast<GMountUnmountFlags>(flags), 
+                                Glib::unwrap(mount_operation),
+                                Glib::unwrap(cancellable),
+                                &SignalProxy_async_callback,
+                                slot_copy);
+}
+
+void Volume::eject(const Glib::RefPtr<MountOperation>& mount_operation, const SlotAsyncReady& slot, MountUnmountFlags flags)
+{
+  // Create a copy of the slot.
+  // A pointer to it will be passed through the callback's data parameter
+  // and deleted in the callback.
+  SlotAsyncReady* slot_copy = new SlotAsyncReady(slot);
+
+  g_volume_eject_with_operation(gobj(),
+                                static_cast<GMountUnmountFlags>(flags), 
+                                Glib::unwrap(mount_operation),
+                                0, // cancellable
+                                &SignalProxy_async_callback,
+                                slot_copy);
+}
+
+void Volume::eject(const Glib::RefPtr<MountOperation>& mount_operation, MountUnmountFlags flags)
+{
+    g_volume_eject_with_operation(gobj(),
+                                  static_cast<GMountUnmountFlags>(flags), 
+                                  Glib::unwrap(mount_operation),
+                                  0, // cancellable
+                                  0, // callback
+                                  0); // data
 }
 
 } // namespace Gio
@@ -193,19 +236,12 @@ void Volume_Class::iface_init_function(void* g_iface, void*)
   //This is a temporary fix until I find out why I can not seem to derive a GtkFileChooser interface. murrayc
   g_assert(klass != 0); 
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->changed = &changed_callback;
   klass->removed = &removed_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Volume_Class::changed_callback(GVolume* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -237,7 +273,7 @@ void Volume_Class::changed_callback(GVolume* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -278,7 +314,7 @@ void Volume_Class::removed_callback(GVolume* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -288,7 +324,6 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Ge
   if(base && base->removed)
     (*base->removed)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Volume_Class::wrap_new(GObject* object)
@@ -407,41 +442,23 @@ bool Volume::should_automount() const
   return g_volume_should_automount(const_cast<GVolume*>(gobj()));
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool Volume::mount_finish(const Glib::RefPtr<AsyncResult>& result)
-#else
-bool Volume::mount_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = g_volume_mount_finish(gobj(), Glib::unwrap(result), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool Volume::eject_finish(const Glib::RefPtr<AsyncResult>& result)
-#else
-bool Volume::eject_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
-  bool retvalue = g_volume_eject_finish(gobj(), Glib::unwrap(result), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  bool retvalue = g_volume_eject_with_operation_finish(gobj(), Glib::unwrap(result), &(gerror));
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
@@ -454,7 +471,7 @@ std::string Volume::get_identifier(const std::string& kind) const
 
 Glib::StringArrayHandle Volume::enumerate_identifiers() const
 {
-  return Glib::StringArrayHandle(g_volume_enumerate_identifiers(const_cast<GVolume*>(gobj())));
+  return Glib::StringArrayHandle(g_volume_enumerate_identifiers(const_cast<GVolume*>(gobj())), Glib::OWNERSHIP_DEEP);
 }
 
 Glib::RefPtr<File> Volume::get_activation_root()
@@ -480,7 +497,6 @@ Glib::SignalProxy0< void > Volume::signal_removed()
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gio::Volume::on_changed()
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -501,10 +517,6 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(gobject_), CppObjectType::get_type()) /
   if(base && base->removed)
     (*base->removed)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gio

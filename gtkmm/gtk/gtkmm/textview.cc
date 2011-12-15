@@ -241,26 +241,20 @@ const Glib::Class& TextView_Class::init()
   return *this;
 }
 
+
 void TextView_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->set_scroll_adjustments = &set_scroll_adjustments_callback;
   klass->populate_popup = &populate_popup_callback;
   klass->set_anchor = &set_anchor_callback;
   klass->insert_at_cursor = &insert_at_cursor_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void TextView_Class::set_scroll_adjustments_callback(GtkTextView* self, GtkAdjustment* p0, GtkAdjustment* p1)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -294,7 +288,7 @@ void TextView_Class::set_scroll_adjustments_callback(GtkTextView* self, GtkAdjus
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -335,7 +329,7 @@ void TextView_Class::populate_popup_callback(GtkTextView* self, GtkMenu* p0)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -375,7 +369,7 @@ void TextView_Class::set_anchor_callback(GtkTextView* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -416,7 +410,7 @@ void TextView_Class::insert_at_cursor_callback(GtkTextView* self, const gchar* p
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -425,7 +419,6 @@ void TextView_Class::insert_at_cursor_callback(GtkTextView* self, const gchar* p
   if(base && base->insert_at_cursor)
     (*base->insert_at_cursor)(self, p0);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* TextView_Class::wrap_new(GObject* o)
@@ -460,6 +453,7 @@ GType TextView::get_type()
 {
   return textview_class_.init().get_type();
 }
+
 
 GType TextView::get_base_type()
 {
@@ -534,27 +528,47 @@ gtk_text_view_get_iter_at_location(const_cast<GtkTextView*>(gobj()), (iter).gobj
 
 void TextView::get_iter_at_position(TextBuffer::iterator& iter, int& trailing, int x, int y) const
 {
-gtk_text_view_get_iter_at_position(const_cast<GtkTextView*>(gobj()), (iter).gobj(), &trailing, x, y); 
+gtk_text_view_get_iter_at_position(const_cast<GtkTextView*>(gobj()), (iter).gobj(), &(trailing), x, y); 
 }
 
 void TextView::get_line_yrange(const TextBuffer::iterator& iter, int& y, int& height) const
 {
-gtk_text_view_get_line_yrange(const_cast<GtkTextView*>(gobj()), (iter).gobj(), &y, &height); 
+gtk_text_view_get_line_yrange(const_cast<GtkTextView*>(gobj()), (iter).gobj(), &(y), &(height)); 
 }
 
 void TextView::get_line_at_y(TextBuffer::iterator& target_iter, int y, int& line_top) const
 {
-gtk_text_view_get_line_at_y(const_cast<GtkTextView*>(gobj()), (target_iter).gobj(), y, &line_top); 
+gtk_text_view_get_line_at_y(const_cast<GtkTextView*>(gobj()), (target_iter).gobj(), y, &(line_top)); 
 }
 
 void TextView::buffer_to_window_coords(TextWindowType win, int buffer_x, int buffer_y, int& window_x, int& window_y) const
 {
-gtk_text_view_buffer_to_window_coords(const_cast<GtkTextView*>(gobj()), ((GtkTextWindowType)(win)), buffer_x, buffer_y, &window_x, &window_y); 
+gtk_text_view_buffer_to_window_coords(const_cast<GtkTextView*>(gobj()), ((GtkTextWindowType)(win)), buffer_x, buffer_y, &(window_x), &(window_y)); 
 }
 
 void TextView::window_to_buffer_coords(TextWindowType win, int window_x, int window_y, int& buffer_x, int& buffer_y) const
 {
-gtk_text_view_window_to_buffer_coords(const_cast<GtkTextView*>(gobj()), ((GtkTextWindowType)(win)), window_x, window_y, &buffer_x, &buffer_y); 
+gtk_text_view_window_to_buffer_coords(const_cast<GtkTextView*>(gobj()), ((GtkTextWindowType)(win)), window_x, window_y, &(buffer_x), &(buffer_y)); 
+}
+
+Gtk::Adjustment* TextView::get_hadjustment()
+{
+  return Glib::wrap(gtk_text_view_get_hadjustment(gobj()));
+}
+
+const Gtk::Adjustment* TextView::get_hadjustment() const
+{
+  return const_cast<TextView*>(this)->get_hadjustment();
+}
+
+Gtk::Adjustment* TextView::get_vadjustment()
+{
+  return Glib::wrap(gtk_text_view_get_vadjustment(gobj()));
+}
+
+const Gtk::Adjustment* TextView::get_vadjustment() const
+{
+  return const_cast<TextView*>(this)->get_vadjustment();
 }
 
 Glib::RefPtr<Gdk::Window> TextView::get_window(TextWindowType win)
@@ -615,6 +629,16 @@ bool TextView::starts_display_line(const TextBuffer::iterator& iter)
 bool TextView::move_visually(TextBuffer::iterator& iter, int count)
 {
   return gtk_text_view_move_visually(gobj(), (iter).gobj(), count);
+}
+
+bool TextView::im_context_filter_keypress(GdkEventKey* event)
+{
+  return gtk_text_view_im_context_filter_keypress(gobj(), event);
+}
+
+void TextView::reset_im_context()
+{
+gtk_text_view_reset_im_context(gobj()); 
 }
 
 void TextView::add_child_at_anchor(Widget& child, const Glib::RefPtr<TextBuffer::ChildAnchor>& anchor)
@@ -993,7 +1017,6 @@ Glib::PropertyProxy_ReadOnly<Glib::ustring> TextView::property_im_module() const
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::TextView::on_set_scroll_adjustments(Adjustment* hadjustment, Adjustment* vadjustment)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -1030,10 +1053,6 @@ void Gtk::TextView::on_insert_at_cursor(const Glib::ustring& str)
   if(base && base->insert_at_cursor)
     (*base->insert_at_cursor)(gobj(),str.c_str());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

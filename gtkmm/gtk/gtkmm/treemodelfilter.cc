@@ -24,25 +24,19 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <gtk/gtk.h>
-
 
 static gboolean SignalProxy_Visible_gtk_callback(GtkTreeModel* model, GtkTreeIter* iter, gpointer data)
 {
   Gtk::TreeModelFilter::SlotVisible* the_slot = static_cast<Gtk::TreeModelFilter::SlotVisible*>(data);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENAB
     return (*the_slot)( Gtk::TreeModel::const_iterator(model, iter) );
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return FALSE; //An arbitary default, just to avoid the compiler warning.
 }
@@ -57,16 +51,14 @@ static void SignalProxy_Modify_gtk_callback(GtkTreeModel* model, GtkTreeIter* it
 {
   Gtk::TreeModelFilter::SlotModify* the_slot = static_cast<Gtk::TreeModelFilter::SlotModify*>(data);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     //Initialize the input parameter with the appropriate type for this column.
     //Then the C++ handler can just use operator==() without calling init on the value output arg:
     Glib::ValueBase cppValue;
     GType column_type = gtk_tree_model_get_column_type(model, column);
     cppValue.init(column_type);
-    
+
     (*the_slot)( Gtk::TreeModel::const_iterator(model, iter), cppValue, column );
 
     //GTK+ has already done this for us: g_value_init(value, column_type);
@@ -74,13 +66,11 @@ static void SignalProxy_Modify_gtk_callback(GtkTreeModel* model, GtkTreeIter* it
     //If the C++ handler has inited value with an inappropriate GType, then this will fail,
     //but they should not do that because it makes no sense.
     g_value_copy(cppValue.gobj() /* source */, value /* destination */);
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED  
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
 static void SignalProxy_Modify_gtk_callback_destroy(void* data)
@@ -168,7 +158,6 @@ void TreeModelFilter::set_value_impl(const iterator& /* row */, int /* column */
 
 } // namespace Gtk
 
-
 namespace
 {
 } // anonymous namespace
@@ -214,23 +203,14 @@ const Glib::Class& TreeModelFilter_Class::init()
   return *this;
 }
 
+
 void TreeModelFilter_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* TreeModelFilter_Class::wrap_new(GObject* object)
@@ -259,6 +239,7 @@ TreeModelFilter::TreeModelFilter(GtkTreeModelFilter* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 TreeModelFilter::~TreeModelFilter()
 {}
 
@@ -270,6 +251,7 @@ GType TreeModelFilter::get_type()
   return treemodelfilter_class_.init().get_type();
 }
 
+
 GType TreeModelFilter::get_base_type()
 {
   return gtk_tree_model_filter_get_type();
@@ -280,10 +262,12 @@ Glib::RefPtr<TreeModelFilter> TreeModelFilter::create(const Glib::RefPtr<TreeMod
 {
   return Glib::RefPtr<TreeModelFilter>( new TreeModelFilter(child_model) );
 }
+
 Glib::RefPtr<TreeModelFilter> TreeModelFilter::create(const Glib::RefPtr<TreeModel>& child_model, const TreeModel::Path& virtual_root)
 {
   return Glib::RefPtr<TreeModelFilter>( new TreeModelFilter(child_model, virtual_root) );
 }
+
 void TreeModelFilter::set_visible_column(const TreeModelColumnBase& column)
 {
 gtk_tree_model_filter_set_visible_column(gobj(), (column).index()); 
@@ -348,11 +332,19 @@ gtk_tree_model_filter_clear_cache(gobj());
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly< Glib::RefPtr<TreeModel> > TreeModelFilter::property_child_model() const
+{
+  return Glib::PropertyProxy_ReadOnly< Glib::RefPtr<TreeModel> >(this, "child-model");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<TreeModel::Path> TreeModelFilter::property_virtual_root() const
+{
+  return Glib::PropertyProxy_ReadOnly<TreeModel::Path>(this, "virtual-root");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
 
 } // namespace Gtk

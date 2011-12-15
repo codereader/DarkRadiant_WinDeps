@@ -1,7 +1,4 @@
-/* $Id: aboutdialog.hg,v 1.10 2006/07/18 19:49:30 murrayc Exp $ */
-
-/* aboutdialog.h
- *
+/*
  * Copyright (C) 2004 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -19,6 +16,11 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#m4 _PUSH(SECTION_CC_PRE_INCLUDES)
+#undef GTK_DISABLE_DEPRECATED
+#m4 _POP()
+_CONFIGINCLUDE(gtkmmconfig.h)
+
 #include <gtkmm/dialog.h>
 //#include <glibmm/listhandle.h>
 
@@ -28,15 +30,15 @@ _PINCLUDE(gtkmm/private/dialog_p.h)
 namespace Gtk
 {
 
-/** The AboutDialog offers a simple way to display information about a program like its logo, name, copyright, 
- * website and license. It is also possible to give credits to the authors, documenters, translators and artists 
- * who have worked on the program. An about dialog is typically opened when the user selects the About option 
+/** The AboutDialog offers a simple way to display information about a program like its logo, name, copyright,
+ * website and license. It is also possible to give credits to the authors, documenters, translators and artists
+ * who have worked on the program. An about dialog is typically opened when the user selects the About option
  * from the Help menu. All parts of the dialog are optional.
  *
- * About dialogs often contain links and email addresses. Gtk::AboutDialog supports this by offering global 
- * hooks, which are called when the user clicks on a link or email address, see set_email_hook() and 
- * set_url_hook(). Email addresses in the authors, documenters and artists properties are recognized by looking 
- * for <user@host>, URLs are recognized by looking for http://url, with the URL extending to the next space, 
+ * About dialogs often contain links and email addresses. Gtk::AboutDialog supports this by offering global
+ * hooks, which are called when the user clicks on a link or email address, see set_email_hook() and
+ * set_url_hook(). Email addresses in the authors, documenters and artists properties are recognized by looking
+ * for <user@host>, URLs are recognized by looking for http://url, with the URL extending to the next space,
  * tab or line break.
  *
  * An AboutDialog looks like this:
@@ -69,7 +71,7 @@ public:
   _WRAP_METHOD(Glib::ustring get_website_label() const, gtk_about_dialog_get_website_label)
   _WRAP_METHOD(void set_website_label(const Glib::ustring& website_label), gtk_about_dialog_set_website_label)
 
-  #m4 _CONVERSION(`gchar const * const *',`Glib::StringArrayHandle',`Glib::StringArrayHandle($3)')
+  #m4 _CONVERSION(`const gchar**',`Glib::StringArrayHandle',`Glib::StringArrayHandle($3)')
 
   _WRAP_METHOD(Glib::StringArrayHandle get_authors() const, gtk_about_dialog_get_authors)
 
@@ -96,22 +98,32 @@ public:
   _WRAP_METHOD(bool get_wrap_license() const, gtk_about_dialog_get_wrap_license)
   _WRAP_METHOD(void set_wrap_license(bool wrap_license), gtk_about_dialog_set_wrap_license)
 
+_DEPRECATE_IFDEF_START
   /** For instance,
    * void on_activate_link_url(AboutDialog& about_dialog, const Glib::ustring& link);
+   *
+   * @deprecated Use signal_activate_link() instead.
    */
   typedef sigc::slot<void, AboutDialog& /* about_dialog */, const Glib::ustring& /* link */> SlotActivateLink;
 
   /** Installs a global callback to be called whenever the user activates an email link in an about dialog.
    * @param slot A function or method to call when an email link is activated.
+   *
+   * @deprecated Use signal_activate_link() instead.
    */
   static void set_email_hook(const SlotActivateLink& slot);
   _IGNORE(gtk_about_dialog_set_email_hook)
 
   /** Installs a global callback to be called whenever the user activates a URL link in an about dialog.
    * @param slot A function or method to call when a URL link is activated.
+   *
+   * @deprecated Use signal_activate_link() instead.
    */
   static void set_url_hook(const SlotActivateLink& slot);
   _IGNORE(gtk_about_dialog_set_url_hook)
+_DEPRECATE_IFDEF_END
+
+  _WRAP_SIGNAL(bool activate_link(const std::string& uri), "activate-link", no_default_handler)
 
 //TODO: Deprecate this, because it conflicts with the property in GtkWidget, and has been removed in GTK+ 2.12.
 //If this could not have been used without an error, then remove it:
@@ -130,9 +142,8 @@ public:
   _WRAP_PROPERTY("translator_credits", Glib::StringArrayHandle)
   _WRAP_PROPERTY("artists", Glib::StringArrayHandle)
   _WRAP_PROPERTY("logo", Glib::RefPtr<Gdk::Pixbuf>)
-  _WRAP_PROPERTY("logo_icon_name", Glib::ustring)  
-  _WRAP_PROPERTY("wrap_license", bool)  
+  _WRAP_PROPERTY("logo_icon_name", Glib::ustring)
+  _WRAP_PROPERTY("wrap_license", bool)
 };
 
 } // namespace Gtk
-

@@ -29,19 +29,16 @@ public:
 
 protected:
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   //Callbacks (default signal handlers):
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
-  static void row_changed_callback(GtkTreeModel* self, GtkTreePath* path, GtkTreeIter* iter);
-  static void row_inserted_callback(GtkTreeModel* self, GtkTreePath* path, GtkTreeIter* iter);
-  static void row_has_child_toggled_callback(GtkTreeModel* self, GtkTreePath* path, GtkTreeIter* iter);
-  static void row_deleted_callback(GtkTreeModel* self, GtkTreePath* path);
-  static void rows_reordered_callback(GtkTreeModel* self, GtkTreePath* path, GtkTreeIter* iter, gint* new_order);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+  static void row_changed_callback(GtkTreeModel* self, GtkTreePath* p0, GtkTreeIter* p1);
+  static void row_inserted_callback(GtkTreeModel* self, GtkTreePath* p0, GtkTreeIter* p1);
+  static void row_has_child_toggled_callback(GtkTreeModel* self, GtkTreePath* p0, GtkTreeIter* p1);
+  static void row_deleted_callback(GtkTreeModel* self, GtkTreePath* p0);
+  static void rows_reordered_callback(GtkTreeModel* self, GtkTreePath* p0, GtkTreeIter* p1, gint* p2);
 
   //Callbacks (virtual functions):
-#ifdef GLIBMM_VFUNCS_ENABLED
   static GtkTreeModelFlags get_flags_vfunc_callback(GtkTreeModel* self);
   static gint get_n_columns_vfunc_callback(GtkTreeModel* self);
   static GType get_column_type_vfunc_callback(GtkTreeModel* self, gint index);
@@ -56,7 +53,6 @@ protected:
   static void unref_node_vfunc_callback(GtkTreeModel* self, GtkTreeIter* iter);
   static GtkTreePath* get_path_vfunc_callback(GtkTreeModel* self, GtkTreeIter* iter);
   static void get_value_vfunc_callback(GtkTreeModel* self, GtkTreeIter* iter, gint column, GValue* value);
-#endif //GLIBMM_VFUNCS_ENABLED
 };
 
 

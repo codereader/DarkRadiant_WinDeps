@@ -4,7 +4,8 @@
 #define _PANGOMM_FONTMETRICS_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: fontmetrics.hg,v 1.2 2004/12/01 11:46:29 murrayc Exp $ */
 
@@ -13,20 +14,21 @@
  * Copyright (C) 1998-1999 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
+ * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <glibmm/value.h>
 #include <pango/pango-font.h>
 
 
@@ -82,7 +84,7 @@ public:
    * of text. (The logical top may be above or below the top of the
    * actual drawn ink. It is necessary to lay out the text to figure
    * where the ink will be.)
-   * @return The ascent, in Pango units. (1 point == Pango::SCALE Pango units.).
+   * @return The ascent, in Pango units.
    */
   int get_ascent() const;
   
@@ -91,7 +93,7 @@ public:
    * of text. (The logical bottom may be above or below the bottom of the
    * actual drawn ink. It is necessary to lay out the text to figure
    * where the ink will be.)
-   * @return The descent, in Pango units. (1 point == Pango::SCALE Pango units.).
+   * @return The descent, in Pango units.
    */
   int get_descent() const;
   
@@ -99,7 +101,7 @@ public:
    * This is merely a representative value useful, for example, for
    * determining the initial size for a window. Actual characters in
    * text will be wider and narrower than this.
-   * @return The character width, in Pango units. (1 point == Pango::SCALE Pango units.).
+   * @return The character width, in Pango units.
    */
   int get_approximate_char_width() const;
   
@@ -108,8 +110,8 @@ public:
    * determining the initial size for a window. Actual digits in
    * text can be wider or narrower than this, though this value
    * is generally somewhat more accurate than the result of
-   * pango_font_metrics_get_approximate_char_width() for digits.
-   * @return The digit width, in Pango units. (1 point == Pango::SCALE Pango units.).
+   * get_approximate_char_width() for digits.
+   * @return The digit width, in Pango units.
    */
   int get_approximate_digit_width() const;
 
@@ -119,32 +121,32 @@ public:
    * baseline of the top of the underline. Since most fonts have
    * underline positions beneath the baseline, this value is typically
    * negative.
-   * @return The suggested underline position, in Pango units.
    * 
-   * Since: 1.6.
+   * @newin{1,6}
+   * @return The suggested underline position, in Pango units.
    */
   int get_underline_position() const;
   
   /** Gets the suggested thickness to draw for the underline.
-   * @return The suggested underline thickness, in Pango units.
    * 
-   * Since: 1.6.
+   * @newin{1,6}
+   * @return The suggested underline thickness, in Pango units.
    */
   int get_underline_thickness() const;
   
   /** Gets the suggested position to draw the strikethrough.
    * The value returned is the distance <em>above</em> the
    * baseline of the top of the strikethrough.
-   * @return The suggested strikethrough position, in Pango units.
    * 
-   * Since: 1.6.
+   * @newin{1,6}
+   * @return The suggested strikethrough position, in Pango units.
    */
   int get_strikethrough_position() const;
   
   /** Gets the suggested thickness to draw for the strikethrough.
-   * @return The suggested strikethrough thickness, in Pango units.
    * 
-   * Since: 1.6.
+   * @newin{1,6}
+   * @return The suggested strikethrough thickness, in Pango units.
    */
   int get_strikethrough_thickness() const;
 

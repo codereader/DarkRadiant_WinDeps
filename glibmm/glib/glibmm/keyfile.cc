@@ -44,11 +44,7 @@ KeyFile::~KeyFile()
     g_key_file_free(gobject_);
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool KeyFile::load_from_data(const Glib::ustring& data, KeyFileFlags flags)
-#else
-bool KeyFile::load_from_data(const Glib::ustring& data, KeyFileFlags flags, std:auto_ptr<Glib::Error>& error)
-#endif
 {
   GError* gerror = 0;
 
@@ -58,20 +54,12 @@ bool KeyFile::load_from_data(const Glib::ustring& data, KeyFileFlags flags, std:
       &gerror);
 
   if(gerror)
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
     Glib::Error::throw_exception(gerror);
-#else
-    error = Glib::Error::throw_exception(gerror);
-#endif
 
   return (result != 0);
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool KeyFile::load_from_data_dirs(const std::string& file, std::string& full_path, KeyFileFlags flags)
-#else
-bool KeyFile::load_from_data_dirs(const std::string& file, std::string& full_path, KeyFileFlags flags, std:auto_ptr<Glib::Error>& error)
-#endif
 {
   GError* gerror = 0;
   char* full_path_c = 0;
@@ -82,11 +70,7 @@ bool KeyFile::load_from_data_dirs(const std::string& file, std::string& full_pat
       &gerror);
 
   if(gerror)
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
     Glib::Error::throw_exception(gerror);
-#else
-    error = Glib::Error::throw_exception(gerror);
-#endif
 
   if(full_path_c)
     full_path = Glib::ScopedPtr<char>(full_path_c).get();
@@ -96,21 +80,13 @@ bool KeyFile::load_from_data_dirs(const std::string& file, std::string& full_pat
   return (result != 0);
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::ustring KeyFile::to_data()
-#else
-Glib::ustring KeyFile::to_data(std:auto_ptr<Glib::Error>& error)
-#endif
 {
   GError* gerror = 0;
   char *const str = g_key_file_to_data(gobj(), 0, &gerror);
 
   if(gerror)
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
     Glib::Error::throw_exception(gerror);
-#else
-    error = Glib::Error::throw_exception(gerror);
-#endif
 
   return Glib::convert_return_gchar_ptr_to_ustring(str);
 }
@@ -123,11 +99,7 @@ Glib::ArrayHandle<Glib::ustring> KeyFile::get_groups() const
   return Glib::ArrayHandle<Glib::ustring>(array, length, Glib::OWNERSHIP_DEEP);
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::ArrayHandle<Glib::ustring> KeyFile::get_keys(const Glib::ustring& group_name) const
-#else
-Glib::ArrayHandle<Glib::ustring> KeyFile::get_keys(const Glib::ustring& group_name, std:auto_ptr<Glib::Error>& error) const
-#endif
 {
   gsize length  = 0;
   GError* gerror = 0;
@@ -138,22 +110,13 @@ Glib::ArrayHandle<Glib::ustring> KeyFile::get_keys(const Glib::ustring& group_na
       &length, &gerror);
 
   if(gerror)
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
     Glib::Error::throw_exception(gerror);
-#else
-    error = Glib::Error::throw_exception(gerror);
-#endif
 
   return Glib::ArrayHandle<Glib::ustring>(array, length, Glib::OWNERSHIP_DEEP);
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::ustring KeyFile::get_locale_string(const Glib::ustring& group_name,
   const Glib::ustring& key) const
-#else
-Glib::ustring KeyFile::get_locale_string(const Glib::ustring& group_name,
-  const Glib::ustring& key, std:auto_ptr<Glib::Error>& error) const
-#endif
 {
   GError* gerror = 0;
   char *const str = g_key_file_get_locale_string(
@@ -162,49 +125,67 @@ Glib::ustring KeyFile::get_locale_string(const Glib::ustring& group_name,
       key.c_str(), 0, &gerror);
 
   if(gerror)
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
     Glib::Error::throw_exception(gerror);
-#else
-    error = Glib::Error::throw_exception(gerror);
-#endif
 
   return Glib::convert_return_gchar_ptr_to_ustring(str);
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+bool KeyFile::get_boolean(const Glib::ustring& key) const
+{
+  GError* gerror = 0;
+  const bool value =
+    static_cast<bool>(g_key_file_get_boolean(const_cast<GKeyFile*>(gobj()), 
+    0, key.c_str(), &gerror));
+  if(gerror)
+    Glib::Error::throw_exception(gerror);
+
+  return value;
+}
+
 int KeyFile::get_integer(const Glib::ustring& key) const
-#else
-int KeyFile::get_integer(const Glib::ustring& key, std::auto_ptr<Glib::Error>& error) const
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   const int value = g_key_file_get_integer(const_cast<GKeyFile*>(gobj()),
                                            0, key.c_str(), &gerror);
   if(gerror)
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
     Glib::Error::throw_exception(gerror);
-#else
-    error = Glib::Error::throw_exception(gerror);
-#endif
 
   return value;
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
-double KeyFile::get_double(const Glib::ustring& key) const
-#else
-double KeyFile::get_double(const Glib::ustring& key, std::auto_ptr<Glib::Error>& error) const
-#endif //GLIBMM_EXCEPTIONS_ENABLED
+gint64 KeyFile::get_int64(const Glib::ustring& key) const
 {
   GError* gerror = 0;
-  double retvalue = g_key_file_get_double(const_cast<GKeyFile*>(gobj()), NULL, key.c_str(), &(gerror));
+
+  const gint64 value = g_key_file_get_int64(const_cast<GKeyFile*>(gobj()), 0,
+    key.c_str(), &gerror);
 
   if(gerror)
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+    Glib::Error::throw_exception(gerror);
+
+  return value;
+}
+
+guint64 KeyFile::get_uint64(const Glib::ustring& key) const
+{
+  GError* gerror = 0;
+
+  const guint64 value = g_key_file_get_uint64(const_cast<GKeyFile*>(gobj()),
+    0, key.c_str(), &gerror);
+
+  if(gerror)
+    Glib::Error::throw_exception(gerror);
+
+  return value;
+}
+
+double KeyFile::get_double(const Glib::ustring& key) const
+{
+  GError* gerror = 0;
+  double retvalue = g_key_file_get_double(const_cast<GKeyFile*>(gobj()), 0, key.c_str(), &(gerror));
+
+  if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
@@ -214,13 +195,8 @@ void KeyFile::set_double(const Glib::ustring& key, double value)
   g_key_file_set_double(gobj(), 0, key.c_str(), value); 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 # define GLIBMM_ERROR_ARG
 # define GLIBMM_THROW(err) if (err) Glib::Error::throw_exception(err)
-#else
-# define GLIBMM_ERROR_ARG , std::auto_ptr<Glib::Error>& error
-# define GLIBMM_THROW(err) if (err) error = Glib::Error::throw_exception(err)
-#endif
 
 Glib::ArrayHandle<Glib::ustring> KeyFile::get_string_list(const Glib::ustring& group_name,
                                                           const Glib::ustring& key
@@ -342,11 +318,7 @@ void KeyFile::set_boolean_list(const Glib::ustring& group_name, const Glib::ustr
                               key.c_str(), const_cast<gboolean*>(list.data()), list.size());
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::ustring KeyFile::get_comment() const
-#else
-Glib::ustring KeyFile::get_comment(std::auto_ptr<Glib::Error>& error) const
-#endif
 {
   GError* gerror = 0;
   char *const str = g_key_file_get_comment(const_cast<GKeyFile*>(gobj()), 0, 0, &gerror);
@@ -406,39 +378,33 @@ Glib::KeyFileError::Code Glib::KeyFileError::code() const
   return static_cast<Code>(Glib::Error::code());
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void Glib::KeyFileError::throw_func(GError* gobject)
 {
   throw Glib::KeyFileError(gobject);
 }
-#else
-//When not using exceptions, we just pass the Exception object around without throwing it:
-std::auto_ptr<Glib::Error> Glib::KeyFileError::throw_func(GError* gobject)
-{
-  return std::auto_ptr<Glib::Error>(new Glib::KeyFileError(gobject));
-}
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
 namespace Glib
 {
 
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool KeyFile::load_from_file(const std::string& filename, KeyFileFlags flags)
-#else
-bool KeyFile::load_from_file(const std::string& filename, KeyFileFlags flags, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = g_key_file_load_from_file(gobj(), filename.c_str(), ((GKeyFileFlags)(flags)), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
+
+  return retvalue;
+
+}
+
+bool KeyFile::load_from_dirs(const std::string& file, const Glib::ArrayHandle<std::string>& search_dirs, Glib::ArrayHandle<std::string>& full_path, KeyFileFlags flags)
+{
+  GError* gerror = 0;
+  bool retvalue = g_key_file_load_from_dirs(gobj(), file.c_str(), const_cast<const gchar**>(search_dirs.data()), const_cast<gchar**>(full_path.data()), ((GKeyFileFlags)(flags)), &(gerror));
   if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
+    ::Glib::Error::throw_exception(gerror);
 
   return retvalue;
 
@@ -454,141 +420,100 @@ bool KeyFile::has_group(const Glib::ustring& group_name) const
   return g_key_file_has_group(const_cast<GKeyFile*>(gobj()), group_name.c_str());
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool KeyFile::has_key(const Glib::ustring& group_name, const Glib::ustring& key) const
-#else
-bool KeyFile::has_key(const Glib::ustring& group_name, const Glib::ustring& key, std::auto_ptr<Glib::Error>& error) const
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = g_key_file_has_key(const_cast<GKeyFile*>(gobj()), group_name.c_str(), key.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::ustring KeyFile::get_value(const Glib::ustring& group_name, const Glib::ustring& key) const
-#else
-Glib::ustring KeyFile::get_value(const Glib::ustring& group_name, const Glib::ustring& key, std::auto_ptr<Glib::Error>& error) const
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   Glib::ustring retvalue = Glib::convert_return_gchar_ptr_to_ustring(g_key_file_get_value(const_cast<GKeyFile*>(gobj()), group_name.c_str(), key.c_str(), &(gerror)));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::ustring KeyFile::get_string(const Glib::ustring& group_name, const Glib::ustring& key) const
-#else
-Glib::ustring KeyFile::get_string(const Glib::ustring& group_name, const Glib::ustring& key, std::auto_ptr<Glib::Error>& error) const
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   Glib::ustring retvalue = Glib::convert_return_gchar_ptr_to_ustring(g_key_file_get_string(const_cast<GKeyFile*>(gobj()), group_name.c_str(), key.c_str(), &(gerror)));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::ustring KeyFile::get_locale_string(const Glib::ustring& group_name, const Glib::ustring& key, const Glib::ustring& locale) const
-#else
-Glib::ustring KeyFile::get_locale_string(const Glib::ustring& group_name, const Glib::ustring& key, const Glib::ustring& locale, std::auto_ptr<Glib::Error>& error) const
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   Glib::ustring retvalue = Glib::convert_return_gchar_ptr_to_ustring(g_key_file_get_locale_string(const_cast<GKeyFile*>(gobj()), group_name.c_str(), key.c_str(), locale.c_str(), &(gerror)));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool KeyFile::get_boolean(const Glib::ustring& group_name, const Glib::ustring& key) const
-#else
-bool KeyFile::get_boolean(const Glib::ustring& group_name, const Glib::ustring& key, std::auto_ptr<Glib::Error>& error) const
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = g_key_file_get_boolean(const_cast<GKeyFile*>(gobj()), group_name.c_str(), key.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 int KeyFile::get_integer(const Glib::ustring& group_name, const Glib::ustring& key) const
-#else
-int KeyFile::get_integer(const Glib::ustring& group_name, const Glib::ustring& key, std::auto_ptr<Glib::Error>& error) const
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   int retvalue = g_key_file_get_integer(const_cast<GKeyFile*>(gobj()), group_name.c_str(), key.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+gint64 KeyFile::get_int64(const Glib::ustring& group_name, const Glib::ustring& key) const
+{
+  GError* gerror = 0;
+  gint64 retvalue = g_key_file_get_int64(const_cast<GKeyFile*>(gobj()), group_name.c_str(), key.c_str(), &(gerror));
+  if(gerror)
+    ::Glib::Error::throw_exception(gerror);
+
+  return retvalue;
+
+}
+
+guint64 KeyFile::get_uint64(const Glib::ustring& group_name, const Glib::ustring& key) const
+{
+  GError* gerror = 0;
+  guint64 retvalue = g_key_file_get_uint64(const_cast<GKeyFile*>(gobj()), group_name.c_str(), key.c_str(), &(gerror));
+  if(gerror)
+    ::Glib::Error::throw_exception(gerror);
+
+  return retvalue;
+
+}
+
 double KeyFile::get_double(const Glib::ustring& group_name, const Glib::ustring& key) const
-#else
-double KeyFile::get_double(const Glib::ustring& group_name, const Glib::ustring& key, std::auto_ptr<Glib::Error>& error) const
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   double retvalue = g_key_file_get_double(const_cast<GKeyFile*>(gobj()), group_name.c_str(), key.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
@@ -599,21 +524,12 @@ void KeyFile::set_double(const Glib::ustring& group_name, const Glib::ustring& k
 g_key_file_set_double(gobj(), group_name.c_str(), key.c_str(), value); 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::ustring KeyFile::get_comment(const Glib::ustring& group_name, const Glib::ustring& key) const
-#else
-Glib::ustring KeyFile::get_comment(const Glib::ustring& group_name, const Glib::ustring& key, std::auto_ptr<Glib::Error>& error) const
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   Glib::ustring retvalue = Glib::convert_return_gchar_ptr_to_ustring(g_key_file_get_comment(const_cast<GKeyFile*>(gobj()), group_name.c_str(), key.c_str(), &(gerror)));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
@@ -649,78 +565,52 @@ void KeyFile::set_integer(const Glib::ustring& group_name, const Glib::ustring& 
 g_key_file_set_integer(gobj(), group_name.c_str(), key.c_str(), value); 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+void KeyFile::set_int64(const Glib::ustring& group_name, const Glib::ustring& key, gint64 value)
+{
+g_key_file_set_int64(gobj(), group_name.c_str(), key.c_str(), value); 
+}
+
+void KeyFile::set_uint64(const Glib::ustring& group_name, const Glib::ustring& key, guint64 value)
+{
+g_key_file_set_uint64(gobj(), group_name.c_str(), key.c_str(), value); 
+}
+
 void KeyFile::set_comment(const Glib::ustring& group_name, const Glib::ustring& key, const Glib::ustring& comment)
-#else
-void KeyFile::set_comment(const Glib::ustring& group_name, const Glib::ustring& key, const Glib::ustring& comment, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   g_key_file_set_comment(gobj(), group_name.c_str(), key.c_str(), comment.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void KeyFile::remove_comment(const Glib::ustring& group_name, const Glib::ustring& key)
-#else
-void KeyFile::remove_comment(const Glib::ustring& group_name, const Glib::ustring& key, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   g_key_file_remove_comment(gobj(), group_name.c_str(), key.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void KeyFile::remove_key(const Glib::ustring& group_name, const Glib::ustring& key)
-#else
-void KeyFile::remove_key(const Glib::ustring& group_name, const Glib::ustring& key, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   g_key_file_remove_key(gobj(), group_name.c_str(), key.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void KeyFile::remove_group(const Glib::ustring& group_name)
-#else
-void KeyFile::remove_group(const Glib::ustring& group_name, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   g_key_file_remove_group(gobj(), group_name.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
 }

@@ -363,23 +363,14 @@ const Glib::Class& Object_Class::init()
   return *this;
 }
 
+
 void Object_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Object_Class::wrap_new(GObject* o)
@@ -397,6 +388,7 @@ GType Object::get_type()
 {
   return object_class_.init().get_type();
 }
+
 
 GType Object::get_base_type()
 {
@@ -417,13 +409,6 @@ Glib::PropertyProxy_ReadOnly<void*> Object::property_user_data() const
   return Glib::PropertyProxy_ReadOnly<void*>(this, "user-data");
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

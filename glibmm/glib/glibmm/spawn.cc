@@ -41,18 +41,14 @@ extern "C"
  */
 static void child_setup_callback(void* user_data)
 {
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     (*reinterpret_cast<sigc::slot<void>*>(user_data))();
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
 static void copy_output_buf(std::string* dest, const char* buf)
@@ -76,7 +72,6 @@ namespace Glib
 
 /**** process spawning functions *******************************************/
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void spawn_async_with_pipes(const std::string& working_directory,
                             const Glib::ArrayHandle<std::string>& argv,
                             const Glib::ArrayHandle<std::string>& envp,
@@ -86,17 +81,6 @@ void spawn_async_with_pipes(const std::string& working_directory,
                             int* standard_input,
                             int* standard_output,
                             int* standard_error)
-#else
-void spawn_async_with_pipes(const std::string& working_directory,
-                            const Glib::ArrayHandle<std::string>& argv,
-                            const Glib::ArrayHandle<std::string>& envp,
-                            SpawnFlags flags,
-                            const sigc::slot<void>& child_setup,
-                            Pid* child_pid,
-                            int* standard_input,
-                            int* standard_output,
-                            int* standard_error, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   const bool setup_slot = !child_setup.empty();
   sigc::slot<void> child_setup_ = child_setup;
@@ -113,16 +97,10 @@ void spawn_async_with_pipes(const std::string& working_directory,
       standard_input, standard_output, standard_error,
       &gerror);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     Glib::Error::throw_exception(gerror);
-  #else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void spawn_async_with_pipes(const std::string& working_directory,
                             const Glib::ArrayHandle<std::string>& argv,
                             SpawnFlags flags,
@@ -131,16 +109,6 @@ void spawn_async_with_pipes(const std::string& working_directory,
                             int* standard_input,
                             int* standard_output,
                             int* standard_error)
-#else
-void spawn_async_with_pipes(const std::string& working_directory,
-                            const Glib::ArrayHandle<std::string>& argv,
-                            SpawnFlags flags,
-                            const sigc::slot<void>& child_setup,
-                            Pid* child_pid,
-                            int* standard_input,
-                            int* standard_output,
-                            int* standard_error, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   const bool setup_slot = !child_setup.empty();
   sigc::slot<void> child_setup_ = child_setup;
@@ -156,30 +124,16 @@ void spawn_async_with_pipes(const std::string& working_directory,
       standard_input, standard_output, standard_error,
       &gerror);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     Glib::Error::throw_exception(gerror);
-  #else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void spawn_async(const std::string& working_directory,
                  const Glib::ArrayHandle<std::string>& argv,
                  const Glib::ArrayHandle<std::string>& envp,
                  SpawnFlags flags,
                  const sigc::slot<void>& child_setup,
                  Pid* child_pid)
-#else
-void spawn_async(const std::string& working_directory,
-                 const Glib::ArrayHandle<std::string>& argv,
-                 const Glib::ArrayHandle<std::string>& envp,
-                 SpawnFlags flags,
-                 const sigc::slot<void>& child_setup,
-                 Pid* child_pid, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   const bool setup_slot = !child_setup.empty();
   sigc::slot<void> child_setup_ = child_setup;
@@ -195,28 +149,15 @@ void spawn_async(const std::string& working_directory,
       child_pid,
       &gerror);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     Glib::Error::throw_exception(gerror);
-  #else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void spawn_async(const std::string& working_directory,
                  const Glib::ArrayHandle<std::string>& argv,
                  SpawnFlags flags,
                  const sigc::slot<void>& child_setup,
                  Pid* child_pid)
-#else
-void spawn_async(const std::string& working_directory,
-                 const Glib::ArrayHandle<std::string>& argv,
-                 SpawnFlags flags,
-                 const sigc::slot<void>& child_setup,
-                 Pid* child_pid, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   const bool setup_slot = !child_setup.empty();
   sigc::slot<void> child_setup_ = child_setup;
@@ -231,16 +172,10 @@ void spawn_async(const std::string& working_directory,
       child_pid,
       &gerror);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     Glib::Error::throw_exception(gerror);
-  #else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void spawn_sync(const std::string& working_directory,
                 const Glib::ArrayHandle<std::string>& argv,
                 const Glib::ArrayHandle<std::string>& envp,
@@ -249,16 +184,6 @@ void spawn_sync(const std::string& working_directory,
                 std::string* standard_output,
                 std::string* standard_error,
                 int* exit_status)
-#else
-void spawn_sync(const std::string& working_directory,
-                const Glib::ArrayHandle<std::string>& argv,
-                const Glib::ArrayHandle<std::string>& envp,
-                SpawnFlags flags,
-                const sigc::slot<void>& child_setup,
-                std::string* standard_output,
-                std::string* standard_error,
-                int* exit_status, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   const bool setup_slot = !child_setup.empty();
   sigc::slot<void> child_setup_ = child_setup;
@@ -279,19 +204,13 @@ void spawn_sync(const std::string& working_directory,
       exit_status,
       &gerror);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     Glib::Error::throw_exception(gerror);
-  #else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   copy_output_buf(standard_output, buf_standard_output.get());
   copy_output_buf(standard_error, buf_standard_error.get());
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void spawn_sync(const std::string& working_directory,
                 const Glib::ArrayHandle<std::string>& argv,
                 SpawnFlags flags,
@@ -299,15 +218,6 @@ void spawn_sync(const std::string& working_directory,
                 std::string* standard_output,
                 std::string* standard_error,
                 int* exit_status)
-#else
-void spawn_sync(const std::string& working_directory,
-                const Glib::ArrayHandle<std::string>& argv,
-                SpawnFlags flags,
-                const sigc::slot<void>& child_setup,
-                std::string* standard_output,
-                std::string* standard_error,
-                int* exit_status, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   const bool setup_slot = !child_setup.empty();
   sigc::slot<void> child_setup_ = child_setup;
@@ -327,47 +237,26 @@ void spawn_sync(const std::string& working_directory,
       exit_status,
       &gerror);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     Glib::Error::throw_exception(gerror);
-  #else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   copy_output_buf(standard_output, buf_standard_output.get());
   copy_output_buf(standard_error, buf_standard_error.get());
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void spawn_command_line_async(const std::string& command_line)
-#else
-void spawn_command_line_async(const std::string& command_line, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   g_spawn_command_line_async(command_line.c_str(), &gerror);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     Glib::Error::throw_exception(gerror);
-  #else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void spawn_command_line_sync(const std::string& command_line,
                              std::string* standard_output,
                              std::string* standard_error,
                              int* exit_status)
-#else
-void spawn_command_line_sync(const std::string& command_line,
-                             std::string* standard_output,
-                             std::string* standard_error,
-                             int* exit_status, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   Glib::ScopedPtr<char> buf_standard_output;
   Glib::ScopedPtr<char> buf_standard_error;
@@ -380,13 +269,8 @@ void spawn_command_line_sync(const std::string& command_line,
       exit_status,
       &gerror);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     Glib::Error::throw_exception(gerror);
-  #else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   copy_output_buf(standard_output, buf_standard_output.get());
   copy_output_buf(standard_error, buf_standard_error.get());
@@ -420,17 +304,9 @@ Glib::SpawnError::Code Glib::SpawnError::code() const
   return static_cast<Code>(Glib::Error::code());
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void Glib::SpawnError::throw_func(GError* gobject)
 {
   throw Glib::SpawnError(gobject);
 }
-#else
-//When not using exceptions, we just pass the Exception object around without throwing it:
-std::auto_ptr<Glib::Error> Glib::SpawnError::throw_func(GError* gobject)
-{
-  return std::auto_ptr<Glib::Error>(new Glib::SpawnError(gobject));
-}
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 

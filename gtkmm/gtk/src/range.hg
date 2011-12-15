@@ -19,9 +19,14 @@
 
 #include <gtkmm/widget.h>
 #include <gtkmm/enums.h> //For SensitivityType.
+#include <gtkmm/border.h>
 _DEFS(gtkmm,gtk)
 _PINCLUDE(gtkmm/private/widget_p.h)
 
+#m4 _PUSH(SECTION_CC_PRE_INCLUDES)
+//Allow use of deprecated API, to avoid the need to break our own ABI:
+#undef GTK_DISABLE_DEPRECATED
+#m4 _POP()
 
 namespace Gtk
 {
@@ -40,8 +45,9 @@ protected:
 public:
   
 
-  _WRAP_METHOD(void set_update_policy(UpdateType policy), gtk_range_set_update_policy)
-  _WRAP_METHOD(UpdateType get_update_policy() const, gtk_range_get_update_policy)
+  _WRAP_METHOD(void set_update_policy(UpdateType policy), gtk_range_set_update_policy, deprecated)
+  _WRAP_METHOD(UpdateType get_update_policy() const, gtk_range_get_update_policy, deprecated)
+
   _WRAP_METHOD(void set_adjustment(Gtk::Adjustment& adjustment), gtk_range_set_adjustment)
   void unset_adjustment();
 
@@ -49,6 +55,28 @@ public:
   _WRAP_METHOD(const Gtk::Adjustment* get_adjustment() const, gtk_range_get_adjustment, constversion)
   _WRAP_METHOD(void set_inverted(bool setting = true), gtk_range_set_inverted)
   _WRAP_METHOD(bool get_inverted() const, gtk_range_get_inverted)
+  _WRAP_METHOD(void set_flippable(bool flippable = true), gtk_range_set_flippable)
+  _WRAP_METHOD(bool get_flippable() const, gtk_range_get_flippable)
+
+  _WRAP_METHOD(void set_slider_size_fixed(bool size_fixed = true), gtk_range_set_slider_size_fixed)
+  _WRAP_METHOD(bool get_slider_size_fixed() const, gtk_range_get_slider_size_fixed)
+
+  _WRAP_METHOD(void set_min_slider_size(bool min_size = true), gtk_range_set_min_slider_size)
+  _WRAP_METHOD(int get_min_slider_size() const, gtk_range_get_min_slider_size)
+
+  /** This method returns the area that contains the range's trough
+   * and its steppers, in the widget's Gdk::Window coordinates.
+   *
+   * This method is useful mainly for Range subclasses.
+   *
+   * @result The range rectangle.
+   *
+   * @@newin{2,20}
+   */
+  Gdk::Rectangle get_range_rect() const;
+  _IGNORE(gtk_range_get_range_rect)
+
+  _WRAP_METHOD(void  get_slider_range(int& slider_start, int& slider_end) const, gtk_range_get_slider_range)
 
   _WRAP_METHOD(void set_lower_stepper_sensitivity(SensitivityType sensitivity), gtk_range_set_lower_stepper_sensitivity)
   _WRAP_METHOD(SensitivityType get_lower_stepper_sensitivity() const, gtk_range_get_lower_stepper_sensitivity)
@@ -66,6 +94,8 @@ public:
   _WRAP_METHOD(bool get_restrict_to_fill_level() const, gtk_range_get_restrict_to_fill_level)
   _WRAP_METHOD(void set_fill_level(double fill_level), gtk_range_set_fill_level)
   _WRAP_METHOD(double get_fill_level() const, gtk_range_get_fill_level)
+  _WRAP_METHOD(void set_round_digits(int round_digits), gtk_range_set_round_digits)
+  _WRAP_METHOD(int get_round_digits() const, gtk_range_get_round_digits)
 
   _WRAP_SIGNAL(void value_changed(), "value_changed")
   _WRAP_SIGNAL(void adjust_bounds(double new_value), "adjust_bounds")
@@ -104,9 +134,12 @@ public:
   _WRAP_PROPERTY("show-fill-level", bool)
   _WRAP_PROPERTY("restrict-to-fill-level", bool)
   _WRAP_PROPERTY("fill-level", double)
+  _WRAP_PROPERTY("round-digits", int)
   
 protected:
-  _WRAP_VFUNC(void get_range_border(GtkBorder* border) const, get_range_border)
+#m4 _CONVERSION(`Gtk::Border*',`GtkBorder*',($3))
+#m4 _CONVERSION(`GtkBorder*',`Gtk::Border*',($3))
+  _WRAP_VFUNC(void get_range_border(Gtk::Border* border) const, get_range_border)
 };
 
 } // namespace Gtk

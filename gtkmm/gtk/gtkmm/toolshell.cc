@@ -73,19 +73,14 @@ void ToolShell_Class::iface_init_function(void* g_iface, void*)
   //This is a temporary fix until I find out why I can not seem to derive a GtkFileChooser interface. murrayc
   g_assert(klass != 0); 
 
-#ifdef GLIBMM_VFUNCS_ENABLED
   klass->get_icon_size = &get_icon_size_vfunc_callback;
   klass->get_orientation = &get_orientation_vfunc_callback;
   klass->get_style = &get_style_vfunc_callback;
   klass->get_relief_style = &get_relief_style_vfunc_callback;
   klass->rebuild_menu = &rebuild_menu_vfunc_callback;
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
 GtkIconSize ToolShell_Class::get_icon_size_vfunc_callback(GtkToolShell* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -116,7 +111,7 @@ GtkIconSize ToolShell_Class::get_icon_size_vfunc_callback(GtkToolShell* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -160,7 +155,7 @@ GtkOrientation ToolShell_Class::get_orientation_vfunc_callback(GtkToolShell* sel
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -204,7 +199,7 @@ GtkToolbarStyle ToolShell_Class::get_style_vfunc_callback(GtkToolShell* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -248,7 +243,7 @@ GtkReliefStyle ToolShell_Class::get_relief_style_vfunc_callback(GtkToolShell* se
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -293,7 +288,7 @@ void ToolShell_Class::rebuild_menu_vfunc_callback(GtkToolShell* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -304,10 +299,6 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Ge
     (*base->rebuild_menu)(self);
 
 }
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* ToolShell_Class::wrap_new(GObject* object)
@@ -349,6 +340,7 @@ GType ToolShell::get_type()
   return toolshell_class_.init().get_type();
 }
 
+
 GType ToolShell::get_base_type()
 {
   return gtk_tool_shell_get_type();
@@ -380,11 +372,37 @@ void ToolShell::rebuild_menu()
 gtk_tool_shell_rebuild_menu(gobj()); 
 }
 
+Orientation ToolShell::get_text_orientation() const
+{
+  return ((Orientation)(gtk_tool_shell_get_text_orientation(const_cast<GtkToolShell*>(gobj()))));
+}
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+float ToolShell::get_text_alignment() const
+{
+  return gtk_tool_shell_get_text_alignment(const_cast<GtkToolShell*>(gobj()));
+}
 
-#ifdef GLIBMM_VFUNCS_ENABLED
+Pango::EllipsizeMode ToolShell::get_ellipsize_mode() const
+{
+  return ((Pango::EllipsizeMode)(gtk_tool_shell_get_ellipsize_mode(const_cast<GtkToolShell*>(gobj()))));
+}
+
+Glib::RefPtr<SizeGroup> ToolShell::get_text_size_group()
+{
+
+  Glib::RefPtr<SizeGroup> retvalue = Glib::wrap(gtk_tool_shell_get_text_size_group(gobj()));
+  if(retvalue)
+    retvalue->reference(); //The function does not do a ref for us.
+  return retvalue;
+
+}
+
+Glib::RefPtr<const SizeGroup> ToolShell::get_text_size_group() const
+{
+  return const_cast<ToolShell*>(this)->get_text_size_group();
+}
+
+
 IconSize Gtk::ToolShell::get_icon_size_vfunc() 
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -447,7 +465,6 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(gobject_), CppObjectType::get_type()) /
   if(base && base->rebuild_menu)
     (*base->rebuild_menu)(gobj());
 }
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

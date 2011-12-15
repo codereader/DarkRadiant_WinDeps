@@ -26,6 +26,8 @@ namespace Gio
 
 _WRAP_ENUM(DataStreamByteOrder, GDataStreamByteOrder, NO_GTYPE)
 _WRAP_ENUM(DataStreamNewlineType, GDataStreamNewlineType, NO_GTYPE)
+_WRAP_ENUM(ErrorEnum, GIOErrorEnum, NO_GTYPE)
+_WRAP_ENUM(SocketFamily, GSocketFamily)
 
 } // namespace Gio
 

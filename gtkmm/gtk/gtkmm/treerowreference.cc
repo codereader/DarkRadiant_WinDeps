@@ -120,7 +120,12 @@ TreeModel::Path TreeRowReference::get_path() const
 
 Glib::RefPtr<TreeModel> TreeRowReference::get_model()
 {
-  return Glib::wrap(gtk_tree_row_reference_get_model(gobj()));
+
+  Glib::RefPtr<TreeModel> retvalue = Glib::wrap(gtk_tree_row_reference_get_model(gobj()));
+  if(retvalue)
+    retvalue->reference(); //The function does not do a ref for us.
+  return retvalue;
+
 }
 
 Glib::RefPtr<const TreeModel> TreeRowReference::get_model() const

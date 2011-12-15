@@ -167,7 +167,7 @@ public:
   ///Provides access to the underlying C GObject.
   GAsyncResult*       gobj()       { return reinterpret_cast<GAsyncResult*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const GAsyncResult* gobj() const { return reinterpret_cast<GAsyncResult*>(gobject_); }
 
 private:
@@ -179,36 +179,50 @@ public:
   //Note that this returns a reference, unlike most GTK+ get_*() functions,
   //so we don't need to use refreturn.
   
+#ifndef GIOMM_DISABLE_DEPRECATED
+
   /** Gets the source object from a AsyncResult.
-   * @return The source object for the @a res.
+   * @deprecated Use get_source_object_base()
+   * @return A new reference to the source object for the @a res,
+   * or <tt>0</tt> if there is none.
    */
   Glib::RefPtr<Glib::Object> get_source_object();
-  
+#endif // GIOMM_DISABLE_DEPRECATED
+
+
+#ifndef GIOMM_DISABLE_DEPRECATED
+
   /** Gets the source object from a AsyncResult.
-   * @return The source object for the @a res.
+   * @deprecated Use get_source_object_base()
+   * @return A new reference to the source object for the @a res,
+   * or <tt>0</tt> if there is none.
    */
   Glib::RefPtr<const Glib::Object> get_source_object() const;
+#endif // GIOMM_DISABLE_DEPRECATED
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual Glib::RefPtr<Glib::Object> get_source_object_vfunc();
-#endif //GLIBMM_VFUNCS_ENABLED
+
+  //Note that this returns a reference, unlike most GTK+ get_*() functions,
+  //so we don't need to use refreturn.
+  Glib::RefPtr<Glib::ObjectBase> get_source_object_base();
+  Glib::RefPtr<const Glib::ObjectBase> get_source_object_base() const;
+
+
+  // TODO: For some reason, the compiler cannot find an unwrap() for ObjectBase.
+  //#m4 __CONVERSION(`Glib::RefPtr<Glib::ObjectBase>',`GObject*',__CONVERT_REFPTR_TO_P)
+ 
+
+    virtual Glib::RefPtr<Glib::ObjectBase> get_source_object_vfunc();
 
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

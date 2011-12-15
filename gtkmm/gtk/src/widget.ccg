@@ -43,22 +43,18 @@ static void Widget_signal_drag_data_get_callback(GtkWidget* self, GdkDragContext
   // Do not try to call a signal on a disassociated wrapper.
   if(Glib::ObjectBase::_get_current_wrapper((GObject*) self))
   {
-    #ifdef GLIBMM_EXCEPTIONS_ENABLED
     try
     {
-    #endif //GLIBMM_EXCEPTIONS_ENABLED
       if(sigc::slot_base *const slot = Glib::SignalProxyNormal::data_to_slot(data))
       {
         SelectionData_WithoutOwnership temp_instance(p1);
         (*static_cast<SlotType*>(slot))( Glib::wrap(p0, true), temp_instance, p2, p3 );
       }
-    #ifdef GLIBMM_EXCEPTIONS_ENABLED
     }
     catch(...)
     {
       Glib::exception_handlers_invoke();
     }
-    #endif //GLIBMM_EXCEPTIONS_ENABLED
   }
 }
 
@@ -70,22 +66,18 @@ static void Widget_signal_selection_get_callback(GtkWidget* self, GtkSelectionDa
   // Do not try to call a signal on a disassociated wrapper.
   if(Glib::ObjectBase::_get_current_wrapper((GObject*) self))
   {
-    #ifdef GLIBMM_EXCEPTIONS_ENABLED
     try
     {
-    #endif //GLIBMM_EXCEPTIONS_ENABLED
       if(sigc::slot_base *const slot = Glib::SignalProxyNormal::data_to_slot(data))
       {
         SelectionData_WithoutOwnership temp_instance(p0);
         (*static_cast<SlotType*>(slot))( temp_instance, p1, p2 );
       }
-    #ifdef GLIBMM_EXCEPTIONS_ENABLED
     }
     catch(...)
     {
       Glib::exception_handlers_invoke();
     }
-    #endif //GLIBMM_EXCEPTIONS_ENABLED
   }
 }
 
@@ -95,7 +87,6 @@ static void Widget_signal_selection_get_callback(GtkWidget* self, GtkSelectionDa
 namespace Gtk
 {
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 //These default handler callbacks are custom implemented, so that we can create a temporary SelectionData instance.
 //To do this, we used the optional custom_c_callback paramater to _WRAP_SIGNAL() in the .hg file.
 void Widget_Class::selection_get_callback(GtkWidget* self, GtkSelectionData* p0, guint p1, guint p2)
@@ -110,20 +101,16 @@ void Widget_Class::selection_get_callback(GtkWidget* self, GtkSelectionData* p0,
   // being overridden:
   if(obj && obj->is_derived_())
   {
-    #ifdef GLIBMM_EXCEPTIONS_ENABLED
     try // Trap C++ exceptions which would normally be lost because this is a C callback.
     {
-    #endif //GLIBMM_EXCEPTIONS_ENABLED
       // Call the virtual member method, which derived classes might override.
       SelectionData_WithoutOwnership temp_instance(p0);
       obj->on_selection_get(temp_instance, p1, p2);
-    #ifdef GLIBMM_EXCEPTIONS_ENABLED
     }
     catch(...)
     {
       Glib::exception_handlers_invoke();
     }
-    #endif //GLIBMM_EXCEPTIONS_ENABLED
   }
   else
   {
@@ -149,20 +136,16 @@ void Widget_Class::drag_data_get_callback(GtkWidget* self, GdkDragContext* p0, G
   // being overridden:
   if(obj && obj->is_derived_())
   {
-    #ifdef GLIBMM_EXCEPTIONS_ENABLED
     try // Trap C++ exceptions which would normally be lost because this is a C callback.
     {
-    #endif //GLIBMM_EXCEPTIONS_ENABLED
       // Call the virtual member method, which derived classes might override.
       SelectionData_WithoutOwnership temp_instance(p1);
       obj->on_drag_data_get(Glib::wrap(p0, true), temp_instance, p2, p3);
-    #ifdef GLIBMM_EXCEPTIONS_ENABLED
     }
     catch(...)
     {
       Glib::exception_handlers_invoke();
     }
-    #endif //GLIBMM_EXCEPTIONS_ENABLED
   }
   else
   {
@@ -175,7 +158,6 @@ void Widget_Class::drag_data_get_callback(GtkWidget* self, GdkDragContext* p0, G
       (*base->drag_data_get)(self, p0, p1, p2, p3);
   }
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 Widget::~Widget()
 {}
@@ -278,62 +260,73 @@ void Widget::unset_cursor()
   gtk_widget_modify_cursor(gobj(), 0, 0);
 }
 
-bool Widget::is_toplevel() const
-  { return GTK_WIDGET_TOPLEVEL(gobj()); }
-
+_DEPRECATE_IFDEF_START
+//deprecated:
 bool Widget::has_no_window() const
-  { return GTK_WIDGET_NO_WINDOW(gobj()); }
+  { return !get_has_window(); }
 
+//deprecated:
 bool Widget::is_realized() const
-  { return GTK_WIDGET_REALIZED(gobj()); }
+  { return get_realized(); }
 
+//deprecated:
 bool Widget::is_mapped() const
-  { return GTK_WIDGET_MAPPED(gobj()); }
+  { return get_mapped(); }
 
-bool Widget::is_visible() const
-  { return GTK_WIDGET_VISIBLE(gobj()); }
-
+//deprecated:
 bool Widget::is_drawable() const
-  { return GTK_WIDGET_DRAWABLE(gobj()); }
+{
+  return get_is_drawable();
+}
 
-bool Widget::sensitive() const
-  { return GTK_WIDGET_SENSITIVE(gobj()); }
-
-bool Widget::parent_sensitive() const
-  { return GTK_WIDGET_PARENT_SENSITIVE(gobj()); }
-
-bool Widget::is_sensitive() const
-  { return GTK_WIDGET_IS_SENSITIVE(gobj()); }
-
-bool Widget::can_focus() const
-  { return GTK_WIDGET_CAN_FOCUS(gobj()); }
-
-bool Widget::has_focus() const
-  { return GTK_WIDGET_HAS_FOCUS(gobj()); }
-
-bool Widget::can_default() const
-  { return GTK_WIDGET_CAN_DEFAULT(gobj()); }
-
-bool Widget::has_default() const
-  { return GTK_WIDGET_HAS_DEFAULT(gobj()); }
-
-bool Widget::has_grab() const
-  { return GTK_WIDGET_HAS_GRAB(gobj()); }
-
-bool Widget::rc_style() const
-  { return GTK_WIDGET_RC_STYLE(gobj()); }
-
-bool Widget::is_composite_child() const
-  { return GTK_WIDGET_COMPOSITE_CHILD(gobj()); }
-
-bool Widget::app_paintable() const
-  { return GTK_WIDGET_APP_PAINTABLE(gobj()); }
-
+//deprecated:
 bool Widget::receives_default() const
-  { return GTK_WIDGET_RECEIVES_DEFAULT(gobj()); }
+{
+  return get_receives_default();
+}
 
+//deprecated:
+bool Widget::is_toplevel() const
+{
+  return get_is_toplevel();
+}
+
+//deprecated:
+bool Widget::is_visible() const
+  { return get_visible(); }
+
+//deprecated:
+bool Widget::sensitive() const
+  { return get_sensitive(); }
+
+//deprecated:
+bool Widget::app_paintable() const
+  { return get_app_paintable(); }
+
+//deprecated:
 bool Widget::double_buffered() const
-  { return GTK_WIDGET_DOUBLE_BUFFERED(gobj()); }
+  { return get_double_buffered(); }
+
+//deprecated:
+bool Widget::rc_style() const
+  { return has_rc_style(); }
+
+//deprecated:
+bool Widget::is_composite_child() const
+{
+  return property_composite_child().get_value();
+}
+
+//deprecated:
+bool Widget::parent_sensitive() const
+{
+  const Gtk::Widget* parent = get_parent();
+  if(!parent)
+    return false;
+
+  return parent->get_sensitive();
+}
+
 
 WidgetFlags Widget::get_flags() const
   { return static_cast<WidgetFlags>(GTK_WIDGET_FLAGS(gobj())); }
@@ -344,11 +337,30 @@ void Widget::set_flags(WidgetFlags flags)
 void Widget::unset_flags(WidgetFlags flags)
   { GTK_WIDGET_UNSET_FLAGS(gobj(), static_cast<guint32>(flags)); }
 
+_DEPRECATE_IFDEF_END
+
+void Widget::set_window(const Glib::RefPtr<Gdk::Window>& window)
+{
+  gtk_widget_set_window(gobj(), Glib::unwrap(window));
+  if (window)
+    window->reference(); // gtk_widget_set_window does not add a ref.
+}
+
+Allocation Widget::get_allocation() const
+{
+  Allocation allocation;
+  gtk_widget_get_allocation(const_cast<GtkWidget*>(gobj()), allocation.gobj());
+  return allocation;
+}
+
+
+
+
 int Widget::get_width() const
-  { return gobj()->allocation.width; }
+  { return get_allocation().get_width(); }
 
 int Widget::get_height() const
-  { return gobj()->allocation.height; }
+  { return get_allocation().get_height(); }
 
 
 void Widget::drag_dest_set(DestDefaults flags, Gdk::DragAction actions)
@@ -386,7 +398,6 @@ void Widget::drag_set_as_icon(const Glib::RefPtr<Gdk::DragContext>& context, int
   gtk_drag_set_icon_widget(Glib::unwrap(context), gobj(), hot_x, hot_y);
 }
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Widget_Class::hierarchy_changed_callback_custom(GtkWidget* self, GtkWidget* p0)
 {
   //GTKMM_LIFECYCLE
@@ -432,7 +443,6 @@ void Widget_Class::parent_set_callback_custom(GtkWidget* self, GtkWidget* p0)
       (*base->parent_set)(self, p0);
   }
 }
-#endif //#GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 void Widget_Class::dispose_vfunc_callback(GObject* self)
 {
@@ -443,7 +453,7 @@ void Widget_Class::dispose_vfunc_callback(GObject* self)
   //if(self)
    //g_warning("  gtypename: %s\n", G_OBJECT_TYPE_NAME(self));
   #endif
-  
+
   Widget *const obj = dynamic_cast<Widget*>(
       Glib::ObjectBase::_get_current_wrapper(self));
 
@@ -452,7 +462,7 @@ void Widget_Class::dispose_vfunc_callback(GObject* self)
   // have to test for cpp_destruction_in_progress_ at this point.
 
   if(obj && !obj->_cpp_destruction_is_in_progress()) //When it should really be destroyed, we zero gobj_.
-  { 
+  {
     GtkWidget *const pWidget = obj->gobj();
     g_return_if_fail(pWidget == GTK_WIDGET(self));
 
@@ -460,13 +470,14 @@ void Widget_Class::dispose_vfunc_callback(GObject* self)
     // the nasty self-destroying behaviour of GTK+.  This applies to
     // any widget inside a GtkContainer on gtk_container_destroy()
     // See also Window_Class::dispose_vfunc_callback().
-  
+
     if(obj->referenced_) //Not managed
-    { 
+    {
       // GTKMM_LIFECYCLE
       // Remove the widget from its parent container so that it
       // won't be destroyed later by gtk_container_destroy().
-      if(pWidget->parent)
+      GtkWidget* parent = gtk_widget_get_parent(pWidget);
+      if(parent)
       {
         // Normally, we would have to ref the child widget because
         // gtk_container_remove() unrefs it.  But since we only remove
@@ -474,10 +485,10 @@ void Widget_Class::dispose_vfunc_callback(GObject* self)
         // reference it has acquired before in gtk_container_add().
 
         #ifdef GLIBMM_DEBUG_REFCOUNTING
-        g_warning("Widget_Class::dispose_vfunc_callback(): removing gobject_: %p from parent: %p", (void*)self, (void*)pWidget->parent);
+        g_warning("Widget_Class::dispose_vfunc_callback(): removing gobject_: %p from parent: %p", (void*)self, (void*)parent);
         #endif
-  
-        gtk_container_remove(GTK_CONTAINER(pWidget->parent), pWidget);
+
+        gtk_container_remove(GTK_CONTAINER(parent), pWidget);
 
         #ifdef GLIBMM_DEBUG_REFCOUNTING
         g_warning("Widget_Class::dispose_vfunc_callback(): after removing from parent.");
@@ -486,7 +497,7 @@ void Widget_Class::dispose_vfunc_callback(GObject* self)
       // Special case for GtkMenu because gtk_menu_attach_to_widget does
       // not set widget->parent but gtk_menu_item_destroy() destroys the menu
       // like gtk_container_destroy()
-      // Gtk::Menu does not use a parent widget because it must 
+      // Gtk::Menu does not use a parent widget because it must
       // be contained in its Gtk::Window so that it can be displayed as a popup.
       else if (GTK_IS_MENU(pWidget) && GTK_IS_MENU_ITEM(gtk_menu_get_attach_widget(GTK_MENU(pWidget))))
       {
@@ -496,7 +507,7 @@ void Widget_Class::dispose_vfunc_callback(GObject* self)
       #ifdef GLIBMM_DEBUG_REFCOUNTING
       g_warning("Widget_Class::dispose_vfunc_callback(): before gtk_widget_hide().");
       #endif
-        
+
       // Now hide the widget.  The C++ object must _not_ be accessed anymore
       // after this call, because a signal_hide() handler might delete it.
       gtk_widget_hide(pWidget);
@@ -504,7 +515,7 @@ void Widget_Class::dispose_vfunc_callback(GObject* self)
       #ifdef GLIBMM_DEBUG_REFCOUNTING
       g_warning("Widget_Class::dispose_vfunc_callback(): after gtk_widget_hide().");
       #endif
-      
+
       // GTKMM_LIFECYCLE
       return; // Prevent calling of normal C dispose vfunc (see below)
     }
@@ -512,7 +523,7 @@ void Widget_Class::dispose_vfunc_callback(GObject* self)
     #ifdef GLIBMM_DEBUG_REFCOUNTING
     g_warning("Widget_Class::dispose_vfunc_callback(): unreferenced: before gtk_widget_hide().");
     #endif
-    
+
     // Always hide widgets on gtk_object_destroy(), regardless of whether
     // the widget is managed or not.  This is done for consistency so that
     // connecting to signal_hide() is guaranteed to work.
@@ -529,7 +540,7 @@ void Widget_Class::dispose_vfunc_callback(GObject* self)
   #ifdef GLIBMM_DEBUG_REFCOUNTING
   g_warning("Widget_Class::dispose_vfunc_callback(): before calling base->dispose.");
   #endif
-        
+
   if(base->dispose)
     (*base->dispose)(self);
 
@@ -550,12 +561,12 @@ Glib::ustring Widget::drag_dest_find_target(const Glib::RefPtr<Gdk::DragContext>
 }
 
 void Widget::unset_shape_combine_mask()
-{            
+{
   gtk_widget_shape_combine_mask(gobj(), 0, 0, 0); /* See GTK+ docs */
 }
 
 void Widget::unset_input_shape_combine_mask()
-{            
+{
   gtk_widget_input_shape_combine_mask(gobj(), 0, 0, 0); /* See GTK+ docs */
 }
 
@@ -573,9 +584,15 @@ Requisition Widget::size_request() const
 
 Glib::RefPtr<Gdk::Pixmap> Widget::get_snapshot() const
 {
-  return Glib::wrap((GdkPixmapObject*)(gtk_widget_get_snapshot(const_cast<GtkWidget*>(gobj()), NULL)));
+  return Glib::wrap(reinterpret_cast<GdkPixmapObject*>(
+      gtk_widget_get_snapshot(const_cast<GtkWidget*>(gobj()), 0)), false);
 }
 
+Requisition Widget::get_requisition() const
+{
+  Requisition result = {0, 0};
+  gtk_widget_get_requisition(const_cast<GtkWidget*>(gobj()), &result);
+  return result;
+}
 
 } // namespace Gtk
-

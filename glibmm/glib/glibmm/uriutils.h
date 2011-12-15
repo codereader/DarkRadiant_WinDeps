@@ -90,6 +90,9 @@ std::string uri_parse_scheme(const std::string& uri);
  */
 std::string uri_escape_string(const std::string& unescaped, const std::string& reserved_chars_allowed = std::string(), bool allow_utf8 = true);
 
+// For some reason gmmproc thinks that g_iconv should be wrapped here.
+
+
 } // namespace Glib
 
 

@@ -91,6 +91,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -103,18 +105,12 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_set_scroll_adjustments(Adjustment* hadj, Adjustment* vadj);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -126,16 +122,16 @@ public:
 
   
   /** Retrieve the bin window of the layout used for drawing operations.
-   * @return A Gdk::Window
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return A Gdk::Window.
    */
   Glib::RefPtr<Gdk::Window> get_bin_window();
   
   /** Retrieve the bin window of the layout used for drawing operations.
-   * @return A Gdk::Window
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return A Gdk::Window.
    */
   Glib::RefPtr<const Gdk::Window> get_bin_window() const;
 

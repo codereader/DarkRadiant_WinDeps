@@ -4,9 +4,8 @@
 #define _ATKMM_HYPERLINK_H
 
 
-#include <glibmm.h>
-
-/* $Id: hyperlink.hg,v 1.4 2006/04/12 11:11:24 murrayc Exp $ */
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 2003 The gtkmm Development Team
  *
@@ -41,13 +40,10 @@ namespace Atk
 
 class Object;
 
-/* An ATK object which encapsulates a link or set of links in a hypertext document.
- * It implements the AtkAction interface.
+/** Encapsulates a link or set of links in a hypertext document.
  */
 
-class Hyperlink
-  : public Glib::Object,
-    public Atk::Action
+class Hyperlink : public Glib::Object, public Atk::Action
 {
   
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -77,6 +73,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -92,10 +90,7 @@ public:
 private:
 
   
-protected:
-
 public:
-
   
   /** Get a the URI associated with the anchor specified 
    * by @a i of @a link. 
@@ -128,13 +123,12 @@ public:
    * @return An Atk::Object associated with this hyperlinks i-th anchor.
    */
   Glib::RefPtr<const Atk::Object> get_object(int i) const;
-  
+
   
   /** Gets the index with the hypertext document at which this link ends.
    * @return The index with the hypertext document at which this link ends.
    */
   int get_end_index() const;
-
   
   /** Gets the index with the hypertext document at which this link begins.
    * @return The index with the hypertext document at which this link begins.
@@ -148,11 +142,10 @@ public:
    * @return Whether or not this link is still valid.
    */
   bool is_valid() const;
-
   
   /** Indicates whether the link currently displays some or all of its
    * content inline.  Ordinary HTML links will usually return
-   * <tt>false</tt>, but an inline &lt;src&gt; HTML element will return
+   * <tt>false</tt>, but an inline <src> HTML element will return
    * <tt>true</tt>.
    * a *
    * @return Whether or not this link displays its content inline.
@@ -164,12 +157,7 @@ public:
    * @return The number of anchors associated with this hyperlink.
    */
   int get_n_anchors() const;
-  
-  /** Determines whether this AtkHyperlink is selected
-   * @return True is the AtkHyperlink is selected, False otherwise.
-   */
-  bool is_selected_link() const;
-
+   // deprecated
   
   /**
    * @par Prototype:
@@ -224,55 +212,33 @@ public:
 
 
 protected:
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual gchar* get_uri_vfunc(int i) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual gchar* get_uri_vfunc(int i) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual Glib::RefPtr<Atk::Object> get_object_vfunc(int i);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual Glib::RefPtr<Atk::Object> get_object_vfunc(int i);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual int get_end_index_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual int get_end_index_vfunc() const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual int get_start_index_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual int get_start_index_vfunc() const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool is_valid_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool is_valid_vfunc() const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual int get_n_anchors_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual int get_n_anchors_vfunc() const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual guint link_state_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual guint link_state_vfunc() const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool is_selected_link_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
- 
+    virtual bool is_selected_link_vfunc() const;
+
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_link_activated();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

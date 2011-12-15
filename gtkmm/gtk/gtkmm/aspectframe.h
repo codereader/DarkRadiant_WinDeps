@@ -84,6 +84,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -96,17 +98,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -124,9 +120,8 @@ public:
    * @param obey_child If <tt>true</tt>, @a ratio  is ignored and the aspect ratio
    * is taken from the requisition of the child.
    */
-  explicit AspectFrame(const Glib::ustring& label = Glib::ustring(),
-    AlignmentEnum xalign = Gtk::ALIGN_CENTER, AlignmentEnum yalign = Gtk::ALIGN_CENTER,
-    float ratio = 1.0, bool obey_child = false);
+    explicit AspectFrame(const Glib::ustring& label =  Glib::ustring(), AlignmentEnum xalign =  Gtk::ALIGN_CENTER, AlignmentEnum yalign =  Gtk::ALIGN_CENTER, float ratio =  1.0, bool obey_child =  false);
+
 
   /** Constructor to create a new AspectFrame object.
    * @param label Label text.
@@ -138,11 +133,11 @@ public:
    * @param obey_child If <tt>true</tt>, @a ratio  is ignored and the aspect ratio 
    * is taken from the requisition of the child.
    */
-  explicit AspectFrame(const Glib::ustring& label,
-    float xalign, float yalign,
-    float ratio = 1.0, bool obey_child = false);
+    explicit AspectFrame(const Glib::ustring& label, float xalign, float yalign, float ratio =  1.0, bool obey_child =  false);
+
 
   //TODO: Is "obey_child = true" a good default?
+  
   /** Set the properties of this AspectFrame.
    * @param xalign Horizontal alignment of the child within the allocation of this 
    * AspectFrame.  This ranges from 0.0 (left aligned) to 1.0 (right aligned).
@@ -152,9 +147,9 @@ public:
    * @param obey_child If <tt>true</tt>, @a ratio  is ignored and the aspect ratio 
    * is taken from the requisition of the child.
    */
-  
-  void set(float xalign, float yalign, float ratio, bool obey_child = true);
+  void set(float xalign, float yalign, float ratio, bool obey_child =  true);
 
+  
   /** Set the properties of this AspectFrame.
    * @param xalign Horizontal alignment of the child within the allocation of this 
    * AspectFrame.  For possible values, see Gtk::AlignmentEnum.
@@ -164,8 +159,7 @@ public:
    * @param obey_child If <tt>true</tt>, @a ratio  is ignored and the aspect ratio
    * is taken from the requisition of the child.
    */
-  
-  void set(AlignmentEnum xalign, AlignmentEnum yalign, float ratio, bool obey_child = true);
+  void set(AlignmentEnum xalign, AlignmentEnum yalign, float ratio, bool obey_child =  true);
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** X alignment of the child.

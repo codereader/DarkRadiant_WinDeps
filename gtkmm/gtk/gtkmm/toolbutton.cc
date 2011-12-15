@@ -93,23 +93,17 @@ const Glib::Class& ToolButton_Class::init()
   return *this;
 }
 
+
 void ToolButton_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->clicked = &clicked_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void ToolButton_Class::clicked_callback(GtkToolButton* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -141,7 +135,7 @@ void ToolButton_Class::clicked_callback(GtkToolButton* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -150,7 +144,6 @@ void ToolButton_Class::clicked_callback(GtkToolButton* self)
   if(base && base->clicked)
     (*base->clicked)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* ToolButton_Class::wrap_new(GObject* o)
@@ -185,6 +178,7 @@ GType ToolButton::get_type()
 {
   return toolbutton_class_.init().get_type();
 }
+
 
 GType ToolButton::get_base_type()
 {
@@ -356,6 +350,20 @@ Glib::PropertyProxy_ReadOnly<Glib::ustring> ToolButton::property_stock_id() cons
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<Glib::ustring> ToolButton::property_icon_name() 
+{
+  return Glib::PropertyProxy<Glib::ustring>(this, "icon-name");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<Glib::ustring> ToolButton::property_icon_name() const
+{
+  return Glib::PropertyProxy_ReadOnly<Glib::ustring>(this, "icon-name");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
 Glib::PropertyProxy<Gtk::Widget> ToolButton::property_icon_widget() 
 {
   return Glib::PropertyProxy<Gtk::Widget>(this, "icon-widget");
@@ -370,7 +378,6 @@ Glib::PropertyProxy_ReadOnly<Gtk::Widget> ToolButton::property_icon_widget() con
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::ToolButton::on_clicked()
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -380,10 +387,6 @@ void Gtk::ToolButton::on_clicked()
   if(base && base->clicked)
     (*base->clicked)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

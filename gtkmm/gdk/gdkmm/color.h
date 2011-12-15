@@ -31,9 +31,6 @@
 // the #ifndef GDKMM_DISABLE_DEPRECATED in deprecated classes) is generated:
 
 
-#include <gdk/gdk.h>
-
-
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 extern "C" { typedef struct _GdkColor GdkColor; }
 #endif
@@ -135,7 +132,7 @@ public:
 
   #ifndef GDKMM_DISABLE_DEPRECATED
 
-  /** 
+  /**
    * @deprecated See set().
    */
   bool parse(const Glib::ustring& spec);
@@ -172,6 +169,8 @@ public:
    */
   void set_blue(gushort value);
 
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** This will fill in the pixel field with the best matching pixel from a color cube.
    * The color is then ready to be used for drawing, e.g. you can call Gdk::GC::set_foreground() which expects pixel to be initialized.
    * Call this after setting the red, green, and blue fields.
@@ -180,8 +179,12 @@ public:
    * which do not expect pixels to be initialized in advance. If you use those methods, there's no need for this method().
    *
    * @param map The colormap for the graphics context and drawable you're using to draw. If you're drawing to a Gtk::Widget, call Gtk::Widget::get_colormap().
+   *
+   * @deprecated Cairo handles colors automatically.
    */
   void rgb_find_color(const Glib::RefPtr<Gdk::Colormap>& map);
+#endif // GDKMM_DISABLE_DEPRECATED
+
 
   /** Get the pixel value, for allocated colors.
    * @result For allocated colors, the value used to draw this color on the screen.
@@ -203,12 +206,12 @@ public:
    */
   double get_blue_p() const;
 
-  /** Get a textual specification of color in the hexadecimal form #rrrrggggbbbb, 
+  /** Get a textual specification of color in the hexadecimal form #rrrrggggbbbb,
    * where r, g and b are hex digits representing the red, green and blue components respectively.
    *
    * @result The string representation.
    *
-   * @newin2p14
+   * @newin{2,14}
    */
   Glib::ustring to_string() const;
 
@@ -225,10 +228,10 @@ struct ColorTraits
   typedef GdkColor    CType;
   typedef GdkColor    CTypeNonConst;
 
-  static CType   to_c_type      (const CppType& obj) { return *obj.gobj(); }
-  static CType   to_c_type      (const CType&   obj) { return obj; }
-  static CppType to_cpp_type    (const CType&   obj) { return CppType(const_cast<CType*>(&obj), true); }
-  static void    release_c_type (const CType&)       {}
+  static CType   to_c_type      (const CppType& obj);
+  static CType   to_c_type      (const CType&   obj);
+  static CppType to_cpp_type    (const CType&   obj);
+  static void    release_c_type (const CType&);
 };
 #endif //DOXYGEN_SHOULD_SKIP_THIS
 

@@ -43,7 +43,7 @@ FileEnumerator::next_files_async(const SlotAsyncReady& slot, const Glib::RefPtr<
   g_file_enumerator_next_files_async(gobj(),
                                      num_files,
                                      io_priority,
-                                     cancellable->gobj(),
+                                     Glib::unwrap(cancellable),
                                      &SignalProxy_async_callback,
                                      slot_copy);
 }
@@ -59,7 +59,7 @@ FileEnumerator::next_files_async(const SlotAsyncReady& slot, int num_files, int 
   g_file_enumerator_next_files_async(gobj(),
                                      num_files,
                                      io_priority,
-                                     NULL, // cancellable
+                                     0, // cancellable
                                      &SignalProxy_async_callback,
                                      slot_copy);
 }
@@ -76,7 +76,7 @@ FileEnumerator::close_async(int io_priority,
 
   g_file_enumerator_close_async(gobj(),
                                 io_priority,
-                                cancellable->gobj(),
+                                Glib::unwrap(cancellable),
                                 &SignalProxy_async_callback,
                                 slot_copy);
 }
@@ -92,45 +92,27 @@ FileEnumerator::close_async(int io_priority,
 
   g_file_enumerator_close_async(gobj(),
                                 io_priority,
-                                NULL, // cancellable
+                                0, // cancellable
                                 &SignalProxy_async_callback,
                                 slot_copy);
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::RefPtr<FileInfo> FileEnumerator::next_file()
-#else
-Glib::RefPtr<FileInfo> FileEnumerator::next_file(std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
-  Glib::RefPtr<FileInfo> retvalue = Glib::wrap(g_file_enumerator_next_file(gobj(), NULL, &(gerror)));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  Glib::RefPtr<FileInfo> retvalue = Glib::wrap(g_file_enumerator_next_file(gobj(), 0, &(gerror)));
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool FileEnumerator::close()
-#else
-bool FileEnumerator::close(std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
-  bool retvalue = g_file_enumerator_close(gobj(), NULL, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  bool retvalue = g_file_enumerator_close(gobj(), 0, &(gerror));
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
@@ -187,18 +169,8 @@ void FileEnumerator_Class::class_init_function(void* g_class, void* class_data)
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* FileEnumerator_Class::wrap_new(GObject* object)
@@ -246,81 +218,45 @@ GType FileEnumerator::get_base_type()
 }
 
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::RefPtr<FileInfo> FileEnumerator::next_file(const Glib::RefPtr<Cancellable>& cancellable)
-#else
-Glib::RefPtr<FileInfo> FileEnumerator::next_file(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   Glib::RefPtr<FileInfo> retvalue = Glib::wrap(g_file_enumerator_next_file(gobj(), const_cast<GCancellable*>(Glib::unwrap(cancellable)), &(gerror)));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool FileEnumerator::close(const Glib::RefPtr<Cancellable>& cancellable)
-#else
-bool FileEnumerator::close(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = g_file_enumerator_close(gobj(), const_cast<GCancellable*>(Glib::unwrap(cancellable)), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::ListHandle< Glib::RefPtr<FileInfo> > FileEnumerator::next_files_finish(const Glib::RefPtr<AsyncResult>& result)
-#else
-Glib::ListHandle< Glib::RefPtr<FileInfo> > FileEnumerator::next_files_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   Glib::ListHandle< Glib::RefPtr<FileInfo> > retvalue = Glib::ListHandle< Glib::RefPtr<FileInfo> >((g_file_enumerator_next_files_finish(gobj(), Glib::unwrap(result), &(gerror))), Glib::OWNERSHIP_DEEP);
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool FileEnumerator::close_finish(const Glib::RefPtr<AsyncResult>& result)
-#else
-bool FileEnumerator::close_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = g_file_enumerator_close_finish(gobj(), Glib::unwrap(result), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
@@ -360,13 +296,6 @@ Glib::RefPtr<const File> FileEnumerator::get_container() const
   return retvalue;
 
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gio

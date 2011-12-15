@@ -26,13 +26,13 @@ public:
 
   const Glib::Class& init();
 
+
   static void class_init_function(void* g_class, void* class_data);
 
   static Glib::ObjectBase* wrap_new(GObject*);
 
 protected:
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   //Callbacks (default signal handlers):
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
@@ -96,20 +96,15 @@ protected:
   static void screen_changed_callback(GtkWidget* self, GdkScreen* p0);
     static void hierarchy_changed_callback_custom(GtkWidget* self, GtkWidget* p0);
       static void parent_set_callback_custom(GtkWidget* self, GtkWidget* p0);
-  #endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
+  
   //Callbacks (virtual functions):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED //We always need dispose_vfunc_callback
     static void dispose_vfunc_callback(GObject* self);
-#ifdef GLIBMM_VFUNCS_ENABLED
     static void dispatch_child_properties_changed_vfunc_callback(GtkWidget* self, guint n_pspecs, GParamSpec** pspecs);
   static void show_all_vfunc_callback(GtkWidget* self);
   static void hide_all_vfunc_callback(GtkWidget* self);
 #ifdef GTKMM_ATKMM_ENABLED
   static AtkObject* get_accessible_vfunc_callback(GtkWidget* self);
 #endif // GTKMM_ATKMM_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 };
 
 

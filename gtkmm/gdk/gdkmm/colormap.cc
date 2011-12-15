@@ -32,7 +32,7 @@ namespace Gdk
 {
 
 Colormap::Colormap(const Glib::RefPtr<Visual>& visual, bool allocate)
-: Glib::Object( G_OBJECT( gdk_colormap_new(visual->gobj(), (gboolean)allocate) ) )
+: Glib::Object( G_OBJECT( gdk_colormap_new(Glib::unwrap(visual), (gboolean)allocate) ) )
   {}
 
 #ifndef GDKMM_DISABLE_DEPRECATED
@@ -101,23 +101,14 @@ const Glib::Class& Colormap_Class::init()
   return *this;
 }
 
+
 void Colormap_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Colormap_Class::wrap_new(GObject* object)
@@ -146,6 +137,7 @@ Colormap::Colormap(GdkColormap* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 Colormap::~Colormap()
 {}
 
@@ -157,6 +149,7 @@ GType Colormap::get_type()
   return colormap_class_.init().get_type();
 }
 
+
 GType Colormap::get_base_type()
 {
   return gdk_colormap_get_type();
@@ -167,13 +160,14 @@ Glib::RefPtr<Colormap> Colormap::create(const Glib::RefPtr<Visual>& visual, bool
 {
   return Glib::RefPtr<Colormap>( new Colormap(visual, allocate) );
 }
+
 Glib::RefPtr<Colormap> Colormap::get_system()
 {
 
   Glib::RefPtr<Colormap> retvalue = Glib::wrap(gdk_colormap_get_system());
 
   if(retvalue)
-    retvalue->reference(); //The function does not do a ref for us.
+    retvalue->reference(); //The function does not do a ref for us
   return retvalue;
 }
 
@@ -217,13 +211,6 @@ Glib::RefPtr<const Screen> Colormap::get_screen() const
 {
   return const_cast<Colormap*>(this)->get_screen();
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gdk

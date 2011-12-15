@@ -30,29 +30,20 @@ static void SignalProxy_Custom_gtk_callback(GtkPrintJob* print_job, gpointer dat
 {
   const Gtk::PrintJob::SlotPrintJobComplete* the_slot = static_cast<Gtk::PrintJob::SlotPrintJobComplete*>(data);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
     // Create a suitable C++ instance to pass to the C++ method;
     Glib::RefPtr<Gtk::PrintJob> job = Glib::wrap(print_job);
 
-    #ifdef GLIBMM_EXCEPTIONS_ENABLED
     if (gerror) Glib::Error::throw_exception(gerror);
     (*the_slot)(job);
-    #else
-    std::auto_ptr<Glib::Error> error = Glib::Error::throw_exception(gerror);
-    (*the_slot)(job, error);
-    #endif //GLIBMM_EXCEPTIONS_ENABLED
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
 static void SignalProxy_Custom_gtk_callback_destroy(void* data)
@@ -128,23 +119,17 @@ const Glib::Class& PrintJob_Class::init()
   return *this;
 }
 
+
 void PrintJob_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->status_changed = &status_changed_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void PrintJob_Class::status_changed_callback(GtkPrintJob* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -176,7 +161,7 @@ void PrintJob_Class::status_changed_callback(GtkPrintJob* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -185,7 +170,6 @@ void PrintJob_Class::status_changed_callback(GtkPrintJob* self)
   if(base && base->status_changed)
     (*base->status_changed)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* PrintJob_Class::wrap_new(GObject* object)
@@ -214,6 +198,7 @@ PrintJob::PrintJob(GtkPrintJob* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 PrintJob::~PrintJob()
 {}
 
@@ -224,6 +209,7 @@ GType PrintJob::get_type()
 {
   return printjob_class_.init().get_type();
 }
+
 
 GType PrintJob::get_base_type()
 {
@@ -245,6 +231,7 @@ Glib::RefPtr<PrintJob> PrintJob::create(const Glib::ustring& title, const Glib::
 {
   return Glib::RefPtr<PrintJob>( new PrintJob(title, printer, settings, page_setup) );
 }
+
 Glib::RefPtr<PrintSettings> PrintJob::get_settings()
 {
 
@@ -285,52 +272,36 @@ PrintStatus PrintJob::get_status() const
   return (PrintStatus)gtk_print_job_get_status(const_cast<GtkPrintJob*>(gobj()));
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void PrintJob::set_source_file(const std::string& filename)
-#else
-void PrintJob::set_source_file(const std::string& filename, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   gtk_print_job_set_source_file(gobj(), filename.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Cairo::RefPtr<Cairo::Surface> PrintJob::get_surface()
-#else
-Cairo::RefPtr<Cairo::Surface> PrintJob::get_surface(std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   Cairo::RefPtr<Cairo::Surface> retvalue = Cairo::RefPtr<Cairo::Surface>(new Cairo::Surface(gtk_print_job_get_surface(gobj(), &(gerror)), false /* take reference */));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Cairo::RefPtr<const Cairo::Surface> PrintJob::get_surface() const
-#else
-Cairo::RefPtr<const Cairo::Surface> PrintJob::get_surface(std::auto_ptr<Glib::Error>& error) const
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
-  return const_cast<PrintJob*>(this)->get_surface();
+  GError* gerror = 0;
+  Cairo::RefPtr<const Cairo::Surface> retvalue = Cairo::RefPtr<Cairo::Surface>(new Cairo::Surface(gtk_print_job_get_surface(const_cast<GtkPrintJob*>(gobj()), &(gerror)), false /* take reference */));
+  if(gerror)
+    ::Glib::Error::throw_exception(gerror);
+
+  return retvalue;
+
 }
 
 void PrintJob::set_track_print_status(bool track_status)
@@ -378,8 +349,21 @@ Glib::PropertyProxy_ReadOnly< Glib::RefPtr<PageSetup> > PrintJob::property_page_
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
 
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<bool> PrintJob::property_track_print_status() 
+{
+  return Glib::PropertyProxy<bool>(this, "track-print-status");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> PrintJob::property_track_print_status() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "track-print-status");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+
 void Gtk::PrintJob::on_status_changed()
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -389,10 +373,6 @@ void Gtk::PrintJob::on_status_changed()
   if(base && base->status_changed)
     (*base->status_changed)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

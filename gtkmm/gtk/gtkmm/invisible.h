@@ -77,6 +77,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -89,43 +91,37 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
 
 public:
   Invisible();
-  explicit Invisible(const Glib::RefPtr<Gdk::Screen>& screen);
+    explicit Invisible(const Glib::RefPtr<Gdk::Screen>& screen);
+
  
-  
-  /** Return value: the associated Gdk::Screen.
-   * @return The associated Gdk::Screen.
+  /** Returns the Gdk::Screen object associated with @a invisible
    * 
-   * @newin2p2.
+   * @newin{2,2}
+   * @return The associated Gdk::Screen.
    */
   Glib::RefPtr<Gdk::Screen> get_screen();
   
-  /** Return value: the associated Gdk::Screen.
-   * @return The associated Gdk::Screen.
+  /** Returns the Gdk::Screen object associated with @a invisible
    * 
-   * @newin2p2.
+   * @newin{2,2}
+   * @return The associated Gdk::Screen.
    */
   Glib::RefPtr<const Gdk::Screen> get_screen() const;
   
   /** Sets the Gdk::Screen where the Gtk::Invisible object will be displayed.
    * 
-   * @newin2p2
+   * @newin{2,2}
    * @param screen A Gdk::Screen.
    */
   void set_screen(const Glib::RefPtr<Gdk::Screen>& screen);

@@ -4,7 +4,8 @@
 #define _PANGOMM_FONTMAP_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: fontmap.hg,v 1.2 2004/03/03 01:07:40 murrayc Exp $ */
 
@@ -13,16 +14,16 @@
  * Copyright 2001      The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
+ * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
@@ -82,6 +83,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -115,6 +118,22 @@ public:
    */
   Glib::RefPtr<Fontset> load_fontset(const Glib::RefPtr<Context>& context, const FontDescription& desc, const Language& language) const;
 
+  
+  /** Creates a Pango::Context connected to @a fontmap.  This is equivalent
+   * to Pango::Context::new() followed by Pango::Context::set_font_map().
+   * 
+   * If you are using Pango as part of a higher-level system,
+   * that system may have it's own way of create a Pango::Context.
+   * For instance, the GTK+ toolkit has, among others,
+   * gdk_pango_context_get_for_screen(), and
+   * gtk_widget_get_pango_context().  Use those instead.
+   * 
+   * @newin{1,22}
+   * @return The newly allocated Pango::Context, which should
+   * be freed with Glib::object_unref().
+   */
+  Glib::RefPtr<Context> create_context();
+
   /** List all families for the fontmap.
    * @return an array of pointers to Pango::FontFamily objects.
    */
@@ -127,17 +146,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

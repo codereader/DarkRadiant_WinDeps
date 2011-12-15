@@ -6,8 +6,6 @@
 
 #include <glibmm.h>
 
-/* $Id: event.hg,v 1.4 2006/04/12 11:11:24 murrayc Exp $ */
-
 /* Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -25,7 +23,7 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-
+ 
 #include <gdkmm/window.h>
 #include <gdkmm/screen.h>
 
@@ -47,7 +45,7 @@ extern "C" { typedef union _GdkEvent GdkEvent; }
 namespace Gdk
 {
 
-/** @addtogroup gdkmmEnums Enums and Flags */
+/** @addtogroup gdkmmEnums gdkmm Enums and Flags */
 
 /**
  * @ingroup gdkmmEnums
@@ -90,7 +88,9 @@ enum EventType
   WINDOW_STATE,
   SETTING,
   OWNER_CHANGE,
-  GRAB_BROKEN
+  GRAB_BROKEN,
+  DAMAGE,
+  EVENT_LAST
 };
 
 } // namespace Gdk
@@ -227,7 +227,7 @@ public:
    * on, fetching events from the windowing system if necessary.
    * See Gdk::Display::get_event().
    * @return The next Gdk::Event to be processed, or <tt>0</tt> if no events
-   * are pending. The returned Gdk::Event should be freed with gdk_event_free().
+   * are pending. The returned Gdk::Event should be freed with free().
    */
   static Event get();
   
@@ -235,19 +235,25 @@ public:
    * display, returns a copy of it. See Gdk::Display::peek_event().
    * @return A copy of the first Gdk::Event on some event queue, or <tt>0</tt> if no
    * events are in any queues. The returned Gdk::Event should be freed with
-   * gdk_event_free().
+   * free().
    */
   static Event peek();
   
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** Waits for a GraphicsExpose or NoExpose event from the X server.
    * This is used in the Gtk::Text and Gtk::CList widgets in GTK+ to make sure any
    * GraphicsExpose events are handled before the widget is scrolled.
+   * 
+   * Deprecated: 2.18:
    * @param window The Gdk::Window to wait for the events for.
    * @return A Gdk::EventExpose if a GraphicsExpose was received, or <tt>0</tt> if a
    * NoExpose event was received.
    */
   static Event get_graphics_expose(const Glib::RefPtr<Window>& window);
-  
+#endif // GDKMM_DISABLE_DEPRECATED
+
+
   /** Appends a copy of the given event onto the front of the event
    * queue for event->any.window's display, or the default event
    * queue if event->any.window is <tt>0</tt>. See Gdk::Display::put_event().
@@ -261,8 +267,8 @@ public:
   static bool events_pending();
 
   
-  /** returns Gdk::CURRENT_TIME. If @a event is <tt>0</tt>, returns Gdk::CURRENT_TIME.
-   * Return value: time stamp field from @a event
+  /** Returns the time stamp from @a event, if there is one; otherwise
+   * returns Gdk::CURRENT_TIME. If @a event is <tt>0</tt>, returns Gdk::CURRENT_TIME.
    * @return Time stamp field from @a event.
    */
   guint32 get_time() const;
@@ -316,24 +322,36 @@ public:
   
   /** Sets the screen for @a event to @a screen. The event must
    * have been allocated by GTK+, for instance, by
-   * gdk_event_copy().
+   * copy().
    * 
-   * @newin2p2
+   * @newin{2,2}
    * @param screen A Gdk::Screen.
    */
   void set_screen(const Glib::RefPtr<Screen>& screen);
   
-  /** Return value: the screen for the event
-   * @return The screen for the event
+  /** Returns the screen for the event. The screen is
+   * typically the screen for <tt>event->any.window</tt>, but
+   * for events such as mouse events, it is the screen
+   * where the pointer was when the event occurs -
+   * that is, the screen which has the root window 
+   * to which <tt>event->motion.x_root</tt> and
+   * <tt>event->motion.y_root</tt> are relative.
    * 
-   * @newin2p2.
+   * @newin{2,2}
+   * @return The screen for the event.
    */
   Glib::RefPtr<Screen> get_screen();
   
-  /** Return value: the screen for the event
-   * @return The screen for the event
+  /** Returns the screen for the event. The screen is
+   * typically the screen for <tt>event->any.window</tt>, but
+   * for events such as mouse events, it is the screen
+   * where the pointer was when the event occurs -
+   * that is, the screen which has the root window 
+   * to which <tt>event->motion.x_root</tt> and
+   * <tt>event->motion.y_root</tt> are relative.
    * 
-   * @newin2p2.
+   * @newin{2,2}
+   * @return The screen for the event.
    */
   Glib::RefPtr<const Screen> get_screen() const;
 

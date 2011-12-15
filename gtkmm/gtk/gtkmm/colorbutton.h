@@ -85,6 +85,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -97,18 +99,12 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_color_set();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -122,7 +118,7 @@ public:
    * open, allowing the user to select a color. The swatch will be updated to reflect the
    * new color when the user finishes.
    *
-   * @newin2p4
+   * @newin{2,4}
    */
   ColorButton();
   
@@ -135,21 +131,21 @@ public:
    *
    * @param color A Gdk::Color to set the current color with.
    *
-   * @newin2p4
+   * @newin{2,4}
    */
-  explicit ColorButton(const Gdk::Color& color);
+    explicit ColorButton(const Gdk::Color& color);
 
-  
+
   /** Sets the current color to be @a color.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param color A Gdk::Color to set the current color with.
    */
   void set_color(const Gdk::Color& color);
   
   /** Sets the current opacity to be @a alpha. 
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param alpha An integer between 0 and 65535.
    */
   void set_alpha(guint16 alpha);
@@ -160,42 +156,42 @@ public:
    *
    * @return A Gdk::Color representing the current internal color of the Gtk::ColorButton.
    *
-   * @newin2p4
+   * @newin{2,4}
    */
   Gdk::Color get_color() const;
   
   
-  /** Return value: an integer between 0 and 65535.
-   * @return An integer between 0 and 65535.
+  /** Returns the current alpha value. 
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return An integer between 0 and 65535.
    */
   guint16 get_alpha() const;
   
   /** Sets whether or not the color button should use the alpha channel.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param use_alpha <tt>true</tt> if color button should use alpha channel, <tt>false</tt> if not.
    */
-  void set_use_alpha(bool use_alpha = true);
+  void set_use_alpha(bool use_alpha =  true);
   
   /** Does the color selection dialog use the alpha channel?
-   * @return <tt>true</tt> if the color sample uses alpha channel, <tt>false</tt> if not.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return <tt>true</tt> if the color sample uses alpha channel, <tt>false</tt> if not.
    */
   bool get_use_alpha() const;
   
   /** Sets the title for the color selection dialog.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param title String containing new window title.
    */
   void set_title(const Glib::ustring& title);
   
   /** Gets the title of the color selection dialog.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @return The title.
    */
   Glib::ustring get_title() const;

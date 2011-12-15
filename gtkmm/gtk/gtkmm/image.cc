@@ -42,13 +42,6 @@ Image::Image(const Gtk::StockID& stock_id, IconSize size)
   Gtk::Misc(Glib::ConstructParams(image_class_.init(), "stock",stock_id.get_c_str(),"icon-size",(GtkIconSize) int(size), static_cast<char*>(0)))
 {}
 
-Image::Image(IconSet& icon_set, IconSize size)
-:
-  // Mark this class as non-derived to allow C++ vfuncs to be skipped.
-  Glib::ObjectBase(0),
-  Gtk::Misc(Glib::ConstructParams(image_class_.init(), "icon-set",icon_set.gobj(),"icon-size",(GtkIconSize) int(size), static_cast<char*>(0)))
-{}
-
 Image::Image(const Glib::RefPtr<Gdk::PixbufAnimation>& animation)
 :
   // Mark this class as non-derived to allow C++ vfuncs to be skipped.
@@ -175,23 +168,14 @@ const Glib::Class& Image_Class::init()
   return *this;
 }
 
+
 void Image_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Image_Class::wrap_new(GObject* o)
@@ -226,6 +210,7 @@ GType Image::get_type()
 {
   return image_class_.init().get_type();
 }
+
 
 GType Image::get_base_type()
 {
@@ -283,6 +268,26 @@ Image::Image(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf)
 
 }
 
+Image::Image(const IconSet& icon_set, IconSize icon_size)
+:
+  // Mark this class as non-derived to allow C++ vfuncs to be skipped.
+  Glib::ObjectBase(0),
+  Gtk::Misc(Glib::ConstructParams(image_class_.init(), "icon_set", const_cast<GtkIconSet*>((icon_set).gobj()), "icon_size", static_cast<GtkIconSize>(int(icon_size)), static_cast<char*>(0)))
+{
+  
+
+}
+
+Image::Image(IconSet& icon_set, IconSize icon_size)
+:
+  // Mark this class as non-derived to allow C++ vfuncs to be skipped.
+  Glib::ObjectBase(0),
+  Gtk::Misc(Glib::ConstructParams(image_class_.init(), "icon_set", (icon_set).gobj(), "icon_size", static_cast<GtkIconSize>(int(icon_size)), static_cast<char*>(0)))
+{
+  
+
+}
+
 void Image::set(const Glib::RefPtr<Gdk::Pixmap>& pixmap, const Glib::RefPtr<Gdk::Bitmap>& mask)
 {
 gtk_image_set_from_pixmap(gobj(), Glib::unwrap(pixmap), Glib::unwrap(mask)); 
@@ -308,9 +313,18 @@ void Image::set(const Gtk::StockID& stock_id, IconSize size)
 gtk_image_set_from_stock(gobj(), (stock_id).get_c_str(), static_cast<GtkIconSize>(int(size))); 
 }
 
+#ifndef GTKMM_DISABLE_DEPRECATED
+
 void Image::set(IconSet& icon_set, IconSize size)
 {
 gtk_image_set_from_icon_set(gobj(), (icon_set).gobj(), static_cast<GtkIconSize>(int(size))); 
+}
+
+#endif // GTKMM_DISABLE_DEPRECATED
+
+void Image::set(const IconSet& icon_set, IconSize size)
+{
+gtk_image_set_from_icon_set(gobj(), const_cast<GtkIconSet*>((icon_set).gobj()), static_cast<GtkIconSize>(int(size))); 
 }
 
 void Image::set(const Glib::RefPtr<Gdk::PixbufAnimation>& animation)
@@ -492,6 +506,20 @@ Glib::PropertyProxy_ReadOnly<int> Image::property_icon_size() const
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<int> Image::property_pixel_size() 
+{
+  return Glib::PropertyProxy<int>(this, "pixel-size");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<int> Image::property_pixel_size() const
+{
+  return Glib::PropertyProxy_ReadOnly<int>(this, "pixel-size");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
 Glib::PropertyProxy< Glib::RefPtr<Gdk::PixbufAnimation> > Image::property_pixbuf_animation() 
 {
   return Glib::PropertyProxy< Glib::RefPtr<Gdk::PixbufAnimation> >(this, "pixbuf-animation");
@@ -502,6 +530,20 @@ Glib::PropertyProxy< Glib::RefPtr<Gdk::PixbufAnimation> > Image::property_pixbuf
 Glib::PropertyProxy_ReadOnly< Glib::RefPtr<Gdk::PixbufAnimation> > Image::property_pixbuf_animation() const
 {
   return Glib::PropertyProxy_ReadOnly< Glib::RefPtr<Gdk::PixbufAnimation> >(this, "pixbuf-animation");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<Glib::ustring> Image::property_icon_name() 
+{
+  return Glib::PropertyProxy<Glib::ustring>(this, "icon-name");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<Glib::ustring> Image::property_icon_name() const
+{
+  return Glib::PropertyProxy_ReadOnly<Glib::ustring>(this, "icon-name");
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
 
@@ -525,13 +567,6 @@ Glib::PropertyProxy_ReadOnly< Glib::RefPtr<Gio::Icon> > Image::property_gicon() 
   return Glib::PropertyProxy_ReadOnly< Glib::RefPtr<Gio::Icon> >(this, "gicon");
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

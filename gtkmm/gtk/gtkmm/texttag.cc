@@ -142,23 +142,17 @@ const Glib::Class& TextTag_Class::init()
   return *this;
 }
 
+
 void TextTag_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->event = &event_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 gboolean TextTag_Class::event_callback(GtkTextTag* self, GObject* p0, GdkEvent* p1, const GtkTextIter* p2)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -191,7 +185,7 @@ gboolean TextTag_Class::event_callback(GtkTextTag* self, GObject* p0, GdkEvent* 
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -203,7 +197,6 @@ gboolean TextTag_Class::event_callback(GtkTextTag* self, GObject* p0, GdkEvent* 
   typedef gboolean RType;
   return RType();
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* TextTag_Class::wrap_new(GObject* object)
@@ -232,6 +225,7 @@ TextTag::TextTag(GtkTextTag* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 TextTag::~TextTag()
 {}
 
@@ -242,6 +236,7 @@ GType TextTag::get_type()
 {
   return texttag_class_.init().get_type();
 }
+
 
 GType TextTag::get_base_type()
 {
@@ -273,10 +268,12 @@ Glib::RefPtr<TextTag> TextTag::create()
 {
   return Glib::RefPtr<TextTag>( new TextTag() );
 }
+
 Glib::RefPtr<TextTag> TextTag::create(const Glib::ustring& name)
 {
   return Glib::RefPtr<TextTag>( new TextTag(name) );
 }
+
 int TextTag::get_priority() const
 {
   return gtk_text_tag_get_priority(const_cast<GtkTextTag*>(gobj()));
@@ -1182,7 +1179,6 @@ Glib::PropertyProxy_ReadOnly<bool> TextTag::property_paragraph_background_set() 
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 bool Gtk::TextTag::on_event(const Glib::RefPtr<Glib::Object>& event_object, GdkEvent* event, const TextIter& iter)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -1195,10 +1191,6 @@ bool Gtk::TextTag::on_event(const Glib::RefPtr<Glib::Object>& event_object, GdkE
   typedef bool RType;
   return RType();
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

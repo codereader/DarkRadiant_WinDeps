@@ -267,25 +267,19 @@ const Glib::Class& SpinButton_Class::init()
   return *this;
 }
 
+
 void SpinButton_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->input = &input_callback;
   klass->output = &output_callback;
   klass->value_changed = &value_changed_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 gint SpinButton_Class::input_callback(GtkSpinButton* self, double* p0)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -316,7 +310,7 @@ gint SpinButton_Class::input_callback(GtkSpinButton* self, double* p0)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -358,7 +352,7 @@ gboolean SpinButton_Class::output_callback(GtkSpinButton* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -401,7 +395,7 @@ void SpinButton_Class::value_changed_callback(GtkSpinButton* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -410,7 +404,6 @@ void SpinButton_Class::value_changed_callback(GtkSpinButton* self)
   if(base && base->value_changed)
     (*base->value_changed)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* SpinButton_Class::wrap_new(GObject* o)
@@ -445,6 +438,7 @@ GType SpinButton::get_type()
 {
   return spinbutton_class_.init().get_type();
 }
+
 
 GType SpinButton::get_base_type()
 {
@@ -715,7 +709,6 @@ Glib::PropertyProxy_ReadOnly<double> SpinButton::property_value() const
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 int Gtk::SpinButton::on_input(double* new_value)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -749,10 +742,6 @@ void Gtk::SpinButton::on_value_changed()
   if(base && base->value_changed)
     (*base->value_changed)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

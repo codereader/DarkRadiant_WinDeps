@@ -122,31 +122,31 @@ public:
   /** Sets the contents of the selection from a Gdk::Pixbuf
    * The pixbuf is converted to the form determined by
    *  @a selection_data->target.
+   * 
+   * @newin{2,6}
    * @param pixbuf A Gdk::Pixbuf.
    * @return <tt>true</tt> if the selection was successfully set,
    * otherwise <tt>false</tt>.
-   * 
-   * @newin2p6.
    */
   bool set_pixbuf(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf);
   
   /** Gets the contents of the selection data as a Gdk::Pixbuf.
+   * 
+   * @newin{2,6}
    * @return If the selection data contained a recognized
    * image type and it could be converted to a Gdk::Pixbuf, a 
    * newly allocated pixbuf is returned, otherwise <tt>0</tt>.
    * If the result is non-<tt>0</tt> it must be freed with Glib::object_unref().
-   * 
-   * @newin2p6.
    */
   Glib::RefPtr<Gdk::Pixbuf> get_pixbuf();
   
   /** Gets the contents of the selection data as a Gdk::Pixbuf.
+   * 
+   * @newin{2,6}
    * @return If the selection data contained a recognized
    * image type and it could be converted to a Gdk::Pixbuf, a 
    * newly allocated pixbuf is returned, otherwise <tt>0</tt>.
    * If the result is non-<tt>0</tt> it must be freed with Glib::object_unref().
-   * 
-   * @newin2p6.
    */
   Glib::RefPtr<const Gdk::Pixbuf> get_pixbuf() const;
   
@@ -156,36 +156,34 @@ public:
   /** Sets the contents of the selection from a list of URIs.
    * The string is converted to the form determined by
    *  @a selection_data->target.
-   * @param uris A <tt>0</tt>-terminated array of strings hilding URIs.
+   * 
+   * @newin{2,6}
+   * @param uris A <tt>0</tt>-terminated array of strings holding URIs.
    * @return <tt>true</tt> if the selection was successfully set,
    * otherwise <tt>false</tt>.
-   * 
-   * @newin2p6.
    */
   bool set_uris(const Glib::StringArrayHandle& uris);
   
-  /** Gets the contents of the selection data as array of URIs.
+  /** Gets the contents of the selection data as a container of URIs.
    * @return If the selection data contains a list of
-   * URIs, a newly allocated <tt>0</tt>-terminated string array
-   * containing the URIs, otherwise <tt>0</tt>. If the result is 
-   * non-<tt>0</tt> it must be freed with Glib::strfreev().
+   * URIs, a container containing the URIs, otherwise an empty container.
    * 
-   * @newin2p6.
+   * @newin{2,6}.
    */
   Glib::StringArrayHandle get_uris() const;
 
 
   /** Retrieves the raw data of the selection.
-   * @return The raw data of the selection.
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The raw data of the selection.
    */
   const guchar* get_data() const;
   
   /** Retrieves the length of the raw data of the selection.
-   * @return The length of the data of the selection.
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The length of the data of the selection.
    */
   int get_length() const;
 
@@ -194,15 +192,15 @@ public:
   //TODO: Change the return type to std::string, when we can break ABI:
   
   /** Retrieves the selection Gdk::Atom of the selection data.
-   * @return The selection Gdk::Atom of the selection data.
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @return The selection Gdk::Atom of the selection data.
    */
   GdkAtom get_selection() const;
 
   /** Retrieves the target of the selection.
    *
-   * @newin2p14
+   * @newin{2,14}
    **/
   std::string get_target() const;
   
@@ -217,24 +215,24 @@ public:
   
 
   /** Retrieves the format of the selection.
-   * @return The format of the selection.
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The format of the selection.
    */
   int get_format() const;
 
   
   /** Retrieves the display of the selection.
-   * @return The display of the selection.
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The display of the selection.
    */
   Glib::RefPtr<Gdk::Display> get_display();
   
   /** Retrieves the display of the selection.
-   * @return The display of the selection.
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The display of the selection.
    */
   Glib::RefPtr<const Gdk::Display> get_display() const;
 
@@ -242,10 +240,10 @@ public:
   /** Given a Gtk::SelectionData object holding a list of targets,
    * determines if any of the targets in @a targets can be used to
    * provide a list or URIs.
+   * 
+   * @newin{2,10}
    * @return <tt>true</tt> if @a selection_data holds a list of targets,
    * and a suitable target for URI lists is included, otherwise <tt>false</tt>.
-   * 
-   * @newin2p10.
    */
   bool targets_include_uri() const;
   
@@ -260,26 +258,26 @@ public:
   /** Given a Gtk::SelectionData object holding a list of targets,
    * determines if any of the targets in @a targets can be used to
    * provide rich text.
+   * 
+   * @newin{2,10}
    * @param buffer A Gtk::TextBuffer.
    * @return <tt>true</tt> if @a selection_data holds a list of targets,
    * and a suitable target for rich text is included,
    * otherwise <tt>false</tt>.
-   * 
-   * @newin2p10.
    */
   bool targets_include_rich_text(const Glib::RefPtr<TextBuffer>& buffer) const;
   
   /** Given a Gtk::SelectionData object holding a list of targets,
    * determines if any of the targets in @a targets can be used to
    * provide a Gdk::Pixbuf.
+   * 
+   * @newin{2,6}
    * @param writable Whether to accept only targets for which GTK+ knows
    * how to convert a pixbuf into the format.
    * @return <tt>true</tt> if @a selection_data holds a list of targets,
    * and a suitable target for images is included, otherwise <tt>false</tt>.
-   * 
-   * @newin2p6.
    */
-  bool targets_include_image(bool writable = true) const;
+  bool targets_include_image(bool writable =  true) const;
 
 
 };

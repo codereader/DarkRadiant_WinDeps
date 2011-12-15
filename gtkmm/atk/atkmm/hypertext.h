@@ -4,7 +4,8 @@
 #define _ATKMM_HYPERTEXT_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: hypertext.hg,v 1.3 2006/04/12 11:11:24 murrayc Exp $ */
 
@@ -104,7 +105,7 @@ public:
   ///Provides access to the underlying C GObject.
   AtkHypertext*       gobj()       { return reinterpret_cast<AtkHypertext*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const AtkHypertext* gobj() const { return reinterpret_cast<AtkHypertext*>(gobject_); }
 
 private:
@@ -134,10 +135,10 @@ public:
   int get_n_links() const;
   
   /** Gets the index into the array of hyperlinks that is associated with
-   * the character specified by @a char_index, or -1 if there is no hyperlink
-   * associated with this character.
+   * the character specified by @a char_index.
    * @param char_index A character index.
-   * @return An index into the array of hyperlinks in @a hypertext.
+   * @return An index into the array of hyperlinks in @a hypertext,
+   * or -1 if there is no hyperlink associated with this character.
    */
   int get_link_index(int char_index) const;
 
@@ -150,35 +151,23 @@ public:
   Glib::SignalProxy1< void,int > signal_link_selected();
 
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual Glib::RefPtr<Hyperlink> get_link_vfunc(int link_index);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual Glib::RefPtr<Hyperlink> get_link_vfunc(int link_index);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual int get_n_links_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual int get_n_links_vfunc() const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual int get_link_index_vfunc(int char_index) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual int get_link_index_vfunc(int char_index) const;
 
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_link_selected(int link_index);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

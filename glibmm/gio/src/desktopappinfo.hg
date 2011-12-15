@@ -41,11 +41,12 @@ class DesktopAppInfo
 
 public:
   // TODO: should use _WRAP_CREATE(), but these functions do more than just call
-  // g_object_new() because there's quite a bit of error-handling to do
+  // g_object_new() because there's quite a bit of error-handling to do.
   _WRAP_METHOD(static Glib::RefPtr<DesktopAppInfo> create(const std::string& desktop_id), g_desktop_app_info_new)
   _WRAP_METHOD(static Glib::RefPtr<DesktopAppInfo> create_from_keyfile(Glib::KeyFile& key_file), g_desktop_app_info_new_from_keyfile)
   _WRAP_METHOD(static Glib::RefPtr<DesktopAppInfo> create_from_filename(const std::string& filename), g_desktop_app_info_new_from_filename)
 
+  _WRAP_METHOD(std::string get_filename() const, g_desktop_app_info_get_filename)
   _WRAP_METHOD(bool is_hidden() const, g_desktop_app_info_get_is_hidden)
   _WRAP_METHOD(static void set_desktop_env(const std::string& desktop_env), g_desktop_app_info_set_desktop_env)
 };

@@ -26,7 +26,6 @@
  */
 
 #include <gdkmm/pixmap.h>
-#include <gdk/gdk.h>
 
 
 namespace Gdk

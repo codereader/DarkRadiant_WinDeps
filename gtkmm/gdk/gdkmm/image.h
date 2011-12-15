@@ -31,9 +31,8 @@
 #include <gdkmm/visual.h>
 #include <gdkmm/colormap.h>
 #include <gdkmm/types.h> //For ByteOrder.
-#include <gdk/gdk.h>
 
-
+ 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 typedef struct _GdkImage GdkImage;
 typedef struct _GdkImageClass GdkImageClass;
@@ -45,7 +44,7 @@ namespace Gdk
 namespace Gdk
 {
 
-/** @addtogroup gdkmmEnums Enums and Flags */
+/** @addtogroup gdkmmEnums gdkmm Enums and Flags */
 
 /**
  * @ingroup gdkmmEnums
@@ -118,6 +117,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -144,7 +145,7 @@ protected:
    */
   Image(ImageType type, const Glib::RefPtr<Visual>& visual, int	width, int height);
   
-  
+
 public:
   
   static Glib::RefPtr<Image> create(ImageType type, const Glib::RefPtr<Visual>& visual, int width, int height);
@@ -162,6 +163,8 @@ public:
    * correct colormap if you get the image from a drawable. If you
    * create the image from scratch, use the colormap of the drawable you
    * intend to render the image to.
+   * 
+   * Deprecated: 2.22: Gdk::Image should not be used anymore.
    * @param colormap A Gdk::Colormap.
    */
   void set_colormap(const Glib::RefPtr<Colormap>& colormap);
@@ -170,6 +173,8 @@ public:
    * will have a colormap if the drawable from which it was created has
    * a colormap, or if a colormap was set explicitely with
    * set_colormap().
+   * 
+   * Deprecated: 2.22: Gdk::Image should not be used anymore.
    * @return Colormap for the image.
    */
   Glib::RefPtr<Colormap> get_colormap();
@@ -178,24 +183,163 @@ public:
    * will have a colormap if the drawable from which it was created has
    * a colormap, or if a colormap was set explicitely with
    * set_colormap().
+   * 
+   * Deprecated: 2.22: Gdk::Image should not be used anymore.
    * @return Colormap for the image.
    */
   Glib::RefPtr<const Colormap> get_colormap() const;
+
   
-   ImageType get_image_type() const;
-    Glib::RefPtr<Visual> get_visual();
+  /** Determines the type of a given image.
+   * 
+   * @newin{2,22}
+   * 
+   * Deprecated: 2.22: Gdk::Image should not be used anymore.
+   * @return The Gdk::ImageType of the image.
+   */
+  ImageType get_image_type() const;
+  
+  /** Determines the visual that was used to create the image.
+   * 
+   * @newin{2,22}
+   * 
+   * Deprecated: 2.22: Gdk::Image should not be used anymore.
+   * @return A Gdk::Visual.
+   */
+  Glib::RefPtr<Visual> get_visual();
+  
+  /** Determines the visual that was used to create the image.
+   * 
+   * @newin{2,22}
+   * 
+   * Deprecated: 2.22: Gdk::Image should not be used anymore.
+   * @return A Gdk::Visual.
+   */
   Glib::RefPtr<const Visual> get_visual() const;
-    ByteOrder get_byte_order() const;
-    int get_width() const;
-    int get_height() const;
-    guint16 get_bpp() const;
-    guint16 get_bpl() const;
-    guint16 get_bits_per_pixel() const;
- 
+  
+  /** Determines the byte order of the image.
+   * 
+   * @newin{2,22}
+   * 
+   * Deprecated: 2.22: Gdk::Image should not be used anymore.
+   * @return A Gdk::Visual.
+   */
+  ByteOrder get_byte_order() const;
+  
+  /** Determines the width of the image.
+   * 
+   * @newin{2,22}
+   * 
+   * Deprecated: 2.22: Gdk::Image should not be used anymore.
+   * @return The width.
+   */
+  int get_width() const;
+  
+  /** Determines the height of the image.
+   * 
+   * @newin{2,22}
+   * 
+   * Deprecated: 2.22: Gdk::Image should not be used anymore.
+   * @return The height.
+   */
+  int get_height() const;
+  
+  /** Determines the depth of the image.
+   * 
+   * @newin{2,22}
+   * 
+   * Deprecated: 2.22: Gdk::Image should not be used anymore.
+   * @return The depth.
+   */
+  guint16 get_depth() const;
+
+  
+#ifndef GDKMM_DISABLE_DEPRECATED
+
+  /** Determines the number of bytes per pixel of the image.
+   * 
+   * @newin{2,22}
+   * 
+   * Deprecated: 2.22: Gdk::Image should not be used anymore.
+   * @deprecated Use get_bytes_per_pixel()
+   * @return The bytes per pixel.
+   */
+  guint16 get_bpp() const;
+#endif // GDKMM_DISABLE_DEPRECATED
+
+
+  /** Determines the number of bytes per pixel of the image.
+   * 
+   * @newin{2,22}
+   * 
+   * Deprecated: 2.22: Gdk::Image should not be used anymore.
+   * @return The bytes per pixel.
+   */
+  guint16 get_bytes_per_pixel() const;
+
+  
+#ifndef GDKMM_DISABLE_DEPRECATED
+
+  /** Determines the number of bytes per line of the image.
+   * 
+   * @newin{2,22}
+   * 
+   * Deprecated: 2.22: Gdk::Image should not be used anymore.
+   * @deprecated Use get_bytes_per_line()
+   * @return The bytes per line.
+   */
+  guint16 get_bpl() const;
+#endif // GDKMM_DISABLE_DEPRECATED
+
+
+  /** Determines the number of bytes per line of the image.
+   * 
+   * @newin{2,22}
+   * 
+   * Deprecated: 2.22: Gdk::Image should not be used anymore.
+   * @return The bytes per line.
+   */
+  guint16 get_bytes_per_line() const;
+
+  
+  /** Determines the number of bits per pixel of the image.
+   * 
+   * @newin{2,22}
+   * 
+   * Deprecated: 2.22: Gdk::Image should not be used anymore.
+   * @return The bits per pixel.
+   */
+  guint16 get_bits_per_pixel() const;
+
+  
+  /** Returns a pointer to the pixel data of the image.
+   * 
+   * @newin{2,22}
+   * 
+   * Deprecated: 2.22: Gdk::Image should not be used anymore.
+   * @return The pixel data of the image.
+   */
+  void* get_pixels();
+  
+  /** Returns a pointer to the pixel data of the image.
+   * 
+   * @newin{2,22}
+   * 
+   * Deprecated: 2.22: Gdk::Image should not be used anymore.
+   * @return The pixel data of the image.
+   */
+  const void* get_pixels() const;
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   //This memory block is not read-only, apparently:
+  /** @deprecated Use get_pixels().
+   */
    void* get_mem();
   const void* get_mem() const;
- 
+ #endif // GDKMM_DISABLE_DEPRECATED
+
+
   //TODO: This should be const really.
    void* get_windowing_data() const;
  
@@ -204,17 +348,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

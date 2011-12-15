@@ -52,9 +52,7 @@ IConv::IConv(const std::string& to_codeset, const std::string& from_codeset)
     // If this should ever fail we're fucked.
     g_assert(gerror != 0);
 
-    #ifdef GLIBMM_EXCEPTIONS_ENABLED
     if(gerror) ::Glib::Error::throw_exception(gerror);
-    #endif //GLIBMM_EXCEPTIONS_ENABLED
   }
 }
 
@@ -86,11 +84,7 @@ void IConv::reset()
   g_iconv(gobject_, 0, &inbytes_left, &outbuf, &outbytes_left);
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 std::string IConv::convert(const std::string& str)
-#else
-std::string IConv::convert(const std::string& str, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   gsize bytes_written = 0;
   GError* gerror = 0;
@@ -98,11 +92,7 @@ std::string IConv::convert(const std::string& str, std::auto_ptr<Glib::Error>& e
   char *const buf = g_convert_with_iconv(
       str.data(), str.size(), gobject_, 0, &bytes_written, &gerror);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror) ::Glib::Error::throw_exception(gerror);
-  #else
-  if(gerror) error = ::Glib::Error::throw_exception(gerror);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return std::string(ScopedPtr<char>(buf).get(), bytes_written);
 }
@@ -125,15 +115,9 @@ bool get_charset(std::string& charset)
 }
 
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 std::string convert(const std::string& str,
                     const std::string& to_codeset,
                     const std::string& from_codeset)
-#else
-std::string convert(const std::string& str,
-                    const std::string& to_codeset,
-                    const std::string& from_codeset, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   gsize bytes_written = 0;
   GError* gerror = 0;
@@ -142,25 +126,15 @@ std::string convert(const std::string& str,
       str.data(), str.size(), to_codeset.c_str(), from_codeset.c_str(),
       0, &bytes_written, &gerror);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror) ::Glib::Error::throw_exception(gerror);
-  #else
-  if(gerror) error = ::Glib::Error::throw_exception(gerror);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return std::string(ScopedPtr<char>(buf).get(), bytes_written);
 }
 
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 std::string convert_with_fallback(const std::string& str,
                                   const std::string& to_codeset,
                                   const std::string& from_codeset)
-#else
-std::string convert_with_fallback(const std::string& str,
-                                  const std::string& to_codeset,
-                                  const std::string& from_codeset, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   gsize bytes_written = 0;
   GError* gerror = 0;
@@ -169,27 +143,16 @@ std::string convert_with_fallback(const std::string& str,
       str.data(), str.size(), to_codeset.c_str(), from_codeset.c_str(), 0,
       0, &bytes_written, &gerror);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror) ::Glib::Error::throw_exception(gerror);
-  #else
-  if(gerror) error = ::Glib::Error::throw_exception(gerror);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return std::string(ScopedPtr<char>(buf).get(), bytes_written);
 }
 
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 std::string convert_with_fallback(const std::string& str,
                                   const std::string& to_codeset,
                                   const std::string& from_codeset,
                                   const Glib::ustring& fallback)
-#else
-std::string convert_with_fallback(const std::string& str,
-                                  const std::string& to_codeset,
-                                  const std::string& from_codeset,
-                                  const Glib::ustring& fallback, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   gsize bytes_written = 0;
   GError* gerror = 0;
@@ -198,21 +161,13 @@ std::string convert_with_fallback(const std::string& str,
       str.data(), str.size(), to_codeset.c_str(), from_codeset.c_str(),
       const_cast<char*>(fallback.c_str()), 0, &bytes_written, &gerror);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror) ::Glib::Error::throw_exception(gerror);
-  #else
-  if(gerror) error = ::Glib::Error::throw_exception(gerror);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return std::string(ScopedPtr<char>(buf).get(), bytes_written);
 }
 
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::ustring locale_to_utf8(const std::string& opsys_string)
-#else
-Glib::ustring locale_to_utf8(const std::string& opsys_string, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   gsize bytes_written = 0;
   GError* gerror = 0;
@@ -220,22 +175,14 @@ Glib::ustring locale_to_utf8(const std::string& opsys_string, std::auto_ptr<Glib
   char *const buf = g_locale_to_utf8(
       opsys_string.data(), opsys_string.size(), 0, &bytes_written, &gerror);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror) ::Glib::Error::throw_exception(gerror);
-  #else
-  if(gerror) error = ::Glib::Error::throw_exception(gerror);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   const ScopedPtr<char> scoped_buf (buf);
   return Glib::ustring(scoped_buf.get(), scoped_buf.get() + bytes_written);
 }
 
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 std::string locale_from_utf8(const Glib::ustring& utf8_string)
-#else
-std::string locale_from_utf8(const Glib::ustring& utf8_string, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   gsize bytes_written = 0;
   GError* gerror = 0;
@@ -243,21 +190,13 @@ std::string locale_from_utf8(const Glib::ustring& utf8_string, std::auto_ptr<Gli
   char *const buf = g_locale_from_utf8(
       utf8_string.data(), utf8_string.bytes(), 0, &bytes_written, &gerror);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror) ::Glib::Error::throw_exception(gerror);
-  #else
-  if(gerror) error = ::Glib::Error::throw_exception(gerror);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return std::string(ScopedPtr<char>(buf).get(), bytes_written);
 }
 
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::ustring filename_to_utf8(const std::string& opsys_string)
-#else
-Glib::ustring filename_to_utf8(const std::string& opsys_string, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   gsize bytes_written = 0;
   GError* gerror = 0;
@@ -265,22 +204,14 @@ Glib::ustring filename_to_utf8(const std::string& opsys_string, std::auto_ptr<Gl
   char *const buf = g_filename_to_utf8(
       opsys_string.data(), opsys_string.size(), 0, &bytes_written, &gerror);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror) ::Glib::Error::throw_exception(gerror);
-  #else
-  if(gerror) error = ::Glib::Error::throw_exception(gerror);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   const ScopedPtr<char> scoped_buf (buf);
   return Glib::ustring(scoped_buf.get(), scoped_buf.get() + bytes_written);
 }
 
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 std::string filename_from_utf8(const Glib::ustring& utf8_string)
-#else
-std::string filename_from_utf8(const Glib::ustring& utf8_string, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   gsize bytes_written = 0;
   GError* gerror = 0;
@@ -288,32 +219,20 @@ std::string filename_from_utf8(const Glib::ustring& utf8_string, std::auto_ptr<G
   char *const buf = g_filename_from_utf8(
       utf8_string.data(), utf8_string.bytes(), 0, &bytes_written, &gerror);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror) ::Glib::Error::throw_exception(gerror);
-  #else
-  if(gerror) error = ::Glib::Error::throw_exception(gerror);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return std::string(ScopedPtr<char>(buf).get(), bytes_written);
 }
 
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 std::string filename_from_uri(const Glib::ustring& uri, Glib::ustring& hostname)
-#else
-std::string filename_from_uri(const Glib::ustring& uri, Glib::ustring& hostname, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   char* hostname_buf = 0;
   GError* gerror = 0;
 
   char *const buf = g_filename_from_uri(uri.c_str(), &hostname_buf, &gerror);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror) ::Glib::Error::throw_exception(gerror);
-  #else
-  if(gerror) error = ::Glib::Error::throw_exception(gerror);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   // Let's take ownership at this point.
   const ScopedPtr<char> scoped_buf (buf);
@@ -327,58 +246,34 @@ std::string filename_from_uri(const Glib::ustring& uri, Glib::ustring& hostname,
 }
 
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 std::string filename_from_uri(const Glib::ustring& uri)
-#else
-std::string filename_from_uri(const Glib::ustring& uri, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   char *const buf = g_filename_from_uri(uri.c_str(), 0, &gerror);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror) ::Glib::Error::throw_exception(gerror);
-  #else
-  if(gerror) error = ::Glib::Error::throw_exception(gerror);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return std::string(ScopedPtr<char>(buf).get());
 }
 
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::ustring filename_to_uri(const std::string& filename, const Glib::ustring& hostname)
-#else
-Glib::ustring filename_to_uri(const std::string& filename, const Glib::ustring& hostname, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   char *const buf = g_filename_to_uri(filename.c_str(), hostname.c_str(), &gerror);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror) ::Glib::Error::throw_exception(gerror);
-  #else
-  if(gerror) error = ::Glib::Error::throw_exception(gerror);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return Glib::ustring(ScopedPtr<char>(buf).get());
 }
 
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::ustring filename_to_uri(const std::string& filename)
-#else
-Glib::ustring filename_to_uri(const std::string& filename, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   char *const buf = g_filename_to_uri(filename.c_str(), 0, &gerror);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror) ::Glib::Error::throw_exception(gerror);
-  #else
-  if(gerror) error = ::Glib::Error::throw_exception(gerror);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return Glib::ustring(ScopedPtr<char>(buf).get());
 }
@@ -421,17 +316,9 @@ Glib::ConvertError::Code Glib::ConvertError::code() const
   return static_cast<Code>(Glib::Error::code());
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void Glib::ConvertError::throw_func(GError* gobject)
 {
   throw Glib::ConvertError(gobject);
 }
-#else
-//When not using exceptions, we just pass the Exception object around without throwing it:
-std::auto_ptr<Glib::Error> Glib::ConvertError::throw_func(GError* gobject)
-{
-  return std::auto_ptr<Glib::Error>(new Glib::ConvertError(gobject));
-}
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 

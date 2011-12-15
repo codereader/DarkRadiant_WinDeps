@@ -91,7 +91,7 @@
     <ClCompile>
       <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;../..;../../glib;../../gio;$(SolutionDir)\glibmm;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../..;../../glib;../../gio;$(SolutionDir)\glibmm;$(SolutionDir)\..\..\..\w32deps\gtk2\include;$(SolutionDir)\..\..\..\w32deps\gtk2\include\glib-2.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\glib-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;GIOMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -122,7 +122,7 @@
     <ClCompile>
       <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;../..;../../glib;../../gio;$(SolutionDir)\glibmm;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../..;../../glib;../../gio;$(SolutionDir)\glibmm;$(SolutionDir)\..\..\..\w32deps\gtk2\include;$(SolutionDir)\..\..\..\w32deps\gtk2\include\glib-2.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\glib-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;GIOMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -150,7 +150,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>.;../..;../../glib;../../gio;$(SolutionDir)\glibmm;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../..;../../glib;../../gio;$(SolutionDir)\glibmm;$(SolutionDir)\..\..\..\w32deps\gtk2\include;$(SolutionDir)\..\..\..\w32deps\gtk2\include\glib-2.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\glib-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;GIOMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -177,7 +177,7 @@
     </Midl>
     <ClCompile>
       <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>.;../..;../../glib;../../gio;$(SolutionDir)\glibmm;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../..;../../glib;../../gio;$(SolutionDir)\glibmm;$(SolutionDir)\..\..\..\w32deps\gtk2\include;$(SolutionDir)\..\..\..\w32deps\gtk2\include\glib-2.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\glib-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;GIOMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -200,57 +200,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\gio\giomm\appinfo.cc" />
-    <ClCompile Include="..\..\gio\giomm\asyncresult.cc" />
-    <ClCompile Include="..\blank.cpp" />
-    <ClCompile Include="..\..\gio\giomm\bufferedinputstream.cc" />
-    <ClCompile Include="..\..\gio\giomm\bufferedoutputstream.cc" />
-    <ClCompile Include="..\..\gio\giomm\cancellable.cc" />
-    <ClCompile Include="..\..\gio\giomm\contenttype.cc" />
-    <ClCompile Include="..\..\gio\giomm\datainputstream.cc" />
-    <ClCompile Include="..\..\gio\giomm\dataoutputstream.cc" />
-    <ClCompile Include="..\..\gio\giomm\drive.cc" />
-    <ClCompile Include="..\..\gio\giomm\emblem.cc" />
-    <ClCompile Include="..\..\gio\giomm\emblemedicon.cc" />
-    <ClCompile Include="..\..\gio\giomm\enums.cc" />
-    <ClCompile Include="..\..\gio\giomm\error.cc" />
-    <ClCompile Include="..\..\gio\giomm\file.cc" />
-    <ClCompile Include="..\..\gio\giomm\fileattributeinfo.cc" />
-    <ClCompile Include="..\..\gio\giomm\fileattributeinfolist.cc" />
-    <ClCompile Include="..\..\gio\giomm\fileenumerator.cc" />
-    <ClCompile Include="..\..\gio\giomm\fileicon.cc" />
-    <ClCompile Include="..\..\gio\giomm\fileinfo.cc" />
-    <ClCompile Include="..\..\gio\giomm\fileinputstream.cc" />
-    <ClCompile Include="..\..\gio\giomm\filemonitor.cc" />
-    <ClCompile Include="..\..\gio\giomm\filenamecompleter.cc" />
-    <ClCompile Include="..\..\gio\giomm\fileoutputstream.cc" />
-    <ClCompile Include="..\..\gio\giomm\filterinputstream.cc" />
-    <ClCompile Include="..\..\gio\giomm\filteroutputstream.cc" />
-    <ClCompile Include="..\..\gio\giomm\icon.cc" />
-    <ClCompile Include="..\..\gio\giomm\init.cc" />
-    <ClCompile Include="..\..\gio\giomm\inputstream.cc" />
-    <ClCompile Include="..\..\gio\giomm\loadableicon.cc" />
-    <ClCompile Include="..\..\gio\giomm\memoryinputstream.cc" />
-    <ClCompile Include="..\..\gio\giomm\memoryoutputstream.cc" />
-    <ClCompile Include="..\..\gio\giomm\mount.cc" />
-    <ClCompile Include="..\..\gio\giomm\mountoperation.cc" />
-    <ClCompile Include="..\..\gio\giomm\outputstream.cc" />
-    <ClCompile Include="..\..\gio\giomm\seekable.cc" />
-    <ClCompile Include="..\..\gio\giomm\slot_async.cc" />
-    <ClCompile Include="..\..\gio\giomm\themedicon.cc" />
-    <ClCompile Include="..\..\gio\giomm\volume.cc" />
-    <ClCompile Include="..\..\gio\giomm\volumemonitor.cc" />
-    <ClCompile Include="..\..\gio\giomm\wrap_init.cc" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\..\gio\giomm\appinfo.h" />
+    <ClInclude Include="..\..\gio\giomm\asyncinitable.h" />
     <ClInclude Include="..\..\gio\giomm\asyncresult.h" />
     <ClInclude Include="..\..\gio\giomm\bufferedinputstream.h" />
     <ClInclude Include="..\..\gio\giomm\bufferedoutputstream.h" />
     <ClInclude Include="..\..\gio\giomm\cancellable.h" />
     <ClInclude Include="..\..\gio\giomm\contenttype.h" />
+    <ClInclude Include="..\..\gio\giomm\credentials.h" />
     <ClInclude Include="..\..\gio\giomm\datainputstream.h" />
     <ClInclude Include="..\..\gio\giomm\dataoutputstream.h" />
+    <ClInclude Include="..\..\gio\giomm\dbusaddress.h" />
+    <ClInclude Include="..\..\gio\giomm\dbusauthobserver.h" />
+    <ClInclude Include="..\..\gio\giomm\dbusconnection.h" />
+    <ClInclude Include="..\..\gio\giomm\dbuserror.h" />
+    <ClInclude Include="..\..\gio\giomm\dbuserrorutils.h" />
+    <ClInclude Include="..\..\gio\giomm\dbusinterfacevtable.h" />
+    <ClInclude Include="..\..\gio\giomm\dbusintrospection.h" />
+    <ClInclude Include="..\..\gio\giomm\dbusmessage.h" />
+    <ClInclude Include="..\..\gio\giomm\dbusmethodinvocation.h" />
+    <ClInclude Include="..\..\gio\giomm\dbusownname.h" />
+    <ClInclude Include="..\..\gio\giomm\dbusproxy.h" />
+    <ClInclude Include="..\..\gio\giomm\dbusserver.h" />
+    <ClInclude Include="..\..\gio\giomm\dbussubtreevtable.h" />
+    <ClInclude Include="..\..\gio\giomm\dbusutils.h" />
+    <ClInclude Include="..\..\gio\giomm\dbuswatchname.h" />
+    <ClInclude Include="..\..\gio\giomm\desktopappinfo.h" />
     <ClInclude Include="..\..\gio\giomm\drive.h" />
     <ClInclude Include="..\..\gio\giomm\emblem.h" />
     <ClInclude Include="..\..\gio\giomm\emblemedicon.h" />
@@ -263,26 +238,188 @@
     <ClInclude Include="..\..\gio\giomm\fileicon.h" />
     <ClInclude Include="..\..\gio\giomm\fileinfo.h" />
     <ClInclude Include="..\..\gio\giomm\fileinputstream.h" />
+    <ClInclude Include="..\..\gio\giomm\fileiostream.h" />
     <ClInclude Include="..\..\gio\giomm\filemonitor.h" />
     <ClInclude Include="..\..\gio\giomm\filenamecompleter.h" />
     <ClInclude Include="..\..\gio\giomm\fileoutputstream.h" />
     <ClInclude Include="..\..\gio\giomm\filterinputstream.h" />
     <ClInclude Include="..\..\gio\giomm\filteroutputstream.h" />
     <ClInclude Include="..\..\gio\giomm\icon.h" />
+    <ClInclude Include="..\..\gio\giomm\inetaddress.h" />
+    <ClInclude Include="..\..\gio\giomm\inetsocketaddress.h" />
     <ClInclude Include="..\..\gio\giomm\init.h" />
+    <ClInclude Include="..\..\gio\giomm\initable.h" />
     <ClInclude Include="..\..\gio\giomm\inputstream.h" />
+    <ClInclude Include="..\..\gio\giomm\iostream.h" />
     <ClInclude Include="..\..\gio\giomm\loadableicon.h" />
     <ClInclude Include="..\..\gio\giomm\memoryinputstream.h" />
     <ClInclude Include="..\..\gio\giomm\memoryoutputstream.h" />
     <ClInclude Include="..\..\gio\giomm\mount.h" />
     <ClInclude Include="..\..\gio\giomm\mountoperation.h" />
+    <ClInclude Include="..\..\gio\giomm\networkaddress.h" />
+    <ClInclude Include="..\..\gio\giomm\networkservice.h" />
     <ClInclude Include="..\..\gio\giomm\outputstream.h" />
+    <ClInclude Include="..\..\gio\giomm\proxy.h" />
+    <ClInclude Include="..\..\gio\giomm\proxyaddress.h" />
+    <ClInclude Include="..\..\gio\giomm\proxyresolver.h" />
+    <ClInclude Include="..\..\gio\giomm\resolver.h" />
     <ClInclude Include="..\..\gio\giomm\seekable.h" />
+    <ClInclude Include="..\..\gio\giomm\settings.h" />
     <ClInclude Include="..\..\gio\giomm\slot_async.h" />
+    <ClInclude Include="..\..\gio\giomm\socket.h" />
+    <ClInclude Include="..\..\gio\giomm\socketaddress.h" />
+    <ClInclude Include="..\..\gio\giomm\socketaddressenumerator.h" />
+    <ClInclude Include="..\..\gio\giomm\socketclient.h" />
+    <ClInclude Include="..\..\gio\giomm\socketconnectable.h" />
+    <ClInclude Include="..\..\gio\giomm\socketconnection.h" />
+    <ClInclude Include="..\..\gio\giomm\socketcontrolmessage.h" />
+    <ClInclude Include="..\..\gio\giomm\socketlistener.h" />
+    <ClInclude Include="..\..\gio\giomm\socketservice.h" />
+    <ClInclude Include="..\..\gio\giomm\srvtarget.h" />
+    <ClInclude Include="..\..\gio\giomm\tcpconnection.h" />
     <ClInclude Include="..\..\gio\giomm\themedicon.h" />
+    <ClInclude Include="..\..\gio\giomm\threadedsocketservice.h" />
+    <ClInclude Include="..\..\gio\giomm\unixconnection.h" />
+    <ClInclude Include="..\..\gio\giomm\unixcredentialsmessage.h" />
+    <ClInclude Include="..\..\gio\giomm\unixfdlist.h" />
+    <ClInclude Include="..\..\gio\giomm\unixfdmessage.h" />
+    <ClInclude Include="..\..\gio\giomm\unixinputstream.h" />
+    <ClInclude Include="..\..\gio\giomm\unixoutputstream.h" />
+    <ClInclude Include="..\..\gio\giomm\unixsocketaddress.h" />
     <ClInclude Include="..\..\gio\giomm\volume.h" />
     <ClInclude Include="..\..\gio\giomm\volumemonitor.h" />
     <ClInclude Include="..\..\gio\giomm\wrap_init.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\gio\giomm\appinfo.cc" />
+    <ClCompile Include="..\..\gio\giomm\asyncinitable.cc" />
+    <ClCompile Include="..\..\gio\giomm\asyncresult.cc" />
+    <ClCompile Include="..\..\gio\giomm\bufferedinputstream.cc" />
+    <ClCompile Include="..\..\gio\giomm\bufferedoutputstream.cc" />
+    <ClCompile Include="..\..\gio\giomm\cancellable.cc" />
+    <ClCompile Include="..\..\gio\giomm\contenttype.cc" />
+    <ClCompile Include="..\..\gio\giomm\credentials.cc" />
+    <ClCompile Include="..\..\gio\giomm\datainputstream.cc" />
+    <ClCompile Include="..\..\gio\giomm\dataoutputstream.cc" />
+    <ClCompile Include="..\..\gio\giomm\dbusaddress.cc" />
+    <ClCompile Include="..\..\gio\giomm\dbusauthobserver.cc" />
+    <ClCompile Include="..\..\gio\giomm\dbusconnection.cc" />
+    <ClCompile Include="..\..\gio\giomm\dbuserror.cc" />
+    <ClCompile Include="..\..\gio\giomm\dbuserrorutils.cc" />
+    <ClCompile Include="..\..\gio\giomm\dbusinterfacevtable.cc" />
+    <ClCompile Include="..\..\gio\giomm\dbusintrospection.cc" />
+    <ClCompile Include="..\..\gio\giomm\dbusmessage.cc" />
+    <ClCompile Include="..\..\gio\giomm\dbusmethodinvocation.cc" />
+    <ClCompile Include="..\..\gio\giomm\dbusownname.cc" />
+    <ClCompile Include="..\..\gio\giomm\dbusproxy.cc" />
+    <ClCompile Include="..\..\gio\giomm\dbusserver.cc" />
+    <ClCompile Include="..\..\gio\giomm\dbussubtreevtable.cc" />
+    <ClCompile Include="..\..\gio\giomm\dbusutils.cc" />
+    <ClCompile Include="..\..\gio\giomm\dbuswatchname.cc" />
+    <ClCompile Include="..\..\gio\giomm\desktopappinfo.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\gio\giomm\drive.cc" />
+    <ClCompile Include="..\..\gio\giomm\emblem.cc" />
+    <ClCompile Include="..\..\gio\giomm\emblemedicon.cc" />
+    <ClCompile Include="..\..\gio\giomm\enums.cc" />
+    <ClCompile Include="..\..\gio\giomm\error.cc" />
+    <ClCompile Include="..\..\gio\giomm\file.cc" />
+    <ClCompile Include="..\..\gio\giomm\fileattributeinfo.cc" />
+    <ClCompile Include="..\..\gio\giomm\fileattributeinfolist.cc" />
+    <ClCompile Include="..\..\gio\giomm\fileenumerator.cc" />
+    <ClCompile Include="..\..\gio\giomm\fileicon.cc" />
+    <ClCompile Include="..\..\gio\giomm\fileinfo.cc" />
+    <ClCompile Include="..\..\gio\giomm\fileinputstream.cc" />
+    <ClCompile Include="..\..\gio\giomm\fileiostream.cc" />
+    <ClCompile Include="..\..\gio\giomm\filemonitor.cc" />
+    <ClCompile Include="..\..\gio\giomm\filenamecompleter.cc" />
+    <ClCompile Include="..\..\gio\giomm\fileoutputstream.cc" />
+    <ClCompile Include="..\..\gio\giomm\filterinputstream.cc" />
+    <ClCompile Include="..\..\gio\giomm\filteroutputstream.cc" />
+    <ClCompile Include="..\..\gio\giomm\icon.cc" />
+    <ClCompile Include="..\..\gio\giomm\inetaddress.cc" />
+    <ClCompile Include="..\..\gio\giomm\inetsocketaddress.cc" />
+    <ClCompile Include="..\..\gio\giomm\init.cc" />
+    <ClCompile Include="..\..\gio\giomm\initable.cc" />
+    <ClCompile Include="..\..\gio\giomm\inputstream.cc" />
+    <ClCompile Include="..\..\gio\giomm\iostream.cc" />
+    <ClCompile Include="..\..\gio\giomm\loadableicon.cc" />
+    <ClCompile Include="..\..\gio\giomm\memoryinputstream.cc" />
+    <ClCompile Include="..\..\gio\giomm\memoryoutputstream.cc" />
+    <ClCompile Include="..\..\gio\giomm\mount.cc" />
+    <ClCompile Include="..\..\gio\giomm\mountoperation.cc" />
+    <ClCompile Include="..\..\gio\giomm\networkaddress.cc" />
+    <ClCompile Include="..\..\gio\giomm\networkservice.cc" />
+    <ClCompile Include="..\..\gio\giomm\outputstream.cc" />
+    <ClCompile Include="..\..\gio\giomm\proxy.cc" />
+    <ClCompile Include="..\..\gio\giomm\proxyaddress.cc" />
+    <ClCompile Include="..\..\gio\giomm\proxyresolver.cc" />
+    <ClCompile Include="..\..\gio\giomm\resolver.cc" />
+    <ClCompile Include="..\..\gio\giomm\seekable.cc" />
+    <ClCompile Include="..\..\gio\giomm\settings.cc" />
+    <ClCompile Include="..\..\gio\giomm\slot_async.cc" />
+    <ClCompile Include="..\..\gio\giomm\socket.cc" />
+    <ClCompile Include="..\..\gio\giomm\socketaddress.cc" />
+    <ClCompile Include="..\..\gio\giomm\socketaddressenumerator.cc" />
+    <ClCompile Include="..\..\gio\giomm\socketclient.cc" />
+    <ClCompile Include="..\..\gio\giomm\socketconnectable.cc" />
+    <ClCompile Include="..\..\gio\giomm\socketconnection.cc" />
+    <ClCompile Include="..\..\gio\giomm\socketcontrolmessage.cc" />
+    <ClCompile Include="..\..\gio\giomm\socketlistener.cc" />
+    <ClCompile Include="..\..\gio\giomm\socketservice.cc" />
+    <ClCompile Include="..\..\gio\giomm\srvtarget.cc" />
+    <ClCompile Include="..\..\gio\giomm\tcpconnection.cc" />
+    <ClCompile Include="..\..\gio\giomm\themedicon.cc" />
+    <ClCompile Include="..\..\gio\giomm\threadedsocketservice.cc" />
+    <ClCompile Include="..\..\gio\giomm\unixconnection.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\gio\giomm\unixcredentialsmessage.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\gio\giomm\unixfdlist.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\gio\giomm\unixfdmessage.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\gio\giomm\unixinputstream.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\gio\giomm\unixoutputstream.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\gio\giomm\unixsocketaddress.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\gio\giomm\volume.cc" />
+    <ClCompile Include="..\..\gio\giomm\volumemonitor.cc" />
+    <ClCompile Include="..\..\gio\giomm\wrap_init.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

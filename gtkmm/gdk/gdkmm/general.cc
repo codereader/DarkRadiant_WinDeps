@@ -1,5 +1,5 @@
 // -*- c++ -*-
-/* $Id: general.cc 1082 2009-01-19 17:55:19Z murrayc $ */
+/* $Id$ */
 
 /* Copyright 2002      The gtkmm Development Team
  *

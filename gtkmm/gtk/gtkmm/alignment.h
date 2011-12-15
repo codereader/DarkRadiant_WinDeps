@@ -88,6 +88,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -100,17 +102,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -123,7 +119,8 @@ public:
    * @param xscale The initial amount that the child expands horizontally to fill up unused space.
    * @param yscale The initial amount that the child expands vertically to fill up unused space.
    */
-  explicit Alignment(float xalign = 0.5, float yalign = 0.5, float xscale = 1.0, float yscale = 1.0);
+    explicit Alignment(float xalign =  0.5, float yalign =  0.5, float xscale =  1.0, float yscale =  1.0);
+
 
   /** Constructor to create an Alignment object.
    * @param xalign A Gtk::AlignmentEnum describing the initial horizontal alignment of the child.
@@ -131,8 +128,16 @@ public:
    * @param xscale The initial amount that the child expands horizontally to fill up unused space.
    * @param yscale The initial amount that the child expands vertically to fill up unused space.
    */
-  explicit Alignment(AlignmentEnum xalign, AlignmentEnum yalign = Gtk::ALIGN_CENTER, float xscale = 1.0, float yscale = 1.0);
+    explicit Alignment(AlignmentEnum xalign, AlignmentEnum yalign =  Gtk::ALIGN_CENTER, float xscale =  1.0, float yscale =  1.0);
 
+
+  /** Sets the Alignment values.
+   * @param xalign The horizontal alignment of the child of this Alignment, from 0 (left) to 1 (right).
+   * @param yalign The vertical alignment of the child of this Alignment, from 0 (top) to 1 (bottom).
+   * @param xscale The amount that the child expands horizontally to fill up unused space, from 0 to 1.  A value of 0 indicates that the child widget should never expand.  A value of 1 indicates that the child widget will expand to fill all the space allocated for the Alignment.
+   * @param yscale The amount that the child widget expands vertically to fill up unused space from 0 to 1.  The values are similar to @a xscale.
+   */
+  void set(float xalign =  0.5, float yalign =  0.5, float xscale =  1.0, float yscale =  1.0);
   
   /** Sets the Alignment values.
    * @param xalign The horizontal alignment of the child of this Alignment, from 0 (left) to 1 (right).
@@ -140,15 +145,7 @@ public:
    * @param xscale The amount that the child expands horizontally to fill up unused space, from 0 to 1.  A value of 0 indicates that the child widget should never expand.  A value of 1 indicates that the child widget will expand to fill all the space allocated for the Alignment.
    * @param yscale The amount that the child widget expands vertically to fill up unused space from 0 to 1.  The values are similar to @a xscale.
    */
-  void set(float xalign = 0.5, float yalign = 0.5, float xscale = 1.0, float yscale=  1.0);
-  
-  /** Sets the Alignment values.
-   * @param xalign The horizontal alignment of the child of this Alignment, from 0 (left) to 1 (right).
-   * @param yalign The vertical alignment of the child of this Alignment, from 0 (top) to 1 (bottom).
-   * @param xscale The amount that the child expands horizontally to fill up unused space, from 0 to 1.  A value of 0 indicates that the child widget should never expand.  A value of 1 indicates that the child widget will expand to fill all the space allocated for the Alignment.
-   * @param yscale The amount that the child widget expands vertically to fill up unused space from 0 to 1.  The values are similar to @a xscale.
-   */
-  void set(AlignmentEnum xalign, AlignmentEnum yalign = Gtk::ALIGN_CENTER, float xscale = 1.0, float yscale=  1.0);
+  void set(AlignmentEnum xalign, AlignmentEnum yalign =  Gtk::ALIGN_CENTER, float xscale =  1.0, float yscale =  1.0);
 
   //New in GTK+ 2.4
   
@@ -157,7 +154,7 @@ public:
    * this can be used to indent the child widget towards the right by adding
    * padding on the left.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param padding_top The padding at the top of the widget.
    * @param padding_bottom The padding at the bottom of the widget.
    * @param padding_left The padding at the left of the widget.
@@ -168,7 +165,7 @@ public:
   /** Gets the padding on the different sides of the widget.
    * See set_padding().
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param padding_top Location to store the padding for the top of the widget, or <tt>0</tt>.
    * @param padding_bottom Location to store the padding for the bottom of the widget, or <tt>0</tt>.
    * @param padding_left Location to store the padding for the left of the widget, or <tt>0</tt>.
@@ -177,7 +174,7 @@ public:
   void get_padding(guint& padding_top, guint& padding_bottom, guint& padding_left, guint& padding_right);
               
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Horizontal position of child in available space. 0.0 is left aligned
+/** Horizontal position of child in available space. 0.0 is left aligned, 1.0 is right aligned.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -187,7 +184,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Horizontal position of child in available space. 0.0 is left aligned
+/** Horizontal position of child in available space. 0.0 is left aligned, 1.0 is right aligned.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -197,7 +194,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Vertical position of child in available space. 0.0 is top aligned
+/** Vertical position of child in available space. 0.0 is top aligned, 1.0 is bottom aligned.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -207,7 +204,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Vertical position of child in available space. 0.0 is top aligned
+/** Vertical position of child in available space. 0.0 is top aligned, 1.0 is bottom aligned.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -217,7 +214,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If available horizontal space is bigger than needed for the child
+/** If available horizontal space is bigger than needed for the child, how much of it to use for the child. 0.0 means none, 1.0 means all.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -227,7 +224,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If available horizontal space is bigger than needed for the child
+/** If available horizontal space is bigger than needed for the child, how much of it to use for the child. 0.0 means none, 1.0 means all.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -237,7 +234,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If available vertical space is bigger than needed for the child
+/** If available vertical space is bigger than needed for the child, how much of it to use for the child. 0.0 means none, 1.0 means all.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -247,7 +244,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If available vertical space is bigger than needed for the child
+/** If available vertical space is bigger than needed for the child, how much of it to use for the child. 0.0 means none, 1.0 means all.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when

@@ -19,19 +19,26 @@
 
 #include <gtkmm/action.h>
 #include <glibmm/interface.h>
-#include <gtk/gtk.h>
 _DEFS(gtkmm,gtk)
 _PINCLUDE(glibmm/private/interface_p.h)
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+extern "C"
+{
+typedef struct _GtkActivatableIface GtkActivatableIface;
+}
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 
 namespace Gtk
 {
 
-/** Activatable widgets can be connected to a GtkAction and reflect the state 
+//TODO: Use this when we can add new base classes to existing classes.
+/** Activatable widgets can be connected to a Gtk::Action and reflect the state 
  * of the action. An Activatable can also provide feedback through its action, 
  * as it is responsible for activating the related action.
  *
- * @newin2p16
+ * @newin{2,16}
  */
 class Activatable : public Glib::Interface
 {

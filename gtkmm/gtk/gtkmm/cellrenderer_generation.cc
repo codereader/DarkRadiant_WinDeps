@@ -1,4 +1,4 @@
-/* $Id: cellrenderer_generation.cc 1082 2009-01-19 17:55:19Z murrayc $ */
+/* $Id$ */
 
 /* Copyright(C) 2003 The gtkmm Development Team
  *
@@ -41,11 +41,7 @@ CellRenderer* generate_cellrenderer<bool>(bool editable)
   CellRendererToggle* pCellRenderer = new CellRendererToggle();
 
   //GTK+'s "activatable" really means "editable":
-#ifdef GLIBMM_PROPERTIES_ENABLED
   pCellRenderer->property_activatable() = editable;
-#else
-  pCellRenderer->set_property("activatable", editable);
-#endif //GLIBMM_PROPERTIES_ENABLED
 
   return pCellRenderer;
 }
@@ -56,11 +52,7 @@ CellRenderer* generate_cellrenderer<AccelKey>(bool editable)
   CellRendererAccel* pCellRenderer = new CellRendererAccel();
 
   //GTK+'s "editable" really means "editable":
-#ifdef GLIBMM_PROPERTIES_ENABLED
   pCellRenderer->property_editable() = editable;
-#else
-  pCellRenderer->set_property("editable", editable);
-#endif //GLIBMM_PROPERTIES_ENABLED
 
   return pCellRenderer;
 }

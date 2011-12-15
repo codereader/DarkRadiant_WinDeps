@@ -40,7 +40,7 @@ Cursor::Cursor(const Glib::RefPtr<Pixmap>& source, const Glib::RefPtr<Pixmap>& m
 				       const Color& fg, const Color& bg,
 				       int x, int y)
 {
-  gobject_ = gdk_cursor_new_from_pixmap(source->gobj(), mask->gobj(), 
+  gobject_ = gdk_cursor_new_from_pixmap(Glib::unwrap(source), mask->gobj(), 
                                         const_cast<GdkColor*>(fg.gobj()),
 				        const_cast<GdkColor*>(bg.gobj()),
                                         x, y);
@@ -48,17 +48,17 @@ Cursor::Cursor(const Glib::RefPtr<Pixmap>& source, const Glib::RefPtr<Pixmap>& m
 
 Cursor::Cursor(const Glib::RefPtr<Display>& display, CursorType cursor_type)
 {
-  gobject_ = gdk_cursor_new_for_display(display->gobj(), (GdkCursorType)cursor_type);
+  gobject_ = gdk_cursor_new_for_display(Glib::unwrap(display), (GdkCursorType)cursor_type);
 }
 
 Cursor::Cursor(const Glib::RefPtr<Display>& display, const Glib::RefPtr<Pixbuf>& pixbuf, int x, int y)
 {
-  gobject_ = gdk_cursor_new_from_pixbuf(display->gobj(), pixbuf->gobj(), x, y);
+  gobject_ = gdk_cursor_new_from_pixbuf(Glib::unwrap(display), pixbuf->gobj(), x, y);
 }
 
 Cursor::Cursor(const Glib::RefPtr<Display>& display, const Glib::ustring& name)
 {
-  gobject_ = gdk_cursor_new_from_name(display->gobj(), name.c_str());
+  gobject_ = gdk_cursor_new_from_name(Glib::unwrap(display), name.c_str());
 }      
 
 } //namespace Gdk
@@ -163,6 +163,11 @@ Glib::RefPtr<Gdk::Pixbuf> Cursor::get_image()
 Glib::RefPtr<const Gdk::Pixbuf> Cursor::get_image() const
 {
   return const_cast<Cursor*>(this)->get_image();
+}
+
+CursorType Cursor::get_cursor_type() const
+{
+  return ((CursorType)(gdk_cursor_get_cursor_type(const_cast<GdkCursor*>(gobj()))));
 }
 
 

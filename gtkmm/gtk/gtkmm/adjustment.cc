@@ -104,24 +104,18 @@ const Glib::Class& Adjustment_Class::init()
   return *this;
 }
 
+
 void Adjustment_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->changed = &changed_callback;
   klass->value_changed = &value_changed_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Adjustment_Class::changed_callback(GtkAdjustment* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -153,7 +147,7 @@ void Adjustment_Class::changed_callback(GtkAdjustment* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -193,7 +187,7 @@ void Adjustment_Class::value_changed_callback(GtkAdjustment* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -202,7 +196,6 @@ void Adjustment_Class::value_changed_callback(GtkAdjustment* self)
   if(base && base->value_changed)
     (*base->value_changed)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Adjustment_Class::wrap_new(GObject* o)
@@ -237,6 +230,7 @@ GType Adjustment::get_type()
 {
   return adjustment_class_.init().get_type();
 }
+
 
 GType Adjustment::get_base_type()
 {
@@ -337,7 +331,91 @@ Glib::SignalProxy0< void > Adjustment::signal_value_changed()
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<double> Adjustment::property_value() 
+{
+  return Glib::PropertyProxy<double>(this, "value");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<double> Adjustment::property_value() const
+{
+  return Glib::PropertyProxy_ReadOnly<double>(this, "value");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<double> Adjustment::property_lower() 
+{
+  return Glib::PropertyProxy<double>(this, "lower");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<double> Adjustment::property_lower() const
+{
+  return Glib::PropertyProxy_ReadOnly<double>(this, "lower");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<double> Adjustment::property_upper() 
+{
+  return Glib::PropertyProxy<double>(this, "upper");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<double> Adjustment::property_upper() const
+{
+  return Glib::PropertyProxy_ReadOnly<double>(this, "upper");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<double> Adjustment::property_step_increment() 
+{
+  return Glib::PropertyProxy<double>(this, "step-increment");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<double> Adjustment::property_step_increment() const
+{
+  return Glib::PropertyProxy_ReadOnly<double>(this, "step-increment");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<double> Adjustment::property_page_increment() 
+{
+  return Glib::PropertyProxy<double>(this, "page-increment");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<double> Adjustment::property_page_increment() const
+{
+  return Glib::PropertyProxy_ReadOnly<double>(this, "page-increment");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<double> Adjustment::property_page_size() 
+{
+  return Glib::PropertyProxy<double>(this, "page-size");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<double> Adjustment::property_page_size() const
+{
+  return Glib::PropertyProxy_ReadOnly<double>(this, "page-size");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+
 void Gtk::Adjustment::on_changed()
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -356,10 +434,6 @@ void Gtk::Adjustment::on_value_changed()
   if(base && base->value_changed)
     (*base->value_changed)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

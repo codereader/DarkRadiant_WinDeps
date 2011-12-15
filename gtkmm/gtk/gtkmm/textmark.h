@@ -103,6 +103,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -130,7 +132,7 @@ protected:
 
    * @param name mark name.
    * @param left_gravity Whether the mark should have left gravity.
-   * @newin2p12
+   * @newin{2,12}
    */
   explicit TextMark(bool left_gravity = true);
 
@@ -145,9 +147,10 @@ protected:
 
    * @param name mark name.
    * @param left_gravity Whether the mark should have left gravity.
-   * @newin2p12
+   * @newin{2,12}
    */
-  explicit TextMark(const Glib::ustring& name, bool left_gravity = true);
+    explicit TextMark(const Glib::ustring& name, bool left_gravity =  true);
+
 
 public:
 
@@ -163,7 +166,7 @@ public:
    * @param name mark name.
    * @param left_gravity Whether the mark should have left gravity.
    * @result A RefPtr to a new text mark.
-   * @newin2p12
+   * @newin{2,12}
    */
   
   static Glib::RefPtr<TextMark> create(bool left_gravity =  true);
@@ -181,7 +184,7 @@ public:
    * @param name mark name.
    * @param left_gravity Whether the mark should have left gravity.
    * @result A RefPtr to a new text mark.
-   * @newin2p12
+   * @newin{2,12}
    */
   
   static Glib::RefPtr<TextMark> create(const Glib::ustring& name, bool left_gravity =  true);
@@ -194,19 +197,22 @@ public:
    * Marks are not visible by default.
    * @param setting Visibility of mark.
    */
-  void set_visible(bool setting = true);
+  void set_visible(bool setting =  true);
   
-  /** Return value: <tt>true</tt> if visible
+  /** Returns <tt>true</tt> if the mark is visible (i.e.\ a cursor is displayed
+   * for it).
    * @return <tt>true</tt> if visible.
    */
   bool get_visible() const;
   
-  /** Return value: mark name
+  /** Returns the mark name; returns <tt>0</tt> for anonymous marks.
    * @return Mark name.
    */
   Glib::ustring get_name() const;
   
-  /** Return value: whether the mark is deleted
+  /** Returns <tt>true</tt> if the mark has been removed from its buffer
+   * with Gtk::TextBuffer::delete_mark(). See Gtk::TextBuffer::add_mark()
+   * for a way to add it to a buffer again.
    * @return Whether the mark is deleted.
    */
   bool get_deleted() const;
@@ -230,23 +236,38 @@ public:
 
   //TODO: Add a const overload, if we have a ConstTextIter. 
   TextIter get_iter();
+  
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Mark name.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_name() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the mark has left gravity.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_left_gravity() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
 
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

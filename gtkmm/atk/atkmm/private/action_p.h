@@ -29,21 +29,17 @@ public:
 
 protected:
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   //Callbacks (default signal handlers):
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
   //Callbacks (virtual functions):
-#ifdef GLIBMM_VFUNCS_ENABLED
   static gboolean do_action_vfunc_callback(AtkAction* self, gint i);
   static gint get_n_actions_vfunc_callback(AtkAction* self);
   static const gchar* get_description_vfunc_callback(AtkAction* self, gint i);
   static const gchar* get_name_vfunc_callback(AtkAction* self, gint i);
   static const gchar* get_keybinding_vfunc_callback(AtkAction* self, gint i);
   static gboolean set_description_vfunc_callback(AtkAction* self, gint i, const gchar* desc);
-#endif //GLIBMM_VFUNCS_ENABLED
 };
 
 

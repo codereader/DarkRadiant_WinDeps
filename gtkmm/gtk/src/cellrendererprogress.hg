@@ -28,7 +28,7 @@ namespace Gtk
 /** Renders numbers as progress bars.
  *
  * @ingroup TreeView
- * @newin2p6
+ * @newin{2,6}
  */
 class CellRendererProgress : public CellRenderer
 {
@@ -41,12 +41,9 @@ public:
   _WRAP_PROPERTY("pulse", int)
   _WRAP_PROPERTY("text-xalign", float)
   _WRAP_PROPERTY("text-yalign", float)
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
+  _WRAP_PROPERTY("orientation", ProgressBarOrientation)
+  
   virtual Glib::PropertyProxy_Base _property_renderable();
-#else
-  virtual Glib::ustring _property_renderable();
-#endif
 };
 
 } // namespace Gtk

@@ -28,6 +28,14 @@
 namespace Gio
 {
 
+EmblemedIcon::EmblemedIcon(const Glib::RefPtr<Icon>& icon)
+:
+  // Mark this class as non-derived to allow C++ vfuncs to be skipped.
+  Glib::ObjectBase(0),
+  Glib::Object(Glib::ConstructParams(emblemedicon_class_.init(), "icon",Glib::unwrap(icon), static_cast<char*>(0)))
+{
+}
+
 } //namespace Gio
 
 namespace
@@ -81,18 +89,8 @@ void EmblemedIcon_Class::class_init_function(void* g_class, void* class_data)
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* EmblemedIcon_Class::wrap_new(GObject* object)
@@ -154,6 +152,12 @@ Glib::RefPtr<EmblemedIcon> EmblemedIcon::create(const Glib::RefPtr<Icon>& icon, 
 {
   return Glib::RefPtr<EmblemedIcon>( new EmblemedIcon(icon, emblem) );
 }
+
+Glib::RefPtr<EmblemedIcon> EmblemedIcon::create(const Glib::RefPtr<Icon>& icon)
+{
+  return Glib::RefPtr<EmblemedIcon>( new EmblemedIcon(icon) );
+}
+
 Glib::RefPtr<Icon> EmblemedIcon::get_icon()
 {
   return Glib::wrap(g_emblemed_icon_get_icon(gobj()));
@@ -173,13 +177,6 @@ void EmblemedIcon::add_emblem(const Glib::RefPtr<Emblem>& emblem)
 {
 g_emblemed_icon_add_emblem(gobj(), const_cast<GEmblem*>(Glib::unwrap(emblem))); 
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gio

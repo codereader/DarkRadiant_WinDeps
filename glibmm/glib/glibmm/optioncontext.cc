@@ -39,18 +39,14 @@ namespace Glib
       Glib::OptionContext::SlotTranslate* the_slot =
         static_cast<Glib::OptionContext::SlotTranslate*>(data);
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
       try
       {
-#endif //GLIBMM_EXCEPTIONS_ENABLED
         translated_str = (*the_slot)(str);
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
       }
       catch(...)
       {
         Glib::exception_handlers_invoke();
       }
-#endif //GLIBMM_EXCEPTIONS_ENABLED
       return translated_str.c_str ();
     }
 
@@ -117,7 +113,7 @@ void OptionContext::set_translate_func (const SlotTranslate& slot)
 
 Glib::ustring OptionContext::get_help(bool main_help) const
 {
-  return Glib::convert_return_gchar_ptr_to_ustring(g_option_context_get_help(const_cast<GOptionContext*>(gobj()), static_cast<int>(main_help), NULL));
+  return Glib::convert_return_gchar_ptr_to_ustring(g_option_context_get_help(const_cast<GOptionContext*>(gobj()), static_cast<int>(main_help), 0));
 }
 
 } // namespace Glib
@@ -142,18 +138,10 @@ Glib::OptionError::Code Glib::OptionError::code() const
   return static_cast<Code>(Glib::Error::code());
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void Glib::OptionError::throw_func(GError* gobject)
 {
   throw Glib::OptionError(gobject);
 }
-#else
-//When not using exceptions, we just pass the Exception object around without throwing it:
-std::auto_ptr<Glib::Error> Glib::OptionError::throw_func(GError* gobject)
-{
-  return std::auto_ptr<Glib::Error>(new Glib::OptionError(gobject));
-}
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
 namespace Glib
@@ -180,21 +168,12 @@ bool OptionContext::get_ignore_unknown_options() const
   return g_option_context_get_ignore_unknown_options(const_cast<GOptionContext*>(gobj()));
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool OptionContext::parse(int& argc, char**& argv)
-#else
-bool OptionContext::parse(int& argc, char**& argv, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
-  bool retvalue = g_option_context_parse(gobj(), &argc, &(argv), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  bool retvalue = g_option_context_parse(gobj(), &(argc), &(argv), &(gerror));
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 

@@ -30,7 +30,7 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/button.h>
 
-
+ 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 typedef struct _GtkColorSelection GtkColorSelection;
 typedef struct _GtkColorSelectionClass GtkColorSelectionClass;
@@ -57,7 +57,7 @@ namespace Gtk
  * parameters such as hue, saturation, value, red, green, blue, and opacity.
  *
  * It is found on the standard color selection dialog box
- * Gtk::ColorSelectionDialog. 
+ * Gtk::ColorSelectionDialog.
  *
  * @ingroup Widgets
  */
@@ -93,6 +93,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -105,18 +107,12 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_color_changed();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -134,7 +130,7 @@ public:
   /** Sets the @a colorsel to use or not use opacity.
    * @param has_opacity <tt>true</tt> if @a colorsel can set the opacity, <tt>false</tt> otherwise.
    */
-  void set_has_opacity_control(bool has_opacity = true);
+  void set_has_opacity_control(bool has_opacity =  true);
   
   /** Determines whether the color selector has a color palette.
    * @return <tt>true</tt> if the selector has a palette.  <tt>false</tt> if it hasn't.
@@ -144,7 +140,7 @@ public:
   /** Shows and hides the palette based upon the value of @a has_palette.
    * @param has_palette <tt>true</tt> if palette is to be visible, <tt>false</tt> otherwise.
    */
-  void set_has_palette(bool has_palette = true);
+  void set_has_palette(bool has_palette =  true);
   
   /** Sets the current color to be @a color.  The first time this is called, it will
    * also set the original color to be @a color too.
@@ -159,7 +155,7 @@ public:
   void set_current_alpha(guint16 alpha);
   Gdk::Color get_current_color() const;
   
-  /** Return value: an integer between 0 and 65535.
+  /** Returns the current alpha value.
    * @return An integer between 0 and 65535.
    */
   guint16 get_current_alpha() const;
@@ -179,7 +175,7 @@ public:
   void set_previous_alpha(guint16 alpha);
   Gdk::Color get_previous_color() const;
   
-  /** Return value: an integer between 0 and 65535.
+  /** Returns the previous alpha value.
    * @return An integer between 0 and 65535.
    */
   guint16 get_previous_alpha() const;
@@ -330,6 +326,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -342,17 +340,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -361,17 +353,95 @@ private:
 public:
 
   ColorSelectionDialog();
-  explicit ColorSelectionDialog(const Glib::ustring& title);
+    explicit ColorSelectionDialog(const Glib::ustring& title);
 
-   ColorSelection* get_colorsel();
+
+  /** Retrieves the Gtk::ColorSelection widget embedded in the dialog.
+   * 
+   * @newin{2,14}
+   * @return The embedded Gtk::ColorSelection.
+   */
+  ColorSelection* get_color_selection();
+  
+  /** Retrieves the Gtk::ColorSelection widget embedded in the dialog.
+   * 
+   * @newin{2,14}
+   * @return The embedded Gtk::ColorSelection.
+   */
+  const ColorSelection* get_color_selection() const;
+
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+  //TODO: Remove these in gtkmm 3. They use G_SEAL()ed struct fields.
+
+  /** @deprecated Use get_color_selection() instead.
+   */
+  ColorSelection* get_colorsel();
+
+  /** @deprecated Use get_color_selection() instead.
+   */
   const ColorSelection* get_colorsel() const;
-    Button* get_ok_button();
+
+  /** @deprecated Use Gtk::Dialog::get_widget_for_response() instead.
+   */
+   Button* get_ok_button();
   const Button* get_ok_button() const;
-    Button* get_cancel_button();
-  const Button* get_cancel_button() const;
-    Button* get_help_button();
-  const Button* get_help_button() const;
  
+  /** @deprecated Use Gtk::Dialog::get_widget_for_response() instead.
+   */
+   Button* get_cancel_button();
+  const Button* get_cancel_button() const;
+ 
+  /** @deprecated Use Gtk::Dialog::get_widget_for_response() instead.
+   */
+   Button* get_help_button();
+  const Button* get_help_button() const;
+ #endif // GTKMM_DISABLE_DEPRECATED
+
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The color selection embedded in the dialog.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<ColorSelection*> property_color_selection() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The OK button of the dialog.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<Button*> property_ok_button() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The cancel button of the dialog.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<Button*> property_cancel_button() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The help button of the dialog.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<Button*> property_help_button() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
 
 };
 

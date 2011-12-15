@@ -4,7 +4,8 @@
 #define _PANGOMM_FONTFAMILY_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: fontfamily.hg,v 1.2 2004/03/03 01:07:40 murrayc Exp $ */
 
@@ -13,16 +14,16 @@
  * Copyright 2001      The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
+ * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
@@ -79,6 +80,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -119,12 +122,12 @@ public:
    * character is typically double-width in a monospace font.
    * 
    * The best way to find out the grid-cell size is to call
-   * pango_font_metrics_get_approximate_digit_width(), since the results
-   * of pango_font_metrics_get_approximate_char_width() may be affected
+   * Pango::FontMetrics::get_approximate_digit_width(), since the results
+   * of Pango::FontMetrics::get_approximate_char_width() may be affected
    * by double-width characters.
-   * @return <tt>true</tt> if the family is monospace.
    * 
-   * Since: 1.4.
+   * @newin{1,4}
+   * @return <tt>true</tt> if the family is monospace.
    */
   bool is_monospace() const;
 
@@ -133,17 +136,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

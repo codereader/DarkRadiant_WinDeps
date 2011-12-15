@@ -1,4 +1,4 @@
-/* $Id: radiobuttongroup.cc 1082 2009-01-19 17:55:19Z murrayc $ */
+/* $Id$ */
 
 /* Copyright(C) 2003 The gtkmm Development Team
  *
@@ -61,7 +61,7 @@ void RadioButtonGroup::add(RadioMenuItem& item)
   item.set_group(*this);
 
   //probably not necessary:
-  group_ = item.gobj()->group;
+  group_ = gtk_radio_menu_item_get_group(item.gobj());
 }
 
 void RadioButtonGroup::add(const Glib::RefPtr<RadioAction>& item)

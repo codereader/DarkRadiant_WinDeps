@@ -3,10 +3,10 @@
 #ifndef _GTKMM_WIDGET_H
 #define _GTKMM_WIDGET_H
 
+#include <gtkmmconfig.h>
+
 
 #include <glibmm.h>
-
-/* $Id: widget.hg,v 1.48 2006/09/19 20:08:42 murrayc Exp $ */
 
 /* Copyright (C) 2002, 2003 The gtkmm Development Team
  *
@@ -24,11 +24,11 @@
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+
  
 #include <pangomm/context.h>
 #include <pangomm/layout.h>
 
-#include <gtkmmconfig.h> //For GTKMM_ATKMM_ENABLED
 #ifdef GTKMM_ATKMM_ENABLED
 #include <atkmm/object.h>
 #include <atkmm/implementor.h>
@@ -55,7 +55,6 @@ extern "C"
 {
 typedef struct _GtkTargetEntry GtkTargetEntry;
 }
-
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -70,7 +69,7 @@ namespace Gtk
 {
 
 
-/** @addtogroup gtkmmEnums Enums and Flags */
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
 
 /**
  * @ingroup gtkmmEnums
@@ -303,7 +302,6 @@ typedef GtkRequisition Requisition;
 // a typedef of GdkRectangle.
 typedef Gdk::Rectangle Allocation;
 
-
 /** @defgroup Widgets Widgets
  */
 
@@ -360,6 +358,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -372,16 +372,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_show();
   virtual void on_hide();
   virtual void on_map();
@@ -440,7 +435,6 @@ protected:
   virtual Glib::RefPtr<Atk::Object> on_get_accessible();
 #endif // GTKMM_ATKMM_ENABLED
   virtual void on_screen_changed(const Glib::RefPtr<Gdk::Screen>& previous_screen);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -451,7 +445,10 @@ public:
   
 
   /** For widgets that support scrolling, sets the scroll adjustments and
-   * Return value: <tt>true</tt> if the widget supports scrolling
+   * returns <tt>true</tt>.  For widgets that don't support scrolling, does
+   * nothing and returns <tt>false</tt>. Widgets that don't support scrolling
+   * can be scrolled by placing them in a Gtk::Viewport, which does
+   * support scrolling.
    * @param hadjustment An adjustment for horizontal scrolling, or <tt>0</tt>.
    * @param vadjustment An adjustment for vertical scrolling, or <tt>0</tt>.
    * @return <tt>true</tt> if the widget supports scrolling.
@@ -493,9 +490,14 @@ public:
   void show_all();
 
   
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   /** Recursively hides a widget and any child widgets.
+   * 
+   * Deprecated: 2.24: Use hide() instead.
    */
   void hide_all();
+#endif // GTKMM_DISABLE_DEPRECATED
 
 
 /* QUEUE DRAWS */
@@ -545,15 +547,15 @@ public:
    * subclass.  Obtains the preferred size of a widget. The container
    * uses this information to arrange its child widgets and decide what
    * size allocations to give them with size_allocate().
-   * 
+   *
    * You can also call this function from an application, with some
    * caveats. Most notably, getting a size request requires the widget
    * to be associated with a screen, because font information may be
    * needed. Multihead-aware applications should keep this in mind.
-   * 
+   *
    * Also remember that the size request is not necessarily the size
    * a widget will actually be allocated.
-   * 
+   *
    * See also get_child_requisition().
    * @result A Gtk::Requisition.
    */
@@ -596,7 +598,7 @@ public:
    * Gtk::Window::add_accel_group(), and the signal must be of type RUN_ACTION.
    * Accelerators added through this function are not user changeable during
    * runtime. If you want to support accelerators that can be changed by the
-   * user, use gtk_accel_map_add_entry() and set_accel_path() or
+   * user, use Gtk::AccelMap::add_entry() and set_accel_path() or
    * Gtk::MenuItem::set_accel_path() instead.
    * @param accel_signal Widget signal to emit on accelerator activation.
    * @param accel_group Accel group for this widget, added to its toplevel.
@@ -604,8 +606,7 @@ public:
    * @param accel_mods Modifier key combination of the accelerator.
    * @param accel_flags Flag accelerators, e.g. Gtk::ACCEL_VISIBLE.
    */
-  void add_accelerator(const Glib::ustring& accel_signal, const Glib::RefPtr<AccelGroup>& accel_group,
-               guint accel_key, Gdk::ModifierType accel_mods, AccelFlags accel_flags);
+  void add_accelerator(const Glib::ustring& accel_signal, const Glib::RefPtr<AccelGroup>& accel_group, guint accel_key, Gdk::ModifierType accel_mods, AccelFlags accel_flags);
 
   
   /** Removes an accelerator from @a widget, previously installed with
@@ -615,8 +616,7 @@ public:
    * @param accel_mods Modifier key combination of the accelerator.
    * @return Whether an accelerator was installed and could be removed.
    */
-  bool remove_accelerator(const Glib::RefPtr<AccelGroup>& accel_group,
-               guint accel_key, Gdk::ModifierType accel_mods);
+  bool remove_accelerator(const Glib::RefPtr<AccelGroup>& accel_group, guint accel_key, Gdk::ModifierType accel_mods);
   
   /** Given an accelerator group, @a accel_group, and an accelerator path,
    *  @a accel_path, sets up an accelerator in @a accel_group so whenever the
@@ -625,7 +625,7 @@ public:
    * accelerator group) installed by previous calls to
    * set_accel_path(). Associating accelerators with
    * paths allows them to be modified by the user and the modifications
-   * to be saved for future use. (See gtk_accel_map_save().)
+   * to be saved for future use. (See Gtk::AccelMap::save().)
    * 
    * This function is a low level function that would most likely
    * be used by a menu creation system like Gtk::UIManager. If you
@@ -642,13 +642,12 @@ public:
    * @param accel_path Path used to look up the accelerator.
    * @param accel_group A Gtk::AccelGroup.
    */
-  void set_accel_path(const Glib::ustring& accel_path,
-                                   const Glib::RefPtr<AccelGroup>& accel_group);
+  void set_accel_path(const Glib::ustring& accel_path, const Glib::RefPtr<AccelGroup>& accel_group);
 
   //GList* gtk_widget_list_accel_closures();
 
   //TODO: Or maybe it is useless: gboolean gtk_widget_can_activate_accel(GtkWidget *widget, guint signal_id)
-  
+
   
   /** Emits the Gtk::Widget::mnemonic-activate signal.
    * 
@@ -660,7 +659,8 @@ public:
    */
   bool mnemonic_activate(bool group_cycling);
 
-  //Probably not usefule. Too C-specific: _WRAP_METHOD(bool can_activate_accel(guint signal_id) const, gtk_widget_can_activate_accel)
+  
+  //Probably not useful. Too C-specific: _WRAP_METHOD(bool can_activate_accel(guint signal_id) const, gtk_widget_can_activate_accel)
 
   //TODO: Use C++ type
   
@@ -693,6 +693,37 @@ public:
    * the event was handled).
    */
   int send_expose(GdkEvent* event);
+  
+  /** Sends the focus change @a event to @a widget
+   * 
+   * This function is not meant to be used by applications. The only time it
+   * should be used is when it is necessary for a Gtk::Widget to assign focus
+   * to a widget that is semantically owned by the first widget even though
+   * it's not a direct child - for instance, a search entry in a floating
+   * window similar to the quick search in Gtk::TreeView.
+   * 
+   * An example of its usage is:
+   * 
+   * |[
+   * GdkEvent *fevent = gdk_event_new (GDK_FOCUS_CHANGE);
+   * 
+   * fevent->focus_change.type = GDK_FOCUS_CHANGE;
+   * fevent->focus_change.in = <tt>true</tt>;
+   * fevent->focus_change.window = gtk_widget_get_window (widget);
+   * if (fevent->focus_change.window != <tt>0</tt>)
+   * g_object_ref (fevent->focus_change.window);
+   * 
+   * gtk_widget_send_focus_change (widget, fevent);
+   * 
+   * gdk_event_free (event);
+   * ]|
+   * 
+   * @newin{2,22}
+   * @param event A Gdk::Event of type GDK_FOCUS_CHANGE.
+   * @return The return value from the event signal emission: <tt>true</tt>
+   * if the event was handled, and <tt>false</tt> otherwise.
+   */
+  bool send_focus_change(GdkEvent* event);
   
   /** For widgets that can be "activated" (buttons, menu items, etc.)
    * this function activates them. Activation is what happens when you
@@ -747,20 +778,60 @@ public:
   void freeze_child_notify();
   
   /** Emits a Gtk::Widget::child-notify signal for the 
-   * <link linkend="child-properties">child property</link> @a child_property 
+   *  @a child_property 
    * on @a widget.
    * 
    * This is the analogue of Glib::object_notify() for child properties.
    * @param child_property The name of a child property installed on the 
    * class of @a widget<!-- -->'s parent.
    */
-  void	child_notify(const Glib::ustring& child_property);
+  void child_notify(const Glib::ustring& child_property);
   
   /** Reverts the effect of a previous call to freeze_child_notify().
    * This causes all queued Gtk::Widget::child-notify signals on @a widget to be 
    * emitted.
    */
-  void	thaw_child_notify();
+  void thaw_child_notify();
+
+  
+  /** Specifies whether @a widget can own the input focus. See
+   * grab_focus() for actually setting the input focus on a
+   * widget.
+   * 
+   * @newin{2,18}
+   * @param can_focus Whether or not @a widget can own the input focus.
+   */
+  void set_can_focus(bool can_focus =  true);
+  
+  /** Determines whether @a widget can own the input focus. See
+   * set_can_focus().
+   * 
+   * @newin{2,18}
+   * @return <tt>true</tt> if @a widget can own the input focus, <tt>false</tt> otherwise.
+   */
+  bool get_can_focus() const;
+  
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+  /** Determines whether @a widget can own the input focus. See
+   * set_can_focus().
+   * 
+   * @newin{2,18}
+   * @deprecated Replaced by get_can_focus().
+   * @return <tt>true</tt> if @a widget can own the input focus, <tt>false</tt> otherwise.
+   */
+  bool can_focus() const;
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+  /** Determines if the widget has the global input focus. See
+   * is_focus() for the difference between having the global
+   * input focus, and only having the focus within a toplevel.
+   * 
+   * @newin{2,18}
+   * @return <tt>true</tt> if the widget has the global input focus.
+   */
+  bool has_focus() const;
 
   
   /** Determines if the widget is the focus widget within its
@@ -773,19 +844,98 @@ public:
   
   /** Causes @a widget to have the keyboard focus for the Gtk::Window it's
    * inside. @a widget must be a focusable widget, such as a Gtk::Entry;
-   * something like Gtk::Frame won't work. (More precisely, it must have the
-   * Gtk::CAN_FOCUS flag set.)
+   * something like Gtk::Frame won't work.
+   * 
+   * More precisely, it must have the Gtk::CAN_FOCUS flag set. Use
+   * set_can_focus() to modify that flag.
+   * 
+   * The widget also needs to be realized and mapped. This is indicated by the
+   * related signals. Grabbing the focus immediately after creating the widget
+   * will likely fail and cause critical warnings.
    */
-  void	grab_focus();
+  void grab_focus();
+  
+  /** Specifies whether @a widget can be a default widget. See
+   * grab_default() for details about the meaning of
+   * "default".
+   * 
+   * @newin{2,18}
+   * @param can_default Whether or not @a widget can be a default widget.
+   */
+  void set_can_default(bool can_default =  true);
+  
+  /** Determines whether @a widget can be a default widget. See
+   * set_can_default().
+   * 
+   * @newin{2,18}
+   * @return <tt>true</tt> if @a widget can be a default widget, <tt>false</tt> otherwise.
+   */
+  bool get_can_default() const;
+  
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+  /** Determines whether @a widget can be a default widget. See
+   * set_can_default().
+   * 
+   * @newin{2,18}
+   * @deprecated Replaced by get_can_default().
+   * @return <tt>true</tt> if @a widget can be a default widget, <tt>false</tt> otherwise.
+   */
+  bool can_default() const;
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+  /** Determines whether @a widget is the current default widget within its
+   * toplevel. See set_can_default().
+   * 
+   * @newin{2,18}
+   * @return <tt>true</tt> if @a widget is the current default widget within
+   * its toplevel, <tt>false</tt> otherwise.
+   */
+  bool has_default() const;
   
   /** Causes @a widget to become the default widget. @a widget must have the
    * Gtk::CAN_DEFAULT flag set; typically you have to set this flag
-   * yourself by calling <literal>GTK_WIDGET_SET_FLAGS ( @a widget,
-   * GTK_CAN_DEFAULT)</literal>. The default widget is activated when 
+   * yourself by calling <tt>gtk_widget_set_can_default ( @a widget,
+   * <tt>true</tt>)</tt>. The default widget is activated when 
    * the user presses Enter in a window. Default widgets must be 
    * activatable, that is, activate() should affect them.
    */
-  void	grab_default();
+  void grab_default();
+  
+  /** Specifies whether @a widget will be treated as the default widget
+   * within its toplevel when it has the focus, even if another widget
+   * is the default.
+   * 
+   * See grab_default() for details about the meaning of
+   * "default".
+   * 
+   * @newin{2,18}
+   * @param receives_default Whether or not @a widget can be a default widget.
+   */
+  void set_receives_default(bool receives_default =  true);
+  
+  /** Determines whether @a widget is alyways treated as default widget
+   * withing its toplevel when it has the focus, even if another widget
+   * is the default.
+   * 
+   * See set_receives_default().
+   * 
+   * @newin{2,18}
+   * @return <tt>true</tt> if @a widget acts as default widget when focussed,
+   * <tt>false</tt> otherwise.
+   */
+  bool get_receives_default() const;
+  
+  /** Determines whether the widget is currently grabbing events, so it
+   * is the only widget receiving input events (keyboard and mouse).
+   * 
+   * See also gtk_grab_add().
+   * 
+   * @newin{2,18}
+   * @return <tt>true</tt> if the widget is in the grab_widgets stack.
+   */
+  bool has_grab() const;
 
   /** Block events to everything else than this widget and its children. This
    * way you can get modal behaviour (usually not recommended). One practical
@@ -830,7 +980,14 @@ public:
    * the state using wrapper functions such as set_sensitive().
    * @param state New state for @a widget.
    */
-  void set_state(Gtk::StateType state);
+  void set_state(StateType state);
+  
+  /** Returns the widget's state. See set_state().
+   * 
+   * @newin{2,18}
+   * @return The state of @a widget.
+   */
+  StateType get_state() const;
   
   /** Sets the sensitivity of a widget. A widget is sensitive if the user
    * can interact with it. Insensitive widgets are "grayed out" and the
@@ -838,7 +995,105 @@ public:
    * "inactive", "disabled", or "ghosted" in some other toolkits.
    * @param sensitive <tt>true</tt> to make the widget sensitive.
    */
-  void set_sensitive(bool sensitive = true);
+  void set_sensitive(bool sensitive =  true);
+  
+  /** Returns the widget's sensitivity (in the sense of returning
+   * the value that has been set using set_sensitive()).
+   * 
+   * The effective sensitivity of a widget is however determined by both its
+   * own and its parent widget's sensitivity. See is_sensitive().
+   * 
+   * @newin{2,18}
+   * @return <tt>true</tt> if the widget is sensitive.
+   */
+  bool get_sensitive() const;
+  
+  /** Returns the widget's effective sensitivity, which means
+   * it is sensitive itself and also its parent widget is sensntive
+   * 
+   * @newin{2,18}
+   * @return <tt>true</tt> if the widget is effectively sensitive.
+   */
+  bool is_sensitive() const;
+  
+  /** Sets the visibility state of @a widget. Note that setting this to
+   * <tt>true</tt> doesn't mean the widget is actually viewable, see
+   * get_visible().
+   * 
+   * This function simply calls show() or hide()
+   * but is nicer to use when the visibility of the widget depends on
+   * some condition.
+   * 
+   * @newin{2,18}
+   * @param visible Whether the widget should be shown or not.
+   */
+  void set_visible(bool visible =  true);
+  
+  /** Determines whether the widget is visible. Note that this doesn't
+   * take into account whether the widget's parent is also visible
+   * or the widget is obscured in any way.
+   * 
+   * See set_visible().
+   * 
+   * @newin{2,18}
+   * @return <tt>true</tt> if the widget is visible.
+   */
+  bool get_visible() const;
+  
+  /** Specifies whether @a widget has a Gdk::Window of its own. Note that
+   * all realized widgets have a non-<tt>0</tt> "window" pointer
+   * (get_window() never returns a <tt>0</tt> window when a widget
+   * is realized), but for many of them it's actually the Gdk::Window of
+   * one of its parent widgets. Widgets that do not create a %window for
+   * themselves in GtkWidget::realize() must announce this by
+   * calling this function with @a has_window = <tt>false</tt>.
+   * 
+   * This function should only be called by widget implementations,
+   * and they should call it in their init() function.
+   * 
+   * @newin{2,18}
+   * @param has_window Whether or not @a widget has a window.
+   */
+  void set_has_window(bool has_window =  true);
+  
+  /** Determines whether @a widget has a Gdk::Window of its own. See
+   * set_has_window().
+   * 
+   * @newin{2,18}
+   * @return <tt>true</tt> if @a widget has a window, <tt>false</tt> otherwise.
+   */
+  bool get_has_window() const;
+  
+  /** Determines whether @a widget is a toplevel widget. Currently only
+   * Gtk::Window and Gtk::Invisible are toplevel widgets. Toplevel
+   * widgets have no parent widget.
+   * 
+   * @newin{2,18}
+   * @return <tt>true</tt> if @a widget is a toplevel, <tt>false</tt> otherwise.
+   */
+  bool get_is_toplevel() const;
+  
+  /** Determines whether @a widget can be drawn to. A widget can be drawn
+   * to if it is mapped and visible.
+   * 
+   * @newin{2,18}
+   * @return <tt>true</tt> if @a widget is drawable, <tt>false</tt> otherwise.
+   */
+  bool get_is_drawable() const;
+  
+  /** Determines whether @a widget is realized.
+   * 
+   * @newin{2,20}
+   * @return <tt>true</tt> if @a widget is realized, <tt>false</tt> otherwise.
+   */
+  bool get_realized() const;
+  
+  /** Whether the widget is mapped.
+   * 
+   * @newin{2,20}
+   * @return <tt>true</tt> if the widget is mapped, <tt>false</tt> otherwise.
+   */
+  bool get_mapped() const;
   
   /** Sets whether the application intends to draw on the widget in
    * an Gtk::Widget::expose-event handler. 
@@ -860,7 +1115,17 @@ public:
    * ]|
    * @param app_paintable <tt>true</tt> if the application will paint on the widget.
    */
-  void set_app_paintable(bool app_paintable = true);
+  void set_app_paintable(bool app_paintable =  true);
+  
+  /** Determines whether the application intends to draw on the widget in
+   * an Gtk::Widget::expose-event handler.
+   * 
+   * See set_app_paintable()
+   * 
+   * @newin{2,18}
+   * @return <tt>true</tt> if the widget is app paintable.
+   */
+  bool get_app_paintable() const;
   
   /** Widgets are double buffered by default; you can use this function
    * to turn off the buffering. "Double buffered" simply means that
@@ -882,7 +1147,16 @@ public:
    * gdk_window_begin_paint()).
    * @param double_buffered <tt>true</tt> to double-buffer a widget.
    */
-  void set_double_buffered(bool double_buffered = true);
+  void set_double_buffered(bool double_buffered =  true);
+  
+  /** Determines whether the widget is double buffered.
+   * 
+   * See set_double_buffered()
+   * 
+   * @newin{2,18}
+   * @return <tt>true</tt> if the widget is double buffered.
+   */
+  bool get_double_buffered() const;
 
   
   /** Sets whether the entire widget is queued for drawing when its size 
@@ -895,7 +1169,7 @@ public:
    * off all allocation on resizing: the widget will not even redraw if
    * its position changes; this is to allow containers that don't draw
    * anything to avoid excess invalidations. If you set this flag on a
-   * NO_WINDOW widget that <emphasis>does</emphasis> draw on @a widget->window, 
+   * NO_WINDOW widget that <em>does</em> draw on @a widget->window, 
    * you are responsible for invalidating both the old and new allocation 
    * of the widget when the widget is moved and responsible for invalidating
    * regions newly when the widget increases size.
@@ -903,7 +1177,7 @@ public:
    * when it is allocated to a new size. Otherwise, only the
    * new portion of the widget will be redrawn.
    */
-  void set_redraw_on_allocate(bool redraw_on_allocate = true);
+  void set_redraw_on_allocate(bool redraw_on_allocate =  true);
 
   
   /** Sets whether @a widget should be mapped along with its when its parent
@@ -925,7 +1199,7 @@ public:
    * never should be called by an application.
    * @param is_visible If <tt>true</tt>, @a widget should be mapped along with its parent.
    */
-  void set_child_visible(bool is_visible = true);
+  void set_child_visible(bool is_visible =  true);
   
   /** Gets the value set with set_child_visible().
    * If you feel a need to use this function, your code probably
@@ -937,28 +1211,59 @@ public:
    */
   bool get_child_visible() const;
 
-  
-  /** Return value: @a widget's window.
-   * @return  @a widget's window.
+  /** Sets a widget's window. This function should only be used in a
+   * widget's Gtk::Widget::on_realize() implementation. The %window passed is
+   * usually either a new window created with Gdk::Window::create(), or the
+   * window of its parent widget as returned by get_parent_window().
    * 
-   * @newin2p14.
+   * Widgets must indicate whether they will create their own Gdk::Window
+   * by calling set_has_window(). This is usually done in the
+   * widget's constructor.
+   *
+   * This function should only be called by custom widget implementations,
+   * and they should call it in their on_realize() function.
+   * 
+   * @newin{2,18}
+   * @param window A Gdk::Window.
+   */
+  void set_window(const Glib::RefPtr<Gdk::Window>& window);
+  
+
+  /** Returns the widget's window if it is realized, <tt>0</tt> otherwise
+   * 
+   * @newin{2,14}
+   * @return  @a widget's window.
    */
   Glib::RefPtr<Gdk::Window> get_window();
   
-  /** Return value: @a widget's window.
-   * @return  @a widget's window.
+  /** Returns the widget's window if it is realized, <tt>0</tt> otherwise
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return  @a widget's window.
    */
   Glib::RefPtr<const Gdk::Window> get_window() const;
 
+  /** Retrieves the widget's location.
+   * @return The widget's allocated area.
+   */
+  Allocation get_allocation() const;
   
-  /** Return value: the parent container of @a widget, or <tt>0</tt>
+
+  /** Sets the widget's allocation.  This should not be used
+   * directly, but from within a widget's size_allocate method.
+   * 
+   * @newin{2,18}
+   * @param allocation A pointer to a Gtk::Allocation to copy from.
+   */
+  void set_allocation(const Allocation& allocation);
+
+  
+  /** Returns the parent container of @a widget.
    * @return The parent container of @a widget, or <tt>0</tt>.
    */
   Container* get_parent();
   
-  /** Return value: the parent container of @a widget, or <tt>0</tt>
+  /** Returns the parent container of @a widget.
    * @return The parent container of @a widget, or <tt>0</tt>.
    */
   const Container* get_parent() const;
@@ -990,7 +1295,7 @@ public:
    * around the window using keyboard shortcuts. @a direction indicates
    * what kind of motion is taking place (up, down, left, right, tab
    * forward, tab backward). child_focus() emits the
-   * Gtk::Widget::focus" signal; widgets override the default handler
+   * Gtk::Widget::focus signal; widgets override the default handler
    * for this signal in order to implement appropriate focus behavior.
    * 
    * The default ::focus handler for a widget should return <tt>true</tt> if
@@ -1042,12 +1347,12 @@ public:
    * Gtk::Entry widgets where the user should be able to navigate the
    * entire row with the cursor keys, as e.g. known from user interfaces 
    * that require entering license keys.
+   * 
+   * @newin{2,12}
    * @param direction Direction of focus movement.
    * @return <tt>true</tt> if stopping keyboard navigation is fine, <tt>false</tt>
    * if the emitting widget should try to handle the keyboard
    * navigation attempt in its parent container(s).
-   * 
-   * @newin2p12.
    */
   bool keynav_failed(DirectionType direction);
   
@@ -1059,7 +1364,7 @@ public:
    * ways, depending on the windowing backend and the desktop environment
    * or window manager that is used.
    * 
-   * @newin2p12
+   * @newin{2,12}
    */
   void error_bell();
 
@@ -1096,7 +1401,7 @@ public:
    * @param width Width @a widget should request, or -1 to unset.
    * @param height Height @a widget should request, or -1 to unset.
    */
-  void set_size_request(int width = -1, int  height = -1);
+  void set_size_request(int width =  -1, int height =  -1);
   
   /** Gets the size request that was explicitly set for the widget using
    * set_size_request(). A value of -1 stored in @a width or
@@ -1151,7 +1456,7 @@ public:
    * returned widget; it should not be unreferenced.
    * 
    * Note the difference in behavior vs. get_ancestor();
-   * <literal>gtk_widget_get_ancestor (widget, GTK_TYPE_WINDOW)</literal> 
+   * <tt>gtk_widget_get_ancestor (widget, GTK_TYPE_WINDOW)</tt> 
    * would return
    * <tt>0</tt> if @a widget wasn't inside a toplevel window, and if the
    * window was inside a Gtk::Window-derived widget which was in turn
@@ -1164,12 +1469,12 @@ public:
    * is set on the result.
    * |[
    * GtkWidget *toplevel = gtk_widget_get_toplevel (widget);
-   * if (GTK_WIDGET_TOPLEVEL (toplevel))
+   * if (gtk_widget_is_toplevel (toplevel))
    * {
-   *   // Perform action on toplevel.
+   * / * Perform action on toplevel. * /
    * }
    * ]|
-   * @return The topmost ancestor of @a widget, or @a widget itself 
+   * @return The topmost ancestor of @a widget, or @a widget itself
    * if there's no ancestor.
    */
   Container* get_toplevel();
@@ -1180,7 +1485,7 @@ public:
    * returned widget; it should not be unreferenced.
    * 
    * Note the difference in behavior vs. get_ancestor();
-   * <literal>gtk_widget_get_ancestor (widget, GTK_TYPE_WINDOW)</literal> 
+   * <tt>gtk_widget_get_ancestor (widget, GTK_TYPE_WINDOW)</tt> 
    * would return
    * <tt>0</tt> if @a widget wasn't inside a toplevel window, and if the
    * window was inside a Gtk::Window-derived widget which was in turn
@@ -1193,19 +1498,19 @@ public:
    * is set on the result.
    * |[
    * GtkWidget *toplevel = gtk_widget_get_toplevel (widget);
-   * if (GTK_WIDGET_TOPLEVEL (toplevel))
+   * if (gtk_widget_is_toplevel (toplevel))
    * {
-   *   // Perform action on toplevel.
+   * / * Perform action on toplevel. * /
    * }
    * ]|
-   * @return The topmost ancestor of @a widget, or @a widget itself 
+   * @return The topmost ancestor of @a widget, or @a widget itself
    * if there's no ancestor.
    */
   const Container* get_toplevel() const;
 
   
   /** Gets the first ancestor of @a widget with type @a widget_type. For example,
-   * <literal>gtk_widget_get_ancestor (widget, GTK_TYPE_BOX)</literal> gets 
+   * <tt>gtk_widget_get_ancestor (widget, GTK_TYPE_BOX)</tt> gets 
    * the first Gtk::Box that's an ancestor of @a widget. No reference will be 
    * added to the returned widget; it should not be unreferenced. See note 
    * about checking for a toplevel Gtk::Window in the docs for 
@@ -1219,7 +1524,7 @@ public:
   Widget* get_ancestor(GType widget_type);
   
   /** Gets the first ancestor of @a widget with type @a widget_type. For example,
-   * <literal>gtk_widget_get_ancestor (widget, GTK_TYPE_BOX)</literal> gets 
+   * <tt>gtk_widget_get_ancestor (widget, GTK_TYPE_BOX)</tt> gets 
    * the first Gtk::Box that's an ancestor of @a widget. No reference will be 
    * added to the returned widget; it should not be unreferenced. See note 
    * about checking for a toplevel Gtk::Window in the docs for 
@@ -1254,9 +1559,9 @@ public:
    * In general, you should only create screen specific
    * resources when a widget has been realized, and you should
    * free those resources when the widget is unrealized.
-   * @return The Gdk::Screen for the toplevel for this widget.
    * 
-   * @newin2p2.
+   * @newin{2,2}
+   * @return The Gdk::Screen for the toplevel for this widget.
    */
   Glib::RefPtr<Gdk::Screen> get_screen();
   
@@ -1268,9 +1573,9 @@ public:
    * In general, you should only create screen specific
    * resources when a widget has been realized, and you should
    * free those resources when the widget is unrealized.
-   * @return The Gdk::Screen for the toplevel for this widget.
    * 
-   * @newin2p2.
+   * @newin{2,2}
+   * @return The Gdk::Screen for the toplevel for this widget.
    */
   Glib::RefPtr<const Gdk::Screen> get_screen() const;
 
@@ -1279,10 +1584,10 @@ public:
    * this widget. All toplevel widgets have an associated
    * screen, and all widgets added into a hierarchy with a toplevel
    * window at the top.
+   * 
+   * @newin{2,2}
    * @return <tt>true</tt> if there is a Gdk::Screen associcated
    * with the widget.
-   * 
-   * @newin2p2.
    */
   bool has_screen() const;
 
@@ -1294,9 +1599,9 @@ public:
    * In general, you should only create display specific
    * resources when a widget has been realized, and you should
    * free those resources when the widget is unrealized.
-   * @return The Gdk::Display for the toplevel for this widget.
    * 
-   * @newin2p2.
+   * @newin{2,2}
+   * @return The Gdk::Display for the toplevel for this widget.
    */
   Glib::RefPtr<Gdk::Display> get_display();
   
@@ -1307,9 +1612,9 @@ public:
    * In general, you should only create display specific
    * resources when a widget has been realized, and you should
    * free those resources when the widget is unrealized.
-   * @return The Gdk::Display for the toplevel for this widget.
    * 
-   * @newin2p2.
+   * @newin{2,2}
+   * @return The Gdk::Display for the toplevel for this widget.
    */
   Glib::RefPtr<const Gdk::Display> get_display() const;
 
@@ -1322,9 +1627,9 @@ public:
    * Gdk::Window associated with the window. In general, you should only
    * create display specific resources when a widget has been realized,
    * and you should free those resources when the widget is unrealized.
-   * @return The Gdk::Window root window for the toplevel for this widget.
    * 
-   * @newin2p2.
+   * @newin{2,2}
+   * @return The Gdk::Window root window for the toplevel for this widget.
    */
   Glib::RefPtr<Gdk::Window> get_root_window();
   
@@ -1336,12 +1641,12 @@ public:
    * Gdk::Window associated with the window. In general, you should only
    * create display specific resources when a widget has been realized,
    * and you should free those resources when the widget is unrealized.
-   * @return The Gdk::Window root window for the toplevel for this widget.
    * 
-   * @newin2p2.
+   * @newin{2,2}
+   * @return The Gdk::Window root window for the toplevel for this widget.
    */
   Glib::RefPtr<const Gdk::Window> get_root_window() const;
-  
+
   
   /** Gets the settings object holding the settings (global property
    * settings, RC file information, etc) used for this widget.
@@ -1354,7 +1659,12 @@ public:
   Glib::RefPtr<Settings> get_settings();
 
   
-  /** Return value: the appropriate clipboard object. If no
+  /** Returns the clipboard object for the given selection to
+   * be used with @a widget. @a widget must have a Gdk::Display
+   * associated with it, so must be attached to a toplevel
+   * window.
+   * 
+   * @newin{2,2}
    * @param selection A Gdk::Atom which identifies the clipboard
    * to use. Gdk::SELECTION_CLIPBOARD gives the
    * default clipboard. Another common value
@@ -1364,12 +1674,15 @@ public:
    * clipboard already exists, a new one will
    * be created. Once a clipboard object has
    * been created, it is persistent for all time.
-   * 
-   * @newin2p2.
    */
   Glib::RefPtr<Clipboard> get_clipboard(const Glib::ustring& selection);
   
-  /** Return value: the appropriate clipboard object. If no
+  /** Returns the clipboard object for the given selection to
+   * be used with @a widget. @a widget must have a Gdk::Display
+   * associated with it, so must be attached to a toplevel
+   * window.
+   * 
+   * @newin{2,2}
    * @param selection A Gdk::Atom which identifies the clipboard
    * to use. Gdk::SELECTION_CLIPBOARD gives the
    * default clipboard. Another common value
@@ -1379,8 +1692,6 @@ public:
    * clipboard already exists, a new one will
    * be created. Once a clipboard object has
    * been created, it is persistent for all time.
-   * 
-   * @newin2p2.
    */
   Glib::RefPtr<const Clipboard> get_clipboard(const Glib::ustring& selection) const;
 
@@ -1403,10 +1714,10 @@ public:
    * interpreted widget relative. If width or height of @a clip_rect are 0 or
    * negative, the width or height of the resulting pixmap will be shrunken
    * by the respective amount.
-   * For instance a @a clip_rect <literal>{ +5, +5, -10, -10 }</literal> will
+   * For instance a @a clip_rect <tt>{ +5, +5, -10, -10 }</tt> will
    * chop off 5 pixels at each side of the snapshot pixmap.
    * If non-<tt>0</tt>, @a clip_rect will contain the exact widget-relative snapshot
-   * coordinates upon return. A @a clip_rect of <literal>{ -1, -1, 0, 0 }</literal>
+   * coordinates upon return. A @a clip_rect of <tt>{ -1, -1, 0, 0 }</tt>
    * can be used to preserve the auto-grown snapshot area and use @a clip_rect
    * as a pure output parameter.
    * 
@@ -1414,7 +1725,7 @@ public:
    * @param clip_rect A Gdk::Rectangle.
    * @return Gdk::Pixmap snapshot of the widget
    * 
-   * @newin2p14.
+   * @newin{2,14}.
    */
   Glib::RefPtr<Gdk::Pixmap> get_snapshot(Gdk::Rectangle& clip_rect) const;
 
@@ -1434,14 +1745,24 @@ public:
   * The returned pixmap can be empty.
   *
   * @result A Gdk::Pixmap snapshot of the widget
-  * 
-  * @newin2p14
+  *
+  * @newin{2,14}
   */
   Glib::RefPtr<Gdk::Pixmap> get_snapshot() const;
 
-  //TODO: This probably needs a special conversion to do an extra ref (take_copy=true) for the returned instance:
   
-  /** Returns: the Atk::Object associated with @a widget
+  /** Returns the accessible object that describes the widget to an
+   * assistive technology. 
+   * 
+   * If no accessibility library is loaded (i.e. no ATK implementation library is 
+   * loaded via <envar>GTK_MODULES</envar> or via another application library, 
+   * such as libgnome), then this Atk::Object instance may be a no-op. Likewise, 
+   * if no class-specific Atk::Object implementation is available for the widget 
+   * instance in question, it will inherit an Atk::Object implementation from the 
+   * first ancestor class for which such an implementation is defined.
+   * 
+   * The documentation of the 
+   * library contains more information about accessible objects and their uses.
    * @return The Atk::Object associated with @a widget.
    */
 
@@ -1449,16 +1770,38 @@ public:
   Glib::RefPtr<Atk::Object> get_accessible();
 #endif //  GTKMM_ATKMM_ENABLED
 
+  
+  /** Returns the accessible object that describes the widget to an
+   * assistive technology. 
+   * 
+   * If no accessibility library is loaded (i.e. no ATK implementation library is 
+   * loaded via <envar>GTK_MODULES</envar> or via another application library, 
+   * such as libgnome), then this Atk::Object instance may be a no-op. Likewise, 
+   * if no class-specific Atk::Object implementation is available for the widget 
+   * instance in question, it will inherit an Atk::Object implementation from the 
+   * first ancestor class for which such an implementation is defined.
+   * 
+   * The documentation of the 
+   * library contains more information about accessible objects and their uses.
+   * @return The Atk::Object associated with @a widget.
+   */
+
+#ifdef  GTKMM_ATKMM_ENABLED
+  Glib::RefPtr<const Atk::Object> get_accessible() const;
+#endif //  GTKMM_ATKMM_ENABLED
+
 
   /** Sets the colormap for the widget to the given value. Widget must not
    * have been previously realized. This probably should only be used
-   * from an <function>init()</function> function (i.e. from the constructor 
+   * from an <tt>init()</tt> function (i.e. from the constructor 
    * for the widget).
    * @param colormap A colormap.
    */
-  void set_colormap(const Glib::RefPtr<const Gdk::Colormap> &colormap);
+  void set_colormap(const Glib::RefPtr<const Gdk::Colormap> & colormap);
   
-  /** Return value: event mask for @a widget
+  /** Returns the event mask for the widget (a bitfield containing flags
+   * from the Gdk::EventMask enumeration). These are the events that the widget
+   * will receive.
    * @return Event mask for @a widget.
    */
   Gdk::EventMask get_events() const;
@@ -1471,7 +1814,7 @@ public:
    * @param x Return location for the X coordinate, or <tt>0</tt>.
    * @param y Return location for the Y coordinate, or <tt>0</tt>.
    */
-  void get_pointer(int &x, int &y) const;
+  void get_pointer(int & x, int & y) const;
   
   /** Determines whether @a widget is somewhere inside @a ancestor, possibly with
    * intermediate containers.
@@ -1479,7 +1822,7 @@ public:
    * @return <tt>true</tt> if @a ancestor contains @a widget as a child, 
    * grandchild, great grandchild, etc.
    */
-  bool is_ancestor(Widget &ancestor) const;
+  bool is_ancestor(Widget & ancestor) const;
 
   
   /** Translate coordinates relative to @a src_widget's allocation to coordinates
@@ -1495,13 +1838,19 @@ public:
    * was no common ancestor. In this case, nothing is stored in
    * * @a dest_x and * @a dest_y. Otherwise <tt>true</tt>.
    */
-  bool translate_coordinates(Widget& dest_widget,
-					       int src_x, int src_y,
-					       int& dest_x, int& dest_y);
+  bool translate_coordinates(Widget& dest_widget, int src_x, int src_y, int& dest_x, int& dest_y);
 
 /* STYLE */
   
-  /** Sets the Gtk::Style for a widget ( @a widget->style). You probably don't
+  /** Determines if the widget style has been looked up through the rc mechanism.
+   * 
+   * @newin{2,20}
+   * @return <tt>true</tt> if the widget has been looked up through the rc
+   * mechanism, <tt>false</tt> otherwise.
+   */
+  bool has_rc_style() const;
+  
+  /** Sets the Gtk::Style for a widget ( @a widget-&gt;style). You probably don't
    * want to use this function; it interacts badly with themes, because
    * themes work by replacing the Gtk::Style. Instead, use
    * modify_style().
@@ -1549,14 +1898,36 @@ public:
    */
   void modify_style(const Glib::RefPtr<RcStyle>& style);
   
-  /** Return value: the modifier style for the widget. This rc style is
+  /** Returns the current modifier style for the widget. (As set by
+   * modify_style().) If no style has previously set, a new
+   * Gtk::RcStyle will be created with all values unset, and set as the
+   * modifier style for the widget. If you make changes to this rc
+   * style, you must call modify_style(), passing in the
+   * returned rc style, to make sure that your changes take effect.
+   * 
+   * Caution: passing the style back to modify_style() will
+   * normally end up destroying it, because modify_style() copies
+   * the passed-in style and sets the copy as the new modifier style,
+   * thus dropping any reference to the old modifier style. Add a reference
+   * to the modifier style if you want to keep it alive.
    * @return The modifier style for the widget. This rc style is
    * owned by the widget. If you want to keep a pointer to value this
    * around, you must add a refcount using Glib::object_ref().
    */
   Glib::RefPtr<RcStyle> get_modifier_style();
   
-  /** Return value: the modifier style for the widget. This rc style is
+  /** Returns the current modifier style for the widget. (As set by
+   * modify_style().) If no style has previously set, a new
+   * Gtk::RcStyle will be created with all values unset, and set as the
+   * modifier style for the widget. If you make changes to this rc
+   * style, you must call modify_style(), passing in the
+   * returned rc style, to make sure that your changes take effect.
+   * 
+   * Caution: passing the style back to modify_style() will
+   * normally end up destroying it, because modify_style() copies
+   * the passed-in style and sets the copy as the new modifier style,
+   * thus dropping any reference to the old modifier style. Add a reference
+   * to the modifier style if you want to keep it alive.
    * @return The modifier style for the widget. This rc style is
    * owned by the widget. If you want to keep a pointer to value this
    * around, you must add a refcount using Glib::object_ref().
@@ -1565,17 +1936,11 @@ public:
 
   // we need custom documentation because modify_* can take a NULL pointer
   // (which we wrap with unset_*)
+  
   /** Sets the foreground color for a widget in a particular state.
    * All other style values are left untouched. See also modify_style() and
    * unset_fg().
    *
-   * @param state The state for which to set the foreground color.
-   * @param color The color to assign (does not need to be allocated).
-   */
-  
-  /** Sets the foreground color for a widget in a particular state.  All
-   * other style values are left untouched. See also
-   * modify_style().
    * @param state The state for which to set the foreground color.
    * @param color The color to assign (does not need to be allocated).
    */
@@ -1589,18 +1954,12 @@ public:
    * @param state The state for which to set the background color.
    * @param color The color to assign (does not need to be allocated).
    */
-  
-  /** Sets the background color for a widget in a particular state.  All
-   * other style values are left untouched. See also
-   * modify_style().
-   * @param state The state for which to set the background color.
-   * @param color The color to assign (does not need to be allocated).
-   */
   void modify_bg(StateType state, const Gdk::Color& color);
 
   // TODO: Document this, and perhaps add unset_bg_pixmap
   void modify_bg_pixmap(StateType state, const Glib::ustring& pixmap_name);
 
+  
   /** Sets the text color for a widget in a particular state.
    * All other style values are left untouched. The text color is the
    * foreground color used along with the base color (see modify_base() ) for
@@ -1610,17 +1969,9 @@ public:
    * @param state The state for which to set the text color.
    * @param color The color to assign (does not need to be allocated).
    */
-  
-  /** Sets the text color for a widget in a particular state.  All other
-   * style values are left untouched. The text color is the foreground
-   * color used along with the base color (see modify_base())
-   * for widgets such as Gtk::Entry and Gtk::TextView. See also
-   * modify_style().
-   * @param state The state for which to set the text color.
-   * @param color The color to assign (does not need to be allocated).
-   */
   void modify_text(StateType state, const Gdk::Color& color);
 
+  
   /** Sets the base color for a widget in a particular state.
    * All other style values are left untouched. The base color is the
    * background color used along with the text color (see modify_text() ) for
@@ -1630,55 +1981,29 @@ public:
    * @param state The state for which to set the text color.
    * @param color The color to assign (does not need to be allocated).
    */
-  
-  /** Sets the base color for a widget in a particular state.
-   * All other style values are left untouched. The base color
-   * is the background color used along with the text color
-   * (see modify_text()) for widgets such as Gtk::Entry
-   * and Gtk::TextView. See also modify_style().
-   * @param state The state for which to set the base color.
-   * @param color The color to assign (does not need to be allocated).
-   */
   void modify_base(StateType state, const Gdk::Color& color);
 
+  
   /** Sets the cursor color to use in a widget, overriding the
    * cursor_color and secondary_cursor_color
-   * style properties. All other style values are left untouched. 
+   * style properties. All other style values are left untouched.
    * See also modify_style().
    * See also unset_cursor().
    *
    * @param primary the color to use for primary cursor (does not need to be allocated).
    * @param secondary the color to use for secondary cursor (does not need to be allocated).
    *
-   * @newin2p12
-   */
-  
-  /** Sets the cursor color to use in a widget, overriding the
-   * Gtk::Widget:cursor-color and Gtk::Widget:secondary-cursor-color
-   * style properties. All other style values are left untouched. 
-   * See also modify_style().
-   * 
-   * @newin2p12
-   * @param primary The color to use for primary cursor (does not need to be
-   * allocated), or <tt>0</tt> to undo the effect of previous calls to
-   * of modify_cursor().
-   * @param secondary The color to use for secondary cursor (does not need to be
-   * allocated), or <tt>0</tt> to undo the effect of previous calls to
-   * of modify_cursor().
+   * @newin{2,12}
    */
   void modify_cursor(const Gdk::Color& primary, const Gdk::Color& secondary);
-  
+
   /// See modify_cursor().
   void unset_cursor();
 
+  
   /** Sets the font to use for a widget.
    * All other style values are left untouched. See also modify_style() and
    * unset_font().
-   */
-  
-  /** Sets the font to use for a widget.  All other style values are left
-   * untouched. See also modify_style().
-   * @param font_desc The font description to use.
    */
   void modify_font(const Pango::FontDescription& font_desc);
 
@@ -1686,7 +2011,7 @@ public:
    * All other style values are left untouched. See also modify_style().
    */
   void unset_fg(StateType state);
-  
+
   /** Undo the effect of previous calls to modify_bg() for a particular state.
    * All other style values are left untouched. See also modify_style().
    */
@@ -1741,7 +2066,7 @@ public:
    * If you keep a Pango::Layout created in this way around, in order to
    * notify the layout of changes to the base direction or font of this
    * widget, you must call pango_layout_context_changed() in response to
-   * the Gtk::Widget::style-set and Gtk::Widget::direction-changed signals 
+   * the Gtk::Widget::style-set and Gtk::Widget::direction-changed signals
    * for the widget.
    * @param text Text to set on the layout (can be <tt>0</tt>).
    * @return The new Pango::Layout.
@@ -1767,7 +2092,7 @@ public:
    * @param detail Render detail to pass to theme engine.
    * @return A new pixbuf if the stock ID was known.
    */
-  Glib::RefPtr<Gdk::Pixbuf> render_icon(const StockID& stock_id, IconSize size, const Glib::ustring& detail = Glib::ustring());
+  Glib::RefPtr<Gdk::Pixbuf> render_icon(const StockID& stock_id, IconSize size, const Glib::ustring& detail =  Glib::ustring());
 
   
   /** Sets a widgets composite name. The widget must be
@@ -1784,8 +2109,13 @@ public:
   Glib::ustring get_composite_name() const;
 
   
+  /** Reset the styles of @a widget and all descendents, so when
+   * they are looked up again, they get the correct values
+   * for the currently loaded RC file settings.
+   * 
+   * This function is not useful for applications.
+   */
   void reset_rc_styles();
-
 
   // PUSH/POP - these are used to create widgets.  Hidden arguments to override the defaults.
   
@@ -1828,7 +2158,6 @@ public:
    */
   static void pop_composite_child();
 
-
 /* DEFAULTS */
 
   
@@ -1839,8 +2168,8 @@ public:
    */
   static void set_default_colormap(const Glib::RefPtr<const Gdk::Colormap>& colormap);
   
-  /** Returns: the default style. This Gtk::Style object is owned
-   * @return The default style. This Gtk::Style object is owned 
+  /** Returns the default style used by all widgets initially.
+   * @return The default style. This Gtk::Style object is owned
    * by GTK+ and should not be modified or freed.
    */
   static Glib::RefPtr<Style> get_default_style();
@@ -1855,7 +2184,6 @@ public:
    * @return Visual of the default colormap.
    */
   static Glib::RefPtr<Gdk::Visual> get_default_visual();
-
 
 /* Directionality of Text */
 
@@ -1907,7 +2235,6 @@ public:
    */
   static TextDirection get_default_direction();
 
-
 /* Shape masking */
   
   /** Sets a shape for this widget's GDK window. This allows for
@@ -1924,7 +2251,7 @@ public:
    * windows which react to mouse click in a nonrectangular region, see 
    * gdk_window_input_shape_combine_mask() for more information.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param shape_mask Shape to be added, or <tt>0</tt> to remove an existing shape.
    * @param offset_x X position of shape mask with respect to @a window.
    * @param offset_y Y position of shape mask with respect to @a window.
@@ -1932,10 +2259,11 @@ public:
   void input_shape_combine_mask(const Glib::RefPtr<const Gdk::Bitmap>& shape_mask, int offset_x, int offset_y);
   void unset_input_shape_combine_mask();
 
-
-  // must be realized 
+  // must be realized
   
   /** Recursively resets the shape on this widget and its descendants.
+   * 
+   * Deprecated: This function is being removed in GTK+ 3.0. Don't use it.
    */
   void reset_shapes();
 
@@ -1945,19 +2273,39 @@ public:
   void class_path(Glib::ustring& path, Glib::ustring& path_reversed);
   
 
-  /** Return value: the list of mnemonic labels; free this list
-   * @return The list of mnemonic labels; free this list
-   * with Glib::list_free() when you are done with it.
+  /** Returns a newly allocated list of the widgets, normally labels, for 
+   * which this widget is a the target of a mnemonic (see for example, 
+   * Gtk::Label::set_mnemonic_widget()).
    * 
-   * @newin2p4.
+   * The widgets in the list are not individually referenced. If you
+   * want to iterate through the list and perform actions involving
+   * callbacks that might destroy the widgets, you
+   * <em>must</em> call <tt>g_list_foreach (result,
+   * (GFunc)g_object_ref, <tt>0</tt>)</tt> first, and then unref all the
+   * widgets afterwards.
+   * 
+   * @newin{2,4}
+   * @return The list of
+   * mnemonic labels; free this list
+   * with Glib::list_free() when you are done with it.
    */
   Glib::ListHandle<Widget*> list_mnemonic_labels();
  
-  /** Return value: the list of mnemonic labels; free this list
-   * @return The list of mnemonic labels; free this list
-   * with Glib::list_free() when you are done with it.
+  /** Returns a newly allocated list of the widgets, normally labels, for 
+   * which this widget is a the target of a mnemonic (see for example, 
+   * Gtk::Label::set_mnemonic_widget()).
    * 
-   * @newin2p4.
+   * The widgets in the list are not individually referenced. If you
+   * want to iterate through the list and perform actions involving
+   * callbacks that might destroy the widgets, you
+   * <em>must</em> call <tt>g_list_foreach (result,
+   * (GFunc)g_object_ref, <tt>0</tt>)</tt> first, and then unref all the
+   * widgets afterwards.
+   * 
+   * @newin{2,4}
+   * @return The list of
+   * mnemonic labels; free this list
+   * with Glib::list_free() when you are done with it.
    */
   Glib::ListHandle<const Widget*> list_mnemonic_labels() const;
  
@@ -1967,7 +2315,7 @@ public:
    * widget is destroyed, so the caller must make sure to update
    * its internal state at this point as well.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param label A Gtk::Widget that acts as a mnemonic label for @a widget.
    */
   void add_mnemonic_label(Widget& label);
@@ -1977,12 +2325,11 @@ public:
    * must have previously been added to the list with
    * add_mnemonic_label().
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param label A Gtk::Widget that was previously set as a mnemnic label for
    *  @a widget with add_mnemonic_label().
    */
   void remove_mnemonic_label(Widget& label);
-           
 
   //TODO: Should drag_get_data() be const?
   
@@ -1991,14 +2338,15 @@ public:
   void drag_get_data(const Glib::RefPtr<Gdk::DragContext>& context, Glib::ustring& target, guint32 time);
 #endif // GTKMM_DISABLE_DEPRECATED
 
-		
-  void drag_get_data(const Glib::RefPtr<Gdk::DragContext>& context, const Glib::ustring& target, guint32 time);		
+
+  void drag_get_data(const Glib::RefPtr<Gdk::DragContext>& context, const Glib::ustring& target, guint32 time);
 
   
   void drag_highlight();
   
   void drag_unhighlight();
 
+  //TODO: Change the defaults? Maybe we should use ALL for DestDefaults. See other drag_dest_set() methods here and in other widgets.
   void drag_dest_set(DestDefaults flags = DestDefaults(0), Gdk::DragAction actions = Gdk::DragAction(0));
   void drag_dest_set(const ArrayHandle_TargetEntry& targets, DestDefaults flags = DEST_DEFAULT_ALL, Gdk::DragAction actions = Gdk::ACTION_COPY);
   
@@ -2007,7 +2355,7 @@ public:
   
   void drag_dest_unset();
   
-  /** Looks for a match between @a context->targets and the
+  /** Looks for a match between @a context-&gt;targets and the
    *  @a dest_target_list, returning the first matching target, otherwise
    * returning Gdk::NONE. @a dest_target_list should usually be the return
    * value from gtk_drag_dest_get_target_list(), but some widgets may
@@ -2022,12 +2370,14 @@ public:
   Glib::ustring drag_dest_find_target(const Glib::RefPtr<Gdk::DragContext>& context) const;
 
   
-  /** Return value: the Gtk::TargetList, or <tt>0</tt> if none
+  /** Returns the list of targets this widget can accept from
+   * drag-and-drop.
    * @return The Gtk::TargetList, or <tt>0</tt> if none.
    */
   Glib::RefPtr<TargetList> drag_dest_get_target_list();
   
-  /** Return value: the Gtk::TargetList, or <tt>0</tt> if none
+  /** Returns the list of targets this widget can accept from
+   * drag-and-drop.
    * @return The Gtk::TargetList, or <tt>0</tt> if none.
    */
   Glib::RefPtr<const TargetList> drag_dest_get_target_list() const;
@@ -2043,21 +2393,21 @@ public:
   /** Add the text targets supported by Gtk::Selection to
    * the target list of the drag destination. The targets
    * are added with @a info = 0. If you need another value, 
-   * use gtk_target_list_add_text_targets() and
+   * use Gtk::TargetList::add_text_targets() and
    * gtk_drag_dest_set_target_list().
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param widget A Gtk::Widget that's a drag destination.
    */
-  void drag_dest_add_text_targets();  
+  void drag_dest_add_text_targets();
   
   /** Add the image targets supported by Gtk::Selection to
    * the target list of the drag destination. The targets
    * are added with @a info = 0. If you need another value, 
-   * use gtk_target_list_add_image_targets() and
+   * use Gtk::TargetList::add_image_targets() and
    * gtk_drag_dest_set_target_list().
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param widget A Gtk::Widget that's a drag destination.
    */
   void drag_dest_add_image_targets();
@@ -2065,14 +2415,14 @@ public:
   /** Add the URI targets supported by Gtk::Selection to
    * the target list of the drag destination. The targets
    * are added with @a info = 0. If you need another value, 
-   * use gtk_target_list_add_uri_targets() and
+   * use Gtk::TargetList::add_uri_targets() and
    * gtk_drag_dest_set_target_list().
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param widget A Gtk::Widget that's a drag destination.
    */
   void drag_dest_add_uri_targets();
- 
+
   void drag_source_set(const ArrayHandle_TargetEntry& targets, Gdk::ModifierType start_button_mask = Gdk::MODIFIER_MASK, Gdk::DragAction actions = Gdk::ACTION_COPY);
   
 
@@ -2080,9 +2430,9 @@ public:
 
   
   /** Sets the icon that will be used for drags from a particular widget
-   * from a pixmap/mask. GTK+ retains references for the arguments, and 
+   * from a pixmap/mask. GTK+ retains references for the arguments, and
    * will release them when they are no longer needed.
-   * Use gtk_drag_source_set_icon_pixbuf() instead.
+   * Use set_icon_pixbuf() instead.
    * @param colormap The colormap of the icon.
    * @param pixmap The image data for the icon.
    * @param mask The transparency mask for an image.
@@ -2105,7 +2455,7 @@ public:
   /** Sets the icon that will be used for drags from a particular source
    * to a themed icon. See the docs for Gtk::IconTheme for more details.
    * 
-   * @newin2p8
+   * @newin{2,8}
    * @param widget A Gtk::Widget.
    * @param icon_name Name of icon to use.
    */
@@ -2115,10 +2465,10 @@ public:
   /** Add the text targets supported by Gtk::Selection to
    * the target list of the drag source.  The targets
    * are added with @a info = 0. If you need another value, 
-   * use gtk_target_list_add_text_targets() and
-   * gtk_drag_source_set_target_list().
+   * use Gtk::TargetList::add_text_targets() and
+   * set_target_list().
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param widget A Gtk::Widget that's is a drag source.
    */
   void drag_source_add_text_targets();
@@ -2126,10 +2476,10 @@ public:
   /** Add the URI targets supported by Gtk::Selection to
    * the target list of the drag source.  The targets
    * are added with @a info = 0. If you need another value, 
-   * use gtk_target_list_add_uri_targets() and
-   * gtk_drag_source_set_target_list().
+   * use Gtk::TargetList::add_uri_targets() and
+   * set_target_list().
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param widget A Gtk::Widget that's is a drag source.
    */
   void drag_source_add_uri_targets();
@@ -2137,19 +2487,42 @@ public:
   /** Add the writable image targets supported by Gtk::Selection to
    * the target list of the drag source. The targets
    * are added with @a info = 0. If you need another value, 
-   * use gtk_target_list_add_image_targets() and
-   * gtk_drag_source_set_target_list().
+   * use Gtk::TargetList::add_image_targets() and
+   * set_target_list().
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param widget A Gtk::Widget that's is a drag source.
    */
   void drag_source_add_image_targets();
-  
+
   
   /** Initiates a drag on the source side. The function
    * only needs to be used when the application is
    * starting drags itself, and is not needed when
-   * gtk_drag_source_set() is used.
+   * Gtk::DragSource::set() is used.
+   * 
+   * The @a event is used to retrieve the timestamp that will be used internally to
+   * grab the pointer.  If @a event is #<tt>0</tt>, then GDK_CURRENT_TIME will be used.
+   * However, you should try to pass a real event in all cases, since that can be
+   * used by GTK+ to get information about the start position of the drag, for
+   * example if the @a event is a GDK_MOTION_NOTIFY.
+   * 
+   * Generally there are three cases when you want to start a drag by hand by calling
+   * this function:
+   * 
+   * 1. During a button-press-event handler, if you want to start a drag immediately
+   * when the user presses the mouse button.  Pass the @a event that you have in your
+   * button-press-event handler.
+   * 
+   * 2. During a motion-notify-event handler, if you want to start a drag when the mouse
+   * moves past a certain threshold distance after a button-press.  Pass the @a event that you
+   * have in your motion-notify-event handler.
+   * 
+   * 3. During a timeout handler, if you want to start a drag after the mouse
+   * button is held down for some time.  Try to save the last event that you got
+   * from the mouse, using gdk_event_copy(), and pass it to this function
+   * (remember to free the event with gdk_event_free() when you are done).  If you
+   * can really not pass a real event, pass #<tt>0</tt> instead.
    * @param targets The targets (data formats) in which the
    * source can provide the data.
    * @param actions A bitmask of the allowed drag actions for this drag.
@@ -2174,19 +2547,21 @@ public:
   //These should be a method of Gdk::DragContext, but gdkmm can't depend on gtkmm.
   static Widget* drag_get_source_widget(const Glib::RefPtr<Gdk::DragContext>& context);
   void drag_set_as_icon(const Glib::RefPtr<Gdk::DragContext>& context, int hot_x, int hot_y);
-  
+
   
   /** This function works like queue_resize(), 
    * except that the widget is not invalidated.
    * 
-   * @newin2p4
+   * @newin{2,4}
    */
   void queue_resize_no_redraw();
   
-  /** Return value: the current value of the "no-show-all" property.
-   * @return The current value of the "no-show-all" property.
+  /** Returns the current value of the GtkWidget:no-show-all property, 
+   * which determines whether calls to show_all() and 
+   * hide_all() will affect this widget. 
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return The current value of the "no-show-all" property.
    */
   bool get_no_show_all() const;
   
@@ -2197,10 +2572,10 @@ public:
    * This is mostly for use in constructing widget hierarchies with externally
    * controlled visibility, see Gtk::UIManager.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param no_show_all The new value for the "no-show-all" property.
    */
-  void set_no_show_all(bool no_show_all = true);
+  void set_no_show_all(bool no_show_all =  true);
 
   //Used when implementing containers:
   
@@ -2245,23 +2620,28 @@ public:
    * the default tooltip window. If @a custom_window is <tt>0</tt>, the default
    * tooltip window will be used.
    * 
-   * @newin2p12
+   * If the custom window should have the default theming it needs to
+   * have the name "gtk-tooltip", see set_name().
+   * 
+   * @newin{2,12}
    * @param custom_window A Gtk::Window, or <tt>0</tt>.
    */
   void set_tooltip_window(Window& widget);
   
-  /** Return value: The Gtk::Window of the current tooltip.
-   * @return The Gtk::Window of the current tooltip.
+  /** Returns the Gtk::Window of the current tooltip. This can be the
+   * GtkWindow created by default, or the custom tooltip window set
+   * using set_tooltip_window().
    * 
-   * @newin2p12.
+   * @newin{2,12}
+   * @return The Gtk::Window of the current tooltip.
    */
   Window* get_tooltip_window();
   
   /** Triggers a tooltip query on the display where the toplevel of @a widget
-   * is located. See gtk_tooltip_trigger_tooltip_query() for more
+   * is located. See Gtk::Tooltip::trigger_tooltip_query() for more
    * information.
    * 
-   * @newin2p12
+   * @newin{2,12}
    */
   void trigger_tooltip_query();
   
@@ -2269,9 +2649,9 @@ public:
    * care of setting GtkWidget:has-tooltip to <tt>true</tt> and of the default
    * handler for the GtkWidget::query-tooltip signal.
    * 
-   * See also the GtkWidget:tooltip-text property and gtk_tooltip_set_text().
+   * See also the GtkWidget:tooltip-text property and Gtk::Tooltip::set_text().
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param text The contents of the tooltip for @a widget.
    */
   void set_tooltip_text(const Glib::ustring& text);
@@ -2279,20 +2659,20 @@ public:
   /** Gets the contents of the tooltip for @a widget.
    * @return The tooltip text.
    * 
-   * @newin2p12.
+   * @newin{2,12}.
    */
   Glib::ustring get_tooltip_text() const;
   
   /** Sets @a markup as the contents of the tooltip, which is marked up with
-   * the <link linkend="PangoMarkupFormat">Pango text markup language</link>.
+   * the .
    * 
    * This function will take care of setting GtkWidget:has-tooltip to <tt>true</tt>
    * and of the default handler for the GtkWidget::query-tooltip signal.
    * 
    * See also the GtkWidget:tooltip-markup property and
-   * gtk_tooltip_set_markup().
+   * Gtk::Tooltip::set_markup().
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param markup The contents of the tooltip for @a widget.
    */
   void set_tooltip_markup(const Glib::ustring& markup);
@@ -2300,67 +2680,116 @@ public:
   /** Gets the contents of the tooltip for @a widget.
    * @return The tooltip text.
    * 
-   * @newin2p12.
+   * @newin{2,12}.
    */
   Glib::ustring get_tooltip_markup() const;
   
   /** Sets the has-tooltip property on @a widget to @a has_tooltip.  See
    * GtkWidget:has-tooltip for more information.
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param has_tooltip Whether or not @a widget has a tooltip.
    */
-  void set_has_tooltip(bool has_tooltip = TRUE);
+  void set_has_tooltip(bool has_tooltip =  TRUE);
   
-  /** Return value: current value of has-tooltip on @a widget.
-   * @return Current value of has-tooltip on @a widget.
+  /** Returns the current value of the has-tooltip property.  See
+   * GtkWidget:has-tooltip for more information.
    * 
-   * @newin2p12.
+   * @newin{2,12}
+   * @return Current value of has-tooltip on @a widget.
    */
   bool get_has_tooltip() const;
-  
-  /* FLAGS */
 
-  //: Returns property {flags.toplevel}.
-  bool is_toplevel() const;
+#ifndef GTKMM_DISABLE_DEPRECATED
 
-  //: Returns property {flags.nowindow}.
+  /** @deprecated Use !get_has_window() instead.
+   */
   bool has_no_window() const;
 
-  //: Returns property {flags.realized}.
+  /** @deprecated Use get_realized() instead.
+   */
   bool is_realized() const;
 
-  //: Returns property {flags.mapped}.
+  /** @deprecated Use get_mapped() instead.
+   */
   bool is_mapped() const;
 
-  //: Returns property {flags.visible}.
-  bool is_visible() const; 
+  /** @deprecated Use get_is_toplevel() instead.
+   */
+  bool is_toplevel() const;
 
-  //: Returns if the widget is ready to be drawn to.
-  // Checks to see if the widget is both visible and mapped which
-  // makes it possible to perform drawing commands on.
+  /** @deprecated Use get_is_drawable() instead.
+   */
   bool is_drawable() const;
-  
-  //: Returns property {flags.sensitive}. You might want to check
-  // is_sensitive instead.
+
+  /** @deprecated Use get_visible() instead.
+   */
+  bool is_visible() const;
+
+  /** @deprecated Use get_sensitive() instead.
+   */
   bool sensitive() const;
 
-  bool parent_sensitive() const;
-  bool is_sensitive() const;
-  bool can_focus() const;
-  bool has_focus() const;
-  bool can_default() const;
-  bool has_default() const;
-  bool has_grab() const;
-  bool rc_style() const;
-  bool is_composite_child() const;
+  /** @deprecated Use get_app_paintable() instead.
+   */
   bool app_paintable() const;
+
+  /** @deprecated Use get_receives_default() instead.
+   */
   bool receives_default() const;
+
+  /** @deprecated Use get_double_buffered() instead.
+   */
   bool double_buffered() const;
 
+  /** @deprecated Call get_sensitive() on the result of get_parent() instead.
+   */
+  bool parent_sensitive() const;
+
+  /** @deprecated Use has_rc_style() instead.
+   */
+  bool rc_style() const;
+
+  /** Returns trye if the widget is a composite child of its parent.
+   * @deprecated Use the "composite-child" property instead.
+   */
+  bool is_composite_child() const;
+
+  /**  @deprecated Use the proper method to test individual states, suchas
+   * get_app_paintable(), get_can_default(),
+   * get_can_focus(), get_double_buffered(),
+   * has_default(), is_drawable(),
+   * has_focus(), has_grab(), get_mapped(),
+   * get_has_window(), has_rc_style(),
+   * get_realized(), get_receives_default(),
+   * get_sensitive(), is_sensitive(),
+   * is_toplevel() or get_visible().
+   */
   WidgetFlags get_flags() const;
+
+  /**
+   * @deprecated Use the proper function instead, such as set_app_paintable(),
+   * set_can_default(), set_can_focus(), set_double_buffered(),
+   * set_has_window(), set_mapped(), set_no_show_all(), set_realized(),
+   * set_receives_default(), set_sensitive() or set_visible().
+   */
   void set_flags(WidgetFlags flags);
+
+  /**
+   * @deprecated Use the proper function instead, such as set_app_paintable(),
+   * set_can_default(), set_can_focus(), set_double_buffered(),
+   * set_has_window(), set_mapped(), set_no_show_all(), set_realized(),
+   * set_receives_default(), set_sensitive() or set_visible().
+   */
   void unset_flags(WidgetFlags flags);
+
+  //TODO: Remove this when we can break ABI:
+  /** @deprecated You should not need to call this method.
+   */
+   Gtk::StateType get_saved_state() const;
+ 
+  #endif // GTKMM_DISABLE_DEPRECATED
+
 
   int get_width() const;
   int get_height() const;
@@ -2373,42 +2802,53 @@ public:
    * Please note that the semantics of this call will change
    * in the future if used on a widget that has a composited
    * window in its hierarchy (as set by gdk_window_set_composited()).
+   * 
+   * @newin{2,10}
    * @return <tt>true</tt> if the widget can rely on its alpha
    * channel being drawn correctly.
-   * 
-   * @newin2p10.
    */
   bool is_composited() const;
 
-  //From gtkaction.h:
+  //TODO: Deprecate this when the other widgets can derive from Gtk::Activatable.
   
-  /** Returns: the action that a widget is a proxy for, or
-   * @return The action that a widget is a proxy for, or
-   * <tt>0</tt>, if it is not attached to an action.
+  /** Returns the Gtk::Action that @a widget is a proxy for. 
+   * See also Gtk::Action::get_proxies().
    * 
-   * @newin2p10
+   * @newin{2,10}
    * 
    * Deprecated: 2.16: Use Gtk::Activatable::get_related_action() instead.
+   * @return The action that a widget is a proxy for, or
+   * <tt>0</tt>, if it is not attached to an action.
    */
   Glib::RefPtr<Action> get_action();
   
-  /** Returns: the action that a widget is a proxy for, or
-   * @return The action that a widget is a proxy for, or
-   * <tt>0</tt>, if it is not attached to an action.
+  /** Returns the Gtk::Action that @a widget is a proxy for. 
+   * See also Gtk::Action::get_proxies().
    * 
-   * @newin2p10
+   * @newin{2,10}
    * 
    * Deprecated: 2.16: Use Gtk::Activatable::get_related_action() instead.
+   * @return The action that a widget is a proxy for, or
+   * <tt>0</tt>, if it is not attached to an action.
    */
   Glib::RefPtr<const Action> get_action() const;
 
-   Gtk::StateType get_state() const;
-    Gtk::StateType get_saved_state() const;
-    Requisition get_requisition() const;
- 
+  //TODO: Move this to protected when we can break API:
+  /**  Retrieves the widget's requisition.
+   *
+   * This method should only be used by widget implementations in
+   * order to discover whether the widget's requisition has actually
+   * changed after some internal state change (so that they can call
+   * queue_resize() instead of queue_draw()).
+   *
+   * Normally, size_request() should be used.
+   *
+   * @result The widget's requisition.
+   *
+   * @@newin{2,20}
+   */
+  Requisition get_requisition() const;
   
-   Allocation get_allocation() const;
- 
 
   /**
    * @par Prototype:
@@ -2426,7 +2866,7 @@ public:
   Glib::SignalProxy0< void > signal_hide();
 
 
-  //: Emitted on mapping of a widget to the screen.
+  /// Emitted on mapping of a widget to the screen.
   //- See {flags.mapped}.
   
   /**
@@ -2447,10 +2887,10 @@ public:
   Glib::SignalProxy0< void > signal_unmap();
 
 
-  //: Emitted on realization of a widget.
+  /// Emitted on realization of a widget.
   //- See {flags.realized}.  This is also responsible for
-  //- setting {flags.realized} when it is done.  Therefore, 
-  //- when overriding the impl method, you should call the 
+  //- setting {flags.realized} when it is done.  Therefore,
+  //- when overriding the impl method, you should call the
   //- default realize method.
   
   /**
@@ -2489,8 +2929,8 @@ public:
 
 
 // Changed signals -- inform widget of internal changes.
-// We rename parent_set => parent_changed 
-//  and      style_set  => style_changed 
+// We rename parent_set => parent_changed
+//  and      style_set  => style_changed
 //  to avoid confusion with set_parent and set_style.
 
   
@@ -2502,8 +2942,8 @@ public:
   Glib::SignalProxy1< void,Gtk::StateType > signal_state_changed();
 
 
-  //: Informs objects that their parent changed.
-  //- The widget passed is the former parent, which may be 0 if 
+  /// Informs objects that their parent changed.
+  //- The widget passed is the former parent, which may be 0 if
   //- there was no parent. (was parent_set in GTK+)
   
   /**
@@ -2522,16 +2962,16 @@ public:
   Glib::SignalProxy1< void,Widget* > signal_hierarchy_changed();
 
 
-//Note: We use Gtk::Style instead of Style here, to fix a build problem on MacOS X 
+//Note: We use Gtk::Style instead of Style here, to fix a build problem on MacOS X
 //that we don't fully understand. See bug #493057.
  
 
-  /** The style-set signal is emitted when a new style has been set 
-   * on a widget. Note that style-modifying functions like 
+  /** The style-set signal is emitted when a new style has been set
+   * on a widget. Note that style-modifying functions like
    * modify_base() also cause this signal to be emitted.
    *
-   * @param previous_style  the previous style, or an empty RefPtr if the widget 
-   * just got its initial style. 
+   * @param previous_style  the previous style, or an empty RefPtr if the widget
+   * just got its initial style.
    *
    * @par Prototype:
    * <tt>void on_my_%style_changed(const Glib::RefPtr<Gtk::Style>& previous_style)</tt>
@@ -2556,8 +2996,8 @@ public:
   Glib::SignalProxy1< void,bool > signal_grab_notify();
 
 
- /** The ::child-notify signal is emitted for each child property that has 
-  * changed on an object. The signal's detail holds the property name. 
+ /** The ::child-notify signal is emitted for each child property that has
+  * changed on an object. The signal's detail holds the property name.
   *
   * @param pspec The GParamSpec of the changed child property.
   *
@@ -2611,7 +3051,7 @@ public:
   Glib::SignalProxy1< void,GdkEvent* > signal_event_after();
 
 
-  //: Event triggered by user pressing button.
+  /// Event triggered by user pressing button.
   
   /**
    * @par Prototype:
@@ -2621,7 +3061,7 @@ public:
   Glib::SignalProxy1< bool,GdkEventButton* > signal_button_press_event();
 
 
-  //: Event triggered by user releasing button.
+  /// Event triggered by user releasing button.
   
   /**
    * @par Prototype:
@@ -2639,7 +3079,7 @@ public:
   Glib::SignalProxy1< bool,GdkEventScroll* > signal_scroll_event();
 
 
-  //: Event triggered by user moving pointer.
+  /// Event triggered by user moving pointer.
   
   /**
    * @par Prototype:
@@ -2654,7 +3094,7 @@ public:
   * hides the window.
   *
   * @param event the event which triggered this signal.
-  * @result true to stop other handlers from being invoked for the event, 
+  * @result true to stop other handlers from being invoked for the event,
   * or false to propagate the event. further.
   *
    * @par Prototype:
@@ -2664,15 +3104,15 @@ public:
   Glib::SignalProxy1< bool,GdkEventAny* > signal_delete_event();
 
 
-  //: Event triggered by window requiring a refresh.
+  /// Event triggered by window requiring a refresh.
   //- Expose events cover a rectangular area that was covered
   //- or obscured by another window.  That area is now exposed
-  //- and thus is needs to be redrawn.  
+  //- and thus is needs to be redrawn.
   //-
   //- If the application is not capable of redrawing sections
   //- it should watch the count field and only draw on the last
-  //- even indicated.  This is important for things such as 
-  //- Gtk::DrawingArea. 
+  //- even indicated.  This is important for things such as
+  //- Gtk::DrawingArea.
   
   /**
    * @par Prototype:
@@ -2682,7 +3122,7 @@ public:
   Glib::SignalProxy1< bool,GdkEventExpose* > signal_expose_event();
 
 
-  //: Event triggered by a key press will widget has focus.
+  /// Event triggered by a key press will widget has focus.
   
   /**
    * @par Prototype:
@@ -2692,7 +3132,7 @@ public:
   Glib::SignalProxy1< bool,GdkEventKey* > signal_key_press_event();
 
 
-  //: Event triggered by a key release will widget has focus.
+  /// Event triggered by a key release will widget has focus.
   
   /**
    * @par Prototype:
@@ -2702,7 +3142,7 @@ public:
   Glib::SignalProxy1< bool,GdkEventKey* > signal_key_release_event();
 
 
-  //: Event triggered by pointer entering widget area.
+  /// Event triggered by pointer entering widget area.
   
   /**
    * @par Prototype:
@@ -2712,7 +3152,7 @@ public:
   Glib::SignalProxy1< bool,GdkEventCrossing* > signal_enter_notify_event();
 
 
-  //: Event triggered by pointer leaving widget area.
+  /// Event triggered by pointer leaving widget area.
   
   /**
    * @par Prototype:
@@ -2721,8 +3161,8 @@ public:
 
   Glib::SignalProxy1< bool,GdkEventCrossing* > signal_leave_notify_event();
 
- 
-  //: Event triggered by a window resizing.
+
+  /// Event triggered by a window resizing.
   
   /**
    * @par Prototype:
@@ -2862,8 +3302,8 @@ public:
 
   Glib::SignalProxy2< void,const SelectionData&,guint > signal_selection_received();
 
-  
-  /** The drag_begin signal is emitted on the drag source when a drag is started. 
+
+  /** The drag_begin signal is emitted on the drag source when a drag is started.
    * A typical reason to connect to this signal is to set up a custom drag icon with
    * drag_source_set_icon().
    *
@@ -2875,9 +3315,9 @@ public:
 
   Glib::SignalProxy1< void,const Glib::RefPtr<Gdk::DragContext>& > signal_drag_begin();
 
-  
-  /** The drag_end signal is emitted on the drag source when a drag is finished. 
-   * A typical reason to connect to this signal is to undo things done in the drag-begin 
+
+  /** The drag_end signal is emitted on the drag source when a drag is finished.
+   * A typical reason to connect to this signal is to undo things done in the drag-begin
    * signal handler.
    *
    * @param context the drag context.
@@ -2891,7 +3331,7 @@ public:
 
   /** The drag_data_get signal is emitted on the drag source when the drop site requests
    * the data which is dragged. It is the responsibility of the signal handler to fill @a data
-   * with the data in the format which is indicated by @a info. See SelectionData::set() and 
+   * with the data in the format which is indicated by @a info. See SelectionData::set() and
    * SelectionData::set_text().
    *
    * @param context: the drag context.
@@ -2905,11 +3345,11 @@ public:
 
   Glib::SignalProxy4< void,const Glib::RefPtr<Gdk::DragContext>&,SelectionData&,guint,guint > signal_drag_data_get();
 
-  
+
   /**  The drag_data_delete signal is emitted on the drag source when a drag with the action
    * Gdk::ACTION_MOVE is successfully completed. The signal handler is responsible for deleting
    * the data that has been dropped. What "delete" means, depends on the context of the drag
-   * operation. 
+   * operation.
    *
    * @param context the drag context.
    *
@@ -2927,9 +3367,9 @@ public:
 
   Glib::SignalProxy2< bool,const Glib::RefPtr<Gdk::DragContext>&,DragResult > signal_drag_failed();
 
-  
+
   /**  The drag_leave signal is emitted on the drop site when the cursor leaves the widget.
-   * A typical reason to connect to this signal is to undo things done in the drag_motion signal handler, 
+   * A typical reason to connect to this signal is to undo things done in the drag_motion signal handler,
    *  e.g. undo highlighting with drag_unhighlight().
    *
    * @param context the drag context.
@@ -2941,22 +3381,22 @@ public:
 
   Glib::SignalProxy2< void,const Glib::RefPtr<Gdk::DragContext>&,guint > signal_drag_leave();
 
-  
+
   /** The drag_motion signal is emitted on the drop site when the user moves the cursor over
-   * the widget during a drag. The signal handler must determine whether the cursor position is in 
+   * the widget during a drag. The signal handler must determine whether the cursor position is in
    * a drop zone or not. If it is not in a drop zone, it returns false and no further processing is
    * necessary. Otherwise, the handler returns true. In this case, the handler is responsible for
    * providing the necessary information for displaying feedback to the user, by calling
    * drag_status(). If the decision whether the drop will be accepted or rejected can't be made
-   * based solely on the cursor position and the type of the data, the handler may inspect the dragged 
-   * data by calling drag_get_data() and defer the drag_status() call to the drag_data_received 
-   * handler. 
+   * based solely on the cursor position and the type of the data, the handler may inspect the dragged
+   * data by calling drag_get_data() and defer the drag_status() call to the drag_data_received
+   * handler.
    *
    * Note that there is no drag_enter signal. The drag receiver has to keep track of whether
    * he has received any drag_motion signals since the last drag_leave and if not, treat the
-   * drag_motion signal as an "enter" signal. Upon an "enter", the handler will typically highlight 
+   * drag_motion signal as an "enter" signal. Upon an "enter", the handler will typically highlight
    * the drop site with drag_highlight().
-   * 
+   *
    * @param context the drag context.
    * @param x the x coordinate of the current cursor position.
    * @param y the y coordinate of the current cursor position.
@@ -2969,14 +3409,14 @@ public:
 
   Glib::SignalProxy4< bool,const Glib::RefPtr<Gdk::DragContext>&,int,int,guint > signal_drag_motion();
 
-  
+
   /** The drag_drop signal is emitted on the drop site when the user drops the data
-   * onto the widget. The signal handler must determine whether the cursor position is in 
-   * a drop zone or not. If it is not in a drop zone, it returns false and no further 
-   * processing is necessary. Otherwise, the handler returns true. In this case, the handler 
+   * onto the widget. The signal handler must determine whether the cursor position is in
+   * a drop zone or not. If it is not in a drop zone, it returns false and no further
+   * processing is necessary. Otherwise, the handler returns true. In this case, the handler
    * must ensure that gtk_drag_finish() is called to let the source know that the drop is done.
    * The call to gtk_drag_finish() can be done either directly or in a drag_data_received handler
-   * which gets triggered by calling drop_get_data() to receive the data for one or more of the 
+   * which gets triggered by calling drop_get_data() to receive the data for one or more of the
    * supported targets.
    *
    * @param context the drag context.
@@ -2991,16 +3431,16 @@ public:
 
   Glib::SignalProxy4< bool,const Glib::RefPtr<Gdk::DragContext>&,int,int,guint > signal_drag_drop();
 
-  
-  /** The drag_data_received signal is emitted on the drop site when the dragged data has been 
-   * received. If the data was received in order to determine whether the drop will be accepted, 
-   * the handler is expected to call drag_status() and <emphasis>not</emphasis> finish the drag. 
-   * If the data was received in response to a drag_drop signal (and this is the last target to be 
-   * received), the handler for this signal is expected to process the received data and then call 
-   * drag_finish(), setting the @a success parameter depending on whether the data was processed 
+
+  /** The drag_data_received signal is emitted on the drop site when the dragged data has been
+   * received. If the data was received in order to determine whether the drop will be accepted,
+   * the handler is expected to call drag_status() and <emphasis>not</emphasis> finish the drag.
+   * If the data was received in response to a drag_drop signal (and this is the last target to be
+   * received), the handler for this signal is expected to process the received data and then call
+   * drag_finish(), setting the @a success parameter depending on whether the data was processed
    * successfully.
    *
-   * The handler may inspect and modify @drag_context->action before calling gtk_drag_finish(), 
+   * The handler may inspect and modify @drag_context->action before calling gtk_drag_finish(),
    * e.g. to implement %Gdk::ACTION_ASK.
    *
    * @param drag_context the drag context
@@ -3029,7 +3469,7 @@ public:
   Glib::SignalProxy0< Glib::RefPtr<Atk::Object> > signal_get_accessible();
 #endif // GTKMM_ATKMM_ENABLED
 
-  
+
   /**
    * @par Prototype:
    * <tt>void on_my_%screen_changed(const Glib::RefPtr<Gdk::Screen>& previous_screen)</tt>
@@ -3046,9 +3486,9 @@ public:
   Glib::SignalProxy0< void > signal_composited_changed();
 
 
-//TODO: The signal_id is very C-like here:                                                                          
+//TODO: The signal_id is very C-like here:
   //_WRAP_SIGNAL(bool can_activate_accel(guint signal_id), "can_activate_accel")
-  
+
   
   /**
    * @par Prototype:
@@ -3130,7 +3570,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Override for width request of the widget
+/** Override for width request of the widget, or -1 if natural request should be used.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -3140,7 +3580,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Override for width request of the widget
+/** Override for width request of the widget, or -1 if natural request should be used.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -3150,7 +3590,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Override for height request of the widget
+/** Override for height request of the widget, or -1 if natural request should be used.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -3160,7 +3600,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Override for height request of the widget
+/** Override for height request of the widget, or -1 if natural request should be used.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -3270,6 +3710,26 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the widget is the focus widget within the toplevel.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_is_focus() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the widget is the focus widget within the toplevel.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_is_focus() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
 /** Whether the widget can be the default widget.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
@@ -3310,7 +3770,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If TRUE
+/** If TRUE, the widget will receive the default action when it is focused.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -3320,7 +3780,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If TRUE
+/** If TRUE, the widget will receive the default action when it is focused.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -3341,7 +3801,7 @@ public:
 
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The style of the widget
+/** The style of the widget, which contains information about how it will look (colors etc).
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -3351,7 +3811,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The style of the widget
+/** The style of the widget, which contains information about how it will look (colors etc).
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -3471,29 +3931,61 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether gtk_widget_show_all() should not affect this widget.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_no_show_all() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether gtk_widget_show_all() should not affect this widget.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_no_show_all() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether or not the widget is double buffered.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_double_buffered() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether or not the widget is double buffered.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_double_buffered() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
 protected:
   //comment in GTK+ header: "seldomly overidden"
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void dispatch_child_properties_changed_vfunc(guint p1, GParamSpec** p2);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void dispatch_child_properties_changed_vfunc(guint p1, GParamSpec** p2);
 
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void show_all_vfunc();
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void show_all_vfunc();
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void hide_all_vfunc();
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void hide_all_vfunc();
 
-
-  #ifdef GLIBMM_VFUNCS_ENABLED
 
 #ifdef  GTKMM_ATKMM_ENABLED
   virtual Glib::RefPtr<Atk::Object> get_accessible_vfunc();
 
 #endif //  GTKMM_ATKMM_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 protected:
@@ -3528,6 +4020,43 @@ protected:
   void unrealize();
 
   
+  /** Marks the widget as being realized.
+   * 
+   * This function should only ever be called in a derived widget's
+   * "map" or "unmap" implementation.
+   * 
+   * @newin{2,20}
+   * @param mapped <tt>true</tt> to mark the widget as mapped.
+   */
+  void set_mapped(bool mapped =  true);
+  
+  /** Marks the widget as being realized.
+   * 
+   * This function should only ever be called in a derived widget's
+   * "realize" or "unrealize" implementation.
+   * 
+   * @newin{2,20}
+   * @param realized <tt>true</tt> to mark the widget as realized.
+   */
+  void set_realized(bool realized =  true);
+  
+  /** This function attaches the widget's Gtk::Style to the widget's
+   * Gdk::Window. It is a replacement for
+   * 
+   * 
+   * widget->style = gtk_style_attach (widget->style, widget->window);
+   * 
+   * 
+   * and should only ever be called in a derived widget's "realize"
+   * implementation which does not chain up to its parent class'
+   * "realize" implementation, because one of the parent classes
+   * (finally Gtk::Widget) would attach the style itself.
+   * 
+   * @newin{2,20}
+   */
+  void style_attach();
+
+  
   /** This function is only for use in widget implementations. Obtains
    *  @a widget->requisition, unless someone has forced a particular
    * geometry on the widget (e.g. with set_size_request()),
@@ -3556,17 +4085,12 @@ protected:
    * @param the_property_name The name of a style property.
    * @param value Location to return the property value.
    */
-  void get_style_property_value(
-                   const Glib::ustring& the_property_name, Glib::ValueBase& value) const;
+  void get_style_property_value(const Glib::ustring& the_property_name, Glib::ValueBase& value) const;
 
   void realize_if_needed();
 
-   void set_allocation(const Allocation& value);
-    void set_window(const Glib::RefPtr<Gdk::Window>& value);
- 
 
 };
-
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 

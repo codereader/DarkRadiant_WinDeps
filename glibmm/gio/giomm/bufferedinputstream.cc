@@ -28,26 +28,17 @@
 
 namespace Gio
 {
-Glib::RefPtr<BufferedInputStream> BufferedInputStream::create_sized(const Glib::RefPtr<InputStream>& base_stream, gsize size)
+Glib::RefPtr<BufferedInputStream> BufferedInputStream::create_sized(const Glib::RefPtr<InputStream>& base_stream, gsize buffer_size)
 {
-    return Glib::RefPtr<Gio::BufferedInputStream>(new BufferedInputStream(base_stream, size));
+  return Glib::RefPtr<Gio::BufferedInputStream>(new BufferedInputStream(base_stream, buffer_size));
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 gssize BufferedInputStream::fill(gssize count)
-#else
-gssize BufferedInputStream::fill(gssize count, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
-  gssize retvalue = g_buffered_input_stream_fill(const_cast<GBufferedInputStream*>(gobj()), count, NULL, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  const gssize retvalue = g_buffered_input_stream_fill(const_cast<GBufferedInputStream*>(gobj()), count, 0, &(gerror));
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
@@ -65,7 +56,7 @@ void BufferedInputStream::fill_async(const SlotAsyncReady& slot,
     g_buffered_input_stream_fill_async(gobj(),
             count,
             io_priority,
-            cancellable->gobj(),
+            Glib::unwrap(cancellable),
             &SignalProxy_async_callback,
             slot_copy);
 }
@@ -82,26 +73,17 @@ void BufferedInputStream::fill_async(const SlotAsyncReady& slot,
     g_buffered_input_stream_fill_async(gobj(),
             count,
             io_priority,
-            NULL,
+            0,
             &SignalProxy_async_callback,
             slot_copy);
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 int BufferedInputStream::read_byte()
-#else
-int BufferedInputStream::read_byte(std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
-  int retvalue = g_buffered_input_stream_read_byte(gobj(), NULL, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  const int retvalue = g_buffered_input_stream_read_byte(gobj(), 0, &(gerror));
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
@@ -160,18 +142,8 @@ void BufferedInputStream_Class::class_init_function(void* g_class, void* class_d
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* BufferedInputStream_Class::wrap_new(GObject* object)
@@ -229,11 +201,11 @@ BufferedInputStream::BufferedInputStream(const Glib::RefPtr<InputStream>& base_s
 
 }
 
-BufferedInputStream::BufferedInputStream(const Glib::RefPtr<InputStream>& base_stream, gsize size)
+BufferedInputStream::BufferedInputStream(const Glib::RefPtr<InputStream>& base_stream, gsize buffer_size)
 :
   // Mark this class as non-derived to allow C++ vfuncs to be skipped.
   Glib::ObjectBase(0),
-  Gio::FilterInputStream(Glib::ConstructParams(bufferedinputstream_class_.init(), "base_stream", const_cast<GInputStream*>(Glib::unwrap(base_stream)), "size", size, static_cast<char*>(0)))
+  Gio::FilterInputStream(Glib::ConstructParams(bufferedinputstream_class_.init(), "base_stream", const_cast<GInputStream*>(Glib::unwrap(base_stream)), "buffer_size", buffer_size, static_cast<char*>(0)))
 {
   
 
@@ -243,6 +215,7 @@ Glib::RefPtr<BufferedInputStream> BufferedInputStream::create(const Glib::RefPtr
 {
   return Glib::RefPtr<BufferedInputStream>( new BufferedInputStream(base_stream) );
 }
+
 gsize BufferedInputStream::get_buffer_size() const
 {
   return g_buffered_input_stream_get_buffer_size(const_cast<GBufferedInputStream*>(gobj()));
@@ -268,61 +241,34 @@ const void* BufferedInputStream::peek_buffer(gsize& count) const
   return g_buffered_input_stream_peek_buffer(const_cast<GBufferedInputStream*>(gobj()), &(count));
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 gssize BufferedInputStream::fill(gssize count, const Glib::RefPtr<Cancellable>& cancellable)
-#else
-gssize BufferedInputStream::fill(gssize count, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   gssize retvalue = g_buffered_input_stream_fill(gobj(), count, const_cast<GCancellable*>(Glib::unwrap(cancellable)), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 gssize BufferedInputStream::fill_finish(const Glib::RefPtr<AsyncResult>& result)
-#else
-gssize BufferedInputStream::fill_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   gssize retvalue = g_buffered_input_stream_fill_finish(gobj(), Glib::unwrap(result), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 int BufferedInputStream::read_byte(const Glib::RefPtr<Cancellable>& cancellable)
-#else
-int BufferedInputStream::read_byte(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   int retvalue = g_buffered_input_stream_read_byte(gobj(), const_cast<GCancellable*>(Glib::unwrap(cancellable)), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
@@ -342,13 +288,6 @@ Glib::PropertyProxy_ReadOnly<guint> BufferedInputStream::property_buffer_size() 
   return Glib::PropertyProxy_ReadOnly<guint>(this, "buffer-size");
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gio

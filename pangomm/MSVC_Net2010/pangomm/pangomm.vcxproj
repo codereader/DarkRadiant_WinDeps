@@ -100,7 +100,7 @@
     <ClCompile>
       <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;../..;../../pango;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\cairomm;$(SolutionDir)\..\..\cairomm\cairomm;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\gtk2\include\pango-1.0;$(SolutionDir)\..\..\gtk2\include\cairo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../..;../../pango;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\cairomm;$(SolutionDir)\..\..\cairomm\cairomm;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\..\w32deps\gtk2\include;$(SolutionDir)\..\..\..\w32deps\gtk2\include\glib-2.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\pango-1.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\cairo;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\glib-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PANGOMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -134,7 +134,7 @@
     <ClCompile>
       <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;../..;../../pango;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\cairomm;$(SolutionDir)\..\..\cairomm\cairomm;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\gtk2\include\pango-1.0;$(SolutionDir)\..\..\gtk2\include\cairo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../..;../../pango;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\cairomm;$(SolutionDir)\..\..\cairomm\cairomm;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\..\w32deps\gtk2\include;$(SolutionDir)\..\..\..\w32deps\gtk2\include\glib-2.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\pango-1.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\cairo;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\glib-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PANGOMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -165,7 +165,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>.;../..;../../pango;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\cairomm;$(SolutionDir)\..\..\cairomm\cairomm;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\gtk2\include\pango-1.0;$(SolutionDir)\..\..\gtk2\include\cairo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../..;../../pango;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\cairomm;$(SolutionDir)\..\..\cairomm\cairomm;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\..\w32deps\gtk2\include;$(SolutionDir)\..\..\..\w32deps\gtk2\include\glib-2.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\pango-1.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\cairo;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\glib-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PANGOMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -195,7 +195,7 @@
     </Midl>
     <ClCompile>
       <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>.;../..;../../pango;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\cairomm;$(SolutionDir)\..\..\cairomm\cairomm;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\gtk2\include\pango-1.0;$(SolutionDir)\..\..\gtk2\include\cairo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../..;../../pango;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\cairomm;$(SolutionDir)\..\..\cairomm\cairomm;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\..\w32deps\gtk2\include;$(SolutionDir)\..\..\..\w32deps\gtk2\include\glib-2.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\pango-1.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\cairo;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\glib-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PANGOMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -222,34 +222,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\pango\pangomm\attributes.cc" />
-    <ClCompile Include="..\..\pango\pangomm\attriter.cc" />
-    <ClCompile Include="..\..\pango\pangomm\attrlist.cc" />
-    <ClCompile Include="..\blank.cpp" />
-    <ClCompile Include="..\..\pango\pangomm\cairofontmap.cc" />
-    <ClCompile Include="..\..\pango\pangomm\color.cc" />
-    <ClCompile Include="..\..\pango\pangomm\context.cc" />
-    <ClCompile Include="..\..\pango\pangomm\coverage.cc" />
-    <ClCompile Include="..\..\pango\pangomm\font.cc" />
-    <ClCompile Include="..\..\pango\pangomm\fontdescription.cc" />
-    <ClCompile Include="..\..\pango\pangomm\fontface.cc" />
-    <ClCompile Include="..\..\pango\pangomm\fontfamily.cc" />
-    <ClCompile Include="..\..\pango\pangomm\fontmap.cc" />
-    <ClCompile Include="..\..\pango\pangomm\fontmetrics.cc" />
-    <ClCompile Include="..\..\pango\pangomm\fontset.cc" />
-    <ClCompile Include="..\..\pango\pangomm\glyph.cc" />
-    <ClCompile Include="..\..\pango\pangomm\glyphstring.cc" />
-    <ClCompile Include="..\..\pango\pangomm\init.cc" />
-    <ClCompile Include="..\..\pango\pangomm\item.cc" />
-    <ClCompile Include="..\..\pango\pangomm\language.cc" />
-    <ClCompile Include="..\..\pango\pangomm\layout.cc" />
-    <ClCompile Include="..\..\pango\pangomm\layoutiter.cc" />
-    <ClCompile Include="..\..\pango\pangomm\layoutline.cc" />
-    <ClCompile Include="..\..\pango\pangomm\layoutrun.cc" />
-    <ClCompile Include="..\..\pango\pangomm\rectangle.cc" />
-    <ClCompile Include="..\..\pango\pangomm\renderer.cc" />
-    <ClCompile Include="..\..\pango\pangomm\tabarray.cc" />
-    <ClCompile Include="..\..\pango\pangomm\wrap_init.cc" />
+    <ProjectReference Include="..\gendef\gendef.vcxproj">
+      <Project>{07324745-c9be-4d65-b08a-9c88188c0c28}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\pango\pangomm\attributes.h" />
@@ -282,13 +258,33 @@
     <ClInclude Include="..\..\pango\pangomm\wrap_init.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="pangomm.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\gendef\gendef.vcxproj">
-      <Project>{07324745-c9be-4d65-b08a-9c88188c0c28}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
+    <ClCompile Include="..\..\pango\pangomm\attributes.cc" />
+    <ClCompile Include="..\..\pango\pangomm\attriter.cc" />
+    <ClCompile Include="..\..\pango\pangomm\attrlist.cc" />
+    <ClCompile Include="..\..\pango\pangomm\cairofontmap.cc" />
+    <ClCompile Include="..\..\pango\pangomm\color.cc" />
+    <ClCompile Include="..\..\pango\pangomm\context.cc" />
+    <ClCompile Include="..\..\pango\pangomm\coverage.cc" />
+    <ClCompile Include="..\..\pango\pangomm\font.cc" />
+    <ClCompile Include="..\..\pango\pangomm\fontdescription.cc" />
+    <ClCompile Include="..\..\pango\pangomm\fontface.cc" />
+    <ClCompile Include="..\..\pango\pangomm\fontfamily.cc" />
+    <ClCompile Include="..\..\pango\pangomm\fontmap.cc" />
+    <ClCompile Include="..\..\pango\pangomm\fontmetrics.cc" />
+    <ClCompile Include="..\..\pango\pangomm\fontset.cc" />
+    <ClCompile Include="..\..\pango\pangomm\glyph.cc" />
+    <ClCompile Include="..\..\pango\pangomm\glyphstring.cc" />
+    <ClCompile Include="..\..\pango\pangomm\init.cc" />
+    <ClCompile Include="..\..\pango\pangomm\item.cc" />
+    <ClCompile Include="..\..\pango\pangomm\language.cc" />
+    <ClCompile Include="..\..\pango\pangomm\layout.cc" />
+    <ClCompile Include="..\..\pango\pangomm\layoutiter.cc" />
+    <ClCompile Include="..\..\pango\pangomm\layoutline.cc" />
+    <ClCompile Include="..\..\pango\pangomm\layoutrun.cc" />
+    <ClCompile Include="..\..\pango\pangomm\rectangle.cc" />
+    <ClCompile Include="..\..\pango\pangomm\renderer.cc" />
+    <ClCompile Include="..\..\pango\pangomm\tabarray.cc" />
+    <ClCompile Include="..\..\pango\pangomm\wrap_init.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -29,17 +29,14 @@ public:
 
 protected:
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   //Callbacks (default signal handlers):
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
   static void insert_text_callback(GtkEditable* self, const gchar* text, gint length, gint* position);
-  static void delete_text_callback(GtkEditable* self, gint start_pos, gint end_pos);
+  static void delete_text_callback(GtkEditable* self, gint p0, gint p1);
   static void changed_callback(GtkEditable* self);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
   //Callbacks (virtual functions):
-#ifdef GLIBMM_VFUNCS_ENABLED
   static void do_insert_text_vfunc_callback(GtkEditable* self, const gchar* text, gint length, gint* position);
   static void do_delete_text_vfunc_callback(GtkEditable* self, gint start_pos, gint end_pos);
   static gchar* get_chars_vfunc_callback(GtkEditable* self, gint start_pos, gint end_pos);
@@ -47,7 +44,6 @@ protected:
   static gboolean get_selection_bounds_vfunc_callback(GtkEditable* self, gint* start_pos, gint* end_pos);
   static void set_position_vfunc_callback(GtkEditable* self, gint position);
   static gint get_position_vfunc_callback(GtkEditable* self);
-#endif //GLIBMM_VFUNCS_ENABLED
 };
 
 

@@ -76,18 +76,8 @@ void MemoryOutputStream_Class::class_init_function(void* g_class, void* class_da
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* MemoryOutputStream_Class::wrap_new(GObject* object)
@@ -135,23 +125,34 @@ GType MemoryOutputStream::get_base_type()
 }
 
 
-MemoryOutputStream::MemoryOutputStream(gpointer data, gsize len, GReallocFunc realloc_fn, GDestroyNotify destroy)
+MemoryOutputStream::MemoryOutputStream(void* data, gsize size, GReallocFunc realloc_function, GDestroyNotify destroy_function)
 :
   // Mark this class as non-derived to allow C++ vfuncs to be skipped.
   Glib::ObjectBase(0),
-  Gio::OutputStream(Glib::ConstructParams(memoryoutputstream_class_.init(), "data", data, "len", len, "realloc_fn", realloc_fn, "destroy", destroy, static_cast<char*>(0)))
+  Gio::OutputStream(Glib::ConstructParams(memoryoutputstream_class_.init(), "data", data, "size", size, "realloc_function", realloc_function, "destroy_function", destroy_function, static_cast<char*>(0)))
 {
   
 
 }
 
-Glib::RefPtr<MemoryOutputStream> MemoryOutputStream::create(gpointer data, gsize len, GReallocFunc realloc_fn, GDestroyNotify destroy)
+Glib::RefPtr<MemoryOutputStream> MemoryOutputStream::create(void* data, gsize size, GReallocFunc realloc_function, GDestroyNotify destroy_function)
 {
-  return Glib::RefPtr<MemoryOutputStream>( new MemoryOutputStream(data, len, realloc_fn, destroy) );
+  return Glib::RefPtr<MemoryOutputStream>( new MemoryOutputStream(data, size, realloc_function, destroy_function) );
 }
-gpointer MemoryOutputStream::get_data()
+
+void* MemoryOutputStream::get_data()
 {
   return g_memory_output_stream_get_data(gobj());
+}
+
+const void* MemoryOutputStream::get_data() const
+{
+  return const_cast<MemoryOutputStream*>(this)->get_data();
+}
+
+void* MemoryOutputStream::steal_data()
+{
+  return g_memory_output_stream_steal_data(gobj());
 }
 
 gsize MemoryOutputStream::get_size() const
@@ -165,11 +166,26 @@ gsize MemoryOutputStream::get_data_size() const
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<void*> MemoryOutputStream::property_data() const
+{
+  return Glib::PropertyProxy_ReadOnly<void*>(this, "data");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<gulong> MemoryOutputStream::property_data_size() const
+{
+  return Glib::PropertyProxy_ReadOnly<gulong>(this, "data-size");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<gulong> MemoryOutputStream::property_size() const
+{
+  return Glib::PropertyProxy_ReadOnly<gulong>(this, "size");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
 
 } // namespace Gio

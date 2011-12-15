@@ -34,6 +34,20 @@
 namespace Gtk
 {
 
+ComboBox::ComboBox(bool has_entry)
+:
+  // Mark this class as non-derived to allow C++ vfuncs to be skipped.
+  Glib::ObjectBase(0),
+  Gtk::Bin(Glib::ConstructParams(combobox_class_.init(), "has-entry",gboolean(has_entry), static_cast<char*>(0)))
+{}
+
+ComboBox::ComboBox(const Glib::RefPtr<TreeModel>& model, bool has_entry)
+:
+  // Mark this class as non-derived to allow C++ vfuncs to be skipped.
+  Glib::ObjectBase(0),
+  Gtk::Bin(Glib::ConstructParams(combobox_class_.init(), "model",Glib::unwrap(model),"has-entry",gboolean(has_entry), static_cast<char*>(0)))
+{}
+
 void ComboBox::unset_active()
 {
   gtk_combo_box_set_active(gobj(), -1 /* see GTK+ docs */);
@@ -94,6 +108,27 @@ void ComboBox::unset_row_separator_func()
   gtk_combo_box_set_row_separator_func(gobj(), 0, 0, 0 /* See C docs. */);
 }
 
+Entry* ComboBox::get_entry()
+{
+  Gtk::Widget* widget = Glib::wrap(gtk_bin_get_child(GTK_BIN(gobj())));
+  return dynamic_cast<Gtk::Entry*>(widget);
+}
+
+const Entry* ComboBox::get_entry() const
+{
+  const Gtk::Widget* widget = Glib::wrap(gtk_bin_get_child(GTK_BIN(gobj())));
+  return dynamic_cast<const Gtk::Entry*>(widget);
+}
+
+Glib::ustring ComboBox::get_entry_text() const
+{
+  const Gtk::Entry* entry = get_entry();
+  if(!entry)
+    return Glib::ustring();
+  else
+    return entry->get_text();
+}
+
 } // namespace Gtk
 
 
@@ -150,23 +185,17 @@ const Glib::Class& ComboBox_Class::init()
   return *this;
 }
 
+
 void ComboBox_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->changed = &changed_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void ComboBox_Class::changed_callback(GtkComboBox* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -198,7 +227,7 @@ void ComboBox_Class::changed_callback(GtkComboBox* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -207,7 +236,6 @@ void ComboBox_Class::changed_callback(GtkComboBox* self)
   if(base && base->changed)
     (*base->changed)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* ComboBox_Class::wrap_new(GObject* o)
@@ -242,6 +270,7 @@ GType ComboBox::get_type()
 {
   return combobox_class_.init().get_type();
 }
+
 
 GType ComboBox::get_base_type()
 {
@@ -372,6 +401,26 @@ gtk_combo_box_set_button_sensitivity(gobj(), ((GtkSensitivityType)(sensitivity))
 SensitivityType ComboBox::get_button_sensitivity() const
 {
   return ((SensitivityType)(gtk_combo_box_get_button_sensitivity(const_cast<GtkComboBox*>(gobj()))));
+}
+
+bool ComboBox::get_has_entry() const
+{
+  return gtk_combo_box_get_has_entry(const_cast<GtkComboBox*>(gobj()));
+}
+
+void ComboBox::set_entry_text_column(const TreeModelColumnBase& text_column) const
+{
+gtk_combo_box_set_entry_text_column(const_cast<GtkComboBox*>(gobj()), (text_column).index()); 
+}
+
+void ComboBox::set_entry_text_column(int text_column)
+{
+gtk_combo_box_set_entry_text_column(gobj(), text_column); 
+}
+
+int ComboBox::get_entry_text_column() const
+{
+  return gtk_combo_box_get_entry_text_column(const_cast<GtkComboBox*>(gobj()));
 }
 
 void ComboBox::popup()
@@ -534,8 +583,28 @@ Glib::PropertyProxy_ReadOnly<Glib::ustring> ComboBox::property_tearoff_title() c
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
 
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> ComboBox::property_popup_shown() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "popup-shown");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<SensitivityType> ComboBox::property_button_sensitivity() 
+{
+  return Glib::PropertyProxy<SensitivityType>(this, "button-sensitivity");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<SensitivityType> ComboBox::property_button_sensitivity() const
+{
+  return Glib::PropertyProxy_ReadOnly<SensitivityType>(this, "button-sensitivity");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+
 void Gtk::ComboBox::on_changed()
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -545,10 +614,6 @@ void Gtk::ComboBox::on_changed()
   if(base && base->changed)
     (*base->changed)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

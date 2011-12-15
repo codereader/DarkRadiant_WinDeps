@@ -76,23 +76,14 @@ const Glib::Class& SeparatorToolItem_Class::init()
   return *this;
 }
 
+
 void SeparatorToolItem_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* SeparatorToolItem_Class::wrap_new(GObject* o)
@@ -128,6 +119,7 @@ GType SeparatorToolItem::get_type()
   return separatortoolitem_class_.init().get_type();
 }
 
+
 GType SeparatorToolItem::get_base_type()
 {
   return gtk_separator_tool_item_get_type();
@@ -144,12 +136,30 @@ SeparatorToolItem::SeparatorToolItem()
 
 }
 
+bool SeparatorToolItem::get_draw() const
+{
+  return gtk_separator_tool_item_get_draw(const_cast<GtkSeparatorToolItem*>(gobj()));
+}
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+void SeparatorToolItem::set_draw(bool draw)
+{
+gtk_separator_tool_item_set_draw(gobj(), static_cast<int>(draw)); 
+}
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<bool> SeparatorToolItem::property_draw() 
+{
+  return Glib::PropertyProxy<bool>(this, "draw");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> SeparatorToolItem::property_draw() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "draw");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
 
 } // namespace Gtk

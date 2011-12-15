@@ -8,8 +8,6 @@
 
 #include <glibmm.h>
 
-/* $Id: treeviewcolumn.hg,v 1.16 2006/07/08 16:31:38 murrayc Exp $ */
-
 /* Copyright(C) 2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -27,14 +25,14 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// This is for including the config header before any code (such as
+ // This is for including the config header before any code (such as
 // the #ifndef GTKMM_DISABLE_DEPRECATED in deprecated classes) is generated:
 
 
 #include <gtkmm/object.h>
-#include <gtkmm/treeiter.h>
 #include <gtkmm/widget.h>
 #include <gdkmm/window.h>
+#include <gtkmm/treeiter.h>
 #include <gtkmm/treemodel.h>
 #include <glibmm/listhandle.h>
 #include <gtkmm/cellrenderer_generation.h>
@@ -52,7 +50,7 @@ namespace Gtk
 {
 
 
-/** @addtogroup gtkmmEnums Enums and Flags */
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
 
 /**
  * @ingroup gtkmmEnums
@@ -86,8 +84,8 @@ namespace Gtk
 {
 
 
-// We use GTKMM_API here because gcc needs the extra help on win32 , even 
-// when using --export-all and auto-import. 
+// We use GTKMM_API here because gcc needs the extra help on win32 , even
+// when using --export-all and auto-import.
 // See http://bugzilla.gnome.org/show_bug.cgi?id=309030.
 
 //TODO: This should derive+implement from CellLayout when we can break ABI.
@@ -131,6 +129,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -143,18 +143,12 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_clicked();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -180,7 +174,7 @@ public:
    * @param cell The Gtk::CellRenderer.
    * @param expand <tt>true</tt> if @a cell is to be given extra space allocated to @a tree_column.
    */
-  void pack_start(CellRenderer& cell, bool expand = true);
+  void pack_start(CellRenderer& cell, bool expand =  true);
   
   /** Adds the @a cell to end of the column. If @a expand is <tt>false</tt>, then the @a cell
    * is allocated no more space than it needs. Any unused space is divided
@@ -188,14 +182,14 @@ public:
    * @param cell The Gtk::CellRenderer.
    * @param expand <tt>true</tt> if @a cell is to be given extra space allocated to @a tree_column.
    */
-  void pack_end(CellRenderer& cell, bool expand = true);
+  void pack_end(CellRenderer& cell, bool expand =  true);
 
   /** Creates an appropriate CellRenderer for the @a column, and packs that cell into the beginning of the column.
    * If @a expand  is <tt>false</tt>, then
    * the cell is allocated no more space than it needs. Any unused space is divided
    * evenly between cells for which @a expand is <tt>true</tt>.
    *
-   * You can use get_first_cell_renderer() or get_cell_renderers() to access the generated CellRenderer.
+   * You can use get_first_cell() or get_cell_renderers() to access the generated CellRenderer.
    *
    * @param column The model column that will be rendered by the view cell.
    * @param expand <tt>true</tt> if the cell is to be given extra space allocated to the view column.
@@ -208,7 +202,7 @@ public:
    * the cell is allocated no more space than it needs. Any unused space is divided
    * evenly between cells for which @a expand is <tt>true</tt>.
    *
-   * You can use get_first_cell_renderer() or get_cell_renderers() to access the generated CellRenderer.
+   * You can use get_first_cell() or get_cell_renderers() to access the generated CellRenderer.
    *
    * @param column The model column that will be rendered by the view cell.
    * @param expand <tt>true</tt> if the cell is to be given extra space allocated to the view column.
@@ -221,18 +215,44 @@ public:
    */
   void clear();
 
+  //We replaced get_first_cell() with get_first_cell() because that
+  //is the name of the method in CellLayout, which this class derives from in gtkmm-3.0.
+  //That allows more code to be ported before actually using gtkmm-3.0.
+
   /** Gets the CellRenderer for the column.
     * You should dynamic_cast<> to the expected derived CellRenderer type.
     * This assumes that the TreeViewColumn contains only one CellRenderer.
+    */
+  CellRenderer* get_first_cell();
+
+  /** Gets the CellRenderer for the column.
+    * You should dynamic_cast<> to the expected derived CellRenderer type.
+    * This assumes that the TreeViewColumn contains only one CellRenderer.
+    */
+  const CellRenderer* get_first_cell() const;
+
+  #ifndef GTKMM_DISABLE_DEPRECATED
+
+  /** Gets the CellRenderer for the column.
+    * You should dynamic_cast<> to the expected derived CellRenderer type.
+    * This assumes that the TreeViewColumn contains only one CellRenderer.
+    *
+    * @deprecated Use get_first_cell().
     */
   CellRenderer* get_first_cell_renderer();
 
   /** Gets the CellRenderer for the column.
     * You should dynamic_cast<> to the expected derived CellRenderer type.
     * This assumes that the TreeViewColumn contains only one CellRenderer.
+    *
+    * @deprecated Use get_first_cell().
     */
   const CellRenderer* get_first_cell_renderer() const;
+  #endif // GTKMM_DISABLE_DEPRECATED
 
+
+  // TODO: Should be deprecated, but we cannot derive from CellLayout
+  // without breaking API and ABI.
   
   /** Returns a list of all the cell renderers in the column,
    * in no particular order.
@@ -259,9 +279,7 @@ public:
    */
   void add_attribute(CellRenderer& cell_renderer, const Glib::ustring& attribute, int column);
 
-#ifdef GLIBMM_PROPERTIES_ENABLED
   void add_attribute(const Glib::PropertyProxy_Base& property, const TreeModelColumnBase& column);
-#endif
 
   void add_attribute(Gtk::CellRenderer& cell, const Glib::ustring& property_name, const TreeModelColumnBase& column);
   
@@ -291,11 +309,11 @@ public:
    *
    * @param cell_renderer A Gtk::CellRenderer
    * @param slot The callback slot to use. Create this with sigc::mem_fun(), or sigc::ptr_fun().
-   */  
+   */
   void set_cell_data_func(CellRenderer& cell_renderer, const SlotCellData& slot);
 
   /** Removes a previously set callback slot. See set_cell_data_func().
-   */ 
+   */
   void unset_cell_data_func(CellRenderer& cell_renderer);
 
   
@@ -311,7 +329,7 @@ public:
    */
   void set_spacing(int spacing);
   
-  /** Return value: the spacing of @a tree_column.
+  /** Returns the spacing of @a tree_column.
    * @return The spacing of @a tree_column.
    */
   int get_spacing() const;
@@ -319,9 +337,9 @@ public:
   /** Sets the visibility of @a tree_column.
    * @param visible <tt>true</tt> if the @a tree_column is visible.
    */
-  void set_visible(bool visible = true);
+  void set_visible(bool visible =  true);
   
-  /** Return value: whether the column is visible or not.  If it is visible, then
+  /** Returns <tt>true</tt> if @a tree_column is visible.
    * @return Whether the column is visible or not.  If it is visible, then
    * the tree will show the column.
    */
@@ -333,9 +351,9 @@ public:
    * mode is changed to Gtk::TREE_VIEW_COLUMN_GROW_ONLY.
    * @param resizable <tt>true</tt>, if the column can be resized.
    */
-  void set_resizable(bool resizable = true);
+  void set_resizable(bool resizable =  true);
   
-  /** Return value: <tt>true</tt>, if the @a tree_column can be resized.
+  /** Returns <tt>true</tt> if the @a tree_column can be resized by the end user.
    * @return <tt>true</tt>, if the @a tree_column can be resized.
    */
   bool get_resizable() const;
@@ -345,12 +363,12 @@ public:
    */
   void set_sizing(TreeViewColumnSizing type);
   
-  /** Return value: The type of @a tree_column.
+  /** Returns the current type of @a tree_column.
    * @return The type of @a tree_column.
    */
   TreeViewColumnSizing get_sizing();
   
-  /** Return value: The current width of @a tree_column.
+  /** Returns the current size of @a tree_column in pixels.
    * @return The current width of @a tree_column.
    */
   int get_width() const;
@@ -376,7 +394,8 @@ public:
    */
   void set_min_width(int min_width);
   
-  /** Return value: The minimum width of the @a tree_column.
+  /** Returns the minimum width in pixels of the @a tree_column, or -1 if no minimum
+   * width is set.
    * @return The minimum width of the @a tree_column.
    */
   int get_min_width() const;
@@ -389,7 +408,8 @@ public:
    */
   void set_max_width(int max_width);
   
-  /** Return value: The maximum width of the @a tree_column.
+  /** Returns the maximum width in pixels of the @a tree_column, or -1 if no maximum
+   * width is set.
    * @return The maximum width of the @a tree_column.
    */
   int get_max_width() const;
@@ -406,7 +426,7 @@ public:
    */
   void set_title(const Glib::ustring& title);
   
-  /** Return value: the title of the column. This string should not be
+  /** Returns the title of the widget.
    * @return The title of the column. This string should not be
    * modified or freed.
    */
@@ -418,15 +438,15 @@ public:
    * option set, then the last column gets all extra space.  By default, every
    * column is created with this <tt>false</tt>.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param expand <tt>true</tt> if the column should take available extra space, <tt>false</tt> if not.
    */
-  void set_expand(bool expand = true);
+  void set_expand(bool expand =  true);
   
   /** Return <tt>true</tt> if the column expands to take any available space.
-   * @return <tt>true</tt>, if the column expands
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return <tt>true</tt>, if the column expands.
    */
   bool get_expand() const;
 
@@ -435,9 +455,9 @@ public:
    * then it can take keyboard focus, and can be clicked.
    * @param clickable <tt>true</tt> if the header is active.
    */
-  void set_clickable(bool clickable = true);
+  void set_clickable(bool clickable =  true);
   
-  /** Return value: <tt>true</tt> if user can click the column header.
+  /** Returns <tt>true</tt> if the user can click on the header for the column.
    * @return <tt>true</tt> if user can click the column header.
    */
   bool get_clickable() const;
@@ -448,13 +468,17 @@ public:
    */
   void set_widget(Gtk::Widget& widget);
   
-  /** Return value: The Gtk::Widget in the column header, or <tt>0</tt>
-   * @return The Gtk::Widget in the column header, or <tt>0</tt>.
+  /** Returns the Gtk::Widget in the button on the column header.
+   * If a custom widget has not been set then <tt>0</tt> is returned.
+   * @return The Gtk::Widget in the column
+   * header, or <tt>0</tt>.
    */
   Widget* get_widget();
   
-  /** Return value: The Gtk::Widget in the column header, or <tt>0</tt>
-   * @return The Gtk::Widget in the column header, or <tt>0</tt>.
+  /** Returns the Gtk::Widget in the button on the column header.
+   * If a custom widget has not been set then <tt>0</tt> is returned.
+   * @return The Gtk::Widget in the column
+   * header, or <tt>0</tt>.
    */
   const Widget* get_widget() const;
 
@@ -474,7 +498,8 @@ public:
   void set_alignment(AlignmentEnum xalign);
 
   
-  /** Return value: The current alignent of @a tree_column.
+  /** Returns the current x alignment of @a tree_column.  This value can range
+   * between 0.0 and 1.0.
    * @return The current alignent of @a tree_column.
    */
   float get_alignment() const;
@@ -483,9 +508,9 @@ public:
    * dragging the header.
    * @param reorderable <tt>true</tt>, if the column can be reordered.
    */
-  void set_reorderable(bool reorderable = true);
+  void set_reorderable(bool reorderable =  true);
   
-  /** Return value: <tt>true</tt> if the @a tree_column can be reordered by the user.
+  /** Returns <tt>true</tt> if the @a tree_column can be reordered by the user.
    * @return <tt>true</tt> if the @a tree_column can be reordered by the user.
    */
   bool get_reorderable() const;
@@ -538,7 +563,7 @@ public:
   
   /** Changes the appearance of the sort indicator. 
    * 
-   * This <emphasis>does not</emphasis> actually sort the model.  Use
+   * This <em>does not</em> actually sort the model.  Use
    * set_sort_column_id() if you want automatic sorting
    * support.  This function is primarily for custom sorting behavior, and should
    * be used in conjunction with gtk_tree_sortable_set_sort_column() to do
@@ -600,7 +625,9 @@ public:
   void cell_get_size(const Gdk::Rectangle& cell_area, int& x_offset, int& y_offset, int& width, int& height) const;
 
   
-  /** Return value: <tt>true</tt>, if any of the cells packed into the @a tree_column are currently visible
+  /** Returns <tt>true</tt> if any of the cells packed into the @a tree_column are visible.
+   * For this to be meaningful, you must first initialize the cells with
+   * cell_set_cell_data()
    * @return <tt>true</tt>, if any of the cells packed into the @a tree_column are currently visible.
    */
   bool cell_is_visible() const;
@@ -608,7 +635,7 @@ public:
   /** Sets the current keyboard focus to be at @a cell, if the column contains
    * 2 or more editable and activatable cells.
    * 
-   * @newin2p2
+   * @newin{2,2}
    * @param cell A Gtk::CellRenderer.
    */
   void focus_cell(CellRenderer& cell);
@@ -628,24 +655,28 @@ public:
   /** Flags the column, and the cell renderers added to this column, to have
    * their sizes renegotiated.
    * 
-   * @newin2p8
+   * @newin{2,8}
    */
   void queue_resize();
 
   
-  /** Return value: The tree view wherein @a column has been inserted if any,
-   * @return The tree view wherein @a column has been inserted if any,
-   * <tt>0</tt> otherwise.
+  /** Returns the Gtk::TreeView wherein @a tree_column has been inserted.
+   * If @a column is currently not inserted in any tree view, <tt>0</tt> is
+   * returned.
    * 
-   * @newin2p12.
+   * @newin{2,12}
+   * @return The tree view wherein @a column has
+   * been inserted if any, <tt>0</tt> otherwise.
    */
   TreeView* get_tree_view();
   
-  /** Return value: The tree view wherein @a column has been inserted if any,
-   * @return The tree view wherein @a column has been inserted if any,
-   * <tt>0</tt> otherwise.
+  /** Returns the Gtk::TreeView wherein @a tree_column has been inserted.
+   * If @a column is currently not inserted in any tree view, <tt>0</tt> is
+   * returned.
    * 
-   * @newin2p12.
+   * @newin{2,12}
+   * @return The tree view wherein @a column has
+   * been inserted if any, <tt>0</tt> otherwise.
    */
   const TreeView* get_tree_view() const;
 
@@ -679,6 +710,26 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Column is user-resizable.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_resizable() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Column is user-resizable.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_resizable() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
 /** Current width of the column.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
@@ -688,6 +739,26 @@ public:
   Glib::PropertyProxy_ReadOnly<int> property_width() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Space which is inserted between cells.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<int> property_spacing() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Space which is inserted between cells.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<int> property_spacing() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** Resize mode of the column.
@@ -929,6 +1000,26 @@ public:
   Glib::PropertyProxy_ReadOnly<SortType> property_sort_order() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Logical sort column ID this column sorts on when selected for sorting.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<int> property_sort_column_id() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Logical sort column ID this column sorts on when selected for sorting.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<int> property_sort_column_id() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 private:
@@ -963,7 +1054,6 @@ void TreeViewColumn::pack_end(const TreeModelColumn<T_ModelColumnType>& column, 
   set_renderer(*pCellRenderer, column);
 }
 
-
 template <class T_ModelColumnType> inline
 TreeViewColumn::TreeViewColumn(const Glib::ustring& title,
                                const TreeModelColumn<T_ModelColumnType>& column)
@@ -973,7 +1063,6 @@ TreeViewColumn::TreeViewColumn(const Glib::ustring& title,
 {
   pack_start(column, true /* expand */);
 }
-
 
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 

@@ -77,7 +77,7 @@ TreePath::operator bool() const
 bool TreePath::empty() const
 {
   if(!gobject_)
-    return false;
+    return true;
 
   return (gtk_tree_path_get_depth(gobject_) == 0);
 }

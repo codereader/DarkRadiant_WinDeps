@@ -42,8 +42,8 @@ namespace Gtk
 {
 
 /** PrintUnixDialog implements a print dialog for platforms
- * which don't provide a native print dialog, like Unix. It can 
- * be used very much like any other GTK+ dialog, at the cost of 
+ * which don't provide a native print dialog, like Unix. It can
+ * be used very much like any other GTK+ dialog, at the cost of
  * the portability offered by the high-level printing API exposed
  * through PrintOperation.
  *
@@ -56,7 +56,7 @@ namespace Gtk
  * - RESPONSE_APPLY for the "Preview" button
  * - RESPONSE_CANCEL for the "Cancel" button
  *
- * @newin2p10
+ * @newin{2,10}
  *
  * @ingroup Printing
  */
@@ -92,6 +92,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -104,21 +106,16 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
 
+  
   //This is not available in on Win32.
 //This source file will not be compiled,
 //and the class will not be registered in wrap_init.h or wrap_init.cc
@@ -131,22 +128,22 @@ public:
   
   /** Sets the page setup of the Gtk::PrintUnixDialog.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param page_setup A Gtk::PageSetup.
    */
   void set_page_setup(const Glib::RefPtr<PageSetup>& page_setup);
   
   /** Gets the page setup that is used by the Gtk::PrintUnixDialog.
-   * @return The page setup of @a dialog.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The page setup of @a dialog.
    */
   Glib::RefPtr<PageSetup> get_page_setup();
   
   /** Gets the page setup that is used by the Gtk::PrintUnixDialog.
-   * @return The page setup of @a dialog.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The page setup of @a dialog.
    */
   Glib::RefPtr<const PageSetup> get_page_setup() const;
 
@@ -154,15 +151,15 @@ public:
   /** Sets the current page number. If @a current_page is not -1, this enables
    * the current page choice for the range of pages to print.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param current_page The current page number.
    */
   void set_current_page(int current_page);
   
   /** Gets the current page of the Gtk::PrintDialog.
-   * @return The current page of @a dialog
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The current page of @a dialog.
    */
   int get_current_page() const;
 
@@ -171,43 +168,43 @@ public:
    * this is used to restore saved print settings from a previous print
    * operation before the print dialog is shown.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param settings A Gtk::PrintSettings, or <tt>0</tt>.
    */
   void set_settings(const Glib::RefPtr<PrintSettings>& print_settings);
   
   /** Gets a new Gtk::PrintSettings object that represents the
    * current values in the print dialog. Note that this creates a
-   * <emphasis>new object</emphasis>, and you need to unref it
+   * <em>new object</em>, and you need to unref it
    * if don't want to keep it.
-   * @return A new Gtk::PrintSettings object with the values from @a dialog
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return A new Gtk::PrintSettings object with the values from @a dialog.
    */
   Glib::RefPtr<PrintSettings> get_settings();
   
   /** Gets a new Gtk::PrintSettings object that represents the
    * current values in the print dialog. Note that this creates a
-   * <emphasis>new object</emphasis>, and you need to unref it
+   * <em>new object</em>, and you need to unref it
    * if don't want to keep it.
-   * @return A new Gtk::PrintSettings object with the values from @a dialog
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return A new Gtk::PrintSettings object with the values from @a dialog.
    */
   Glib::RefPtr<const PrintSettings> get_settings() const;
 
    
   /** Gets the currently selected printer.
-   * @return The currently selected printer
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The currently selected printer.
    */
   Glib::RefPtr<Printer> get_selected_printer();
   
   /** Gets the currently selected printer.
-   * @return The currently selected printer
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The currently selected printer.
    */
   Glib::RefPtr<const Printer> get_selected_printer() const;
 
@@ -215,7 +212,7 @@ public:
   
   /** Adds a custom tab to the print dialog.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param child The widget to put in the custom tab.
    * @param tab_label The widget to use as tab label.
    */
@@ -227,10 +224,67 @@ public:
    * the dialog will only let you select the scale if the printing
    * system automatically handles scaling.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param capabilities The printing capabilities of your application.
    */
   void set_manual_capabilities(PrintCapabilities capabilities);
+  
+  /** Gets the value of Gtk::PrintUnixDialog::manual-capabilities property.
+   * 
+   * @newin{2,18}
+   * @return The printing capabilities.
+   */
+  PrintCapabilities get_manual_capabilities() const;
+
+  
+  /** Sets whether the print dialog allows user to print a selection.
+   * 
+   * @newin{2,18}
+   * @param support_selection <tt>true</tt> to allow print selection.
+   */
+  void get_support_selection(bool support_selection =  true);
+  
+  /** Gets the value of Gtk::PrintUnixDialog::support-selection property.
+   * 
+   * @newin{2,18}
+   * @return Whether the application supports print of selection.
+   */
+  bool get_support_selection() const;
+  
+  /** Sets whether a selection exists.
+   * 
+   * @newin{2,18}
+   * @param has_selection <tt>true</tt> indicates that a selection exists.
+   */
+  void set_has_selection(bool has_selection =  true);
+  
+  /** Gets the value of Gtk::PrintUnixDialog::has-selection property.
+   * 
+   * @newin{2,18}
+   * @return Whether there is a selection.
+   */
+  bool get_has_selection() const;
+  
+  /** Embed page size combo box and orientation combo box into page setup page.
+   * 
+   * @newin{2,18}
+   * @param embed Embed page setup selection.
+   */
+  void set_embed_page_setup(bool embed =  true);
+  
+  /** Gets the value of Gtk::PrintUnixDialog::embed-page-setup property.
+   * 
+   * @newin{2,18}
+   * @return Whether there is a selection.
+   */
+  bool get_embed_page_setup() const;
+  
+  /** Gets the page setup that is used by the Gtk::PrintUnixDialog.
+   * 
+   * @newin{2,18}
+   * @return Whether a page setup was set by user.
+   */
+  bool get_page_setup_set() const;
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The GtkPageSetup to use.
@@ -300,6 +354,87 @@ public:
    * the value of the property changes.
    */
   Glib::PropertyProxy_ReadOnly< Glib::RefPtr<Printer> > property_selected_printer() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Capabilities the application can handle.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_manual_capabilities() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Capabilities the application can handle.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_manual_capabilities() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the dialog supports selection.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_support_selection() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the dialog supports selection.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_support_selection() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the application has a selection.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_has_selection() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the application has a selection.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_has_selection() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** TRUE if page setup combos are embedded in GtkPrintUnixDialog.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_embed_page_setup() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** TRUE if page setup combos are embedded in GtkPrintUnixDialog.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_embed_page_setup() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

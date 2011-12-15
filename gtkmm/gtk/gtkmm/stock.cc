@@ -1,5 +1,5 @@
 // -*- c++ -*-
-/* $Id: stock.cc 1093 2009-02-08 14:36:41Z murrayc $ */
+/* $Id$ */
 
 /* Copyright (C) 2002 The gtkmm Development Team
  *
@@ -19,7 +19,6 @@
  */
 
 #include <gtkmm/stock.h>
-#include <gtkmm/stockitem.h>
 #include <gtk/gtk.h>
 
 // Get rid of macro DELETE (from winnt.h).  We have some macro
@@ -171,4 +170,3 @@ Glib::SListHandle<Gtk::StockID,Gtk::StockID_Traits> get_ids()
 } // namespace Stock
 
 } // namespace Gtk
-

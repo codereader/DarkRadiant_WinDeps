@@ -73,6 +73,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -156,18 +158,6 @@ public:
   static Glib::RefPtr<PixbufLoader> create(const Glib::ustring& image_type, bool mime_type =  false);
 
 
-  /** Causes the image to be scaled while it is loaded. The desired
-   * image size can be determined relative to the original size of
-   * the image by calling set_size() from a
-   * signal handler for the ::size-prepared signal.
-   * 
-   * Attempts to set the desired image size  are ignored after the 
-   * emission of the ::size-prepared signal.
-   * 
-   * @newin2p2
-   * @param width The desired width of the image being loaded.
-   * @param height The desired height of the image being loaded.
-   */
   void set_size(int width, int height);
 
  
@@ -180,25 +170,9 @@ public:
    * @throw Gdk::PixbufError
    * @throw Glib::FileError
    */
-  
-  /** This will cause a pixbuf loader to parse the next @a count bytes of
-   * an image.  It will return <tt>true</tt> if the data was loaded successfully,
-   * and <tt>false</tt> if an error occurred.  In the latter case, the loader
-   * will be closed, and will not accept further writes. If <tt>false</tt> is
-   * returned, @a error will be set to an error from the Gdk::PIXBUF_ERROR
-   * or FILE_ERROR domains.
-   * @param buf Pointer to image data.
-   * @param count Length of the @a buf buffer in bytes.
-   * @return <tt>true</tt> if the write was successful, or <tt>false</tt> if the loader
-   * cannot parse the buffer.
-   */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   void write(const guint8* buf, gsize count);
-#else
-  void write(const guint8* buf, gsize count, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
+  
   /** Informs a pixbuf loader that no further writes with PixbufLoader::write()
    * will occur, so that it can free its internal loading structures.  Also,
    * tries to parse any data that hasn't yet been parsed; if the remaining data
@@ -208,60 +182,14 @@ public:
    * @throw Gdk::PixbufError
    * @throw Glib::FileError
    */
-  
-  /** Informs a pixbuf loader that no further writes with
-   * write() will occur, so that it can free its
-   * internal loading structures. Also, tries to parse any data that
-   * hasn't yet been parsed; if the remaining data is partial or
-   * corrupt, an error will be returned.  If <tt>false</tt> is returned, @a error
-   * will be set to an error from the Gdk::PIXBUF_ERROR or FILE_ERROR
-   * domains. If you're just cancelling a load rather than expecting it
-   * to be finished, passing <tt>0</tt> for @a error to ignore it is
-   * reasonable.
-   * @return <tt>true</tt> if all image data written so far was successfully
-   *             passed out via the update_area signal.
-   */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   void close();
-#else
-  void close(std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
-  /** Queries the Gdk::Pixbuf that a pixbuf loader is currently creating.
-   * In general it only makes sense to call this function after the
-   * "area-prepared" signal has been emitted by the loader; this means
-   * that enough data has been read to know the size of the image that
-   * will be allocated.  If the loader has not received enough data via
-   * write(), then this function returns <tt>0</tt>.  The
-   * returned pixbuf will be the same in all future calls to the loader,
-   * so simply calling Glib::object_ref() should be sufficient to continue
-   * using it.  Additionally, if the loader is an animation, it will
-   * return the "static image" of the animation
-   * (see Gdk::PixbufAnimation::get_static_image()).
-   * @return The Gdk::Pixbuf that the loader is creating, or <tt>0</tt> if not
-   * enough data has been read to determine how to create the image buffer.
-   */
+  
   Glib::RefPtr<Gdk::Pixbuf> get_pixbuf();
   
-  /** Queries the Gdk::PixbufAnimation that a pixbuf loader is currently creating.
-   * In general it only makes sense to call this function after the "area-prepared"
-   * signal has been emitted by the loader. If the loader doesn't have enough
-   * bytes yet (hasn't emitted the "area-prepared" signal) this function will 
-   * return <tt>0</tt>.
-   * @return The Gdk::PixbufAnimation that the loader is loading, or <tt>0</tt> if
-   *  not enough data has been read to determine the information.
-   */
   Glib::RefPtr<Gdk::PixbufAnimation> get_animation();
 
   
-  /** Obtains the available information about the format of the 
-   * currently loading image file.
-   * @return A Gdk::PixbufFormat or <tt>0</tt>. The return value is owned 
-   * by GdkPixbuf and should not be freed.
-   * 
-   * @newin2p2.
-   */
   PixbufFormat get_format() const;
 
   /** This signal is emitted when the pixbuf loader has allocated the 
@@ -328,20 +256,14 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_area_prepared();
   virtual void on_area_updated(int x, int y, int width, int height);
   virtual void on_closed();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

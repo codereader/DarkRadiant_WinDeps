@@ -84,23 +84,14 @@ const Glib::Class& RecentAction_Class::init()
   return *this;
 }
 
+
 void RecentAction_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* RecentAction_Class::wrap_new(GObject* object)
@@ -129,6 +120,7 @@ RecentAction::RecentAction(GtkRecentAction* castitem)
   Gtk::Action((GtkAction*)(castitem))
 {}
 
+
 RecentAction::~RecentAction()
 {}
 
@@ -139,6 +131,7 @@ GType RecentAction::get_type()
 {
   return recentaction_class_.init().get_type();
 }
+
 
 GType RecentAction::get_base_type()
 {
@@ -166,11 +159,11 @@ RecentAction::RecentAction(const Glib::ustring& name, const StockID& stock_id, c
 
 }
 
-RecentAction::RecentAction(const Glib::ustring& name, const StockID& stock_id, const Glib::ustring& label, const Glib::ustring& tooltip, const Glib::RefPtr<RecentManager>& manager)
+RecentAction::RecentAction(const Glib::ustring& name, const StockID& stock_id, const Glib::ustring& label, const Glib::ustring& tooltip, const Glib::RefPtr<RecentManager>& recent_manager)
 :
   // Mark this class as non-derived to allow C++ vfuncs to be skipped.
   Glib::ObjectBase(0),
-  Gtk::Action(Glib::ConstructParams(recentaction_class_.init(), "name", name.empty() ? 0 : name.c_str(), "stock_id", (stock_id).get_c_str(), "label", label.empty() ? 0 : label.c_str(), "tooltip", tooltip.empty() ? 0 : tooltip.c_str(), "manager", Glib::unwrap(manager), static_cast<char*>(0)))
+  Gtk::Action(Glib::ConstructParams(recentaction_class_.init(), "name", name.empty() ? 0 : name.c_str(), "stock_id", (stock_id).get_c_str(), "label", label.empty() ? 0 : label.c_str(), "tooltip", tooltip.empty() ? 0 : tooltip.c_str(), "recent_manager", Glib::unwrap(recent_manager), static_cast<char*>(0)))
 {
   
 
@@ -180,14 +173,17 @@ Glib::RefPtr<RecentAction> RecentAction::create()
 {
   return Glib::RefPtr<RecentAction>( new RecentAction() );
 }
+
 Glib::RefPtr<RecentAction> RecentAction::create(const Glib::ustring& name, const Gtk::StockID& stock_id, const Glib::ustring& label, const Glib::ustring& tooltip)
 {
   return Glib::RefPtr<RecentAction>( new RecentAction(name, stock_id, label, tooltip) );
 }
-Glib::RefPtr<RecentAction> RecentAction::create(const Glib::ustring& name, const Gtk::StockID& stock_id, const Glib::ustring& label, const Glib::ustring& tooltip, const Glib::RefPtr<RecentManager>& manager)
+
+Glib::RefPtr<RecentAction> RecentAction::create(const Glib::ustring& name, const Gtk::StockID& stock_id, const Glib::ustring& label, const Glib::ustring& tooltip, const Glib::RefPtr<RecentManager>& recent_manager)
 {
-  return Glib::RefPtr<RecentAction>( new RecentAction(name, stock_id, label, tooltip, manager) );
+  return Glib::RefPtr<RecentAction>( new RecentAction(name, stock_id, label, tooltip, recent_manager) );
 }
+
 bool RecentAction::get_show_numbers()
 {
   return gtk_recent_action_get_show_numbers(gobj());
@@ -212,13 +208,6 @@ Glib::PropertyProxy_ReadOnly<bool> RecentAction::property_show_numbers() const
   return Glib::PropertyProxy_ReadOnly<bool>(this, "show-numbers");
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

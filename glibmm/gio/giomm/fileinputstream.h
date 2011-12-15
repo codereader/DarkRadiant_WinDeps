@@ -115,11 +115,7 @@ public:
    * @param cancellable A Cancellable object.
    * @return A FileInfo, or an empty RefPtr on error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileInfo> query_info(const Glib::RefPtr<Cancellable>& cancellable, const std::string& attributes = "*");
-#else
-  Glib::RefPtr<FileInfo> query_info(const Glib::RefPtr<Cancellable>& cancellable, const std::string& attributes, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Queries a file input stream the given @a attributes. This function blocks 
    * while querying the stream. For the asynchronous (non-blocking) version 
@@ -130,11 +126,7 @@ public:
    * @param attributes A file attribute query string.
    * @return A FileInfo, or an empty RefPtr on error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileInfo> query_info(const std::string& attributes = "*");
-#else
-  Glib::RefPtr<FileInfo> query_info(const std::string& attributes, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
   /** Queries the stream information asynchronously. For the synchronous version of this function, see query_info().
@@ -166,12 +158,7 @@ public:
    * @param result A AsyncResult.
    * @return FileInfo.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileInfo> query_info_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  Glib::RefPtr<FileInfo> query_info_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   //These seem to be just C convenience functions - they are already in the Seekable base class:
   //See http://bugzilla.gnome.org/show_bug.cgi?id=509990
@@ -187,17 +174,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

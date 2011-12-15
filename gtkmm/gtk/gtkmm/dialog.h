@@ -9,7 +9,7 @@
 /* $Id: dialog.hg,v 1.8 2006/03/22 16:53:22 murrayc Exp $ */
 
 /* dialog.h
- * 
+ *
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -27,8 +27,8 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <gtkmm/window.h>
 #include <gtkmm/box.h>
+#include <gtkmm/window.h>
 #include <gtkmm/button.h>
 #include <gtkmm/buttonbox.h>
 
@@ -48,7 +48,7 @@ namespace Gtk
  */
 
 
-/** @addtogroup gtkmmEnums Enums and Flags */
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
 
 /**
  * @ingroup gtkmmEnums
@@ -94,13 +94,13 @@ namespace Gtk
  *
  * Dialog boxes are a convenient way to prompt the user for a small amount
  * of input, eg. to display a message, ask a question, or anything else that
- * does not require extensive effort on the user's part. 
+ * does not require extensive effort on the user's part.
  *
  * gtkmm treats a dialog as a window split vertically. The top section is a
  * Gtk::VBox, and is where widgets such as a Gtk::Label or a Gtk::Entry should be
  * packed. The bottom area is known as the action_area. This is generally
  * used for packing buttons into the dialog which may perform functions such
- * as cancel, ok, or apply. The two areas are separated by a Gtk::HSeparator. 
+ * as cancel, ok, or apply. The two areas are separated by a Gtk::HSeparator.
  *
  * The dialog can be 'modal' (that is, one which freezes the rest of the
  * application from user input) - this can be specified in the Gtk::Dialog
@@ -115,7 +115,7 @@ namespace Gtk
  * If you want to block waiting for a dialog to return before returning control
  * flow to your code, you can call run(). This function enters a
  * recursive main loop and waits for the user to respond to the dialog, returning
- * the response ID corresponding to the button the user clicked. 
+ * the response ID corresponding to the button the user clicked.
  *
  * @ingroup Dialogs
  */
@@ -151,6 +151,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -163,18 +165,12 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_response(int response_id);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -219,13 +215,13 @@ public:
    */
   Button* add_button(const Gtk::StockID& stock_id, int response_id);
   
-  /** Calls <literal>gtk_widget_set_sensitive (widget, @a setting)</literal> 
+  /** Calls <tt>gtk_widget_set_sensitive (widget, @a setting)</tt> 
    * for each widget in the dialog's action area with the given @a response_id.
    * A convenient way to sensitize/desensitize dialog buttons.
    * @param response_id A response ID.
    * @param setting <tt>true</tt> for sensitive.
    */
-  void set_response_sensitive(int response_id, bool setting = true);
+  void set_response_sensitive(int response_id, bool setting =  true);
   
   /** Sets the last widget in the dialog's action area with the given @a response_id
    * as the default widget for the dialog. Pressing "Enter" normally activates
@@ -234,43 +230,72 @@ public:
    */
   void set_default_response(int response_id);
   
+  /** Gets the widget button that uses the given response ID in the action area
+   * of a dialog.
+   * 
+   * @newin{2,20}
+   * @param response_id The response ID used by the @a dialog widget.
+   * @return The @a widget button that uses the given @a response_id, or <tt>0</tt>.
+   */
+  Widget* get_widget_for_response(int response_id);
+  
+  /** Gets the widget button that uses the given response ID in the action area
+   * of a dialog.
+   * 
+   * @newin{2,20}
+   * @param response_id The response ID used by the @a dialog widget.
+   * @return The @a widget button that uses the given @a response_id, or <tt>0</tt>.
+   */
+  const Widget* get_widget_for_response(int response_id) const;
+  
   /** Gets the response id of a widget in the action area
    * of a dialog.
+   * 
+   * @newin{2,8}
    * @param widget A widget in the action area of @a dialog.
    * @return The response id of @a widget, or Gtk::RESPONSE_NONE
    * if @a widget doesn't have a response id set.
-   * 
-   * @newin2p8.
    */
   int get_response_for_widget(const Gtk::Widget& widget) const;
   
   /** Sets whether the dialog has a separator above the buttons.
-   * <tt>true</tt> by default.
+   * 
+   * Deprecated: 2.22: This function will be removed in GTK+ 3
    * @param setting <tt>true</tt> to have a separator.
    */
-  void set_has_separator(bool setting = true);
+  void set_has_separator(bool setting =  true);
   
   /** Accessor for whether the dialog has a separator.
+   * 
+   * Deprecated: 2.22: This function will be removed in GTK+ 3
    * @return <tt>true</tt> if the dialog has a separator.
    */
   bool get_has_separator() const;
 
   
-  /** Returns: Whether the alternative button order should be used
-   * @param screen A Gdk::Screen, or <tt>0</tt> to use the default screen.
-   * @return Whether the alternative button order should be used
+  /** Returns <tt>true</tt> if dialogs are expected to use an alternative
+   * button order on the screen @a screen. See
+   * Gtk::Dialog::set_alternative_button_order() for more details
+   * about alternative button order. 
    * 
-   * @newin2p6.
+   * If you need to use this function, you should probably connect
+   * to the ::notify:gtk-alternative-button-order signal on the
+   * Gtk::Settings object associated to @a screen, in order to be 
+   * notified if the button order setting changes.
+   * 
+   * @newin{2,6}
+   * @param screen A Gdk::Screen, or <tt>0</tt> to use the default screen.
+   * @return Whether the alternative button order should be used.
    */
   static bool alternative_button_order(const Glib::RefPtr<const Gdk::Screen>& screen);
 
-  /** Sets an alternative button order. If the gtk-alternative-button-order 
-   * setting is set to true, the dialog buttons are reordered according to 
+  /** Sets an alternative button order. If the gtk-alternative-button-order
+   * setting is set to true, the dialog buttons are reordered according to
    * the order of the response ids in @a new_order.
    *
-   * By default, GTK+ dialogs use the button order advocated by the Gnome 
-   * <ulink url="http://developer.gnome.org/projects/gup/hig/2.0/">Human 
-   * Interface Guidelines</ulink> with the affirmative button at the far 
+   * By default, GTK+ dialogs use the button order advocated by the Gnome
+   * <ulink url="http://developer.gnome.org/projects/gup/hig/2.0/">Human
+   * Interface Guidelines</ulink> with the affirmative button at the far
    * right, and the cancel button left of it. But the builtin GTK+ dialogs
    * and #GtkMessageDialog<!-- -->s do provide an alternative button order,
    * which is more suitable on some platforms, e.g. Windows.
@@ -278,7 +303,7 @@ public:
    * Use this function after adding all the buttons to your dialog
    *
    * @param new_order an array of response ids of the dialog's buttons.
-   * 
+   *
    * @newinp26
    */
   void set_alternative_button_order_from_array(const Glib::ArrayHandle<int>& new_order);
@@ -308,7 +333,7 @@ public:
    * destroying the dialog if you wish to do so.
    * 
    * Typical usage of this function might be:
-   * @code
+   * &lt;informalexample&gt;&lt;programlisting&gt;
    * int result = dialog.run();
    * switch (result)
    * {
@@ -319,40 +344,42 @@ public:
    *   do_nothing_since_dialog_was_cancelled();
    *   break;
    * }
-   * @endcode
+   * &lt;/programlisting&gt;&lt;/informalexample&gt;
    * @return Response ID.
    */
   int run();
 
+  // This previously returned an HButtonBox*, which broke on Maemo Fremantle.
+  // Changed post-2.18.2
   
-  /** Returns: the action area.
-   * @return The action area.
+  /** Returns the action area of @a dialog.
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The action area.
    */
-  HButtonBox* get_action_area();
+  ButtonBox* get_action_area();
   
-  /** Returns: the action area.
-   * @return The action area.
+  /** Returns the action area of @a dialog.
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The action area.
    */
-  const HButtonBox* get_action_area() const;
+  const ButtonBox* get_action_area() const;
 
   //TODO: Rename to get_content_area() when we do an ABI break.
   //We kept it as get_vbox() when reimplementing a MEMBER_GET with this new C function:
   
-  /** Returns: the content area Gtk::VBox.
-   * @return The content area Gtk::VBox.
+  /** Returns the content area of @a dialog.
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The content area Gtk::VBox.
    */
   VBox* get_vbox();
   
-  /** Returns: the content area Gtk::VBox.
-   * @return The content area Gtk::VBox.
+  /** Returns the content area of @a dialog.
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The content area Gtk::VBox.
    */
   const VBox* get_vbox() const;
 
@@ -384,7 +411,10 @@ public:
 
   Glib::SignalProxy1< void,int > signal_response();
 
+  
+  //_WRAP_PROPERTY("has-separator", bool) //deprecated.
 
+  
 protected:
   void construct_(bool modal, bool use_separator);
 

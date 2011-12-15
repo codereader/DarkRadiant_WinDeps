@@ -37,7 +37,14 @@
 #include <gtkmm/treemodelcolumn.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treeiter.h>
-#include <gtk/gtk.h>
+
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+extern "C"
+{
+typedef struct _GtkTreeSortableIface GtkTreeSortableIface;
+}
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -109,7 +116,7 @@ public:
   ///Provides access to the underlying C GObject.
   GtkTreeSortable*       gobj()       { return reinterpret_cast<GtkTreeSortable*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const GtkTreeSortable* gobj() const { return reinterpret_cast<GtkTreeSortable*>(gobject_); }
 
 private:
@@ -139,7 +146,7 @@ public:
   
   /** Sets the current sort column to be @a sort_column_id. The @a sortable will
    * resort itself to reflect this change, after emitting a
-   * Gtk::TreeSortable::sort-column-changed signal. @a sortable may either be 
+   * Gtk::TreeSortable::sort-column-changed signal. @a sort_column_id may either be
    * a regular column id, or one of the following special values:
    * <variablelist>
    * <varlistentry>
@@ -158,7 +165,7 @@ public:
   
   /** Sets the current sort column to be @a sort_column_id. The @a sortable will
    * resort itself to reflect this change, after emitting a
-   * Gtk::TreeSortable::sort-column-changed signal. @a sortable may either be 
+   * Gtk::TreeSortable::sort-column-changed signal. @a sort_column_id may either be
    * a regular column id, or one of the following special values:
    * <variablelist>
    * <varlistentry>
@@ -224,7 +231,9 @@ public:
   void unset_default_sort_func();
 
   
-  /** Return value: <tt>true</tt>, if the model has a default sort function
+  /** Returns <tt>true</tt> if the model has a default sort function. This is used
+   * primarily by GtkTreeViewColumns in order to determine if a model can 
+   * go back to the default state, or not.
    * @return <tt>true</tt>, if the model has a default sort function.
    */
   bool has_default_sort_func() const;
@@ -243,47 +252,29 @@ public:
 
 
 protected:
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool get_sort_column_id_vfunc(int* sort_column_id, SortType* order) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool get_sort_column_id_vfunc(int* sort_column_id, SortType* order) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void set_sort_column_id_vfunc(int sort_column_id, SortType order);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void set_sort_column_id_vfunc(int sort_column_id, SortType order);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void set_sort_func_vfunc(int sort_column_id, GtkTreeIterCompareFunc func, void* data, GDestroyNotify destroy);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void set_sort_func_vfunc(int sort_column_id, GtkTreeIterCompareFunc func, void* data, GDestroyNotify destroy);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void set_default_sort_func_vfunc(GtkTreeIterCompareFunc func, void* data, GDestroyNotify destroy);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void set_default_sort_func_vfunc(GtkTreeIterCompareFunc func, void* data, GDestroyNotify destroy);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool has_default_sort_func_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool has_default_sort_func_vfunc() const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void sort_column_changed_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void sort_column_changed_vfunc() const;
 
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_sort_column_changed();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

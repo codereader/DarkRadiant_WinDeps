@@ -39,7 +39,7 @@ namespace Gtk
 namespace Gtk
 {
 
-/** @addtogroup gtkmmEnums Enums and Flags */
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
 
 /**
  * @ingroup gtkmmEnums
@@ -111,7 +111,8 @@ enum PrintPages
 {
   PRINT_PAGES_ALL,
   PRINT_PAGES_CURRENT,
-  PRINT_PAGES_RANGES
+  PRINT_PAGES_RANGES,
+  PRINT_PAGES_SELECTION
 };
 
 } // namespace Gtk
@@ -212,7 +213,7 @@ namespace Gtk
  * next time your app runs, or even store them in a document. The predefined keys try to use shared 
  * values as much as possible so that moving such a document between systems still works. 
  *
- * @newin2p10
+ * @newin{2,10}
  *
  * @ingroup Printing
  */
@@ -247,6 +248,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -264,9 +267,6 @@ private:
 protected:
   PrintSettings();
 
- //TODO: We need fuller information about the GError domains:
- //http://bugzilla.gnome.org/show_bug.cgi?id=544706
-
  /** Reads the print settings from the @a key_file.
   * Returns a new PrintSettings object with the restored settings,
   * or an empty RefPtr if an error occurred.
@@ -275,15 +275,11 @@ protected:
   * @param key_file The KeyFile to retrieve the settings from.
   * @result the restored PrintSettings
   *
-  * @throws KeyFileError
+  * @throws KeyFileError, FileError
   *
-  * @newin2p14
+  * @newin{2,14}
   */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static Glib::RefPtr<PrintSettings> create_from_key_file(const Glib::KeyFile& key_file);
-#else
-  static Glib::RefPtr<PrintSettings> create_from_key_file(const Glib::KeyFile& key_file, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
  /** Reads the print settings from the group @a group_name in @a key_file.
   * Returns a new PrintSettings object with the restored settings,
@@ -294,15 +290,11 @@ protected:
   * @param group_name The name of the group to use.
   * @result the restored PrintSettings
   *
-  * @throws KeyFileError
+  * @throws KeyFileError, FileError
   *
-  * @newin2p14
+  * @newin{2,14}
   */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static Glib::RefPtr<PrintSettings> create_from_key_file(const Glib::KeyFile& key_file, const Glib::ustring& group_name);
-#else
-  static Glib::RefPtr<PrintSettings> create_from_key_file(const Glib::KeyFile& key_file, const Glib::ustring& group_name, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
  /** Reads the print settings from @a file_name. Returns a new PrintSettings
@@ -312,15 +304,11 @@ protected:
   * @param file_name The filename to read the settings from.
   * @result the restored PrintSettings
   *
-  * @throws KeyFileError
+  * @throws KeyFileError, FileError
   *
-  * @newin2p14
+  * @newin{2,14}
   */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static Glib::RefPtr<PrintSettings> create_from_file(const std::string& file_name);
-#else
-  static Glib::RefPtr<PrintSettings> create_from_file(const std::string& file_name, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
 public:
@@ -366,42 +354,36 @@ public:
 
   
   /** Copies a Gtk::PrintSettings object.
-   * @return A newly allocated copy of @a other
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return A newly allocated copy of @a other.
    */
   Glib::RefPtr<PrintSettings> copy() const;
 
   //The from_ infix was added to these functions to make them clearer. GTK+ didn't want to change them.
   
-  /** Reads the print settings from @a file_name.
-   * See gtk_print_settings_to_file().
-   * @param file_name The filename to read the settings from.
-   * @return <tt>true</tt> on success
+  /** Reads the print settings from @a file_name. If the file could not be loaded
+   * then error is set to either a FileError or KeyFileError.
+   * See to_file().
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @param file_name The filename to read the settings from.
+   * @return <tt>true</tt> on success.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool load_from_file(const std::string& file_name);
-#else
-  bool load_from_file(const std::string& file_name, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
-  /** Reads the print settings from the group @a group_name in @a key_file.
+   
+  /** Reads the print settings from the group @a group_name in @a key_file. If the
+   * file could not be loaded then error is set to either a FileError or
+   * KeyFileError.
+   * 
+   * @newin{2,14}
    * @param key_file The KeyFile to retrieve the settings from.
    * @param group_name The name of the group to use, or <tt>0</tt> to use the default
    * "Print Settings".
-   * @return <tt>true</tt> on success
-   * 
-   * @newin2p14.
+   * @return <tt>true</tt> on success.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool load_from_key_file(const Glib::KeyFile& key_file, const Glib::ustring& group_name);
-#else
-  bool load_from_key_file(const Glib::KeyFile& key_file, const Glib::ustring& group_name, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
  /** Reads the print settings from the @a key_file.
   * See save_to_key_file().
@@ -409,15 +391,11 @@ public:
   * @param key_file The KeyFile to retrieve the settings from.
   * @result true on success.
   *
-  * @throws KeyFileError
+  * @throws KeyFileError, FileError
   *
-  * @newin2p14
+  * @newin{2,14}
   */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool load_from_key_file(const Glib::KeyFile& key_file);
-#else
-  bool load_from_key_file(const Glib::KeyFile& key_file, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
   //The save_ prefix was added to these functions to make them clearer. GTK+ didn't want to change them.
@@ -427,18 +405,14 @@ public:
    * @param file_name The file to save to.
    * @return <tt>true</tt> on success
    * 
-   * @newin2p12.
+   * @newin{2,12}.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool save_to_file(const std::string& file_name) const;
-#else
-  bool save_to_file(const std::string& file_name, std::auto_ptr<Glib::Error>& error) const;
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
+   
   /** This function adds the print settings from @a settings to @a key_file.
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param key_file The Glib::KeyFile to save the print settings to.
    * @param group_name The group to add the settings to in @a key_file.
    */
@@ -448,7 +422,7 @@ public:
   /** This function adds the print settings from @a settings to @a key_file,
    * in the "Print Settings" group.
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param key_file The Glib::KeyFile to save the print settings to.
    *
    * @deprecated Use the const version.
@@ -459,34 +433,34 @@ public:
   /** This function adds the print settings from @a settings to @a key_file,
    * in the "Print Settings" group.
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param key_file The Glib::KeyFile to save the print settings to.
    */
   void save_to_key_file(Glib::KeyFile& key_file) const;
 
   //TODO: add a @see link?
   
-  /** Return value: <tt>true</tt>, if @a key has a value
-   * @param key A key.
-   * @return <tt>true</tt>, if @a key has a value
+  /** Returns <tt>true</tt>, if a value is associated with @a key.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @param key A key.
+   * @return <tt>true</tt>, if @a key has a value.
    */
   bool has_key(const Glib::ustring& key) const;
 
   
   /** Looks up the string value associated with @a key.
-   * @param key A key.
-   * @return The string value for @a key
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @param key A key.
+   * @return The string value for @a key.
    */
   Glib::ustring get(const Glib::ustring& key) const;
 
   
   /** Associates @a value with @a key.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param key A key.
    * @param value A string value, or <tt>0</tt>.
    */
@@ -495,7 +469,7 @@ public:
   /** Removes any value associated with @a key. 
    * This has the same effect as setting the value to <tt>0</tt>.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param key A key.
    */
   void unset(const Glib::ustring& key);
@@ -511,61 +485,70 @@ public:
   void setting_foreach(const SlotForeach& slot);
 
  
-  /** Return value: <tt>true</tt>, if @a key maps to a true value.
+  /** Returns the boolean represented by the value
+   * that is associated with @a key. 
+   * 
+   * The string "true" represents <tt>true</tt>, any other 
+   * string <tt>false</tt>.
+   * 
+   * @newin{2,10}
    * @param key A key.
    * @return <tt>true</tt>, if @a key maps to a true value.
-   * 
-   * @newin2p10.
    */
   bool get_bool(const Glib::ustring& key) const;
   
   /** Sets @a key to a boolean value.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param key A key.
    * @param value A boolean.
    */
-  void set_bool(const Glib::ustring& key, bool value = true);
+  void set_bool(const Glib::ustring& key, bool value =  true);
 
   
-  /** Return value: the double value of @a key
-   * @param key A key.
-   * @return The double value of @a key
+  /** Returns the double value associated with @a key, or 0.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @param key A key.
+   * @return The double value of @a key.
    */
   double get_double(const Glib::ustring& key) const;
   
-  /** Return value: the floating point number associated with @a key
+  /** Returns the floating point number represented by 
+   * the value that is associated with @a key, or @a default_val
+   * if the value does not represent a floating point number.
+   * 
+   * Floating point numbers are parsed with Glib::ascii_strtod().
+   * 
+   * @newin{2,10}
    * @param key A key.
    * @param def The default value.
-   * @return The floating point number associated with @a key
-   * 
-   * @newin2p10.
+   * @return The floating point number associated with @a key.
    */
   double get_double_with_default(const Glib::ustring& key, double def) const;
   
   /** Sets @a key to a double value.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param key A key.
    * @param value A double value.
    */
   void set_double(const Glib::ustring& key, double value);
 
   
-  /** Return value: the length value of @a key, converted to @a unit
+  /** Returns the value associated with @a key, interpreted
+   * as a length. The returned value is converted to @a units.
+   * 
+   * @newin{2,10}
    * @param key A key.
    * @param unit The unit of the return value.
-   * @return The length value of @a key, converted to @a unit
-   * 
-   * @newin2p10.
+   * @return The length value of @a key, converted to @a unit.
    */
   double get_length(const Glib::ustring& key, Unit unit) const;
   
   /** Associates a length in units of @a unit with @a key.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param key A key.
    * @param value A length.
    * @param unit The unit of @a length.
@@ -573,26 +556,27 @@ public:
   void set_length(const Glib::ustring& key, double value, Unit unit);
 
   
-  /** Return value: the integer value of @a key
-   * @param key A key.
-   * @return The integer value of @a key 
+  /** Returns the integer value of @a key, or 0.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @param key A key.
+   * @return The integer value of @a key.
    */
   int get_int(const Glib::ustring& key) const;
   
-  /** Return value: the integer value of @a key
+  /** Returns the value of @a key, interpreted as
+   * an integer, or the default value.
+   * 
+   * @newin{2,10}
    * @param key A key.
    * @param def The default value.
-   * @return The integer value of @a key
-   * 
-   * @newin2p10.
+   * @return The integer value of @a key.
    */
   int get_int_with_default(const Glib::ustring& key, int def) const;
   
   /** Sets @a key to an integer value.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param key A key.
    * @param value An integer.
    */
@@ -603,16 +587,16 @@ public:
   
   /** Convenience function to obtain the value of 
    * Gtk::PRINT_SETTINGS_PRINTER.
-   * @return The printer name
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The printer name.
    */
   Glib::ustring get_printer() const;
   
   /** Convenience function to set Gtk::PRINT_SETTINGS_PRINTER
    * to @a printer.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param printer The printer name.
    */
   void set_printer(const Glib::ustring& name);
@@ -620,15 +604,15 @@ public:
   
   /** Get the value of Gtk::PRINT_SETTINGS_ORIENTATION, 
    * converted to a Gtk::PageOrientation.
-   * @return The orientation
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The orientation.
    */
   PageOrientation get_orientation() const;
   
   /** Sets the value of Gtk::PRINT_SETTINGS_ORIENTATION.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param orientation A page orientation.
    */
   void set_orientation(PageOrientation orientation);
@@ -636,17 +620,17 @@ public:
   
   /** Gets the value of Gtk::PRINT_SETTINGS_PAPER_FORMAT, 
    * converted to a Gtk::PaperSize.
-   * @return The paper size
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The paper size.
    */
   PaperSize get_paper_size();
   
   /** Gets the value of Gtk::PRINT_SETTINGS_PAPER_FORMAT, 
    * converted to a Gtk::PaperSize.
-   * @return The paper size
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The paper size.
    */
   const PaperSize get_paper_size() const;
   
@@ -654,41 +638,41 @@ public:
    * Gtk::PRINT_SETTINGS_PAPER_WIDTH and
    * Gtk::PRINT_SETTINGS_PAPER_HEIGHT.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param paper_size A paper size.
    */
   void set_paper_size(const PaperSize& paper_size);
 
   
   /** Gets the value of Gtk::PRINT_SETTINGS_PAPER_WIDTH,
-   * converted to @a unit.
-   * @param unit The unit for the return value.
-   * @return The paper width, in units of @a unit
+   * converted to @a unit. 
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @param unit The unit for the return value.
+   * @return The paper width, in units of @a unit.
    */
   double get_paper_width(Unit unit) const;
   
   /** Sets the value of Gtk::PRINT_SETTINGS_PAPER_WIDTH.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param width The paper width.
    * @param unit The units of @a width.
    */
   void set_paper_width(double width, Unit unit);
   
   /** Gets the value of Gtk::PRINT_SETTINGS_PAPER_HEIGHT,
-   * converted to @a unit.
-   * @param unit The unit for the return value.
-   * @return The paper height, in units of @a unit
+   * converted to @a unit. 
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @param unit The unit for the return value.
+   * @return The paper height, in units of @a unit.
    */
   double get_paper_height(Unit unit) const;
   
   /** Sets the value of Gtk::PRINT_SETTINGS_PAPER_HEIGHT.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param height The paper height.
    * @param unit The units of @a height.
    */
@@ -696,129 +680,129 @@ public:
 
   
   /** Gets the value of Gtk::PRINT_SETTINGS_USE_COLOR.
-   * @return Whether to use color
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return Whether to use color.
    */
   bool get_use_color() const;
   
   /** Sets the value of Gtk::PRINT_SETTINGS_USE_COLOR.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param use_color Whether to use color.
    */
-  void set_use_color(bool use_color = true);
+  void set_use_color(bool use_color =  true);
 
   
   /** Gets the value of Gtk::PRINT_SETTINGS_COLLATE.
-   * @return Whether to collate the printed pages
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return Whether to collate the printed pages.
    */
   bool get_collate() const;
   
   /** Sets the value of Gtk::PRINT_SETTINGS_COLLATE.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param collate Whether to collate the output.
    */
-  void set_collate(bool collate = true);
+  void set_collate(bool collate =  true);
 
   
   /** Gets the value of Gtk::PRINT_SETTINGS_REVERSE.
-   * @return Whether to reverse the order of the printed pages
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return Whether to reverse the order of the printed pages.
    */
   bool get_reverse() const;
   
   /** Sets the value of Gtk::PRINT_SETTINGS_REVERSE.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param reverse Whether to reverse the output.
    */
-  void set_reverse(bool reverse = true);
+  void set_reverse(bool reverse =  true);
 
   
   /** Gets the value of Gtk::PRINT_SETTINGS_DUPLEX.
-   * @return Whether to print the output in duplex.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return Whether to print the output in duplex.
    */
   PrintDuplex get_duplex() const;
   
   /** Sets the value of Gtk::PRINT_SETTINGS_DUPLEX.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param duplex A Gtk::PrintDuplex value.
    */
   void set_duplex(PrintDuplex duplex);
 
   
   /** Gets the value of Gtk::PRINT_SETTINGS_QUALITY.
-   * @return The print quality
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The print quality.
    */
   PrintQuality get_quality() const;
   
   /** Sets the value of Gtk::PRINT_SETTINGS_QUALITY.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param quality A Gtk::PrintQuality value.
    */
   void set_quality(PrintQuality quality);
 
   
   /** Gets the value of Gtk::PRINT_SETTINGS_N_COPIES.
-   * @return The number of copies to print
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The number of copies to print.
    */
   int get_n_copies() const;
   
   /** Sets the value of Gtk::PRINT_SETTINGS_N_COPIES.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param num_copies The number of copies.
    */
   void set_n_copies(int num_copies);
 
   
   /** Gets the value of Gtk::PRINT_SETTINGS_NUMBER_UP.
-   * @return The number of pages per sheet
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The number of pages per sheet.
    */
   int get_number_up() const;
   
   /** Sets the value of Gtk::PRINT_SETTINGS_NUMBER_UP.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param number_up The number of pages per sheet.
    */
   void set_number_up(int number_up);
 
   
   /** Gets the value of Gtk::PRINT_SETTINGS_NUMBER_UP_LAYOUT.
-   * @return Layout of page in number-up mode
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return Layout of page in number-up mode.
    */
   NumberUpLayout get_number_up_layout() const;
   
   /** Sets the value of Gtk::PRINT_SETTINGS_NUMBER_UP_LAYOUT.
    * 
-   * @newin2p14
+   * @newin{2,14}
    * @param number_up_layout A Gtk::NumberUpLayout value.
    */
   void set_number_up(NumberUpLayout number_up_layout);
 
   
   /** Gets the value of Gtk::PRINT_SETTINGS_RESOLUTION.
-   * @return The resolution in dpi
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The resolution in dpi.
    */
   int get_resolution() const;
   
@@ -826,23 +810,23 @@ public:
    * Gtk::PRINT_SETTINGS_RESOLUTION_X and 
    * Gtk::PRINT_SETTINGS_RESOLUTION_Y.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param resolution The resolution in dpi.
    */
   void set_resolution(int resolution);
 
   
   /** Gets the value of Gtk::PRINT_SETTINGS_RESOLUTION_X.
-   * @return The horizontal resolution in dpi
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @return The horizontal resolution in dpi.
    */
   int get_resolution_x() const;
   
   /** Gets the value of Gtk::PRINT_SETTINGS_RESOLUTION_Y.
-   * @return The vertical resolution in dpi
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @return The vertical resolution in dpi.
    */
   int get_resolution_y() const;
   
@@ -850,52 +834,52 @@ public:
    * Gtk::PRINT_SETTINGS_RESOLUTION_X and
    * Gtk::PRINT_SETTINGS_RESOLUTION_Y.
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param resolution_x The horizontal resolution in dpi.
    * @param resolution_y The vertical resolution in dpi.
    */
   void set_resolution_xy(int resolution_x, int resolution_y);
   
   /** Gets the value of Gtk::PRINT_SETTINGS_PRINTER_LPI.
-   * @return The resolution in lpi (lines per inch)
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @return The resolution in lpi (lines per inch).
    */
   double get_printer_lpi() const;
   
   /** Sets the value of Gtk::PRINT_SETTINGS_PRINTER_LPI.
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param lpi The resolution in lpi (lines per inch).
    */
   void set_printer_lpi(double lpi);
 
   
   /** Gets the value of Gtk::PRINT_SETTINGS_SCALE.
-   * @return The scale in percent
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The scale in percent.
    */
   double get_scale() const;
   
   /** Sets the value of Gtk::PRINT_SETTINGS_SCALE.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param scale The scale in percent.
    */
   void set_scale(double scale);
 
   
   /** Gets the value of Gtk::PRINT_SETTINGS_PRINT_PAGES.
-   * @return Which pages to print
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return Which pages to print.
    */
   PrintPages get_print_pages() const;
   
   /** Sets the value of Gtk::PRINT_SETTINGS_PRINT_PAGES.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param pages A Gtk::PrintPages value.
    */
   void set_print_pages(PrintPages print_pages);
@@ -916,30 +900,30 @@ public:
 
   
   /** Gets the value of Gtk::PRINT_SETTINGS_PAGE_SET.
-   * @return The set of pages to print
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The set of pages to print.
    */
   PageSet get_page_set() const;
   
   /** Sets the value of Gtk::PRINT_SETTINGS_PAGE_SET.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param page_set A Gtk::PageSet value.
    */
   void set_page_set(PageSet page_set);
 
   
   /** Gets the value of Gtk::PRINT_SETTINGS_DEFAULT_SOURCE.
-   * @return The default source
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The default source.
    */
   Glib::ustring get_default_source() const;
   
   /** Sets the value of Gtk::PRINT_SETTINGS_DEFAULT_SOURCE.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param default_source The default source.
    */
   void set_default_source(const Glib::ustring& default_source);
@@ -949,9 +933,9 @@ public:
    * 
    * The set of media types is defined in PWG 5101.1-2002 PWG.
    * <!-- FIXME link here -->
-   * @return The media type
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The media type.
    */
   Glib::ustring get_media_type() const;
   
@@ -960,52 +944,52 @@ public:
    * The set of media types is defined in PWG 5101.1-2002 PWG.
    * <!-- FIXME link here -->
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param media_type The media type.
    */
   void set_media_type(const Glib::ustring& media_type);
 
   
   /** Gets the value of Gtk::PRINT_SETTINGS_DITHER.
-   * @return The dithering that is used
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The dithering that is used.
    */
   Glib::ustring get_dither() const;
   
   /** Sets the value of Gtk::PRINT_SETTINGS_DITHER.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param dither The dithering that is used.
    */
   void set_dither(const Glib::ustring& dither);
 
   
   /** Gets the value of Gtk::PRINT_SETTINGS_FINISHINGS.
-   * @return The finishings
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The finishings.
    */
   Glib::ustring get_finishings() const;
   
   /** Sets the value of Gtk::PRINT_SETTINGS_FINISHINGS.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param finishings The finishings.
    */
   void set_finishings(const Glib::ustring& finishings);
 
   
   /** Gets the value of Gtk::PRINT_SETTINGS_OUTPUT_BIN.
-   * @return The output bin
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The output bin.
    */
   Glib::ustring get_output_bin() const;
   
   /** Sets the value of Gtk::PRINT_SETTINGS_OUTPUT_BIN.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param output_bin The output bin.
    */
   void set_output_bin(const Glib::ustring& output_bin);
@@ -1017,17 +1001,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

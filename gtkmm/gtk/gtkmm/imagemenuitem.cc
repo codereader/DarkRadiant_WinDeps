@@ -122,23 +122,14 @@ const Glib::Class& ImageMenuItem_Class::init()
   return *this;
 }
 
+
 void ImageMenuItem_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* ImageMenuItem_Class::wrap_new(GObject* o)
@@ -173,6 +164,7 @@ GType ImageMenuItem::get_type()
 {
   return imagemenuitem_class_.init().get_type();
 }
+
 
 GType ImageMenuItem::get_base_type()
 {
@@ -279,13 +271,6 @@ Glib::PropertyProxy_ReadOnly<bool> ImageMenuItem::property_always_show_image() c
   return Glib::PropertyProxy_ReadOnly<bool>(this, "always-show-image");
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

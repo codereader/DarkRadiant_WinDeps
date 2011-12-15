@@ -110,6 +110,7 @@ public:
    */
   std::string get_completion_suffix(const std::string& initial_text) const;
   
+   
   /** Gets an array of completion strings for a given initial text.
    * @param initial_text Text to be completed.
    * @return Array of strings with possible completions for @a initial_text.
@@ -121,7 +122,7 @@ public:
    * complete directory names, and not file names.
    * @param dirs_only A <tt>bool</tt>.
    */
-  void set_dirs_only(bool dirs_only = true);
+  void set_dirs_only(bool dirs_only =  true);
 
   
   /**
@@ -136,18 +137,12 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_got_completion_data();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

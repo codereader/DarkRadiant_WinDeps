@@ -91,18 +91,11 @@ void FilenameCompleter_Class::class_init_function(void* g_class, void* class_dat
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->got_completion_data = &got_completion_data_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void FilenameCompleter_Class::got_completion_data_callback(GFilenameCompleter* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -134,7 +127,7 @@ void FilenameCompleter_Class::got_completion_data_callback(GFilenameCompleter* s
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -143,7 +136,6 @@ void FilenameCompleter_Class::got_completion_data_callback(GFilenameCompleter* s
   if(base && base->got_completion_data)
     (*base->got_completion_data)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* FilenameCompleter_Class::wrap_new(GObject* object)
@@ -205,6 +197,7 @@ Glib::RefPtr<FilenameCompleter> FilenameCompleter::create()
 {
   return Glib::RefPtr<FilenameCompleter>( new FilenameCompleter() );
 }
+
 std::string FilenameCompleter::get_completion_suffix(const std::string& initial_text) const
 {
   return Glib::convert_return_gchar_ptr_to_stdstring(g_filename_completer_get_completion_suffix(const_cast<GFilenameCompleter*>(gobj()), initial_text.c_str()));
@@ -212,7 +205,7 @@ std::string FilenameCompleter::get_completion_suffix(const std::string& initial_
 
 Glib::StringArrayHandle FilenameCompleter::get_completions(const std::string& initial_text) const
 {
-  return Glib::StringArrayHandle(g_filename_completer_get_completions(const_cast<GFilenameCompleter*>(gobj()), initial_text.c_str()));
+  return Glib::StringArrayHandle(g_filename_completer_get_completions(const_cast<GFilenameCompleter*>(gobj()), initial_text.c_str()), Glib::OWNERSHIP_DEEP);
 }
 
 void FilenameCompleter::set_dirs_only(bool dirs_only)
@@ -227,7 +220,6 @@ Glib::SignalProxy0< void > FilenameCompleter::signal_got_completion_data()
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gio::FilenameCompleter::on_got_completion_data()
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -237,10 +229,6 @@ void Gio::FilenameCompleter::on_got_completion_data()
   if(base && base->got_completion_data)
     (*base->got_completion_data)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gio

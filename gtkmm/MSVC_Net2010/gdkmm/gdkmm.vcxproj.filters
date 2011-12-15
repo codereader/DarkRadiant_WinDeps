@@ -15,10 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ResourceCompile Include="gdkmm.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="..\..\gdk\gdkmm\bitmap.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\blank.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\gdk\gdkmm\color.cc">
@@ -191,10 +193,5 @@
     <ClInclude Include="..\..\gdk\gdkmm\wrap_init.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="gdkmm.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
   </ItemGroup>
 </Project>

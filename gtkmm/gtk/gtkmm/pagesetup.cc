@@ -26,53 +26,29 @@
 namespace Gtk
 {
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::RefPtr<PageSetup> PageSetup::create_from_key_file(const Glib::KeyFile& key_file)
-#else
-Glib::RefPtr<PageSetup> PageSetup::create_from_key_file(const Glib::KeyFile& key_file, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   Glib::RefPtr<PageSetup> result = PageSetup::create();
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   result->load_from_key_file(key_file);
-  #else
-  result->load_from_key_file(key_file, error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return result;
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::RefPtr<PageSetup> PageSetup::create_from_key_file(const Glib::KeyFile& key_file, const Glib::ustring& group_name)
-#else
-Glib::RefPtr<PageSetup> PageSetup::create_from_key_file(const Glib::KeyFile& key_file, const Glib::ustring& group_name, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   Glib::RefPtr<PageSetup> result = PageSetup::create();
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   result->load_from_key_file(key_file, group_name);
-  #else
-  result->load_from_key_file(key_file, group_name, error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return result;
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::RefPtr<PageSetup> PageSetup::create_from_file(const std::string& file_name)
-#else
-Glib::RefPtr<PageSetup> PageSetup::create_from_file(const std::string& file_name, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   Glib::RefPtr<PageSetup> result = PageSetup::create();
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   result->load_from_file(file_name);
-  #else
-  result->load_from_file(file_name, error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return result;
 }
@@ -89,21 +65,12 @@ void PageSetup::save_to_key_file(Glib::KeyFile& key_file) const
   gtk_page_setup_to_key_file(const_cast<GtkPageSetup*>(gobj()), (key_file).gobj(), 0); 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool PageSetup::load_from_key_file(const Glib::KeyFile& key_file)
-#else
-bool PageSetup::load_from_key_file(const Glib::KeyFile& key_file, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = gtk_page_setup_load_key_file(gobj(), const_cast<GKeyFile*>((key_file).gobj()), NULL, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
@@ -154,23 +121,14 @@ const Glib::Class& PageSetup_Class::init()
   return *this;
 }
 
+
 void PageSetup_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* PageSetup_Class::wrap_new(GObject* object)
@@ -199,6 +157,7 @@ PageSetup::PageSetup(GtkPageSetup* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 PageSetup::~PageSetup()
 {}
 
@@ -209,6 +168,7 @@ GType PageSetup::get_type()
 {
   return pagesetup_class_.init().get_type();
 }
+
 
 GType PageSetup::get_base_type()
 {
@@ -230,46 +190,29 @@ Glib::RefPtr<PageSetup> PageSetup::create()
 {
   return Glib::RefPtr<PageSetup>( new PageSetup() );
 }
+
 Glib::RefPtr<PageSetup> PageSetup::copy() const
 {
   return Glib::wrap(gtk_page_setup_copy(const_cast<GtkPageSetup*>(gobj())));
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool PageSetup::load_from_file(const std::string& file_name)
-#else
-bool PageSetup::load_from_file(const std::string& file_name, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = gtk_page_setup_load_file(gobj(), file_name.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool PageSetup::load_from_key_file(const Glib::KeyFile& key_file, const Glib::ustring& group_name)
-#else
-bool PageSetup::load_from_key_file(const Glib::KeyFile& key_file, const Glib::ustring& group_name, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = gtk_page_setup_load_key_file(gobj(), const_cast<GKeyFile*>((key_file).gobj()), group_name.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
@@ -365,21 +308,12 @@ double PageSetup::get_page_height(Unit unit) const
   return gtk_page_setup_get_page_height(const_cast<GtkPageSetup*>(gobj()), ((GtkUnit)(unit)));
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool PageSetup::save_to_file(const std::string& file_name) const
-#else
-bool PageSetup::save_to_file(const std::string& file_name, std::auto_ptr<Glib::Error>& error) const
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = gtk_page_setup_to_file(const_cast<GtkPageSetup*>(gobj()), file_name.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
@@ -398,13 +332,6 @@ void PageSetup::save_to_key_file(Glib::KeyFile& key_file, const Glib::ustring& g
 {
 gtk_page_setup_to_key_file(const_cast<GtkPageSetup*>(gobj()), (key_file).gobj(), group_name.c_str()); 
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

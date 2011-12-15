@@ -199,25 +199,19 @@ const Glib::Class& TextTagTable_Class::init()
   return *this;
 }
 
+
 void TextTagTable_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->tag_changed = &tag_changed_callback;
   klass->tag_added = &tag_added_callback;
   klass->tag_removed = &tag_removed_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void TextTagTable_Class::tag_changed_callback(GtkTextTagTable* self, GtkTextTag* p0, gboolean p1)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -251,7 +245,7 @@ void TextTagTable_Class::tag_changed_callback(GtkTextTagTable* self, GtkTextTag*
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -292,7 +286,7 @@ void TextTagTable_Class::tag_added_callback(GtkTextTagTable* self, GtkTextTag* p
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -333,7 +327,7 @@ void TextTagTable_Class::tag_removed_callback(GtkTextTagTable* self, GtkTextTag*
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -342,7 +336,6 @@ void TextTagTable_Class::tag_removed_callback(GtkTextTagTable* self, GtkTextTag*
   if(base && base->tag_removed)
     (*base->tag_removed)(self, p0);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* TextTagTable_Class::wrap_new(GObject* object)
@@ -371,6 +364,7 @@ TextTagTable::TextTagTable(GtkTextTagTable* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 TextTagTable::~TextTagTable()
 {}
 
@@ -381,6 +375,7 @@ GType TextTagTable::get_type()
 {
   return texttagtable_class_.init().get_type();
 }
+
 
 GType TextTagTable::get_base_type()
 {
@@ -402,6 +397,7 @@ Glib::RefPtr<TextTagTable> TextTagTable::create()
 {
   return Glib::RefPtr<TextTagTable>( new TextTagTable() );
 }
+
 void TextTagTable::add(const Glib::RefPtr<TextTag>& tag)
 {
 gtk_text_tag_table_add(gobj(), Glib::unwrap(tag)); 
@@ -451,7 +447,6 @@ Glib::SignalProxy1< void,const Glib::RefPtr<TextTag>& > TextTagTable::signal_tag
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::TextTagTable::on_tag_changed(const Glib::RefPtr<TextTag>& tag, bool size_changed)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -479,10 +474,6 @@ void Gtk::TextTagTable::on_tag_removed(const Glib::RefPtr<TextTag>& tag)
   if(base && base->tag_removed)
     (*base->tag_removed)(gobj(),Glib::unwrap(tag));
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

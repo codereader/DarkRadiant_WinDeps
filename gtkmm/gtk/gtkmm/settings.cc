@@ -79,23 +79,14 @@ const Glib::Class& Settings_Class::init()
   return *this;
 }
 
+
 void Settings_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Settings_Class::wrap_new(GObject* object)
@@ -124,6 +115,7 @@ Settings::Settings(GtkSettings* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 Settings::~Settings()
 {}
 
@@ -134,6 +126,7 @@ GType Settings::get_type()
 {
   return settings_class_.init().get_type();
 }
+
 
 GType Settings::get_base_type()
 {
@@ -147,7 +140,7 @@ Glib::RefPtr<Settings> Settings::get_default()
   Glib::RefPtr<Settings> retvalue = Glib::wrap(gtk_settings_get_default());
 
   if(retvalue)
-    retvalue->reference(); //The function does not do a ref for us.
+    retvalue->reference(); //The function does not do a ref for us
   return retvalue;
 }
 
@@ -158,7 +151,7 @@ Glib::RefPtr<Settings> Settings::get_for_screen(const Glib::RefPtr<Gdk::Screen>&
   Glib::RefPtr<Settings> retvalue = Glib::wrap(gtk_settings_get_for_screen(Glib::unwrap(screen)));
 
   if(retvalue)
-    retvalue->reference(); //The function does not do a ref for us.
+    retvalue->reference(); //The function does not do a ref for us
   return retvalue;
 }
 
@@ -939,13 +932,6 @@ Glib::PropertyProxy_ReadOnly<Glib::ustring> Settings::property_gtk_icon_sizes() 
   return Glib::PropertyProxy_ReadOnly<Glib::ustring>(this, "gtk-icon-sizes");
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

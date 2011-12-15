@@ -162,23 +162,17 @@ const Glib::Class& Layout_Class::init()
   return *this;
 }
 
+
 void Layout_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->set_scroll_adjustments = &set_scroll_adjustments_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Layout_Class::set_scroll_adjustments_callback(GtkLayout* self, GtkAdjustment* p0, GtkAdjustment* p1)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -212,7 +206,7 @@ void Layout_Class::set_scroll_adjustments_callback(GtkLayout* self, GtkAdjustmen
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -221,7 +215,6 @@ void Layout_Class::set_scroll_adjustments_callback(GtkLayout* self, GtkAdjustmen
   if(base && base->set_scroll_adjustments)
     (*base->set_scroll_adjustments)(self, p0, p1);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Layout_Class::wrap_new(GObject* o)
@@ -256,6 +249,7 @@ GType Layout::get_type()
 {
   return layout_class_.init().get_type();
 }
+
 
 GType Layout::get_base_type()
 {
@@ -392,7 +386,6 @@ Glib::PropertyProxy_ReadOnly<guint> Layout::property_height() const
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::Layout::on_set_scroll_adjustments(Adjustment* hadj, Adjustment* vadj)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -402,10 +395,6 @@ void Gtk::Layout::on_set_scroll_adjustments(Adjustment* hadj, Adjustment* vadj)
   if(base && base->set_scroll_adjustments)
     (*base->set_scroll_adjustments)(gobj(),(GtkAdjustment*)Glib::unwrap(hadj),(GtkAdjustment*)Glib::unwrap(vadj));
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

@@ -4,7 +4,8 @@
 #define _ATKMM_SELECTION_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: selection.hg,v 1.2 2004/01/02 09:56:43 murrayc Exp $ */
 
@@ -25,6 +26,8 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+
+#include <glibmm/interface.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 extern "C"
@@ -109,7 +112,7 @@ public:
   ///Provides access to the underlying C GObject.
   AtkSelection*       gobj()       { return reinterpret_cast<AtkSelection*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const AtkSelection* gobj() const { return reinterpret_cast<AtkSelection*>(gobject_); }
 
 private:
@@ -187,51 +190,31 @@ public:
 
 
 protected:
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool add_selection_vfunc(int i);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool add_selection_vfunc(int i);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool clear_selection_vfunc();
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool clear_selection_vfunc();
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual Glib::RefPtr<Atk::Object> get_selection_vfunc(int i);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual Glib::RefPtr<Atk::Object> get_selection_vfunc(int i);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual int get_selection_count_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual int get_selection_count_vfunc() const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool is_child_selected_vfunc(int i) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool is_child_selected_vfunc(int i) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool remove_selection_vfunc(int i);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool remove_selection_vfunc(int i);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool select_all_selection_vfunc();
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool select_all_selection_vfunc();
 
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_selection_changed();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

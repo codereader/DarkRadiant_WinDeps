@@ -48,8 +48,10 @@ class Widget;
 //TODO_API: Is _CLASS_BOXEDTYPE the appropriate thing to use here.
 //This seems to be reference-counted, not copied.
 
-// TODO: Documentation, thought the C API has no documentation for this either.
-// See http://bugzilla.gnome.org/show_bug.cgi?id=575537
+/** This manages a set of variants of a particular icon 
+ * An IconSet contains variants for different sizes and widget states. 
+ * Icons in an icon factory are named by a stock ID, which is a simple string identifying the icon. Each GtkStyle has a list of GtkIconFactory derived from the current theme; those icon factories are consulted first when searching for an icon. If the theme doesn't set a particular icon, GTK+ looks for the icon in a list of default icon factories, maintained by gtk_icon_factory_add_default() and gtk_icon_factory_remove_default(). Applications with icons should add a default icon factory with their icons, which will allow themes to override the icons for the application. 
+ */
 class IconSet
 {
   public:
@@ -116,15 +118,13 @@ public:
    * will disable caching.
    * @return A Gdk::Pixbuf to be displayed.
    */
-  Glib::RefPtr<Gdk::Pixbuf> render_icon(const Glib::RefPtr<Style>& style, TextDirection direction,
-                                          Gtk::StateType state, IconSize size,
-                                          Widget& widget, const Glib::ustring& detail);
+  Glib::RefPtr<Gdk::Pixbuf> render_icon(const Glib::RefPtr<Style>& style, TextDirection direction, Gtk::StateType state, IconSize size, Widget& widget, const Glib::ustring& detail);
 
   
   /** Icon sets have a list of Gtk::IconSource, which they use as base
    * icons for rendering icons in different states and sizes. Icons are
    * scaled, made to look insensitive, etc. in
-   * gtk_icon_set_render_icon(), but Gtk::IconSet needs base images to
+   * render_icon(), but Gtk::IconSet needs base images to
    * work with. The base images and when to use them are described by
    * a Gtk::IconSource.
    * 
@@ -144,7 +144,7 @@ public:
    * icon sources to more generic icon sources. The order in which you
    * add the sources to the icon set does not matter.
    * 
-   * gtk_icon_set_new_from_pixbuf() creates a new icon set with a
+   * new_from_pixbuf() creates a new icon set with a
    * default icon source based on the given pixbuf.
    * @param source A Gtk::IconSource.
    */
@@ -152,6 +152,15 @@ public:
 
   Glib::ArrayHandle<IconSize> get_sizes() const;
 
+  /** Looks for an icon in the list of default icon factories.
+   * @param stock_id StockID to search for
+   *
+   * For display to the user, you should use Style::lookup_icon_set() on the Style 
+   * for the widget that will display the icon, instead of using this function directly, 
+   * so that themes are taken into account
+   *
+   * @returns an IconSet
+   */
   static IconSet lookup_default(const Gtk::StockID& stock_id);
 
 

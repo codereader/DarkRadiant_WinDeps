@@ -31,22 +31,13 @@
 namespace Gdk
 {
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::RefPtr<PixbufAnimation> PixbufAnimation::create_from_file(const Glib::ustring& filename)
-#else
-Glib::RefPtr<PixbufAnimation> PixbufAnimation::create_from_file(const Glib::ustring& filename, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   return Glib::wrap(gdk_pixbuf_animation_new_from_file(filename.c_str(), &gerror));
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
 } //Gdk
@@ -96,23 +87,14 @@ const Glib::Class& PixbufAnimation_Class::init()
   return *this;
 }
 
+
 void PixbufAnimation_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* PixbufAnimation_Class::wrap_new(GObject* object)
@@ -141,6 +123,7 @@ PixbufAnimation::PixbufAnimation(GdkPixbufAnimation* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 PixbufAnimation::~PixbufAnimation()
 {}
 
@@ -151,6 +134,7 @@ GType PixbufAnimation::get_type()
 {
   return pixbufanimation_class_.init().get_type();
 }
+
 
 GType PixbufAnimation::get_base_type()
 {
@@ -192,13 +176,6 @@ Glib::RefPtr<PixbufAnimationIter> PixbufAnimation::get_iter(const GTimeVal* star
   return retvalue;
 
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gdk

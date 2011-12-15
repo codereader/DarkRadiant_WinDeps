@@ -9,7 +9,7 @@
 /* $Id: statusbar.hg,v 1.2 2003/10/12 09:38:11 murrayc Exp $ */
 
 /* statusbar.h
- * 
+ *
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -87,6 +87,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -99,19 +101,13 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_text_pushed(guint context_id, const Glib::ustring& text);
   virtual void on_text_popped(guint context_id, const Glib::ustring& text);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -121,13 +117,23 @@ public:
   Statusbar();
 
   
-  /** Returns: an integer id
+  /** Returns a new context identifier, given a description 
+   * of the actual context. Note that the description is 
+   * <em>not</em> shown in the UI.
    * @param context_description Textual description of what context 
    * the new message is being used in.
    * @return An integer id.
    */
   guint get_context_id(const Glib::ustring& context_description);
+
+  //TODO: Remove the default 0 context_id values in all these methods?
+
+  /** Pushes a new message onto a statusbar's stack.
+   * @param text The message to add to the statusbar.
+   * @param context_id The message's context id, as returned by get_context_id()
+   */
   guint push(const Glib::ustring& text, guint context_id = 0);
+
   
   /** Removes the first message in the Gtk::StatusBar's stack
    * with the given context id. 
@@ -137,19 +143,52 @@ public:
    * context id.
    * @param context_id A context identifier.
    */
-  void pop(guint context_id = 0);
+  void pop(guint context_id =  0);
+
+  /** Forces the removal of a message from a statusbar's stack. 
+   * The exact context_id and message_id must be specified.
+   * @param message_id A message identifier, as returned by push().
+   * @param context_id A context identifier.
+   */
   void remove_message(guint message_id, guint context_id = 0);
+  
+
+  /** Forces the removal of all messages from a statusbar's
+   * stack with the exact @a context_id.
+   * 
+   * @newin{2,22}
+   * @param context_id A context identifier.
+   */
+  void remove_all_messages(guint context_id =  0);
+
   
   /** Sets whether the statusbar has a resize grip. 
    * <tt>true</tt> by default.
    * @param setting <tt>true</tt> to have a resize grip.
    */
-  void set_has_resize_grip(bool setting = true);
+  void set_has_resize_grip(bool setting =  true);
   
-  /** Returns: <tt>true</tt> if the statusbar has a resize grip.
+  /** Returns whether the statusbar has a resize grip.
    * @return <tt>true</tt> if the statusbar has a resize grip.
    */
   bool get_has_resize_grip() const;
+
+  //This actually returns a GtkFrame, though the documentation describes it as "box".
+  //I'm not generally happy about API that returns an unknown type. murrayc.
+  
+  /** Retrieves the box containing the label widget.
+   * 
+   * @newin{2,20}
+   * @return A Gtk::Box.
+   */
+  Gtk::Widget* get_message_area();
+  
+  /** Retrieves the box containing the label widget.
+   * 
+   * @newin{2,20}
+   * @return A Gtk::Box.
+   */
+  const Gtk::Widget* get_message_area() const;
 
  
   /**

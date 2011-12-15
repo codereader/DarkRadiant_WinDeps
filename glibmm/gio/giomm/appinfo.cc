@@ -29,18 +29,10 @@
 namespace Gio
 {
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::RefPtr<AppInfo>
 AppInfo::create_from_commandline(const std::string& commandline,
                                  const std::string& application_name,
                                  AppInfoCreateFlags flags)
-#else
-Glib::RefPtr<AppInfo>
-AppInfo::create_from_commandline(const std::string& commandline,
-                                 const std::string& application_name,
-                                 AppInfoCreateFlags flags,
-                                 std::auto_ptr<Glib::Error>& error)
-#endif // GLIBMM_EXCEPTIONS_ENABLED
 {
   GAppInfo* capp_info = 0;
   GError* gerror = 0;
@@ -51,31 +43,18 @@ AppInfo::create_from_commandline(const std::string& commandline,
                                                  &gerror);
 
   if (gerror)
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
     ::Glib::Error::throw_exception(gerror);
-#else
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return Glib::wrap(capp_info);
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool AppInfo::launch_default_for_uri(const std::string& uri)
-#else
-bool AppInfo::launch_default_for_uri(const std::string& uri, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
-  bool retvalue = g_app_info_launch_default_for_uri(uri.c_str(), NULL, &(gerror));
+  const bool retvalue = g_app_info_launch_default_for_uri(uri.c_str(), 0, &(gerror));
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
@@ -133,18 +112,8 @@ void AppLaunchContext_Class::class_init_function(void* g_class, void* class_data
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* AppLaunchContext_Class::wrap_new(GObject* object)
@@ -206,6 +175,7 @@ Glib::RefPtr<AppLaunchContext> AppLaunchContext::create()
 {
   return Glib::RefPtr<AppLaunchContext>( new AppLaunchContext() );
 }
+
 std::string AppLaunchContext::get_display(const Glib::RefPtr<AppInfo>& info, const Glib::ListHandle< Glib::RefPtr<Gio::File> >& files)
 {
   return Glib::convert_return_gchar_ptr_to_stdstring(g_app_launch_context_get_display(gobj(), Glib::unwrap(info), files.data()));
@@ -220,13 +190,6 @@ void AppLaunchContext::launch_failed(const std::string& startup_notify_id)
 {
 g_app_launch_context_launch_failed(gobj(), startup_notify_id.c_str()); 
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gio
@@ -273,18 +236,8 @@ void AppInfo_Class::iface_init_function(void* g_iface, void*)
   //This is a temporary fix until I find out why I can not seem to derive a GtkFileChooser interface. murrayc
   g_assert(klass != 0); 
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* AppInfo_Class::wrap_new(GObject* object)
@@ -377,21 +330,12 @@ const Glib::RefPtr<const Icon> AppInfo::get_icon() const
   return const_cast<AppInfo*>(this)->get_icon();
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool AppInfo::launch(const Glib::ListHandle<std::string>& files, const Glib::RefPtr<AppLaunchContext>& launch_context)
-#else
-bool AppInfo::launch(const Glib::ListHandle<std::string>& files, const Glib::RefPtr<AppLaunchContext>& launch_context, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = g_app_info_launch(gobj(), files.data(), Glib::unwrap(launch_context), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
@@ -407,21 +351,12 @@ bool AppInfo::supports_files() const
   return g_app_info_supports_files(const_cast<GAppInfo*>(gobj()));
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool AppInfo::launch_uris(const Glib::ListHandle<std::string>& uris, GAppLaunchContext* launch_context)
-#else
-bool AppInfo::launch_uris(const Glib::ListHandle<std::string>& uris, GAppLaunchContext* launch_context, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = g_app_info_launch_uris(gobj(), uris.data(), launch_context, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
@@ -442,61 +377,34 @@ bool AppInfo::do_delete()
   return g_app_info_delete(gobj());
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool AppInfo::set_as_default_for_type(const std::string& content_type)
-#else
-bool AppInfo::set_as_default_for_type(const std::string& content_type, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = g_app_info_set_as_default_for_type(gobj(), content_type.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool AppInfo::set_as_default_for_extension(const std::string& extension)
-#else
-bool AppInfo::set_as_default_for_extension(const std::string& extension, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = g_app_info_set_as_default_for_extension(gobj(), extension.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool AppInfo::add_supports_type(const std::string& content_type)
-#else
-bool AppInfo::add_supports_type(const std::string& content_type, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = g_app_info_add_supports_type(gobj(), content_type.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
@@ -507,21 +415,12 @@ bool AppInfo::can_remove_supports_type() const
   return g_app_info_can_remove_supports_type(const_cast<GAppInfo*>(gobj()));
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool AppInfo::remove_supports_type(const std::string& content_type)
-#else
-bool AppInfo::remove_supports_type(const std::string& content_type, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = g_app_info_remove_supports_type(gobj(), content_type.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
@@ -557,32 +456,16 @@ g_app_info_reset_type_associations(content_type.c_str());
 }
 
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool AppInfo::launch_default_for_uri(const std::string& uri, const Glib::RefPtr<AppLaunchContext>& context)
-#else
-bool AppInfo::launch_default_for_uri(const std::string& uri, const Glib::RefPtr<AppLaunchContext>& context, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = g_app_info_launch_default_for_uri(uri.c_str(), Glib::unwrap(context), &(gerror));
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gio

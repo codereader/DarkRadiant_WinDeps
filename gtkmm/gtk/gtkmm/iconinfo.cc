@@ -21,14 +21,14 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <gtk/gtk.h>
 #include <gtkmm/icontheme.h>
- 
+#include <gtk/gtk.h>
+
 namespace Gtk
 {
 
 IconInfo::IconInfo(const Glib::RefPtr<IconTheme>& icon_theme, const Glib::RefPtr<Gdk::Pixbuf>& pixbuf)
-: gobject_( gtk_icon_info_new_for_pixbuf(icon_theme->gobj(), pixbuf->gobj()) )
+: gobject_( gtk_icon_info_new_for_pixbuf(Glib::unwrap(icon_theme), pixbuf->gobj()) )
 {
 }
 
@@ -40,9 +40,9 @@ bool IconInfo::get_attach_points(Glib::ArrayHandle<Gdk::Point>& /* points */) co
 
   if(c_attach_points)
   {
-    //TODO: We can't use = with an ArrayHandle. 
+    //TODO: We can't use = with an ArrayHandle.
     //Investigate whether the bool return value has a special meaning - maybe we can just return an empty ArrayHandle.
-    //points = Glib::ArrayHandle<Gdk::Point>(reinterpret_cast<Gdk::Point*>(c_attach_points), (size_t)n_points, Glib::OWNERSHIP_SHALLOW); //We use OWNERSHIP_SHALLOW because we just need to g_free() the array and nothing more.        
+    //points = Glib::ArrayHandle<Gdk::Point>(reinterpret_cast<Gdk::Point*>(c_attach_points), (size_t)n_points, Glib::OWNERSHIP_SHALLOW); //We use OWNERSHIP_SHALLOW because we just need to g_free() the array and nothing more.
   }
   return result;
 }
@@ -60,10 +60,9 @@ IconInfo::operator bool() const
 {
   return gobj() != 0;
 }
-  
+
 
 } // namespace Gtk
-
 
 namespace
 {
@@ -160,21 +159,12 @@ Glib::RefPtr<const Gdk::Pixbuf> IconInfo::get_builtin_pixbuf() const
   return const_cast<IconInfo*>(this)->get_builtin_pixbuf();
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::RefPtr<Gdk::Pixbuf> IconInfo::load_icon() const
-#else
-Glib::RefPtr<Gdk::Pixbuf> IconInfo::load_icon(std::auto_ptr<Glib::Error>& error) const
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   Glib::RefPtr<Gdk::Pixbuf> retvalue = Glib::wrap(gtk_icon_info_load_icon(const_cast<GtkIconInfo*>(gobj()), &(gerror)));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 

@@ -71,6 +71,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -83,18 +85,12 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_embedded();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -119,24 +115,24 @@ public:
 
   
   /** Determines whether the plug is embedded in a socket.
-   * @return <tt>true</tt> if the plug is embedded in a socket
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return <tt>true</tt> if the plug is embedded in a socket.
    */
   bool get_embedded() const;
 
   
   /** Retrieves the socket the plug is embedded in.
-   * @return The window of the socket, or <tt>0</tt>
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The window of the socket, or <tt>0</tt>.
    */
   Glib::RefPtr<Gdk::Window> get_socket_window();
   
   /** Retrieves the socket the plug is embedded in.
-   * @return The window of the socket, or <tt>0</tt>
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The window of the socket, or <tt>0</tt>.
    */
   Glib::RefPtr<const Gdk::Window> get_socket_window() const;
 

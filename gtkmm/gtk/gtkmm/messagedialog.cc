@@ -8,7 +8,7 @@
 // -*- c++ -*-
 /* $Id: messagedialog.ccg,v 1.7 2005/02/15 10:52:44 murrayc Exp $ */
 
-/* 
+/*
  *
  * Copyright 2002 The gtkmm Development Team
  *
@@ -60,35 +60,28 @@ MessageDialog::MessageDialog(Gtk::Window& parent, const Glib::ustring& message, 
 
 void MessageDialog::set_message(const Glib::ustring& message, bool use_markup)
 {
-  // TODO: GTK+ bug: The label widget is really a <private> struct field.
-  // There should really be a message property.
-
   if(use_markup)
-    gtk_message_dialog_set_markup(gobj(), message.c_str()); 
+    gtk_message_dialog_set_markup(gobj(), message.c_str());
   else
-    gtk_label_set_text(GTK_LABEL(gobj()->label), message.c_str());
+  {
+    property_use_markup() = false;
+    property_text() = message;
+  }
 }
 
 void MessageDialog::set_secondary_text(const Glib::ustring& text, bool use_markup)
 {
   if(use_markup)
-    gtk_message_dialog_format_secondary_markup(gobj(), text.c_str());
+    gtk_message_dialog_format_secondary_markup(gobj(), "%s", text.c_str());
   else
-    gtk_message_dialog_format_secondary_text(gobj(), text.c_str());
+    gtk_message_dialog_format_secondary_text(gobj(), "%s", text.c_str());
 }
 
 } // namespace Gtk
 
-
 namespace
 {
 } // anonymous namespace
-
-// static
-GType Glib::Value<Gtk::MessageType>::value_type()
-{
-  return gtk_message_type_get_type();
-}
 
 // static
 GType Glib::Value<Gtk::ButtonsType>::value_type()
@@ -134,23 +127,14 @@ const Glib::Class& MessageDialog_Class::init()
   return *this;
 }
 
+
 void MessageDialog_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* MessageDialog_Class::wrap_new(GObject* o)
@@ -186,6 +170,7 @@ GType MessageDialog::get_type()
   return messagedialog_class_.init().get_type();
 }
 
+
 GType MessageDialog::get_base_type()
 {
   return gtk_message_dialog_get_type();
@@ -215,6 +200,16 @@ gtk_message_dialog_set_markup(gobj(), str.c_str());
 }
 
 #endif // GTKMM_DISABLE_DEPRECATED
+
+VBox* MessageDialog::get_message_area()
+{
+  return Glib::wrap((GtkVBox*)(gtk_message_dialog_get_message_area(gobj())));
+}
+
+const VBox* MessageDialog::get_message_area() const
+{
+  return const_cast<MessageDialog*>(this)->get_message_area();
+}
 
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -301,12 +296,12 @@ Glib::PropertyProxy_ReadOnly<Widget*> MessageDialog::property_image() const
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
 
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<VBox*> MessageDialog::property_message_area() const
+{
+  return Glib::PropertyProxy_ReadOnly<VBox*>(this, "message-area");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
 
 } // namespace Gtk

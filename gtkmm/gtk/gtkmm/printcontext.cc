@@ -73,23 +73,14 @@ const Glib::Class& PrintContext_Class::init()
   return *this;
 }
 
+
 void PrintContext_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* PrintContext_Class::wrap_new(GObject* object)
@@ -118,6 +109,7 @@ PrintContext::PrintContext(GtkPrintContext* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 PrintContext::~PrintContext()
 {}
 
@@ -128,6 +120,7 @@ GType PrintContext::get_type()
 {
   return printcontext_class_.init().get_type();
 }
+
 
 GType PrintContext::get_base_type()
 {
@@ -180,6 +173,11 @@ double PrintContext::get_dpi_y() const
   return gtk_print_context_get_dpi_y(const_cast<GtkPrintContext*>(gobj()));
 }
 
+bool PrintContext::get_hard_margins(double& top, double& bottom, double& left, double& right) const
+{
+  return gtk_print_context_get_hard_margins(const_cast<GtkPrintContext*>(gobj()), &(top), &(bottom), &(left), &(right));
+}
+
 Glib::RefPtr<Pango::FontMap> PrintContext::get_pango_fontmap()
 {
 
@@ -219,13 +217,6 @@ void PrintContext::set_cairo_context(const Cairo::RefPtr<Cairo::Context>& cr, do
 {
 gtk_print_context_set_cairo_context(gobj(), (cr)->cobj(), dpi_x, dpi_y); 
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

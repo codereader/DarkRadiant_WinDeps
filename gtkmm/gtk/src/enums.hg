@@ -19,6 +19,8 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <gtkmmconfig.h> //For GTKMM_MAEMO_EXTENSIONS_ENABLED
+
 _DEFS(gtkmm,gtk)
 
 
@@ -73,6 +75,7 @@ _WRAP_ENUM(BuiltinIconSize, GtkIconSize)
 _WRAP_ENUM(TextDirection, GtkTextDirection)
 _WRAP_ENUM(Justification, GtkJustification)
 _WRAP_ENUM(MenuDirectionType, GtkMenuDirectionType)
+_WRAP_ENUM(MessageType, GtkMessageType)
 _WRAP_ENUM(MetricType, GtkMetricType)
 _WRAP_ENUM(MovementStep, GtkMovementStep)
 _WRAP_ENUM(Orientation, GtkOrientation)
@@ -81,6 +84,7 @@ _WRAP_ENUM(PackType, GtkPackType)
 _WRAP_ENUM(PathPriorityType, GtkPathPriorityType)
 _WRAP_ENUM(PathType, GtkPathType)
 _WRAP_ENUM(PolicyType, GtkPolicyType)
+_WRAP_ENUM(ProgressBarOrientation, GtkProgressBarOrientation)
 _WRAP_ENUM(PositionType, GtkPositionType)
 _WRAP_ENUM(ReliefStyle, GtkReliefStyle)
 _WRAP_ENUM(ResizeMode, GtkResizeMode)
@@ -138,7 +142,7 @@ public:
   explicit IconSize(int size) : size_ (size) {}
   operator int() const { return size_; }
 
-  // These static methods are implement in iconfactory.ccg. TODO: That's probably unnecessarily obscure. murrayc.
+  // These static methods are implemented in iconfactory.ccg. TODO: That's probably unnecessarily obscure. murrayc.
 
   /** Obtains the pixel size of a semantic icon size, possibly modified by user preferences for the default Gtk::Settings.
    * Normally size would be Gtk::ICON_SIZE_MENU, Gtk::ICON_SIZE_BUTTON, etc. 
@@ -167,7 +171,7 @@ public:
    * @param settings A Gtk::Settings object, used to determine which set of user preferences to used.
    * @result true if size was a valid size. 
    *
-   * @newin2p14
+   * @newin{2,14}
    */
   static bool lookup(IconSize size, int& width, int& height, const Glib::RefPtr<Gtk::Settings>& settings);
 
@@ -227,11 +231,16 @@ namespace Gtk
    */
   enum AlignmentEnum
   {
-    ALIGN_LEFT,   /**< Same as 0.0 */
-    ALIGN_CENTER,  /**< Same as 0.5 */
-    ALIGN_RIGHT,  /**< Same as 1.0 */
-    ALIGN_TOP,   /**< Same as ALIGN_LEFT */
-    ALIGN_BOTTOM  /**< Same as ALIGN_RIGHT */
+    ALIGN_START, /**< Same as 0.0. */
+    ALIGN_CENTER,  /**< Same as 0.5. */
+    ALIGN_END  /**< Same as 1.0. */
+_DEPRECATE_IFDEF_START
+    ,
+    ALIGN_LEFT = ALIGN_START, /**< @deprecated Use ALIGN_START. */
+    ALIGN_RIGHT = ALIGN_END, /**< @deprecated Use ALIGN_END. */
+    ALIGN_TOP = ALIGN_START, /**< @deprecated Use ALIGN_START. */
+    ALIGN_BOTTOM = ALIGN_END /**< @deprecated Use ALIGN_END. */
+_DEPRECATE_IFDEF_END
   };
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS

@@ -86,6 +86,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -114,18 +116,18 @@ public:
 
   /** Locks are added and removed using lock() and
    * unlock().
+   * 
+   * @newin{2,14}
    * @return <tt>true</tt> if there are 1 or more locks on the @a accel_group,
    * <tt>false</tt> otherwise.
-   * 
-   * @newin2p14.
    */
   bool get_is_locked() const;
   
   /** Gets a Gdk::ModifierType representing the mask for this
    *  @a accel_group. For example, Gdk::CONTROL_MASK, Gdk::SHIFT_MASK, etc.
-   * @return The modifier mask for this accel group.
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The modifier mask for this accel group.
    */
   Gdk::ModifierType get_modifier_mask() const;
 
@@ -134,7 +136,7 @@ public:
    * 
    * Locking an acelerator group prevents the accelerators contained
    * within it to be changed during runtime. Refer to
-   * gtk_accel_map_change_entry() about runtime accelerator changes.
+   * Gtk::AccelMap::change_entry() about runtime accelerator changes.
    * 
    * If called more than once, @a accel_group remains locked until
    * unlock() has been called an equivalent number
@@ -178,12 +180,12 @@ public:
 
   
   /** Converts an accelerator keyval and modifier mask into a string 
-   * which can be used to represent the accelerator to the user.
+   * which can be used to represent the accelerator to the user. 
+   * 
+   * @newin{2,6}
    * @param accelerator_key Accelerator keyval.
    * @param accelerator_mods Accelerator modifier mask.
    * @return A newly-allocated string representing the accelerator.
-   * 
-   * @newin2p6.
    */
   static Glib::ustring get_label(guint accelerator_key, Gdk::ModifierType accelerator_mods);
 
@@ -214,7 +216,7 @@ public:
    * @param accel_mods Keyboard state mask from a key event.
    * @return <tt>true</tt> if an accelerator was activated and handled this keypress.
    */
-  bool activate(GQuark accel_quark, const Glib::RefPtr<Glib::Object>& acceleratable, guint	accel_key, Gdk::ModifierType accel_mods);
+  bool activate(GQuark accel_quark, const Glib::RefPtr<Glib::Object>& acceleratable, guint accel_key, Gdk::ModifierType accel_mods);
 
   
   //Let's not wrap this, because the GtkAccelGroupFindFunc callback uses GClosures, and it's not clear that this is useful.
@@ -252,23 +254,39 @@ public:
 
   Glib::SignalProxy3< void,guint,Gdk::ModifierType,GClosure* > signal_accel_changed();
 
+  
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Is the accel group locked.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_is_locked() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Modifier Mask.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<Gdk::ModifierType> property_modifier_mask() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_accel_changed(guint keyval, Gdk::ModifierType modifier, GClosure* accel_closure);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

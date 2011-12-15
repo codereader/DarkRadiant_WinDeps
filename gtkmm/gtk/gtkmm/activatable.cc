@@ -73,16 +73,11 @@ void Activatable_Class::iface_init_function(void* g_iface, void*)
   //This is a temporary fix until I find out why I can not seem to derive a GtkFileChooser interface. murrayc
   g_assert(klass != 0); 
 
-#ifdef GLIBMM_VFUNCS_ENABLED
   klass->update = &update_vfunc_callback;
   klass->sync_action_properties = &sync_action_properties_vfunc_callback;
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
 void Activatable_Class::update_vfunc_callback(GtkActivatable* self, GtkAction* action, const gchar* property_name)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -116,7 +111,7 @@ void Activatable_Class::update_vfunc_callback(GtkActivatable* self, GtkAction* a
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -159,7 +154,7 @@ void Activatable_Class::sync_action_properties_vfunc_callback(GtkActivatable* se
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -170,10 +165,6 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Ge
     (*base->sync_action_properties)(self, action);
 
 }
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Activatable_Class::wrap_new(GObject* object)
@@ -214,6 +205,7 @@ GType Activatable::get_type()
 {
   return activatable_class_.init().get_type();
 }
+
 
 GType Activatable::get_base_type()
 {
@@ -291,10 +283,6 @@ Glib::PropertyProxy_ReadOnly<bool> Activatable::property_use_action_appearance()
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
 void Gtk::Activatable::update_vfunc(const Glib::RefPtr<Action>& action, const Glib::ustring& property_name) 
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -315,7 +303,6 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(gobject_), CppObjectType::get_type()) /
   if(base && base->sync_action_properties)
     (*base->sync_action_properties)(gobj(),Glib::unwrap(action));
 }
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

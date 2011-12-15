@@ -186,23 +186,14 @@ const Glib::Class& ListStore_Class::init()
   return *this;
 }
 
+
 void ListStore_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* ListStore_Class::wrap_new(GObject* object)
@@ -231,6 +222,7 @@ ListStore::ListStore(GtkListStore* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 ListStore::~ListStore()
 {}
 
@@ -241,6 +233,7 @@ GType ListStore::get_type()
 {
   return liststore_class_.init().get_type();
 }
+
 
 GType ListStore::get_base_type()
 {
@@ -262,6 +255,7 @@ Glib::RefPtr<ListStore> ListStore::create(const TreeModelColumnRecord& columns)
 {
   return Glib::RefPtr<ListStore>( new ListStore(columns) );
 }
+
 void ListStore::iter_swap(const iterator& a, const iterator& b)
 {
 gtk_list_store_swap(gobj(), const_cast<GtkTreeIter*>((a).gobj()), const_cast<GtkTreeIter*>((b).gobj())); 
@@ -276,13 +270,6 @@ bool ListStore::iter_is_valid(const iterator& iter) const
 {
   return gtk_list_store_iter_is_valid(const_cast<GtkListStore*>(gobj()), const_cast<GtkTreeIter*>((iter).gobj()));
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

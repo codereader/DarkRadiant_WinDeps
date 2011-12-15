@@ -53,7 +53,8 @@ public:
     INVALID_TAG,
     MISSING_PROPERTY_VALUE,
     INVALID_VALUE,
-    VERSION_MISMATCH
+    VERSION_MISMATCH,
+    DUPLICATE_ID
   };
 
   BuilderError(Code error_code, const Glib::ustring& error_message);
@@ -63,15 +64,11 @@ public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 private:
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static void throw_func(GError* gobject);
-#else
-  //When not using exceptions, we just pass the Exception object around without throwing it:
-  static std::auto_ptr<Glib::Error> throw_func(GError* gobject);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   friend void wrap_init(); // uses throw_func()
-#endif
+
+  #endif //DOXYGEN_SHOULD_SKIP_THIS
 };
 
 } // namespace Gtk
@@ -102,7 +99,7 @@ namespace Gtk
  * is created. The Gtk::Builder object then provides an interface for accessing the 
  * widgets in the interface by the names assigned to them inside the UI description.
  *
- * @newin2p12
+ * @newin{2,12}
  */
 
 class Builder : public Glib::Object
@@ -135,6 +132,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -165,9 +164,9 @@ public:
    *
    * @param filename the name of the file to parse.
    * @result A new Builder object, or a null pointer if an error occurred.
-   * @throws Glib::FileError, Glib::MarkupError
+   * @throws BuilderError, Glib::MarkupError, Glib::FileError
    *
-   * @newin2p12
+   * @newin{2,12}
    */
   static Glib::RefPtr<Builder> create_from_file(const std::string& filename);
 
@@ -180,12 +179,11 @@ public:
    * @param filename the name of the file to parse.
    * @param object_id The object to build.
    * @result A new Builder object, or a null pointer if an error occurred.
-   * @throws Glib::FileError, Glib::MarkupError
+   * @throws BuilderError, Glib::MarkupError, Glib::FileError
    *
-   * @newin2p14
+   * @newin{2,14}
    */
   static Glib::RefPtr<Builder> create_from_file(const std::string& filename, const Glib::ustring& object_id);
-
   //This is just to avoid the ambiguous call when using a string literal, 
   //caused by the overload that takes a StringArrayHandle.
   /** Parses a file containing a GtkBuilder UI definition, building only the requested object.
@@ -197,12 +195,11 @@ public:
    * @param filename the name of the file to parse.
    * @param object_id The object to build.
    * @result A new Builder object, or a null pointer if an error occurred.
-   * @throws Glib::FileError, Glib::MarkupError
+   * @throws BuilderError, Glib::MarkupError, Glib::FileError
    *
-   * @newin2p16
+   * @newin{2,16}
    */
   static Glib::RefPtr<Builder> create_from_file(const std::string& filename, const char* object_id);
-
   /** Parses a file containing a GtkBuilder UI definition, building only the requested objects.
    *
    * If you are adding an object that depends on an object that is not
@@ -212,23 +209,21 @@ public:
    * @param filename the name of the file to parse.
    * @param object_ids The objects to build.
    * @result A new Builder object, or a null pointer if an error occurred.
-   * @throws Glib::FileError, Glib::MarkupError
+   * @throws BuilderError, Glib::MarkupError, Glib::FileError
    *
-   * @newin2p14
+   * @newin{2,14}
    */
   static Glib::RefPtr<Builder> create_from_file(const std::string& filename, const Glib::StringArrayHandle& object_ids);
-  
 
   /** Parses a string containing a GtkBuilder UI definition.
    *
    * @param buffer: the string to parse
    * @result A new Builder object, or a null pointer if an error occurred.
-   * @throws Glib::MarkupError
+   * @throws BuilderError, Glib::MarkupError
    *
-   * @newin2p12
+   * @newin{2,12}
    */
   static Glib::RefPtr<Builder> create_from_string(const Glib::ustring& buffer);
-
   //This is just to avoid the ambiguous call when using a string literal, 
   //caused by the overload that takes a StringArrayHandle.
   /** Parses a string containing a GtkBuilder UI definition building only the requested object.
@@ -236,9 +231,9 @@ public:
    * @param buffer The string to parse.
    * @param object_id The object to build.
    * @result A new Builder object, or a null pointer if an error occurred.
-   * @throws Glib::MarkupError
+   * @throws BuilderError, Glib::MarkupError
    *
-   * @newin2p16
+   * @newin{2,16}
    */
   static Glib::RefPtr<Builder> create_from_string(const Glib::ustring& buffer, const char* object_id);
 
@@ -247,9 +242,9 @@ public:
    * @param buffer The string to parse.
    * @param object_id The object to build.
    * @result A new Builder object, or a null pointer if an error occurred.
-   * @throws Glib::MarkupError
+   * @throws BuilderError, Glib::MarkupError
    *
-   * @newin2p14
+   * @newin{2,14}
    */
   static Glib::RefPtr<Builder> create_from_string(const Glib::ustring& buffer, const Glib::ustring& object_id);
 
@@ -262,26 +257,23 @@ public:
    * @param buffer the string to parse
    * @param object_ids The objects to build.
    * @result A new Builder object, or a null pointer if an error occurred.
-   * @throws Glib::MarkupError
+   * @throws BuilderError, Glib::MarkupError
    *
-   * @newin2p14
+   * @newin{2,14}
    */
   static Glib::RefPtr<Builder> create_from_string(const Glib::ustring& buffer, const Glib::StringArrayHandle& object_ids);
   
 
-  /** Parses a file containing a <link linkend="BUILDER-UI">GtkBuilder 
-   * UI definition</link> and merges it with the current contents of @a builder.
-   * @param filename The name of the file to parse.
-   * @return A positive value on success, 0 if an error occurred
-   * 
-   * @newin2p12.
+  /** Parses a file containing a GtkBuilder UI definition, 
+   * and merges it with the current contents of the builder.
+   *
+   * @param buffer The file to parse.
+   * @result true on success or false if an error occurred.
+   * @throws BuilderError, Glib::MarkupError, Glib::MarkupError
+   *
+   * @newin{2,14}
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool add_from_file(const std::string& filename);
-#else
-  bool add_from_file(const std::string& filename, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   //This is just to avoid the ambiguous call when using a string literal, 
   //caused by the overload that takes a StringArrayHandle.
@@ -296,15 +288,11 @@ public:
    * @param buffer The file to parse.
    * @param The object to build.
    * @result true on success or false if an error occurred.
-   * @throws Glib::MarkupError
+   * @throws BuilderError, Glib::MarkupError, Glib::MarkupError
    *
-   * @newin2p16
+   * @newin{2,16}
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool add_from_file(const std::string& filename, const char* object_id);
-  #else
-  bool add_from_file(const std::string& filename, const char* object_id, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Parses a file containing a GtkBuilder UI definition, 
    * building only the requested object, 
@@ -317,38 +305,21 @@ public:
    * @param buffer The file to parse.
    * @param The object to build.
    * @result true on success or false if an error occurred.
-   * @throws Glib::MarkupError
+   * @throws BuilderError, Glib::MarkupError, Glib::MarkupError
    *
-   * @newin2p14
+   * @newin{2,14}
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool add_from_file(const std::string& filename, const Glib::ustring& object_id);
-  #else
-  bool add_from_file(const std::string& filename, const Glib::ustring& object_id, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
  
-  /** Parses a file containing a <link linkend="BUILDER-UI">GtkBuilder 
-   * UI definition</link> building only the requested objects and merges
-   * them with the current contents of @a builder. 
+  /** Parses a file containing a 
    * 
-   * <note><para>
-   * If you are adding an object that depends on an object that is not 
-   * its child (for instance a Gtk::TreeView that depends on its
-   * Gtk::TreeModel), you have to explicitely list all of them in @a object_ids. 
-   * </para></note>
+   * @newin{2,14}
    * @param filename The name of the file to parse.
    * @param object_ids Nul-terminated array of objects to build.
-   * @return A positive value on success, 0 if an error occurred
-   * 
-   * @newin2p14.
+   * @return A positive value on success, 0 if an error occurred.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool add_from_file(const std::string& filename, const Glib::StringArrayHandle& object_ids);
-#else
-  bool add_from_file(const std::string& filename, const Glib::StringArrayHandle& object_ids, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   //This is just to avoid the ambiguous call when using a string literal, 
   //caused by the overload that takes a StringArrayHandle.
@@ -357,15 +328,11 @@ public:
    *
    * @param buffer The string to parse.
    * @result true on success or false if an error occurred.
-   * @throws Glib::MarkupError
+   * @throws BuilderError, Glib::MarkupError
    *
-   * @newin2p12
+   * @newin{2,12}
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool add_from_string(const Glib::ustring& buffer);
-  #else
-  bool add_from_string(const Glib::ustring& buffer, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Parses a string containing a GtkBuilder UI definition, 
    * building only the requested object, 
@@ -374,15 +341,11 @@ public:
    * @param buffer The string to parse.
    * @param The object to build.
    * @result true on success or false if an error occurred.
-   * @throws Glib::MarkupError
+   * @throws BuilderError, Glib::MarkupError
    *
-   * @newin2p16
+   * @newin{2,16}
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool add_from_string(const Glib::ustring& buffer, const char* object_id);
-  #else
-  bool add_from_string(const Glib::ustring& buffer, const char* object_id, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Parses a string containing a GtkBuilder UI definition, 
    * building only the requested object, 
@@ -391,15 +354,11 @@ public:
    * @param buffer The string to parse.
    * @param The object to build.
    * @result true on success or false if an error occurred.
-   * @throws Glib::MarkupError
+   * @throws BuilderError, Glib::MarkupError
    *
-   * @newin2p14
+   * @newin{2,14}
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool add_from_string(const Glib::ustring& buffer, const Glib::ustring& object_id);
-  #else
-  bool add_from_string(const Glib::ustring& buffer, const Glib::ustring& object_id, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Parses a string containing a GtkBuilder UI definition, 
    * building only the requested objects, 
@@ -408,41 +367,34 @@ public:
    * @param buffer The string to parse.
    * @param The objects to build.
    * @result true on success or false if an error occurred.
-   * @throws Glib::MarkupError
+   * @throws BuilderError, Glib::MarkupError
    *
-   * @newin2p14
+   * @newin{2,14}
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool add_from_string(const Glib::ustring& buffer, const Glib::StringArrayHandle& object_ids);
-  #else
-  bool add_from_string(const Glib::ustring& buffer, const Glib::StringArrayHandle& object_ids, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
-  /** Parses a string containing a <link linkend="BUILDER-UI">GtkBuilder 
-   * UI definition</link> and merges it with the current contents of @a builder.
+  /** Parses a string containing a GtkBuilder UI definition 
+   * and merges it with the current contents of the builder.
+   *
    * @param buffer The string to parse.
-   * @param length The length of @a buffer (may be -1 if @a buffer is nul-terminated).
-   * @return A positive value on success, 0 if an error occurred
-   * 
-   * @newin2p12.
+   * @param length The length of @a buffer (may be -1 if @buffer is nul-terminated).
+   * @result true on success or false if an error occurred.
+   * @throws BuilderError, Glib::MarkupError
+   *
+   * @newin{2,12}
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool add_from_string(const char* buffer, gsize length);
-#else
-  bool add_from_string(const char* buffer, gsize length, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   //TODO: Custom-implement this and prevent it from being used with GTK_WIDGET-derived types?
   
   /** Gets the object named @a name. Note that this function does not
-   * increment the reference count of the returned object.
-   * @param name Name of object to get.
-   * @return The object named @a name or <tt>0</tt> if it could not be 
-   * found in the object tree. 
+   * increment the reference count of the returned object. 
    * 
-   * @newin2p12.
+   * @newin{2,12}
+   * @param name Name of object to get.
+   * @return The object named @a name or <tt>0</tt> if
+   * it could not be found in the object tree.
    */
   Glib::RefPtr<Glib::Object> get_object(const Glib::ustring& name);
 
@@ -542,21 +494,42 @@ public:
   /** Sets the translation domain of @a builder. 
    * See Gtk::Builder:translation-domain.
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param domain The translation domain or <tt>0</tt>.
    */
   void set_translation_domain(const Glib::ustring& domain);
   
   /** Gets the translation domain of @a builder.
+   * 
+   * @newin{2,12}
    * @return The translation domain. This string is owned
    * by the builder object and must not be modified or freed.
-   * 
-   * @newin2p12.
    */
   Glib::ustring get_translation_domain() const;
   
   //We ignore gtk_builder_get_type_from_name() because it only seems useful when implementing GtkBuildable for widgets.
   
+  
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The translation domain used by gettext.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<Glib::ustring> property_translation_domain() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The translation domain used by gettext.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_translation_domain() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
 
 protected:
   Gtk::Widget* get_widget_checked(const Glib::ustring& name, GType type);
@@ -571,17 +544,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

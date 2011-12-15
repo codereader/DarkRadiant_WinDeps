@@ -97,7 +97,8 @@ private:
 
 
 protected:
-  explicit DataInputStream(const Glib::RefPtr<InputStream>& base_stream);
+    explicit DataInputStream(const Glib::RefPtr<InputStream>& base_stream);
+
 
 public:
 
@@ -136,68 +137,41 @@ public:
    * @return An unsigned 8-bit/1-byte value read from the @a stream or %0 
    * if an error occurred.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   guchar read_byte(const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  guchar read_byte(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** non-cancellable version of read_byte()
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   guchar read_byte();
-#else
-  guchar read_byte(std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Reads a 16-bit/2-byte value from @a stream.
    * 
    * In order to get the correct byte order for this read operation, 
-   * see Glib::data_stream_get_byte_order() and Glib::data_stream_set_byte_order().
+   * see g_data_input_stream_get_byte_order() and g_data_input_stream_set_byte_order().
    * @param cancellable Optional Cancellable object, <tt>0</tt> to ignore.
    * @return A signed 16-bit/2-byte value read from @a stream or %0 if 
    * an error occurred.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   gint16 read_int16(const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  gint16 read_int16(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
   /** non-cancellable version of read_int16()
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   gint16 read_int16();
-#else
-  gint16 read_int16(std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Reads an unsigned 16-bit/2-byte value from @a stream.
    * 
    * In order to get the correct byte order for this read operation, 
-   * see Glib::data_stream_get_byte_order() and Glib::data_stream_set_byte_order().
+   * see g_data_input_stream_get_byte_order() and g_data_input_stream_set_byte_order().
    * @param cancellable Optional Cancellable object, <tt>0</tt> to ignore.
    * @return An unsigned 16-bit/2-byte value read from the @a stream or %0 if 
    * an error occurred.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   guint16 read_uint16(const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  guint16 read_uint16(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
 //TODO: Real documentation:
   /** non-cancellable version of read_uint16()
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   guint16 read_uint16();
-#else
-  guint16 read_uint16(std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Reads a signed 32-bit/4-byte value from @a stream.
@@ -212,20 +186,11 @@ public:
    * @return A signed 32-bit/4-byte value read from the @a stream or %0 if 
    * an error occurred.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   gint32 read_int32(const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  gint32 read_int32(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** non-cancellable version of read_int32()
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   gint32 read_int32();
-#else
-  gint32 read_int32(std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Reads an unsigned 32-bit/4-byte value from @a stream.
@@ -240,19 +205,10 @@ public:
    * @return An unsigned 32-bit/4-byte value read from the @a stream or %0 if 
    * an error occurred.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   guint32 read_uint32(const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  guint32 read_uint32(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
   /** non-cancellable version of read_uint32()
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   guint32 read_uint32();
-#else
-  guint32 read_uint32(std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Reads a 64-bit/8-byte value from @a stream.
@@ -267,20 +223,11 @@ public:
    * @return A signed 64-bit/8-byte value read from @a stream or %0 if 
    * an error occurred.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   gint64 read_int64(const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  gint64 read_int64(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** non-cancellable version of read_int64()
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   gint64 read_int64();
-#else
-  gint64 read_int64(std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Reads an unsigned 64-bit/8-byte value from @a stream.
@@ -295,39 +242,26 @@ public:
    * @return An unsigned 64-bit/8-byte read from @a stream or %0 if 
    * an error occurred.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   guint64 read_uint64(const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  guint64 read_uint64(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** non-cancellable version of read_uint64()
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   guint64 read_uint64();
-#else
-  guint64 read_uint64(std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
   //Note that we return a bool because we can't use std::string to distinguish between an empty string and a NULL.
 
   /** Reads a line from the data input stream.
-   * 
-   * The operation can be cancelled by triggering the cancellable object from 
+   *
+   * The operation can be cancelled by triggering the cancellable object from
    * another thread. If the operation
-   * was cancelled, a Gio::Error with CANCELLED will be thrown. 
+   * was cancelled, a Gio::Error with CANCELLED will be thrown.
    *
    * @param data A string to fill with the read data (without the newlines).
    * @param cancellable A cancellable object.
    * @result true if the read succeeded without error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool read_line(std::string& line, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool read_line(std::string& line, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
   /** A non-cancellable version of read_line().
@@ -335,18 +269,14 @@ public:
    * @param data A string to fill with the read data (without the newlines).
    * @result true if the read succeeded without error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool read_line(std::string& line);
-#else
-  bool read_line(std::string& line, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-  /** The asynchronous version of read_until(). It is 
+  /** The asynchronous version of read_until(). It is
    * an error to have two outstanding calls to this function.
    *
-   * @param slot The slot to call when the request is satisfied. 
+   * @param slot The slot to call when the request is satisfied.
    * @param cancellable A cancellable object.
-   * @param io_priority The I/O priority of the request. 
+   * @param io_priority The I/O priority of the request.
    * @result true if the read succeeded without error.
    */
   void read_line_async(const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, int io_priority = Glib::PRIORITY_DEFAULT);
@@ -358,62 +288,133 @@ public:
    * @param data A string to fill with the read data.
    * @result true if the read succeeded without error.
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool read_line_finish(const Glib::RefPtr<AsyncResult>& result, std::string& data);
-  #else
-  bool read_line_finish(const Glib::RefPtr<AsyncResult>& result, std::string& data, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
-  /** Reads a string from the data input stream, up to the first 
+  /** Reads a string from the data input stream, up to the first
    * occurrence of any of the stop characters.
    *
+   * Note that, in contrast to read_until_async(),
+   * this function consumes the stop character that it finds.
+   *
+   * Don't use this function in new code.  Its functionality is
+   * inconsistent with read_until_async().  Both
+   * functions will be marked as deprecated in a future release.  Use
+   * read_upto() instead, but note that that method
+   * does not consume the stop character.
+   *
    * @param data A string to fill with the read data.
    * @param stop_chars Characters to terminate the read.
    * @param cancellable A cancellable object.
    * @result true if the read succeeded without error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool read_until(std::string& data, const std::string& stop_chars, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool read_until(std::string& data, const std::string& stop_chars, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
+  //TODO: This will be really deprecated sometime, maybe even before glib 2.28.0.
   /** A non-cancellable version of read_until().
+   *
+   * Note that, in contrast to read_until_async(),
+   * this function consumes the stop character that it finds.
+   *
+   * Don't use this function in new code.  Its functionality is
+   * inconsistent with read_until_async().  Both
+   * functions will be marked as deprecated in a future release.  Use
+   * read_upto() instead, but note that that method
+   * does not consume the stop character.
+   *
    * @param stop_chars Characters to terminate the read.
    * @param data A string to fill with the read data.
    * @result true if the read succeeded without error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool read_until(std::string& data, const std::string& stop_chars);
-#else
-  bool read_until(std::string& data, const std::string& stop_chars, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-  /** The asynchronous version of read_until(). It is 
+  //TODO: This will be really deprecated sometime after glib 2.28.0.
+  /** The asynchronous version of read_until(). It is
    * an error to have two outstanding calls to this function.
    *
+   * Note that, in contrast to ead_until(),
+   * this function does not consume the stop character that it finds.  You
+   * must read it for yourself.
+   *
+   *
+   * Don't use this function in new code.  Its functionality is
+   * inconsistent with read_until().  Both functions
+   * will be marked as deprecated in a future release.  Use
+   * read_upto_async() instead.
+   *
    * @param stop_chars Characters to terminate the read.
-   * @param slot The slot to call when the request is satisfied. 
+   * @param slot The slot to call when the request is satisfied.
    * @param cancellable A cancellable object.
-   * @param io_priority The I/O priority of the request. 
+   * @param io_priority The I/O priority of the request.
    * @result true if the read succeeded without error.
    */
   void read_until_async(const std::string& stop_chars, const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, int io_priority = Glib::PRIORITY_DEFAULT);
   
 
+  //TODO: This will be really deprecated sometime after glib 2.28.0.
   /** Finish an asynchronous call started by read_until_async().
    *
    * @param result The AsyncResult that was provided to the callback slot.
    * @param data A string to fill with the read data.
    * @result true if the read succeeded without error.
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool read_until_finish(const Glib::RefPtr<AsyncResult>& result, std::string& data);
-  #else
-  bool read_until_finish(const Glib::RefPtr<AsyncResult>& result, std::string& data, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
+  
+
+ /** Reads a string from the data input stream, up to the first
+   * occurrence of any of the stop characters.
+   *
+   * In contrast to read_until(), this method
+   * does <emphasis>not</emphasis> consume the stop character. You have
+   * to use read_byte() to get it before calling
+   * read_upto() again.
+   *
+   * @param data A string to fill with the read data.
+   * @param stop_chars Characters to terminate the read.
+   * @param cancellable A cancellable object.
+   * @result true if the read succeeded without error.
+   */
+  bool read_upto(std::string& data, const std::string& stop_chars, const Glib::RefPtr<Cancellable>& cancellable);
+  
+
+  /** A non-cancellable version of read_upto().
+   * @param stop_chars Characters to terminate the read.
+   * @param data A string to fill with the read data.
+   * @result true if the read succeeded without error.
+   */
+  bool read_upto(std::string& data, const std::string& stop_chars);
+
+  //TODO: Add a version that takes the stop_chars length, to allow a 0 in the middle?
+
+  /** The asynchronous version of read_upto(). It is
+   * an error to have two outstanding calls to this function.
+   *
+   * In contrast to read_until(), this method
+   * does <emphasis>not</emphasis> consume the stop character. You have
+   * to use read_byte() to get it before calling
+   * read_upto() again.
+   *
+   * @param stop_chars Characters to terminate the read.
+   * @param slot The slot to call when the request is satisfied.
+   * @param cancellable A cancellable object.
+   * @param io_priority The I/O priority of the request.
+   * @result true if the read succeeded without error.
+   */
+  void read_upto_async(const std::string& stop_chars, const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, int io_priority = Glib::PRIORITY_DEFAULT);
+  
+
+  /** Finish an asynchronous call started by read_upto_async().
+   *
+   * Note that this function does <emphasis>not</emphasis> consume the
+   * stop character. You have to use read_byte() to
+   * get it before calling read_upto_async() again.
+   *
+   * @param result The AsyncResult that was provided to the callback slot.
+   * @param data A string to fill with the read data.
+   * @result true if the read succeeded without error.
+   */
+  bool read_upto_finish(const Glib::RefPtr<AsyncResult>& result, std::string& data);
   
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -461,17 +462,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

@@ -19,6 +19,7 @@
 
 #include <giomm/mount.h>
 #include <giomm/icon.h>
+//#include <giomm/volume.h>
 //#include <giomm/mountoperation.h>
 
 _DEFS(giomm,gio)
@@ -31,6 +32,9 @@ typedef struct _GDriveIface GDriveIface;
 
 namespace Gio
 {
+
+_WRAP_ENUM(DriveStartFlags, GDriveStartFlags)
+_WRAP_ENUM(DriveStartStopType, GDriveStartStopType)
 
 /** Virtual File System drive management.
  *
@@ -77,17 +81,26 @@ public:
    * @param flags Flags affecting the unmount if required for eject.
    */
   void eject(const SlotAsyncReady& slot, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
-  _IGNORE(g_drive_eject)
+  void eject(const Glib::RefPtr<MountOperation>& mount_operation, const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  void eject(const Glib::RefPtr<MountOperation>& mount_operation, const SlotAsyncReady& slot, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
 
   /** Ejects the drive.
    * @param slot A callback which will be called when the eject is completed.
    * @param flags Flags affecting the unmount if required for eject.
    */
   void eject(MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  void eject(const Glib::RefPtr<MountOperation>& mount_operation, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  _IGNORE(g_drive_eject)
+  _IGNORE(g_drive_eject_with_operation)
 
+  // eject_finish() is deprecated in favor of eject_with_operation_finish(), and
+  // since all of our eject() overloads are implemented by
+  // eject_with_operation(), we implement the _finish() with
+  // eject_with_operation_finish and ignore the deprecated one
   _WRAP_METHOD(bool eject_finish(const Glib::RefPtr<AsyncResult>& result),
-               g_drive_eject_finish,
+               g_drive_eject_with_operation_finish,
                errthrow)
+  _IGNORE (g_drive_eject_finish)
 
   /** Polls drive to see if media has been inserted or removed.
    * @param slot A callback which will be called when the poll is completed.
@@ -110,7 +123,31 @@ public:
                errthrow)
 
   _WRAP_METHOD(std::string get_identifier(const std::string& kind) const, g_drive_get_identifier)
+  
+  #m4 _CONVERSION(`char**',`Glib::StringArrayHandle',`Glib::StringArrayHandle($3, Glib::OWNERSHIP_DEEP)')
   _WRAP_METHOD(Glib::StringArrayHandle enumerate_identifiers() const, g_drive_enumerate_identifiers)
+
+  /** @newin{2,22} */
+  void start(const Glib::RefPtr<MountOperation>& mount_operation, const Glib::RefPtr<Cancellable>& cancellable, const SlotAsyncReady& slot, DriveStartFlags flags = DRIVE_START_NONE);
+  /** @newin{2,22} */
+  void start(const Glib::RefPtr<MountOperation>& mount_operation, const SlotAsyncReady& slot, DriveStartFlags flags = DRIVE_START_NONE);
+  _IGNORE(g_drive_start)
+  _WRAP_METHOD(bool start_finish(const Glib::RefPtr<AsyncResult>& result), g_drive_start_finish, errthrow)
+  /** @newin{2,22} */
+  _WRAP_METHOD(bool can_start() const, g_drive_can_start)
+  /** @newin{2,22} */
+  _WRAP_METHOD(bool can_start_degraded() const, g_drive_can_start_degraded)
+
+  /** @newin{2,22} */
+  void stop(const Glib::RefPtr<MountOperation>& mount_operation, const Glib::RefPtr<Cancellable>& cancellable, const SlotAsyncReady& slot, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  /** @newin{2,22} */
+  void stop(const Glib::RefPtr<MountOperation>& mount_operation, const SlotAsyncReady& slot, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  _IGNORE(g_drive_stop)
+  _WRAP_METHOD(bool stop_finish(const Glib::RefPtr<AsyncResult>& result), g_drive_stop_finish, errthrow)
+  /** @newin{2,22} */
+  _WRAP_METHOD(bool can_stop() const, g_drive_can_stop)
+
+  _WRAP_METHOD(DriveStartStopType get_start_stop_type() const, g_drive_get_start_stop_type)
 
   /** @newin{2,20}
    */
@@ -123,6 +160,9 @@ public:
   /** @newin{2,20}
    */
   _WRAP_SIGNAL(void eject_button(), eject_button, no_default_handler)
+
+  /** @newin{2,22} */
+  _WRAP_SIGNAL(void stop_button(), stop_button, no_default_handler)
 
   //_WRAP_VFUNC(Glib::ustring get_name() const, get_name)
   //Careful of ref-counting: //_WRAP_VFUNC(Glib::RefPtr<Icon> get_icon() const, get_icon)

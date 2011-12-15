@@ -87,19 +87,19 @@ public:
     void set_short_name(const gchar& value);
    
    int get_flags() const;
-    void set_flags(const int& value);
+   /** Set one or more OptionEntry::Flags.
+   * Do not set FLAG_FILENAME. Character encoding is chosen when the OptionEntry
+   * is added to an OptionGroup.
+   */
+   void set_flags(const int& value);
    
-  //TODO: G_OPTION_ARG_CALLBACK,
-    
    Glib::ustring get_description() const;
  
   void set_description(const Glib::ustring& value);
   
-  
    Glib::ustring get_arg_description() const;
  
   void set_arg_description(const Glib::ustring& value);
-  
   
   GOptionEntry*       gobj()       { return gobject_; }
   const GOptionEntry* gobj() const { return gobject_; }
@@ -110,6 +110,9 @@ protected:
 
 
 };
+
+// For some reason gmmproc thinks that g_iconv should be wrapped here.
+
 
 } // namespace Glib
 

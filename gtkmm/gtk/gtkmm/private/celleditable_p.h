@@ -29,18 +29,14 @@ public:
 
 protected:
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   //Callbacks (default signal handlers):
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
   static void editing_done_callback(GtkCellEditable* self);
   static void remove_widget_callback(GtkCellEditable* self);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
   //Callbacks (virtual functions):
-#ifdef GLIBMM_VFUNCS_ENABLED
   static void start_editing_vfunc_callback(GtkCellEditable* self, GdkEvent* event);
-#endif //GLIBMM_VFUNCS_ENABLED
 };
 
 

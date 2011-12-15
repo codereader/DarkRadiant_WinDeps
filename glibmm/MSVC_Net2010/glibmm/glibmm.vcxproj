@@ -100,7 +100,7 @@
     <ClCompile>
       <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;../..;../../glib;$(SolutionDir)\glibmm;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../..;../../glib;$(SolutionDir)\glibmm;$(SolutionDir)\..\..\..\w32deps\gtk2\include;$(SolutionDir)\..\..\..\w32deps\gtk2\include\glib-2.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\glib-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;GLIBMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -134,7 +134,7 @@
     <ClCompile>
       <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;../..;../../glib;$(SolutionDir)\glibmm;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../..;../../glib;$(SolutionDir)\glibmm;$(SolutionDir)\..\..\..\w32deps\gtk2\include;$(SolutionDir)\..\..\..\w32deps\gtk2\include\glib-2.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\glib-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;GLIBMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -165,7 +165,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>.;../..;../../glib;$(SolutionDir)\glibmm;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../..;../../glib;$(SolutionDir)\glibmm;$(SolutionDir)\..\..\..\w32deps\gtk2\include;$(SolutionDir)\..\..\..\w32deps\gtk2\include\glib-2.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\glib-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;GLIBMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -195,7 +195,7 @@
     </Midl>
     <ClCompile>
       <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>.;../..;../../glib;$(SolutionDir)\glibmm;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../..;../../glib;$(SolutionDir)\glibmm;$(SolutionDir)\..\..\..\w32deps\gtk2\include;$(SolutionDir)\..\..\..\w32deps\gtk2\include\glib-2.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\glib-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;GLIBMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -221,7 +221,78 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\blank.cpp" />
+    <ClInclude Include="..\..\glib\glibmm\arrayhandle.h" />
+    <ClInclude Include="..\..\glib\glibmm\balancedtree.h" />
+    <ClInclude Include="..\..\glib\glibmm\checksum.h" />
+    <ClInclude Include="..\..\glib\glibmm\class.h" />
+    <ClInclude Include="..\..\glib\glibmm\containerhandle_shared.h" />
+    <ClInclude Include="..\..\glib\glibmm\containers.h" />
+    <ClInclude Include="..\..\glib\glibmm\convert.h" />
+    <ClInclude Include="..\..\glib\glibmm\date.h" />
+    <ClInclude Include="..\..\glib\glibmm\debug.h" />
+    <ClInclude Include="..\..\glib\glibmm\dispatcher.h" />
+    <ClInclude Include="..\..\glib\glibmm\error.h" />
+    <ClInclude Include="..\..\glib\glibmm\exception.h" />
+    <ClInclude Include="..\..\glib\glibmm\exceptionhandler.h" />
+    <ClInclude Include="..\..\glib\glibmm\fileutils.h" />
+    <ClInclude Include="..\..\glib\glibmm\helperlist.h" />
+    <ClInclude Include="..\..\glib\glibmm\i18n-lib.h" />
+    <ClInclude Include="..\..\glib\glibmm\i18n.h" />
+    <ClInclude Include="..\..\glib\glibmm\init.h" />
+    <ClInclude Include="..\..\glib\glibmm\interface.h" />
+    <ClInclude Include="..\..\glib\glibmm\iochannel.h" />
+    <ClInclude Include="..\..\glib\glibmm\keyfile.h" />
+    <ClInclude Include="..\..\glib\glibmm\listhandle.h" />
+    <ClInclude Include="..\..\glib\glibmm\main.h" />
+    <ClInclude Include="..\..\glib\glibmm\markup.h" />
+    <ClInclude Include="..\..\glib\glibmm\miscutils.h" />
+    <ClInclude Include="..\..\glib\glibmm\module.h" />
+    <ClInclude Include="..\..\glib\glibmm\nodetree.h" />
+    <ClInclude Include="..\..\glib\glibmm\object.h" />
+    <ClInclude Include="..\..\glib\glibmm\objectbase.h" />
+    <ClInclude Include="..\..\glib\glibmm\optioncontext.h" />
+    <ClInclude Include="..\..\glib\glibmm\optionentry.h" />
+    <ClInclude Include="..\..\glib\glibmm\optiongroup.h" />
+    <ClInclude Include="..\..\glib\glibmm\pattern.h" />
+    <ClInclude Include="..\..\glib\glibmm\priorities.h" />
+    <ClInclude Include="..\..\glib\glibmm\property.h" />
+    <ClInclude Include="..\..\glib\glibmm\propertyproxy.h" />
+    <ClInclude Include="..\..\glib\glibmm\propertyproxy_base.h" />
+    <ClInclude Include="..\..\glib\glibmm\quark.h" />
+    <ClInclude Include="..\..\glib\glibmm\random.h" />
+    <ClInclude Include="..\..\glib\glibmm\refptr.h" />
+    <ClInclude Include="..\..\glib\glibmm\regex.h" />
+    <ClInclude Include="..\..\glib\glibmm\sarray.h" />
+    <ClInclude Include="..\..\glib\glibmm\shell.h" />
+    <ClInclude Include="..\..\glib\glibmm\signalproxy.h" />
+    <ClInclude Include="..\..\glib\glibmm\signalproxy_connectionnode.h" />
+    <ClInclude Include="..\..\glib\glibmm\slisthandle.h" />
+    <ClInclude Include="..\..\glib\glibmm\spawn.h" />
+    <ClInclude Include="..\..\glib\glibmm\streamiochannel.h" />
+    <ClInclude Include="..\..\glib\glibmm\stringutils.h" />
+    <ClInclude Include="..\..\glib\glibmm\thread.h" />
+    <ClInclude Include="..\..\glib\glibmm\threadpool.h" />
+    <ClInclude Include="..\..\glib\glibmm\timer.h" />
+    <ClInclude Include="..\..\glib\glibmm\timeval.h" />
+    <ClInclude Include="..\..\glib\glibmm\unicode.h" />
+    <ClInclude Include="..\..\glib\glibmm\uriutils.h" />
+    <ClInclude Include="..\..\glib\glibmm\ustring.h" />
+    <ClInclude Include="..\..\glib\glibmm\utility.h" />
+    <ClInclude Include="..\..\glib\glibmm\value.h" />
+    <ClInclude Include="..\..\glib\glibmm\valuearray.h" />
+    <ClInclude Include="..\..\glib\glibmm\value_basictypes.h" />
+    <ClInclude Include="..\..\glib\glibmm\value_custom.h" />
+    <ClInclude Include="..\..\glib\glibmm\variant.h" />
+    <ClInclude Include="..\..\glib\glibmm\variantiter.h" />
+    <ClInclude Include="..\..\glib\glibmm\varianttype.h" />
+    <ClInclude Include="..\..\glib\glibmm\variant_basictypes.h" />
+    <ClInclude Include="..\..\glib\glibmm\vectorutils.h" />
+    <ClInclude Include="..\..\glib\glibmm\wrap.h" />
+    <ClInclude Include="..\..\glib\glibmm\wrap_init.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\glib\glibmm\arrayhandle.cc" />
+    <ClCompile Include="..\..\glib\glibmm\balancedtree.cc" />
     <ClCompile Include="..\..\glib\glibmm\checksum.cc" />
     <ClCompile Include="..\..\glib\glibmm\class.cc" />
     <ClCompile Include="..\..\glib\glibmm\containers.cc" />
@@ -254,6 +325,7 @@
     <ClCompile Include="..\..\glib\glibmm\quark.cc" />
     <ClCompile Include="..\..\glib\glibmm\random.cc" />
     <ClCompile Include="..\..\glib\glibmm\regex.cc" />
+    <ClCompile Include="..\..\glib\glibmm\sarray.cc" />
     <ClCompile Include="..\..\glib\glibmm\shell.cc" />
     <ClCompile Include="..\..\glib\glibmm\signalproxy.cc" />
     <ClCompile Include="..\..\glib\glibmm\signalproxy_connectionnode.cc" />
@@ -269,71 +341,16 @@
     <ClCompile Include="..\..\glib\glibmm\ustring.cc" />
     <ClCompile Include="..\..\glib\glibmm\utility.cc" />
     <ClCompile Include="..\..\glib\glibmm\value.cc" />
+    <ClCompile Include="..\..\glib\glibmm\valuearray.cc" />
     <ClCompile Include="..\..\glib\glibmm\value_basictypes.cc" />
     <ClCompile Include="..\..\glib\glibmm\value_custom.cc" />
+    <ClCompile Include="..\..\glib\glibmm\variant.cc" />
+    <ClCompile Include="..\..\glib\glibmm\variantiter.cc" />
+    <ClCompile Include="..\..\glib\glibmm\varianttype.cc" />
+    <ClCompile Include="..\..\glib\glibmm\variant_basictypes.cc" />
+    <ClCompile Include="..\..\glib\glibmm\vectorutils.cc" />
     <ClCompile Include="..\..\glib\glibmm\wrap.cc" />
     <ClCompile Include="..\..\glib\glibmm\wrap_init.cc" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\glib\glibmm\arrayhandle.h" />
-    <ClInclude Include="..\..\glib\glibmm\checksum.h" />
-    <ClInclude Include="..\..\glib\glibmm\class.h" />
-    <ClInclude Include="..\..\glib\glibmm\containerhandle_shared.h" />
-    <ClInclude Include="..\..\glib\glibmm\containers.h" />
-    <ClInclude Include="..\..\glib\glibmm\convert.h" />
-    <ClInclude Include="..\..\glib\glibmm\date.h" />
-    <ClInclude Include="..\..\glib\glibmm\debug.h" />
-    <ClInclude Include="..\..\glib\glibmm\dispatcher.h" />
-    <ClInclude Include="..\..\glib\glibmm\error.h" />
-    <ClInclude Include="..\..\glib\glibmm\exception.h" />
-    <ClInclude Include="..\..\glib\glibmm\exceptionhandler.h" />
-    <ClInclude Include="..\..\glib\glibmm\fileutils.h" />
-    <ClInclude Include="..\..\glib\glibmm\helperlist.h" />
-    <ClInclude Include="..\..\glib\glibmm\i18n-lib.h" />
-    <ClInclude Include="..\..\glib\glibmm\i18n.h" />
-    <ClInclude Include="..\..\glib\glibmm\init.h" />
-    <ClInclude Include="..\..\glib\glibmm\interface.h" />
-    <ClInclude Include="..\..\glib\glibmm\iochannel.h" />
-    <ClInclude Include="..\..\glib\glibmm\keyfile.h" />
-    <ClInclude Include="..\..\glib\glibmm\listhandle.h" />
-    <ClInclude Include="..\..\glib\glibmm\main.h" />
-    <ClInclude Include="..\..\glib\glibmm\markup.h" />
-    <ClInclude Include="..\..\glib\glibmm\miscutils.h" />
-    <ClInclude Include="..\..\glib\glibmm\module.h" />
-    <ClInclude Include="..\..\glib\glibmm\nodetree.h" />
-    <ClInclude Include="..\..\glib\glibmm\object.h" />
-    <ClInclude Include="..\..\glib\glibmm\objectbase.h" />
-    <ClInclude Include="..\..\glib\glibmm\optioncontext.h" />
-    <ClInclude Include="..\..\glib\glibmm\optionentry.h" />
-    <ClInclude Include="..\..\glib\glibmm\optiongroup.h" />
-    <ClInclude Include="..\..\glib\glibmm\pattern.h" />
-    <ClInclude Include="..\..\glib\glibmm\property.h" />
-    <ClInclude Include="..\..\glib\glibmm\propertyproxy.h" />
-    <ClInclude Include="..\..\glib\glibmm\propertyproxy_base.h" />
-    <ClInclude Include="..\..\glib\glibmm\quark.h" />
-    <ClInclude Include="..\..\glib\glibmm\random.h" />
-    <ClInclude Include="..\..\glib\glibmm\refptr.h" />
-    <ClInclude Include="..\..\glib\glibmm\regex.h" />
-    <ClInclude Include="..\..\glib\glibmm\shell.h" />
-    <ClInclude Include="..\..\glib\glibmm\signalproxy.h" />
-    <ClInclude Include="..\..\glib\glibmm\signalproxy_connectionnode.h" />
-    <ClInclude Include="..\..\glib\glibmm\slisthandle.h" />
-    <ClInclude Include="..\..\glib\glibmm\spawn.h" />
-    <ClInclude Include="..\..\glib\glibmm\streamiochannel.h" />
-    <ClInclude Include="..\..\glib\glibmm\stringutils.h" />
-    <ClInclude Include="..\..\glib\glibmm\thread.h" />
-    <ClInclude Include="..\..\glib\glibmm\threadpool.h" />
-    <ClInclude Include="..\..\glib\glibmm\timer.h" />
-    <ClInclude Include="..\..\glib\glibmm\timeval.h" />
-    <ClInclude Include="..\..\glib\glibmm\unicode.h" />
-    <ClInclude Include="..\..\glib\glibmm\uriutils.h" />
-    <ClInclude Include="..\..\glib\glibmm\ustring.h" />
-    <ClInclude Include="..\..\glib\glibmm\utility.h" />
-    <ClInclude Include="..\..\glib\glibmm\value.h" />
-    <ClInclude Include="..\..\glib\glibmm\value_basictypes.h" />
-    <ClInclude Include="..\..\glib\glibmm\value_custom.h" />
-    <ClInclude Include="..\..\glib\glibmm\wrap.h" />
-    <ClInclude Include="..\..\glib\glibmm\wrap_init.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

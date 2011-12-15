@@ -156,18 +156,10 @@ Gtk::FileChooserError::Code Gtk::FileChooserError::code() const
   return static_cast<Code>(Glib::Error::code());
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void Gtk::FileChooserError::throw_func(GError* gobject)
 {
   throw Gtk::FileChooserError(gobject);
 }
-#else
-//When not using exceptions, we just pass the Exception object around without throwing it:
-std::auto_ptr<Glib::Error> Gtk::FileChooserError::throw_func(GError* gobject)
-{
-  return std::auto_ptr<Glib::Error>(new Gtk::FileChooserError(gobject));
-}
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 // static
 GType Glib::Value<Gtk::FileChooserError::Code>::value_type()
@@ -217,18 +209,8 @@ void FileChooser_Class::iface_init_function(void* g_iface, void*)
   //This is a temporary fix until I find out why I can not seem to derive a GtkFileChooser interface. murrayc
   g_assert(klass != 0); 
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* FileChooser_Class::wrap_new(GObject* object)
@@ -269,6 +251,7 @@ GType FileChooser::get_type()
 {
   return filechooser_class_.init().get_type();
 }
+
 
 GType FileChooser::get_base_type()
 {
@@ -324,6 +307,16 @@ gtk_file_chooser_set_do_overwrite_confirmation(gobj(), static_cast<int>(do_overw
 bool FileChooser::get_do_overwrite_confirmation() const
 {
   return gtk_file_chooser_get_do_overwrite_confirmation(const_cast<GtkFileChooser*>(gobj()));
+}
+
+void FileChooser::set_create_folders(bool create_folders)
+{
+gtk_file_chooser_set_create_folders(gobj(), static_cast<int>(create_folders)); 
+}
+
+bool FileChooser::get_create_folders() const
+{
+  return gtk_file_chooser_get_create_folders(const_cast<GtkFileChooser*>(gobj()));
 }
 
 void FileChooser::set_current_name(const Glib::ustring& name)
@@ -411,41 +404,23 @@ Glib::ustring FileChooser::get_current_folder_uri() const
   return Glib::convert_return_gchar_ptr_to_ustring(gtk_file_chooser_get_current_folder_uri(const_cast<GtkFileChooser*>(gobj())));
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool FileChooser::set_file(const Glib::RefPtr<const Gio::File>& uri)
-#else
-bool FileChooser::set_file(const Glib::RefPtr<const Gio::File>& uri, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = gtk_file_chooser_set_file(gobj(), const_cast<GFile*>(Glib::unwrap<Gio::File>(uri)), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool FileChooser::select_file(const Glib::RefPtr<const Gio::File>& file)
-#else
-bool FileChooser::select_file(const Glib::RefPtr<const Gio::File>& file, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = gtk_file_chooser_select_file(gobj(), const_cast<GFile*>(Glib::unwrap<Gio::File>(file)), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
@@ -461,21 +436,12 @@ Glib::SListHandle< Glib::RefPtr<Gio::File> > FileChooser::get_files()
   return Glib::SListHandle< Glib::RefPtr<Gio::File> >(gtk_file_chooser_get_files(gobj()), Glib::OWNERSHIP_DEEP);
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool FileChooser::set_current_folder_file(const Glib::RefPtr<const Gio::File>& file)
-#else
-bool FileChooser::set_current_folder_file(const Glib::RefPtr<const Gio::File>& file, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = gtk_file_chooser_set_current_folder_file(gobj(), const_cast<GFile*>(Glib::unwrap<Gio::File>(file)), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
@@ -593,12 +559,7 @@ gtk_file_chooser_set_filter(gobj(), const_cast<GtkFileFilter*>((filter).gobj()))
 
 FileFilter* FileChooser::get_filter()
 {
-
-  FileFilter* retvalue = Glib::wrap(gtk_file_chooser_get_filter(gobj()));
-  if(retvalue)
-    retvalue->reference(); //The function does not do a ref for us.
-  return retvalue;
-
+  return Glib::wrap(gtk_file_chooser_get_filter(gobj()));
 }
 
 const FileFilter* FileChooser::get_filter() const
@@ -606,41 +567,23 @@ const FileFilter* FileChooser::get_filter() const
   return const_cast<FileChooser*>(this)->get_filter();
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool FileChooser::add_shortcut_folder(const Glib::ustring& folder)
-#else
-bool FileChooser::add_shortcut_folder(const Glib::ustring& folder, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = gtk_file_chooser_add_shortcut_folder(gobj(), folder.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool FileChooser::remove_shortcut_folder(const Glib::ustring& folder)
-#else
-bool FileChooser::remove_shortcut_folder(const Glib::ustring& folder, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = gtk_file_chooser_remove_shortcut_folder(gobj(), folder.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
@@ -651,41 +594,23 @@ Glib::SListHandle<Glib::ustring> FileChooser::list_shortcut_folders() const
   return Glib::SListHandle<Glib::ustring>(gtk_file_chooser_list_shortcut_folders(const_cast<GtkFileChooser*>(gobj())), Glib::OWNERSHIP_DEEP);
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool FileChooser::add_shortcut_folder_uri(const Glib::ustring& uri)
-#else
-bool FileChooser::add_shortcut_folder_uri(const Glib::ustring& uri, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = gtk_file_chooser_add_shortcut_folder_uri(gobj(), uri.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool FileChooser::remove_shortcut_folder_uri(const Glib::ustring& uri)
-#else
-bool FileChooser::remove_shortcut_folder_uri(const Glib::ustring& uri, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = gtk_file_chooser_remove_shortcut_folder_uri(gobj(), uri.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
@@ -752,20 +677,6 @@ Glib::PropertyProxy<FileFilter*> FileChooser::property_filter()
 Glib::PropertyProxy_ReadOnly<FileFilter*> FileChooser::property_filter() const
 {
   return Glib::PropertyProxy_ReadOnly<FileFilter*>(this, "filter");
-}
-#endif //GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-Glib::PropertyProxy<bool> FileChooser::property_folder_mode() 
-{
-  return Glib::PropertyProxy<bool>(this, "folder-mode");
-}
-#endif //GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-Glib::PropertyProxy_ReadOnly<bool> FileChooser::property_folder_mode() const
-{
-  return Glib::PropertyProxy_ReadOnly<bool>(this, "folder-mode");
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
 
@@ -881,12 +792,19 @@ Glib::PropertyProxy_ReadOnly<bool> FileChooser::property_do_overwrite_confirmati
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
 
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<bool> FileChooser::property_create_folders() 
+{
+  return Glib::PropertyProxy<bool>(this, "create-folders");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> FileChooser::property_create_folders() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "create-folders");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
 
 } // namespace Gtk

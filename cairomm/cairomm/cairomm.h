@@ -33,6 +33,7 @@
 
 #include <cairommconfig.h>
 #include <cairomm/context.h>
+#include <cairomm/device.h>
 #include <cairomm/enums.h>
 #include <cairomm/exception.h>
 #include <cairomm/fontface.h>
@@ -40,6 +41,7 @@
 #include <cairomm/matrix.h>
 #include <cairomm/path.h>
 #include <cairomm/pattern.h>
+#include <cairomm/region.h>
 #include <cairomm/scaledfont.h>
 #include <cairomm/surface.h>
 

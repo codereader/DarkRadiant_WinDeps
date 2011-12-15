@@ -29,19 +29,15 @@ public:
 
 protected:
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   //Callbacks (default signal handlers):
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
   static void link_selected_callback(AtkHypertext* self, gint p0);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
   //Callbacks (virtual functions):
-#ifdef GLIBMM_VFUNCS_ENABLED
   static AtkHyperlink* get_link_vfunc_callback(AtkHypertext* self, gint link_index);
   static gint get_n_links_vfunc_callback(AtkHypertext* self);
   static gint get_link_index_vfunc_callback(AtkHypertext* self, gint char_index);
-#endif //GLIBMM_VFUNCS_ENABLED
 };
 
 

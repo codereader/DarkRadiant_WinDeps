@@ -102,39 +102,71 @@ private:
 
   
 protected:
-  //TODO: Documentation:
- explicit EmblemedIcon(const Glib::RefPtr<Icon>& icon, const Glib::RefPtr<Emblem>& emblem);
+  //We have this constructor because g_emblemed_icon_new() may take a NULL emblem parameter.
+ /** Creates a new emblemed icon for @a icon with the emblem @a emblem.
+   * @param icon An Icon.
+   * @param emblem An Emblem.
+   *
+   * @newin{2,28}
+   */
+  explicit EmblemedIcon(const Glib::RefPtr<Icon>& icon);
+
+  /** Creates a new emblemed icon for @a icon with the emblem @a emblem.
+   * @param icon An Icon.
+   * @param emblem An Emblem.
+   */
+   explicit EmblemedIcon(const Glib::RefPtr<Icon>& icon, const Glib::RefPtr<Emblem>& emblem);
+
 
 public:
+
+  /** Creates a new emblemed icon for @a icon with the emblem @a emblem.
+   * @param icon An Icon.
+   * @param emblem An Emblem.
+   * @result An Icon.
+   */
   
   static Glib::RefPtr<EmblemedIcon> create(const Glib::RefPtr<Icon>& icon, const Glib::RefPtr<Emblem>& emblem);
 
 
+  /** Creates a new emblemed icon for @a icon with no emblem.
+   * @param icon An Icon.
+   * @result An Icon.
+   *
+   * @newin{2,28}
+   */
+  
+  static Glib::RefPtr<EmblemedIcon> create(const Glib::RefPtr<Icon>& icon);
+
+
   /** Gets the main icon for @a emblemed.
-   * @return A Icon that is owned by @a emblemed
    * 
-   * @newin{2,18}.
+   * @newin{2,18}
+   * @return A Icon that is owned by @a emblemed.
    */
   Glib::RefPtr<Icon> get_icon();
   
   /** Gets the main icon for @a emblemed.
-   * @return A Icon that is owned by @a emblemed
    * 
-   * @newin{2,18}.
+   * @newin{2,18}
+   * @return A Icon that is owned by @a emblemed.
    */
   Glib::RefPtr<const Icon> get_icon() const;
- 
 
+ 
   /** Gets the list of emblems for the @a icon.
-   * @return A List of Emblem &lt;!-- --&gt;s that is owned by @a emblemed
    * 
-   * @newin{2,18}.
+   * @newin{2,18}
+   * @return A List of
+   * Emblem <!-- -->s that is owned by @a emblemed.
    */
   Glib::ListHandle<Glib::RefPtr<Emblem> > get_emblems();
-  // TODO: need constversion?
-  //_WRAP_METHOD(Glib::ListHandle<Glib::RefPtr<const Emblem> > get_emblems() const, g_emblemed_icon_get_emblems, constversion)
+
+//TODO: #m4 __CONVERSION(`GList*',`Glib::ListHandle<Glib::RefPtr<const Emblem> >',`$2($3, Glib::OWNERSHIP_NONE)')
+//  _WRAP_METHOD(Glib::ListHandle<Glib::RefPtr<const Emblem> > get_emblems() const, g_emblemed_icon_get_emblems, constversion)
+
   
-  /** Adds @a emblem to the List of Emblem &lt;!-- --&gt;s.
+  /** Adds @a emblem to the List of Emblem <!-- -->s.
    * 
    * @newin{2,18}
    * @param emblem A Emblem.
@@ -146,17 +178,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

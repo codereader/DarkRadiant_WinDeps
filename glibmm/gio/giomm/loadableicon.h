@@ -102,7 +102,7 @@ public:
   ///Provides access to the underlying C GObject.
   GLoadableIcon*       gobj()       { return reinterpret_cast<GLoadableIcon*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const GLoadableIcon* gobj() const { return reinterpret_cast<GLoadableIcon*>(gobject_); }
 
 private:
@@ -119,18 +119,10 @@ public:
  *
  * @return a InputStream to read the icon from.
  **/
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<InputStream> load(int size, Glib::ustring& type, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  Glib::RefPtr<InputStream> load(int size, Glib::ustring& type, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   /** Non-cancellable version of load()
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<InputStream> load(int size, Glib::ustring& type);
-#else
-  Glib::RefPtr<InputStream> load(int size, Glib::ustring& type, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   //TODO: 'type' can be NULL as well, but I don't really want to add 2 more
   //overloads -- one cancellable, and one not...
 
@@ -156,17 +148,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

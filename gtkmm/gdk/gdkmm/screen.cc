@@ -50,6 +50,22 @@ static const Glib::SignalProxyInfo Screen_signal_size_changed_info =
 };
 
 
+static const Glib::SignalProxyInfo Screen_signal_composited_changed_info =
+{
+  "composited-changed",
+  (GCallback) &Glib::SignalProxyNormal::slot0_void_callback,
+  (GCallback) &Glib::SignalProxyNormal::slot0_void_callback
+};
+
+
+static const Glib::SignalProxyInfo Screen_signal_monitors_changed_info =
+{
+  "monitors-changed",
+  (GCallback) &Glib::SignalProxyNormal::slot0_void_callback,
+  (GCallback) &Glib::SignalProxyNormal::slot0_void_callback
+};
+
+
 } // anonymous namespace
 
 
@@ -92,23 +108,17 @@ const Glib::Class& Screen_Class::init()
   return *this;
 }
 
+
 void Screen_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->size_changed = &size_changed_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Screen_Class::size_changed_callback(GdkScreen* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -140,7 +150,7 @@ void Screen_Class::size_changed_callback(GdkScreen* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -149,7 +159,6 @@ void Screen_Class::size_changed_callback(GdkScreen* self)
   if(base && base->size_changed)
     (*base->size_changed)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Screen_Class::wrap_new(GObject* object)
@@ -178,6 +187,7 @@ Screen::Screen(GdkScreen* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 Screen::~Screen()
 {}
 
@@ -188,6 +198,7 @@ GType Screen::get_type()
 {
   return screen_class_.init().get_type();
 }
+
 
 GType Screen::get_base_type()
 {
@@ -385,6 +396,11 @@ int Screen::get_n_monitors() const
   return gdk_screen_get_n_monitors(const_cast<GdkScreen*>(gobj()));
 }
 
+int Screen::get_primary_monitor() const
+{
+  return gdk_screen_get_primary_monitor(const_cast<GdkScreen*>(gobj()));
+}
+
 void Screen::get_monitor_geometry(int monitor_num, Rectangle& dest) const
 {
 gdk_screen_get_monitor_geometry(const_cast<GdkScreen*>(gobj()), monitor_num, (dest).gobj()); 
@@ -426,7 +442,7 @@ Glib::RefPtr<Screen> Screen::get_default()
   Glib::RefPtr<Screen> retvalue = Glib::wrap(gdk_screen_get_default());
 
   if(retvalue)
-    retvalue->reference(); //The function does not do a ref for us.
+    retvalue->reference(); //The function does not do a ref for us
   return retvalue;
 }
 
@@ -478,7 +494,47 @@ Glib::SignalProxy0< void > Screen::signal_size_changed()
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+Glib::SignalProxy0< void > Screen::signal_composited_changed()
+{
+  return Glib::SignalProxy0< void >(this, &Screen_signal_composited_changed_info);
+}
+
+
+Glib::SignalProxy0< void > Screen::signal_monitors_changed()
+{
+  return Glib::SignalProxy0< void >(this, &Screen_signal_monitors_changed_info);
+}
+
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<Cairo::FontOptions> Screen::property_font_options() 
+{
+  return Glib::PropertyProxy<Cairo::FontOptions>(this, "font-options");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<Cairo::FontOptions> Screen::property_font_options() const
+{
+  return Glib::PropertyProxy_ReadOnly<Cairo::FontOptions>(this, "font-options");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<double> Screen::property_resolution() 
+{
+  return Glib::PropertyProxy<double>(this, "resolution");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<double> Screen::property_resolution() const
+{
+  return Glib::PropertyProxy_ReadOnly<double>(this, "resolution");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+
 void Gdk::Screen::on_size_changed()
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -488,10 +544,6 @@ void Gdk::Screen::on_size_changed()
   if(base && base->size_changed)
     (*base->size_changed)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gdk

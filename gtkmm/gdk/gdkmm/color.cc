@@ -73,7 +73,7 @@ void Color::set_rgb_p(double red_, double green_, double blue_)
 void Color::set_hsv(double h, double s, double v)
 {
   //TODO: Comments/Documentation. I have no idea what this code does. murrayc.
-  
+
   h /= 60.0;
   int i = (int)h;
   double p = v * (1 - s);
@@ -190,10 +190,14 @@ void Color::set_blue(gushort value)
   gobject_->blue = value;
 }
 
+#ifndef GDKMM_DISABLE_DEPRECATED
+
 void Color::rgb_find_color(const Glib::RefPtr<Gdk::Colormap>& map)
 {
-  gdk_rgb_find_color(map->gobj(), gobj());
+  gdk_rgb_find_color(Glib::unwrap(map), gobj());
 }
+#endif // GDKMM_DISABLE_DEPRECATED
+
 
 guint Color::get_pixel() const
 {
@@ -220,8 +224,25 @@ Glib::ustring Color::to_string() const
   return Glib::convert_return_gchar_ptr_to_ustring( gdk_color_to_string(gobject_) );
 }
 
-} //namespace Gdk
+ColorTraits::CType ColorTraits::to_c_type(const CppType& obj)
+{
+  return *obj.gobj();
+}
 
+ColorTraits::CType ColorTraits::to_c_type(const CType&   obj)
+{
+  return obj;
+}
+
+ColorTraits::CppType ColorTraits::to_cpp_type(const CType& obj)
+{
+  return CppType(const_cast<CType*>(&obj), true);
+}
+
+void ColorTraits::release_c_type(const CType&)
+{}
+
+} //namespace Gdk
 
 namespace
 {

@@ -12,6 +12,7 @@
 
 // #include the widget headers so that we can call the get_type() static methods:
 
+#include "balancedtree.h"
 #include "checksum.h"
 #include "convert.h"
 #include "date.h"
@@ -30,6 +31,10 @@
 #include "thread.h"
 #include "unicode.h"
 #include "uriutils.h"
+#include "valuearray.h"
+#include "variant.h"
+#include "variantiter.h"
+#include "varianttype.h"
 
 extern "C"
 {
@@ -60,16 +65,16 @@ namespace Glib {
 void wrap_init()
 {
   // Register Error domains:
-  Glib::Error::register_domain(g_convert_error_quark(), &Glib::ConvertError::throw_func);
-  Glib::Error::register_domain(g_file_error_quark(), &Glib::FileError::throw_func);
-  Glib::Error::register_domain(g_io_channel_error_quark(), &Glib::IOChannelError::throw_func);
-  Glib::Error::register_domain(g_key_file_error_quark(), &Glib::KeyFileError::throw_func);
-  Glib::Error::register_domain(g_markup_error_quark(), &Glib::MarkupError::throw_func);
-  Glib::Error::register_domain(g_option_error_quark(), &Glib::OptionError::throw_func);
-  Glib::Error::register_domain(g_regex_error_quark(), &Glib::RegexError::throw_func);
-  Glib::Error::register_domain(g_shell_error_quark(), &Glib::ShellError::throw_func);
-  Glib::Error::register_domain(g_spawn_error_quark(), &Glib::SpawnError::throw_func);
-  Glib::Error::register_domain(g_thread_error_quark(), &Glib::ThreadError::throw_func);
+  Glib::Error::register_domain(g_convert_error_quark(), &::Glib::ConvertError::throw_func);
+  Glib::Error::register_domain(g_file_error_quark(), &::Glib::FileError::throw_func);
+  Glib::Error::register_domain(g_io_channel_error_quark(), &::Glib::IOChannelError::throw_func);
+  Glib::Error::register_domain(g_key_file_error_quark(), &::Glib::KeyFileError::throw_func);
+  Glib::Error::register_domain(g_markup_error_quark(), &::Glib::MarkupError::throw_func);
+  Glib::Error::register_domain(g_option_error_quark(), &::Glib::OptionError::throw_func);
+  Glib::Error::register_domain(g_regex_error_quark(), &::Glib::RegexError::throw_func);
+  Glib::Error::register_domain(g_shell_error_quark(), &::Glib::ShellError::throw_func);
+  Glib::Error::register_domain(g_spawn_error_quark(), &::Glib::SpawnError::throw_func);
+  Glib::Error::register_domain(g_thread_error_quark(), &::Glib::ThreadError::throw_func);
 
 // Map gtypes to gtkmm wrapper-creation functions:
 

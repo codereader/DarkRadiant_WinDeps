@@ -88,28 +88,19 @@ const Glib::Class& PageSetupUnixDialog_Class::init()
   return *this;
 }
 
+
 void PageSetupUnixDialog_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* PageSetupUnixDialog_Class::wrap_new(GObject* o)
 {
-  return manage(new PageSetupUnixDialog((GtkPageSetupUnixDialog*)(o)));
+  return new PageSetupUnixDialog((GtkPageSetupUnixDialog*)(o)); //top-level windows can not be manage()ed.
 
 }
 
@@ -139,6 +130,7 @@ GType PageSetupUnixDialog::get_type()
 {
   return pagesetupunixdialog_class_.init().get_type();
 }
+
 
 GType PageSetupUnixDialog::get_base_type()
 {
@@ -185,13 +177,6 @@ Glib::RefPtr<const PrintSettings> PageSetupUnixDialog::get_print_settings() cons
 {
   return const_cast<PageSetupUnixDialog*>(this)->get_print_settings();
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

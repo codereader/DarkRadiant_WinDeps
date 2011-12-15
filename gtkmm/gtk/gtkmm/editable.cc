@@ -63,7 +63,7 @@ static const Glib::SignalProxyInfo Editable_signal_insert_text_info =
 };
 
 
-static void Editable_signal_delete_text_callback(GtkEditable* self, gint start_pos,gint end_pos,void* data)
+static void Editable_signal_delete_text_callback(GtkEditable* self, gint p0,gint p1,void* data)
 {
   using namespace Gtk;
   typedef sigc::slot< void,int,int > SlotType;
@@ -76,8 +76,8 @@ static void Editable_signal_delete_text_callback(GtkEditable* self, gint start_p
     {
     #endif //GLIBMM_EXCEPTIONS_ENABLED
       if(sigc::slot_base *const slot = Glib::SignalProxyNormal::data_to_slot(data))
-        (*static_cast<SlotType*>(slot))(start_pos
-, end_pos
+        (*static_cast<SlotType*>(slot))(p0
+, p1
 );
     #ifdef GLIBMM_EXCEPTIONS_ENABLED
     }
@@ -149,7 +149,6 @@ void Editable_Class::iface_init_function(void* g_iface, void*)
   //This is a temporary fix until I find out why I can not seem to derive a GtkFileChooser interface. murrayc
   g_assert(klass != 0); 
 
-#ifdef GLIBMM_VFUNCS_ENABLED
   klass->do_insert_text = &do_insert_text_vfunc_callback;
   klass->do_delete_text = &do_delete_text_vfunc_callback;
   klass->get_chars = &get_chars_vfunc_callback;
@@ -157,16 +156,12 @@ void Editable_Class::iface_init_function(void* g_iface, void*)
   klass->get_selection_bounds = &get_selection_bounds_vfunc_callback;
   klass->set_position = &set_position_vfunc_callback;
   klass->get_position = &get_position_vfunc_callback;
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->insert_text = &insert_text_callback;
   klass->delete_text = &delete_text_callback;
   klass->changed = &changed_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
 void Editable_Class::do_insert_text_vfunc_callback(GtkEditable* self, const gchar* text, gint length, gint* position)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -198,7 +193,7 @@ void Editable_Class::do_insert_text_vfunc_callback(GtkEditable* self, const gcha
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -242,7 +237,7 @@ void Editable_Class::do_delete_text_vfunc_callback(GtkEditable* self, gint start
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -285,7 +280,7 @@ gchar* Editable_Class::get_chars_vfunc_callback(GtkEditable* self, gint start_po
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -332,7 +327,7 @@ void Editable_Class::set_selection_bounds_vfunc_callback(GtkEditable* self, gint
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -375,7 +370,7 @@ gboolean Editable_Class::get_selection_bounds_vfunc_callback(GtkEditable* self, 
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -421,7 +416,7 @@ void Editable_Class::set_position_vfunc_callback(GtkEditable* self, gint positio
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -462,7 +457,7 @@ gint Editable_Class::get_position_vfunc_callback(GtkEditable* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -476,9 +471,7 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Ge
   typedef gint RType;
   return RType();
 }
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Editable_Class::insert_text_callback(GtkEditable* self, const gchar* text, gint length, gint* position)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -510,7 +503,7 @@ void Editable_Class::insert_text_callback(GtkEditable* self, const gchar* text, 
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -520,7 +513,7 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Ge
   if(base && base->insert_text)
     (*base->insert_text)(      self, text, length, position);
 }
-void Editable_Class::delete_text_callback(GtkEditable* self, gint start_pos, gint end_pos)
+void Editable_Class::delete_text_callback(GtkEditable* self, gint p0, gint p1)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
       Glib::ObjectBase::_get_current_wrapper((GObject*)self));
@@ -540,8 +533,8 @@ void Editable_Class::delete_text_callback(GtkEditable* self, gint start_pos, gin
       {
       #endif //GLIBMM_EXCEPTIONS_ENABLED
         // Call the virtual member method, which derived classes might override.
-        obj->on_delete_text(start_pos
-, end_pos
+        obj->on_delete_text(p0
+, p1
 );
         return;
       #ifdef GLIBMM_EXCEPTIONS_ENABLED
@@ -553,7 +546,7 @@ void Editable_Class::delete_text_callback(GtkEditable* self, gint start_pos, gin
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -561,7 +554,7 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Ge
 
   // Call the original underlying C function:
   if(base && base->delete_text)
-    (*base->delete_text)(self, start_pos, end_pos);
+    (*base->delete_text)(self, p0, p1);
 }
 void Editable_Class::changed_callback(GtkEditable* self)
 {
@@ -594,7 +587,7 @@ void Editable_Class::changed_callback(GtkEditable* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -604,7 +597,6 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Ge
   if(base && base->changed)
     (*base->changed)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Editable_Class::wrap_new(GObject* object)
@@ -646,6 +638,7 @@ GType Editable::get_type()
   return editable_class_.init().get_type();
 }
 
+
 GType Editable::get_base_type()
 {
   return gtk_editable_get_type();
@@ -684,7 +677,7 @@ bool Editable::get_editable() const
 
 void Editable::insert_text(const Glib::ustring& text, int length, int& position)
 {
-gtk_editable_insert_text(gobj(), text.c_str(), length, &position); 
+gtk_editable_insert_text(gobj(), text.c_str(), length, &(position)); 
 }
 
 void Editable::delete_text(int start_pos, int end_pos)
@@ -704,7 +697,7 @@ gtk_editable_select_region(gobj(), start_pos, end_pos);
 
 bool Editable::get_selection_bounds(int& start_pos, int& end_pos) const
 {
-  return gtk_editable_get_selection_bounds(const_cast<GtkEditable*>(gobj()), &start_pos, &end_pos);
+  return gtk_editable_get_selection_bounds(const_cast<GtkEditable*>(gobj()), &(start_pos), &(end_pos));
 }
 
 void Editable::set_position(int position)
@@ -736,7 +729,6 @@ Glib::SignalProxy0< void > Editable::signal_changed()
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::Editable::on_insert_text(const Glib::ustring& text, int* position)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -767,9 +759,7 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(gobject_), CppObjectType::get_type()) /
   if(base && base->changed)
     (*base->changed)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
-#ifdef GLIBMM_VFUNCS_ENABLED
 void Gtk::Editable::insert_text_vfunc(const Glib::ustring& text, int& position) 
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -821,7 +811,7 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(gobject_), CppObjectType::get_type()) /
 )  );
 
   if(base && base->get_selection_bounds)
-    return (*base->get_selection_bounds)(const_cast<GtkEditable*>(gobj()),&start_pos,&end_pos);
+    return (*base->get_selection_bounds)(const_cast<GtkEditable*>(gobj()),&(start_pos),&(end_pos));
 
   typedef bool RType;
   return RType();
@@ -849,7 +839,6 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(gobject_), CppObjectType::get_type()) /
   typedef int RType;
   return RType();
 }
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

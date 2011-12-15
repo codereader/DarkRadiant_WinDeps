@@ -29,12 +29,9 @@ static int SignalProxy_Compare_gtk_callback(GtkRecentInfo* a, GtkRecentInfo* b, 
 {
   const Gtk::RecentChooser::SlotCompare* the_slot = static_cast<Gtk::RecentChooser::SlotCompare*>(data);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     return (*the_slot)(Glib::wrap(a, true /* take reference */), Glib::wrap(b, true /* take reference */));
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
@@ -42,7 +39,6 @@ static int SignalProxy_Compare_gtk_callback(GtkRecentInfo* a, GtkRecentInfo* b, 
   }
 
   return 0;
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
 static void SignalProxy_Compare_gtk_callback_destroy(gpointer data)
@@ -124,18 +120,10 @@ Gtk::RecentChooserError::Code Gtk::RecentChooserError::code() const
   return static_cast<Code>(Glib::Error::code());
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void Gtk::RecentChooserError::throw_func(GError* gobject)
 {
   throw Gtk::RecentChooserError(gobject);
 }
-#else
-//When not using exceptions, we just pass the Exception object around without throwing it:
-std::auto_ptr<Glib::Error> Gtk::RecentChooserError::throw_func(GError* gobject)
-{
-  return std::auto_ptr<Glib::Error>(new Gtk::RecentChooserError(gobject));
-}
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 // static
 GType Glib::Value<Gtk::RecentChooserError::Code>::value_type()
@@ -185,7 +173,6 @@ void RecentChooser_Class::iface_init_function(void* g_iface, void*)
   //This is a temporary fix until I find out why I can not seem to derive a GtkFileChooser interface. murrayc
   g_assert(klass != 0); 
 
-#ifdef GLIBMM_VFUNCS_ENABLED
   klass->get_current_uri = &get_current_uri_vfunc_callback;
   klass->unselect_uri = &unselect_uri_vfunc_callback;
   klass->select_all = &select_all_vfunc_callback;
@@ -193,13 +180,9 @@ void RecentChooser_Class::iface_init_function(void* g_iface, void*)
   klass->get_recent_manager = &get_recent_manager_vfunc_callback;
   klass->add_filter = &add_filter_vfunc_callback;
   klass->remove_filter = &remove_filter_vfunc_callback;
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
 gchar* RecentChooser_Class::get_current_uri_vfunc_callback(GtkRecentChooser* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -230,7 +213,7 @@ gchar* RecentChooser_Class::get_current_uri_vfunc_callback(GtkRecentChooser* sel
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -276,7 +259,7 @@ void RecentChooser_Class::unselect_uri_vfunc_callback(GtkRecentChooser* self, co
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -318,7 +301,7 @@ void RecentChooser_Class::select_all_vfunc_callback(GtkRecentChooser* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -360,7 +343,7 @@ void RecentChooser_Class::unselect_all_vfunc_callback(GtkRecentChooser* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -401,7 +384,7 @@ GtkRecentManager* RecentChooser_Class::get_recent_manager_vfunc_callback(GtkRece
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -447,7 +430,7 @@ void RecentChooser_Class::add_filter_vfunc_callback(GtkRecentChooser* self, GtkR
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -490,7 +473,7 @@ void RecentChooser_Class::remove_filter_vfunc_callback(GtkRecentChooser* self, G
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -501,10 +484,6 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Ge
     (*base->remove_filter)(self, filter);
 
 }
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* RecentChooser_Class::wrap_new(GObject* object)
@@ -545,6 +524,7 @@ GType RecentChooser::get_type()
 {
   return recentchooser_class_.init().get_type();
 }
+
 
 GType RecentChooser::get_base_type()
 {
@@ -632,21 +612,12 @@ RecentSortType RecentChooser::get_sort_type() const
   return ((RecentSortType)(gtk_recent_chooser_get_sort_type(const_cast<GtkRecentChooser*>(gobj()))));
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool RecentChooser::set_current_uri(const Glib::ustring& uri)
-#else
-bool RecentChooser::set_current_uri(const Glib::ustring& uri, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = gtk_recent_chooser_set_current_uri(gobj(), uri.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
@@ -677,21 +648,12 @@ Glib::RefPtr<const RecentInfo> RecentChooser::get_current_item() const
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool RecentChooser::select_uri(const Glib::ustring& uri)
-#else
-bool RecentChooser::select_uri(const Glib::ustring& uri, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = gtk_recent_chooser_select_uri(gobj(), uri.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
@@ -892,10 +854,6 @@ Glib::PropertyProxy_ReadOnly<RecentFilter*> RecentChooser::property_filter() con
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
 Glib::ustring Gtk::RecentChooser::get_current_uri_vfunc() const
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -972,7 +930,6 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(gobject_), CppObjectType::get_type()) /
   if(base && base->remove_filter)
     (*base->remove_filter)(gobj(),const_cast<GtkRecentFilter*>((filter).gobj()));
 }
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

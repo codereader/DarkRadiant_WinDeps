@@ -31,10 +31,8 @@ static gboolean SignalProxy_Custom_gtk_callback(const GtkRecentFilterInfo* filte
 {
   const Gtk::RecentFilter::SlotCustom* the_slot = static_cast<Gtk::RecentFilter::SlotCustom*>(data);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     // Create a suitable C++ instance to pass to the C++ method:
     Gtk::RecentFilter::Info cppInfo;
     cppInfo.contains = (Gtk::RecentFilterFlags)filter_info->contains;
@@ -56,14 +54,12 @@ static gboolean SignalProxy_Custom_gtk_callback(const GtkRecentFilterInfo* filte
     cppInfo.age = filter_info->age;
   
     return (*the_slot)(cppInfo);
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
     return false; // arbitrary default;
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
 static void SignalProxy_Custom_gtk_callback_destroy(void* data)
@@ -142,23 +138,14 @@ const Glib::Class& RecentFilter_Class::init()
   return *this;
 }
 
+
 void RecentFilter_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* RecentFilter_Class::wrap_new(GObject* o)
@@ -193,6 +180,7 @@ GType RecentFilter::get_type()
 {
   return recentfilter_class_.init().get_type();
 }
+
 
 GType RecentFilter::get_base_type()
 {
@@ -254,13 +242,6 @@ RecentFilterFlags RecentFilter::get_needed() const
 {
   return (RecentFilterFlags)gtk_recent_filter_get_needed(const_cast<GtkRecentFilter*>(gobj()));
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

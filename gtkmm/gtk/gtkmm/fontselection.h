@@ -26,9 +26,8 @@
  */
 
 
-#include <gtkmm/dialog.h>
 #include <gtkmm/box.h>
-
+#include <gtkmm/dialog.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 typedef struct _GtkFontSelection GtkFontSelection;
@@ -51,6 +50,7 @@ namespace Gtk
 
 class Button;
 class Entry;
+class TreeView;
 class RadioButton;
 
 
@@ -59,8 +59,8 @@ class RadioButton;
  * The Gtk::FontSelection widget lists the available fonts, styles and
  * sizes, allowing the user to select a font. It is used in the
  * Gtk::FontSelectionDialog widget to provide a dialog box for selecting
- * fonts. 
- * 
+ * fonts.
+ *
  * @ingroup Widgets
  */
 
@@ -95,6 +95,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -107,24 +109,150 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
 
-  
+   //deprecated
 public:
   FontSelection();
+
+  
+  /** This returns the Gtk::TreeView that lists font families, for
+   * example, 'Sans', 'Serif', etc.
+   * 
+   * @newin{2,14}
+   * @return A Gtk::Widget that is part of @a fontsel.
+   */
+  TreeView* get_family_list();
+  
+  /** This returns the Gtk::TreeView that lists font families, for
+   * example, 'Sans', 'Serif', etc.
+   * 
+   * @newin{2,14}
+   * @return A Gtk::Widget that is part of @a fontsel.
+   */
+  const TreeView* get_family_list() const;
+
+  
+  /** This returns the Gtk::TreeView which lists all styles available for
+   * the selected font. For example, 'Regular', 'Bold', etc.
+   * 
+   * @newin{2,14}
+   * @return A Gtk::Widget that is part of @a fontsel.
+   */
+  TreeView* get_face_list();
+  
+  /** This returns the Gtk::TreeView which lists all styles available for
+   * the selected font. For example, 'Regular', 'Bold', etc.
+   * 
+   * @newin{2,14}
+   * @return A Gtk::Widget that is part of @a fontsel.
+   */
+  const TreeView* get_face_list() const;
+
+  
+  /** This returns the Gtk::Entry used to allow the user to edit the font
+   * number manually instead of selecting it from the list of font sizes.
+   * 
+   * @newin{2,14}
+   * @return A Gtk::Widget that is part of @a fontsel.
+   */
+  Entry* get_size_entry();
+  
+  /** This returns the Gtk::Entry used to allow the user to edit the font
+   * number manually instead of selecting it from the list of font sizes.
+   * 
+   * @newin{2,14}
+   * @return A Gtk::Widget that is part of @a fontsel.
+   */
+  const Entry* get_size_entry() const;
+
+  
+  /** This returns the Gtk::TreeeView used to list font sizes.
+   * 
+   * @newin{2,14}
+   * @return A Gtk::Widget that is part of @a fontsel.
+   */
+  TreeView* get_size_list();
+  
+  /** This returns the Gtk::TreeeView used to list font sizes.
+   * 
+   * @newin{2,14}
+   * @return A Gtk::Widget that is part of @a fontsel.
+   */
+  const TreeView* get_size_list() const;
+
+  
+  /** This returns the Gtk::Entry used to display the font as a preview.
+   * 
+   * @newin{2,14}
+   * @return A Gtk::Widget that is part of @a fontsel.
+   */
+  Entry* get_preview_entry();
+  
+  /** This returns the Gtk::Entry used to display the font as a preview.
+   * 
+   * @newin{2,14}
+   * @return A Gtk::Widget that is part of @a fontsel.
+   */
+  const Entry* get_preview_entry() const;
+
+  
+  /** Gets the Pango::FontFamily representing the selected font family.
+   * 
+   * @newin{2,14}
+   * @return A Pango::FontFamily representing the
+   * selected font family. Font families are a collection of font
+   * faces. The returned object is owned by @a fontsel and must not
+   * be modified or freed.
+   */
+  Glib::RefPtr<Pango::FontFamily> get_family();
+  
+  /** Gets the Pango::FontFamily representing the selected font family.
+   * 
+   * @newin{2,14}
+   * @return A Pango::FontFamily representing the
+   * selected font family. Font families are a collection of font
+   * faces. The returned object is owned by @a fontsel and must not
+   * be modified or freed.
+   */
+  Glib::RefPtr<const Pango::FontFamily> get_family() const;
+
+  
+  /** Gets the Pango::FontFace representing the selected font group
+   * details (i.e.\ family, slant, weight, width, etc).
+   * 
+   * @newin{2,14}
+   * @return A Pango::FontFace representing the
+   * selected font group details. The returned object is owned by
+   *  @a fontsel and must not be modified or freed.
+   */
+  Glib::RefPtr<Pango::FontFace> get_face();
+  
+  /** Gets the Pango::FontFace representing the selected font group
+   * details (i.e.\ family, slant, weight, width, etc).
+   * 
+   * @newin{2,14}
+   * @return A Pango::FontFace representing the
+   * selected font group details. The returned object is owned by
+   *  @a fontsel and must not be modified or freed.
+   */
+  Glib::RefPtr<const Pango::FontFace> get_face() const;
+
+  
+  /** The selected font size.
+   * 
+   * @newin{2,14}
+   * @return A n integer representing the selected font size,
+   * or -1 if no font size is selected.
+   */
+  int get_size() const;
 
   
   /** Gets the currently-selected font name. 
@@ -165,24 +293,40 @@ public:
    */
   void set_preview_text(const Glib::ustring& fontname);
 
-  // Font page
+  //TODO: Remove these accessors when we can break ABI.
+  //They probably all return null now anyway.
+
+
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+  /** @deprecated You should not need to call this method.
+   */
    Entry* get_font_entry();
   const Entry* get_font_entry() const;
-    Entry* get_font_style_entry();
-  const Entry* get_font_style_entry() const;
-    Entry* get_size_entry();
-  const Entry* get_size_entry() const;
  
+  /** @deprecated You should not need to call this method.
+   */
+   Entry* get_font_style_entry();
+  const Entry* get_font_style_entry() const;
+ 
+  /** @deprecated You should not need to call this method.
+   */
    RadioButton* get_pixels_button();
   const RadioButton* get_pixels_button() const;
-    RadioButton* get_points_button();
+ 
+  /** @deprecated You should not need to call this method.
+   */
+   RadioButton* get_points_button();
   const RadioButton* get_points_button() const;
-    Button* get_filter_button();
+ 
+  /** @deprecated You should not need to call this method.
+   */
+   Button* get_filter_button();
   const Button* get_filter_button() const;
- 
-   Entry* get_preview_entry();
-  const Entry* get_preview_entry() const;
- 
+ #endif // GTKMM_DISABLE_DEPRECATED
+
+
+  //Note: The GdkFont "font" property is deprecated, or should be.
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The string that represents this font.
    *
@@ -228,7 +372,7 @@ public:
 
 /** A dialog box for selecting fonts.
  *
- * The Gtk::FontSelectionDialog widget is a dialog box for selecting a font. 
+ * The Gtk::FontSelectionDialog widget is a dialog box for selecting a font.
  *
  * A FontSelectionDialog looks like this:
  * @image html fontselectiondialog1.png
@@ -267,6 +411,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -279,17 +425,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -298,9 +438,9 @@ private:
 public:
 
   FontSelectionDialog();
-  explicit FontSelectionDialog(const Glib::ustring& title);
+    explicit FontSelectionDialog(const Glib::ustring& title);
 
-  
+
   /** Sets the currently selected font.
    * @param fontname A font name like "Helvetica 12" or "Times Bold 18".
    * @return <tt>true</tt> if the font selected in @a fsd is now the
@@ -333,15 +473,59 @@ public:
    */
   void set_preview_text(const Glib::ustring& fontname);
 
-   FontSelection* get_font_selection();
-  const FontSelection* get_font_selection() const;
-    Button* get_ok_button();
+  
+  /** Gets the 'OK' button.
+   * 
+   * @newin{2,14}
+   * @return The Gtk::Widget used in the dialog
+   * for the 'OK' button.
+   */
+  Button* get_ok_button();
+  
+  /** Gets the 'OK' button.
+   * 
+   * @newin{2,14}
+   * @return The Gtk::Widget used in the dialog
+   * for the 'OK' button.
+   */
   const Button* get_ok_button() const;
-    Button* get_apply_button();
-  const Button* get_apply_button() const;
-    Button* get_cancel_button();
+
+  
+  /** Gets the 'Cancel' button.
+   * 
+   * @newin{2,14}
+   * @return The Gtk::Widget used in the dialog
+   * for the 'Cancel' button.
+   */
+  Button* get_cancel_button();
+  
+  /** Gets the 'Cancel' button.
+   * 
+   * @newin{2,14}
+   * @return The Gtk::Widget used in the dialog
+   * for the 'Cancel' button.
+   */
   const Button* get_cancel_button() const;
- 
+
+  
+  /** Obtains a button. The button doesn't have any function.
+   * 
+   * @newin{2,14}
+   * 
+   * Deprecated: 2.16: Don't use this function.
+   * @return A Gtk::Widget.
+   */
+  Button* get_apply_button();
+  
+  /** Obtains a button. The button doesn't have any function.
+   * 
+   * @newin{2,14}
+   * 
+   * Deprecated: 2.16: Don't use this function.
+   * @return A Gtk::Widget.
+   */
+  const Button* get_apply_button() const;
+
 
 };
 

@@ -93,6 +93,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -105,17 +107,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -135,7 +131,8 @@ public:
    * @param title The title of the browse dialog.
    * @param action The open mode for the widget.
    */
-  explicit FileChooserButton(const Glib::ustring& title, FileChooserAction action = FILE_CHOOSER_ACTION_OPEN);
+    explicit FileChooserButton(const Glib::ustring& title, FileChooserAction action =  FILE_CHOOSER_ACTION_OPEN);
+
   
   /** Creates a new file-selecting button widget using backend.
    *
@@ -143,51 +140,53 @@ public:
    * @param action The open mode for the widget.
    * @param backend The name of the Gtk::FileSystem backend to use.
    */ 
-  explicit FileChooserButton(const Glib::ustring& title, FileChooserAction action, const Glib::ustring& backend);
+    explicit FileChooserButton(const Glib::ustring& title, FileChooserAction action, const Glib::ustring& backend);
+
   
   /** Creates a new file-selecting button widget which uses dialog as its file-picking window.
    *
    * @param dialog The dialog to use.
    */
-  explicit FileChooserButton(FileChooserDialog& dialog);
-  
+    explicit FileChooserButton(FileChooserDialog& dialog);
+
   
   /** Retrieves the title of the browse dialog used by @a button. The returned value
    * should not be modified or freed.
-   * @return A pointer to the browse dialog's title.
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return A pointer to the browse dialog's title.
    */
   Glib::ustring get_title() const;
   
   /** Modifies the @a title of the browse dialog used by @a button.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param title The new browse dialog title.
    */
   void set_title(const Glib::ustring& title);
  
   
   /** Retrieves the width in characters of the @a button widget's entry and/or label.
-   * @return An integer width (in characters) that the button will use to size itself.
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return An integer width (in characters) that the button will use to size itself.
    */
   int get_width_chars() const;
   
   /** Sets the width (in characters) that @a button will use to @a n_chars.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param n_chars The new width, in characters.
    */
   void set_width_chars(int n_chars);
 
   
-  /** Return value: <tt>true</tt> if the button grabs focus when it is clicked with
+  /** Returns whether the button grabs focus when it is clicked with the mouse.
+   * See set_focus_on_click().
+   * 
+   * @newin{2,10}
    * @return <tt>true</tt> if the button grabs focus when it is clicked with
    * the mouse.
-   * 
-   * @newin2p10.
    */
   bool get_focus_on_click() const;
   
@@ -196,10 +195,10 @@ public:
    * you don't want the keyboard focus removed from the main area of the
    * application.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param focus_on_click Whether the button grabs focus when clicked with the mouse.
    */
-  void set_focus_on_click(gboolean focus_on_click = true);   
+  void set_focus_on_click(gboolean focus_on_click =  true);   
 
   //TODO: Remove no_default_handler when we can break ABI.
   //This is a G_SIGNAL_ACTION signal, but it seems to be public API for applications.
@@ -213,6 +212,7 @@ public:
   Glib::SignalProxy0< void > signal_file_set();
 
 
+  //gtkmmproc error: dialog : attempt to wrap write-only and construct-only property.
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** Whether the button grabs focus when it is clicked with the mouse.
    *
@@ -254,7 +254,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
                                           
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The desired width of the button widget
+/** The desired width of the button widget, in characters.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -264,7 +264,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The desired width of the button widget
+/** The desired width of the button widget, in characters.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when

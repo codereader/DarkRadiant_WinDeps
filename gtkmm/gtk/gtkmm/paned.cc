@@ -92,23 +92,14 @@ const Glib::Class& Paned_Class::init()
   return *this;
 }
 
+
 void Paned_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Paned_Class::wrap_new(GObject* o)
@@ -143,6 +134,7 @@ GType Paned::get_type()
 {
   return paned_class_.init().get_type();
 }
+
 
 GType Paned::get_base_type()
 {
@@ -210,6 +202,21 @@ const Widget* Paned::get_child2() const
   return const_cast<Paned*>(this)->get_child2();
 }
 
+Glib::RefPtr<Gdk::Window> Paned::get_handle_window()
+{
+
+  Glib::RefPtr<Gdk::Window> retvalue = Glib::wrap((GdkWindowObject*)(gtk_paned_get_handle_window(gobj())));
+  if(retvalue)
+    retvalue->reference(); //The function does not do a ref for us.
+  return retvalue;
+
+}
+
+Glib::RefPtr<const Gdk::Window> Paned::get_handle_window() const
+{
+  return const_cast<Paned*>(this)->get_handle_window();
+}
+
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
 Glib::PropertyProxy<int> Paned::property_position() 
@@ -254,13 +261,6 @@ Glib::PropertyProxy_ReadOnly<int> Paned::property_max_position() const
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-
 } // namespace Gtk
 
 
@@ -301,23 +301,14 @@ const Glib::Class& HPaned_Class::init()
   return *this;
 }
 
+
 void HPaned_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* HPaned_Class::wrap_new(GObject* o)
@@ -353,6 +344,7 @@ GType HPaned::get_type()
   return hpaned_class_.init().get_type();
 }
 
+
 GType HPaned::get_base_type()
 {
   return gtk_hpaned_get_type();
@@ -367,13 +359,6 @@ HPaned::HPaned()
   
 
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk
@@ -416,23 +401,14 @@ const Glib::Class& VPaned_Class::init()
   return *this;
 }
 
+
 void VPaned_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* VPaned_Class::wrap_new(GObject* o)
@@ -468,6 +444,7 @@ GType VPaned::get_type()
   return vpaned_class_.init().get_type();
 }
 
+
 GType VPaned::get_base_type()
 {
   return gtk_vpaned_get_type();
@@ -482,13 +459,6 @@ VPaned::VPaned()
   
 
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

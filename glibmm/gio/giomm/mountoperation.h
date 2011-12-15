@@ -39,7 +39,7 @@ namespace Gio
 namespace Gio
 {
 
-/** @addtogroup giommEnums Enums and Flags */
+/** @addtogroup giommEnums giomm Enums and Flags */
 
 /**
  * @ingroup giommEnums
@@ -54,11 +54,11 @@ namespace Gio
  */
 enum AskPasswordFlags
 {
-  ASK_PASSWORD_NEED_PASSWORD = 1 << 0,
-  ASK_PASSWORD_NEED_USERNAME = 1 << 1,
-  ASK_PASSWORD_NEED_DOMAIN = 1 << 2,
-  ASK_PASSWORD_SAVING_SUPPORTED = 1 << 3,
-  ASK_PASSWORD_ANONYMOUS_SUPPORTED = 1 << 4
+  ASK_PASSWORD_NEED_PASSWORD = (1 << 0),
+  ASK_PASSWORD_NEED_USERNAME = (1 << 1),
+  ASK_PASSWORD_NEED_DOMAIN = (1 << 2),
+  ASK_PASSWORD_SAVING_SUPPORTED = (1 << 3),
+  ASK_PASSWORD_ANONYMOUS_SUPPORTED = (1 << 4)
 };
 
 /** @ingroup giommEnums */
@@ -209,7 +209,7 @@ public:
   /** Sets the mount operation to use an anonymous user if @a anonymous is <tt>true</tt>.
    * @param anonymous Boolean value.
    */
-  void set_anonymous(bool anonymous = true);
+  void set_anonymous(bool anonymous =  true);
   
   /** Gets the domain of the mount operation.
    * @return A string set to the domain.
@@ -284,6 +284,9 @@ public:
 
   Glib::SignalProxy0< void > signal_aborted();
 
+
+  //TODO: The array of char* is not very pleasant to wrap:
+  //_WRAP_SIGNAL( void show_processes(const Glib::ustring& message, GArray* processes, const gchar *choices[]);
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The user name.
@@ -410,20 +413,14 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_ask_password(const Glib::ustring& message, const Glib::ustring& default_user, const Glib::ustring& default_domain, AskPasswordFlags flags);
   virtual void on_ask_question(const Glib::ustring& message, const Glib::StringArrayHandle& choices);
   virtual void on_reply(MountOperationResult result);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

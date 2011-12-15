@@ -24,6 +24,7 @@
  */
 
 #include <glibmm/object.h>
+#include <giomm/icon.h>
 #include <gdkmm/pixbuf.h>
 #include <gtkmm/enums.h>
 #include <gtkmm/widget.h>
@@ -83,7 +84,7 @@ namespace Gtk
  * wish. The semantics of the return value are exactly as before,
  * return true to show the window, false to not show it.
  *
- * @newin2p12
+ * @newin{2,12}
  */
 
 class Tooltip : public Glib::Object
@@ -117,6 +118,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -133,22 +136,20 @@ private:
 
 
 public:
-
   
   /** Sets the text of the tooltip to be @a markup, which is marked up
-   * with the <link
-   * linkend="PangoMarkupFormat">Pango text markup language</link>.
+   * with the .
    * If @a markup is <tt>0</tt>, the label will be hidden.
    * 
-   * @newin2p12
-   * @param markup A markup string (see <link linkend="PangoMarkupFormat">Pango markup format</link>) or <tt>0</tt>.
+   * @newin{2,12}
+   * @param markup A markup string (see ) or <tt>0</tt>.
    */
   void set_markup(const Glib::ustring& markup);
   
   /** Sets the text of the tooltip to be @a text. If @a text is <tt>0</tt>, the label
-   * will be hidden. See also gtk_tooltip_set_markup().
+   * will be hidden. See also set_markup().
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param text A text string or <tt>0</tt>.
    */
   void set_text(const Glib::ustring& markup);
@@ -156,16 +157,28 @@ public:
   /** Sets the icon of the tooltip (which is in front of the text) to be
    *  @a pixbuf.  If @a pixbuf is <tt>0</tt>, the image will be hidden.
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param pixbuf A Gdk::Pixbuf, or <tt>0</tt>.
    */
   void set_icon(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf);
+  
+  /** Sets the icon of the tooltip (which is in front of the text)
+   * to be the icon indicated by @a gicon with the size indicated
+   * by @a size. If @a gicon is <tt>0</tt>, the image will be hidden.
+   * 
+   * @newin{2,20}
+   * @param gicon A Icon representing the icon, or <tt>0</tt>.
+   * @param size A stock icon size.
+   */
+  void set_icon(const Glib::RefPtr<Gio::Icon>& icon, IconSize size);
+
+  //TODO: Remove the _from_*() suffixes?
   
   /** Sets the icon of the tooltip (which is in front of the text) to be
    * the stock item indicated by @a stock_id with the size indicated
    * by @a size.  If @a stock_id is <tt>0</tt>, the image will be hidden.
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param stock_id A stock id, or <tt>0</tt>.
    * @param size A stock icon size.
    */
@@ -175,20 +188,23 @@ public:
    * the icon indicated by @a icon_name with the size indicated
    * by @a size.  If @a icon_name is <tt>0</tt>, the image will be hidden.
    * 
-   * @newin2p14
+   * @newin{2,14}
    * @param icon_name An icon name, or <tt>0</tt>.
    * @param size A stock icon size.
    */
   void set_icon_from_icon_name(const Glib::ustring& icon_name, IconSize size);
 
-  
-  /** Replaces the widget packed into the tooltip with @a custom_widget.  
+
+  /** Replaces the widget packed into the tooltip with
+   *  @a custom_widget. @a custom_widget does not get destroyed when the tooltip goes
+   * away.
    * By default a box with a Gtk::Image and Gtk::Label is embedded in 
-   * the tooltip, which can be configured using gtk_tooltip_set_markup() 
-   * and gtk_tooltip_set_icon().
+   * the tooltip, which can be configured using set_markup() 
+   * and set_icon().
    * 
-   * @newin2p12
-   * @param custom_widget A Gtk::Widget.
+   * 
+   * @newin{2,12}
+   * @param custom_widget A Gtk::Widget, or <tt>0</tt> to unset the old custom widget.
    */
   void set_custom(Widget& custom_widget);
   
@@ -201,7 +217,7 @@ public:
    * functions for this: Gtk::TreeView::set_tooltip_row() and
    * Gtk::TreeView::set_tooltip_cell().
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param rect A Gdk::Rectangle.
    */
   void set_tip_area(const Gdk::Rectangle& rect);
@@ -214,17 +230,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

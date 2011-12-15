@@ -95,7 +95,7 @@
     <ClCompile>
       <AdditionalOptions>/vd2 /MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../../atk;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\gtk2\include\atk-1.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../atk;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\..\w32deps\gtk2\include;$(SolutionDir)\..\..\..\w32deps\gtk2\include\glib-2.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\atk-1.0;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\glib-2.0\include;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;ATKMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -129,7 +129,7 @@
     <ClCompile>
       <AdditionalOptions>/vd2 /MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../../atk;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\gtk2\include\atk-1.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../atk;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\..\w32deps\gtk2\include;$(SolutionDir)\..\..\..\w32deps\gtk2\include\glib-2.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\atk-1.0;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\glib-2.0\include;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;ATKMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -160,7 +160,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalOptions>/vd2 /MP %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>../../atk;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\gtk2\include\atk-1.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../atk;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\..\w32deps\gtk2\include;$(SolutionDir)\..\..\..\w32deps\gtk2\include\glib-2.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\atk-1.0;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\glib-2.0\include;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -190,7 +190,7 @@
     </Midl>
     <ClCompile>
       <AdditionalOptions>/vd2 /MP %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>../../atk;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\gtk2\include\atk-1.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../atk;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\..\w32deps\gtk2\include;$(SolutionDir)\..\..\..\w32deps\gtk2\include\glib-2.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\atk-1.0;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\glib-2.0\include;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -216,28 +216,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\atk\atkmm\action.cc" />
-    <ClCompile Include="..\blank.cpp" />
-    <ClCompile Include="..\..\atk\atkmm\component.cc" />
-    <ClCompile Include="..\..\atk\atkmm\document.cc" />
-    <ClCompile Include="..\..\atk\atkmm\editabletext.cc" />
-    <ClCompile Include="..\..\atk\atkmm\hyperlink.cc" />
-    <ClCompile Include="..\..\atk\atkmm\hypertext.cc" />
-    <ClCompile Include="..\..\atk\atkmm\image.cc" />
-    <ClCompile Include="..\..\atk\atkmm\implementor.cc" />
-    <ClCompile Include="..\..\atk\atkmm\init.cc" />
-    <ClCompile Include="..\..\atk\atkmm\noopobject.cc" />
-    <ClCompile Include="..\..\atk\atkmm\object.cc" />
-    <ClCompile Include="..\..\atk\atkmm\objectaccessible.cc" />
-    <ClCompile Include="..\..\atk\atkmm\relation.cc" />
-    <ClCompile Include="..\..\atk\atkmm\relationset.cc" />
-    <ClCompile Include="..\..\atk\atkmm\selection.cc" />
-    <ClCompile Include="..\..\atk\atkmm\stateset.cc" />
-    <ClCompile Include="..\..\atk\atkmm\streamablecontent.cc" />
-    <ClCompile Include="..\..\atk\atkmm\table.cc" />
-    <ClCompile Include="..\..\atk\atkmm\text.cc" />
-    <ClCompile Include="..\..\atk\atkmm\value.cc" />
-    <ClCompile Include="..\..\atk\atkmm\wrap_init.cc" />
+    <ResourceCompile Include="atkmm.rc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\atk\atkmm\action.h" />
@@ -263,7 +242,27 @@
     <ClInclude Include="..\..\atk\atkmm\wrap_init.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="atkmm.rc" />
+    <ClCompile Include="..\..\atk\atkmm\action.cc" />
+    <ClCompile Include="..\..\atk\atkmm\component.cc" />
+    <ClCompile Include="..\..\atk\atkmm\document.cc" />
+    <ClCompile Include="..\..\atk\atkmm\editabletext.cc" />
+    <ClCompile Include="..\..\atk\atkmm\hyperlink.cc" />
+    <ClCompile Include="..\..\atk\atkmm\hypertext.cc" />
+    <ClCompile Include="..\..\atk\atkmm\image.cc" />
+    <ClCompile Include="..\..\atk\atkmm\implementor.cc" />
+    <ClCompile Include="..\..\atk\atkmm\init.cc" />
+    <ClCompile Include="..\..\atk\atkmm\noopobject.cc" />
+    <ClCompile Include="..\..\atk\atkmm\object.cc" />
+    <ClCompile Include="..\..\atk\atkmm\objectaccessible.cc" />
+    <ClCompile Include="..\..\atk\atkmm\relation.cc" />
+    <ClCompile Include="..\..\atk\atkmm\relationset.cc" />
+    <ClCompile Include="..\..\atk\atkmm\selection.cc" />
+    <ClCompile Include="..\..\atk\atkmm\stateset.cc" />
+    <ClCompile Include="..\..\atk\atkmm\streamablecontent.cc" />
+    <ClCompile Include="..\..\atk\atkmm\table.cc" />
+    <ClCompile Include="..\..\atk\atkmm\text.cc" />
+    <ClCompile Include="..\..\atk\atkmm\value.cc" />
+    <ClCompile Include="..\..\atk\atkmm\wrap_init.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

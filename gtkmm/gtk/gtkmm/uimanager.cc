@@ -32,22 +32,14 @@ namespace Gtk
 
 typedef UIManager::ui_merge_id ui_merge_id; //Help gmmproc so that it does not need to add the full type name for the return type.
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 UIManager::ui_merge_id UIManager::add_ui_from_string(const Glib::ustring& buffer)
-#else
-UIManager::ui_merge_id UIManager::add_ui_from_string(const Glib::ustring& buffer, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   guint retvalue = gtk_ui_manager_add_ui_from_string(gobj(), buffer.c_str(), buffer.size(), &(gerror));
 
   if (gerror)
   { 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   ::Glib::Error::throw_exception(gerror);
-#else
-  error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   }
   return retvalue;
 }
@@ -288,24 +280,18 @@ const Glib::Class& UIManager_Class::init()
   return *this;
 }
 
+
 void UIManager_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->add_widget = &add_widget_callback;
   klass->actions_changed = &actions_changed_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void UIManager_Class::add_widget_callback(GtkUIManager* self, GtkWidget* p0)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -338,7 +324,7 @@ void UIManager_Class::add_widget_callback(GtkUIManager* self, GtkWidget* p0)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -378,7 +364,7 @@ void UIManager_Class::actions_changed_callback(GtkUIManager* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -387,7 +373,6 @@ void UIManager_Class::actions_changed_callback(GtkUIManager* self)
   if(base && base->actions_changed)
     (*base->actions_changed)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* UIManager_Class::wrap_new(GObject* object)
@@ -416,6 +401,7 @@ UIManager::UIManager(GtkUIManager* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 UIManager::~UIManager()
 {}
 
@@ -426,6 +412,7 @@ GType UIManager::get_type()
 {
   return uimanager_class_.init().get_type();
 }
+
 
 GType UIManager::get_base_type()
 {
@@ -447,6 +434,7 @@ Glib::RefPtr<UIManager> UIManager::create()
 {
   return Glib::RefPtr<UIManager>( new UIManager() );
 }
+
 void UIManager::set_add_tearoffs(bool add_tearoffs)
 {
 gtk_ui_manager_set_add_tearoffs(gobj(), static_cast<int>(add_tearoffs)); 
@@ -527,21 +515,12 @@ Glib::RefPtr<const Action> UIManager::get_action(const Glib::ustring& path) cons
   return const_cast<UIManager*>(this)->get_action(path);
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 ui_merge_id UIManager::add_ui_from_file(const Glib::ustring& filename)
-#else
-ui_merge_id UIManager::add_ui_from_file(const Glib::ustring& filename, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   ui_merge_id retvalue = gtk_ui_manager_add_ui_from_file(gobj(), filename.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
@@ -631,7 +610,6 @@ Glib::PropertyProxy_ReadOnly<Glib::ustring> UIManager::property_ui() const
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::UIManager::on_add_widget(Widget* widget)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -650,10 +628,6 @@ void Gtk::UIManager::on_actions_changed()
   if(base && base->actions_changed)
     (*base->actions_changed)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

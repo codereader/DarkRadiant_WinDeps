@@ -41,8 +41,14 @@ class TargetList
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 
-  // For use with Glib::RefPtr<> only.
+  /** Increment the reference count for this object.
+   * You should never need to do this manually - use the object via a RefPtr instead.
+   */
   void reference()   const;
+
+  /** Decrement the reference count for this object.
+   * You should never need to do this manually - use the object via a RefPtr instead.
+   */
   void unreference() const;
 
   ///Provides access to the underlying C instance.
@@ -74,7 +80,7 @@ public:
    * @param flags The flags for this target.
    * @param info An ID that will be passed back to the application.
    */
-  void add(const Glib::ustring& target, TargetFlags flags = TargetFlags(0), guint info = 0);
+  void add(const Glib::ustring& target, TargetFlags flags =  TargetFlags(0), guint info =  0);
   void add(const ArrayHandle_TargetEntry& targets);
   
   /** Removes a target from a target list.

@@ -1,5 +1,5 @@
 // -*- c++ -*-
-/* $Id: comboboxentrytext.cc 1082 2009-01-19 17:55:19Z murrayc $ */
+/* $Id$ */
 
 /* 
  *
@@ -20,11 +20,19 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+
+//Allow us to use deprecated GTK+ API.
+//This whole C++ class is deprecated anyway.
+#undef GTK_DISABLE_DEPRECATED
+
 #include <gtkmm/comboboxentrytext.h>
 
 #include <gtkmm/liststore.h>
 #include <gtkmm/cellrenderertext.h>
 #include <gtk/gtk.h>
+
 
 namespace Gtk
 {
@@ -42,7 +50,7 @@ ComboBoxEntryText::ComboBoxEntryText(GtkComboBoxEntry* castitem)
   set_text_column(m_text_columns.m_column);
 }
 
-void ComboBoxEntryText::append_text(const Glib::ustring& text)
+void ComboBoxEntryText::append(const Glib::ustring& text)
 {
   //We can not use gtk_combo_box_append_text() here, because that can only be used if gtk_combo_box_new_text() has been used.
 
@@ -58,13 +66,13 @@ void ComboBoxEntryText::append_text(const Glib::ustring& text)
   }
 }
 
-void ComboBoxEntryText::insert_text(int position, const Glib::ustring& text)
+void ComboBoxEntryText::insert(int position, const Glib::ustring& text)
 {
   //TODO: We should not use gtk_combo_box_insert_text() here, because that can only be used if gtk_combo_box_new_text() has been used.
   gtk_combo_box_insert_text(GTK_COMBO_BOX(gobj()), position, text.c_str());
 }
 
-void ComboBoxEntryText::prepend_text(const Glib::ustring& text)
+void ComboBoxEntryText::prepend(const Glib::ustring& text)
 {
   //We can not use gtk_combo_box_prepend_text() here, because that can only be used if gtk_combo_box_new_text() has been used.
 
@@ -80,11 +88,22 @@ void ComboBoxEntryText::prepend_text(const Glib::ustring& text)
   }
 }
 
-//deprecated.
-void ComboBoxEntryText::clear()
+
+void ComboBoxEntryText::append_text(const Glib::ustring& text)
 {
-  clear_items();
+  append(text);
 }
+
+void ComboBoxEntryText::insert_text(int position, const Glib::ustring& text)
+{
+  insert(position, text);
+}
+
+void ComboBoxEntryText::prepend_text(const Glib::ustring& text)
+{
+  prepend(text);
+}
+
 
 void ComboBoxEntryText::clear_items()
 {
@@ -155,6 +174,13 @@ void ComboBoxEntryText::set_active_text(const Glib::ustring& text)
   unset_active();
 }
 
+//deprecated.
+void ComboBoxEntryText::clear()
+{
+  clear_items();
+}
+
+#endif //GTKMM_DISABLE_DEPRECATED
 
 } // namespace Gtk
 

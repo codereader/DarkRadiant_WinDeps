@@ -1,5 +1,5 @@
 // -*- c++ -*-
-/* $Id: targetentry.cc 1082 2009-01-19 17:55:19Z murrayc $ */
+/* $Id$ */
 
 /* targetentry.cc
  *

@@ -15,8 +15,6 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <gtk/gtk.h>
-
 #include <glibmm/interface.h>
 
 #include <gtkmm/pagesetup.h>
@@ -25,13 +23,22 @@
 _DEFS(gtkmm,gtk)
 _PINCLUDE(glibmm/private/interface_p.h)
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+extern "C"
+{
+typedef struct _GtkPrintOperationPreviewIface GtkPrintOperationPreviewIface;
+}
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+
+
 namespace Gtk
 {
 
 //TODO: There is no GtkPrintOperationPreview documentation either.
 // See http://bugzilla.gnome.org/show_bug.cgi?id=575538
 /** 
- * @newin2p10
+ * @newin{2,10}
  *
  * @ingroup Printing
  */

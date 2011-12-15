@@ -267,25 +267,19 @@ const Glib::Class& Entry_Class::init()
   return *this;
 }
 
+
 void Entry_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->populate_popup = &populate_popup_callback;
   klass->insert_at_cursor = &insert_at_cursor_callback;
   klass->activate = &activate_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Entry_Class::populate_popup_callback(GtkEntry* self, GtkMenu* p0)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -318,7 +312,7 @@ void Entry_Class::populate_popup_callback(GtkEntry* self, GtkMenu* p0)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -359,7 +353,7 @@ void Entry_Class::insert_at_cursor_callback(GtkEntry* self, const gchar* p0)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -399,7 +393,7 @@ void Entry_Class::activate_callback(GtkEntry* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -408,7 +402,6 @@ void Entry_Class::activate_callback(GtkEntry* self)
   if(base && base->activate)
     (*base->activate)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Entry_Class::wrap_new(GObject* o)
@@ -444,6 +437,7 @@ GType Entry::get_type()
   return entry_class_.init().get_type();
 }
 
+
 GType Entry::get_base_type()
 {
   return gtk_entry_get_type();
@@ -458,6 +452,51 @@ Entry::Entry()
 {
   
 
+}
+
+Entry::Entry(const Glib::RefPtr<EntryBuffer>& buffer)
+:
+  // Mark this class as non-derived to allow C++ vfuncs to be skipped.
+  Glib::ObjectBase(0),
+  Gtk::Widget(Glib::ConstructParams(entry_class_.init(), "buffer", Glib::unwrap(buffer), static_cast<char*>(0)))
+{
+  
+
+}
+
+Glib::RefPtr<EntryBuffer> Entry::get_buffer()
+{
+
+  Glib::RefPtr<EntryBuffer> retvalue = Glib::wrap(gtk_entry_get_buffer(gobj()));
+  if(retvalue)
+    retvalue->reference(); //The function does not do a ref for us.
+  return retvalue;
+
+}
+
+Glib::RefPtr<const EntryBuffer> Entry::get_buffer() const
+{
+  return const_cast<Entry*>(this)->get_buffer();
+}
+
+void Entry::set_buffer(const Glib::RefPtr<EntryBuffer>& buffer)
+{
+gtk_entry_set_buffer(gobj(), Glib::unwrap(buffer)); 
+}
+
+Glib::RefPtr<Gdk::Window> Entry::get_text_window()
+{
+
+  Glib::RefPtr<Gdk::Window> retvalue = Glib::wrap((GdkWindowObject*)(gtk_entry_get_text_window(gobj())));
+  if(retvalue)
+    retvalue->reference(); //The function does not do a ref for us.
+  return retvalue;
+
+}
+
+Glib::RefPtr<const Gdk::Window> Entry::get_text_window() const
+{
+  return const_cast<Entry*>(this)->get_text_window();
 }
 
 void Entry::set_visibility(bool visible)
@@ -577,7 +616,7 @@ Glib::RefPtr<const Pango::Layout> Entry::get_layout() const
 
 void Entry::get_layout_offsets(int& x, int& y)
 {
-gtk_entry_get_layout_offsets(gobj(), &x, &y); 
+gtk_entry_get_layout_offsets(gobj(), &(x), &(y)); 
 }
 
 int Entry::layout_index_to_text_index(int layout_index) const
@@ -750,6 +789,31 @@ int Entry::get_current_icon_drag_source()
   return gtk_entry_get_current_icon_drag_source(gobj());
 }
 
+Glib::RefPtr<Gdk::Window> Entry::get_icon_window(EntryIconPosition icon_pos)
+{
+
+  Glib::RefPtr<Gdk::Window> retvalue = Glib::wrap((GdkWindowObject*)(gtk_entry_get_icon_window(gobj(), ((GtkEntryIconPosition)(icon_pos)))));
+  if(retvalue)
+    retvalue->reference(); //The function does not do a ref for us.
+  return retvalue;
+
+}
+
+Glib::RefPtr<const Gdk::Window> Entry::get_icon_window(EntryIconPosition icon_pos) const
+{
+  return const_cast<Entry*>(this)->get_icon_window(icon_pos);
+}
+
+bool Entry::im_context_filter_keypress(GdkEventKey* event)
+{
+  return gtk_entry_im_context_filter_keypress(gobj(), event);
+}
+
+void Entry::reset_im_context()
+{
+gtk_entry_reset_im_context(gobj()); 
+}
+
 
 Glib::SignalProxy1< void,Menu* > Entry::signal_populate_popup()
 {
@@ -780,6 +844,20 @@ Glib::SignalProxy2< void,EntryIconPosition,const GdkEventButton* > Entry::signal
   return Glib::SignalProxy2< void,EntryIconPosition,const GdkEventButton* >(this, &Entry_signal_icon_press_info);
 }
 
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy< Glib::RefPtr<EntryBuffer> > Entry::property_buffer() 
+{
+  return Glib::PropertyProxy< Glib::RefPtr<EntryBuffer> >(this, "buffer");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly< Glib::RefPtr<EntryBuffer> > Entry::property_buffer() const
+{
+  return Glib::PropertyProxy_ReadOnly< Glib::RefPtr<EntryBuffer> >(this, "buffer");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
 Glib::PropertyProxy_ReadOnly<int> Entry::property_cursor_position() const
@@ -848,6 +926,20 @@ Glib::PropertyProxy<bool> Entry::property_has_frame()
 Glib::PropertyProxy_ReadOnly<bool> Entry::property_has_frame() const
 {
   return Glib::PropertyProxy_ReadOnly<bool>(this, "has-frame");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<Border> Entry::property_inner_border() 
+{
+  return Glib::PropertyProxy<Border>(this, "inner-border");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<Border> Entry::property_inner_border() const
+{
+  return Glib::PropertyProxy_ReadOnly<Border>(this, "inner-border");
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
 
@@ -1216,6 +1308,62 @@ Glib::PropertyProxy_ReadOnly<bool> Entry::property_secondary_icon_sensitive() co
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<bool> Entry::property_primary_icon_tooltip_text() 
+{
+  return Glib::PropertyProxy<bool>(this, "primary-icon-tooltip-text");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> Entry::property_primary_icon_tooltip_text() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "primary-icon-tooltip-text");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<bool> Entry::property_secondary_icon_tooltip_text() 
+{
+  return Glib::PropertyProxy<bool>(this, "secondary-icon-tooltip-text");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> Entry::property_secondary_icon_tooltip_text() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "secondary-icon-tooltip-text");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<bool> Entry::property_primary_icon_tooltip_markup() 
+{
+  return Glib::PropertyProxy<bool>(this, "primary-icon-tooltip-markup");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> Entry::property_primary_icon_tooltip_markup() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "primary-icon-tooltip-markup");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<bool> Entry::property_secondary_icon_tooltip_markup() 
+{
+  return Glib::PropertyProxy<bool>(this, "secondary-icon-tooltip-markup");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> Entry::property_secondary_icon_tooltip_markup() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "secondary-icon-tooltip-markup");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
 Glib::PropertyProxy<Glib::ustring> Entry::property_im_module() 
 {
   return Glib::PropertyProxy<Glib::ustring>(this, "im-module");
@@ -1230,7 +1378,6 @@ Glib::PropertyProxy_ReadOnly<Glib::ustring> Entry::property_im_module() const
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::Entry::on_populate_popup(Menu* menu)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -1258,10 +1405,6 @@ void Gtk::Entry::on_activate()
   if(base && base->activate)
     (*base->activate)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

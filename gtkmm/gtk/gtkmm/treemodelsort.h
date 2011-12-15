@@ -26,11 +26,12 @@
  */
 
 
+// We couldn't include it in treemodel.h, but doing it here makes it easier for people.
+#include <gtkmm/treepath.h>
+
 #include <gtkmm/treeiter.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treesortable.h>
-// We couldn't include it in treemodel.h, but doing it here makes it easier for people.
-#include <gtkmm/treepath.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -46,13 +47,13 @@ namespace Gtk
 
 /** A wrapper which makes an underlying Gtk::TreeModel sortable.
  *
- * The TreeModelSort is a model which implements the TreeSortable interface. 
+ * The TreeModelSort is a model which implements the TreeSortable interface.
  * It does not hold any data itself, but rather is created with
  * a child model and proxies its data.  It has identical column types to
  * this child model, and the changes in the child are propagated.  The
  * primary purpose of this model is to provide a way to sort a different
  * model without modifying it. Note that the sort function used by
- * TreeModelSort is not guaranteed to be stable. 
+ * TreeModelSort is not guaranteed to be stable.
  *
  * For instance, you might create two TreeView widgets each with a
  * view of the same data.  If the model is wrapped by a
@@ -94,6 +95,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -110,19 +113,20 @@ private:
 
   
 protected:
-  explicit TreeModelSort(const Glib::RefPtr<TreeModel>& model);
+    explicit TreeModelSort(const Glib::RefPtr<TreeModel>& model);
+
 
 public:
   
   static Glib::RefPtr<TreeModelSort> create(const Glib::RefPtr<TreeModel>& model);
 
 
-  /** Return value: the "child model" being sorted
+  /** Returns the model the Gtk::TreeModelSort is sorting.
    * @return The "child model" being sorted.
    */
   Glib::RefPtr<TreeModel> get_model();
   
-  /** Return value: the "child model" being sorted
+  /** Returns the model the Gtk::TreeModelSort is sorting.
    * @return The "child model" being sorted.
    */
   Glib::RefPtr<const TreeModel> get_model() const;
@@ -180,17 +184,28 @@ public:
   void clear_cache();
 
   
-  /** <warning><para>
+  /** <warning>
    * This function is slow. Only use it for debugging and/or testing purposes.
-   * </para></warning>
+   * </warning>
    * 
    * Checks if the given iter is a valid iter for this Gtk::TreeModelSort.
+   * 
+   * @newin{2,2}
    * @param iter A Gtk::TreeIter.
    * @return <tt>true</tt> if the iter is valid, <tt>false</tt> if the iter is invalid.
-   * 
-   * @newin2p2.
    */
   bool iter_is_valid(const iterator& iter) const;
+  
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The model for the TreeModelSort to sort.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< Glib::RefPtr<TreeModel> > property_model() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
 
 protected:
   virtual void set_value_impl(const iterator& row, int column, const Glib::ValueBase& value);
@@ -200,17 +215,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

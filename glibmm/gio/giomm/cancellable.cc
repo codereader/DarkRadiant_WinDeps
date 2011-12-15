@@ -27,6 +27,33 @@
 
 namespace Gio {
 
+extern "C" {
+
+void delete_slot(gpointer data)
+{
+    Cancellable::SlotCancelledCallback* callback =
+        reinterpret_cast<Cancellable::SlotCancelledCallback*>(data);
+    delete callback;
+}
+
+void slot_cancelled_proxy(GCancellable * /*cancellable*/, gpointer data)
+{
+    Cancellable::SlotCancelledCallback* callback =
+        reinterpret_cast<Cancellable::SlotCancelledCallback*>(data);
+    (*callback)();
+}
+
+} // extern "C"
+
+gulong
+Cancellable::connect(const SlotCancelledCallback& callback)
+{
+    SlotCancelledCallback* slot_copy = new SlotCancelledCallback(callback);
+    return g_cancellable_connect (gobj(),
+                                  G_CALLBACK(slot_cancelled_proxy),
+                                  slot_copy,
+                                  &delete_slot);
+}
 
 } // namespace Gio
 
@@ -90,18 +117,11 @@ void Cancellable_Class::class_init_function(void* g_class, void* class_data)
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->cancelled = &cancelled_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Cancellable_Class::cancelled_callback(GCancellable* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -133,7 +153,7 @@ void Cancellable_Class::cancelled_callback(GCancellable* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -142,7 +162,6 @@ void Cancellable_Class::cancelled_callback(GCancellable* self)
   if(base && base->cancelled)
     (*base->cancelled)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Cancellable_Class::wrap_new(GObject* object)
@@ -204,6 +223,7 @@ Glib::RefPtr<Cancellable> Cancellable::create()
 {
   return Glib::RefPtr<Cancellable>( new Cancellable() );
 }
+
 bool Cancellable::is_cancelled() const
 {
   return g_cancellable_is_cancelled(const_cast<GCancellable*>(gobj()));
@@ -212,6 +232,16 @@ bool Cancellable::is_cancelled() const
 int Cancellable::get_fd() const
 {
   return g_cancellable_get_fd(const_cast<GCancellable*>(gobj()));
+}
+
+bool Cancellable::make_pollfd(GPollFD* pollfd)
+{
+  return g_cancellable_make_pollfd(gobj(), pollfd);
+}
+
+void Cancellable::release_fd()
+{
+g_cancellable_release_fd(gobj()); 
 }
 
 void Cancellable::cancel()
@@ -225,7 +255,7 @@ Glib::RefPtr<Cancellable> Cancellable::get_current()
   Glib::RefPtr<Cancellable> retvalue = Glib::wrap(g_cancellable_get_current());
 
   if(retvalue)
-    retvalue->reference(); //The function does not do a ref for us.
+    retvalue->reference(); //The function does not do a ref for us
   return retvalue;
 }
 
@@ -245,6 +275,11 @@ void Cancellable::reset()
 g_cancellable_reset(gobj()); 
 }
 
+void Cancellable::disconnect(gulong handler_id)
+{
+g_cancellable_disconnect(gobj(), handler_id); 
+}
+
 
 Glib::SignalProxy0< void > Cancellable::signal_cancelled()
 {
@@ -252,7 +287,6 @@ Glib::SignalProxy0< void > Cancellable::signal_cancelled()
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gio::Cancellable::on_cancelled()
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -262,10 +296,6 @@ void Gio::Cancellable::on_cancelled()
   if(base && base->cancelled)
     (*base->cancelled)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gio

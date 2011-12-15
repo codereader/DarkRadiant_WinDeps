@@ -72,23 +72,14 @@ const Glib::Class& TextChildAnchor_Class::init()
   return *this;
 }
 
+
 void TextChildAnchor_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* TextChildAnchor_Class::wrap_new(GObject* object)
@@ -117,6 +108,7 @@ TextChildAnchor::TextChildAnchor(GtkTextChildAnchor* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 TextChildAnchor::~TextChildAnchor()
 {}
 
@@ -127,6 +119,7 @@ GType TextChildAnchor::get_type()
 {
   return textchildanchor_class_.init().get_type();
 }
+
 
 GType TextChildAnchor::get_base_type()
 {
@@ -148,6 +141,7 @@ Glib::RefPtr<TextChildAnchor> TextChildAnchor::create()
 {
   return Glib::RefPtr<TextChildAnchor>( new TextChildAnchor() );
 }
+
 Glib::ListHandle<Widget*> TextChildAnchor::get_widgets()
 {
   return Glib::ListHandle<Widget*>(gtk_text_child_anchor_get_widgets(gobj()), Glib::OWNERSHIP_SHALLOW);
@@ -162,13 +156,6 @@ bool TextChildAnchor::get_deleted() const
 {
   return gtk_text_child_anchor_get_deleted(const_cast<GtkTextChildAnchor*>(gobj()));
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

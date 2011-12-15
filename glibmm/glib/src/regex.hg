@@ -39,6 +39,8 @@ _WRAP_ENUM(RegexMatchFlags, GRegexMatchFlags, NO_GTYPE)
 _WRAP_GERROR(RegexError, GRegexError, G_REGEX_ERROR, NO_GTYPE)
 
 
+class MatchInfo;
+
 /** Perl-compatible regular expressions - matches strings against regular expressions.
  *
  * The Glib::Regex functions implement regular expression pattern matching using 
@@ -97,55 +99,91 @@ class Regex
   _IGNORE(g_regex_ref, g_regex_unref)
 public:
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static Glib::RefPtr<Glib::Regex> create(const Glib::ustring& pattern, RegexCompileFlags compile_options = static_cast<RegexCompileFlags>(0), RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0));
-#else
-  static Glib::RefPtr<Glib::Regex> create(const Glib::ustring& pattern, RegexCompileFlags compile_options, RegexMatchFlags match_options, std::auto_ptr<Glib::Error>& error);
-#endif /* !GLIBMM_EXCEPTIONS_ENABLED */
   
   _WRAP_METHOD(Glib::ustring get_pattern() const, g_regex_get_pattern)
   _WRAP_METHOD(int get_max_backref() const, g_regex_get_max_backref)
   _WRAP_METHOD(int get_capture_count() const, g_regex_get_capture_count)
   _WRAP_METHOD(int get_string_number(const Glib::ustring& name) const, g_regex_get_string_number)
+  _WRAP_METHOD(RegexCompileFlags get_compile_flags() const, g_regex_get_compile_flags)
+  _WRAP_METHOD(RegexMatchFlags get_match_flags() const, g_regex_get_match_flags)
 
   static Glib::ustring escape_string(const Glib::ustring& string);
 
   _WRAP_METHOD(static bool match_simple(const Glib::ustring& pattern, const Glib::ustring& string, RegexCompileFlags compile_options = static_cast<RegexCompileFlags>(0), RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0)), g_regex_match_simple)
 
-  //TODO: _WRAP_METHOD(bool match(const Glib::ustring& string, RegexMatchFlags match_options = (RegexMatchFlags)0, GMatchInfo **match_info = 0), g_regex_match)
+  _WRAP_METHOD_DOCS_ONLY(g_regex_match)
+  bool match(
+    const Glib::ustring& string,
+    Glib::MatchInfo& match_info,
+    RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0)
+  );
+
+  /// A match() method not requiring a Glib::MatchInfo.
   bool match(const Glib::ustring& string, RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0));
 
-  //TODO: Wrap GMatchInfo as an iterator:
-  //_WRAP_METHOD(bool match_full(const gchar* string, gssize string_len, int start_position, RegexMatchFlags match_options = (RegexMatchFlags)0, GMatchInfo** match_info = 0), g_regex_match_full, errthrow)
+  /// A match() method with a start position and a Glib::MatchInfo.
+  bool match(
+    const Glib::ustring& string,
+    int start_position,
+    Glib::MatchInfo& match_info,
+    RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0)
+  );
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  _WRAP_METHOD_DOCS_ONLY(g_regex_match_full)
+  bool match(
+    const Glib::ustring& string,
+    gssize string_len,
+    int start_position,
+    Glib::MatchInfo& match_info,
+    RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0)
+  );
+
+  /// A match() method with a start position not requiring a Glib::MatchInfo.
   bool match(const Glib::ustring& string, int start_position, RegexMatchFlags match_options);
-#else
-  bool match(const Glib::ustring& string, int start_position, RegexMatchFlags match_options, std::auto_ptr<Glib::Error>& error);
-#endif /* !GLIBMM_EXCEPTIONS_ENABLED */
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  /** A match() method with a string length and start position not requiring a
+   * Glib::MatchInfo.
+   */
   bool match(const Glib::ustring& string, gssize string_len, int start_position, RegexMatchFlags match_options);
-#else
-  bool match(const Glib::ustring& string, gssize string_len, int start_position, RegexMatchFlags match_options, std::auto_ptr<Glib::Error>& error);
-#endif /* !GLIBMM_EXCEPTIONS_ENABLED */
 
-  //TODO: _WRAP_METHOD(bool match_all(const Glib::ustring& string, RegexMatchFlags match_options = (RegexMatchFlags)0, GMatchInfo ** match_info = 0), g_regex_match_all)
+  _WRAP_METHOD_DOCS_ONLY(g_regex_match_all)
+  bool match_all(
+    const Glib::ustring& string,
+    Glib::MatchInfo& match_info,
+    RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0)
+  );
+
+  /// A match_all() method not requiring a Glib::MatchInfo.
   bool match_all(const Glib::ustring& string, RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0));
 
-  //TODO: _WRAP_METHOD(bool match_all_full(const gchar* string, gssize string_len, int start_position, RegexMatchFlags match_options = (RegexMatchFlags)0, GMatchInfo** match_info = 0), g_regex_match_all_full, errthrow)
+  /// A match_all() method with a start positon and a Glib::MatchInfo.
+  bool match_all(
+    const Glib::ustring& string,
+    int start_position,
+    Glib::MatchInfo& match_info,
+    RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0)
+  );
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  _WRAP_METHOD_DOCS_ONLY(g_regex_match_all_full, errthrow)
+  /// @throw Glib::Error.
+  bool match_all(
+    const Glib::ustring& string,
+    gssize string_len,
+    int start_position,
+    Glib::MatchInfo& match_info,
+    RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0)
+  );
+
+  /** A match_all() method with a start position not requiring a
+   * Glib::MatchInfo.
+   */
   bool match_all(const Glib::ustring& string, int start_position, RegexMatchFlags match_options);
-#else
-  bool match_all(const Glib::ustring& string, int start_position, RegexMatchFlags match_options, std::auto_ptr<Glib::Error>& error);
-#endif /* !GLIBMM_EXCEPTIONS_ENABLED */
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  /** A match_all() method with a start position and a string length not
+   * requiring a Glib::MatchInfo.
+   */
   bool match_all(const Glib::ustring& string, gssize string_len, int start_position, RegexMatchFlags match_options);
-#else
-  bool match_all(const Glib::ustring& string, gssize string_len, int start_position, RegexMatchFlags match_options, std::auto_ptr<Glib::Error>& error);
-#endif /* !GLIBMM_EXCEPTIONS_ENABLED */
 
 #m4 _CONVERSION(`gchar**',`Glib::StringArrayHandle',`Glib::StringArrayHandle($3, Glib::OWNERSHIP_DEEP)')
 
@@ -154,57 +192,88 @@ public:
 
   _WRAP_METHOD(Glib::StringArrayHandle split(const gchar* string, gssize string_len, int start_position, RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0), int max_tokens = 0) const, g_regex_split_full, errthrow)
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::StringArrayHandle split(const Glib::ustring& string, int start_position, RegexMatchFlags match_options, int max_tokens) const;
-#else
-  Glib::StringArrayHandle split(const Glib::ustring& string, int start_position, RegexMatchFlags match_options, int max_tokens, std::auto_ptr<Glib::Error>& error) const;
-#endif /* !GLIBMM_EXCEPTIONS_ENABLED */
 
   _WRAP_METHOD(Glib::ustring replace(const gchar* string, gssize string_len, int start_position, const Glib::ustring& replacement, RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0)), g_regex_replace, errthrow)
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::ustring replace(const Glib::ustring& string, int start_position, const Glib::ustring& replacement, RegexMatchFlags match_options);
-#else
-  Glib::ustring replace(const Glib::ustring& string, int start_position, const Glib::ustring& replacement, RegexMatchFlags match_options, std::auto_ptr<Glib::Error>& error);
-#endif /* !GLIBMM_EXCEPTIONS_ENABLED */
 
   _WRAP_METHOD(Glib::ustring replace_literal(const gchar *string, gssize string_len, int start_position, const Glib::ustring& replacement, RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0)), g_regex_replace_literal, errthrow)
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::ustring replace_literal(const Glib::ustring& string, int start_position, const Glib::ustring& replacement, RegexMatchFlags match_options);
-#else
-  Glib::ustring replace_literal(const Glib::ustring& string, int start_position, const Glib::ustring& replacement, RegexMatchFlags match_options, std::auto_ptr<Glib::Error>& error);
-#endif /* !GLIBMM_EXCEPTIONS_ENABLED */
 
   _WRAP_METHOD(Glib::ustring replace_eval(const Glib::ustring& string, gssize string_len, int start_position, RegexMatchFlags match_options, GRegexEvalCallback eval,  gpointer user_data), g_regex_replace_eval, errthrow)
   _WRAP_METHOD(static bool check_replacement(const Glib::ustring& replacement, gboolean* has_references), g_regex_check_replacement, errthrow)
+};
 
-/* Match info */
-/*
-GRegex		 *g_match_info_get_regex	(const GMatchInfo    *match_info);
-const gchar      *g_match_info_get_string       (const GMatchInfo    *match_info);
+//TODO: Add C++ iterator like functionality for this class.
+/** MatchInfo - MatchInfo is used to retrieve information about the regular
+ * expression match which created it.
+ * @newin{2,28}
+ */
+class MatchInfo
+{
+  _CLASS_GENERIC(MatchInfo, GMatchInfo)
 
-void		  g_match_info_free		(GMatchInfo          *match_info);
-  _WRAP_METHOD(bool g_match_info_next		(GMatchInfo          *match_info,
-						 GError             **error);
-  _WRAP_METHOD(bool g_match_info_matches		(const GMatchInfo    *match_info);
-  _WRAP_METHOD(int g_match_info_get_match_count	(const GMatchInfo    *match_info);
-  _WRAP_METHOD(bool g_match_info_is_partial_match	(const GMatchInfo    *match_info);
-Glib::ustring g_match_info_expand_references(const GMatchInfo    *match_info,
-						 Glib::ustring& string_to_expand,
-						 GError             **error);
-Glib::ustring g_match_info_fetch		(const GMatchInfo    *match_info,
-						 int match_num);
-  _WRAP_METHOD(bool g_match_info_fetch_pos	(const GMatchInfo    *match_info,
-						 int match_num,
-						 int                 *start_pos,
-						 int                 *end_pos);
-Glib::ustring g_match_info_fetch_named	(const GMatchInfo    *match_info,
-						 Glib::ustring& name);
-  _WRAP_METHOD(bool g_match_info_fetch_named_pos	(const GMatchInfo    *match_info,
-						 Glib::ustring& name,
-						 int                 *start_pos,
-						 int                 *end_pos);
-gchar		**g_match_info_fetch_all	(const GMatchInfo    *match_info);
-*/
+public:
+  /// Default constructor.
+  MatchInfo();
+
+  /** C object constructor.
+   * @param castitem The C object.
+   * @param take_ownership Whether to destroy the C object with the wrapper or
+   * not.
+   */
+  explicit MatchInfo(GMatchInfo* castitem, bool take_ownership = true);
+
+  /// Destructor.
+  virtual ~MatchInfo();
+
+  /// Provides access to the underlying C object.
+  GMatchInfo* gobj()
+    { return reinterpret_cast<GMatchInfo*>(gobject_); }
+
+  /// Provides access to the underlying C object.
+  const GMatchInfo* gobj() const
+    { return reinterpret_cast<GMatchInfo*>(gobject_); }
+
+private:
+// noncopyable
+  MatchInfo(const MatchInfo& other);
+  MatchInfo& operator=(const MatchInfo& other);
+
+  friend class Regex;
+
+public:
+
+  _WRAP_METHOD(Glib::RefPtr<Regex> get_regex(), g_match_info_get_regex)
+  _WRAP_METHOD(Glib::RefPtr<const Regex> get_regex() const, g_match_info_get_regex, constversion)
+
+  _WRAP_METHOD(Glib::ustring get_string() const, g_match_info_get_string)
+  _WRAP_METHOD(bool matches() const, g_match_info_matches)
+
+  _WRAP_METHOD(bool next(), g_match_info_next, errthrow)
+
+  _WRAP_METHOD(int get_match_count() const, g_match_info_get_match_count)
+  _WRAP_METHOD(bool is_partial_match() const, g_match_info_is_partial_match)
+
+  _WRAP_METHOD(Glib::ustring expand_references(const Glib::ustring& string_to_expand), g_match_info_expand_references, errthrow)
+
+  _WRAP_METHOD(Glib::ustring fetch(int match_num), g_match_info_fetch)
+
+  _WRAP_METHOD(bool fetch_pos(int match_num, int& start_pos, int& end_pos), g_match_info_fetch_pos)
+
+  _WRAP_METHOD(Glib::ustring fetch_named(const Glib::ustring& name), g_match_info_fetch_named)
+
+  _WRAP_METHOD(bool fetch_named_pos(const Glib::ustring& name, int& start_pos, int& end_pos), g_match_info_fetch_named_pos)
+
+  _WRAP_METHOD(Glib::StringArrayHandle fetch_all(), g_match_info_fetch_all)
+
+protected:
+  GMatchInfo* gobject_;      // The C object.
+  bool take_ownership;       // Bool signaling ownership.
+
+protected:
+  // So that Glib::Regex::match() can set the C object.
+  void set_gobject(GMatchInfo* castitem, bool take_ownership = true);
 };
 
 } // namespace Glib

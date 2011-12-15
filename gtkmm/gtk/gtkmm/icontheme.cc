@@ -87,18 +87,10 @@ Gtk::IconThemeError::Code Gtk::IconThemeError::code() const
   return static_cast<Code>(Glib::Error::code());
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void Gtk::IconThemeError::throw_func(GError* gobject)
 {
   throw Gtk::IconThemeError(gobject);
 }
-#else
-//When not using exceptions, we just pass the Exception object around without throwing it:
-std::auto_ptr<Glib::Error> Gtk::IconThemeError::throw_func(GError* gobject)
-{
-  return std::auto_ptr<Glib::Error>(new Gtk::IconThemeError(gobject));
-}
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 // static
 GType Glib::Value<Gtk::IconThemeError::Code>::value_type()
@@ -146,23 +138,17 @@ const Glib::Class& IconTheme_Class::init()
   return *this;
 }
 
+
 void IconTheme_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->changed = &changed_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void IconTheme_Class::changed_callback(GtkIconTheme* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -194,7 +180,7 @@ void IconTheme_Class::changed_callback(GtkIconTheme* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -203,7 +189,6 @@ void IconTheme_Class::changed_callback(GtkIconTheme* self)
   if(base && base->changed)
     (*base->changed)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* IconTheme_Class::wrap_new(GObject* object)
@@ -232,6 +217,7 @@ IconTheme::IconTheme(GtkIconTheme* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 IconTheme::~IconTheme()
 {}
 
@@ -242,6 +228,7 @@ GType IconTheme::get_type()
 {
   return icontheme_class_.init().get_type();
 }
+
 
 GType IconTheme::get_base_type()
 {
@@ -263,13 +250,14 @@ Glib::RefPtr<IconTheme> IconTheme::create()
 {
   return Glib::RefPtr<IconTheme>( new IconTheme() );
 }
+
 Glib::RefPtr<IconTheme> IconTheme::get_default()
 {
 
   Glib::RefPtr<IconTheme> retvalue = Glib::wrap(gtk_icon_theme_get_default());
 
   if(retvalue)
-    retvalue->reference(); //The function does not do a ref for us.
+    retvalue->reference(); //The function does not do a ref for us
   return retvalue;
 }
 
@@ -280,7 +268,7 @@ Glib::RefPtr<IconTheme> IconTheme::get_for_screen(const Glib::RefPtr<Gdk::Screen
   Glib::RefPtr<IconTheme> retvalue = Glib::wrap(gtk_icon_theme_get_for_screen(Glib::unwrap(screen)));
 
   if(retvalue)
-    retvalue->reference(); //The function does not do a ref for us.
+    retvalue->reference(); //The function does not do a ref for us
   return retvalue;
 }
 
@@ -325,21 +313,12 @@ IconInfo IconTheme::choose_icon(const Glib::StringArrayHandle& icon_names, int s
   return Glib::wrap(gtk_icon_theme_choose_icon(gobj(), const_cast<const gchar**>((icon_names).data()), size, ((GtkIconLookupFlags)(flags))));
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::RefPtr<Gdk::Pixbuf> IconTheme::load_icon(const Glib::ustring& icon_name, int size, IconLookupFlags flags) const
-#else
-Glib::RefPtr<Gdk::Pixbuf> IconTheme::load_icon(const Glib::ustring& icon_name, int size, IconLookupFlags flags, std::auto_ptr<Glib::Error>& error) const
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   Glib::RefPtr<Gdk::Pixbuf> retvalue = Glib::wrap(gtk_icon_theme_load_icon(const_cast<GtkIconTheme*>(gobj()), icon_name.c_str(), size, ((GtkIconLookupFlags)(flags)), &(gerror)));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
@@ -377,7 +356,6 @@ Glib::SignalProxy0< void > IconTheme::signal_changed()
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::IconTheme::on_changed()
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -387,10 +365,6 @@ void Gtk::IconTheme::on_changed()
   if(base && base->changed)
     (*base->changed)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

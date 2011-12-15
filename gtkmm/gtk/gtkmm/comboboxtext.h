@@ -27,18 +27,21 @@ namespace Gtk
 {
 
 //This is a C++ convenience class that is equivalent to the gtk_combo_box_new_text() C convenience function.
+//In gtkmm-3.0 we simply wrap GtkComboBoxText, which is also in GTK+ 2.24.
+//But this C++ class was created before GtkComboBoxText existed and we want to avoid changing the ABI. 
 
 /** This is a specialisation of the ComboBox which has one column of text (a simple list),
  * and appropriate methods for setting and getting the text.
  *
- * Note that you can not use this class with Gnome::Glade::Xml::get_widget_derived() to wrap a GtkComboBox added 
+ * You should not call set_model() or attempt to pack more cells into this combo box via its CellLayout base class.
+ *
+ * Note that you cannot use this class with Gnome::Glade::Xml::get_widget_derived() to wrap a GtkComboBox added 
  * in the Glade user interface designer, because Glade adds its own TreeModel instead of using the TreeModel from 
  * this class. You could use a normal Gtk::ComboBox instead, though you can not use Glade to add rows to a TreeModel 
  * that is defined in your C++ code.
  *
  * @ingroup Widgets
  */
-
 class ComboBoxText
 : public ComboBox
 {
@@ -55,19 +58,54 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
+
+  /** Creates a new empty ComboBoxText, without an entry.
+   */
   ComboBoxText();
+  
+  /** Creates a new empty ComboBoxText, optionally with an entry.
+   * @param has_entry If this is true then this will have an Entry widget.
+   */
+  explicit ComboBoxText(bool has_entry); //In gtkmm 3.0 has_entry has a default value but we already have a default constructor here.
 
   /** Add an item to the end of the drop-down list.
    * @param text The text for the item.
    */
-  void append_text(const Glib::ustring& text);
-
-  void insert_text(int position, const Glib::ustring& text);
+  void append(const Glib::ustring& text);
+  
+  void insert(int position, const Glib::ustring& text);
 
   /** Add an item to the beginning of the drop-down list.
    * @param text The text for the item.
    */
+  void prepend(const Glib::ustring& text);
+  
+#ifndef GTKMM_DISABLE_DEPRECATED
+  /** Add an item to the end of the drop-down list.
+   * @param text The text for the item.
+   *
+   * @deprecated Use append().
+   */
+  void append_text(const Glib::ustring& text);
+  
+  /**
+   * @deprecated Use insert().
+   */
+  void insert_text(int position, const Glib::ustring& text);
+
+  /** Add an item to the beginning of the drop-down list.
+   * @param text The text for the item.
+   *
+   * @deprecated Use prepend().
+   */
   void prepend_text(const Glib::ustring& text);
+  
+  /** Remove all items from the drop-down menu.
+   *
+   * @deprecated Use remove_all().
+   */
+  void clear_items();
+#endif //GTKMM_DISABLE_DEPRECATED
 
   /** Get the currently-chosen item.
    * @result The text of the active item.
@@ -81,13 +119,13 @@ public:
 
   //There is a clear() method in the CellLayout base class, so this would cause confusion.
   //TODO: Remove this when we can break API.
-  /// @deprecated See clear_items(). Since 2.8.
+  /// @deprecated Use remove_all(). Since 2.8.
   void clear();
 
   /** Remove all items from the drop-down menu.
    */
-  void clear_items();
-
+  void remove_all();
+  
   /** Remove the specified item if it is in the drop-down menu.
    * @text The text of the item that should be removed.
    */

@@ -95,28 +95,19 @@ const Glib::Class& PrintUnixDialog_Class::init()
   return *this;
 }
 
+
 void PrintUnixDialog_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* PrintUnixDialog_Class::wrap_new(GObject* o)
 {
-  return manage(new PrintUnixDialog((GtkPrintUnixDialog*)(o)));
+  return new PrintUnixDialog((GtkPrintUnixDialog*)(o)); //top-level windows can not be manage()ed.
 
 }
 
@@ -146,6 +137,7 @@ GType PrintUnixDialog::get_type()
 {
   return printunixdialog_class_.init().get_type();
 }
+
 
 GType PrintUnixDialog::get_base_type()
 {
@@ -233,6 +225,46 @@ void PrintUnixDialog::set_manual_capabilities(PrintCapabilities capabilities)
 gtk_print_unix_dialog_set_manual_capabilities(gobj(), ((GtkPrintCapabilities)(capabilities))); 
 }
 
+PrintCapabilities PrintUnixDialog::get_manual_capabilities() const
+{
+  return (PrintCapabilities)gtk_print_unix_dialog_get_manual_capabilities(const_cast<GtkPrintUnixDialog*>(gobj()));
+}
+
+void PrintUnixDialog::get_support_selection(bool support_selection)
+{
+gtk_print_unix_dialog_set_support_selection(gobj(), static_cast<int>(support_selection)); 
+}
+
+bool PrintUnixDialog::get_support_selection() const
+{
+  return gtk_print_unix_dialog_get_support_selection(const_cast<GtkPrintUnixDialog*>(gobj()));
+}
+
+void PrintUnixDialog::set_has_selection(bool has_selection)
+{
+gtk_print_unix_dialog_set_has_selection(gobj(), static_cast<int>(has_selection)); 
+}
+
+bool PrintUnixDialog::get_has_selection() const
+{
+  return gtk_print_unix_dialog_get_has_selection(const_cast<GtkPrintUnixDialog*>(gobj()));
+}
+
+void PrintUnixDialog::set_embed_page_setup(bool embed)
+{
+gtk_print_unix_dialog_set_embed_page_setup(gobj(), static_cast<int>(embed)); 
+}
+
+bool PrintUnixDialog::get_embed_page_setup() const
+{
+  return gtk_print_unix_dialog_get_embed_page_setup(const_cast<GtkPrintUnixDialog*>(gobj()));
+}
+
+bool PrintUnixDialog::get_page_setup_set() const
+{
+  return gtk_print_unix_dialog_get_page_setup_set(const_cast<GtkPrintUnixDialog*>(gobj()));
+}
+
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
 Glib::PropertyProxy< Glib::RefPtr<PageSetup> > PrintUnixDialog::property_page_setup() 
@@ -283,12 +315,61 @@ Glib::PropertyProxy_ReadOnly< Glib::RefPtr<Printer> > PrintUnixDialog::property_
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
 
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<bool> PrintUnixDialog::property_manual_capabilities() 
+{
+  return Glib::PropertyProxy<bool>(this, "manual-capabilities");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> PrintUnixDialog::property_manual_capabilities() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "manual-capabilities");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<bool> PrintUnixDialog::property_support_selection() 
+{
+  return Glib::PropertyProxy<bool>(this, "support-selection");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> PrintUnixDialog::property_support_selection() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "support-selection");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<bool> PrintUnixDialog::property_has_selection() 
+{
+  return Glib::PropertyProxy<bool>(this, "has-selection");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> PrintUnixDialog::property_has_selection() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "has-selection");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<bool> PrintUnixDialog::property_embed_page_setup() 
+{
+  return Glib::PropertyProxy<bool>(this, "embed-page-setup");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> PrintUnixDialog::property_embed_page_setup() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "embed-page-setup");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
 
 } // namespace Gtk

@@ -104,7 +104,7 @@ public:
   ///Provides access to the underlying C GObject.
   GtkCellEditable*       gobj()       { return reinterpret_cast<GtkCellEditable*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const GtkCellEditable* gobj() const { return reinterpret_cast<GtkCellEditable*>(gobject_); }
 
 private:
@@ -143,30 +143,43 @@ public:
 
   Glib::SignalProxy0< void > signal_remove_widget();
 
+  
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Indicates that editing has been canceled.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_editing_canceled() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Indicates that editing has been canceled.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_editing_canceled() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
 
 protected:
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void start_editing_vfunc(GdkEvent* event);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void start_editing_vfunc(GdkEvent* event);
 
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_editing_done();
   virtual void on_remove_widget();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

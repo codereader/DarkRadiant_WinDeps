@@ -29,21 +29,17 @@ public:
 
 protected:
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   //Callbacks (default signal handlers):
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
   //Callbacks (virtual functions):
-#ifdef GLIBMM_VFUNCS_ENABLED
   static void pack_start_vfunc_callback(GtkCellLayout* self, GtkCellRenderer* cell, gboolean expand);
   static void pack_end_vfunc_callback(GtkCellLayout* self, GtkCellRenderer* cell, gboolean expand);
   static void clear_vfunc_callback(GtkCellLayout* self);
   static void add_attribute_vfunc_callback(GtkCellLayout* self, GtkCellRenderer* cell, const gchar* attribute, gint column);
   static void clear_attributes_vfunc_callback(GtkCellLayout* self, GtkCellRenderer* cell);
   static void reorder_vfunc_callback(GtkCellLayout* self, GtkCellRenderer* cell, gint position);
-#endif //GLIBMM_VFUNCS_ENABLED
 };
 
 

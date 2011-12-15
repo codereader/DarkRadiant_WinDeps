@@ -103,6 +103,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -115,18 +117,12 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual Glib::ustring on_format_value(double value);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -135,81 +131,58 @@ protected:
   Scale();
 public:
   
+  
   /** Set the number of decimal digits.
    * 
    * This also causes the adjustment to be rounded off so the retrieved value
    * matches the value the user sees. Setting digits to 1 gives for example
    * 1.0, 2 gives 1.00, etc.
    */
-  
-  /** Sets the number of decimal places that are displayed in the value.
-   * Also causes the value of the adjustment to be rounded off to this
-   * number of digits, so the retrieved value matches the value the user saw.
-   * @param digits The number of decimal places to display, 
-   * e.g. use 1 to display 1.0, 2 to display 1.00, etc.
-   */
   void set_digits(int digits);
 
-  /** Get the number of decimal digits.
-   */
   
-  /** Gets the number of decimal places that are displayed in the value.
-   * @return The number of decimal places that are displayed.
+  /** Get the number of decimal digits.
    */
   int get_digits() const;
 
-  /** Set whether the current value is displayed as a string next to the slider. 
-   */
   
-  /** Specifies whether the current value is displayed as a string next 
-   * to the slider.
-   * @param draw_value <tt>true</tt> to draw the value.
+  /** Set whether the current value is displayed as a string next to the slider.
    */
-  void set_draw_value(bool draw_value = true);
+  void set_draw_value(bool draw_value =  true);
 
-  /** Get whether the current value is displayed as a string next to the slider. 
-   */
   
-  /** Returns: whether the current value is displayed as a string
-   * @return Whether the current value is displayed as a string.
+  /** Get whether the current value is displayed as a string next to the slider.
    */
   bool get_draw_value() const;
 
 
   /** Set the position in which the value is displayed.
    */
-  
-  /** Sets the position in which the current value is displayed.
-   * @param pos The position in which the current value is displayed.
-   */
   void set_value_pos(PositionType pos);
 
-  /** Get the position in which the value is displayed.
-   */
   
-  /** Gets the position in which the current value is displayed.
-   * @return The position in which the current value is displayed.
+  /** Get the position in which the value is displayed.
    */
   PositionType get_value_pos() const;
 
   
-  /** Gets the Pango::Layout used to display the scale. 
-   * The returned object is owned by the scale so does 
-   * not need to be freed by the caller.
-   * @return The Pango::Layout for this scale, or <tt>0</tt> 
-   * if the Gtk::Scale:draw-value property is <tt>false</tt>.
+  /** Gets the Pango::Layout used to display the scale. The returned
+   * object is owned by the scale so does not need to be freed by
+   * the caller.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return The Pango::Layout for this scale,
+   * or <tt>0</tt> if the Gtk::Scale:draw-value property is <tt>false</tt>.
    */
   Glib::RefPtr<Pango::Layout> get_layout();
   
-  /** Gets the Pango::Layout used to display the scale. 
-   * The returned object is owned by the scale so does 
-   * not need to be freed by the caller.
-   * @return The Pango::Layout for this scale, or <tt>0</tt> 
-   * if the Gtk::Scale:draw-value property is <tt>false</tt>.
+  /** Gets the Pango::Layout used to display the scale. The returned
+   * object is owned by the scale so does not need to be freed by
+   * the caller.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return The Pango::Layout for this scale,
+   * or <tt>0</tt> if the Gtk::Scale:draw-value property is <tt>false</tt>.
    */
   Glib::RefPtr<const Pango::Layout> get_layout() const;
   
@@ -221,7 +194,7 @@ public:
    * If the Gtk::Scale:draw-value property is <tt>false</tt>, the return 
    * values are undefined.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param x Location to store X offset of layout, or <tt>0</tt>.
    * @param y Location to store Y offset of layout, or <tt>0</tt>.
    */
@@ -238,20 +211,20 @@ public:
    * 
    * To remove marks from a scale, use clear_marks().
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param value The value at which the mark is placed, must be between 
    * the lower and upper limits of the scales' adjustment.
    * @param position Where to draw the mark. For a horizontal scale, Gtk::POS_TOP
    * is drawn above the scale, anything else below. For a vertical scale,
    * Gtk::POS_LEFT is drawn to the left of the scale, anything else to the
    * right.
-   * @param markup Text to be shown at the mark, using <link linkend="PangoMarkupFormat">Pango markup</link>, or <tt>0</tt>.
+   * @param markup Text to be shown at the mark, using , or <tt>0</tt>.
    */
   void add_mark(double value, PositionType position, const Glib::ustring& markup);
   
   /** Removes any marks that have been added with add_mark().
    * 
-   * @newin2p16
+   * @newin{2,16}
    */
   void clear_marks();
   
@@ -343,9 +316,7 @@ public:
 
 protected:
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void draw_value_vfunc();
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void draw_value_vfunc();
 
   
   virtual int calc_digits_(double step) const;
@@ -396,6 +367,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -408,17 +381,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -480,6 +447,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -492,17 +461,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:

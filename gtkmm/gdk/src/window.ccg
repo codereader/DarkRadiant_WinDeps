@@ -19,8 +19,8 @@
  */
 
 #include <gdk/gdk.h>
-#include <gdkmm/pixmap.h>
 #include <gdkmm/cursor.h>
+#include <gdkmm/device.h>
 #include <gdkmm/types.h>
 
 
@@ -29,7 +29,7 @@ namespace Gdk
 
 Window::Window(const Glib::RefPtr<Window>& parent, GdkWindowAttr* attributes, int attributes_mask)
 :
-  Drawable((GdkDrawable*) gdk_window_new(parent->gobj(), attributes, attributes_mask))
+  Glib::Object((GObject*) gdk_window_new(Glib::unwrap(parent), attributes, attributes_mask))
 {
   //GdkWindow is X11/win32-specific, so we probably can't derived our own GType.
 }
@@ -39,47 +39,14 @@ void Window::set_cursor()
   gdk_window_set_cursor(gobj(), 0);
 }
 
-GrabStatus Window::pointer_grab(bool owner_events, EventMask event_mask, const Cursor& cursor, guint32 timestamp)
+void Window::set_device_cursor(const Glib::RefPtr<Gdk::Device>& device)
 {
-  return ((GrabStatus)(gdk_pointer_grab(gobj(), static_cast<int>(owner_events), ((GdkEventMask)(event_mask)), 0, (cursor).gobj_copy(), timestamp)));
+  gdk_window_set_device_cursor(gobj(), Glib::unwrap(device), 0);
 }
 
-GrabStatus Window::pointer_grab(bool owner_events, EventMask event_mask, guint32 timestamp)
-{
-  return ((GrabStatus)(gdk_pointer_grab(gobj(), static_cast<int>(owner_events), ((GdkEventMask)(event_mask)), 0, 0, timestamp)));
-}
-
-//static
-void Window::unset_sm_client_id()
-{
-  gdk_set_sm_client_id(0 /* see GDK docs */);
-}
-
-void Window::set_icon(const Glib::RefPtr<Window>& icon_window, const Glib::RefPtr<Pixmap>& pixmap)
-{
-  gdk_window_set_icon(gobj(), icon_window->gobj(), pixmap->gobj(), 0); /* See GDK docs */  
-}
-  
 void Window::unset_icon()
 {
-  gdk_window_set_icon(gobj(), 0, 0, 0); /* See GDK docs */
-}
-
-void Window::unset_shape_combine_mask()
-{
-  gdk_window_shape_combine_mask(gobj(), 0, 0, 0); //See GDK docs.
-} 
-
-void Window::get_internal_paint_info(Glib::RefPtr<Drawable>& real_drawable, int& x_offset, int& y_offset) const
-{
-  GdkDrawable* temp_drawable = 0;
-  gdk_window_get_internal_paint_info(const_cast<GdkWindow*>(gobj()), &temp_drawable, &x_offset, &y_offset);
-  real_drawable = Glib::wrap(temp_drawable);
-}
-
-void Window::unset_back_pixmap()
-{
-  gdk_window_set_back_pixmap(gobj(), NULL, FALSE);
+  gdk_window_set_icon_name(gobj(), 0); /* See GDK docs */
 }
 
 void Window::invalidate(bool invalidate_children)
@@ -87,5 +54,15 @@ void Window::invalidate(bool invalidate_children)
   gdk_window_invalidate_rect(gobj(), NULL, invalidate_children);
 }
 
-} // namespace Gdk
+void Window::restack(bool above)
+{
+  gdk_window_restack(gobj(), NULL, above);
+}
 
+Glib::RefPtr<DragContext> Window::drag_begin (const std::vector<Glib::ustring>& targets)
+{
+  return Glib::wrap (gdk_drag_begin (gobj (), Glib::ListHandler<Glib::ustring, AtomUstringTraits>::vector_to_list(targets).data ()), true);
+}
+
+
+} // namespace Gdk

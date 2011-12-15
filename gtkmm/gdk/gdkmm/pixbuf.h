@@ -8,8 +8,6 @@
 
 #include <glibmm.h>
 
-/* $Id: pixbuf.hg,v 1.16 2006/05/11 11:40:23 murrayc Exp $ */
-
 /* Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -27,7 +25,7 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// This is for including the config header before any code (such as
+ // This is for including the config header before any code (such as
 // the #ifndef GDKMM_DISABLE_DEPRECATED in deprecated classes) is generated:
 
 
@@ -37,6 +35,7 @@
 #include <gdkmm/bitmap.h>
 #include <gdkmm/pixbufformat.h>
 #include <gdkmm/types.h>
+#include <giomm/inputstream.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -51,7 +50,7 @@ namespace Gdk
 {
 
 
-/** @addtogroup gdkmmEnums Enums and Flags */
+/** @addtogroup gdkmmEnums gdkmm Enums and Flags */
 
 /**
  * @ingroup gdkmmEnums
@@ -199,15 +198,11 @@ public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 private:
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static void throw_func(GError* gobject);
-#else
-  //When not using exceptions, we just pass the Exception object around without throwing it:
-  static std::auto_ptr<Glib::Error> throw_func(GError* gobject);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   friend void wrap_init(); // uses throw_func()
-#endif
+
+  #endif //DOXYGEN_SHOULD_SKIP_THIS
 };
 
 } // namespace Gdk
@@ -244,7 +239,7 @@ struct PixbufFormatTraits
   static void    release_c_type (CType          /* ptr */) { /* Doesn't happen */ }
 };
 #endif //DOXYGEN_SHOULD_SKIP_THIS
-  
+
 
 class Pixbuf : public Glib::Object
 {
@@ -276,6 +271,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -299,9 +296,9 @@ protected:
    * representation inside a Pixbuf. In other words, copies
    * image data from a server-side drawable to a client-side RGB(A) buffer.
    * This allows you to efficiently read individual pixels on the client side.
-   * 
+   *
    * If the drawable @src has no colormap (See Gdk::Drawable::get_colormap()),
-   * then a suitable colormap must be specified. Otherwise, you may use the 
+   * then a suitable colormap must be specified. Otherwise, you may use the
    * constructor that takes no colormap argument.
    * Typically a Gdk::Window or a pixmap created by passing a Gdk:Window
    * to the Gdk::Pixbuf constructor will already have a colormap associated with
@@ -329,7 +326,7 @@ protected:
    * If the window you're obtaining data from is partially obscured by
    * other windows, then the contents of the pixbuf areas corresponding
    * to the obscured regions are undefined.
-   * 
+   *
    * See alo Gdk::Drawable::get_image().
    *
    * @param src Source drawable.
@@ -339,7 +336,7 @@ protected:
    * @param width Width in pixels of region to get.
    * @param height Height in pixels of region to get.
    *
-   * @newin2p12
+   * @newin{2,12}
    */
    Pixbuf(const Glib::RefPtr<Drawable>& src, const Glib::RefPtr<Colormap>& cmap,
          int src_x, int src_y, int width, int height);
@@ -352,7 +349,7 @@ protected:
    * @param width Width in pixels of region to get.
    * @param height Height in pixels of region to get.
    *
-   * @newin2p12
+   * @newin{2,12}
    */
    Pixbuf(const Glib::RefPtr<Drawable>& src,
          int src_x, int src_y, int width, int height);
@@ -374,7 +371,7 @@ protected:
    * @param width Width in pixels of region to get.
    * @param height Height in pixels of region to get.
    *
-   * @newin2p12
+   * @newin{2,12}
    */
   Pixbuf(const Glib::RefPtr<Image>& src, const Glib::RefPtr<Colormap>& cmap,
          int src_x, int src_y, int width, int height);
@@ -429,9 +426,9 @@ public:
    * representation inside a Pixbuf. In other words, copies
    * image data from a server-side drawable to a client-side RGB(A) buffer.
    * This allows you to efficiently read individual pixels on the client side.
-   * 
+   *
    * If the drawable @src has no colormap (See Gdk::Drawable::get_colormap()),
-   * then a suitable colormap must be specified. Otherwise, you may use the 
+   * then a suitable colormap must be specified. Otherwise, you may use the
    * constructor that takes no colormap argument.
    * Typically a Gdk::Window or a pixmap created by passing a Gdk:Window
    * to the Gdk::Pixbuf constructor will already have a colormap associated with
@@ -459,7 +456,7 @@ public:
    * If the window you're obtaining data from is partially obscured by
    * other windows, then the contents of the pixbuf areas corresponding
    * to the obscured regions are undefined.
-   * 
+   *
    * See alo Gdk::Drawable::get_image().
    *
    * @param src Source drawable.
@@ -469,7 +466,7 @@ public:
    * @param width Width in pixels of region to get.
    * @param height Height in pixels of region to get.
    *
-   * @newin2p12
+   * @newin{2,12}
    */
   
   static Glib::RefPtr<Pixbuf> create(const Glib::RefPtr<Drawable>& src, const Glib::RefPtr<Colormap>& cmap, int src_x, int src_y, int width, int height);
@@ -483,7 +480,7 @@ public:
    * @param width Width in pixels of region to get.
    * @param height Height in pixels of region to get.
    *
-   * @newin2p12
+   * @newin{2,12}
    */
   
   static Glib::RefPtr<Pixbuf> create(const Glib::RefPtr<Drawable>& src, int src_x, int src_y, int width, int height);
@@ -498,7 +495,7 @@ public:
    * @param width Width in pixels of region to get.
    * @param height Height in pixels of region to get.
    *
-   * @newin2p12
+   * @newin{2,12}
    */
   
   static Glib::RefPtr<Pixbuf> create(const Glib::RefPtr<Image>& src, const Glib::RefPtr<Colormap>& cmap, int src_x, int src_y, int width, int height);
@@ -518,68 +515,29 @@ public:
   static Glib::RefPtr<Pixbuf> create(const Glib::RefPtr<Image>& src, int src_x, int src_y, int width, int height);
 
 
-  /** Creates a new Gdk::Pixbuf with a copy of the information in the specified
-   *  @a pixbuf.
-   * @return A newly-created pixbuf with a reference count of 1, or <tt>0</tt> if
-   * not enough memory could be allocated.
-   */
   Glib::RefPtr<Pixbuf> copy() const;
 
   
-  /** Creates a new Gdk::Pixbuf structure and allocates a buffer for it.  The 
-   * buffer has an optimal rowstride.  Note that the buffer is not cleared;
-   * you will have to fill it completely yourself.
-   * @param colorspace Color space for image.
-   * @param has_alpha Whether the image should have transparency information.
-   * @param bits_per_sample Number of bits per color sample.
-   * @param width Width of image in pixels, must be > 0.
-   * @param height Height of image in pixels, must be > 0.
-   * @return A newly-created Gdk::Pixbuf with a reference count of 1, or 
-   * <tt>0</tt> if not enough memory could be allocated for the image buffer.
-   */
-  static Glib::RefPtr<Pixbuf> create(
-                   Colorspace colorspace, bool has_alpha,
-                   int bits_per_sample, int width, int height);
+  static Glib::RefPtr<Pixbuf> create(Colorspace colorspace, bool has_alpha, int bits_per_sample, int width, int height);
 
   
-  /** Creates a new pixbuf which represents a sub-region of
-   *  @a src_pixbuf. The new pixbuf shares its pixels with the
-   * original pixbuf, so writing to one affects both.
-   * The new pixbuf holds a reference to @a src_pixbuf, so
-   *  @a src_pixbuf will not be finalized until the new pixbuf
-   * is finalized.
+  /** 
    * @param src_pixbuf A Gdk::Pixbuf.
    * @param src_x X coord in @a src_pixbuf.
    * @param src_y Y coord in @a src_pixbuf.
    * @param width Width of region in @a src_pixbuf.
    * @param height Height of region in @a src_pixbuf.
-   * @return A new pixbuf.
    */
-  static Glib::RefPtr<Pixbuf> create_subpixbuf(
-                  const Glib::RefPtr<Pixbuf>& src_pixbuf,
-                  int src_x, int src_y, int width, int height);
+  static Glib::RefPtr<Pixbuf> create_subpixbuf(const Glib::RefPtr<Pixbuf>& src_pixbuf, int src_x, int src_y, int width, int height);
 
-  /** Creates a new pixbuf by loading an image from a file. The file format is detected automatically. 
+  
+  /** Creates a new pixbuf by loading an image from a file. The file format is detected automatically.
    * @param filename The path to the pixbuf file.
-   * 
+   *
    * @throw Glib::FileError
    * @throw Gdk::PixbufError
    */
-  
-  /** Creates a new pixbuf by loading an image from a file.  The file format is
-   * detected automatically. If <tt>0</tt> is returned, then @a error will be set.
-   * Possible errors are in the Gdk::PIXBUF_ERROR and FILE_ERROR domains.
-   * @param filename Name of file to load, in the GLib file name encoding.
-   * @return A newly-created pixbuf with a reference count of 1, or <tt>0</tt> if
-   * any of several error conditions occurred:  the file could not be opened,
-   * there was no loader for the file's format, there was not enough memory to
-   * allocate the image buffer, or the image file contained invalid data.
-   */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static Glib::RefPtr<Pixbuf> create_from_file(const std::string& filename);
-#else
-  static Glib::RefPtr<Pixbuf> create_from_file(const std::string& filename, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Creates a new pixbuf by loading an image from a file. The file format is detected automatically.
@@ -592,36 +550,7 @@ public:
    * @throw Glib::FileError
    * @throw Gdk::PixbufError
    */
-  
-  /** Creates a new pixbuf by loading an image from a file.  The file format is
-   * detected automatically. If <tt>0</tt> is returned, then @a error will be set.
-   * Possible errors are in the Gdk::PIXBUF_ERROR and FILE_ERROR domains.
-   * The image will be scaled to fit in the requested size, optionally preserving
-   * the image's aspect ratio. 
-   * 
-   * When preserving the aspect ratio, a @a width of -1 will cause the image
-   * to be scaled to the exact given height, and a @a height of -1 will cause
-   * the image to be scaled to the exact given width. When not preserving
-   * aspect ratio, a @a width or @a height of -1 means to not scale the image 
-   * at all in that dimension. Negative values for @a width and @a height are 
-   * allowed since 2.8.
-   * @param filename Name of file to load, in the GLib file name encoding.
-   * @param width The width the image should have or -1 to not constrain the width.
-   * @param height The height the image should have or -1 to not constrain the height.
-   * @param preserve_aspect_ratio <tt>true</tt> to preserve the image's aspect ratio.
-   * @return A newly-created pixbuf with a reference count of 1, or <tt>0</tt> 
-   * if any of several error conditions occurred:  the file could not be opened,
-   * there was no loader for the file's format, there was not enough memory to
-   * allocate the image buffer, or the image file contained invalid data.
-   * 
-   * @newin2p6.
-   */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
-  static Glib::RefPtr<Pixbuf> create_from_file(const std::string& filename, int width, int height, bool preserve_aspect_ratio = true);
-#else
-  static Glib::RefPtr<Pixbuf> create_from_file(const std::string& filename, int width, int height, bool preserve_aspect_ratio, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
+  static Glib::RefPtr<Pixbuf> create_from_file(const std::string& filename, int width, int height, bool preserve_aspect_ratio =  true);
    //gdk_pixbuf_new_from_file_at_size() just calls gdk_pixbuf_new_from_file_at_scale().
 
   /** Creates a new Gdk::Pixbuf out of in-memory image data.
@@ -660,13 +589,9 @@ public:
                                                const SlotDestroyData& destroy_slot);
 
   
-  /** Creates a new pixbuf by parsing XPM data in memory.  This data is commonly
-   * the result of including an XPM file into a program's C source.
-   * @param data Pointer to inline XPM data.
-   * @return A newly-created pixbuf with a reference count of 1.
-   */
   static Glib::RefPtr<Pixbuf> create_from_xpm_data(const char *const * data);
 
+  
   /** Create a Gdk::Pixbuf from a flat representation that is suitable for
    * storing as inline data in a program.  This is useful if you want to ship a
    * program with images, but don't want to depend on any external files.
@@ -695,111 +620,41 @@ public:
    * to @a data for the resulting pixbuf.
    * @throw Gdk::PixbufError
    */
+  static Glib::RefPtr<Pixbuf> create_from_inline(int data_length, const guint8* data, bool copy_pixels =  false);
+
   
-  /** Create a Gdk::Pixbuf from a flat representation that is suitable for
-   * storing as inline data in a program. This is useful if you want to
-   * ship a program with images, but don't want to depend on any
-   * external files.
-   * 
-   * GTK+ ships with a program called <command>gdk-pixbuf-csource</command> 
-   * which allows for conversion of Gdk::Pixbufs into such a inline representation.
-   * In almost all cases, you should pass the <option>--raw</option> flag to
-   * <command>gdk-pixbuf-csource</command>. A sample invocation would be:
-   * 
-   * <informalexample><programlisting>
-   * gdk-pixbuf-csource --raw --name=myimage_inline myimage.png
-   * </programlisting></informalexample>
-   * 
-   * For the typical case where the inline pixbuf is read-only static data,
-   * you don't need to copy the pixel data unless you intend to write to
-   * it, so you can pass <tt>false</tt> for @a copy_pixels.  (If you pass 
-   * <option>--rle</option> to <command>gdk-pixbuf-csource</command>, a copy 
-   * will be made even if @a copy_pixels is <tt>false</tt>, so using this option is 
-   * generally a bad idea.)
-   * 
-   * If you create a pixbuf from const inline data compiled into your
-   * program, it's probably safe to ignore errors and disable length checks, 
-   * since things will always succeed:
-   * <informalexample><programlisting>
-   * pixbuf = gdk_pixbuf_new_from_inline (-1, myimage_inline, <tt>false</tt>, <tt>0</tt>);
-   * </programlisting></informalexample>
-   * 
-   * For non-const inline data, you could get out of memory. For untrusted 
-   * inline data located at runtime, you could have corrupt inline data in 
-   * addition.
-   * @param data_length Length in bytes of the @a data argument or -1 to 
-   * disable length checks.
-   * @param data Byte data containing a serialized Gdk::Pixdata structure.
-   * @param copy_pixels Whether to copy the pixel data, or use direct pointers
-   *  @a data for the resulting pixbuf.
-   * @return A newly-created Gdk::Pixbuf structure with a reference,
-   * count of 1, or <tt>0</tt> if an error occurred.
-   */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
-  static Glib::RefPtr<Pixbuf> create_from_inline(int data_length, const guint8* data,
-                                                 bool copy_pixels = false);
-#else
-  static Glib::RefPtr<Pixbuf> create_from_inline(int data_length, const guint8* data, bool copy_pixels, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
+  static Glib::RefPtr<Pixbuf> create_from_stream(const Glib::RefPtr<Gio::InputStream>& stream, const Glib::RefPtr<Gio::Cancellable>& cancelable);
+  static Glib::RefPtr<Pixbuf> create_from_stream(const Glib::RefPtr<Gio::InputStream>& stream);
+
+  
+  static Glib::RefPtr<Pixbuf> create_from_stream_at_scale(const Glib::RefPtr<Gio::InputStream>& stream, int width, int height, bool preserve_aspect_ratio, const Glib::RefPtr<Gio::Cancellable>& cancelable);
+  static Glib::RefPtr<Pixbuf> create_from_stream_at_scale(const Glib::RefPtr<Gio::InputStream>& stream, int width, int height, bool preserve_aspect_ratio);
 
 
-  /** Queries the color space of a pixbuf.
-   * @return Color space.
-   */
   Colorspace get_colorspace() const;
 
   
-  /** Queries the number of channels of a pixbuf.
-   * @return Number of channels.
-   */
   int get_n_channels() const;
   
-  /** Queries whether a pixbuf has an alpha channel (opacity information).
-   * @return <tt>true</tt> if it has an alpha channel, <tt>false</tt> otherwise.
-   */
   bool get_has_alpha() const;
   
-  /** Queries the number of bits per color sample in a pixbuf.
-   * @return Number of bits per color sample.
-   */
   int get_bits_per_sample() const;
   
-  /** Queries a pointer to the pixel data of a pixbuf.
-   * @return A pointer to the pixbuf's pixel data.  Please see <xref linkend="image-data"/>
-   * for information about how the pixel data is stored in
-   * memory.
-   */
   guint8* get_pixels() const;
   
-  /** Queries the width of a pixbuf.
-   * @return Width in pixels.
-   */
   int get_width() const;
   
-  /** Queries the height of a pixbuf.
-   * @return Height in pixels.
-   */
   int get_height() const;
   
-  /** Queries the rowstride of a pixbuf, which is the number of bytes between the start of a row
-   * and the start of the next row.
-   * @return Distance between row starts.
-   */
   int get_rowstride() const;
 
   
-  /** Clears a pixbuf to the given RGBA value, converting the RGBA value into
-   * the pixbuf's pixel format. The alpha will be ignored if the pixbuf
-   * doesn't have an alpha channel.
-   * @param pixel RGBA pixel to clear to
-   * (0xffffffff is opaque white, 0x00000000 transparent black).
-   */
   void fill(guint32 pixel);
 
-  /** Saves pixbuf to a file in format @a type. 
+  /** Saves pixbuf to a file in format @a type.
    * By default, "jpeg", "png", "ico" and "bmp" are possible file formats to save in, but more formats may be installed.
-   * TThe list of all writable formats can be determined by using Gdk::Pixbuf::get_formats() with 
-   * Gdk::PixbufFormat::is_writable().
+   * The list of all writable formats can be determined by using get_formats() with
+   * is_writable().
    *
    * @param filename The path of the file to be created.
    * @param type The file type.
@@ -807,26 +662,22 @@ public:
    * @throw Glib::FileError
    * @throw Gdk::PixbufError
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   void save(const std::string& filename, const Glib::ustring& type);
-  #else
-  void save(const std::string& filename, const Glib::ustring& type, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
-  /** Saves pixbuf to a file in format @a type. 
+  /** Saves pixbuf to a file in format @a type.
    * By default, "jpeg", "png", "ico" and "bmp" are possible file formats to save in, but more formats may be installed.
-   * TThe list of all writable formats can be determined by using Gdk::Pixbuf::get_formats() with 
+   * TThe list of all writable formats can be determined by using get_formats() with
    * Gdk::PixbufFormat::is_writable().
    *
-   * The @a option_keys and @option_values, if not empty, should contain pairs of strings that modify the save parameters. 
+   * The @a option_keys and @option_values, if not empty, should contain pairs of strings that modify the save parameters.
    * For example,  "quality", "100".
    *
-   * Currently only a few parameters exist. JPEG images can be saved with a "quality" parameter; 
-   * its value should be in the range [0,100]. Text chunks can be attached to PNG images by specifying parameters of the 
-   * form "tEXt::key", where key is an ASCII string of length 1-79. The values are UTF-8 encoded strings. ICO images can be 
-   * saved in depth 16, 24, or 32, by using the "depth" parameter. When the ICO saver is given "x_hot" and "y_hot" 
-   * parameters, it produces a CUR instead of an ICO.  
+   * Currently only a few parameters exist. JPEG images can be saved with a "quality" parameter;
+   * its value should be in the range [0,100]. Text chunks can be attached to PNG images by specifying parameters of the
+   * form "tEXt::key", where key is an ASCII string of length 1-79. The values are UTF-8 encoded strings. ICO images can be
+   * saved in depth 16, 24, or 32, by using the "depth" parameter. When the ICO saver is given "x_hot" and "y_hot"
+   * parameters, it produces a CUR instead of an ICO.
    *
    * @param filename The path of the file to be created.
    * @param type The file type.
@@ -836,15 +687,9 @@ public:
    * @throw Glib::FileError
    * @throw Gdk::PixbufError
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   void save(const std::string& filename, const Glib::ustring& type,
             const Glib::StringArrayHandle& option_keys,
             const Glib::StringArrayHandle& option_values);
-  #else
-  void save(const std::string& filename, const Glib::ustring& type,
-            const Glib::StringArrayHandle& option_keys,
-            const Glib::StringArrayHandle& option_values, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
 /* TODO:
@@ -856,11 +701,11 @@ typedef gboolean (*GdkPixbufSaveFunc)   (const gchar *buf,
 gboolean gdk_pixbuf_save_to_callback    (GdkPixbuf  *pixbuf,
 					 GdkPixbufSaveFunc save_func,
 					 gpointer user_data,
-					 const char *type, 
+					 const char *type,
 					 GError    **error,
 					 ...);
 
-gboolean gdk_pixbuf_save_to_callbackv   (GdkPixbuf  *pixbuf, 
+gboolean gdk_pixbuf_save_to_callbackv   (GdkPixbuf  *pixbuf,
 					 GdkPixbufSaveFunc save_func,
 					 gpointer user_data,
 					 const char *type,
@@ -881,14 +726,9 @@ gboolean gdk_pixbuf_save_to_callbackv   (GdkPixbuf  *pixbuf,
    * @throw Glib::FileError
    * @throw Gdk::PixbufError
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   void save_to_buffer(gchar*& buffer, gsize& buffer_size,
                       const Glib::ustring& type = "png");
-  #else
-  void save_to_buffer(gchar*& buffer, gsize& buffer_size,
-                      const Glib::ustring& type, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
-                      
+
   /* Saves the pixbuf to a new buffer in format @a type.
    * Note that the buffer is not nul-terminated and may contain embedded nulls.
    * @see save().
@@ -900,243 +740,39 @@ gboolean gdk_pixbuf_save_to_callbackv   (GdkPixbuf  *pixbuf,
    * @throw Glib::FileError
    * @throw Gdk::PixbufError
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   void save_to_buffer(gchar*& buffer, gsize& buffer_size,
                       const Glib::ustring& type,
                       const Glib::StringArrayHandle& option_keys,
                       const Glib::StringArrayHandle& option_values);
-  #else
-  void save_to_buffer(gchar*& buffer, gsize& buffer_size,
-                      const Glib::ustring& type,
-                      const Glib::StringArrayHandle& option_keys,
-                      const Glib::StringArrayHandle& option_values, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
   
-                                         
-  /** Takes an existing pixbuf and adds an alpha channel to it.
-   * If the existing pixbuf already had an alpha channel, the channel
-   * values are copied from the original; otherwise, the alpha channel
-   * is initialized to 255 (full opacity).
-   * 
-   * If @a substitute_color is <tt>true</tt>, then the color specified by ( @a r, @a g, @a b) will be
-   * assigned zero opacity. That is, if you pass (255, 255, 255) for the
-   * substitute color, all white pixels will become fully transparent.
-   * @param substitute_color Whether to set a color to zero opacity.  If this
-   * is <tt>false</tt>, then the ( @a r, @a g, @a b) arguments will be ignored.
-   * @param r Red value to substitute.
-   * @param g Green value to substitute.
-   * @param b Blue value to substitute.
-   * @return A newly-created pixbuf with a reference count of 1.
-   */
-  Glib::RefPtr<Gdk::Pixbuf> add_alpha(
-                   bool substitute_color, guint8 r, guint8 g, guint8 b) const;
+
+  Glib::RefPtr<Gdk::Pixbuf> add_alpha(bool substitute_color, guint8 r, guint8 g, guint8 b) const;
 
   
-  /** Copies a rectangular area from @a src_pixbuf to @a dest_pixbuf.  Conversion of
-   * pixbuf formats is done automatically.
-   * 
-   * If the source rectangle overlaps the destination rectangle on the
-   * same pixbuf, it will be overwritten during the copy operation.
-   * Therefore, you can not use this function to scroll a pixbuf.
-   * @param src_x Source X coordinate within @a src_pixbuf.
-   * @param src_y Source Y coordinate within @a src_pixbuf.
-   * @param width Width of the area to copy.
-   * @param height Height of the area to copy.
-   * @param dest_pixbuf Destination pixbuf.
-   * @param dest_x X coordinate within @a dest_pixbuf.
-   * @param dest_y Y coordinate within @a dest_pixbuf.
-   */
-  void copy_area(
-                   int src_x, int src_y, int width, int height,
-                   const Glib::RefPtr<Gdk::Pixbuf>& dest_pixbuf,
-                   int dest_x, int dest_y) const;
+  void copy_area(int src_x, int src_y, int width, int height, const Glib::RefPtr<Gdk::Pixbuf>& dest_pixbuf, int dest_x, int dest_y) const;
 
   
-  /** Modifies saturation and optionally pixelates @a src, placing the result in
-   *  @a dest. @a src and @a dest may be the same pixbuf with no ill effects.  If
-   *  @a saturation is 1.0 then saturation is not changed. If it's less than 1.0,
-   * saturation is reduced (the image turns toward grayscale); if greater than
-   * 1.0, saturation is increased (the image gets more vivid colors). If @a pixelate
-   * is <tt>true</tt>, then pixels are faded in a checkerboard pattern to create a
-   * pixelated image. @a src and @a dest must have the same image format, size, and
-   * rowstride.
-   * @param dest Place to write modified version of @a src.
-   * @param saturation Saturation factor.
-   * @param pixelate Whether to pixelate.
-   */
-  void saturate_and_pixelate(
-                   const Glib::RefPtr<Gdk::Pixbuf>& dest,
-                   float saturation, bool pixelate) const;
+  void saturate_and_pixelate(const Glib::RefPtr<Gdk::Pixbuf>& dest, float saturation, bool pixelate) const;
 
 
-  /** Creates a transformation of the source image @a src by scaling by
-   *  @a scale_x and @a scale_y then translating by @a offset_x and @a offset_y,
-   * then renders the rectangle ( @a dest_x, @a dest_y, @a dest_width,
-   *  @a dest_height) of the resulting image onto the destination image
-   * replacing the previous contents.
-   * 
-   * Try to use scale_simple() first, this function is
-   * the industrial-strength power tool you can fall back to if
-   * scale_simple() isn't powerful enough.
-   * 
-   * If the source rectangle overlaps the destination rectangle on the
-   * same pixbuf, it will be overwritten during the scaling which
-   * results in rendering artifacts.
-   * @param dest The Gdk::Pixbuf into which to render the results.
-   * @param dest_x The left coordinate for region to render.
-   * @param dest_y The top coordinate for region to render.
-   * @param dest_width The width of the region to render.
-   * @param dest_height The height of the region to render.
-   * @param offset_x The offset in the X direction (currently rounded to an integer).
-   * @param offset_y The offset in the Y direction (currently rounded to an integer).
-   * @param scale_x The scale factor in the X direction.
-   * @param scale_y The scale factor in the Y direction.
-   * @param interp_type The interpolation type for the transformation.
-   */
-  void scale(const Glib::RefPtr<Gdk::Pixbuf>& dest,
-                          int    dest_x,      int    dest_y,
-                          int    dest_width,  int    dest_height,
-                          double offset_x,    double offset_y,
-                          double scale_x,     double scale_y,
-                          InterpType interp_type) const;
+  void scale(const Glib::RefPtr<Gdk::Pixbuf>& dest, int dest_x, int dest_y, int dest_width, int dest_height, double offset_x, double offset_y, double scale_x, double scale_y, InterpType interp_type) const;
 
   
-  /** Creates a transformation of the source image @a src by scaling by
-   *  @a scale_x and @a scale_y then translating by @a offset_x and @a offset_y.
-   * This gives an image in the coordinates of the destination pixbuf.
-   * The rectangle ( @a dest_x, @a dest_y, @a dest_width, @a dest_height)
-   * is then composited onto the corresponding rectangle of the
-   * original destination image.
-   * 
-   * When the destination rectangle contains parts not in the source 
-   * image, the data at the edges of the source image is replicated
-   * to infinity. 
-   * 
-   * <figure id="pixbuf-composite-diagram">
-   * <title>Compositing of pixbufs</title>
-   * <graphic fileref="composite.png" format="PNG"/>
-   * </figure>
-   * @param dest The Gdk::Pixbuf into which to render the results.
-   * @param dest_x The left coordinate for region to render.
-   * @param dest_y The top coordinate for region to render.
-   * @param dest_width The width of the region to render.
-   * @param dest_height The height of the region to render.
-   * @param offset_x The offset in the X direction (currently rounded to an integer).
-   * @param offset_y The offset in the Y direction (currently rounded to an integer).
-   * @param scale_x The scale factor in the X direction.
-   * @param scale_y The scale factor in the Y direction.
-   * @param interp_type The interpolation type for the transformation.
-   * @param overall_alpha Overall alpha for source image (0..255).
-   */
-  void composite(const Glib::RefPtr<Gdk::Pixbuf>& dest,
-                              int    dest_x,      int    dest_y,
-                              int    dest_width,  int    dest_height,
-                              double offset_x,    double offset_y,
-                              double scale_x,     double scale_y,
-                              InterpType interp_type,
-                              int overall_alpha) const;
+  void composite(const Glib::RefPtr<Gdk::Pixbuf>& dest, int dest_x, int dest_y, int dest_width, int dest_height, double offset_x, double offset_y, double scale_x, double scale_y, InterpType interp_type, int overall_alpha) const;
 
   
-  /** Creates a transformation of the source image @a src by scaling by
-   *  @a scale_x and @a scale_y then translating by @a offset_x and @a offset_y,
-   * then composites the rectangle ( @a dest_x , @a dest_y, @a dest_width,
-   *  @a dest_height) of the resulting image with a checkboard of the
-   * colors @a color1 and @a color2 and renders it onto the destination
-   * image.
-   * 
-   * See composite_color_simple() for a simpler variant of this
-   * function suitable for many tasks.
-   * @param dest The Gdk::Pixbuf into which to render the results.
-   * @param dest_x The left coordinate for region to render.
-   * @param dest_y The top coordinate for region to render.
-   * @param dest_width The width of the region to render.
-   * @param dest_height The height of the region to render.
-   * @param offset_x The offset in the X direction (currently rounded to an integer).
-   * @param offset_y The offset in the Y direction (currently rounded to an integer).
-   * @param scale_x The scale factor in the X direction.
-   * @param scale_y The scale factor in the Y direction.
-   * @param interp_type The interpolation type for the transformation.
-   * @param overall_alpha Overall alpha for source image (0..255).
-   * @param check_x The X offset for the checkboard (origin of checkboard is at - @a check_x, - @a check_y).
-   * @param check_y The Y offset for the checkboard.
-   * @param check_size The size of checks in the checkboard (must be a power of two).
-   * @param color1 The color of check at upper left.
-   * @param color2 The color of the other check.
-   */
-  void composite_color(const Glib::RefPtr<Gdk::Pixbuf>& dest,
-                                    int    dest_x,      int    dest_y,
-                                    int    dest_width,  int    dest_height,
-                                    double offset_x,    double offset_y,
-                                    double scale_x,     double scale_y,
-                                    InterpType interp_type,
-                                    int overall_alpha,
-                                    int check_x, int check_y,
-                                    int check_size,
-                                    guint32 color1, guint32 color2) const;
+  void composite_color(const Glib::RefPtr<Gdk::Pixbuf>& dest, int dest_x, int dest_y, int dest_width, int dest_height, double offset_x, double offset_y, double scale_x, double scale_y, InterpType interp_type, int overall_alpha, int check_x, int check_y, int check_size, guint32 color1, guint32 color2) const;
 
   
-  /** Create a new Gdk::Pixbuf containing a copy of @a src scaled to
-   *  @a dest_width x @a dest_height. Leaves @a src unaffected.  @a interp_type
-   * should be Gdk::INTERP_NEAREST if you want maximum speed (but when
-   * scaling down Gdk::INTERP_NEAREST is usually unusably ugly).  The
-   * default @a interp_type should be Gdk::INTERP_BILINEAR which offers
-   * reasonable quality and speed.
-   * 
-   * You can scale a sub-portion of @a src by creating a sub-pixbuf
-   * pointing into @a src; see new_subpixbuf().
-   * 
-   * For more complicated scaling/compositing see scale()
-   * and composite().
-   * @param dest_width The width of destination image.
-   * @param dest_height The height of destination image.
-   * @param interp_type The interpolation type for the transformation.
-   * @return The new Gdk::Pixbuf, or <tt>0</tt> if not enough memory could be
-   * allocated for it.
-   */
-  Glib::RefPtr<Gdk::Pixbuf> scale_simple(
-                   int dest_width, int dest_height,
-                   InterpType interp_type) const;
+  Glib::RefPtr<Gdk::Pixbuf> scale_simple(int dest_width, int dest_height, InterpType interp_type) const;
 
   
-  /** Creates a new Gdk::Pixbuf by scaling @a src to @a dest_width x
-   *  @a dest_height and compositing the result with a checkboard of colors
-   *  @a color1 and @a color2.
-   * @param dest_width The width of destination image.
-   * @param dest_height The height of destination image.
-   * @param interp_type The interpolation type for the transformation.
-   * @param overall_alpha Overall alpha for source image (0..255).
-   * @param check_size The size of checks in the checkboard (must be a power of two).
-   * @param color1 The color of check at upper left.
-   * @param color2 The color of the other check.
-   * @return The new Gdk::Pixbuf, or <tt>0</tt> if not enough memory could be
-   * allocated for it.
-   */
-  Glib::RefPtr<Gdk::Pixbuf> composite_color_simple(
-                   int dest_width, int dest_height,
-                   InterpType interp_type,
-                   int overall_alpha, int check_size,
-                   guint32 color1, guint32 color2) const;
-               
+  Glib::RefPtr<Gdk::Pixbuf> composite_color_simple(int dest_width, int dest_height, InterpType interp_type, int overall_alpha, int check_size, guint32 color1, guint32 color2) const;
+
   
-  /** Rotates a pixbuf by a multiple of 90 degrees, and returns the
-   * result in a new pixbuf.
-   * @param angle The angle to rotate by.
-   * @return The new Gdk::Pixbuf, or <tt>0</tt> if not enough memory could be
-   * allocated for it.
-   * 
-   * @newin2p6.
-   */
   Glib::RefPtr<Gdk::Pixbuf> rotate_simple(PixbufRotation angle) const;
   
-  /** Flips a pixbuf horizontally or vertically and returns the
-   * result in a new pixbuf.
-   * @param horizontal <tt>true</tt> to flip horizontally, <tt>false</tt> to flip vertically.
-   * @return The new Gdk::Pixbuf, or <tt>0</tt> if not enough memory could be
-   * allocated for it.
-   * 
-   * @newin2p6.
-   */
-  Glib::RefPtr<Gdk::Pixbuf> flip(bool horizontal = true) const;
+  Glib::RefPtr<Gdk::Pixbuf> flip(bool horizontal =  true) const;
 
   
   /** Takes the opacity values in a rectangular portion of a pixbuf and thresholds
@@ -1152,11 +788,7 @@ gboolean gdk_pixbuf_save_to_callbackv   (GdkPixbuf  *pixbuf,
    * @param alpha_threshold Opacity values below this will be painted as zero; all
    * other values will be painted as one.
    */
-  void render_threshold_alpha(const Glib::RefPtr<Gdk::Bitmap>& bitmap,
-                                          int src_x, int src_y,
-                                          int dest_x, int dest_y,
-                                          int width, int height,
-                                          int alpha_threshold);
+  void render_threshold_alpha(const Glib::RefPtr<Gdk::Bitmap>& bitmap, int src_x, int src_y, int dest_x, int dest_y, int width, int height, int alpha_threshold);
 
   
 #ifndef GDKMM_DISABLE_DEPRECATED
@@ -1188,13 +820,7 @@ gboolean gdk_pixbuf_save_to_callbackv   (GdkPixbuf  *pixbuf,
    * @param x_dither X offset for dither.
    * @param y_dither Y offset for dither.
    */
-  void render_to_drawable(const Glib::RefPtr<Drawable>& drawable,
-                                          const Glib::RefPtr<Gdk::GC>& gc,
-                                          int src_x, int src_y,
-                                          int dest_x, int dest_y,
-                                          int width, int height,
-                                          RgbDither dither,
-                                          int x_dither, int y_dither);
+  void render_to_drawable(const Glib::RefPtr<Drawable>& drawable, const Glib::RefPtr<Gdk::GC>& gc, int src_x, int src_y, int dest_x, int dest_y, int width, int height, RgbDither dither, int x_dither, int y_dither);
 #endif // GDKMM_DISABLE_DEPRECATED
 
 
@@ -1223,14 +849,7 @@ gboolean gdk_pixbuf_save_to_callbackv   (GdkPixbuf  *pixbuf,
    * @param x_dither X offset for dither.
    * @param y_dither Y offset for dither.
    */
-  void render_to_drawable_alpha(const Glib::RefPtr<Drawable>& drawable,
-                                          int src_x, int src_y,
-                                          int dest_x, int dest_y,
-                                          int width, int height,
-                                          PixbufAlphaMode alpha_mode,
-                                          int alpha_threshold,
-                                          RgbDither dither,
-                                          int x_dither, int y_dither);
+  void render_to_drawable_alpha(const Glib::RefPtr<Drawable>& drawable, int src_x, int src_y, int dest_x, int dest_y, int width, int height, PixbufAlphaMode alpha_mode, int alpha_threshold, RgbDither dither, int x_dither, int y_dither);
 #endif // GDKMM_DISABLE_DEPRECATED
 
 
@@ -1243,24 +862,14 @@ gboolean gdk_pixbuf_save_to_callbackv   (GdkPixbuf  *pixbuf,
                               Glib::RefPtr<Bitmap>& mask_return, int alpha_threshold);
 
   
-  /** Looks up @a key in the list of options that may have been attached to the
-   *  @a pixbuf when it was loaded, or that may have been attached by another
-   * function using set_option().
-   * 
-   * For instance, the ANI loader provides "Title" and "Artist" options. 
-   * The ICO, XBM, and XPM loaders provide "x_hot" and "y_hot" hot-spot 
-   * options for cursor definitions. The PNG loader provides the tEXt ancillary
-   * chunk key/value pairs as options. Since 2.12, the TIFF and JPEG loaders
-   * return an "orientation" option string that corresponds to the embedded 
-   * TIFF/Exif orientation tag (if present).
-   * @param key A nul-terminated string.
-   * @return The value associated with @a key. This is a nul-terminated 
-   * string that should not be freed or <tt>0</tt> if @a key was not found.
-   */
   Glib::ustring get_option(const Glib::ustring& key) const;
 
 
   typedef Glib::SListHandle< Glib::RefPtr<PixbufFormat>, PixbufFormatTraits > SListHandle_PixbufFormat;
+  
+  /** Obtains the available information about the image formats supported by GdkPixbuf.
+   * @result A list of PixbufFormats describing the supported image formats. 
+   */
   static SListHandle_PixbufFormat get_formats();
   
 
@@ -1268,17 +877,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

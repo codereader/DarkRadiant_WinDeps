@@ -1,7 +1,7 @@
 /* $Id: window.hg,v 1.20 2006/05/10 20:59:28 murrayc Exp $ */
 
 /* window.h
- * 
+ *
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -18,13 +18,24 @@
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
- 
+
 #include <glibmm/object.h>
 #include <glibmm/listhandle.h>
 #include <gtkmm/bin.h>
 
 _DEFS(gtkmm,gtk)
 _PINCLUDE(gtkmm/private/bin_p.h)
+
+#m4 _PUSH(SECTION_CC_PRE_INCLUDES)
+//Allow us to set the struct fields.
+//TODO: Remove these functions anyway in an ABI break.
+#undef GSEAL_ENABLE
+#m4 _POP()
+
+#m4 _PUSH(SECTION_CC_PRE_INCLUDES)
+//Allow use of deprecated API, to avoid the need to break our own ABI:
+#undef GTK_DISABLE_DEPRECATED
+#m4 _POP()
 
 namespace Gtk
 {
@@ -64,9 +75,11 @@ class Window : public Bin
   _IGNORE(_gtk_window_internal_set_focus, _gtk_window_reposition, _gtk_window_constrain_size, gtk_window_remove_embedded_xid,
                 _gtk_window_get_group, _gtk_window_activate_key, gtk_window_add_embedded_xid, _gtk_window_keys_foreach)
 public:
-   _WRAP_CTOR(Window(WindowType type = WINDOW_TOPLEVEL), gtk_window_new)
+  _WRAP_CTOR(Window(WindowType type = WINDOW_TOPLEVEL), gtk_window_new)
 
+  _WRAP_PROPERTY("type", WindowType)
   _WRAP_PROPERTY("title", Glib::ustring)
+  _WRAP_PROPERTY("startup-id", Glib::ustring)
   _WRAP_PROPERTY("allow_shrink", bool)
   _WRAP_PROPERTY("allow_grow", bool)
   _WRAP_PROPERTY("resizable", bool)
@@ -76,30 +89,40 @@ public:
   _WRAP_PROPERTY("default_height", int)
   _WRAP_PROPERTY("destroy_with_parent", bool)
   _WRAP_PROPERTY("icon", Glib::RefPtr<Gdk::Pixbuf>)
-  
+  _WRAP_PROPERTY("mnemonics-visible", bool)
+  _WRAP_PROPERTY("icon-name", Glib::ustring)
   _WRAP_PROPERTY("screen", Glib::RefPtr<Gdk::Screen>)
   _WRAP_PROPERTY("is_active", bool)
   _WRAP_PROPERTY("has_toplevel_focus", bool)
   _WRAP_PROPERTY("type_hint", GdkWindowTypeHint)
   _WRAP_PROPERTY("skip_taskbar_hint", bool)
-  _WRAP_PROPERTY("skip_pager_hint", bool)        
+  _WRAP_PROPERTY("skip_pager_hint", bool)
   _WRAP_PROPERTY("role", Glib::ustring)
   _WRAP_PROPERTY("decorated", bool)
   _WRAP_PROPERTY("gravity", Gdk::Gravity)
   _WRAP_PROPERTY("transient_for", Window*)
-  _WRAP_PROPERTY("urgency_hint", bool) 
-  _WRAP_PROPERTY("deletable", bool) 
   _WRAP_PROPERTY("opacity", double)
+  _WRAP_PROPERTY("urgency_hint", bool)
+  _WRAP_PROPERTY("accept-focus", bool)
+  _WRAP_PROPERTY("focus-on-map", bool)
+  _WRAP_PROPERTY("deletable", bool)
 
+_DEPRECATE_IFDEF_START
+
+  /** @deprecated Use Gtk::Widget::is_toplevel().
+   */
   bool is_toplevel() const;
-  bool is_dialog() const;
+
+  /** @deprecated Use get_window_type().
+   */
   bool is_popup() const;
 
-  _MEMBER_GET(window_type, type, WindowType, guint)
-
-  //: This is special to the GTK+ linux-fb port.
+  // This is special to the GTK+ linux-fb port.
+  /** @deprecated You should not need to call this method.
+   */
   _MEMBER_GET_GOBJECT(frame, frame, Gdk::Window, GdkWindow*)
 
+_DEPRECATE_IFDEF_END
 
   _WRAP_SIGNAL(void set_focus(Widget* focus), "set_focus")
   _WRAP_SIGNAL(bool frame_event(GdkEvent* event), "frame_event")
@@ -115,13 +138,9 @@ dnl// GTK+ code, e.g. when receiving the GDK_DELETE event.  For details, look
 dnl// at Gtk::Window_Class::dispose_vfunc_callback() in window.ccg.
 dnl
   _PUSH(SECTION_PCC_CLASS_INIT_VFUNCS)
-#endif //GLIBMM_VFUNCS_ENABLED //We always need dispose_vfunc_callback
     reinterpret_cast<GObjectClass*>(klass)->dispose = &dispose_vfunc_callback;
-#ifdef GLIBMM_VFUNCS_ENABLED
   _SECTION(SECTION_PH_VFUNCS)
-#endif //GLIBMM_VFUNCS_ENABLED //We always need dispose_vfunc_callback
     static void dispose_vfunc_callback(GObject* self);
-#ifdef GLIBMM_VFUNCS_ENABLED
   _POP()
 #m4end
 
@@ -137,8 +156,6 @@ dnl
 
   _WRAP_METHOD(void set_role(const Glib::ustring& role), gtk_window_set_role)
 
-  //: Returns the role of the window.
-  //- See {set_role()} for further explanation.
   _WRAP_METHOD(Glib::ustring get_role() const, gtk_window_get_role)
 
 
@@ -155,15 +172,21 @@ dnl
 
   _WRAP_METHOD(void set_focus(Gtk::Widget& focus), gtk_window_set_focus)
   void unset_focus();
-  
+
   _WRAP_METHOD(Widget* get_focus(), gtk_window_get_focus)
   _WRAP_METHOD(const Widget* get_focus() const, gtk_window_get_focus, constversion)
   _WRAP_METHOD(void set_default(Gtk::Widget& default_widget), gtk_window_set_default)
   void unset_default();
- 
+
   _WRAP_METHOD(bool activate_default(), gtk_window_activate_default)
 
   _WRAP_METHOD(void set_transient_for(Window& parent), gtk_window_set_transient_for)
+
+  /** Unsets the current transient window.
+   * @see set_transient_for().
+   * @newin{2,20}
+   */
+  void unset_transient_for();
 
   _WRAP_METHOD(Window* get_transient_for(), gtk_window_get_transient_for)
   _WRAP_METHOD(const Window* get_transient_for() const, gtk_window_get_transient_for, constversion)
@@ -191,8 +214,12 @@ dnl
   //_WRAP_METHOD(void set_destroy_with_parent(bool setting = true), gtk_window_set_destroy_with_parent)
   // I don't that that this is ever a good thing for C++.murrayc.
 
+  //TODO: Remove?
   _WRAP_METHOD(bool get_destroy_with_parent() const, gtk_window_get_destroy_with_parent)
   // I don't that that this is ever a good thing for C++.murrayc.
+
+  _WRAP_METHOD(void set_mnemonics_visible(bool setting = true), gtk_window_set_mnemonics_visible)
+  _WRAP_METHOD(bool get_mnemonics_visible() const, gtk_window_get_mnemonics_visible)
 
   _WRAP_METHOD(void set_resizable(bool resizable = true), gtk_window_set_resizable)
 
@@ -213,17 +240,17 @@ dnl
   _WRAP_METHOD(Glib::RefPtr<const Gdk::Screen> get_screen() const, gtk_window_get_screen, refreturn, constversion)
 
 
-  _WRAP_METHOD(void set_has_frame(bool setting = true), gtk_window_set_has_frame)
+  _WRAP_METHOD(void set_has_frame(bool setting = true), gtk_window_set_has_frame, deprecated)
 
-  _WRAP_METHOD(bool get_has_frame() const, gtk_window_get_has_frame)
+  _WRAP_METHOD(bool get_has_frame() const, gtk_window_get_has_frame, deprecated)
 
   _WRAP_METHOD(void set_frame_dimensions(int left,  int top,
                                          int right, int bottom),
-               gtk_window_set_frame_dimensions)
+               gtk_window_set_frame_dimensions, deprecated)
 
   _WRAP_METHOD(void get_frame_dimensions(int& left,  int& top,
                                          int& right, int& bottom) const,
-               gtk_window_get_frame_dimensions)
+               gtk_window_get_frame_dimensions, deprecated)
 
   _WRAP_METHOD(void set_decorated(bool setting = true), gtk_window_set_decorated)
   _WRAP_METHOD(bool get_decorated() const, gtk_window_get_decorated)
@@ -240,18 +267,21 @@ dnl
   _WRAP_METHOD(void set_icon(const Glib::RefPtr<Gdk::Pixbuf>& icon),
                gtk_window_set_icon)
 
-
+  //TODO: Correct the since tag.
+  _WRAP_METHOD(void set_icon_name(const Glib::ustring& name), gtk_window_set_icon_name)
   _WRAP_METHOD(bool set_icon_from_file(const std::string& filename), gtk_window_set_icon_from_file, errthrow)
 
   _WRAP_METHOD(Glib::RefPtr<Gdk::Pixbuf> get_icon(), gtk_window_get_icon, refreturn)
   _WRAP_METHOD(Glib::RefPtr<const Gdk::Pixbuf> get_icon() const, gtk_window_get_icon, refreturn, constversion)
+
+  _WRAP_METHOD(Glib::ustring get_icon_name() const, gtk_window_get_icon_name)
 
   _WRAP_METHOD(static void set_default_icon_list(
                    const Glib::ListHandle< Glib::RefPtr<Gdk::Pixbuf> >& list),
                gtk_window_set_default_icon_list)
 
   _WRAP_METHOD(static Glib::ListHandle< Glib::RefPtr<Gdk::Pixbuf> > get_default_icon_list(), gtk_window_get_default_icon_list)
-  
+
   _WRAP_METHOD(static void set_default_icon(const Glib::RefPtr<Gdk::Pixbuf>& icon), gtk_window_set_default_icon)
   _WRAP_METHOD(static void set_default_icon_name(const Glib::ustring& name), gtk_window_set_default_icon_name)
   _WRAP_METHOD(static bool set_default_icon_from_file(const std::string& filename), gtk_window_set_default_icon_from_file, errthrow)
@@ -295,7 +325,7 @@ dnl
 
   _WRAP_METHOD(void fullscreen(), gtk_window_fullscreen)
   _WRAP_METHOD(void unfullscreen(), gtk_window_unfullscreen)
-        
+
   _WRAP_METHOD(void begin_resize_drag(Gdk::WindowEdge edge,
                    int button, int root_x, int root_y, guint32 timestamp),
                gtk_window_begin_resize_drag)
@@ -327,6 +357,8 @@ dnl
   _WRAP_METHOD(Glib::RefPtr<WindowGroup> get_group(), gtk_window_get_group, refreturn)
   _WRAP_METHOD(Glib::RefPtr<const WindowGroup> get_group() const, gtk_window_get_group, refreturn, constversion)
 
+  _WRAP_METHOD(WindowType get_window_type() const, gtk_window_get_window_type)
+
   _WRAP_METHOD(void reshow_with_initial_size(),
                gtk_window_reshow_with_initial_size)
 
@@ -334,7 +366,7 @@ dnl
   _WRAP_METHOD(void set_keep_above(bool setting = true), gtk_window_set_keep_above)
   _WRAP_METHOD(void set_keep_below(bool setting = true), gtk_window_set_keep_below)
 
-  
+
   /** Returns a default accel group for this window
    * This is a gtkmm-specific function.  This accel group can not
    * be removed.
@@ -365,4 +397,3 @@ private:
 
 
 } // namespace Gtk
-

@@ -24,79 +24,43 @@
 namespace Gio
 {
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 gssize InputStream::read(void* buffer, gsize count)
-#else
-gssize InputStream::read(void* buffer, gsize count, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
-  gssize retvalue = g_input_stream_read(gobj(), buffer, count, NULL, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  gssize retvalue = g_input_stream_read(gobj(), buffer, count, 0, &(gerror));
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
 
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool InputStream::read_all(void* buffer, gsize count, gsize& bytes_read)
-#else
-bool InputStream::read_all(void* buffer, gsize count, gsize& bytes_read, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
-  bool retvalue = g_input_stream_read_all(gobj(), buffer, count, &(bytes_read), NULL, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  bool retvalue = g_input_stream_read_all(gobj(), buffer, count, &(bytes_read), 0, &(gerror));
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 gssize InputStream::skip(gsize count)
-#else
-gssize InputStream::skip(gsize count, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
-  gssize retvalue = g_input_stream_skip(gobj(), count, NULL, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  gssize retvalue = g_input_stream_skip(gobj(), count, 0, &(gerror));
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool InputStream::close()
-#else
-bool InputStream::close(std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
-  bool retvalue = g_input_stream_close(gobj(), NULL, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  bool retvalue = g_input_stream_close(gobj(), 0, &(gerror));
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
@@ -113,7 +77,7 @@ InputStream::read_async(void* buffer, gsize count, const SlotAsyncReady& slot, c
                             buffer,
                             count,
                             io_priority,
-                            cancellable->gobj(),
+                            Glib::unwrap(cancellable),
                             &SignalProxy_async_callback,
                             slot_copy);
 }
@@ -130,7 +94,7 @@ InputStream::read_async(void* buffer, gsize count, const SlotAsyncReady& slot, i
                             buffer,
                             count,
                             io_priority,
-                            NULL,
+                            0,
                             &SignalProxy_async_callback,
                             slot_copy);
 }
@@ -147,7 +111,7 @@ InputStream::skip_async(gsize count, const SlotAsyncReady& slot, const Glib::Ref
   g_input_stream_skip_async(gobj(),
                             count,
                             io_priority,
-                            cancellable->gobj(),
+                            Glib::unwrap(cancellable),
                             &SignalProxy_async_callback,
                             slot_copy);
 }
@@ -163,7 +127,7 @@ InputStream::skip_async(gsize count, const SlotAsyncReady& slot, int io_priority
   g_input_stream_skip_async(gobj(),
                             count,
                             io_priority,
-                            NULL,
+                            0,
                             &SignalProxy_async_callback,
                             slot_copy);
 }
@@ -178,7 +142,7 @@ InputStream::close_async(const SlotAsyncReady& slot, const Glib::RefPtr<Cancella
 
   g_input_stream_close_async(gobj(),
                              io_priority,
-                             cancellable->gobj(),
+                             Glib::unwrap(cancellable),
                              &SignalProxy_async_callback,
                              slot_copy);
 }
@@ -193,7 +157,7 @@ InputStream::close_async(const SlotAsyncReady& slot, int io_priority)
 
   g_input_stream_close_async(gobj(),
                              io_priority,
-                             NULL,
+                             0,
                              &SignalProxy_async_callback,
                              slot_copy);
 }

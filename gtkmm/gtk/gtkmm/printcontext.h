@@ -54,7 +54,7 @@ namespace Gtk
  * PrintContext objects gets passed to the begin-print, end-print, 
  * request-page-setup and draw-page signals on the PrintOperation.
  *
- * @newin2p10
+ * @newin{2,10}
  *
  * @ingroup Printing
  */
@@ -89,6 +89,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -109,98 +111,112 @@ public:
    
   /** Obtains the cairo context that is associated with the
    * Gtk::PrintContext.
-   * @return The cairo context of @a context
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The cairo context of @a context.
    */
   Cairo::RefPtr<Cairo::Context> get_cairo_context();
   
   /** Obtains the cairo context that is associated with the
    * Gtk::PrintContext.
-   * @return The cairo context of @a context
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The cairo context of @a context.
    */
   Cairo::RefPtr<const Cairo::Context> get_cairo_context() const;
 
   
   /** Obtains the Gtk::PageSetup that determines the page
    * dimensions of the Gtk::PrintContext.
-   * @return The page setup of @a context
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The page setup of @a context.
    */
   Glib::RefPtr<PageSetup> get_page_setup();
   
   /** Obtains the Gtk::PageSetup that determines the page
    * dimensions of the Gtk::PrintContext.
-   * @return The page setup of @a context
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The page setup of @a context.
    */
   Glib::RefPtr<const PageSetup> get_page_setup() const;
 
   
   /** Obtains the width of the Gtk::PrintContext, in pixels.
-   * @return The width of @a context
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The width of @a context.
    */
   double get_width() const;
   
   /** Obtains the height of the Gtk::PrintContext, in pixels.
-   * @return The height of @a context
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The height of @a context.
    */
   double get_height() const;
 
   
   /** Obtains the horizontal resolution of the Gtk::PrintContext,
    * in dots per inch.
-   * @return The horizontal resolution of @a context
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The horizontal resolution of @a context.
    */
   double get_dpi_x() const;
   
   /** Obtains the vertical resolution of the Gtk::PrintContext,
    * in dots per inch.
-   * @return The vertical resolution of @a context
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The vertical resolution of @a context.
    */
   double get_dpi_y() const;
 
   
-  /** Return value: the font map of @a context
-   * @return The font map of @a context
+  /** Obtains the hardware printer margins of the Gtk::PrintContext, in units.
    * 
-   * @newin2p10.
+   * @newin{2,20}
+   * @param top Top hardware printer margin.
+   * @param bottom Bottom hardware printer margin.
+   * @param left Left hardware printer margin.
+   * @param right Right hardware printer margin.
+   * @return <tt>true</tt> if the hard margins were retrieved.
+   */
+  bool get_hard_margins(double& top, double& bottom, double& left, double& right) const;
+
+  
+  /** Returns a Pango::FontMap that is suitable for use
+   * with the Gtk::PrintContext.
+   * 
+   * @newin{2,10}
+   * @return The font map of @a context.
    */
   Glib::RefPtr<Pango::FontMap> get_pango_fontmap();
   
-  /** Return value: the font map of @a context
-   * @return The font map of @a context
+  /** Returns a Pango::FontMap that is suitable for use
+   * with the Gtk::PrintContext.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The font map of @a context.
    */
   Glib::RefPtr<const Pango::FontMap> get_pango_fontmap() const;
 
   
   /** Creates a new Pango::Context that can be used with the
    * Gtk::PrintContext.
-   * @return A new Pango context for @a context
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return A new Pango context for @a context.
    */
   Glib::RefPtr<Pango::Context> create_pango_context();
   
   /** Creates a new Pango::Layout that is suitable for use
    * with the Gtk::PrintContext.
-   * @return A new Pango layout for @a context
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return A new Pango layout for @a context.
    */
   Glib::RefPtr<Pango::Layout> create_pango_layout();
 
@@ -212,7 +228,7 @@ public:
    * since GTK+ itself creates a suitable cairo context in that
    * case.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param cr The cairo context.
    * @param dpi_x The horizontal resolution to use with @a cr.
    * @param dpi_y The vertical resolution to use with @a cr.
@@ -224,17 +240,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

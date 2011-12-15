@@ -40,12 +40,6 @@ GType Glib::Value<Gtk::ProgressBarStyle>::value_type()
   return gtk_progress_bar_style_get_type();
 }
 
-// static
-GType Glib::Value<Gtk::ProgressBarOrientation>::value_type()
-{
-  return gtk_progress_bar_orientation_get_type();
-}
-
 
 namespace Glib
 {
@@ -84,23 +78,14 @@ const Glib::Class& ProgressBar_Class::init()
   return *this;
 }
 
+
 void ProgressBar_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* ProgressBar_Class::wrap_new(GObject* o)
@@ -135,6 +120,7 @@ GType ProgressBar::get_type()
 {
   return progressbar_class_.init().get_type();
 }
+
 
 GType ProgressBar::get_base_type()
 {
@@ -209,6 +195,20 @@ Pango::EllipsizeMode ProgressBar::get_ellipsize() const
 
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<Adjustment*> ProgressBar::property_adjustment() 
+{
+  return Glib::PropertyProxy<Adjustment*>(this, "adjustment");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<Adjustment*> ProgressBar::property_adjustment() const
+{
+  return Glib::PropertyProxy_ReadOnly<Adjustment*>(this, "adjustment");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
 Glib::PropertyProxy<double> ProgressBar::property_fraction() 
 {
   return Glib::PropertyProxy<double>(this, "fraction");
@@ -251,6 +251,62 @@ Glib::PropertyProxy_ReadOnly<ProgressBarOrientation> ProgressBar::property_orien
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<ProgressBarStyle> ProgressBar::property_bar_style() 
+{
+  return Glib::PropertyProxy<ProgressBarStyle>(this, "bar-style");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<ProgressBarStyle> ProgressBar::property_bar_style() const
+{
+  return Glib::PropertyProxy_ReadOnly<ProgressBarStyle>(this, "bar-style");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<guint> ProgressBar::property_activity_step() 
+{
+  return Glib::PropertyProxy<guint>(this, "activity-step");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<guint> ProgressBar::property_activity_step() const
+{
+  return Glib::PropertyProxy_ReadOnly<guint>(this, "activity-step");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<guint> ProgressBar::property_activity_blocks() 
+{
+  return Glib::PropertyProxy<guint>(this, "activity-blocks");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<guint> ProgressBar::property_activity_blocks() const
+{
+  return Glib::PropertyProxy_ReadOnly<guint>(this, "activity-blocks");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<guint> ProgressBar::property_discrete_blocks() 
+{
+  return Glib::PropertyProxy<guint>(this, "discrete-blocks");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<guint> ProgressBar::property_discrete_blocks() const
+{
+  return Glib::PropertyProxy_ReadOnly<guint>(this, "discrete-blocks");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
 Glib::PropertyProxy<Glib::ustring> ProgressBar::property_text() 
 {
   return Glib::PropertyProxy<Glib::ustring>(this, "text");
@@ -277,13 +333,6 @@ Glib::PropertyProxy_ReadOnly<bool> ProgressBar::property_ellipsize() const
   return Glib::PropertyProxy_ReadOnly<bool>(this, "ellipsize");
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

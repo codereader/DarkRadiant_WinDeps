@@ -26,27 +26,16 @@
 namespace Glib
 {
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::RefPtr<Glib::Regex> Regex::create(const Glib::ustring& pattern,
                                         RegexCompileFlags compile_options,
                                         RegexMatchFlags match_options)
-#else
-Glib::RefPtr<Glib::Regex> Regex::create(const Glib::ustring& pattern,
-                                        RegexCompileFlags compile_options,
-                                        RegexMatchFlags match_options,
-                                        std::auto_ptr<Glib::Error>& error)
-#endif /* GLIBMM_EXCEPTIONS_ENABLED */
 {
   GError* gerror = 0;
   GRegex* regex  = g_regex_new(pattern.c_str(), (GRegexCompileFlags)compile_options,
                                (GRegexMatchFlags)match_options, &gerror);
 
   if(gerror)
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
     Glib::Error::throw_exception(gerror);
-#else
-    error = Glib::Error::throw_exception(gerror);
-#endif
   return Glib::wrap(regex);
 }
 
@@ -58,152 +47,226 @@ Glib::ustring Regex::escape_string(const Glib::ustring& string)
   return Glib::ustring(buf.get());
 }
 
+bool Regex::match(
+  const Glib::ustring& string,
+  Glib::MatchInfo& match_info,
+  RegexMatchFlags match_options
+)
+{
+  GMatchInfo* ginfo = 0;
+  bool const result = static_cast<bool>(g_regex_match(gobj(), string.c_str(),
+    static_cast<GRegexMatchFlags>(match_options), &ginfo));
+  match_info.set_gobject(ginfo);
+  return result;
+}
+
 bool Regex::match(const Glib::ustring& string, RegexMatchFlags match_options)
 {
   return g_regex_match(gobj(), string.c_str(), (GRegexMatchFlags)(match_options), 0);
 }
 
+bool Regex::match(
+  const Glib::ustring& string,
+  int start_position,
+  Glib::MatchInfo& match_info,
+  RegexMatchFlags match_options
+)
+{
+  GError* gerror = 0;
+  GMatchInfo* ginfo = 0;
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  bool const result = static_cast<bool>(g_regex_match_full(gobj(),
+    string.c_str(), -1, start_position,
+    static_cast<GRegexMatchFlags>(match_options), &ginfo, &gerror));
+
+  if(gerror)
+    ::Glib::Error::throw_exception(gerror);
+
+  match_info.set_gobject(ginfo);
+  return result;
+}
+
+bool Regex::match(
+  const Glib::ustring& string,
+  gssize string_len,
+  int start_position,
+  Glib::MatchInfo& match_info,
+  RegexMatchFlags match_options
+)
+{
+  GError* gerror = 0;
+  GMatchInfo* ginfo = 0;
+
+  bool const result = static_cast<bool>(g_regex_match_full(gobj(),
+    string.c_str(), string_len, start_position,
+    static_cast<GRegexMatchFlags>(match_options), &ginfo, &gerror));
+
+  if(gerror)
+    ::Glib::Error::throw_exception(gerror);
+
+  match_info.set_gobject(ginfo);
+  return result;
+}
+
 bool Regex::match(const Glib::ustring& string, int start_position, RegexMatchFlags match_options)
-#else
-bool Regex::match(const Glib::ustring& string, int start_position, RegexMatchFlags match_options, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = g_regex_match_full(gobj(), string.c_str(), -1, start_position, ((GRegexMatchFlags)(match_options)), 0, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool Regex::match(const Glib::ustring& string, gssize string_len, int start_position, RegexMatchFlags match_options)
-#else
-bool Regex::match(const Glib::ustring& string, gssize string_len, int start_position, RegexMatchFlags match_options, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = g_regex_match_full(gobj(), string.c_str(), string_len, start_position, ((GRegexMatchFlags)(match_options)), 0, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
 
+bool Regex::match_all(
+  const Glib::ustring& string,
+  Glib::MatchInfo& match_info,
+  RegexMatchFlags match_options
+)
+{
+  GMatchInfo* ginfo = 0;
+  bool const result = static_cast<bool>(g_regex_match_all(gobj(),
+    string.c_str(), static_cast<GRegexMatchFlags>(match_options),
+    &ginfo));
+  match_info.set_gobject(ginfo);
+  return result;
+}
 
 bool Regex::match_all(const Glib::ustring& string, RegexMatchFlags match_options)
 {
   return g_regex_match_all(gobj(), string.c_str(), ((GRegexMatchFlags)(match_options)), 0);
 }
 
+bool Regex::match_all(
+  const Glib::ustring& string,
+  int start_position,
+  Glib::MatchInfo& match_info,
+  RegexMatchFlags match_options
+)
+{
+  GError* gerror = 0;
+  GMatchInfo* ginfo = 0;
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  bool const retvalue = static_cast<bool>(g_regex_match_all_full(gobj(),
+    string.c_str(), -1, start_position,
+    static_cast<GRegexMatchFlags>(match_options), &ginfo, &gerror));
+
+  if(gerror)
+    ::Glib::Error::throw_exception(gerror);
+
+  match_info.set_gobject(ginfo);
+  return retvalue;
+}
+
+bool Regex::match_all(
+  const Glib::ustring& string,
+  gssize string_len,
+  int start_position,
+  Glib::MatchInfo& match_info,
+  RegexMatchFlags match_options
+)
+{
+  GError* gerror = 0;
+  GMatchInfo* ginfo = 0;
+
+  bool const retvalue = static_cast<bool>(g_regex_match_all_full(gobj(),
+    string.c_str(), string_len, start_position,
+    static_cast<GRegexMatchFlags>(match_options), &ginfo, &gerror));
+
+  if(gerror)
+    ::Glib::Error::throw_exception(gerror);
+
+  match_info.set_gobject(ginfo);
+  return retvalue;
+}
+
 bool Regex::match_all(const Glib::ustring& string, int start_position, RegexMatchFlags match_options)
-#else
-bool Regex::match_all(const Glib::ustring& string, int start_position, RegexMatchFlags match_options, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = g_regex_match_all_full(gobj(), string.c_str(), -1, start_position, ((GRegexMatchFlags)(match_options)), 0, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool Regex::match_all(const Glib::ustring& string, gssize string_len, int start_position, RegexMatchFlags match_options)
-#else
-bool Regex::match_all(const Glib::ustring& string, gssize string_len, int start_position, RegexMatchFlags match_options, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = g_regex_match_all_full(gobj(), string.c_str(), string_len, start_position, ((GRegexMatchFlags)(match_options)), 0, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
 
-
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::ustring Regex::replace(const Glib::ustring& string, int start_position, const Glib::ustring& replacement, RegexMatchFlags match_options)
-#else
-Glib::ustring Regex::replace(const Glib::ustring& string, int start_position, const Glib::ustring& replacement, RegexMatchFlags match_options, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   Glib::ustring retvalue = Glib::convert_return_gchar_ptr_to_ustring(g_regex_replace(gobj(), string.c_str(), -1, start_position, replacement.c_str(), ((GRegexMatchFlags)(match_options)), &(gerror)));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
 
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::ustring Regex::replace_literal(const Glib::ustring& string, int start_position, const Glib::ustring& replacement, RegexMatchFlags match_options)
-#else
-Glib::ustring Regex::replace_literal(const Glib::ustring& string, int start_position, const Glib::ustring& replacement, RegexMatchFlags match_options, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   Glib::ustring retvalue = Glib::convert_return_gchar_ptr_to_ustring(g_regex_replace_literal(gobj(), string.c_str(), -1, start_position, replacement.c_str(), ((GRegexMatchFlags)(match_options)), &(gerror)));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::StringArrayHandle Regex::split(const Glib::ustring& string, int start_position, RegexMatchFlags match_options, int max_tokens) const
-#else
-Glib::StringArrayHandle Regex::split(const Glib::ustring& string, int start_position, RegexMatchFlags match_options, int max_tokens, std::auto_ptr<Glib::Error>& error) const
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   Glib::StringArrayHandle retvalue = Glib::StringArrayHandle(g_regex_split_full(const_cast<GRegex*>(gobj()), string.c_str(), -1, start_position, ((GRegexMatchFlags)(match_options)), max_tokens, &(gerror)), Glib::OWNERSHIP_DEEP);
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
+}
+
+
+MatchInfo::MatchInfo()
+: gobject_(0),
+  take_ownership(false)
+{
+}
+
+MatchInfo::MatchInfo(GMatchInfo* castitem, bool take_ownership)
+: gobject_(castitem),
+  take_ownership(take_ownership)
+{
+}
+
+void MatchInfo::set_gobject(GMatchInfo* castitem, bool take_ownership)
+{
+  if(gobject_ && take_ownership)
+    g_match_info_free(gobject_);
+
+  gobject_ = castitem;
+  this->take_ownership = take_ownership;
+}
+
+MatchInfo::~MatchInfo()
+{
+  if(take_ownership && gobject_)
+    g_match_info_free(gobject_);
 }
 
 } // namespace Glib
@@ -228,18 +291,10 @@ Glib::RegexError::Code Glib::RegexError::code() const
   return static_cast<Code>(Glib::Error::code());
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void Glib::RegexError::throw_func(GError* gobject)
 {
   throw Glib::RegexError(gobject);
 }
-#else
-//When not using exceptions, we just pass the Exception object around without throwing it:
-std::auto_ptr<Glib::Error> Glib::RegexError::throw_func(GError* gobject)
-{
-  return std::auto_ptr<Glib::Error>(new Glib::RegexError(gobject));
-}
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
 /* Why reinterpret_cast<Regex*>(gobject) is needed:
@@ -328,6 +383,16 @@ int Regex::get_string_number(const Glib::ustring& name) const
   return g_regex_get_string_number(const_cast<GRegex*>(gobj()), name.c_str());
 }
 
+RegexCompileFlags Regex::get_compile_flags() const
+{
+  return ((RegexCompileFlags)(g_regex_get_compile_flags(const_cast<GRegex*>(gobj()))));
+}
+
+RegexMatchFlags Regex::get_match_flags() const
+{
+  return ((RegexMatchFlags)(g_regex_get_match_flags(const_cast<GRegex*>(gobj()))));
+}
+
 bool Regex::match_simple(const Glib::ustring& pattern, const Glib::ustring& string, RegexCompileFlags compile_options, RegexMatchFlags match_options)
 {
   return g_regex_match_simple(pattern.c_str(), string.c_str(), ((GRegexCompileFlags)(compile_options)), ((GRegexMatchFlags)(match_options)));
@@ -345,104 +410,144 @@ Glib::StringArrayHandle Regex::split(const Glib::ustring& string, RegexMatchFlag
   return Glib::StringArrayHandle(g_regex_split(gobj(), string.c_str(), ((GRegexMatchFlags)(match_options))), Glib::OWNERSHIP_DEEP);
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::StringArrayHandle Regex::split(const gchar* string, gssize string_len, int start_position, RegexMatchFlags match_options, int max_tokens) const
-#else
-Glib::StringArrayHandle Regex::split(const gchar* string, gssize string_len, int start_position, RegexMatchFlags match_options, int max_tokens, std::auto_ptr<Glib::Error>& error) const
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   Glib::StringArrayHandle retvalue = Glib::StringArrayHandle(g_regex_split_full(const_cast<GRegex*>(gobj()), string, string_len, start_position, ((GRegexMatchFlags)(match_options)), max_tokens, &(gerror)), Glib::OWNERSHIP_DEEP);
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::ustring Regex::replace(const gchar* string, gssize string_len, int start_position, const Glib::ustring& replacement, RegexMatchFlags match_options)
-#else
-Glib::ustring Regex::replace(const gchar* string, gssize string_len, int start_position, const Glib::ustring& replacement, RegexMatchFlags match_options, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   Glib::ustring retvalue = Glib::convert_return_gchar_ptr_to_ustring(g_regex_replace(gobj(), string, string_len, start_position, replacement.c_str(), ((GRegexMatchFlags)(match_options)), &(gerror)));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::ustring Regex::replace_literal(const gchar * string, gssize string_len, int start_position, const Glib::ustring& replacement, RegexMatchFlags match_options)
-#else
-Glib::ustring Regex::replace_literal(const gchar * string, gssize string_len, int start_position, const Glib::ustring& replacement, RegexMatchFlags match_options, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   Glib::ustring retvalue = Glib::convert_return_gchar_ptr_to_ustring(g_regex_replace_literal(gobj(), string, string_len, start_position, replacement.c_str(), ((GRegexMatchFlags)(match_options)), &(gerror)));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::ustring Regex::replace_eval(const Glib::ustring& string, gssize string_len, int start_position, RegexMatchFlags match_options, GRegexEvalCallback eval, gpointer user_data)
-#else
-Glib::ustring Regex::replace_eval(const Glib::ustring& string, gssize string_len, int start_position, RegexMatchFlags match_options, GRegexEvalCallback eval, gpointer user_data, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   Glib::ustring retvalue = Glib::convert_return_gchar_ptr_to_ustring(g_regex_replace_eval(gobj(), string.c_str(), string_len, start_position, ((GRegexMatchFlags)(match_options)), eval, user_data, &(gerror)));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool Regex::check_replacement(const Glib::ustring& replacement, gboolean* has_references)
-#else
-bool Regex::check_replacement(const Glib::ustring& replacement, gboolean* has_references, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = g_regex_check_replacement(replacement.c_str(), has_references, &(gerror));
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
+}
+
+
+} // namespace Glib
+
+
+namespace Glib
+{
+
+
+Glib::RefPtr<Regex> MatchInfo::get_regex()
+{
+  return Glib::wrap(g_match_info_get_regex(gobj()));
+}
+
+Glib::RefPtr<const Regex> MatchInfo::get_regex() const
+{
+  return const_cast<MatchInfo*>(this)->get_regex();
+}
+
+Glib::ustring MatchInfo::get_string() const
+{
+  return Glib::convert_const_gchar_ptr_to_ustring(g_match_info_get_string(const_cast<GMatchInfo*>(gobj())));
+}
+
+bool MatchInfo::matches() const
+{
+  return g_match_info_matches(const_cast<GMatchInfo*>(gobj()));
+}
+
+bool MatchInfo::next()
+{
+  GError* gerror = 0;
+  bool retvalue = g_match_info_next(gobj(), &(gerror));
+  if(gerror)
+    ::Glib::Error::throw_exception(gerror);
+
+  return retvalue;
+
+}
+
+int MatchInfo::get_match_count() const
+{
+  return g_match_info_get_match_count(const_cast<GMatchInfo*>(gobj()));
+}
+
+bool MatchInfo::is_partial_match() const
+{
+  return g_match_info_is_partial_match(const_cast<GMatchInfo*>(gobj()));
+}
+
+Glib::ustring MatchInfo::expand_references(const Glib::ustring& string_to_expand)
+{
+  GError* gerror = 0;
+  Glib::ustring retvalue = Glib::convert_return_gchar_ptr_to_ustring(g_match_info_expand_references(gobj(), string_to_expand.c_str(), &(gerror)));
+  if(gerror)
+    ::Glib::Error::throw_exception(gerror);
+
+  return retvalue;
+
+}
+
+Glib::ustring MatchInfo::fetch(int match_num)
+{
+  return Glib::convert_return_gchar_ptr_to_ustring(g_match_info_fetch(gobj(), match_num));
+}
+
+bool MatchInfo::fetch_pos(int match_num, int& start_pos, int& end_pos)
+{
+  return g_match_info_fetch_pos(gobj(), match_num, &(start_pos), &(end_pos));
+}
+
+Glib::ustring MatchInfo::fetch_named(const Glib::ustring& name)
+{
+  return Glib::convert_return_gchar_ptr_to_ustring(g_match_info_fetch_named(gobj(), name.c_str()));
+}
+
+bool MatchInfo::fetch_named_pos(const Glib::ustring& name, int& start_pos, int& end_pos)
+{
+  return g_match_info_fetch_named_pos(gobj(), name.c_str(), &(start_pos), &(end_pos));
+}
+
+Glib::StringArrayHandle MatchInfo::fetch_all()
+{
+  return Glib::StringArrayHandle(g_match_info_fetch_all(gobj()), Glib::OWNERSHIP_DEEP);
 }
 
 

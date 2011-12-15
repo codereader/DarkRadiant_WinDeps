@@ -24,7 +24,7 @@
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
- 
+
 #include <gdk/gdkkeysyms.h>
 
 
@@ -112,7 +112,7 @@ public:
  * @ingroup Menus
  */
 
-class MenuShell : public Container 
+class MenuShell : public Container
 {
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -143,6 +143,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -155,19 +157,13 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_deactivate();
   virtual void on_selection_done();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -193,26 +189,26 @@ public:
 
   //TODO: Is force_deactivate = false a good default?
   
-  void activate_item(MenuItem& menu_item, bool force_deactivate = false);
+  void activate_item(MenuItem& menu_item, bool force_deactivate =  false);
   
   /** Select the first visible or selectable child of the menu shell;
    * don't select tearoff items unless the only item is a tearoff
    * item.
    * 
-   * @newin2p2
+   * @newin{2,2}
    * @param search_sensitive If <tt>true</tt>, search for the first selectable
    * menu item, otherwise select nothing if
    * the first item isn't sensitive. This
    * should be <tt>false</tt> if the menu is being
    * popped up initially.
    */
-  void select_first(bool search_sensitive = true);
+  void select_first(bool search_sensitive =  true);
   
   void deactivate();
   
   /** Cancels the selection within the menu shell.  
    * 
-   * @newin2p4
+   * @newin{2,4}
    */
   void cancel();
 
@@ -258,7 +254,7 @@ public:
    * MenuBar and OptionMenu is attached to a window at this time and
    * the window object can be found automatically.
    *
-   * Important note when using popup menus: 
+   * Important note when using popup menus:
    * If you are using accelerated menu entries inside a popup
    * menu you have to call the accelerate() method manually. This is
    * because the popup menu is not connected to any window and the
@@ -285,10 +281,10 @@ public:
   void accelerate(Widget& parent);
 
   
-  /** Returns: <tt>true</tt> if the menu shell will take the keyboard focus on popup.
-   * @return <tt>true</tt> if the menu shell will take the keyboard focus on popup.
+  /** Returns <tt>true</tt> if the menu shell will take the keyboard focus on popup.
    * 
-   * @newin2p8.
+   * @newin{2,8}
+   * @return <tt>true</tt> if the menu shell will take the keyboard focus on popup.
    */
   bool get_take_focus() const;
   
@@ -318,11 +314,11 @@ public:
    * 
    * See also gdk_keyboard_grab()
    * 
-   * @newin2p8
+   * @newin{2,8}
    * @param take_focus <tt>true</tt> if the menu shell should take the keyboard focus on popup.
    */
-  void set_take_focus(bool take_focus = true);
-  
+  void set_take_focus(bool take_focus =  true);
+
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** A boolean that determines whether the menu grabs the keyboard focus.
    *

@@ -100,23 +100,17 @@ const Glib::Class& ToggleToolButton_Class::init()
   return *this;
 }
 
+
 void ToggleToolButton_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->toggled = &toggled_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void ToggleToolButton_Class::toggled_callback(GtkToggleToolButton* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -148,7 +142,7 @@ void ToggleToolButton_Class::toggled_callback(GtkToggleToolButton* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -157,7 +151,6 @@ void ToggleToolButton_Class::toggled_callback(GtkToggleToolButton* self)
   if(base && base->toggled)
     (*base->toggled)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* ToggleToolButton_Class::wrap_new(GObject* o)
@@ -192,6 +185,7 @@ GType ToggleToolButton::get_type()
 {
   return toggletoolbutton_class_.init().get_type();
 }
+
 
 GType ToggleToolButton::get_base_type()
 {
@@ -236,7 +230,21 @@ Glib::SignalProxy0< void > ToggleToolButton::signal_toggled()
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<bool> ToggleToolButton::property_active() 
+{
+  return Glib::PropertyProxy<bool>(this, "active");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> ToggleToolButton::property_active() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "active");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+
 void Gtk::ToggleToolButton::on_toggled()
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -246,10 +254,6 @@ void Gtk::ToggleToolButton::on_toggled()
   if(base && base->toggled)
     (*base->toggled)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

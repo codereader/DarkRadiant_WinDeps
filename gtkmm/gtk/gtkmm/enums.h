@@ -27,12 +27,14 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <gtkmmconfig.h> //For GTKMM_MAEMO_EXTENSIONS_ENABLED
+
 
 namespace Gtk
 {
 
 
-/** @addtogroup gtkmmEnums Enums and Flags */
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
 
 /**
  * @ingroup gtkmmEnums
@@ -148,8 +150,6 @@ namespace Gtk
 
 
 /** Used to indicate the direction in which a Gtk::Arrow should point.
- */
-/**
  * @ingroup gtkmmEnums
  */
 enum ArrowType
@@ -200,8 +200,6 @@ namespace Gtk
  */
 
 /** Denotes the expansion properties that a widget will have when it (or its parent) is resized.
- */
-/**
  * @ingroup gtkmmEnums
  * @par Bitwise operators:
  * <tt>%AttachOptions operator|(AttachOptions, AttachOptions)</tt><br>
@@ -275,11 +273,8 @@ namespace Gtk
 /*! @var AttachOptions SHRINK
  * The widget should shrink as and when possible.
  */
-/*! @var AttachOptions FILL
+/** @var AttachOptions FILL
  * The widget should fill the space allocated to it.
- */
-
-/**
  * @ingroup gtkmmEnums
  */
 enum ButtonBoxStyle
@@ -578,6 +573,39 @@ namespace Gtk
 /**
  * @ingroup gtkmmEnums
  */
+enum MessageType
+{
+  MESSAGE_INFO,
+  MESSAGE_WARNING,
+  MESSAGE_QUESTION,
+  MESSAGE_ERROR,
+  MESSAGE_OTHER
+};
+
+} // namespace Gtk
+
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+namespace Glib
+{
+
+template <>
+class Value<Gtk::MessageType> : public Glib::Value_Enum<Gtk::MessageType>
+{
+public:
+  static GType value_type() G_GNUC_CONST;
+};
+
+} // namespace Glib
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+
+namespace Gtk
+{
+
+/**
+ * @ingroup gtkmmEnums
+ */
 enum MetricType
 {
   PIXELS,
@@ -820,6 +848,38 @@ namespace Glib
 
 template <>
 class Value<Gtk::PolicyType> : public Glib::Value_Enum<Gtk::PolicyType>
+{
+public:
+  static GType value_type() G_GNUC_CONST;
+};
+
+} // namespace Glib
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+
+namespace Gtk
+{
+
+/**
+ * @ingroup gtkmmEnums
+ */
+enum ProgressBarOrientation
+{
+  PROGRESS_LEFT_TO_RIGHT,
+  PROGRESS_RIGHT_TO_LEFT,
+  PROGRESS_BOTTOM_TO_TOP,
+  PROGRESS_TOP_TO_BOTTOM
+};
+
+} // namespace Gtk
+
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+namespace Glib
+{
+
+template <>
+class Value<Gtk::ProgressBarOrientation> : public Glib::Value_Enum<Gtk::ProgressBarOrientation>
 {
 public:
   static GType value_type() G_GNUC_CONST;
@@ -1559,7 +1619,7 @@ public:
   explicit IconSize(int size) : size_ (size) {}
   operator int() const { return size_; }
 
-  // These static methods are implement in iconfactory.ccg. TODO: That's probably unnecessarily obscure. murrayc.
+  // These static methods are implemented in iconfactory.ccg. TODO: That's probably unnecessarily obscure. murrayc.
 
   /** Obtains the pixel size of a semantic icon size, possibly modified by user preferences for the default Gtk::Settings.
    * Normally size would be Gtk::ICON_SIZE_MENU, Gtk::ICON_SIZE_BUTTON, etc. 
@@ -1588,7 +1648,7 @@ public:
    * @param settings A Gtk::Settings object, used to determine which set of user preferences to used.
    * @result true if size was a valid size. 
    *
-   * @newin2p14
+   * @newin{2,14}
    */
   static bool lookup(IconSize size, int& width, int& height, const Glib::RefPtr<Gtk::Settings>& settings);
 
@@ -1648,11 +1708,18 @@ namespace Gtk
    */
   enum AlignmentEnum
   {
-    ALIGN_LEFT,   /**< Same as 0.0 */
-    ALIGN_CENTER,  /**< Same as 0.5 */
-    ALIGN_RIGHT,  /**< Same as 1.0 */
-    ALIGN_TOP,   /**< Same as ALIGN_LEFT */
-    ALIGN_BOTTOM  /**< Same as ALIGN_RIGHT */
+    ALIGN_START, /**< Same as 0.0. */
+    ALIGN_CENTER,  /**< Same as 0.5. */
+    ALIGN_END  /**< Same as 1.0. */
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+    ,
+    ALIGN_LEFT = ALIGN_START, /**< @deprecated Use ALIGN_START. */
+    ALIGN_RIGHT = ALIGN_END, /**< @deprecated Use ALIGN_END. */
+    ALIGN_TOP = ALIGN_START, /**< @deprecated Use ALIGN_START. */
+    ALIGN_BOTTOM = ALIGN_END /**< @deprecated Use ALIGN_END. */
+#endif // GTKMM_DISABLE_DEPRECATED
+
   };
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS

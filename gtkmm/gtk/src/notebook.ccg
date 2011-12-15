@@ -20,39 +20,39 @@
 
 #include <gtk/gtk.h>
 #include <gtkmm/label.h>
+#include <algorithm>
 
-//We use a function instead of a static method, so we can make it static, so it is not exported.
-static GtkNotebook* SignalProxy_WindowCreation_gtk_callback(GtkNotebook* /* source */, GtkWidget* page, gint x, gint y, gpointer data)
+
+namespace
 {
-  Gtk::Notebook::SlotWindowCreation* the_slot = static_cast<Gtk::Notebook::SlotWindowCreation*>(data);
+extern "C"
+{
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
+_DEPRECATE_IFDEF_START
+static GtkNotebook* SignalProxy_WindowCreation_gtk_callback(GtkNotebook*, GtkWidget* page,
+                                                            int x, int y, void* data)
+{
+  Gtk::Notebook::SlotWindowCreation *const
+    slot = static_cast<Gtk::Notebook::SlotWindowCreation*>(data);
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
-    Gtk::Widget* pCppPage = Glib::wrap(page);
-
-    Gtk::Notebook* pCppNotebookResult = (*the_slot)(pCppPage, x, y);
-    if(pCppNotebookResult)
-      return pCppNotebookResult->gobj();
-    else
-      return 0;
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
+    return Glib::unwrap((*slot)(Glib::wrap(page), x, y));
   }
-  catch(...)
+  catch (...)
   {
     Glib::exception_handlers_invoke();
-    return 0;
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
+  return 0;
 }
+_DEPRECATE_IFDEF_END
 
 static void SignalProxy_WindowCreation_gtk_callback_destroy(void* data)
 {
-  Gtk::Notebook::SlotWindowCreation* the_slot = static_cast<Gtk::Notebook::SlotWindowCreation*>(data);
-  delete the_slot;
+  delete static_cast<Gtk::Notebook::SlotWindowCreation*>(data);
 }
 
+} // extern "C"
+} // anonymous namespace
 
 namespace Gtk
 {
@@ -83,24 +83,20 @@ PageIterator& PageIterator::operator++()
 const PageIterator PageIterator::operator++(int)
 {
   const PageIterator tmp (*this);
-  this->operator++();
+  ++*this;
   return tmp;
 }
 
 PageIterator& PageIterator::operator--()
 {
-  if(node_)
-    node_ = node_->prev;
-  else
-    node_ = g_list_last(parent_->gobj()->children);
-
+  node_ = (node_) ? node_->prev : g_list_last(parent_->gobj()->children);
   return *this;
 }
 
 const PageIterator PageIterator::operator--(int)
 {
   const PageIterator tmp (*this);
-  this->operator--();
+  --*this;
   return tmp;
 }
 
@@ -108,7 +104,7 @@ const PageIterator PageIterator::operator--(int)
 /*********************************************************************
 ***** Page Properties
 *********************************************************************/
-
+_DEPRECATE_IFDEF_START
 int Page::get_page_num() const
 {
   return g_list_position(parent_->gobj()->children, node_);
@@ -168,6 +164,7 @@ void Page::set_tab_label_packing(bool expand, bool fill, PackType pack_type)
 {
   parent_->set_tab_label_packing(*get_child(), expand, fill, pack_type);
 }
+_DEPRECATE_IFDEF_END
 
 /*********************************************************************
 ***** List properties
@@ -183,9 +180,9 @@ PageList::PageList(GtkNotebook* gparent)
 {}
 
 PageList::PageList(const PageList& src)
-{
-  operator=(src);
-}
+:
+  gparent_ (src.gparent_)
+{}
 
 PageList& PageList::operator=(const PageList& src)
 {
@@ -193,6 +190,7 @@ PageList& PageList::operator=(const PageList& src)
   return *this;
 }
 
+_DEPRECATE_IFDEF_START
 PageList::size_type PageList::max_size() const
 {
   return G_MAXINT;
@@ -215,8 +213,7 @@ PageList::value_type PageList::front() const
 
 PageList::value_type PageList::back() const
 {
-  iterator pend (end());
-  return *--pend;
+  return *--end();
 }
 
 PageList::value_type PageList::operator[](size_type index) const
@@ -280,24 +277,26 @@ void PageList::reorder(PageList::iterator position, PageList::iterator page)
 
 PageList::iterator PageList::find(int num)
 {
-  if(num < 0) return end();
-  int j = 0;
-  iterator i;
-  for(i = begin(), j = 0; i != end(), j < num; ++i, ++j);
+  if (num < 0)
+    return end();
+  iterator i = begin();
+  std::advance(i, num);
   return i;
 }
 
 PageList::iterator PageList::find(const_reference c)
 {
   iterator i = begin();
-  for(i = begin(); i != end() && ((*i).get_child() != c.get_child()); i++);
+  while (i != end() && ((*i).get_child() != c.get_child()))
+    ++i;
   return i;
 }
 
 PageList::iterator PageList::find(Widget& widget)
 {
-  iterator i;
-  for(i = begin(); i != end() && ((*i).get_child() != &widget); i++);
+  iterator i = begin();
+  while (i != end() && ((*i).get_child() != &widget))
+    ++i;
   return i;
 }
 
@@ -325,7 +324,9 @@ PageList::iterator PageList::end_() const
 {
   return iterator(Glib::wrap(gparent_), 0);
 }
+_DEPRECATE_IFDEF_END
 
+_DEPRECATE_IFDEF_START
 Element::Element(Widget* child, Widget* tab, Widget* menu)
 :
   child_  (child),
@@ -361,10 +362,12 @@ MenuElem::MenuElem(Widget& child, Widget& menu)
 :
   Element(&child, 0, &menu)
 {}
+_DEPRECATE_IFDEF_END
 
 } /* namespace Notebook_Helpers */
 
 
+_DEPRECATE_IFDEF_START
 Notebook::PageList::iterator Notebook::get_current()
 {
   return pages().find(get_current_page());
@@ -381,11 +384,7 @@ const Notebook::PageList& Notebook::pages() const
   pages_proxy_ = PageList(const_cast<GtkNotebook*>(gobj()));
   return pages_proxy_;
 }
-
-/*Widget* Notebook::get_current_page()
-{
-  return get_nth_page(get_current_page_num());
-}*/
+_DEPRECATE_IFDEF_END
 
 int Notebook::prepend_page(Widget& child, const Glib::ustring& tab_label, bool use_mnemonic)
 {
@@ -433,6 +432,7 @@ void Notebook::remove_page(Widget& child)
     remove_page(pos);
 }
 
+_DEPRECATE_IFDEF_START
 void Notebook::query_tab_label_packing(Widget& child, bool& expand, bool& fill, PackType& pack_type)
 {
   gboolean gexpand = false;
@@ -443,6 +443,7 @@ void Notebook::query_tab_label_packing(Widget& child, bool& expand, bool& fill, 
   fill = gfill;
   pack_type = (PackType)gpack_type;
 }
+_DEPRECATE_IFDEF_END
 
 int Notebook::prepend_page(Widget& child)
 {
@@ -459,6 +460,7 @@ int Notebook::insert_page(Widget& child, int position)
   return gtk_notebook_insert_page(gobj(), child.gobj(), 0 /* see GTK+ docs */, position);
 }
 
+_DEPRECATE_IFDEF_START
 typedef sigc::slot<Widget*, int, int> SlotWindowCreation;
 
 void Notebook::set_window_creation_hook(const SlotWindowCreation& slot)
@@ -466,6 +468,7 @@ void Notebook::set_window_creation_hook(const SlotWindowCreation& slot)
   SlotWindowCreation* slot_copy = new SlotWindowCreation(slot);
   gtk_notebook_set_window_creation_hook(&SignalProxy_WindowCreation_gtk_callback, slot_copy, &SignalProxy_WindowCreation_gtk_callback_destroy);
 }
+_DEPRECATE_IFDEF_END
 
 } //namespace Gtk
 

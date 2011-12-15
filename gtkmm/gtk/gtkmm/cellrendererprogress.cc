@@ -31,17 +31,10 @@
 namespace Gtk
 {
 
-#ifdef GLIBMM_PROPERTIES_ENABLED
 Glib::PropertyProxy_Base CellRendererProgress::_property_renderable()
 {
   return _property_renderable();
 }
-#else
-Glib::ustring CellRendererProgress::_property_renderable()
-{
-  return _property_renderable();
-}
-#endif //#ifdef GLIBMM_PROPERTIES_ENABLED
 
 
 } // namespace Gtk
@@ -89,23 +82,14 @@ const Glib::Class& CellRendererProgress_Class::init()
   return *this;
 }
 
+
 void CellRendererProgress_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* CellRendererProgress_Class::wrap_new(GObject* o)
@@ -140,6 +124,7 @@ GType CellRendererProgress::get_type()
 {
   return cellrendererprogress_class_.init().get_type();
 }
+
 
 GType CellRendererProgress::get_base_type()
 {
@@ -228,12 +213,19 @@ Glib::PropertyProxy_ReadOnly<float> CellRendererProgress::property_text_yalign()
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
 
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<ProgressBarOrientation> CellRendererProgress::property_orientation() 
+{
+  return Glib::PropertyProxy<ProgressBarOrientation>(this, "orientation");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<ProgressBarOrientation> CellRendererProgress::property_orientation() const
+{
+  return Glib::PropertyProxy_ReadOnly<ProgressBarOrientation>(this, "orientation");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
 
 } // namespace Gtk

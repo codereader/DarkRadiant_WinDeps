@@ -4,7 +4,8 @@
 #define _PANGOMM_GLYPHSTRING_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: glyphstring.hg,v 1.2 2006/05/30 17:14:21 murrayc Exp $ */
 
@@ -13,16 +14,16 @@
  * Copyright (C) 1998-1999 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
+ * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
@@ -95,7 +96,7 @@ public:
   /** Resize a glyph string to the given length.
    * @param new_len The new length of the string.
    */
-  void set_size (int new_len);
+  void set_size(int new_len);
 
   
   /** Compute the logical and ink extents of a glyph string. See the documentation
@@ -122,12 +123,12 @@ public:
 
   
   /** Computes the logical width of the glyph string as can also be computed
-   * using pango_glyph_string_extents().  However, since this only computes the
+   * using extents().  However, since this only computes the
    * width, it's much faster.  This is in fact only a convenience function that
    * computes the sum of geometry.width for each glyph in the @a glyphs.
-   * @return The logical width of the glyph string.
    * 
-   * Since: 1.14.
+   * @newin{1,14}
+   * @return The logical width of the glyph string.
    */
   int get_width() const;
 

@@ -4,9 +4,6 @@
 #include <gtkmm/clipboard.h>
 #include <gtkmm/private/clipboard_p.h>
 
-// -*- c++ -*-
-/* $Id: clipboard.ccg,v 1.11 2006/06/13 17:16:26 murrayc Exp $ */
-
 /* 
  *
  * Copyright 2002 The gtkmm Development Team
@@ -62,37 +59,29 @@ static void SignalProxy_GetClear_gtk_callback_get(GtkClipboard*, GtkSelectionDat
 {
   SignalProxy_GetClear *const self = static_cast<SignalProxy_GetClear*>(data);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     Gtk::SelectionData_WithoutOwnership cppSelectionData(selection_data);
     (self->slot_get_)(cppSelectionData, info);
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
 static void SignalProxy_GetClear_gtk_callback_clear(GtkClipboard*, void* data)
 {
   SignalProxy_GetClear *const self = static_cast<SignalProxy_GetClear*>(data);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     (self->slot_clear_)();
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   delete self; // After this callback has been called, none of the 2 callbacks will be called again.
 
@@ -107,64 +96,42 @@ static void SignalProxy_Received_gtk_callback(GtkClipboard*, GtkSelectionData* s
 {
   Gtk::Clipboard::SlotReceived* the_slot = static_cast<Gtk::Clipboard::SlotReceived*>(data);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     Gtk::SelectionData cppSelectionData(selection_data, true /*take_copy=true*/);
     (*the_slot)(cppSelectionData);
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   delete the_slot;
 }
 
-//This is not public API:
-typedef std::list<Glib::ustring> listStrings;
-static listStrings util_convert_atoms_to_strings(GdkAtom* targets, int n_targets)
+static void SignalProxy_TargetsReceived_gtk_callback(GtkClipboard*, GdkAtom* atoms,
+                                                     gint n_atoms, gpointer data)
 {
-  listStrings listTargets;
+  Gtk::Clipboard::SlotTargetsReceived *const
+    slot = static_cast<Gtk::Clipboard::SlotTargetsReceived*>(data);
 
-  //Add the targets to the C++ container:
-  for(int i = 0; i < n_targets; i++)
-  {
-    //Convert the atom to a string:
-    char* atom_name = gdk_atom_name(targets[i]);
-    if(atom_name)
-    {
-      listTargets.push_back( Glib::ustring(atom_name) );
-      g_free(atom_name);
-    }
-  }
-
-  return listTargets;
-}
-
-static void SignalProxy_TargetsReceived_gtk_callback(GtkClipboard*, GdkAtom* atoms, gint n_atoms, gpointer data)
-{
-  Gtk::Clipboard::SlotTargetsReceived* the_slot = static_cast<Gtk::Clipboard::SlotTargetsReceived*>(data);
-
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
-    listStrings listTargets = util_convert_atoms_to_strings(atoms, n_atoms);
-    (*the_slot)(listTargets);
-    //I guess that GTK+ does a g_free of the GdkAtoms* array itself, so we do not need to. murrayc.
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
+    // TODO: This conversion should normally be performed in a custom
+    // Traits implementation.  Alternatively, a real container could
+    // have been used as the argument instead of handle.
+    const unsigned int n_names = (n_atoms > 0) ? n_atoms : 0;
+    char** names = g_new(char*, n_names);
+
+    std::transform(&atoms[0], &atoms[n_names], &names[0], &gdk_atom_name);
+
+    (*slot)(Glib::StringArrayHandle(names, n_names, Glib::OWNERSHIP_DEEP));
   }
-  catch(...)
+  catch (...)
   {
     Glib::exception_handlers_invoke();
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
-
-  delete the_slot; // the callback is only used once
+  delete slot; // the callback is only used once
 }
 
 
@@ -172,61 +139,49 @@ static void SignalProxy_TextReceived_gtk_callback(GtkClipboard*, const char* tex
 {
   Gtk::Clipboard::SlotTextReceived* the_slot = static_cast<Gtk::Clipboard::SlotTextReceived*>(data);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     (*the_slot)((text) ? Glib::ustring(text) : Glib::ustring());
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   delete the_slot; // the callback is only used once
 }
 
-static void SignalProxy_RichTextReceived_gtk_callback(GtkClipboard*, GdkAtom format, const guint8* text, gsize             length, void* data)
+static void SignalProxy_RichTextReceived_gtk_callback(GtkClipboard*, GdkAtom format,
+                                                      const guint8* text, gsize length, void* data)
 {
-  Gtk::Clipboard::SlotRichTextReceived* the_slot = static_cast<Gtk::Clipboard::SlotRichTextReceived*>(data);
+  Gtk::Clipboard::SlotRichTextReceived *const
+    slot = static_cast<Gtk::Clipboard::SlotRichTextReceived*>(data);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
-    gchar* format_atom_name = gdk_atom_name(format);
-    (*the_slot)( (format_atom_name ? Glib::ustring(format_atom_name) : Glib::ustring()), (text ? std::string((char*)text, length) : std::string()) );
-    g_free(format_atom_name);
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
+    (*slot)(Glib::convert_return_gchar_ptr_to_ustring(gdk_atom_name(format)),
+            (text) ? std::string(reinterpret_cast<const char*>(text), length) : std::string());
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
-
-  delete the_slot; // the callback is only used once
+  delete slot; // the callback is only used once
 }
 
 static void SignalProxy_UrisReceived_gtk_callback(GtkClipboard*, gchar** uris, void* data)
 {
   Gtk::Clipboard::SlotUrisReceived* the_slot = static_cast<Gtk::Clipboard::SlotUrisReceived*>(data);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     //Handle: Does this take ownership? It should probalby copy. murrayc.
     (*the_slot)( Glib::StringArrayHandle(uris) );
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   delete the_slot; // the callback is only used once
 }
@@ -235,18 +190,14 @@ static void SignalProxy_ImageReceived_gtk_callback(GtkClipboard*, GdkPixbuf* ima
 {
   Gtk::Clipboard::SlotImageReceived* the_slot = static_cast<Gtk::Clipboard::SlotImageReceived*>(data);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     (*the_slot)(Glib::wrap(image, true /* take_ref */));
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   delete the_slot; // the callback is only used once
 }
@@ -335,29 +286,23 @@ SelectionData Clipboard::wait_for_contents(const Glib::ustring& target) const
 
 Glib::StringArrayHandle Clipboard::wait_for_targets() const
 {
-  std::list<Glib::ustring> listTargets;
+  char**   names = 0;
+  GdkAtom* atoms = 0;
+  int  n_targets = 0;
 
-  //Get a newly-allocated array of atoms:
-  GdkAtom* targets = 0;
-  gint n_targets = 0;
-  gboolean test = gtk_clipboard_wait_for_targets( const_cast<GtkClipboard*>(gobj()), &targets, &n_targets );
-  if(!test)
-    n_targets = 0; //otherwise it will be -1.
-
-  //Add the targets to the C++ container:
-  for(int i = 0; i < n_targets; i++)
+  // TODO: This works, but is not the intended way to use the array handles.
+  // Normally one would define custom Traits for the conversion, but that is
+  // not possible here because it would break binary compatibility.
+  if (gtk_clipboard_wait_for_targets(const_cast<GtkClipboard*>(gobj()), &atoms, &n_targets))
   {
-    //Convert the atom to a string:
-    gchar* const atom_name = gdk_atom_name(targets[i]);
-
-    Glib::ustring target;
-    if(atom_name)
-      target = Glib::ScopedPtr<char>(atom_name).get(); //This frees the gchar*.
-
-    listTargets.push_back(target);
+    names = g_new(char*, n_targets);
+    std::transform(&atoms[0], &atoms[n_targets], &names[0], &gdk_atom_name);
+    g_free(atoms);
   }
+  else
+    n_targets = 0;
 
-  return listTargets;
+  return Glib::StringArrayHandle(names, n_targets, Glib::OWNERSHIP_DEEP);
 }
 
 void Clipboard::set_can_store(const ArrayHandle_TargetEntry& targets)
@@ -472,23 +417,14 @@ const Glib::Class& Clipboard_Class::init()
   return *this;
 }
 
+
 void Clipboard_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Clipboard_Class::wrap_new(GObject* object)
@@ -517,6 +453,7 @@ Clipboard::Clipboard(GtkClipboard* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 Clipboard::~Clipboard()
 {}
 
@@ -527,6 +464,7 @@ GType Clipboard::get_type()
 {
   return clipboard_class_.init().get_type();
 }
+
 
 GType Clipboard::get_base_type()
 {
@@ -540,7 +478,7 @@ Glib::RefPtr<Clipboard> Clipboard::get(GdkAtom selection)
   Glib::RefPtr<Clipboard> retvalue = Glib::wrap(gtk_clipboard_get(selection));
 
   if(retvalue)
-    retvalue->reference(); //The function does not do a ref for us.
+    retvalue->reference(); //The function does not do a ref for us
   return retvalue;
 }
 
@@ -551,7 +489,7 @@ Glib::RefPtr<Clipboard> Clipboard::get_for_display(const Glib::RefPtr<Gdk::Displ
   Glib::RefPtr<Clipboard> retvalue = Glib::wrap(gtk_clipboard_get_for_display(Glib::unwrap(display), selection));
 
   if(retvalue)
-    retvalue->reference(); //The function does not do a ref for us.
+    retvalue->reference(); //The function does not do a ref for us
   return retvalue;
 }
 
@@ -646,13 +584,6 @@ Glib::SignalProxy1< void,GdkEventOwnerChange* > Clipboard::signal_owner_change()
 {
   return Glib::SignalProxy1< void,GdkEventOwnerChange* >(this, &Clipboard_signal_owner_change_info);
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

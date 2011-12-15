@@ -1,5 +1,5 @@
 // -*- c++ -*-
-/* $Id: stockid.cc 1082 2009-01-19 17:55:19Z murrayc $ */
+/* $Id$ */
 
 /* stockid.cc
  *
@@ -59,6 +59,11 @@ StockID& StockID::operator=(const StockID& other)
   return *this;
 }
 
+StockID::operator bool() const
+{
+  return !(id_.empty());
+}
+  
 bool StockID::equal(const StockID& rhs) const
 {
   // Do an exact per-byte comparison:

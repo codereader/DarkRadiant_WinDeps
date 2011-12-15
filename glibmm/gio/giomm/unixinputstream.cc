@@ -76,18 +76,8 @@ void UnixInputStream_Class::class_init_function(void* g_class, void* class_data)
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* UnixInputStream_Class::wrap_new(GObject* object)
@@ -135,20 +125,21 @@ GType UnixInputStream::get_base_type()
 }
 
 
-UnixInputStream::UnixInputStream(int fd, bool close_fd_at_close)
+UnixInputStream::UnixInputStream(int fd, bool close_fd)
 :
   // Mark this class as non-derived to allow C++ vfuncs to be skipped.
   Glib::ObjectBase(0),
-  Gio::InputStream(Glib::ConstructParams(unixinputstream_class_.init(), "fd", fd, "close_fd_at_close", static_cast<int>(close_fd_at_close), static_cast<char*>(0)))
+  Gio::InputStream(Glib::ConstructParams(unixinputstream_class_.init(), "fd", fd, "close_fd", static_cast<int>(close_fd), static_cast<char*>(0)))
 {
   
 
 }
 
-Glib::RefPtr<UnixInputStream> UnixInputStream::create(int fd, bool close_fd_at_close)
+Glib::RefPtr<UnixInputStream> UnixInputStream::create(int fd, bool close_fd)
 {
-  return Glib::RefPtr<UnixInputStream>( new UnixInputStream(fd, close_fd_at_close) );
+  return Glib::RefPtr<UnixInputStream>( new UnixInputStream(fd, close_fd) );
 }
+
 void UnixInputStream::set_close_fd(bool close_fd)
 {
 g_unix_input_stream_set_close_fd(gobj(), static_cast<int>(close_fd)); 
@@ -185,13 +176,6 @@ Glib::PropertyProxy_ReadOnly<bool> UnixInputStream::property_close_fd() const
   return Glib::PropertyProxy_ReadOnly<bool>(this, "close-fd");
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gio

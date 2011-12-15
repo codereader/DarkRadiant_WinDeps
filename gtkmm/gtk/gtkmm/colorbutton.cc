@@ -95,23 +95,17 @@ const Glib::Class& ColorButton_Class::init()
   return *this;
 }
 
+
 void ColorButton_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->color_set = &color_set_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void ColorButton_Class::color_set_callback(GtkColorButton* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -143,7 +137,7 @@ void ColorButton_Class::color_set_callback(GtkColorButton* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -152,7 +146,6 @@ void ColorButton_Class::color_set_callback(GtkColorButton* self)
   if(base && base->color_set)
     (*base->color_set)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* ColorButton_Class::wrap_new(GObject* o)
@@ -187,6 +180,7 @@ GType ColorButton::get_type()
 {
   return colorbutton_class_.init().get_type();
 }
+
 
 GType ColorButton::get_base_type()
 {
@@ -313,7 +307,6 @@ Glib::PropertyProxy_ReadOnly<guint16> ColorButton::property_alpha() const
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::ColorButton::on_color_set()
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -323,10 +316,6 @@ void Gtk::ColorButton::on_color_set()
   if(base && base->color_set)
     (*base->color_set)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

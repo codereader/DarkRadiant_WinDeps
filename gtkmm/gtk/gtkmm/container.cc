@@ -33,23 +33,19 @@ namespace
 
 static void container_foreach_callback(GtkWidget* widget_gobj, void* data)
 {
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     Gtk::Container::ForeachSlot& slot = *static_cast<Gtk::Container::ForeachSlot*>(data);
     Gtk::Widget *const widget = Glib::wrap(widget_gobj);
 
     g_return_if_fail(widget != 0);
 
     slot(*widget);
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
 
@@ -62,20 +58,16 @@ static void Container_signal_remove_callback_normal(GtkContainer* self, GtkWidge
   // Do not try to call a signal on a disassociated wrapper.
   if(Glib::ObjectBase::_get_current_wrapper((GObject*) self))
   {
-    #ifdef GLIBMM_EXCEPTIONS_ENABLED
     try
     {
-    #endif //GLIBMM_EXCEPTIONS_ENABLED
       if(sigc::slot_base *const slot = Glib::SignalProxyNormal::data_to_slot(data))
         (*static_cast<SlotType*>(slot))(Glib::wrap(p0)
 );
-    #ifdef GLIBMM_EXCEPTIONS_ENABLED
     }
     catch(...)
     {
       Glib::exception_handlers_invoke();
     }
-    #endif //GLIBMM_EXCEPTIONS_ENABLED
   }
 }
 
@@ -107,7 +99,6 @@ static void Container_signal_remove_callback(GtkContainer* self, GtkWidget* p0, 
 namespace Gtk
 {
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 //Copy of generated callback:
 void Container_Class::remove_callback_normal(GtkContainer* self, GtkWidget* p0)
 {
@@ -121,20 +112,16 @@ void Container_Class::remove_callback_normal(GtkContainer* self, GtkWidget* p0)
   // being overridden:
   if(obj && obj->is_derived_())
   {
-    #ifdef GLIBMM_EXCEPTIONS_ENABLED
     try // Trap C++ exceptions which would normally be lost because this is a C callback.
     {
-    #endif //GLIBMM_EXCEPTIONS_ENABLED
       // Call the virtual member method, which derived classes might override.
       obj->on_remove(Glib::wrap(p0)
 );
-    #ifdef GLIBMM_EXCEPTIONS_ENABLED
     }
     catch(...)
     {
       Glib::exception_handlers_invoke();
     }
-    #endif //GLIBMM_EXCEPTIONS_ENABLED
   }
   else
   {
@@ -168,16 +155,17 @@ void Container_Class::remove_callback(GtkContainer* self, GtkWidget* p0)
   }
   else
   {
-    BaseClassType *const base = static_cast<BaseClassType*>(
-        g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
-    );
+    BaseClassType *const base =
+      static_cast<BaseClassType*>(g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)));
 
-    //Call the original underlying C function:
-    if(base && base->remove)
+    // Do not try to call the default implementation of the virtual function
+    // GtkContainerClass::remove(), because it unhelpfully informs us that
+    // it isn't implemented.  This leaves us with no generic means to check
+    // whether it is implemented.
+    if(base && G_TYPE_FROM_CLASS(base) != GTK_TYPE_CONTAINER && base->remove)
       (*base->remove)(self, p0);
   }
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 void Container::foreach(const Container::ForeachSlot& slot)
 {
@@ -238,7 +226,6 @@ void Container::remove(Widget& widget)
   gtk_container_remove(gobj(), widget.gobj());
 }
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 // static
 void Container_Class::destroy_callback(GtkObject* self)
 {
@@ -256,7 +243,6 @@ void Container_Class::destroy_callback(GtkObject* self)
   if(base->destroy)
     (*base->destroy)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 } // namespace Gtk
 
@@ -387,29 +373,25 @@ const Glib::Class& Container_Class::init()
   return *this;
 }
 
+
 void Container_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
   klass->child_type = &child_type_vfunc_callback;
   klass->forall = &forall_vfunc_callback;
   klass->composite_name = &composite_name_vfunc_callback;
   klass->set_child_property = &set_child_property_vfunc_callback;
   klass->get_child_property = &get_child_property_vfunc_callback;
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->add = &add_callback;
   klass->remove = &remove_callback;
   klass->check_resize = &check_resize_callback;
   klass->set_focus_child = &set_focus_child_callback;
     reinterpret_cast<GtkObjectClass*>(klass)->destroy = &destroy_callback;
-  #endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-}
+  }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
 GType Container_Class::child_type_vfunc_callback(GtkContainer* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -440,7 +422,7 @@ GType Container_Class::child_type_vfunc_callback(GtkContainer* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -484,7 +466,7 @@ void Container_Class::forall_vfunc_callback(GtkContainer* self, gboolean include
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -524,7 +506,7 @@ gchar* Container_Class::composite_name_vfunc_callback(GtkContainer* self, GtkWid
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -568,7 +550,7 @@ void Container_Class::set_child_property_vfunc_callback(GtkContainer* self, GtkW
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -609,7 +591,7 @@ void Container_Class::get_child_property_vfunc_callback(GtkContainer* self, GtkW
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -619,9 +601,7 @@ void Container_Class::get_child_property_vfunc_callback(GtkContainer* self, GtkW
     (*base->get_child_property)(self, child, property_id, value, pspec);
 
 }
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Container_Class::add_callback(GtkContainer* self, GtkWidget* p0)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -654,7 +634,7 @@ void Container_Class::add_callback(GtkContainer* self, GtkWidget* p0)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -694,7 +674,7 @@ void Container_Class::check_resize_callback(GtkContainer* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -735,7 +715,7 @@ void Container_Class::set_focus_child_callback(GtkContainer* self, GtkWidget* p0
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -744,7 +724,6 @@ void Container_Class::set_focus_child_callback(GtkContainer* self, GtkWidget* p0
   if(base && base->set_focus_child)
     (*base->set_focus_child)(self, p0);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Container_Class::wrap_new(GObject* o)
@@ -779,6 +758,7 @@ GType Container::get_type()
 {
   return container_class_.init().get_type();
 }
+
 
 GType Container::get_base_type()
 {
@@ -957,7 +937,6 @@ Glib::PropertyProxy_WriteOnly<Widget*> Container::property_child()
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::Container::on_add(Widget* widget)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -994,9 +973,7 @@ void Gtk::Container::on_set_focus_child(Widget* widget)
   if(base && base->set_focus_child)
     (*base->set_focus_child)(gobj(),(GtkWidget*)Glib::unwrap(widget));
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
-#ifdef GLIBMM_VFUNCS_ENABLED
 GType Gtk::Container::child_type_vfunc() const
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -1048,7 +1025,6 @@ void Gtk::Container::get_child_property_vfunc(GtkWidget* child, guint property_i
   if(base && base->get_child_property)
     (*base->get_child_property)(const_cast<GtkContainer*>(gobj()),child,property_id,value,pspec);
 }
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

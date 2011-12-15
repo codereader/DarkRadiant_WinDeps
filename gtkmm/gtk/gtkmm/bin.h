@@ -9,7 +9,7 @@
 /* $Id: bin.hg,v 1.2 2003/03/03 07:49:05 murrayc Exp $ */
 
 /* bin.h
- * 
+ *
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -81,6 +81,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -93,36 +95,38 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
 
 protected:
 
-  /** This constructor is protected because only derived 
+  /** This constructor is protected because only derived
    * classes should be instantiated.
    */
   Bin();
 public:
-  
 
-  // get_child() is a convenience function to get a c++ wrapper of
-  // the contained widget. It may return NULL if such an item is not
-  // available.
-   Widget* get_child();
-  const Widget* get_child() const;
- 
+  
+  /** Gets the child of the Gtk::Bin, or <tt>0</tt> if the bin contains
+   * no child widget. The returned widget does not have a reference
+   * added, so you do not need to unref it.
+   * @return Pointer to child of the Gtk::Bin.
+   */
+  Gtk::Widget* get_child();
+  
+  /** Gets the child of the Gtk::Bin, or <tt>0</tt> if the bin contains
+   * no child widget. The returned widget does not have a reference
+   * added, so you do not need to unref it.
+   * @return Pointer to child of the Gtk::Bin.
+   */
+  const Gtk::Widget* get_child() const;
+
   /** Remove the contained object
    * Since this can only hold one object it is not necessary to
    * specify which object to remove like other containers.
@@ -139,11 +143,11 @@ public:
    * This does not correspond to any GTK+ function and is provided purely for
    * convenience.
    * @param label The text for the label.
-   * @param mnemonic If <tt>true</tt>, characters preceded by an underscore 
+   * @param mnemonic If <tt>true</tt>, characters preceded by an underscore
    * (_) will be underlined and used as a keyboard accelerator (shortcut).
-   * @param x_align The horizontal alignment of the text.  This ranges from 
+   * @param x_align The horizontal alignment of the text.  This ranges from
    * 0.0 (left aligned) to 1.0 (right aligned).
-   * @param y_align The vertical alignment of the text.  This ranges from 
+   * @param y_align The vertical alignment of the text.  This ranges from
    * 0.0 (top aligned) to 1.0 (bottom aligned).
    */
   void add_label(const Glib::ustring& label, bool mnemonic = false,
@@ -155,9 +159,9 @@ public:
    * @param label The label text.
    * @param mnemonic If <tt>true</tt>, characters preceded by an underscore
    * (_) will be underlined and used as a keyboard accelerator (shortcut).
-   * @param x_align The horizontal alignment of the text.  For possible 
+   * @param x_align The horizontal alignment of the text.  For possible
    * values, see Gtk::AlignmentEnum.
-   * @param y_align The vertical alignment of the text.  For possible 
+   * @param y_align The vertical alignment of the text.  For possible
    * values, see Gtk::AlignmentEnum.
    */
   void add_label(const Glib::ustring& label, bool mnemonic,
@@ -176,7 +180,7 @@ public:
   /** Add Image and Label objects.
    * This does not correspond to any GTK+ function and is provided purely for
    * convenience.
-   * This will create, manage, add, and show a new Image and Label (within an 
+   * This will create, manage, add, and show a new Image and Label (within an
    * HBox) to this Bin.
    * @param pixmap A Glib::RefPtr to a Gdk::Pixmap.
    * @param mask A Glib::RefPtr to a Gdk::Bitmap.
@@ -192,7 +196,7 @@ public:
   /** Add Image and Label objects.
    * This does not correspond to any GTK+ function and is provided purely for
    * convenience.
-   * This will create, manage, add, and show a new Image and Label (within an 
+   * This will create, manage, add, and show a new Image and Label (within an
    * HBox) to this Bin.
    * @param pixfile The path to a file to be displayed.
    * @param label The text for the label.

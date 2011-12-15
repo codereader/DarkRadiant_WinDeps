@@ -133,23 +133,17 @@ const Glib::Class& RadioButton_Class::init()
   return *this;
 }
 
+
 void RadioButton_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->group_changed = &group_changed_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void RadioButton_Class::group_changed_callback(GtkRadioButton* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -181,7 +175,7 @@ void RadioButton_Class::group_changed_callback(GtkRadioButton* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -190,7 +184,6 @@ void RadioButton_Class::group_changed_callback(GtkRadioButton* self)
   if(base && base->group_changed)
     (*base->group_changed)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* RadioButton_Class::wrap_new(GObject* o)
@@ -226,6 +219,7 @@ GType RadioButton::get_type()
   return radiobutton_class_.init().get_type();
 }
 
+
 GType RadioButton::get_base_type()
 {
   return gtk_radio_button_get_type();
@@ -244,7 +238,6 @@ Glib::SignalProxy0< void > RadioButton::signal_group_changed()
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::RadioButton::on_group_changed()
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -254,10 +247,6 @@ void Gtk::RadioButton::on_group_changed()
   if(base && base->group_changed)
     (*base->group_changed)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

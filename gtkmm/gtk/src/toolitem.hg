@@ -1,7 +1,4 @@
-/* $Id: toolitem.hg,v 1.14 2006/04/12 11:11:25 murrayc Exp $ */
-
-/* box.h
- * 
+/*
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -19,21 +16,23 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#m4 _PUSH(SECTION_CC_PRE_INCLUDES)
+#undef GTK_DISABLE_DEPRECATED
+#m4 _POP()
 // This is for including the config header before any code (such as
 // the #ifndef GTKMM_DISABLE_DEPRECATED in deprecated classes) is generated:
 _CONFIGINCLUDE(gtkmmconfig.h)
 
 #include <gtkmm/bin.h>
 #include <gtkmm/tooltips.h>
+#include <gtkmm/sizegroup.h>
 _DEFS(gtkmm,gtk)
 _PINCLUDE(gtkmm/private/bin_p.h)
-
 
 namespace Gtk
 {
 
-/** 
- *
+/**
  * @ingroup Widgets
  */
 class ToolItem : public Bin
@@ -52,7 +51,7 @@ public:
 
   _WRAP_METHOD(void set_tooltip_text(const Glib::ustring& text),  gtk_tool_item_set_tooltip_text)
   _WRAP_METHOD(void set_tooltip_markup(const Glib::ustring& markup), gtk_tool_item_set_tooltip_markup)
-  
+
   _WRAP_METHOD(void set_use_drag_window(bool use_drag_window = true), gtk_tool_item_set_use_drag_window)
   _WRAP_METHOD(bool get_use_drag_window() const, gtk_tool_item_get_use_drag_window)
 
@@ -65,10 +64,16 @@ public:
   _WRAP_METHOD(bool get_is_important() const, gtk_tool_item_get_is_important)
   _WRAP_METHOD(void set_is_important(bool is_important = true), gtk_tool_item_set_is_important)
 
+  _WRAP_METHOD(Pango::EllipsizeMode get_ellipsize_mode() const, gtk_tool_item_get_ellipsize_mode)
   _WRAP_METHOD(IconSize get_icon_size () const, gtk_tool_item_get_icon_size)
   _WRAP_METHOD(Orientation get_orientation() const, gtk_tool_item_get_orientation)
   _WRAP_METHOD(ToolbarStyle get_toolbar_style() const, gtk_tool_item_get_toolbar_style)
   _WRAP_METHOD(ReliefStyle get_relief_style() const, gtk_tool_item_get_relief_style)
+
+  _WRAP_METHOD(float get_text_alignment() const, gtk_tool_item_get_text_alignment)
+  _WRAP_METHOD(Orientation  get_text_orientation() const, gtk_tool_item_get_text_orientation)
+  _WRAP_METHOD(Glib::RefPtr<SizeGroup> get_text_size_group(), gtk_tool_item_get_text_size_group, refreturn)
+  _WRAP_METHOD(Glib::RefPtr<const SizeGroup> get_text_size_group() const, gtk_tool_item_get_text_size_group, refreturn, constversion)
 
   _WRAP_METHOD(Widget* retrieve_proxy_menu_item(), gtk_tool_item_retrieve_proxy_menu_item)
   _WRAP_METHOD(const Widget* retrieve_proxy_menu_item() const, gtk_tool_item_retrieve_proxy_menu_item, constversion)
@@ -79,7 +84,7 @@ public:
   _WRAP_METHOD(void rebuild_menu(), gtk_tool_item_rebuild_menu)
 
   _WRAP_METHOD(void toolbar_reconfigured(), gtk_tool_item_toolbar_reconfigured)
-  
+
   //TODO: This suggests calling set_proxy_menu_item() with NULL. but the function asserts against that.
   /** This signal is emitted when the toolbar needs information from @tool_item
    * about whether the item should appear in the toolbar overflow menu. In
@@ -90,7 +95,7 @@ public:
    * in the overflow menu
    * </listitem>
    * <listitem> call set_proxy_menu_item() with a new menu
-   * item and return true, or 
+   * item and return true, or
    * </listitem>
    * <listitem> return false to indicate that the signal was not
    * handled by the item. This means that
@@ -107,7 +112,7 @@ public:
    * @result true if the signal was handled, false if not
    */
   _WRAP_SIGNAL(bool create_menu_proxy(), create_menu_proxy)
-  
+
   /** This signal is emitted when some property of the toolbar that the
    * item is a child of changes. For custom subclasses of ToolItem,
    * the default handler of this signal use the functions
@@ -129,7 +134,7 @@ public:
   /** This signal is emitted when the toolitem's tooltip changes.
    * Application developers can use gtk_tool_item_set_tooltip() to
    * set the item's tooltip.
-   * @deprecated: Use the new Gtk::Tooltip API. This signal will now never be emitted.
+   * @deprecated Use the new Gtk::Tooltip API. This signal will now never be emitted.
    *
    * @param tooltips the Tooltips
    * @param tip_text the tooltip text
@@ -138,8 +143,8 @@ public:
    */
   Glib::SignalProxy3< bool,Tooltips*,const Glib::ustring&,const Glib::ustring& > signal_set_tooltip();
   //_WRAP_SIGNAL(bool set_tooltip(Tooltips* tooltips, const Glib::ustring& tip_text, const Glib::ustring& tip_private), set_tooltip, no_default_handler, deprecated) //TODO: Implement deprecated for _WRAP_SIGNAL() to avoid hand-coding this:
+  _IGNORE_SIGNAL(set_tooltip)
   #endif //GTKMM_DISABLE_DEPRECATED
-
 
   _WRAP_PROPERTY("visible_horizontal", bool)
   _WRAP_PROPERTY("visible_vertical", bool)
@@ -147,4 +152,3 @@ public:
 };
 
 } // namespace Gtk
-

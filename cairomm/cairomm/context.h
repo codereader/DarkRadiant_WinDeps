@@ -36,7 +36,7 @@
 namespace Cairo
 {
 
-/** Context is the main class used to draw in cairomm. 
+/** Context is the main class used to draw in cairomm.
  * In the simplest case, create a Context with its target Surface, set its
  * drawing options (line width, color, etc), create shapes with methods like
  * move_to() and line_to(), and then draw the shapes to the Surface using
@@ -70,7 +70,7 @@ public:
    * nested; each call to restore() restores the state from the matching paired
    * save().
    *
-   * It isn't necessary to clear all saved states before a cairo_t is freed. 
+   * It isn't necessary to clear all saved states before a cairo_t is freed.
    * Any saved states will be freed when the Context is destroyed.
    *
    * @sa restore()
@@ -99,7 +99,7 @@ public:
    * Note: The Pattern's transformation matrix will be locked to the user space
    * in effect at the time of set_source(). This means that further
    * modifications of the current transformation matrix will not affect the
-   * source pattern. 
+   * source pattern.
    *
    * @param source	a Pattern to be used as the source for subsequent drawing
    * operations.
@@ -162,7 +162,7 @@ public:
    *
    * @param surface  	a Surface to be used to set the source pattern
    * @param x  	User-space X coordinate for surface origin
-   * @param y  	User-space Y coordinate for surface origin 
+   * @param y  	User-space Y coordinate for surface origin
    */
   void set_source(const RefPtr<Surface>& surface, double x, double y);
 
@@ -209,7 +209,7 @@ public:
    * @param width	a line width, as a user-space value
    */
   void set_line_width(double width);
-  
+
   /** Sets the current line cap style within the cairo Context. See
    * LineCap for details about how the available line cap styles are drawn.
    *
@@ -232,11 +232,43 @@ public:
    */
   void set_line_join(LineJoin line_join);
 
-  /** 
+#ifndef CAIROMM_DISABLE_DEPRECATED
+  /**
+   * Alternate version of set_dash().  You'll probably want to use the one that
+   * takes a std::vector argument instead.
+   *
+   * @deprecated Instead use the version that takes a const dashes parameter.
+   */
+  void set_dash(std::valarray<double>& dashes, double offset);
+
+  /** Sets the dash pattern to be used by stroke(). A dash pattern is specified
+   * by dashes, an array of positive values. Each value provides the user-space
+   * length of altenate "on" and "off" portions of the stroke. The offset
+   * specifies an offset into the pattern at which the stroke begins.
+   *
+   * If dashes is empty dashing is disabled.  If the size of dashes is 1, a
+   * symmetric pattern is assumed with alternating on and off portions of the
+   * size specified by the single value in dashes.
+   *
+   * It is invalid for any value in dashes to be negative, or for all values to
+   * be 0.  If this is the case, an exception will be thrown
+   *
+   * @param dashes	an array specifying alternate lengths of on and off portions
+   * @param offset	an offset into the dash pattern at which the stroke should start
+   *
+   * @exception
+   *
+   * @deprecated Instead use the version that takes a const dashes parameter.
+   */
+  void set_dash(std::vector<double>& dashes, double offset);
+#endif //CAIROMM_DISABLE_DEPRECATED
+
+  /**
    * Alternate version of set_dash().  You'll probably want to use the one that
    * takes a std::vector argument instead.
    */
-  void set_dash(std::valarray<double>& dashes, double offset);
+  void set_dash(const std::valarray<double>& dashes, double offset);
+
   /** Sets the dash pattern to be used by stroke(). A dash pattern is specified
    * by dashes, an array of positive values. Each value provides the user-space
    * length of altenate "on" and "off" portions of the stroke. The offset
@@ -254,7 +286,7 @@ public:
    *
    * @exception
    */
-  void set_dash(std::vector<double>& dashes, double offset);
+  void set_dash(const std::vector<double>& dashes, double offset);
 
   /** This function disables a dash pattern that was set with set_dash()
    */
@@ -268,7 +300,7 @@ public:
    * takes place after any existing transformation.
    *
    * @param tx	amount to translate in the X direction
-   * @param ty	amount to translate in the Y direction 
+   * @param ty	amount to translate in the Y direction
    */
   void translate(double tx, double ty);
 
@@ -326,11 +358,14 @@ public:
    */
   void set_identity_matrix();
 
+#ifndef CAIROMM_DISABLE_DEPRECATED
   /** Transform a coordinate from user space to device space by multiplying the
    * given point by the current transformation matrix (CTM).
    *
    * @param x	X value of coordinate (in/out parameter)
    * @param y	Y value of coordinate (in/out parameter)
+   *
+   * @deprecated Use the const version.
    */
   void user_to_device(double& x, double& y);
 
@@ -340,6 +375,8 @@ public:
    *
    * @param dx	X component of a distance vector (in/out parameter)
    * @param dy	Y component of a distance vector (in/out parameter)
+   *
+   * @deprecated Use the const version.
    */
   void user_to_device_distance(double& dx, double& dy);
 
@@ -348,6 +385,8 @@ public:
    *
    * @param x	X value of coordinate (in/out parameter)
    * @param y	Y value of coordinate (in/out parameter)
+   *
+   * @deprecated Use the const version.
    */
   void device_to_user(double& x, double& y);
 
@@ -357,8 +396,45 @@ public:
    *
    * @param dx	X component of a distance vector (in/out parameter)
    * @param dy	Y component of a distance vector (in/out parameter)
+   *
+   * @deprecated Use the const version.
    */
   void device_to_user_distance(double& dx, double& dy);
+#endif //CAIROMM_DISABLE_DEPRECATED
+
+  /** Transform a coordinate from user space to device space by multiplying the
+   * given point by the current transformation matrix (CTM).
+   *
+   * @param x	X value of coordinate (in/out parameter)
+   * @param y	Y value of coordinate (in/out parameter)
+   */
+  void user_to_device(double& x, double& y) const;
+
+  /** Transform a distance vector from user space to device space. This
+   * function is similar to user_to_device() except that the translation
+   * components of the CTM will be ignored when transforming (dx,dy).
+   *
+   * @param dx	X component of a distance vector (in/out parameter)
+   * @param dy	Y component of a distance vector (in/out parameter)
+   */
+  void user_to_device_distance(double& dx, double& dy) const;
+
+  /** Transform a coordinate from device space to user space by multiplying the
+   * given point by the inverse of the current transformation matrix (CTM).
+   *
+   * @param x	X value of coordinate (in/out parameter)
+   * @param y	Y value of coordinate (in/out parameter)
+   */
+  void device_to_user(double& x, double& y) const;
+
+  /** Transform a distance vector from device space to user space. This
+   * function is similar to device_to_user() except that the translation
+   * components of the inverse CTM will be ignored when transforming (dx,dy).
+   *
+   * @param dx	X component of a distance vector (in/out parameter)
+   * @param dy	Y component of a distance vector (in/out parameter)
+   */
+  void device_to_user_distance(double& dx, double& dy) const;
 
   /** Clears the current path. After this call there will be no current point.
    */
@@ -407,21 +483,23 @@ public:
   void curve_to(double x1, double y1, double x2, double y2, double x3, double y3);
 
   /** Adds a circular arc of the given radius to the current path. The arc is
-   * centered at (xc, yc), begins at angle1 and proceeds in the direction of
-   * increasing angles to end at angle2. If angle2 is less than angle1 it will
-   * be progressively increased by 2*M_PI until it is greater than angle1.
+   * centered at (@a xc, @a yc), begins at @a angle1 and proceeds in the direction of
+   * increasing angles to end at @a angle2. If @a angle2 is less than @a angle1 it will
+   * be progressively increased by 2*M_PI until it is greater than @a angle1.
    *
    * If there is a current point, an initial line segment will be added to the
-   * path to connect the current point to the beginning of the arc.
+   * path to connect the current point to the beginning of the arc. If this
+   * initial line is undesired, it can be avoided by calling
+   * begin_new_sub_path() before calling arc().
    *
    * Angles are measured in radians. An angle of 0 is in the direction of the
-   * positive X axis (in user-space). An angle of M_PI radians (90 degrees) is
+   * positive X axis (in user-space). An angle of M_PI/2.0 radians (90 degrees) is
    * in the direction of the positive Y axis (in user-space). Angles increase
    * in the direction from the positive X axis toward the positive Y axis. So
    * with the default transformation matrix, angles increase in a clockwise
    * direction.
    *
-   * (To convert from degrees to radians, use degrees * (M_PI / 180.).)
+   * ( To convert from degrees to radians, use degrees * (M_PI / 180.0). )
    *
    * This function gives the arc in the direction of increasing angles; see
    * arc_negative() to get the arc in the direction of decreasing angles.
@@ -447,10 +525,10 @@ public:
    */
   void arc(double xc, double yc, double radius, double angle1, double angle2);
 
-  /** Adds a circular arc of the given radius to the current path. The arc is
-   * centered at (xc, yc), begins at angle1 and proceeds in the direction of
-   * decreasing angles to end at angle2. If angle2 is greater than angle1 it
-   * will be progressively decreased by 2*M_PI until it is greater than angle1.
+  /** Adds a circular arc of the given @a radius to the current path. The arc is
+   * centered at (@a xc, @a yc), begins at @a angle1 and proceeds in the direction of
+   * decreasing angles to end at @a angle2. If @a angle2 is greater than @a angle1 it
+   * will be progressively decreased by 2*M_PI until it is greater than @a angle1.
    *
    * See arc() for more details. This function differs only in the direction of
    * the arc between the two angles.
@@ -625,9 +703,9 @@ public:
 
   /** A drawing operator that fills the current path according to the current
    * fill rule, (each sub-path is implicitly closed before being filled). After
-   * fill(), the current path will be cleared from the cairo context. 
+   * fill(), the current path will be cleared from the cairo context.
    *
-   * @sa set_fill_rule() 
+   * @sa set_fill_rule()
    * @sa fill_preserve()
    */
   void fill();
@@ -637,7 +715,7 @@ public:
    * Unlike fill(), fill_preserve() preserves the path within the
    * cairo Context.
    *
-   * @sa set_fill_rule() 
+   * @sa set_fill_rule()
    * @sa fill().
    */
   void fill_preserve();
@@ -645,6 +723,7 @@ public:
   void show_page();
   bool in_stroke(double x, double y) const;
   bool in_fill(double x, double y) const;
+  bool in_clip(double x, double y) const;
   void get_stroke_extents(double& x1, double& y1, double& x2, double& y2) const;
   void get_fill_extents(double& x1, double& y1, double& x2, double& y2) const;
 
@@ -685,7 +764,7 @@ public:
    * current fill rule.
    *
    * Unlike clip(), cairo_clip_preserve preserves the path within the cairo
-   * Context. 
+   * Context.
    *
    * @sa clip()
    * @sa set_fill_rule()
@@ -784,7 +863,7 @@ public:
    *
    * The current point is returned in the user-space coordinate system. If
    * there is no defined current point then x and y will both be set to 0.0.
-   * 
+   *
    * Most path construction functions alter the current point. See the
    * following for details on how they affect the current point: clear_path(),
    * move_to(), line_to(), curve_to(), arc(), rel_move_to(), rel_line_to(),
@@ -907,7 +986,7 @@ public:
    * be approximated with piecewise-linear approximations, (accurate to within
    * the current tolerance value). That is, the result is guaranteed to not have
    * any elements of type CAIRO_PATH_CURVE_TO which will instead be
-   * replaced by a series of CAIRO_PATH_LINE_TO elements. 
+   * replaced by a series of CAIRO_PATH_LINE_TO elements.
    *
    * @note The caller owns the Path object returned from this function.  The
    * Path object must be freed when you are finished with it.
@@ -916,7 +995,7 @@ public:
 
   /** Append the path onto the current path. The path may be either the return
    * value from one of copy_path() or copy_path_flat() or it may be constructed
-   * manually. 
+   * manually.
    *
    * @param path	path to be appended
    */
@@ -1040,20 +1119,22 @@ public:
   /** Gets a pointer to the base C type that is wrapped by the Context
    */
   inline const cobject* cobj() const { return m_cobject; }
- 
-  #ifndef DOXYGEN_IGNORE_THIS
+
+#ifndef DOXYGEN_IGNORE_THIS
   ///For use only by the cairomm implementation.
   inline ErrorStatus get_status() const
   { return cairo_status(const_cast<cairo_t*>(cobj())); }
 
   void reference() const;
   void unreference() const;
-  #endif //DOXYGEN_IGNORE_THIS
+#endif //DOXYGEN_IGNORE_THIS
 
 protected:
-
- 
   cobject* m_cobject;
+
+private:
+  Context(const Context&);
+  Context& operator=(const Context&);
 };
 
 } // namespace Cairo

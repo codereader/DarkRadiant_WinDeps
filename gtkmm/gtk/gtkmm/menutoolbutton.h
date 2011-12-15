@@ -3,13 +3,12 @@
 #ifndef _GTKMM_MENUTOOLBUTTON_H
 #define _GTKMM_MENUTOOLBUTTON_H
 
+#include <gtkmmconfig.h>
+
 
 #include <glibmm.h>
 
-/* $Id: menutoolbutton.hg,v 1.2 2006/04/12 11:11:25 murrayc Exp $ */
-
-/* box.h
- *
+/*
  * Copyright (C) 2003 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -27,6 +26,7 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+ 
 #include <gtkmm/toolbutton.h>
 #include <gtkmm/menu.h>
 #include <gtkmm/tooltips.h>
@@ -80,6 +80,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -92,36 +94,31 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_show_menu();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
 
-public:
 
+public:
   /** Creates a new MenuToolButton.
    */
   MenuToolButton();
-  
+
   /** Creates a new MenuToolButton from a StockID.
    *
    * The MenuToolButton will be created according to the @a stock_id properties.
-   * 
+   *
    * @param stock_id The StockID which determines the look of the MenuToolButton.
    */
-  explicit MenuToolButton(const Gtk::StockID& stock_id);
-  
+    explicit MenuToolButton(const Gtk::StockID& stock_id);
+
+
   /** Creates a new MenuToolButton with a label.
    *
    * The MenuToolButton will have the label @a label.
@@ -129,7 +126,7 @@ public:
    * @param label The string used to display the label for this MenuToolButton.
    */
   explicit MenuToolButton(const Glib::ustring& label);
-  
+
   /** Creates a new MenuToolButton with an image.
    *
    * The MenuToolButton will have the label @a label and an image widget @a icon_widget.
@@ -143,22 +140,24 @@ public:
   /** Sets the Gtk::Menu that is popped up when the user clicks on the arrow.
    * If @a menu is <tt>0</tt>, the arrow button becomes insensitive.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param menu The Gtk::Menu associated with Gtk::MenuToolButton.
    */
   void set_menu(Menu& menu);
   
   /** Gets the Gtk::Menu associated with Gtk::MenuToolButton.
-   * @return The Gtk::Menu associated with Gtk::MenuToolButton
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return The Gtk::Menu associated
+   * with Gtk::MenuToolButton.
    */
   Menu* get_menu();
   
   /** Gets the Gtk::Menu associated with Gtk::MenuToolButton.
-   * @return The Gtk::Menu associated with Gtk::MenuToolButton
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return The Gtk::Menu associated
+   * with Gtk::MenuToolButton.
    */
   const Menu* get_menu() const;
 
@@ -169,7 +168,7 @@ public:
    * pops up the menu. See Gtk::ToolItem::set_tooltip() for setting
    * a tooltip on the whole Gtk::MenuToolButton.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * 
    * Deprecated: 2.12: Use set_arrow_tooltip_text()
    * instead.
@@ -186,7 +185,7 @@ public:
    * pops up the menu.  See Gtk::ToolItem::set_tooltip() for setting a tooltip
    * on the whole Gtk::MenuToolButton.
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param text Text to be used as tooltip text for button's arrow button.
    */
   void set_arrow_tooltip_text(const Glib::ustring& text);
@@ -195,7 +194,7 @@ public:
    * which pops up the menu.  See Gtk::ToolItem::set_tooltip() for setting a
    * tooltip on the whole Gtk::MenuToolButton.
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param markup Markup text to be used as tooltip text for button's arrow button.
    */
   void set_arrow_tooltip_markup(const Glib::ustring& markup);

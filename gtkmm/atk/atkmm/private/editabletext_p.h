@@ -27,14 +27,11 @@ public:
 
 protected:
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   //Callbacks (default signal handlers):
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
   //Callbacks (virtual functions):
-#ifdef GLIBMM_VFUNCS_ENABLED
   static gboolean set_run_attributes_vfunc_callback(AtkEditableText* self, AtkAttributeSet* attrib_set, gint start_offset, gint end_offset);
   static void set_text_contents_vfunc_callback(AtkEditableText* self, const gchar* string);
   static void insert_text_vfunc_callback(AtkEditableText* self, const gchar* string, gint length, gint* position);
@@ -42,7 +39,6 @@ protected:
   static void cut_text_vfunc_callback(AtkEditableText* self, gint start_pos, gint end_pos);
   static void delete_text_vfunc_callback(AtkEditableText* self, gint start_pos, gint end_pos);
   static void paste_text_vfunc_callback(AtkEditableText* self, gint position);
-#endif //GLIBMM_VFUNCS_ENABLED
 };
 
 

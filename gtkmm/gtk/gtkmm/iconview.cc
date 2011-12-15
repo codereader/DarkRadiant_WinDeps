@@ -35,18 +35,14 @@ static void proxy_foreach_callback(GtkIconView* /* icon_view */, GtkTreePath* pa
   typedef Gtk::IconView::SlotForeach SlotType;
   SlotType& slot = *static_cast<SlotType*>(data);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     slot(Gtk::TreeModel::Path(path, true));
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
 } //anonymous namespace
@@ -370,25 +366,19 @@ const Glib::Class& IconView_Class::init()
   return *this;
 }
 
+
 void IconView_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->set_scroll_adjustments = &set_scroll_adjustments_callback;
   klass->item_activated = &item_activated_callback;
   klass->selection_changed = &selection_changed_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void IconView_Class::set_scroll_adjustments_callback(GtkIconView* self, GtkAdjustment* p0, GtkAdjustment* p1)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -422,7 +412,7 @@ void IconView_Class::set_scroll_adjustments_callback(GtkIconView* self, GtkAdjus
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -463,7 +453,7 @@ void IconView_Class::item_activated_callback(GtkIconView* self, GtkTreePath* p0)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -503,7 +493,7 @@ void IconView_Class::selection_changed_callback(GtkIconView* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -512,7 +502,6 @@ void IconView_Class::selection_changed_callback(GtkIconView* self)
   if(base && base->selection_changed)
     (*base->selection_changed)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* IconView_Class::wrap_new(GObject* o)
@@ -548,6 +537,7 @@ GType IconView::get_type()
   return iconview_class_.init().get_type();
 }
 
+
 GType IconView::get_base_type()
 {
   return gtk_icon_view_get_type();
@@ -581,7 +571,12 @@ gtk_icon_view_set_model(gobj(), Glib::unwrap(model));
 
 Glib::RefPtr<TreeModel> IconView::get_model()
 {
-  return Glib::wrap(gtk_icon_view_get_model(gobj()));
+
+  Glib::RefPtr<TreeModel> retvalue = Glib::wrap(gtk_icon_view_get_model(gobj()));
+  if(retvalue)
+    retvalue->reference(); //The function does not do a ref for us.
+  return retvalue;
+
 }
 
 Glib::RefPtr<const TreeModel> IconView::get_model() const
@@ -642,6 +637,16 @@ gtk_icon_view_set_orientation(gobj(), ((GtkOrientation)(orientation)));
 Orientation IconView::get_orientation() const
 {
   return ((Orientation)(gtk_icon_view_get_orientation(const_cast<GtkIconView*>(gobj()))));
+}
+
+void IconView::set_item_orientation(Orientation orientation)
+{
+gtk_icon_view_set_item_orientation(gobj(), ((GtkOrientation)(orientation))); 
+}
+
+Orientation IconView::get_item_orientation() const
+{
+  return ((Orientation)(gtk_icon_view_get_item_orientation(const_cast<GtkIconView*>(gobj()))));
 }
 
 void IconView::set_columns(int columns)
@@ -796,7 +801,7 @@ Glib::RefPtr<Gdk::Pixmap> IconView::create_drag_icon(const TreeModel::Path& path
 
 void IconView::convert_widget_to_bin_window_coords(int wx, int wy, int& bx, int& by) const
 {
-gtk_icon_view_convert_widget_to_bin_window_coords(const_cast<GtkIconView*>(gobj()), wx, wy, &bx, &by); 
+gtk_icon_view_convert_widget_to_bin_window_coords(const_cast<GtkIconView*>(gobj()), wx, wy, &(bx), &(by)); 
 }
 
 void IconView::set_tooltip_item(const Glib::RefPtr<Tooltip>& tooltip, const TreeModel::Path& path)
@@ -881,6 +886,20 @@ Glib::PropertyProxy_ReadOnly<int> IconView::property_markup_column() const
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<int> IconView::property_tooltip_column() 
+{
+  return Glib::PropertyProxy<int>(this, "tooltip-column");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<int> IconView::property_tooltip_column() const
+{
+  return Glib::PropertyProxy_ReadOnly<int>(this, "tooltip-column");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
 Glib::PropertyProxy<SelectionMode> IconView::property_selection_mode() 
 {
   return Glib::PropertyProxy<SelectionMode>(this, "selection-mode");
@@ -905,6 +924,34 @@ Glib::PropertyProxy<Orientation> IconView::property_orientation()
 Glib::PropertyProxy_ReadOnly<Orientation> IconView::property_orientation() const
 {
   return Glib::PropertyProxy_ReadOnly<Orientation>(this, "orientation");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<Orientation> IconView::property_item_orientation() 
+{
+  return Glib::PropertyProxy<Orientation>(this, "item-orientation");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<Orientation> IconView::property_item_orientation() const
+{
+  return Glib::PropertyProxy_ReadOnly<Orientation>(this, "item-orientation");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<bool> IconView::property_reorderable() 
+{
+  return Glib::PropertyProxy<bool>(this, "reorderable");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> IconView::property_reorderable() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "reorderable");
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
 
@@ -1006,8 +1053,21 @@ Glib::PropertyProxy_ReadOnly<int> IconView::property_margin() const
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
 
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<int> IconView::property_item_padding() 
+{
+  return Glib::PropertyProxy<int>(this, "item-padding");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<int> IconView::property_item_padding() const
+{
+  return Glib::PropertyProxy_ReadOnly<int>(this, "item-padding");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+
 void Gtk::IconView::on_set_scroll_adjustments(Adjustment* hadjustment, Adjustment* vadjustment)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -1035,10 +1095,6 @@ void Gtk::IconView::on_selection_changed()
   if(base && base->selection_changed)
     (*base->selection_changed)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

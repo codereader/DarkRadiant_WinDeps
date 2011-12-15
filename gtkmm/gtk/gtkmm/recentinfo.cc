@@ -26,12 +26,6 @@
 namespace Gtk
 {
 
-bool RecentInfo::equal(const RecentInfo& other) const
-{
-  return (static_cast<bool>(gtk_recent_info_match(const_cast<GtkRecentInfo*>(this->gobj()),
-                                                  const_cast<GtkRecentInfo*>(other.gobj()))));
-}
-
 RecentInfo::operator bool() const
 {
   return gobj() != 0;
@@ -39,14 +33,34 @@ RecentInfo::operator bool() const
 
 Glib::StringArrayHandle RecentInfo::get_applications() const
 {
-  //We pass 0 for the length output argument, because we don't need it, because the returned array is null-terminated.
-  return Glib::StringArrayHandle(gtk_recent_info_get_applications(const_cast<GtkRecentInfo*>(this->gobj()), 0));
+  gsize length = 0;
+  char** const applications =
+    gtk_recent_info_get_applications(const_cast<GtkRecentInfo*>(gobj()), &length);
+
+  return Glib::StringArrayHandle(applications, length, Glib::OWNERSHIP_DEEP);
+}
+
+bool RecentInfo::get_application_info(const Glib::ustring& app_name, std::string& app_exec,
+                                      guint& count, time_t& time_) const
+{
+  const char* app_exec_cstr = 0;
+  const int found = gtk_recent_info_get_application_info(
+      const_cast<GtkRecentInfo*>(gobj()), app_name.c_str(), &app_exec_cstr, &count, &time_);
+
+  if (app_exec_cstr)
+    app_exec = app_exec_cstr;
+  else
+    app_exec.erase();
+
+  return (found != 0);
 }
 
 Glib::StringArrayHandle RecentInfo::get_groups() const
 {
-  //We pass 0 for the length output argument, because we don't need it, because the returned array is null-terminated.
-  return Glib::StringArrayHandle(gtk_recent_info_get_groups(const_cast<GtkRecentInfo*>(this->gobj()), 0));
+  gsize length = 0;
+  char** const groups = gtk_recent_info_get_groups(const_cast<GtkRecentInfo*>(gobj()), &length);
+
+  return Glib::StringArrayHandle(groups, length, Glib::OWNERSHIP_DEEP);
 }
 
 RecentInfoTraits::CppType RecentInfoTraits::to_cpp_type(const CType& obj)
@@ -66,7 +80,7 @@ GType Value<RefPtr<Gtk::RecentInfo> >::value_type()
 
 void Value<RefPtr<Gtk::RecentInfo> >::set(const CppType& data)
 {
-  set_boxed(data->gobj());
+  set_boxed(Glib::unwrap(data));
 }
 
 Value<RefPtr<Gtk::RecentInfo> >::CppType Value<RefPtr<Gtk::RecentInfo> >::get() const
@@ -187,11 +201,6 @@ bool RecentInfo::get_private_hint() const
   return gtk_recent_info_get_private_hint(const_cast<GtkRecentInfo*>(gobj()));
 }
 
-bool RecentInfo::get_application_info(const Glib::ustring& app_name, Glib::StringArrayHandle& app_exec, guint& count, time_t& time) const
-{
-  return gtk_recent_info_get_application_info(const_cast<GtkRecentInfo*>(gobj()), app_name.c_str(), const_cast<gchar**>((app_exec).data()), &(count), &(time));
-}
-
 Glib::ustring RecentInfo::last_application() const
 {
   return Glib::convert_return_gchar_ptr_to_ustring(gtk_recent_info_last_application(const_cast<GtkRecentInfo*>(gobj())));
@@ -219,12 +228,7 @@ Glib::RefPtr<Gdk::Pixbuf> RecentInfo::get_icon(int size)
 
 Glib::RefPtr<const Gdk::Pixbuf> RecentInfo::get_icon(int size) const
 {
-
-  Glib::RefPtr<const Gdk::Pixbuf> retvalue = Glib::wrap(gtk_recent_info_get_icon(const_cast<GtkRecentInfo*>(gobj()), size));
-  if(retvalue)
-    retvalue->reference(); //The function does not do a ref for us.
-  return retvalue;
-
+  return const_cast<RecentInfo*>(this)->get_icon(size);
 }
 
 Glib::ustring RecentInfo::get_short_name() const
@@ -250,6 +254,11 @@ bool RecentInfo::is_local() const
 bool RecentInfo::exists() const
 {
   return gtk_recent_info_exists(const_cast<GtkRecentInfo*>(gobj()));
+}
+
+bool RecentInfo::equal(const RecentInfo& b) const
+{
+  return gtk_recent_info_match(const_cast<GtkRecentInfo*>(gobj()), const_cast<GtkRecentInfo*>((b).gobj()));
 }
 
 

@@ -33,7 +33,7 @@ extern "C" { typedef struct _GModule GModule; }
 namespace Glib
 {
 
-/** @addtogroup glibmmEnums Enums and Flags */
+/** @addtogroup glibmmEnums glibmm Enums and Flags */
 
 /**
  * @ingroup glibmmEnums

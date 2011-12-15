@@ -5,16 +5,16 @@
  * Copyright 2001-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
+ * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
@@ -32,14 +32,10 @@ namespace Pango
  */
 class LayoutIter
 {
-  _CLASS_GENERIC(LayoutIter, PangoLayoutIter)
-  _IGNORE(pango_layout_iter_free, pango_layout_iter_get_char_extents)
+  _CLASS_BOXEDTYPE(LayoutIter, PangoLayoutIter, NONE, pango_layout_iter_copy, pango_layout_iter_free)
+  _IGNORE(pango_layout_iter_copy, pango_layout_iter_free)
 
 public:
-  // There's no other ctor, and the default ctor creates an invalid object.
-  // Therefore, Pango::LayoutIter is usable only as output argument.
-  LayoutIter();
-  ~LayoutIter();
 
   _WRAP_METHOD(int get_index() const, pango_layout_iter_get_index)
   _WRAP_METHOD(LayoutRun get_run() const, pango_layout_iter_get_run)
@@ -64,6 +60,7 @@ public:
    * @return The logical extents of the current character.
    */
   Rectangle get_char_extents() const;
+  _IGNORE(pango_layout_iter_get_char_extents)
 
   _WRAP_METHOD(void get_cluster_extents(Rectangle& ink_rect, Rectangle& logical_rect) const, pango_layout_iter_get_cluster_extents)
 
@@ -89,7 +86,7 @@ public:
    */
   Rectangle get_run_logical_extents() const;
 
-  _WRAP_METHOD(void get_line_extents(Rectangle& ink_rect, Rectangle& logical_rect) const, pango_layout_iter_get_line_extents)
+  _WRAP_METHOD(void get_line_extents(Rectangle& ink_rect, Rectangle& logical_rect) const,   pango_layout_iter_get_line_extents)
 
   /** Obtains the ink extents of the current line.
    * @return The extents of the current line as drawn.
@@ -117,22 +114,12 @@ public:
 
   _WRAP_METHOD(int get_baseline() const, pango_layout_iter_get_baseline)
 
-  /// Provides access to the underlying C GObject.  
-  PangoLayoutIter*       gobj()       { return gobject_; }
-  /// Provides access to the underlying C GObject.
-  const PangoLayoutIter* gobj() const { return gobject_; }
-
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** @deprecated Use the copy constructor instead.
+   * This was only ever for internal use anyway.
+   */
   void assign_gobj(PangoLayoutIter* src);
 #endif
-
-protected:
-  PangoLayoutIter* gobject_;
-
-private:
-  // noncopyable
-  LayoutIter(const LayoutIter&);
-  LayoutIter& operator=(const LayoutIter&);
 };
 
 } //namespace Pango

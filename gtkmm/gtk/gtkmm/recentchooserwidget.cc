@@ -71,23 +71,14 @@ const Glib::Class& RecentChooserWidget_Class::init()
   return *this;
 }
 
+
 void RecentChooserWidget_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* RecentChooserWidget_Class::wrap_new(GObject* o)
@@ -123,6 +114,7 @@ GType RecentChooserWidget::get_type()
   return recentchooserwidget_class_.init().get_type();
 }
 
+
 GType RecentChooserWidget::get_base_type()
 {
   return gtk_recent_chooser_widget_get_type();
@@ -148,13 +140,6 @@ RecentChooserWidget::RecentChooserWidget(const Glib::RefPtr<RecentManager>& rece
   
 
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

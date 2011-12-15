@@ -26,13 +26,13 @@ public:
 
   const Glib::Class& init();
 
+
   static void class_init_function(void* g_class, void* class_data);
 
   static Glib::ObjectBase* wrap_new(GObject*);
 
 protected:
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   //Callbacks (default signal handlers):
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
@@ -42,11 +42,8 @@ protected:
   static void state_change_callback(AtkObject* self, const gchar* p0, gboolean p1);
   static void visible_data_changed_callback(AtkObject* self);
   static void active_descendant_changed_callback(AtkObject* self, gpointer* p0);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
   //Callbacks (virtual functions):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 };
 
 

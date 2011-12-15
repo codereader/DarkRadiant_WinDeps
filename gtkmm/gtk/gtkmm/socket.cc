@@ -141,24 +141,18 @@ const Glib::Class& Socket_Class::init()
   return *this;
 }
 
+
 void Socket_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->plug_added = &plug_added_callback;
   klass->plug_removed = &plug_removed_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Socket_Class::plug_added_callback(GtkSocket* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -190,7 +184,7 @@ void Socket_Class::plug_added_callback(GtkSocket* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -229,7 +223,7 @@ gboolean Socket_Class::plug_removed_callback(GtkSocket* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -241,7 +235,6 @@ gboolean Socket_Class::plug_removed_callback(GtkSocket* self)
   typedef gboolean RType;
   return RType();
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Socket_Class::wrap_new(GObject* o)
@@ -276,6 +269,7 @@ GType Socket::get_type()
 {
   return socket_class_.init().get_type();
 }
+
 
 GType Socket::get_base_type()
 {
@@ -331,7 +325,6 @@ Glib::SignalProxy0< bool > Socket::signal_plug_removed()
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::Socket::on_plug_added()
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -353,10 +346,6 @@ bool Gtk::Socket::on_plug_removed()
   typedef bool RType;
   return RType();
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

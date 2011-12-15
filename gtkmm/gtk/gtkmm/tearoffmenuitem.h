@@ -10,7 +10,7 @@
 
 
 /* tearoffmenuitem.h
- * 
+ *
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -80,6 +80,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -92,17 +94,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -110,7 +106,12 @@ private:
 public:
   TearoffMenuItem();
 
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+  /** @deprecated This method was apparently not useful and will be removed in a later gtkmm version, due to changes in GTK+.
+   */
   bool is_torn_off() const;
+#endif // GTKMM_DISABLE_DEPRECATED
 
 
 };

@@ -4,7 +4,8 @@
 #define _ATKMM_ACTION_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: action.hg,v 1.5 2004/03/12 20:35:53 murrayc Exp $ */
 
@@ -25,6 +26,8 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+
+#include <glibmm/interface.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 extern "C" { typedef struct _AtkActionIface AtkActionIface; }
@@ -111,7 +114,7 @@ public:
   ///Provides access to the underlying C GObject.
   AtkAction*       gobj()       { return reinterpret_cast<AtkAction*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const AtkAction* gobj() const { return reinterpret_cast<AtkAction*>(gobject_); }
 
 private:
@@ -169,47 +172,29 @@ public:
   Glib::ustring get_localized_name(int i);
 
 protected:
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool do_action_vfunc(int i);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool do_action_vfunc(int i);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual int get_n_actions_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual int get_n_actions_vfunc() const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual const char* get_description_vfunc(int i) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual const char* get_description_vfunc(int i) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual const char* get_name_vfunc(int i) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual const char* get_name_vfunc(int i) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual const char* get_keybinding_vfunc(int i) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual const char* get_keybinding_vfunc(int i) const;
 
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool set_description_vfunc(int i, const Glib::ustring& desc);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool set_description_vfunc(int i, const Glib::ustring& desc);
 
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

@@ -33,18 +33,14 @@ namespace Glib
       Glib::OptionContext::SlotTranslate* the_slot =
         static_cast<Glib::OptionContext::SlotTranslate*>(data);
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
       try
       {
-#endif //GLIBMM_EXCEPTIONS_ENABLED
         translated_str = (*the_slot)(str);
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
       }
       catch(...)
       {
         Glib::exception_handlers_invoke();
       }
-#endif //GLIBMM_EXCEPTIONS_ENABLED
       return translated_str.c_str ();
     }
 
@@ -111,7 +107,7 @@ void OptionContext::set_translate_func (const SlotTranslate& slot)
 
 Glib::ustring OptionContext::get_help(bool main_help) const
 {
-  return Glib::convert_return_gchar_ptr_to_ustring(g_option_context_get_help(const_cast<GOptionContext*>(gobj()), static_cast<int>(main_help), NULL));
+  return Glib::convert_return_gchar_ptr_to_ustring(g_option_context_get_help(const_cast<GOptionContext*>(gobj()), static_cast<int>(main_help), 0));
 }
 
 } // namespace Glib

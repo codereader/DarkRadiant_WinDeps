@@ -71,23 +71,14 @@ const Glib::Class& RecentChooserMenu_Class::init()
   return *this;
 }
 
+
 void RecentChooserMenu_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* RecentChooserMenu_Class::wrap_new(GObject* o)
@@ -122,6 +113,7 @@ GType RecentChooserMenu::get_type()
 {
   return recentchoosermenu_class_.init().get_type();
 }
+
 
 GType RecentChooserMenu::get_base_type()
 {
@@ -160,11 +152,19 @@ bool RecentChooserMenu::get_show_numbers() const
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<bool> RecentChooserMenu::property_show_numbers() 
+{
+  return Glib::PropertyProxy<bool>(this, "show-numbers");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> RecentChooserMenu::property_show_numbers() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "show-numbers");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
 
 } // namespace Gtk

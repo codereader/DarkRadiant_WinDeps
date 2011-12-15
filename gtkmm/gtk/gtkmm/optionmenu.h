@@ -10,10 +10,7 @@
 
 #include <glibmm.h>
 
-/* $Id: optionmenu.hg,v 1.6 2006/04/12 11:11:25 murrayc Exp $ */
-
-/* optionmenu.h
- * 
+/*
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -31,7 +28,7 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// This is for including the config header before any code (such as
+ // This is for including the config header before any code (such as
 // the #ifndef GTKMM_DISABLE_DEPRECATED in deprecated classes) is generated:
 
 
@@ -56,7 +53,7 @@ class Menu;
  * A Gtk::OptionMenu is a widget that allows the user to choose from a list
  * of valid choices. The Gtk::OptionMenu displays the selected choice. When
  * activated the GtkOptionMenu displays a popup Gtk::Menu which allows the
- * user to make a new choice. 
+ * user to make a new choice.
  *
  * @deprecated Use the ComboBox widget instead.
  */
@@ -92,6 +89,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -104,18 +103,12 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_changed();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -125,7 +118,7 @@ public:
 
   OptionMenu();
   
-  
+
   void set_menu(Menu& menu);
   
   Menu* get_menu();
@@ -135,9 +128,10 @@ public:
   void remove_menu();
   
   /** Retrieves the index of the currently selected menu item. The menu
-   * items are numbered from top to bottom, starting with 0.
-   * @return Index of the selected menu item, or -1 if there are no menu items
+   * items are numbered from top to bottom, starting with 0. 
+   * 
    * Deprecated: 2.4: Use Gtk::ComboBox instead.
+   * @return Index of the selected menu item, or -1 if there are no menu items.
    */
   int get_history() const;
   
@@ -150,7 +144,7 @@ public:
    */
 
   Glib::SignalProxy0< void > signal_changed();
-	
+
 
 private:
   void init_accels_handler_();
@@ -158,7 +152,7 @@ private:
 
 };
 
-} /* namespace Gtk */
+} // namespace Gtk
 
 
 namespace Glib

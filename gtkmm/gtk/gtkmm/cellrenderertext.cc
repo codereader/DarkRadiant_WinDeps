@@ -30,17 +30,10 @@
 namespace Gtk
 {
 
-#ifdef GLIBMM_PROPERTIES_ENABLED
 Glib::PropertyProxy_Base CellRendererText::_property_renderable()
 {
   return property_text();
 }
-#else
-Glib::ustring CellRendererText::_property_renderable()
-{
-  return "text";
-}
-#endif //#GLIBMM_PROPERTIES_ENABLED
 
 void CellRendererText::edited(const Glib::ustring& path, const Glib::ustring& new_text)
 {
@@ -128,23 +121,17 @@ const Glib::Class& CellRendererText_Class::init()
   return *this;
 }
 
+
 void CellRendererText_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->edited = &edited_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void CellRendererText_Class::edited_callback(GtkCellRendererText* self, const gchar* p0, const gchar* p1)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -178,7 +165,7 @@ void CellRendererText_Class::edited_callback(GtkCellRendererText* self, const gc
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -187,7 +174,6 @@ void CellRendererText_Class::edited_callback(GtkCellRendererText* self, const gc
   if(base && base->edited)
     (*base->edited)(self, p0, p1);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* CellRendererText_Class::wrap_new(GObject* o)
@@ -222,6 +208,7 @@ GType CellRendererText::get_type()
 {
   return cellrenderertext_class_.init().get_type();
 }
+
 
 GType CellRendererText::get_base_type()
 {
@@ -833,7 +820,6 @@ Glib::PropertyProxy_ReadOnly<bool> CellRendererText::property_single_paragraph_m
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::CellRendererText::on_edited(const Glib::ustring& path, const Glib::ustring& new_text)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -843,10 +829,6 @@ void Gtk::CellRendererText::on_edited(const Glib::ustring& path, const Glib::ust
   if(base && base->edited)
     (*base->edited)(gobj(),path.c_str(),new_text.c_str());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

@@ -154,24 +154,18 @@ const Glib::Class& Statusbar_Class::init()
   return *this;
 }
 
+
 void Statusbar_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->text_pushed = &text_pushed_callback;
   klass->text_popped = &text_popped_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Statusbar_Class::text_pushed_callback(GtkStatusbar* self, guint p0, const gchar* p1)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -204,7 +198,7 @@ void Statusbar_Class::text_pushed_callback(GtkStatusbar* self, guint p0, const g
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -245,7 +239,7 @@ void Statusbar_Class::text_popped_callback(GtkStatusbar* self, guint p0, const g
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -254,7 +248,6 @@ void Statusbar_Class::text_popped_callback(GtkStatusbar* self, guint p0, const g
   if(base && base->text_popped)
     (*base->text_popped)(self, p0, p1);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Statusbar_Class::wrap_new(GObject* o)
@@ -290,6 +283,7 @@ GType Statusbar::get_type()
   return statusbar_class_.init().get_type();
 }
 
+
 GType Statusbar::get_base_type()
 {
   return gtk_statusbar_get_type();
@@ -316,6 +310,11 @@ void Statusbar::pop(guint context_id)
 gtk_statusbar_pop(gobj(), context_id); 
 }
 
+void Statusbar::remove_all_messages(guint context_id)
+{
+gtk_statusbar_remove_all(gobj(), context_id); 
+}
+
 void Statusbar::set_has_resize_grip(bool setting)
 {
 gtk_statusbar_set_has_resize_grip(gobj(), static_cast<int>(setting)); 
@@ -324,6 +323,16 @@ gtk_statusbar_set_has_resize_grip(gobj(), static_cast<int>(setting));
 bool Statusbar::get_has_resize_grip() const
 {
   return gtk_statusbar_get_has_resize_grip(const_cast<GtkStatusbar*>(gobj()));
+}
+
+Gtk::Widget* Statusbar::get_message_area()
+{
+  return Glib::wrap(gtk_statusbar_get_message_area(gobj()));
+}
+
+const Gtk::Widget* Statusbar::get_message_area() const
+{
+  return const_cast<Statusbar*>(this)->get_message_area();
 }
 
 
@@ -354,7 +363,6 @@ Glib::PropertyProxy_ReadOnly<bool> Statusbar::property_has_resize_grip() const
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::Statusbar::on_text_pushed(guint context_id, const Glib::ustring& text)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -373,10 +381,6 @@ void Gtk::Statusbar::on_text_popped(guint context_id, const Glib::ustring& text)
   if(base && base->text_popped)
     (*base->text_popped)(gobj(),context_id,text.c_str());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

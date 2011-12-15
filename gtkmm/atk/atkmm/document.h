@@ -4,7 +4,8 @@
 #define _ATKMM_DOCUMENT_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: document.hg,v 1.3 2004/01/19 19:48:36 murrayc Exp $ */
 
@@ -25,6 +26,8 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+
+#include <glibmm/interface.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 extern "C"
@@ -104,7 +107,7 @@ public:
   ///Provides access to the underlying C GObject.
   AtkDocument*       gobj()       { return reinterpret_cast<AtkDocument*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const AtkDocument* gobj() const { return reinterpret_cast<AtkDocument*>(gobject_); }
 
 private:
@@ -125,30 +128,20 @@ public:
   gpointer get_document();
 
 protected:
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual const gchar* get_document_type_vfunc();
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual const gchar* get_document_type_vfunc();
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual gpointer get_document_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual gpointer get_document_vfunc() const;
 
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

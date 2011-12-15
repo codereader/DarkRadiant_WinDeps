@@ -24,6 +24,7 @@
  */
 
 #include <gio/gio.h>
+#include <giomm/volume.h>
 #include <glibmm/error.h>
 #include <glibmm/exceptionhandler.h>
 #include "slot_async.h"
@@ -38,11 +39,12 @@ void Drive::eject(const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& c
   // and deleted in the callback.
   SlotAsyncReady* slot_copy = new SlotAsyncReady(slot);
 
-  g_drive_eject(gobj(),
-                static_cast<GMountUnmountFlags>(flags), 
-                cancellable->gobj(),
-                &SignalProxy_async_callback,
-                slot_copy);
+  g_drive_eject_with_operation(gobj(),
+                               static_cast<GMountUnmountFlags>(flags),
+                               0, // mount_operation
+                               Glib::unwrap(cancellable),
+                               &SignalProxy_async_callback,
+                               slot_copy);
 }
 
 void Drive::eject(const SlotAsyncReady& slot, MountUnmountFlags flags)
@@ -52,20 +54,62 @@ void Drive::eject(const SlotAsyncReady& slot, MountUnmountFlags flags)
   // and deleted in the callback.
   SlotAsyncReady* slot_copy = new SlotAsyncReady(slot);
 
-  g_drive_eject(gobj(),
-                static_cast<GMountUnmountFlags>(flags), 
-                NULL, // cancellable
-                &SignalProxy_async_callback,
-                slot_copy);
+  g_drive_eject_with_operation(gobj(),
+                               static_cast<GMountUnmountFlags>(flags), 
+                               0, // mount_operation
+                               0, // cancellable
+                               &SignalProxy_async_callback,
+                               slot_copy);
+}
+
+void Drive::eject(const Glib::RefPtr<MountOperation>& mount_operation, const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, MountUnmountFlags flags)
+{
+  // Create a copy of the slot.
+  // A pointer to it will be passed through the callback's data parameter
+  // and deleted in the callback.
+  SlotAsyncReady* slot_copy = new SlotAsyncReady(slot);
+
+  g_drive_eject_with_operation(gobj(),
+                               static_cast<GMountUnmountFlags>(flags),
+                               Glib::unwrap(mount_operation),
+                               Glib::unwrap(cancellable),
+                               &SignalProxy_async_callback,
+                               slot_copy);
+}
+
+void Drive::eject(const Glib::RefPtr<MountOperation>& mount_operation, const SlotAsyncReady& slot, MountUnmountFlags flags)
+{
+  // Create a copy of the slot.
+  // A pointer to it will be passed through the callback's data parameter
+  // and deleted in the callback.
+  SlotAsyncReady* slot_copy = new SlotAsyncReady(slot);
+
+  g_drive_eject_with_operation(gobj(),
+                               static_cast<GMountUnmountFlags>(flags),
+                               Glib::unwrap(mount_operation),
+                               0, // cancellable
+                               &SignalProxy_async_callback,
+                               slot_copy);
+}
+
+void Drive::eject(const Glib::RefPtr<MountOperation>& mount_operation, MountUnmountFlags flags)
+{
+  g_drive_eject_with_operation(gobj(),
+                               static_cast<GMountUnmountFlags>(flags), 
+                               Glib::unwrap(mount_operation),
+                               0, // cancellable
+                               0, // callback
+                               0); // user_data
 }
 
 void Drive::eject(MountUnmountFlags flags)
 {
-  g_drive_eject(gobj(),
-                static_cast<GMountUnmountFlags>(flags), 
-                NULL, // cancellable
-                NULL,
-                NULL);
+  g_drive_eject_with_operation(gobj(),
+                               static_cast<GMountUnmountFlags>(flags), 
+                               0, // mount_operation
+                               0, // cancellable
+                               0, // callback
+                               0); // user_data
 }
 
 void Drive::poll_for_media(const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable)
@@ -76,7 +120,7 @@ void Drive::poll_for_media(const SlotAsyncReady& slot, const Glib::RefPtr<Cancel
   SlotAsyncReady* slot_copy = new SlotAsyncReady(slot);
 
   g_drive_poll_for_media(gobj(),
-                         cancellable->gobj(),
+                         Glib::unwrap(cancellable),
                          &SignalProxy_async_callback,
                          slot_copy);
 }
@@ -89,7 +133,7 @@ void Drive::poll_for_media(const SlotAsyncReady& slot)
   SlotAsyncReady* slot_copy = new SlotAsyncReady(slot);
 
   g_drive_poll_for_media(gobj(),
-                         NULL, // cancellable
+                         0, // cancellable
                          &SignalProxy_async_callback,
                          slot_copy);
 }
@@ -97,9 +141,84 @@ void Drive::poll_for_media(const SlotAsyncReady& slot)
 void Drive::poll_for_media()
 {
   g_drive_poll_for_media(gobj(),
-                         NULL, // cancellable
-                         NULL,
-                         NULL);
+                         0, // cancellable
+                         0,
+                         0);
+}
+
+void
+Drive::stop(const Glib::RefPtr<MountOperation>& mount_operation,
+            const Glib::RefPtr<Cancellable>& cancellable,
+            const SlotAsyncReady& slot,
+            MountUnmountFlags flags)
+{
+  // Create a copy of the slot.
+  // A pointer to it will be passed through the callback's data parameter
+  // and deleted in the callback.
+  SlotAsyncReady* slot_copy = new SlotAsyncReady(slot);
+
+  g_drive_stop(gobj(),
+               static_cast<GMountUnmountFlags>(flags),
+               Glib::unwrap(mount_operation),
+               Glib::unwrap(cancellable),
+               &SignalProxy_async_callback,
+               slot_copy);
+}
+
+void
+Drive::stop(const Glib::RefPtr<MountOperation>& mount_operation,
+            const SlotAsyncReady& slot,
+            MountUnmountFlags flags)
+{
+  // Create a copy of the slot.
+  // A pointer to it will be passed through the callback's data parameter
+  // and deleted in the callback.
+  SlotAsyncReady* slot_copy = new SlotAsyncReady(slot);
+
+  g_drive_stop(gobj(),
+               static_cast<GMountUnmountFlags>(flags),
+               Glib::unwrap(mount_operation),
+               0,
+               &SignalProxy_async_callback,
+               slot_copy);
+}
+
+
+void
+Drive::start(const Glib::RefPtr<MountOperation>& mount_operation,
+             const Glib::RefPtr<Cancellable>& cancellable,
+             const SlotAsyncReady& slot,
+             DriveStartFlags flags)
+{
+  // Create a copy of the slot.
+  // A pointer to it will be passed through the callback's data parameter
+  // and deleted in the callback.
+  SlotAsyncReady* slot_copy = new SlotAsyncReady(slot);
+
+  g_drive_start(gobj(),
+                static_cast<GDriveStartFlags>(flags),
+                Glib::unwrap(mount_operation),
+                Glib::unwrap(cancellable),
+                &SignalProxy_async_callback,
+                slot_copy);
+}
+
+void
+Drive::start(const Glib::RefPtr<MountOperation>& mount_operation,
+             const SlotAsyncReady& slot,
+             DriveStartFlags flags)
+{
+  // Create a copy of the slot.
+  // A pointer to it will be passed through the callback's data parameter
+  // and deleted in the callback.
+  SlotAsyncReady* slot_copy = new SlotAsyncReady(slot);
+
+  g_drive_start(gobj(),
+                static_cast<GDriveStartFlags>(flags),
+                Glib::unwrap(mount_operation),
+                0,
+                &SignalProxy_async_callback,
+                slot_copy);
 }
 
 } // namespace Gio
@@ -133,7 +252,27 @@ static const Glib::SignalProxyInfo Drive_signal_eject_button_info =
 };
 
 
+static const Glib::SignalProxyInfo Drive_signal_stop_button_info =
+{
+  "stop_button",
+  (GCallback) &Glib::SignalProxyNormal::slot0_void_callback,
+  (GCallback) &Glib::SignalProxyNormal::slot0_void_callback
+};
+
+
 } // anonymous namespace
+
+// static
+GType Glib::Value<Gio::DriveStartFlags>::value_type()
+{
+  return g_drive_start_flags_get_type();
+}
+
+// static
+GType Glib::Value<Gio::DriveStartStopType>::value_type()
+{
+  return g_drive_start_stop_type_get_type();
+}
 
 
 namespace Glib
@@ -177,18 +316,8 @@ void Drive_Class::iface_init_function(void* g_iface, void*)
   //This is a temporary fix until I find out why I can not seem to derive a GtkFileChooser interface. murrayc
   g_assert(klass != 0); 
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Drive_Class::wrap_new(GObject* object)
@@ -292,41 +421,23 @@ bool Drive::can_eject() const
   return g_drive_can_eject(const_cast<GDrive*>(gobj()));
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool Drive::eject_finish(const Glib::RefPtr<AsyncResult>& result)
-#else
-bool Drive::eject_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
-  bool retvalue = g_drive_eject_finish(gobj(), Glib::unwrap(result), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  bool retvalue = g_drive_eject_with_operation_finish(gobj(), Glib::unwrap(result), &(gerror));
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool Drive::poll_for_media_finish(const Glib::RefPtr<AsyncResult>& result)
-#else
-bool Drive::poll_for_media_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = g_drive_poll_for_media_finish(gobj(), Glib::unwrap(result), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
@@ -339,7 +450,49 @@ std::string Drive::get_identifier(const std::string& kind) const
 
 Glib::StringArrayHandle Drive::enumerate_identifiers() const
 {
-  return Glib::StringArrayHandle(g_drive_enumerate_identifiers(const_cast<GDrive*>(gobj())));
+  return Glib::StringArrayHandle(g_drive_enumerate_identifiers(const_cast<GDrive*>(gobj())), Glib::OWNERSHIP_DEEP);
+}
+
+bool Drive::start_finish(const Glib::RefPtr<AsyncResult>& result)
+{
+  GError* gerror = 0;
+  bool retvalue = g_drive_start_finish(gobj(), Glib::unwrap(result), &(gerror));
+  if(gerror)
+    ::Glib::Error::throw_exception(gerror);
+
+  return retvalue;
+
+}
+
+bool Drive::can_start() const
+{
+  return g_drive_can_start(const_cast<GDrive*>(gobj()));
+}
+
+bool Drive::can_start_degraded() const
+{
+  return g_drive_can_start_degraded(const_cast<GDrive*>(gobj()));
+}
+
+bool Drive::stop_finish(const Glib::RefPtr<AsyncResult>& result)
+{
+  GError* gerror = 0;
+  bool retvalue = g_drive_stop_finish(gobj(), Glib::unwrap(result), &(gerror));
+  if(gerror)
+    ::Glib::Error::throw_exception(gerror);
+
+  return retvalue;
+
+}
+
+bool Drive::can_stop() const
+{
+  return g_drive_can_stop(const_cast<GDrive*>(gobj()));
+}
+
+DriveStartStopType Drive::get_start_stop_type() const
+{
+  return ((DriveStartStopType)(g_drive_get_start_stop_type(const_cast<GDrive*>(gobj()))));
 }
 
 
@@ -361,11 +514,10 @@ Glib::SignalProxy0< void > Drive::signal_eject_button()
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
+Glib::SignalProxy0< void > Drive::signal_stop_button()
+{
+  return Glib::SignalProxy0< void >(this, &Drive_signal_stop_button_info);
+}
 
 
 } // namespace Gio

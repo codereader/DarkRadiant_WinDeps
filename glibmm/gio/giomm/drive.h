@@ -27,6 +27,7 @@
 
 #include <giomm/mount.h>
 #include <giomm/icon.h>
+//#include <giomm/volume.h>
 //#include <giomm/mountoperation.h>
 
 
@@ -44,6 +45,107 @@ namespace Gio
 { class Drive_Class; } // namespace Gio
 namespace Gio
 {
+
+/** @addtogroup giommEnums giomm Enums and Flags */
+
+/**
+ * @ingroup giommEnums
+ * @par Bitwise operators:
+ * <tt>%DriveStartFlags operator|(DriveStartFlags, DriveStartFlags)</tt><br>
+ * <tt>%DriveStartFlags operator&(DriveStartFlags, DriveStartFlags)</tt><br>
+ * <tt>%DriveStartFlags operator^(DriveStartFlags, DriveStartFlags)</tt><br>
+ * <tt>%DriveStartFlags operator~(DriveStartFlags)</tt><br>
+ * <tt>%DriveStartFlags& operator|=(DriveStartFlags&, DriveStartFlags)</tt><br>
+ * <tt>%DriveStartFlags& operator&=(DriveStartFlags&, DriveStartFlags)</tt><br>
+ * <tt>%DriveStartFlags& operator^=(DriveStartFlags&, DriveStartFlags)</tt><br>
+ */
+enum DriveStartFlags
+{
+  DRIVE_START_NONE = 0x0
+};
+
+/** @ingroup giommEnums */
+inline DriveStartFlags operator|(DriveStartFlags lhs, DriveStartFlags rhs)
+  { return static_cast<DriveStartFlags>(static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs)); }
+
+/** @ingroup giommEnums */
+inline DriveStartFlags operator&(DriveStartFlags lhs, DriveStartFlags rhs)
+  { return static_cast<DriveStartFlags>(static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs)); }
+
+/** @ingroup giommEnums */
+inline DriveStartFlags operator^(DriveStartFlags lhs, DriveStartFlags rhs)
+  { return static_cast<DriveStartFlags>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs)); }
+
+/** @ingroup giommEnums */
+inline DriveStartFlags operator~(DriveStartFlags flags)
+  { return static_cast<DriveStartFlags>(~static_cast<unsigned>(flags)); }
+
+/** @ingroup giommEnums */
+inline DriveStartFlags& operator|=(DriveStartFlags& lhs, DriveStartFlags rhs)
+  { return (lhs = static_cast<DriveStartFlags>(static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs))); }
+
+/** @ingroup giommEnums */
+inline DriveStartFlags& operator&=(DriveStartFlags& lhs, DriveStartFlags rhs)
+  { return (lhs = static_cast<DriveStartFlags>(static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs))); }
+
+/** @ingroup giommEnums */
+inline DriveStartFlags& operator^=(DriveStartFlags& lhs, DriveStartFlags rhs)
+  { return (lhs = static_cast<DriveStartFlags>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs))); }
+
+} // namespace Gio
+
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+namespace Glib
+{
+
+template <>
+class Value<Gio::DriveStartFlags> : public Glib::Value_Flags<Gio::DriveStartFlags>
+{
+public:
+  static GType value_type() G_GNUC_CONST;
+};
+
+} // namespace Glib
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+
+namespace Gio
+{
+
+/**
+ * @ingroup giommEnums
+ */
+enum DriveStartStopType
+{
+  DRIVE_START_STOP_TYPE_UNKNOWN,
+  DRIVE_START_STOP_TYPE_SHUTDOWN,
+  DRIVE_START_STOP_TYPE_NETWORK,
+  DRIVE_START_STOP_TYPE_MULTIDISK,
+  DRIVE_START_STOP_TYPE_PASSWORD
+};
+
+} // namespace Gio
+
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+namespace Glib
+{
+
+template <>
+class Value<Gio::DriveStartStopType> : public Glib::Value_Enum<Gio::DriveStartStopType>
+{
+public:
+  static GType value_type() G_GNUC_CONST;
+};
+
+} // namespace Glib
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+
+namespace Gio
+{
+
 
 /** Virtual File System drive management.
  *
@@ -110,7 +212,7 @@ public:
   ///Provides access to the underlying C GObject.
   GDrive*       gobj()       { return reinterpret_cast<GDrive*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const GDrive* gobj() const { return reinterpret_cast<GDrive*>(gobject_); }
 
 private:
@@ -194,26 +296,31 @@ public:
    * @param flags Flags affecting the unmount if required for eject.
    */
   void eject(const SlotAsyncReady& slot, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
-  
+  void eject(const Glib::RefPtr<MountOperation>& mount_operation, const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  void eject(const Glib::RefPtr<MountOperation>& mount_operation, const SlotAsyncReady& slot, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
 
   /** Ejects the drive.
    * @param slot A callback which will be called when the eject is completed.
    * @param flags Flags affecting the unmount if required for eject.
    */
   void eject(MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
-
+  void eject(const Glib::RefPtr<MountOperation>& mount_operation, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
   
-  /** Finishes ejecting a drive.
+  
+  // eject_finish() is deprecated in favor of eject_with_operation_finish(), and
+  // since all of our eject() overloads are implemented by
+  // eject_with_operation(), we implement the _finish() with
+  // eject_with_operation_finish and ignore the deprecated one
+  
+  /** Finishes ejecting a drive. If any errors occurred during the operation,
+   *  @a error will be set to contain the errors and <tt>false</tt> will be returned.
+   * 
+   * @newin{2,22}
    * @param result A AsyncResult.
-   * @return <tt>true</tt> if the drive has been ejected successfully,
-   * <tt>false</tt> otherwise.
+   * @return <tt>true</tt> if the drive was successfully ejected. <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool eject_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  bool eject_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
+  
 
   /** Polls drive to see if media has been inserted or removed.
    * @param slot A callback which will be called when the poll is completed.
@@ -236,13 +343,9 @@ public:
    * @return <tt>true</tt> if the drive has been poll_for_mediaed successfully,
    * <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool poll_for_media_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  bool poll_for_media_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
+  
   /** Gets the identifier of the given kind for @a drive.
    * @param kind The kind of identifier to return.
    * @return A newly allocated string containing the
@@ -251,13 +354,65 @@ public:
    */
   std::string get_identifier(const std::string& kind) const;
   
+   
   /** Gets the kinds of identifiers that @a drive has. 
    * Use Glib::drive_get_identifer() to obtain the identifiers
    * themselves.
-   * @return A <tt>0</tt>-terminated array of strings containing
-   * kinds of identifiers. Use Glib::strfreev() to free.
+   * @return A <tt>0</tt>-terminated
+   * array of strings containing kinds of identifiers. Use Glib::strfreev()
+   * to free.
    */
   Glib::StringArrayHandle enumerate_identifiers() const;
+
+  /** @newin{2,22} */
+  void start(const Glib::RefPtr<MountOperation>& mount_operation, const Glib::RefPtr<Cancellable>& cancellable, const SlotAsyncReady& slot, DriveStartFlags flags = DRIVE_START_NONE);
+  /** @newin{2,22} */
+  void start(const Glib::RefPtr<MountOperation>& mount_operation, const SlotAsyncReady& slot, DriveStartFlags flags = DRIVE_START_NONE);
+  
+  
+  /** Finishes starting a drive.
+   * 
+   * @newin{2,22}
+   * @param result A AsyncResult.
+   * @return <tt>true</tt> if the drive has been started successfully,
+   * <tt>false</tt> otherwise.
+   */
+  bool start_finish(const Glib::RefPtr<AsyncResult>& result);
+  
+  /** @newin{2,22}
+   */
+  bool can_start() const;
+  
+  /** @newin{2,22}
+   */
+  bool can_start_degraded() const;
+
+  /** @newin{2,22} */
+  void stop(const Glib::RefPtr<MountOperation>& mount_operation, const Glib::RefPtr<Cancellable>& cancellable, const SlotAsyncReady& slot, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  /** @newin{2,22} */
+  void stop(const Glib::RefPtr<MountOperation>& mount_operation, const SlotAsyncReady& slot, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  
+  
+  /** Finishes stopping a drive.
+   * 
+   * @newin{2,22}
+   * @param result A AsyncResult.
+   * @return <tt>true</tt> if the drive has been stopped successfully,
+   * <tt>false</tt> otherwise.
+   */
+  bool stop_finish(const Glib::RefPtr<AsyncResult>& result);
+  
+  /** @newin{2,22}
+   */
+  bool can_stop() const;
+
+  
+  /** Gets a hint about how a drive can be started/stopped.
+   * 
+   * @newin{2,22}
+   * @return A value from the DriveStartStopType enumeration.
+   */
+  DriveStartStopType get_start_stop_type() const;
 
   /** @newin{2,20}
    *
@@ -286,6 +441,14 @@ public:
   Glib::SignalProxy0< void > signal_eject_button();
 
 
+  /** @newin{2,22} *
+   * @par Prototype:
+   * <tt>void on_my_%stop_button()</tt>
+   */
+
+  Glib::SignalProxy0< void > signal_stop_button();
+
+
   //_WRAP_VFUNC(Glib::ustring get_name() const, get_name)
   //Careful of ref-counting: //_WRAP_VFUNC(Glib::RefPtr<Icon> get_icon() const, get_icon)
   //_WRAP_VFUNC(bool has_volumes() const, has_volumes)
@@ -295,17 +458,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

@@ -32,7 +32,7 @@ static GType
 get_type_from_name_vfunc_callback(GtkBuilder*, const char* type_name)
 {
   if (!type_name)
-	return G_TYPE_INVALID;
+    return G_TYPE_INVALID;
 
   // See if there is a gtkmm version of the gclass:
   Glib::ustring classname_prefixed ("gtkmm__"); // gtkmm uses a prefix
@@ -52,7 +52,7 @@ get_type_from_name_vfunc_callback(GtkBuilder*, const char* type_name)
 namespace Gtk
 {
 
-//static
+// static
 Glib::RefPtr<Builder> Builder::create_from_file(const std::string& filename)
 {
   Glib::RefPtr<Builder> builder = Builder::create();
@@ -62,7 +62,7 @@ Glib::RefPtr<Builder> Builder::create_from_file(const std::string& filename)
     return Glib::RefPtr<Builder>();
 }
 
-//static
+// static
 Glib::RefPtr<Builder> Builder::create_from_file(const std::string& filename, const char* object_id)
 {
   Glib::RefPtr<Builder> builder = Builder::create();
@@ -103,7 +103,8 @@ Glib::RefPtr<Builder> Builder::create_from_string(const Glib::ustring& buffer)
 }
 
 //static
-Glib::RefPtr<Builder> Builder::create_from_string(const Glib::ustring& buffer, const char* object_id)
+Glib::RefPtr<Builder> Builder::create_from_string(const Glib::ustring& buffer,
+                                                  const char* object_id)
 {
   Glib::RefPtr<Builder> builder = Builder::create();
   if(builder->add_from_string(buffer, object_id))
@@ -113,7 +114,8 @@ Glib::RefPtr<Builder> Builder::create_from_string(const Glib::ustring& buffer, c
 }
 
 //static
-Glib::RefPtr<Builder> Builder::create_from_string(const Glib::ustring& buffer, const Glib::ustring& object_id)
+Glib::RefPtr<Builder> Builder::create_from_string(const Glib::ustring& buffer,
+                                                  const Glib::ustring& object_id)
 {
   Glib::RefPtr<Builder> builder = Builder::create();
   if(builder->add_from_string(buffer, object_id))
@@ -123,7 +125,8 @@ Glib::RefPtr<Builder> Builder::create_from_string(const Glib::ustring& buffer, c
 }
 
 //static
-Glib::RefPtr<Builder> Builder::create_from_string(const Glib::ustring& buffer, const Glib::StringArrayHandle& object_ids)
+Glib::RefPtr<Builder> Builder::create_from_string(const Glib::ustring& buffer,
+                                                  const Glib::StringArrayHandle& object_ids)
 {
   Glib::RefPtr<Builder> builder = Builder::create();
   if(builder->add_from_string(buffer, object_ids))
@@ -132,106 +135,56 @@ Glib::RefPtr<Builder> Builder::create_from_string(const Glib::ustring& buffer, c
     return Glib::RefPtr<Builder>();
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool Builder::add_from_file(const std::string& filename, const char* object_id)
-#else
-bool Builder::add_from_file(const std::string& filename, const char* object_id, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   std::list<Glib::ustring> object_ids;
   object_ids.push_back(object_id);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   return add_from_file(filename, object_ids);
-  #else
-  return add_from_file(filename, object_ids, error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool Builder::add_from_file(const std::string& filename, const Glib::ustring& object_id)
-#else
-bool Builder::add_from_file(const std::string& filename, const Glib::ustring& object_id, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   std::list<Glib::ustring> object_ids;
   object_ids.push_back(object_id);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   return add_from_file(filename, object_ids);
-  #else
-  return add_from_file(filename, object_ids, error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool Builder::add_from_string(const Glib::ustring& buffer)
-#else
-bool Builder::add_from_string(const Glib::ustring& buffer, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = gtk_builder_add_from_string(gobj(), buffer.c_str(), -1 /* means null-terminated */, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
 
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool Builder::add_from_string(const Glib::ustring& buffer, const char* object_id)
-#else
-bool Builder::add_from_string(const Glib::ustring& buffer, const char* object_id, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   std::list<Glib::ustring> object_ids;
   object_ids.push_back(object_id);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   return add_from_string(buffer, object_ids);
-  #else
-  return add_from_string(buffer, object_ids, error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool Builder::add_from_string(const Glib::ustring& buffer, const Glib::ustring& object_id)
-#else
-bool Builder::add_from_string(const Glib::ustring& buffer, const Glib::ustring& object_id, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   std::list<Glib::ustring> object_ids;
   object_ids.push_back(object_id);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   return add_from_string(buffer, object_ids);
-  #else
-  return add_from_string(buffer, object_ids, error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool Builder::add_from_string(const Glib::ustring& buffer, const Glib::StringArrayHandle& object_ids)
-#else
-bool Builder::add_from_string(const Glib::ustring& buffer, const Glib::StringArrayHandle& object_ids, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = gtk_builder_add_objects_from_string(gobj(), buffer.c_str(), -1 /* means null-terminated */, const_cast<char**>(object_ids.data()), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
@@ -260,6 +213,12 @@ Gtk::Widget* Builder::get_widget_checked(const Glib::ustring& name, GType type)
 {
   // Get the widget from the GtkBuilder file.
   GtkWidget *cobject = get_cwidget(name);
+  if(!cobject)
+  {
+    g_critical("gtkmm: Gtk::Buidler: widget `%s' was not found in the GtkBuilder file, or the specified part of it.", 
+      name.c_str());
+    return 0;
+  }
 
   // Check if it has the correct type.
   if(!g_type_is_a(G_OBJECT_TYPE(cobject), type))
@@ -296,18 +255,10 @@ Gtk::BuilderError::Code Gtk::BuilderError::code() const
   return static_cast<Code>(Glib::Error::code());
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void Gtk::BuilderError::throw_func(GError* gobject)
 {
   throw Gtk::BuilderError(gobject);
 }
-#else
-//When not using exceptions, we just pass the Exception object around without throwing it:
-std::auto_ptr<Glib::Error> Gtk::BuilderError::throw_func(GError* gobject)
-{
-  return std::auto_ptr<Glib::Error>(new Gtk::BuilderError(gobject));
-}
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 // static
 GType Glib::Value<Gtk::BuilderError::Code>::value_type()
@@ -355,24 +306,15 @@ const Glib::Class& Builder_Class::init()
   return *this;
 }
 
+
 void Builder_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
   klass->get_type_from_name = &get_type_from_name_vfunc_callback;
-  #endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+  
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Builder_Class::wrap_new(GObject* object)
@@ -401,6 +343,7 @@ Builder::Builder(GtkBuilder* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 Builder::~Builder()
 {}
 
@@ -411,6 +354,7 @@ GType Builder::get_type()
 {
   return builder_class_.init().get_type();
 }
+
 
 GType Builder::get_base_type()
 {
@@ -432,61 +376,35 @@ Glib::RefPtr<Builder> Builder::create()
 {
   return Glib::RefPtr<Builder>( new Builder() );
 }
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+
 bool Builder::add_from_file(const std::string& filename)
-#else
-bool Builder::add_from_file(const std::string& filename, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = gtk_builder_add_from_file(gobj(), filename.c_str(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool Builder::add_from_file(const std::string& filename, const Glib::StringArrayHandle& object_ids)
-#else
-bool Builder::add_from_file(const std::string& filename, const Glib::StringArrayHandle& object_ids, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = gtk_builder_add_objects_from_file(gobj(), filename.c_str(), const_cast<char**>((object_ids).data()), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool Builder::add_from_string(const char* buffer, gsize length)
-#else
-bool Builder::add_from_string(const char* buffer, gsize length, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   bool retvalue = gtk_builder_add_from_string(gobj(), buffer, length, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
@@ -513,11 +431,19 @@ Glib::ustring Builder::get_translation_domain() const
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<Glib::ustring> Builder::property_translation_domain() 
+{
+  return Glib::PropertyProxy<Glib::ustring>(this, "translation-domain");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<Glib::ustring> Builder::property_translation_domain() const
+{
+  return Glib::PropertyProxy_ReadOnly<Glib::ustring>(this, "translation-domain");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
 
 } // namespace Gtk

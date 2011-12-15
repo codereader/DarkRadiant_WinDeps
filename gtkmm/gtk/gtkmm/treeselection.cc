@@ -33,18 +33,14 @@ static void proxy_foreach_selection_iter_callback(GtkTreeModel* model, GtkTreePa
   typedef Gtk::TreeSelection::SlotForeachIter SlotType;
   SlotType& slot = *static_cast<SlotType*>(data);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     slot(Gtk::TreeModel::iterator(model, iter));
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
 static void proxy_foreach_selection_path_callback(GtkTreeModel*, GtkTreePath* path, GtkTreeIter*, void* data)
@@ -52,18 +48,14 @@ static void proxy_foreach_selection_path_callback(GtkTreeModel*, GtkTreePath* pa
   typedef Gtk::TreeSelection::SlotForeachPath SlotType;
   SlotType& slot = *static_cast<SlotType*>(data);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     slot(Gtk::TreeModel::Path(path, true));
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
 static void proxy_foreach_selection_path_and_iter_callback(GtkTreeModel* model, GtkTreePath* path,
@@ -72,18 +64,14 @@ static void proxy_foreach_selection_path_and_iter_callback(GtkTreeModel* model, 
   typedef Gtk::TreeSelection::SlotForeachPathAndIter SlotType;
   SlotType& slot = *static_cast<SlotType*>(data);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     slot(Gtk::TreeModel::Path(path, true), Gtk::TreeModel::iterator(model, iter));
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
 
@@ -92,14 +80,11 @@ static gboolean SignalProxy_Select_gtk_callback(GtkTreeSelection*, GtkTreeModel*
 {
   const Gtk::TreeSelection::SlotSelect* the_slot = static_cast<Gtk::TreeSelection::SlotSelect*>(data);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     return (*the_slot)(Glib::wrap(model, true),   // take copy
                          Gtk::TreePath(path, true), // take copy
                          path_currently_selected);
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
@@ -107,7 +92,6 @@ static gboolean SignalProxy_Select_gtk_callback(GtkTreeSelection*, GtkTreeModel*
   }
 
   return 0;
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
 static void SignalProxy_Select_gtk_callback_destroy(void* data)
@@ -259,23 +243,17 @@ const Glib::Class& TreeSelection_Class::init()
   return *this;
 }
 
+
 void TreeSelection_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->changed = &changed_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void TreeSelection_Class::changed_callback(GtkTreeSelection* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -307,7 +285,7 @@ void TreeSelection_Class::changed_callback(GtkTreeSelection* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -316,7 +294,6 @@ void TreeSelection_Class::changed_callback(GtkTreeSelection* self)
   if(base && base->changed)
     (*base->changed)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* TreeSelection_Class::wrap_new(GObject* object)
@@ -345,6 +322,7 @@ TreeSelection::TreeSelection(GtkTreeSelection* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 TreeSelection::~TreeSelection()
 {}
 
@@ -355,6 +333,7 @@ GType TreeSelection::get_type()
 {
   return treeselection_class_.init().get_type();
 }
+
 
 GType TreeSelection::get_base_type()
 {
@@ -449,7 +428,6 @@ Glib::SignalProxy0< void > TreeSelection::signal_changed()
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::TreeSelection::on_changed()
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -459,10 +437,6 @@ void Gtk::TreeSelection::on_changed()
   if(base && base->changed)
     (*base->changed)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

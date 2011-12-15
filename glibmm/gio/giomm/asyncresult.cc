@@ -26,6 +26,29 @@
 //#include <gio/gasyncresult.h> //We are not allowed to include individual headers.
 #include <gio/gio.h>
 
+namespace Gio
+{
+
+static GObject* unwrap_objectbase_custom(const Glib::RefPtr<Glib::ObjectBase>& cpp_instance)
+{
+  return (cpp_instance ? cpp_instance->gobj() : 0);
+}
+
+Glib::RefPtr<Glib::ObjectBase> AsyncResult::get_source_object_base()
+{
+  GObject* cobj = g_async_result_get_source_object(gobj());
+  ObjectBase* cppobj = Glib::wrap_auto(cobj); //ObjectBase::_get_current_wrapper(cobj);
+  return Glib::RefPtr<Glib::ObjectBase>(cppobj); //g_async_result_get_source_object() gives us a ref, unusually.
+  //TODO: For some reason this fails: Glib::wrap(cobj);
+}
+
+Glib::RefPtr<const Glib::ObjectBase> AsyncResult::get_source_object_base() const
+{
+  return const_cast<AsyncResult*>(this)->get_source_object_base();
+}
+
+} //namespace Gio
+
 namespace
 {
 } // anonymous namespace
@@ -72,15 +95,10 @@ void AsyncResult_Class::iface_init_function(void* g_iface, void*)
   //This is a temporary fix until I find out why I can not seem to derive a GtkFileChooser interface. murrayc
   g_assert(klass != 0); 
 
-#ifdef GLIBMM_VFUNCS_ENABLED
   klass->get_source_object = &get_source_object_vfunc_callback;
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
 GObject* AsyncResult_Class::get_source_object_vfunc_callback(GAsyncResult* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -101,7 +119,7 @@ GObject* AsyncResult_Class::get_source_object_vfunc_callback(GAsyncResult* self)
       {
       #endif //GLIBMM_EXCEPTIONS_ENABLED
         // Call the virtual member method, which derived classes might override.
-        return Glib::unwrap(obj->get_source_object_vfunc());
+        return unwrap_objectbase_custom(obj->get_source_object_vfunc());
       #ifdef GLIBMM_EXCEPTIONS_ENABLED
       }
       catch(...)
@@ -111,7 +129,7 @@ GObject* AsyncResult_Class::get_source_object_vfunc_callback(GAsyncResult* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -125,10 +143,6 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Ge
   typedef GObject* RType;
   return RType();
 }
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* AsyncResult_Class::wrap_new(GObject* object)
@@ -177,22 +191,26 @@ GType AsyncResult::get_base_type()
 }
 
 
+#ifndef GIOMM_DISABLE_DEPRECATED
+
 Glib::RefPtr<Glib::Object> AsyncResult::get_source_object()
 {
   return Glib::wrap(g_async_result_get_source_object(gobj()));
 }
+
+#endif // GIOMM_DISABLE_DEPRECATED
+
+#ifndef GIOMM_DISABLE_DEPRECATED
 
 Glib::RefPtr<const Glib::Object> AsyncResult::get_source_object() const
 {
   return const_cast<AsyncResult*>(this)->get_source_object();
 }
 
+#endif // GIOMM_DISABLE_DEPRECATED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-Glib::RefPtr<Glib::Object> Gio::AsyncResult::get_source_object_vfunc() 
+Glib::RefPtr<Glib::ObjectBase> Gio::AsyncResult::get_source_object_vfunc() 
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
@@ -202,10 +220,9 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(gobject_), CppObjectType::get_type()) /
   if(base && base->get_source_object)
     return Glib::wrap((*base->get_source_object)(gobj()));
 
-  typedef Glib::RefPtr<Glib::Object> RType;
+  typedef Glib::RefPtr<Glib::ObjectBase> RType;
   return RType();
 }
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gio

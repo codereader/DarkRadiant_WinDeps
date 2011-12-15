@@ -29,157 +29,85 @@
 namespace Gio
 {
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 guchar DataInputStream::read_byte()
-#else
-guchar DataInputStream::read_byte(std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
-  guchar retvalue = g_data_input_stream_read_byte(gobj(), NULL, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  const guchar retvalue = g_data_input_stream_read_byte(gobj(), 0, &(gerror));
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 gint16 DataInputStream::read_int16()
-#else
-gint16 DataInputStream::read_int16(std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
-  gint16 retvalue = g_data_input_stream_read_int16(gobj(), NULL, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  const gint16 retvalue = g_data_input_stream_read_int16(gobj(), 0, &(gerror));
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 guint16 DataInputStream::read_uint16()
-#else
-guint16 DataInputStream::read_uint16(std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
-  guint16 retvalue = g_data_input_stream_read_uint16(gobj(), NULL, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  const guint16 retvalue = g_data_input_stream_read_uint16(gobj(), 0, &(gerror));
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 gint32 DataInputStream::read_int32()
-#else
-gint32 DataInputStream::read_int32(std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
-  gint32 retvalue = g_data_input_stream_read_int32(gobj(), NULL, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  const gint32 retvalue = g_data_input_stream_read_int32(gobj(), 0, &(gerror));
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 guint32 DataInputStream::read_uint32()
-#else
-guint32 DataInputStream::read_uint32(std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
-  guint32 retvalue = g_data_input_stream_read_uint32(gobj(), NULL, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  const guint32 retvalue = g_data_input_stream_read_uint32(gobj(), 0, &(gerror));
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 gint64 DataInputStream::read_int64()
-#else
-gint64 DataInputStream::read_int64(std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
-  gint64 retvalue = g_data_input_stream_read_int64(gobj(), NULL, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  const gint64 retvalue = g_data_input_stream_read_int64(gobj(), 0, &(gerror));
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 guint64 DataInputStream::read_uint64()
-#else
-guint64 DataInputStream::read_uint64(std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
-  guint64 retvalue = g_data_input_stream_read_uint64(gobj(), NULL, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  const guint64 retvalue = g_data_input_stream_read_uint64(gobj(), 0, &(gerror));
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool DataInputStream::read_line(std::string& line, const Glib::RefPtr<Cancellable>& cancellable)
-#else
-bool DataInputStream::read_line(std::string& line, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   char* c_line = g_data_input_stream_read_line(gobj(),
-                                               NULL, // pass NULL since we can easily determine the length from the returned std::string
-                                               cancellable->gobj(),
+                                               0, // pass NULL since we can easily determine the length from the returned std::string
+                                               Glib::unwrap(cancellable),
                                                &gerror);
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
     if (c_line) {
         line = c_line;
         g_free (c_line);
@@ -189,24 +117,15 @@ bool DataInputStream::read_line(std::string& line, const Glib::RefPtr<Cancellabl
     return false;
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool DataInputStream::read_line(std::string& line)
-#else
-bool DataInputStream::read_line(std::string& line, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   char* c_line = g_data_input_stream_read_line(gobj(),
-                                               NULL, // pass NULL since we can easily determine the length from the returned std::string
-                                               NULL,
+                                               0, // pass NULL since we can easily determine the length from the returned std::string
+                                               0,
                                                &gerror);
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
     if (c_line) {
         line = c_line;
         g_free(c_line);
@@ -225,27 +144,18 @@ void DataInputStream::read_line_async(const SlotAsyncReady& slot, const Glib::Re
 
   g_data_input_stream_read_line_async(gobj(),
                             io_priority,
-                            cancellable->gobj(),
+                            Glib::unwrap(cancellable),
                             &SignalProxy_async_callback,
                             slot_copy);
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool DataInputStream::read_line_finish(const Glib::RefPtr<AsyncResult>& result, std::string& data)
-#else
-bool DataInputStream::read_line_finish(const Glib::RefPtr<AsyncResult>& result, std::string& data, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   gsize size = 0;
   gchar* buffer = g_data_input_stream_read_line_finish(gobj(), Glib::unwrap(result), &size, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   bool retval = false;
   if(buffer && size)
@@ -254,29 +164,20 @@ bool DataInputStream::read_line_finish(const Glib::RefPtr<AsyncResult>& result, 
     data = std::string(buffer, size);
     g_free (buffer);
   }
-  
+
   return retval;
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool DataInputStream::read_until(std::string& data, const std::string& stop_chars, const Glib::RefPtr<Cancellable>& cancellable)
-#else
-bool DataInputStream::read_until(std::string& data, const std::string& stop_chars, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   char* c_str = g_data_input_stream_read_until(gobj(),
                                                stop_chars.c_str(),
-                                               NULL, // pass NULL since we can easily determine the length from the returned std::string
-                                               cancellable->gobj(),
+                                               0, // pass NULL since we can easily determine the length from the returned std::string
+                                               Glib::unwrap(cancellable),
                                                &gerror);
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
     if (c_str) {
         data = c_str;
         g_free (c_str);
@@ -288,25 +189,16 @@ bool DataInputStream::read_until(std::string& data, const std::string& stop_char
 
 /** non-cancellable version of read_until()
  */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool DataInputStream::read_until(std::string& data, const std::string& stop_chars)
-#else
-bool DataInputStream::read_until(std::string& data, const std::string& stop_chars, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   char* c_str = g_data_input_stream_read_until(gobj(),
                                                stop_chars.c_str(),
-                                               NULL, // pass NULL since we can easily determine the length from the returned std::string
-                                               NULL,
+                                               0, // pass NULL since we can easily determine the length from the returned std::string
+                                               0,
                                                &gerror);
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
     if (c_str) {
         data = c_str;
         g_free (c_str);
@@ -323,29 +215,20 @@ void DataInputStream::read_until_async(const std::string& stop_chars, const Slot
   // and deleted in the callback.
   SlotAsyncReady* slot_copy = new SlotAsyncReady(slot);
 
-  g_data_input_stream_read_until_async(gobj(), stop_chars.c_str(), 
+  g_data_input_stream_read_until_async(gobj(), stop_chars.c_str(),
                             io_priority,
-                            cancellable->gobj(),
+                            Glib::unwrap(cancellable),
                             &SignalProxy_async_callback,
                             slot_copy);
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 bool DataInputStream::read_until_finish(const Glib::RefPtr<AsyncResult>& result, std::string& data)
-#else
-bool DataInputStream::read_until_finish(const Glib::RefPtr<AsyncResult>& result, std::string& data, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   gsize size = 0;
   gchar* buffer = g_data_input_stream_read_until_finish(gobj(), Glib::unwrap(result), &size, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   bool retval = false;
   if(buffer && size)
@@ -354,11 +237,88 @@ bool DataInputStream::read_until_finish(const Glib::RefPtr<AsyncResult>& result,
     data = std::string(buffer, size);
     g_free (buffer);
   }
-  
+
   return retval;
 }
 
-  
+
+bool DataInputStream::read_upto(std::string& data, const std::string& stop_chars, const Glib::RefPtr<Cancellable>& cancellable)
+{
+  GError* gerror = 0;
+  char* c_str = g_data_input_stream_read_upto(gobj(),
+                                               stop_chars.c_str(), -1, /* null-terminated */
+                                               0, // pass NULL since we can easily determine the length from the returned std::string
+                                               Glib::unwrap(cancellable),
+                                               &gerror);
+  if(gerror)
+    ::Glib::Error::throw_exception(gerror);
+    if (c_str) {
+        data = c_str;
+        g_free (c_str);
+        return true;
+    }
+    // end of stream reached, return failure status
+    return false;
+}
+
+/** non-cancellable version of read_upto()
+ */
+bool DataInputStream::read_upto(std::string& data, const std::string& stop_chars)
+{
+  GError* gerror = 0;
+  char* c_str = g_data_input_stream_read_upto(gobj(),
+    stop_chars.c_str(), -1, /* null-terminated */
+    0, // pass NULL since we can easily determine the length from the returned std::string
+    0,
+    &gerror);
+
+  if(gerror)
+    ::Glib::Error::throw_exception(gerror);
+
+  if (c_str) {
+      data = c_str;
+      g_free (c_str);
+      return true;
+  }
+
+  // end of stream reached, return failure status
+  return false;
+}
+
+void DataInputStream::read_upto_async(const std::string& stop_chars, const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, int io_priority)
+{
+  // Create a copy of the slot.
+  // A pointer to it will be passed through the callback's data parameter
+  // and deleted in the callback.
+  SlotAsyncReady* slot_copy = new SlotAsyncReady(slot);
+
+  g_data_input_stream_read_upto_async(gobj(), stop_chars.c_str(), -1, /* null-terminated */
+                            io_priority,
+                            Glib::unwrap(cancellable),
+                            &SignalProxy_async_callback,
+                            slot_copy);
+}
+
+bool DataInputStream::read_upto_finish(const Glib::RefPtr<AsyncResult>& result, std::string& data)
+{
+  GError* gerror = 0;
+  gsize size = 0;
+  gchar* buffer = g_data_input_stream_read_upto_finish(gobj(), Glib::unwrap(result), &size, &(gerror));
+  if(gerror)
+    ::Glib::Error::throw_exception(gerror);
+
+  bool retval = false;
+  if(buffer && size)
+  {
+    retval = (buffer != 0);
+    data = std::string(buffer, size);
+    g_free (buffer);
+  }
+
+  return retval;
+}
+
+
 } // namespace Gio
 
 namespace
@@ -411,18 +371,8 @@ void DataInputStream_Class::class_init_function(void* g_class, void* class_data)
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* DataInputStream_Class::wrap_new(GObject* object)
@@ -484,6 +434,7 @@ Glib::RefPtr<DataInputStream> DataInputStream::create(const Glib::RefPtr<InputSt
 {
   return Glib::RefPtr<DataInputStream>( new DataInputStream(base_stream) );
 }
+
 void DataInputStream::set_byte_order(DataStreamByteOrder order)
 {
 g_data_input_stream_set_byte_order(gobj(), ((GDataStreamByteOrder)(order))); 
@@ -504,141 +455,78 @@ DataStreamNewlineType DataInputStream::get_newline_type() const
   return ((DataStreamNewlineType)(g_data_input_stream_get_newline_type(const_cast<GDataInputStream*>(gobj()))));
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 guchar DataInputStream::read_byte(const Glib::RefPtr<Cancellable>& cancellable)
-#else
-guchar DataInputStream::read_byte(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   guchar retvalue = g_data_input_stream_read_byte(gobj(), const_cast<GCancellable*>(Glib::unwrap(cancellable)), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 gint16 DataInputStream::read_int16(const Glib::RefPtr<Cancellable>& cancellable)
-#else
-gint16 DataInputStream::read_int16(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   gint16 retvalue = g_data_input_stream_read_int16(gobj(), const_cast<GCancellable*>(Glib::unwrap(cancellable)), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 guint16 DataInputStream::read_uint16(const Glib::RefPtr<Cancellable>& cancellable)
-#else
-guint16 DataInputStream::read_uint16(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   guint16 retvalue = g_data_input_stream_read_uint16(gobj(), const_cast<GCancellable*>(Glib::unwrap(cancellable)), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 gint32 DataInputStream::read_int32(const Glib::RefPtr<Cancellable>& cancellable)
-#else
-gint32 DataInputStream::read_int32(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   gint32 retvalue = g_data_input_stream_read_int32(gobj(), const_cast<GCancellable*>(Glib::unwrap(cancellable)), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 guint32 DataInputStream::read_uint32(const Glib::RefPtr<Cancellable>& cancellable)
-#else
-guint32 DataInputStream::read_uint32(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   guint32 retvalue = g_data_input_stream_read_uint32(gobj(), const_cast<GCancellable*>(Glib::unwrap(cancellable)), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 gint64 DataInputStream::read_int64(const Glib::RefPtr<Cancellable>& cancellable)
-#else
-gint64 DataInputStream::read_int64(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   gint64 retvalue = g_data_input_stream_read_int64(gobj(), const_cast<GCancellable*>(Glib::unwrap(cancellable)), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 guint64 DataInputStream::read_uint64(const Glib::RefPtr<Cancellable>& cancellable)
-#else
-guint64 DataInputStream::read_uint64(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   guint64 retvalue = g_data_input_stream_read_uint64(gobj(), const_cast<GCancellable*>(Glib::unwrap(cancellable)), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
@@ -672,13 +560,6 @@ Glib::PropertyProxy_ReadOnly<DataStreamNewlineType> DataInputStream::property_ne
   return Glib::PropertyProxy_ReadOnly<DataStreamNewlineType>(this, "newline-type");
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gio

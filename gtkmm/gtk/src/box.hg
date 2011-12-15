@@ -20,15 +20,49 @@
 _DEFS(gtkmm,gtk)
 _PINCLUDE(gtkmm/private/container_p.h)
 
-#include <gtkmm/container.h>
-#include <glibmm/helperlist.h>
+#m4 _PUSH(SECTION_CC_PRE_INCLUDES)
+//Allow us to use the ->children struct field.
+//TODO: We probably need to remove the entire STL-style children() API in a future ABI break.
+#undef GSEAL_ENABLE
+#m4 _POP()
+
+// Temporarily undef GTK_DISABLE_DEPRECATED, redefining it later if appropriate.
+// We need this to use _GtkBoxChild, which we use in our (deprecated) API.
+#if defined(GTK_DISABLE_DEPRECATED) && !defined(GTKMM_GTK_DISABLE_DEPRECATED_UNDEFED)
+#undef GTK_DISABLE_DEPRECATED
+#define GTKMM_GTK_DISABLE_DEPRECATED_UNDEFED 1
+#endif
+
+// This is needed for gdkregion.h, for GdkSpanFunc, which we indirectly include.
+// Otherwise application code must be very careful of the include order.
+#if defined(GDK_DISABLE_DEPRECATED) && !defined(GTKMM_GDK_DISABLE_DEPRECATED_UNDEFED)
+#undef GDK_DISABLE_DEPRECATED
+#define GTKMM_GDK_DISABLE_DEPRECATED_UNDEFED 1
+#endif
+
 #include <gtk/gtk.h>  /* For _GtkBoxChild */
 
+// Redefine GTK_DISABLE_DEPRECATED if it was defined before we temporarily undefed it:
+#if defined(GTKMM_GTK_DISABLE_DEPRECATED_UNDEFED)
+#define GTK_DISABLE_DEPRECATED 1
+#undef GTKMM_GTK_DISABLE_DEPRECATED_UNDEFED
+#endif
+
+// Redefine GDK_DISABLE_DEPRECATED if it was defined before we temporarily undefed it:
+#if defined(GTKMM_GDK_DISABLE_DEPRECATED_UNDEFED)
+#define GDK_DISABLE_DEPRECATED 1
+#undef GTKMM_GDK_DISABLE_DEPRECATED_UNDEFED
+#endif
+
+
+
+#include <gtkmm/container.h>
+#include <glibmm/helperlist.h>
 
 namespace Gtk
 {
 
-/** Packing options for adding child widgets to a Box with pack_start() and pack_end(). 
+/** Packing options for adding child widgets to a Box with pack_start() and pack_end().
  * @ingroup gtkmmEnums
  */
 enum PackOptions
@@ -70,7 +104,7 @@ public:
 
 protected:
   inline GtkBox* parent()
-    { return (GtkBox*) (gobj()->widget->parent); }
+    { return (GtkBox*) (gtk_widget_get_parent(gobj()->widget)); }
 
   void redraw();
 
@@ -111,7 +145,7 @@ struct EndElem : public Element
   GP_LIST(BoxList,Box,GtkBox,Child,children)
   //The standard iterator, instead of List_Cpp_Iterator,
   //only works because Child is derived from _GtkBoxChild.
-  
+
   GP_LIST_FIND(get_widget)
   GP_LIST_CONTAINER_REMOVE(get_widget)
         // Non-standard
@@ -232,7 +266,7 @@ public:
    * @param spacing Determines the space in pixels between child widgets.
    */
   _WRAP_CTOR(VBox(bool homogeneous = false, int spacing = 0), gtk_vbox_new)
-  
+
 };
 
 /** Horizontal Box for laying widgets in a horizontal row.
@@ -266,4 +300,3 @@ public:
 };
 
 } // namespace Gtk
-

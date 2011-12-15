@@ -1,5 +1,5 @@
 // -*- c++ -*-
-/* $Id: comboboxtext.cc 1082 2009-01-19 17:55:19Z murrayc $ */
+/* $Id$ */
 
 /* 
  *
@@ -20,6 +20,10 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+
+//Allow us to use deprecated GTK+ API.
+#undef GTK_DISABLE_DEPRECATED
+
 #include <gtkmm/comboboxtext.h>
 
 #include <gtkmm/liststore.h>
@@ -35,15 +39,27 @@ ComboBoxText::ComboBoxText()
   pack_start(m_text_columns.m_column);
 }
 
+ComboBoxText::ComboBoxText(bool has_entry)
+: ComboBox(has_entry)
+{
+  set_model( Gtk::ListStore::create(m_text_columns) );
+  if (has_entry)
+    set_entry_text_column(m_text_columns.m_column);
+  else
+    pack_start(m_text_columns.m_column);
+}
+
 ComboBoxText::ComboBoxText(GtkComboBox* castitem)
 : Gtk::ComboBox(castitem)
 {
   set_model( Gtk::ListStore::create(m_text_columns) );
-  pack_start(m_text_columns.m_column);
+  if (gtk_combo_box_get_has_entry(castitem))
+    set_entry_text_column(m_text_columns.m_column);
+  else
+    pack_start(m_text_columns.m_column);
 }
 
-
-void ComboBoxText::append_text(const Glib::ustring& text)
+void ComboBoxText::append(const Glib::ustring& text)
 {
   //We can not use gtk_combo_box_append_text() here, because that can only be used if gtk_combo_box_new_text() has been used.
 
@@ -59,13 +75,30 @@ void ComboBoxText::append_text(const Glib::ustring& text)
   }
 }
 
+#ifndef GTKMM_DISABLE_DEPRECATED
+void ComboBoxText::append_text(const Glib::ustring& text)
+{
+  append(text);
+}
+
+void ComboBoxText::prepend_text(const Glib::ustring& text)
+{
+  prepend(text);
+}
+
 void ComboBoxText::insert_text(int position, const Glib::ustring& text)
+{
+  insert(position, text);
+}
+#endif //GTKMM_DISABLE_DEPRECATED
+
+void ComboBoxText::insert(int position, const Glib::ustring& text)
 {
   //TODO: We should not use gtk_combo_box_insert_text() here, because that can only be used if gtk_combo_box_new_text() has been used.
   gtk_combo_box_insert_text(gobj(), position, text.c_str());
 }
 
-void ComboBoxText::prepend_text(const Glib::ustring& text)
+void ComboBoxText::prepend(const Glib::ustring& text)
 {
   //We can not use gtk_combo_box_prepend_text() here, because that can only be used if gtk_combo_box_new_text() has been used.
 
@@ -98,13 +131,20 @@ Glib::ustring ComboBoxText::get_active_text() const
   return result;
 }
 
+#ifndef GTKMM_DISABLE_DEPRECATED
 //deprecated.
 void ComboBoxText::clear()
 {
-  clear_items();
+  remove_all();
 }
 
 void ComboBoxText::clear_items()
+{
+  remove_all();
+}
+#endif //GTKMM_DISABLE_DEPRECATED
+
+void ComboBoxText::remove_all()
 {
   //Ideally, we would just store the ListStore as a member variable, but we forgot to do that and not it would break the ABI.
   Glib::RefPtr<Gtk::TreeModel> model = get_model();
@@ -113,6 +153,7 @@ void ComboBoxText::clear_items()
   if(list_model)  
     list_model->clear();
 }
+
 
 void ComboBoxText::remove_text(const Glib::ustring& text)
 {

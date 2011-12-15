@@ -16,6 +16,18 @@
 ;; Enumerations and flags ...
 
 (define-flags Flags
+  (in-module "GBinding")
+  (c-name "GBindingFlags")
+  (gtype-id "G_TYPE_BINDING_FLAGS")
+  (values
+    '("default" "G_BINDING_DEFAULT")
+    '("bidirectional" "G_BINDING_BIDIRECTIONAL")
+    '("sync-create" "G_BINDING_SYNC_CREATE")
+    '("invert-boolean" "G_BINDING_INVERT_BOOLEAN")
+  )
+)
+
+(define-flags Flags
   (in-module "GParam")
   (c-name "GParamFlags")
   (gtype-id "G_TYPE_PARAM_FLAGS")
@@ -29,6 +41,7 @@
     '("private" "G_PARAM_PRIVATE")
     '("static-nick" "G_PARAM_STATIC_NICK")
     '("static-blurb" "G_PARAM_STATIC_BLURB")
+    '("deprecated" "G_PARAM_DEPRECATED")
   )
 )
 
@@ -104,6 +117,92 @@
     '("value-abstract" "G_TYPE_FLAG_VALUE_ABSTRACT")
   )
 )
+
+
+;; From gbinding.h
+
+(define-function g_binding_flags_get_type
+  (c-name "g_binding_flags_get_type")
+  (return-type "GType")
+)
+
+(define-function g_binding_get_type
+  (c-name "g_binding_get_type")
+  (return-type "GType")
+)
+
+(define-method get_flags
+  (of-object "GBinding")
+  (c-name "g_binding_get_flags")
+  (return-type "GBindingFlags")
+)
+
+(define-method get_source
+  (of-object "GBinding")
+  (c-name "g_binding_get_source")
+  (return-type "GObject*")
+)
+
+(define-method get_target
+  (of-object "GBinding")
+  (c-name "g_binding_get_target")
+  (return-type "GObject*")
+)
+
+(define-method get_source_property
+  (of-object "GBinding")
+  (c-name "g_binding_get_source_property")
+  (return-type "const-gchar*")
+)
+
+(define-method get_target_property
+  (of-object "GBinding")
+  (c-name "g_binding_get_target_property")
+  (return-type "const-gchar*")
+)
+
+(define-function g_object_bind_property
+  (c-name "g_object_bind_property")
+  (return-type "GBinding*")
+  (parameters
+    '("gpointer" "source")
+    '("const-gchar*" "source_property")
+    '("gpointer" "target")
+    '("const-gchar*" "target_property")
+    '("GBindingFlags" "flags")
+  )
+)
+
+(define-function g_object_bind_property_full
+  (c-name "g_object_bind_property_full")
+  (return-type "GBinding*")
+  (parameters
+    '("gpointer" "source")
+    '("const-gchar*" "source_property")
+    '("gpointer" "target")
+    '("const-gchar*" "target_property")
+    '("GBindingFlags" "flags")
+    '("GBindingTransformFunc" "transform_to")
+    '("GBindingTransformFunc" "transform_from")
+    '("gpointer" "user_data")
+    '("GDestroyNotify" "notify")
+  )
+)
+
+(define-function g_object_bind_property_with_closures
+  (c-name "g_object_bind_property_with_closures")
+  (return-type "GBinding*")
+  (parameters
+    '("gpointer" "source")
+    '("const-gchar*" "source_property")
+    '("gpointer" "target")
+    '("const-gchar*" "target_property")
+    '("GBindingFlags" "flags")
+    '("GClosure*" "transform_to")
+    '("GClosure*" "transform_from")
+  )
+)
+
 
 
 ;; From gboxed.h
@@ -219,8 +318,43 @@
   (return-type "GType")
 )
 
+(define-function g_array_get_type
+  (c-name "g_array_get_type")
+  (return-type "GType")
+)
+
+(define-function g_byte_array_get_type
+  (c-name "g_byte_array_get_type")
+  (return-type "GType")
+)
+
+(define-function g_ptr_array_get_type
+  (c-name "g_ptr_array_get_type")
+  (return-type "GType")
+)
+
+(define-function g_variant_type_get_gtype
+  (c-name "g_variant_type_get_gtype")
+  (return-type "GType")
+)
+
 (define-function g_regex_get_type
   (c-name "g_regex_get_type")
+  (return-type "GType")
+)
+
+(define-function g_error_get_type
+  (c-name "g_error_get_type")
+  (return-type "GType")
+)
+
+(define-function g_date_time_get_type
+  (c-name "g_date_time_get_type")
+  (return-type "GType")
+)
+
+(define-function g_variant_get_gtype
+  (c-name "g_variant_get_gtype")
   (return-type "GType")
 )
 
@@ -552,6 +686,16 @@
   )
 )
 
+(define-method install_properties
+  (of-object "GObjectClass")
+  (c-name "g_object_class_install_properties")
+  (return-type "none")
+  (parameters
+    '("guint" "n_pspecs")
+    '("GParamSpec**" "pspecs")
+  )
+)
+
 (define-function g_object_interface_install_property
   (c-name "g_object_interface_install_property")
   (return-type "none")
@@ -706,6 +850,15 @@
   (return-type "none")
   (parameters
     '("const-gchar*" "property_name")
+  )
+)
+
+(define-method notify_by_pspec
+  (of-object "GObject")
+  (c-name "g_object_notify_by_pspec")
+  (return-type "none")
+  (parameters
+    '("GParamSpec*" "pspec")
   )
 )
 
@@ -988,6 +1141,14 @@
   (parameters
     '("gsize" "what")
     '("gpointer" "data")
+  )
+)
+
+(define-function g_clear_object
+  (c-name "g_clear_object")
+  (return-type "none")
+  (parameters
+    '("volatile-GObject**" "object_ptr")
   )
 )
 
@@ -1534,6 +1695,19 @@
   )
 )
 
+(define-function g_param_spec_variant
+  (c-name "g_param_spec_variant")
+  (return-type "GParamSpec*")
+  (parameters
+    '("const-gchar*" "name")
+    '("const-gchar*" "nick")
+    '("const-gchar*" "blurb")
+    '("const-GVariantType*" "type")
+    '("GVariant*" "default_value")
+    '("GParamFlags" "flags")
+  )
+)
+
 
 
 ;; From gsignal.h
@@ -1932,6 +2106,17 @@
   )
 )
 
+(define-function g_signal_accumulator_first_wins
+  (c-name "g_signal_accumulator_first_wins")
+  (return-type "gboolean")
+  (parameters
+    '("GSignalInvocationHint*" "ihint")
+    '("GValue*" "return_accu")
+    '("const-GValue*" "handler_return")
+    '("gpointer" "dummy")
+  )
+)
+
 (define-function g_signal_handlers_destroy
   (c-name "g_signal_handlers_destroy")
   (return-type "none")
@@ -2245,6 +2430,24 @@
 (define-method get_private
   (of-object "GTypeInstance")
   (c-name "g_type_instance_get_private")
+  (return-type "gpointer")
+  (parameters
+    '("GType" "private_type")
+  )
+)
+
+(define-method add_class_private
+  (of-object "GType")
+  (c-name "g_type_add_class_private")
+  (return-type "none")
+  (parameters
+    '("gsize" "private_size")
+  )
+)
+
+(define-method get_private
+  (of-object "GTypeClass")
+  (c-name "g_type_class_get_private")
   (return-type "gpointer")
   (parameters
     '("GType" "private_type")
@@ -2967,6 +3170,36 @@
   (of-object "GValue")
   (c-name "g_value_get_gtype")
   (return-type "GType")
+)
+
+(define-method set_variant
+  (of-object "GValue")
+  (c-name "g_value_set_variant")
+  (return-type "none")
+  (parameters
+    '("GVariant*" "variant")
+  )
+)
+
+(define-method take_variant
+  (of-object "GValue")
+  (c-name "g_value_take_variant")
+  (return-type "none")
+  (parameters
+    '("GVariant*" "variant")
+  )
+)
+
+(define-method get_variant
+  (of-object "GValue")
+  (c-name "g_value_get_variant")
+  (return-type "GVariant*")
+)
+
+(define-method dup_variant
+  (of-object "GValue")
+  (c-name "g_value_dup_variant")
+  (return-type "GVariant*")
 )
 
 (define-function g_pointer_type_register_static

@@ -101,7 +101,7 @@ DirIterator::DirIterator(GDir* gobject, const char* current)
 
 std::string DirIterator::operator*() const
 {
-  return (current_) ? std::string(current_) : std::string();
+  return convert_const_gchar_ptr_to_stdstring(current_);
 }
 
 DirIterator& DirIterator::operator++()
@@ -185,8 +185,26 @@ std::string file_get_contents(const std::string& filename)
   return std::string(contents.get(), length);
 }
 
-} // namespace Glib
+void
+file_set_contents(const std::string& filename,
+                  const gchar *contents,
+                  gssize length)
+{
+  GError* error  = 0;
 
+  g_file_set_contents(filename.c_str(), contents, length, &error);
+
+  if(error)
+    Glib::Error::throw_exception(error);
+}
+
+void
+file_set_contents (const std::string& filename, const std::string& contents)
+{
+    file_set_contents(filename, contents.c_str(), contents.size());
+}
+
+} // namespace Glib
 
 namespace
 {
@@ -208,17 +226,9 @@ Glib::FileError::Code Glib::FileError::code() const
   return static_cast<Code>(Glib::Error::code());
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void Glib::FileError::throw_func(GError* gobject)
 {
   throw Glib::FileError(gobject);
 }
-#else
-//When not using exceptions, we just pass the Exception object around without throwing it:
-std::auto_ptr<Glib::Error> Glib::FileError::throw_func(GError* gobject)
-{
-  return std::auto_ptr<Glib::Error>(new Glib::FileError(gobject));
-}
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 

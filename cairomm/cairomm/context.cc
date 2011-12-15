@@ -16,6 +16,11 @@
  * 02110-1301, USA.
  */
 
+/* M_PI is defined in math.h in the case of Microsoft Visual C++ */
+#if defined(_MSC_VER)
+#define _USE_MATH_DEFINES
+#endif 
+
 #include <cairommconfig.h>
 #include <cairomm/context.h>
 #include <cairomm/context_private.h>
@@ -26,8 +31,7 @@
 /* M_PI is defined in math.h in the case of Microsoft Visual C++ */
 #if defined(_MSC_VER)
 #define _USE_MATH_DEFINES
-#include <math.h>
-#endif 
+#endif
 
 /* Solaris et. al. need math.h for M_PI too */
 #include <cmath>
@@ -156,11 +160,29 @@ void Context::set_line_join(LineJoin line_join)
 
 void Context::set_dash(std::valarray<double>& dashes, double offset)
 {
+  std::vector<double> v(dashes.size());
+  for(size_t i = 0; i < dashes.size(); ++i)
+    v[i] = dashes[i];
+
+  set_dash(v, offset);
+}
+
+void Context::set_dash(std::vector<double>& dashes, double offset)
+{
   cairo_set_dash(cobj(), &dashes[0], dashes.size(), offset);
   check_object_status_and_throw_exception(*this);
 }
 
-void Context::set_dash(std::vector<double>& dashes, double offset)
+void Context::set_dash(const std::valarray<double>& dashes, double offset)
+{
+  std::vector<double> v(dashes.size());
+  for(size_t i = 0; i < dashes.size(); ++i)
+    v[i] = dashes[i];
+
+  set_dash(v, offset);
+}
+
+void Context::set_dash(const std::vector<double>& dashes, double offset)
 {
   cairo_set_dash(cobj(), &dashes[0], dashes.size(), offset);
   check_object_status_and_throw_exception(*this);
@@ -232,27 +254,55 @@ void Context::set_identity_matrix()
   check_object_status_and_throw_exception(*this);
 }
 
+//deprecated:
 void Context::user_to_device(double& x, double& y)
 {
-  cairo_user_to_device(cobj(), &x, &y);
+  const Context* constThis = this;
+  constThis->user_to_device(x, y);
+}
+
+void Context::user_to_device(double& x, double& y) const
+{
+  cairo_user_to_device(const_cast<cobject*>(cobj()), &x, &y);
   check_object_status_and_throw_exception(*this);
 }
 
+//deprecated:
 void Context::user_to_device_distance(double& dx, double& dy)
 {
-  cairo_user_to_device_distance(cobj(), &dx, &dy);
+  const Context* constThis = this;
+  constThis->user_to_device_distance(dx, dy);
+}
+
+void Context::user_to_device_distance(double& dx, double& dy) const
+{
+  cairo_user_to_device_distance(const_cast<cobject*>(cobj()), &dx, &dy);
   check_object_status_and_throw_exception(*this);
 }
 
+//deprecated:
 void Context::device_to_user(double& x, double& y)
 {
-  cairo_device_to_user(cobj(), &x, &y);
+  const Context* constThis = this;
+  constThis->device_to_user(x, y);
+}
+
+void Context::device_to_user(double& x, double& y) const
+{
+  cairo_device_to_user(const_cast<cobject*>(cobj()), &x, &y);
   check_object_status_and_throw_exception(*this);
 }
 
+//deprecated:
 void Context::device_to_user_distance(double& dx, double& dy)
 {
-  cairo_device_to_user_distance(cobj(), &dx, &dy);
+  const Context* constThis = this;
+  constThis->device_to_user_distance(dx, dy);
+}
+
+void Context::device_to_user_distance(double& dx, double& dy) const
+{
+  cairo_device_to_user_distance(const_cast<cobject*>(cobj()), &dx, &dy);
   check_object_status_and_throw_exception(*this);
 }
 
@@ -402,6 +452,13 @@ bool Context::in_fill(double x, double y) const
   return result;
 }
 
+bool Context::in_clip(double x, double y) const
+{
+  const bool result = cairo_in_clip(const_cast<cobject*>(cobj()), x, y);
+  check_object_status_and_throw_exception(*this);
+  return result;
+}
+
 void Context::get_stroke_extents(double& x1, double& y1, double& x2, double& y2) const
 {
   cairo_stroke_extents(const_cast<cobject*>(cobj()), &x1, &y1, &x2, &y2);
@@ -434,7 +491,7 @@ void Context::clip_preserve()
 
 void Context::get_clip_extents(double& x1, double& y1, double& x2, double& y2) const
 {
-  cairo_clip_extents(const_cast<cairo_t*>(const_cast<cobject*>(cobj())), &x1, &y1, &x2, &y2);
+  cairo_clip_extents(const_cast<cobject*>(const_cast<cobject*>(cobj())), &x1, &y1, &x2, &y2);
   check_object_status_and_throw_exception(*this);
 }
 
@@ -443,7 +500,7 @@ void Context::copy_clip_rectangle_list(std::vector<Rectangle>& rectangles) const
   cairo_rectangle_list_t* c_list = 0;
   // It would be nice if the cairo interface didn't copy it into a C array first
   // and just let us do the copying...
-  c_list = cairo_copy_clip_rectangle_list(const_cast<cairo_t*>(const_cast<cobject*>(cobj())));
+  c_list = cairo_copy_clip_rectangle_list(const_cast<cobject*>(const_cast<cobject*>(cobj())));
   // the rectangle list contains a status field that we need to check and the
   // cairo context also has a status that we need to check
   // FIXME: do we want to throw an exception if the clip can't be represented by
@@ -709,7 +766,7 @@ Context::get_dash(std::vector<double>& dashes, double& offset) const
   // constant...
   const int cnt = cairo_get_dash_count(const_cast<cobject*>(cobj()));
   double* dash_array = new double[cnt];
-  cairo_get_dash(const_cast<cairo_t*>(cobj()), dash_array, &offset);
+  cairo_get_dash(const_cast<cobject*>(cobj()), dash_array, &offset);
   check_object_status_and_throw_exception(*this);
   dashes.assign(dash_array, dash_array + cnt);
   delete[] dash_array;
@@ -730,7 +787,7 @@ void Context::get_matrix(cairo_matrix_t& matrix)
 Matrix Context::get_matrix() const
 {
   Cairo::Matrix m;
-  cairo_get_matrix(const_cast<cairo_t*>(cobj()), (cairo_matrix_t*)&m);
+  cairo_get_matrix(const_cast<cobject*>(cobj()), (cairo_matrix_t*)&m);
   check_object_status_and_throw_exception(*this);
   return m;
 }
@@ -791,21 +848,21 @@ RefPtr<Surface> get_surface_wrapper (cairo_surface_t* surface)
 
 RefPtr<Surface> Context::get_target()
 {
-  cairo_surface_t* surface = cairo_get_target(const_cast<cairo_t*>(cobj()));
+  cairo_surface_t* surface = cairo_get_target(const_cast<cobject*>(cobj()));
   check_object_status_and_throw_exception(*this);
   return get_surface_wrapper (surface);
 }
 
 RefPtr<const Surface> Context::get_target() const
 {
-  cairo_surface_t* surface = cairo_get_target(const_cast<cairo_t*>(cobj()));
+  cairo_surface_t* surface = cairo_get_target(const_cast<cobject*>(cobj()));
   check_object_status_and_throw_exception(*this);
   return RefPtr<const Surface>::cast_const (get_surface_wrapper (surface));
 }
 
 Path* Context::copy_path() const
 {
-  cairo_path_t* cresult = cairo_copy_path(const_cast<cairo_t*>(cobj()));
+  cairo_path_t* cresult = cairo_copy_path(const_cast<cobject*>(cobj()));
   check_object_status_and_throw_exception(*this);
   return new Path(cresult, true /* take ownership */); //The caller must delete it.
 }
@@ -819,7 +876,7 @@ void Context::get_path_extents(double& x1, double& y1, double& x2, double& y2) c
 
 Path* Context::copy_path_flat() const
 {
-  cairo_path_t* cresult = cairo_copy_path_flat(const_cast<cairo_t*>(cobj()));
+  cairo_path_t* cresult = cairo_copy_path_flat(const_cast<cobject*>(cobj()));
   check_object_status_and_throw_exception(*this);
   return new Path(cresult, true /* take ownership */); //The caller must delete it.
 }

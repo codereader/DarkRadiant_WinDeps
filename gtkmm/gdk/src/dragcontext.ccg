@@ -20,6 +20,8 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <glibmm/vectorutils.h>
+
 #include <gdkmm/window.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
@@ -28,11 +30,13 @@
 namespace Gdk
 {
 
-void DragContext::find_window_for_screen(const Glib::RefPtr<Window>& drag_window, const Glib::RefPtr<Screen>& screen, int x_root, int y_root, Glib::RefPtr<Window>& dest_window, DragProtocol* protocol) const
+void DragContext::find_window_for_screen(const Glib::RefPtr<Window>& drag_window, const Glib::RefPtr<Screen>& screen, int x_root, int y_root, Glib::RefPtr<Window>& dest_window, DragProtocol& protocol) const
 {
   GdkWindow* cWindow = 0;
-  gdk_drag_find_window_for_screen(const_cast<GdkDragContext*>(gobj()), drag_window->gobj(), screen->gobj(), x_root, y_root, &cWindow, (GdkDragProtocol*)(protocol));
-  dest_window = Glib::wrap((GdkWindowObject*)cWindow);
+  GdkDragProtocol cprotocol = GDK_DRAG_PROTO_NONE; //arbitrary default.
+  gdk_drag_find_window_for_screen(const_cast<GdkDragContext*>(gobj()), drag_window->gobj(), screen->gobj(), x_root, y_root, &cWindow, &cprotocol);
+  dest_window = Glib::wrap(cWindow);
+  protocol = (DragProtocol)cprotocol;
 }
 
 void DragContext::drag_refuse(guint32 time)
@@ -40,10 +44,10 @@ void DragContext::drag_refuse(guint32 time)
   gdk_drag_status(gobj(), ((GdkDragAction)(0)) /* see GDK docs */, time);
 }
 
-Gdk::ListHandle_AtomString DragContext::get_targets() const
+std::vector<std::string> DragContext::list_targets() const
 {
   //Note that we don't free the GList* (or it's items), because we are accessing the struct directly:
-  return ListHandle_AtomString( gobj()->targets, Glib::OWNERSHIP_NONE);
+  return Glib::ListHandler<std::string, AtomStringTraits>::list_to_vector( gdk_drag_context_list_targets(const_cast<GdkDragContext*>(gobj())), Glib::OWNERSHIP_NONE);
 }
 
 } /* namespace Gdk */

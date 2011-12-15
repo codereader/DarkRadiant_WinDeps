@@ -93,23 +93,14 @@ const Glib::Class& Arrow_Class::init()
   return *this;
 }
 
+
 void Arrow_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Arrow_Class::wrap_new(GObject* o)
@@ -144,6 +135,7 @@ GType Arrow::get_type()
 {
   return arrow_class_.init().get_type();
 }
+
 
 GType Arrow::get_base_type()
 {
@@ -194,13 +186,6 @@ Glib::PropertyProxy_ReadOnly<ShadowType> Arrow::property_shadow_type() const
   return Glib::PropertyProxy_ReadOnly<ShadowType>(this, "shadow-type");
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

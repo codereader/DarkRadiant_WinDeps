@@ -29,14 +29,11 @@ public:
 
 protected:
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   //Callbacks (default signal handlers):
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
   //Callbacks (virtual functions):
-#ifdef GLIBMM_VFUNCS_ENABLED
   static guint add_focus_handler_vfunc_callback(AtkComponent* self, AtkFocusHandler handler);
   static gboolean contains_vfunc_callback(AtkComponent* self, gint x, gint y, AtkCoordType coord_type);
   static AtkObject* ref_accessible_at_point_vfunc_callback(AtkComponent* self, gint x, gint y, AtkCoordType coord_type);
@@ -50,7 +47,6 @@ protected:
   static gboolean set_extents_vfunc_callback(AtkComponent* self, gint x, gint y, gint width, gint height, AtkCoordType coord_type);
   static gboolean set_position_vfunc_callback(AtkComponent* self, gint x, gint y, AtkCoordType coord_type);
   static gboolean set_size_vfunc_callback(AtkComponent* self, gint width, gint height);
-#endif //GLIBMM_VFUNCS_ENABLED
 };
 
 

@@ -84,7 +84,7 @@
     </BuildLog>
     <ClCompile>
       <AdditionalOptions> /MP %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\include;$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\include\gtksourceview;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\atk-1.0;$(SolutionDir)\..\..\gtk2\include\cairo;$(SolutionDir)\..\..\gtk2\include\gtk-2.0;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\gtk2\include\pango-1.0;$(SolutionDir)\..\..\..\w32deps\libxml2\include;$(SolutionDir)\..\..\..\w32deps\win_iconv\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\include;$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\include\gtksourceview;$(SolutionDir)\..\..\..\w32deps\gtk2\include;$(SolutionDir)\..\..\..\w32deps\gtk2\include\atk-1.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\cairo;$(SolutionDir)\..\..\..\w32deps\gtk2\include\gtk-2.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\glib-2.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\pango-1.0;$(SolutionDir)\..\..\..\w32deps\libxml2\include;$(SolutionDir)\..\..\..\w32deps\win_iconv\include;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\glib-2.0\include;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\gtk-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_DEPRECATE;DR_GTK_SOURCEVIEW_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -109,7 +109,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\include;$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\include\gtksourceview;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\atk-1.0;$(SolutionDir)\..\..\gtk2\include\cairo;$(SolutionDir)\..\..\gtk2\include\gtk-2.0;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\gtk2\include\pango-1.0;$(SolutionDir)\..\..\..\w32deps\libxml2\include;$(SolutionDir)\..\..\..\w32deps\win_iconv\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\include;$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\include\gtksourceview;$(SolutionDir)\..\..\..\w32deps\gtk2\include;$(SolutionDir)\..\..\..\w32deps\gtk2\include\atk-1.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\cairo;$(SolutionDir)\..\..\..\w32deps\gtk2\include\gtk-2.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\glib-2.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\pango-1.0;$(SolutionDir)\..\..\..\w32deps\libxml2\include;$(SolutionDir)\..\..\..\w32deps\win_iconv\include;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\glib-2.0\include;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\gtk-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_DEPRECATE;DR_GTK_SOURCEVIEW_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -133,7 +133,7 @@
     </BuildLog>
     <ClCompile>
       <AdditionalOptions> /MP %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\include;$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\include\gtksourceview;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\atk-1.0;$(SolutionDir)\..\..\gtk2\include\cairo;$(SolutionDir)\..\..\gtk2\include\gtk-2.0;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\gtk2\include\pango-1.0;$(SolutionDir)\..\..\..\w32deps\libxml2\include;$(SolutionDir)\..\..\..\w32deps\win_iconv\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\include;$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\include\gtksourceview;$(SolutionDir)\..\..\..\w32deps\gtk2\include;$(SolutionDir)\..\..\..\w32deps\gtk2\include\atk-1.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\cairo;$(SolutionDir)\..\..\..\w32deps\gtk2\include\gtk-2.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\glib-2.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\pango-1.0;$(SolutionDir)\..\..\..\w32deps\libxml2\include;$(SolutionDir)\..\..\..\w32deps\win_iconv\include;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\glib-2.0\include;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\gtk-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WIN32;_CRT_SECURE_NO_DEPRECATE;DR_GTK_SOURCEVIEW_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -158,7 +158,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\include;$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\include\gtksourceview;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\atk-1.0;$(SolutionDir)\..\..\gtk2\include\cairo;$(SolutionDir)\..\..\gtk2\include\gtk-2.0;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\gtk2\include\pango-1.0;$(SolutionDir)\..\..\..\w32deps\libxml2\include;$(SolutionDir)\..\..\..\w32deps\win_iconv\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\include;$(SolutionDir)\..\..\..\w32deps\gtksourceview-2.0\include\gtksourceview;$(SolutionDir)\..\..\..\w32deps\gtk2\include;$(SolutionDir)\..\..\..\w32deps\gtk2\include\atk-1.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\cairo;$(SolutionDir)\..\..\..\w32deps\gtk2\include\gtk-2.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\glib-2.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\pango-1.0;$(SolutionDir)\..\..\..\w32deps\libxml2\include;$(SolutionDir)\..\..\..\w32deps\win_iconv\include;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\glib-2.0\include;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\gtk-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WIN32;_CRT_SECURE_NO_DEPRECATE;DR_GTK_SOURCEVIEW_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>

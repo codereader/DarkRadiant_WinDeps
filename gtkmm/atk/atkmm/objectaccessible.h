@@ -4,7 +4,8 @@
 #define _ATKMM_OBJECTACCESSIBLE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: objectaccessible.hg,v 1.4 2006/04/12 11:11:24 murrayc Exp $ */
 
@@ -74,6 +75,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -92,12 +95,12 @@ protected:
 
   
   /** Gets the GObject for which @a obj is the accessible object.
-   * @return A Object which is the object for which @a obj is the accessible objedct.
+   * @return A Object which is the object for which @a obj is the accessible object.
    */
   Glib::RefPtr<Glib::Object> get_object();
   
   /** Gets the GObject for which @a obj is the accessible object.
-   * @return A Object which is the object for which @a obj is the accessible objedct.
+   * @return A Object which is the object for which @a obj is the accessible object.
    */
   Glib::RefPtr<const Glib::Object> get_object() const;
 
@@ -119,17 +122,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

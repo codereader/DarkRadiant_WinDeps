@@ -139,26 +139,26 @@ bool RC::reparse_all()
 
 bool RC::reparse_all(const Glib::RefPtr<Settings>& settings, bool force_load)
 {
-  return gtk_rc_reparse_all_for_settings(settings->gobj(), force_load);
+  return gtk_rc_reparse_all_for_settings(Glib::unwrap(settings), force_load);
 }
 
 void RC::reset_styles(const Glib::RefPtr<Settings>& settings)
 {
-  gtk_rc_reset_styles(settings->gobj());        
+  gtk_rc_reset_styles(Glib::unwrap(settings));        
 }
 
 Glib::ustring
 RC::find_pixmap_in_path(const Glib::RefPtr<Settings>& context, GScanner *scanner, const Glib::ustring& pixmap_file)
 {
   return Glib::convert_return_gchar_ptr_to_ustring(
-      gtk_rc_find_pixmap_in_path(context->gobj(), scanner, const_cast<char*>(pixmap_file.c_str())));
+      gtk_rc_find_pixmap_in_path(Glib::unwrap(context), scanner, const_cast<char*>(pixmap_file.c_str())));
 }
 
 Glib::ustring
 RC::find_pixmap_in_path(const Glib::RefPtr<Settings>& context, const Glib::ustring& pixmap_file)
 {
   return Glib::convert_return_gchar_ptr_to_ustring(
-      gtk_rc_find_pixmap_in_path(context->gobj(), 0 /* see C docs */, const_cast<char*>(pixmap_file.c_str())));
+      gtk_rc_find_pixmap_in_path(Glib::unwrap(context), 0 /* see C docs */, const_cast<char*>(pixmap_file.c_str())));
 }
 
 Glib::ustring
@@ -233,23 +233,14 @@ const Glib::Class& RcStyle_Class::init()
   return *this;
 }
 
+
 void RcStyle_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* RcStyle_Class::wrap_new(GObject* object)
@@ -278,6 +269,7 @@ RcStyle::RcStyle(GtkRcStyle* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 RcStyle::~RcStyle()
 {}
 
@@ -288,6 +280,7 @@ GType RcStyle::get_type()
 {
   return rcstyle_class_.init().get_type();
 }
+
 
 GType RcStyle::get_base_type()
 {
@@ -309,6 +302,7 @@ Glib::RefPtr<RcStyle> RcStyle::create()
 {
   return Glib::RefPtr<RcStyle>( new RcStyle() );
 }
+
 Glib::RefPtr<RcStyle> RcStyle::copy() const
 {
   return Glib::wrap(gtk_rc_style_copy(const_cast<GtkRcStyle*>(gobj())));
@@ -369,13 +363,6 @@ Gdk::Color RcStyle::get_base(StateType state) const
   return gobj()->ythickness;
 }
  
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
 
 } // namespace Gtk
 

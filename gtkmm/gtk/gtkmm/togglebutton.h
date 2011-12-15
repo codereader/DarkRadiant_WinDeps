@@ -79,6 +79,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -91,18 +93,12 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_toggled();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -142,7 +138,7 @@ public:
    * @param draw_indicator If <tt>true</tt>, draw the button as a separate indicator
    * and label; if <tt>false</tt>, draw the button like a normal button.
    */
-  void set_mode(bool draw_indicator = true);
+  void set_mode(bool draw_indicator =  true);
   
   /** Retrieves whether the button is displayed as a separate indicator
    * and label. See set_mode().
@@ -152,7 +148,7 @@ public:
   bool get_mode() const;
 
   
-  void set_active(bool is_active = true);
+  void set_active(bool is_active =  true);
   
   bool get_active() const;
 
@@ -167,7 +163,7 @@ public:
    * visual appearance, it doesn't affect the semantics of the button.
    * @param setting <tt>true</tt> if state is inconsistent.
    */
-  void set_inconsistent(bool setting = true);
+  void set_inconsistent(bool setting =  true);
   
   /** Gets the value set by set_inconsistent().
    * @return <tt>true</tt> if the button is displayed as inconsistent, <tt>false</tt> otherwise.
@@ -207,7 +203,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If the toggle button is in an in between state.
+/** If the toggle button is in an 'in between' state.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -217,7 +213,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If the toggle button is in an in between state.
+/** If the toggle button is in an 'in between' state.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when

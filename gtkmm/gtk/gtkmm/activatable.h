@@ -27,7 +27,14 @@
 
 #include <gtkmm/action.h>
 #include <glibmm/interface.h>
-#include <gtk/gtk.h>
+
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+extern "C"
+{
+typedef struct _GtkActivatableIface GtkActivatableIface;
+}
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -41,11 +48,12 @@ namespace Gtk
 namespace Gtk
 {
 
-/** Activatable widgets can be connected to a GtkAction and reflect the state 
+//TODO: Use this when we can add new base classes to existing classes.
+/** Activatable widgets can be connected to a Gtk::Action and reflect the state 
  * of the action. An Activatable can also provide feedback through its action, 
  * as it is responsible for activating the related action.
  *
- * @newin2p16
+ * @newin{2,16}
  */
 
 class Activatable : public Glib::Interface
@@ -100,7 +108,7 @@ public:
   ///Provides access to the underlying C GObject.
   GtkActivatable*       gobj()       { return reinterpret_cast<GtkActivatable*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const GtkActivatable* gobj() const { return reinterpret_cast<GtkActivatable*>(gobject_); }
 
 private:
@@ -119,35 +127,35 @@ public:
    * method is called when the related Gtk::Action properties change
    * and registers to the action's proxy list.
    * 
-   * <note><para>Be careful to call this before setting the local
+   * <note>Be careful to call this before setting the local
    * copy of the Gtk::Action property, since this function uses 
-   * gtk_activatable_get_action() to retrieve the previous action</para></note>
+   * gtk_activatable_get_action() to retrieve the previous action</note>
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param action The Gtk::Action to set.
    */
   void do_set_related_action(const Glib::RefPtr<Action>& action);
   
   /** Gets the related Gtk::Action for @a activatable.
-   * @return The related Gtk::Action if one is set.
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @return The related Gtk::Action if one is set.
    */
   Glib::RefPtr<Action> get_related_action();
   
   /** Gets the related Gtk::Action for @a activatable.
-   * @return The related Gtk::Action if one is set.
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @return The related Gtk::Action if one is set.
    */
   Glib::RefPtr<const Action> get_related_action() const;
   
   /** Gets whether this activatable should reset its layout
    * and appearance when setting the related action or when
    * the action changes appearance.
-   * @return Whether @a activatable uses its actions appearance.
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @return Whether @a activatable uses its actions appearance.
    */
   bool get_use_action_appearance() const;
   
@@ -156,17 +164,17 @@ public:
    * or unset and by the implementing class when
    * Gtk::Activatable::use-action-appearance changes.
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param action The related Gtk::Action or <tt>0</tt>.
    */
   void sync_action_properties(const Glib::RefPtr<Action>& action);
   
   /** Sets the related action on the @a activatable object.
    * 
-   * <note><para>Gtk::Activatable implementors need to handle the Gtk::Activatable:related-action
-   * property and call do_set_related_action() when it changes.</para></note>
+   * <note>Gtk::Activatable implementors need to handle the Gtk::Activatable:related-action
+   * property and call do_set_related_action() when it changes.</note>
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param action The Gtk::Action to set.
    */
   void set_related_action(const Glib::RefPtr<Action>& action);
@@ -174,15 +182,15 @@ public:
   /** Sets whether this activatable should reset its layout and appearance
    * when setting the related action or when the action changes appearance
    * 
-   * <note><para>Gtk::Activatable implementors need to handle the
+   * <note>Gtk::Activatable implementors need to handle the
    * Gtk::Activatable:use-action-appearance property and call
    * sync_action_properties() to update @a activatable
-   * if needed.</para></note>
+   * if needed.</note>
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param use_appearance Whether to use the actions appearance.
    */
-  void set_use_action_appearance(bool use_appearance = true);
+  void set_use_action_appearance(bool use_appearance =  true);
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The action this activatable will activate and receive updates from.
@@ -225,30 +233,20 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void update_vfunc(const Glib::RefPtr<Action>& action, const Glib::ustring& property_name);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void update_vfunc(const Glib::RefPtr<Action>& action, const Glib::ustring& property_name);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void sync_action_properties_vfunc(const Glib::RefPtr<Action>& action);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void sync_action_properties_vfunc(const Glib::RefPtr<Action>& action);
 
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

@@ -24,13 +24,8 @@
 namespace Gio
 {
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::RefPtr<InputStream>
 LoadableIcon::load(int size, Glib::ustring& type, const Glib::RefPtr<Cancellable>& cancellable)
-#else
-Glib::RefPtr<InputStream>
-LoadableIcon::load(int size, Glib::ustring& type, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   char* c_type;
   GError* gerror = 0;
@@ -38,15 +33,10 @@ LoadableIcon::load(int size, Glib::ustring& type, const Glib::RefPtr<Cancellable
       Glib::wrap(g_loadable_icon_load(gobj(),
                  size,
                  &c_type,
-                 cancellable->gobj(),
+                 Glib::unwrap(cancellable),
                  &gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   type = c_type;
   g_free(c_type);
@@ -55,13 +45,8 @@ LoadableIcon::load(int size, Glib::ustring& type, const Glib::RefPtr<Cancellable
   return retval;
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::RefPtr<InputStream>
 LoadableIcon::load(int size, Glib::ustring& type)
-#else
-Glib::RefPtr<InputStream>
-LoadableIcon::load(int size, Glib::ustring& type, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   char* c_type;
   GError* gerror = 0;
@@ -69,15 +54,10 @@ LoadableIcon::load(int size, Glib::ustring& type, std::auto_ptr<Glib::Error>& er
       Glib::wrap(g_loadable_icon_load(gobj(),
                  size,
                  &c_type,
-                 NULL,
+                 0,
                  &gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   type = c_type;
   g_free(c_type);
@@ -97,7 +77,7 @@ LoadableIcon::load_async(int size, const SlotAsyncReady& slot, const
 
   g_loadable_icon_load_async(gobj(),
                              size,
-                             cancellable->gobj(),
+                             Glib::unwrap(cancellable),
                              &SignalProxy_async_callback,
                              slot_copy);
 }
@@ -112,7 +92,7 @@ LoadableIcon::load_async(int size, const SlotAsyncReady& slot)
 
   g_loadable_icon_load_async(gobj(),
                              size,
-                             NULL,
+                             0,
                              &SignalProxy_async_callback,
                              slot_copy);
 }

@@ -25,6 +25,9 @@
 _DEFS(gtkmm,gtk)
 _PINCLUDE(gtkmm/private/combobox_p.h)
 
+#m4 _PUSH(SECTION_CC_PRE_INCLUDES)
+#undef GTK_DISABLE_DEPRECATED
+#m4 _POP()
 
 namespace Gtk
 {
@@ -52,10 +55,13 @@ namespace Gtk
  * @image html comboboxentry1.png
  *
  * @ingroup Widgets
+ *
+ * @deprecated Instead use ComboBox with has_entry = true.
  */
 class ComboBoxEntry : public ComboBox
 {
   _CLASS_GTKOBJECT(ComboBoxEntry, GtkComboBoxEntry, GTK_COMBO_BOX_ENTRY, Gtk::ComboBox, GtkComboBox)
+  _IS_DEPRECATED
 public:
   _CTOR_DEFAULT()
   _IGNORE(gtk_combo_box_entry_new, gtk_combo_box_entyry_new_text) //See ComboBoxEntryText for an equivalent of gtk_combo_box_entry_new_text().
@@ -85,7 +91,7 @@ public:
   /** Returns the currently active string.
    * @result The currently active text.
    *
-   * @newin2p14
+   * @newin{2,14}
    */
   Glib::ustring get_active_text() const;
 
@@ -97,7 +103,9 @@ public:
 
   /** @see Bin::get_child().
    */
-  const Entry* get_entry() const;                                      
+  const Entry* get_entry() const;   
+  
+  _WRAP_PROPERTY("text-column", int)                                   
 };
 
 

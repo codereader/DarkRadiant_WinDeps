@@ -4,7 +4,8 @@
 #define _ATKMM_IMAGE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: image.hg,v 1.2 2004/01/02 09:56:43 murrayc Exp $ */
 
@@ -110,7 +111,7 @@ public:
   ///Provides access to the underlying C GObject.
   AtkImage*       gobj()       { return reinterpret_cast<AtkImage*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const AtkImage* gobj() const { return reinterpret_cast<AtkImage*>(gobject_); }
 
 private:
@@ -133,17 +134,16 @@ public:
   
   /** Get the width and height in pixels for the specified image.
    * The values of @a width and @a height are returned as -1 if the
-   * values cannot be obtained.
-   * @param width Filled with the image width.
-   * @param height Filled with the image height.
+   * values cannot be obtained (for instance, if the object is not onscreen).
+   * @param width Filled with the image width, or -1 if the value cannot be obtained.
+   * @param height Filled with the image height, or -1 if the value cannot be obtained.
    */
   void get_image_size(int& width, int& height) const;
   
   /** Gets the position of the image in the form of a point specifying the
-   * images top-left corner.  The values of @a x and @a y are returned as -1
-   * if the values cannot be obtained.
-   * @param x Address of <tt>int</tt> to put x coordinate position.
-   * @param y Address of <tt>int</tt> to put y coordinate position.
+   * images top-left corner.
+   * @param x Address of <tt>int</tt> to put x coordinate position; otherwise, -1 if value cannot be obtained.
+   * @param y Address of <tt>int</tt> to put y coordinate position; otherwise, -1 if value cannot be obtained.
    * @param coord_type Specifies whether the coordinates are relative to the screen
    * or to the components top level window.
    */
@@ -152,39 +152,25 @@ public:
 protected:
  
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool set_image_description_vfunc(const Glib::ustring& description);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool set_image_description_vfunc(const Glib::ustring& description);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual const char* get_image_description_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual const char* get_image_description_vfunc() const;
 
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void get_image_position_vfunc(int& x, int& y, CoordType coord_type) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void get_image_position_vfunc(int& x, int& y, CoordType coord_type) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void get_image_size_vfunc(int& width, int& height) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void get_image_size_vfunc(int& width, int& height) const;
 
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

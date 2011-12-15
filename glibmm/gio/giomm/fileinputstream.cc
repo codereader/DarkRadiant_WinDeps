@@ -30,40 +30,22 @@
 namespace Gio
 {
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::RefPtr<FileInfo> FileInputStream::query_info(const Glib::RefPtr<Cancellable>& cancellable, const std::string& attributes)
-#else
-Glib::RefPtr<FileInfo> FileInputStream::query_info(const Glib::RefPtr<Cancellable>& cancellable, const std::string& attributes, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   Glib::RefPtr<FileInfo> retvalue = Glib::wrap(g_file_input_stream_query_info(gobj(), g_strdup((attributes).c_str()), const_cast<GCancellable*>(Glib::unwrap(cancellable)), &(gerror)));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::RefPtr<FileInfo> FileInputStream::query_info(const std::string& attributes)
-#else
-Glib::RefPtr<FileInfo> FileInputStream::query_info(const std::string& attributes, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
-  Glib::RefPtr<FileInfo> retvalue = Glib::wrap(g_file_input_stream_query_info(gobj(), g_strdup((attributes).c_str()), NULL, &(gerror)));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  Glib::RefPtr<FileInfo> retvalue = Glib::wrap(g_file_input_stream_query_info(gobj(), g_strdup((attributes).c_str()), 0, &(gerror)));
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 }
@@ -79,7 +61,7 @@ FileInputStream::query_info_async(const SlotAsyncReady& slot, const Glib::RefPtr
   g_file_input_stream_query_info_async(gobj(),
                                        const_cast<char*>(attributes.c_str()),
                                        io_priority,
-                                       cancellable->gobj(),
+                                       Glib::unwrap(cancellable),
                                        &SignalProxy_async_callback,
                                        slot_copy);
 }
@@ -95,7 +77,7 @@ FileInputStream::query_info_async(const SlotAsyncReady& slot, const std::string&
   g_file_input_stream_query_info_async(gobj(),
                                        const_cast<char*>(attributes.c_str()),
                                        io_priority,
-                                       NULL,
+                                       0,
                                        &SignalProxy_async_callback,
                                        slot_copy);
 }
@@ -153,18 +135,8 @@ void FileInputStream_Class::class_init_function(void* g_class, void* class_data)
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* FileInputStream_Class::wrap_new(GObject* object)
@@ -212,32 +184,16 @@ GType FileInputStream::get_base_type()
 }
 
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 Glib::RefPtr<FileInfo> FileInputStream::query_info_finish(const Glib::RefPtr<AsyncResult>& result)
-#else
-Glib::RefPtr<FileInfo> FileInputStream::query_info_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   Glib::RefPtr<FileInfo> retvalue = Glib::wrap(g_file_input_stream_query_info_finish(gobj(), Glib::unwrap(result), &(gerror)));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   return retvalue;
 
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gio

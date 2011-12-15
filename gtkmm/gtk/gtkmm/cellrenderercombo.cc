@@ -42,17 +42,10 @@ static GtkTreeModel* _get_model(GtkCellRendererCombo* renderer)
 namespace Gtk
 {
 
-#ifdef GLIBMM_PROPERTIES_ENABLED
 Glib::PropertyProxy_Base CellRendererCombo::_property_renderable()
 {
   return CellRendererText::_property_renderable();
 }
-#else
-Glib::ustring CellRendererCombo::_property_renderable()
-{
-  return CellRendererText::_property_renderable();
-}
-#endif //#ifdef GLIBMM_PROPERTIES_ENABLED
 
 } //namespace Gtk
 
@@ -134,23 +127,14 @@ const Glib::Class& CellRendererCombo_Class::init()
   return *this;
 }
 
+
 void CellRendererCombo_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* CellRendererCombo_Class::wrap_new(GObject* o)
@@ -185,6 +169,7 @@ GType CellRendererCombo::get_type()
 {
   return cellrenderercombo_class_.init().get_type();
 }
+
 
 GType CellRendererCombo::get_base_type()
 {
@@ -250,13 +235,6 @@ Glib::PropertyProxy_ReadOnly<bool> CellRendererCombo::property_has_entry() const
   return Glib::PropertyProxy_ReadOnly<bool>(this, "has-entry");
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

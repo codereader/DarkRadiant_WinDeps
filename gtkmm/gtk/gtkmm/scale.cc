@@ -235,21 +235,17 @@ const Glib::Class& Scale_Class::init()
   return *this;
 }
 
+
 void Scale_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
   klass->draw_value = &draw_value_vfunc_callback;
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->format_value = &format_value_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
 void Scale_Class::draw_value_vfunc_callback(GtkScale* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -281,7 +277,7 @@ void Scale_Class::draw_value_vfunc_callback(GtkScale* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -291,9 +287,7 @@ void Scale_Class::draw_value_vfunc_callback(GtkScale* self)
     (*base->draw_value)(self);
 
 }
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 gchar* Scale_Class::format_value_callback(GtkScale* self, gdouble p0)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -326,7 +320,7 @@ gchar* Scale_Class::format_value_callback(GtkScale* self, gdouble p0)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -338,7 +332,6 @@ gchar* Scale_Class::format_value_callback(GtkScale* self, gdouble p0)
   typedef gchar* RType;
   return RType();
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Scale_Class::wrap_new(GObject* o)
@@ -373,6 +366,7 @@ GType Scale::get_type()
 {
   return scale_class_.init().get_type();
 }
+
 
 GType Scale::get_base_type()
 {
@@ -437,7 +431,7 @@ Glib::RefPtr<const Pango::Layout> Scale::get_layout() const
 
 void Scale::get_layout_offsets(int& x, int& y) const
 {
-gtk_scale_get_layout_offsets(const_cast<GtkScale*>(gobj()), &x, &y); 
+gtk_scale_get_layout_offsets(const_cast<GtkScale*>(gobj()), &(x), &(y)); 
 }
 
 void Scale::add_mark(double value, PositionType position, const Glib::ustring& markup)
@@ -500,7 +494,6 @@ Glib::PropertyProxy_ReadOnly<PositionType> Scale::property_value_pos() const
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 Glib::ustring Gtk::Scale::on_format_value(double value)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -513,9 +506,7 @@ Glib::ustring Gtk::Scale::on_format_value(double value)
   typedef Glib::ustring RType;
   return RType();
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
-#ifdef GLIBMM_VFUNCS_ENABLED
 void Gtk::Scale::draw_value_vfunc() 
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -525,7 +516,6 @@ void Gtk::Scale::draw_value_vfunc()
   if(base && base->draw_value)
     (*base->draw_value)(gobj());
 }
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk
@@ -568,23 +558,14 @@ const Glib::Class& VScale_Class::init()
   return *this;
 }
 
+
 void VScale_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* VScale_Class::wrap_new(GObject* o)
@@ -620,17 +601,11 @@ GType VScale::get_type()
   return vscale_class_.init().get_type();
 }
 
+
 GType VScale::get_base_type()
 {
   return gtk_vscale_get_type();
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk
@@ -673,23 +648,14 @@ const Glib::Class& HScale_Class::init()
   return *this;
 }
 
+
 void HScale_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* HScale_Class::wrap_new(GObject* o)
@@ -725,17 +691,11 @@ GType HScale::get_type()
   return hscale_class_.init().get_type();
 }
 
+
 GType HScale::get_base_type()
 {
   return gtk_hscale_get_type();
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

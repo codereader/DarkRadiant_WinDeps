@@ -84,10 +84,8 @@ const MenuShell::MenuList& MenuShell::items() const
 
 void MenuShell_Class::insert_vfunc_callback(GtkMenuShell* self, GtkWidget* child, int position)
 {
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     MenuShell *const obj = dynamic_cast<MenuShell*>(
         Glib::ObjectBase::_get_current_wrapper((GObject*) self));
 
@@ -96,13 +94,11 @@ void MenuShell_Class::insert_vfunc_callback(GtkMenuShell* self, GtkWidget* child
     {
       Glib::wrap((GtkMenuItem*) child)->accelerate(*obj->accel_window_);
     }
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   GtkMenuShellClass *const base = static_cast<GtkMenuShellClass*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)));
@@ -158,7 +154,7 @@ void MenuList::remove(Widget& widget)
     if(pAccelLabel) //If the child is an AccelLabel.
     {
       //The unset_accel_widget() method is not implemented in gtkmm until 2.4:
-      gtk_accel_label_set_accel_widget(pAccelLabel->gobj(), 0);
+      gtk_accel_label_set_accel_widget(Glib::unwrap(pAccelLabel), 0);
     }
   }
 

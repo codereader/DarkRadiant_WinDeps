@@ -33,7 +33,6 @@ public:
 
 protected:
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   //Callbacks (default signal handlers):
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
@@ -47,11 +46,8 @@ protected:
   static void drive_connected_callback(GVolumeMonitor* self, GDrive* p0);
   static void drive_disconnected_callback(GVolumeMonitor* self, GDrive* p0);
   static void drive_changed_callback(GVolumeMonitor* self, GDrive* p0);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
   //Callbacks (virtual functions):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 };
 
 

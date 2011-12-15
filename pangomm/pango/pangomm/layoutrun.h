@@ -4,23 +4,24 @@
 #define _PANGOMM_LAYOUTRUN_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* layoutrun.h
  *
  * Copyright (C) 1998-1999 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
+ * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
@@ -88,14 +89,22 @@ private:
 
   
   /** Modifies @a orig to cover only the text after @a split_index, and
-   * Return value: the newly allocated item representing text before
+   * returns a new item that covers the text before @a split_index that
+   * used to be in @a orig. You can think of @a split_index as the length of
+   * the returned item. @a split_index may not be 0, and it may not be
+   * greater than or equal to the length of @a orig (that is, there must
+   * be at least one byte assigned to each item, you can't create a
+   * zero-length item).
+   * 
+   * This function is similar in function to Pango::Item::split() (and uses
+   * it internally.)
+   * 
+   * @newin{1,2}
    * @param text Text to which positions in @a orig apply.
    * @param split_index Byte index of position to split item, relative to the start of the item.
    * @return The newly allocated item representing text before
    *  @a split_index, which should be freed
-   * with pango_glyph_item_free().
-   * 
-   * Since: 1.2.
+   * with free().
    */
   GlyphItem split(const Glib::ustring& text, int split_index);
 
@@ -104,7 +113,7 @@ private:
   /** Adds spacing between the graphemes of @a glyph_item to
    * give the effect of typographic letter spacing.
    * 
-   * Since: 1.6
+   * @newin{1,6}
    * @param text Text that @a glyph_item corresponds to
    * (glyph_item->item->offset is an offset from the
    * start of @a text).
@@ -115,7 +124,7 @@ private:
    * in Pango units. May be negative, though too large
    * negative values will give ugly results.
    */
-  void letter_space(const Glib::ustring& text, const LogAttr& log_attrs, int letter_spacing = 0);
+  void letter_space(const Glib::ustring& text, const LogAttr& log_attrs, int letter_spacing =  0);
 
   /** Gets the Pango::Item object that provides information about the segment of text in this run.
    * @return A Pango::Item object.

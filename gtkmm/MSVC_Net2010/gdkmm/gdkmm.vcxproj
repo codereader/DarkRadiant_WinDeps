@@ -95,7 +95,7 @@
     <ClCompile>
       <AdditionalOptions>/vd2 /MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>./;../../gdk;../../gtk;../../atk;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\cairomm;$(SolutionDir)\..\..\pangomm\pango;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\atk-1.0;$(SolutionDir)\..\..\gtk2\include\cairo;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\gtk2\include\gtk-2.0;$(SolutionDir)\..\..\gtk2\include\pango-1.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../../gdk;../../gtk;../../atk;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\gio;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\cairomm;$(SolutionDir)\..\..\pangomm\pango;$(SolutionDir)\..\..\..\w32deps\gtk2\include;$(SolutionDir)\..\..\..\w32deps\gtk2\include\glib-2.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\atk-1.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\cairo;$(SolutionDir)\..\..\..\w32deps\gtk2\include\gtk-2.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\pango-1.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\glib-2.0\include;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\gtk-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;GDKMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -129,7 +129,7 @@
     <ClCompile>
       <AdditionalOptions>/vd2 /MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>./;../../gdk;../../gtk;../../atk;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\cairomm;$(SolutionDir)\..\..\pangomm\pango;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\atk-1.0;$(SolutionDir)\..\..\gtk2\include\cairo;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\gtk2\include\gtk-2.0;$(SolutionDir)\..\..\gtk2\include\pango-1.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../../gdk;../../gtk;../../atk;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\gio;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\cairomm;$(SolutionDir)\..\..\pangomm\pango;$(SolutionDir)\..\..\..\w32deps\gtk2\include;$(SolutionDir)\..\..\..\w32deps\gtk2\include\glib-2.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\atk-1.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\cairo;$(SolutionDir)\..\..\..\w32deps\gtk2\include\gtk-2.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\pango-1.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\glib-2.0\include;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\gtk-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;GDKMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -160,7 +160,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalOptions>/vd2 /MP %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>./;../../gdk;../../gtk;../../atk;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\cairomm;$(SolutionDir)\..\..\pangomm\pango;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\atk-1.0;$(SolutionDir)\..\..\gtk2\include\cairo;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\gtk2\include\gtk-2.0;$(SolutionDir)\..\..\gtk2\include\pango-1.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../../gdk;../../gtk;../../atk;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\gio;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\cairomm;$(SolutionDir)\..\..\pangomm\pango;$(SolutionDir)\..\..\..\w32deps\gtk2\include;$(SolutionDir)\..\..\..\w32deps\gtk2\include\glib-2.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\atk-1.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\cairo;$(SolutionDir)\..\..\..\w32deps\gtk2\include\gtk-2.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\pango-1.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\glib-2.0\include;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\gtk-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -190,7 +190,7 @@
     </Midl>
     <ClCompile>
       <AdditionalOptions>/vd2 /MP %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>./;../../gdk;../../gtk;../../atk;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\cairomm;$(SolutionDir)\..\..\pangomm\pango;$(SolutionDir)\..\..\gtk2\include;$(SolutionDir)\..\..\gtk2\include\atk-1.0;$(SolutionDir)\..\..\gtk2\include\cairo;$(SolutionDir)\..\..\gtk2\include\glib-2.0;$(SolutionDir)\..\..\gtk2\include\gtk-2.0;$(SolutionDir)\..\..\gtk2\include\pango-1.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../../gdk;../../gtk;../../atk;$(SolutionDir)\..\..\glibmm\glib;$(SolutionDir)\..\..\glibmm\gio;$(SolutionDir)\..\..\glibmm\MSVC_Net2010\glibmm;$(SolutionDir)\..\..\cairomm;$(SolutionDir)\..\..\pangomm\pango;$(SolutionDir)\..\..\..\w32deps\gtk2\include;$(SolutionDir)\..\..\..\w32deps\gtk2\include\glib-2.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\atk-1.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\cairo;$(SolutionDir)\..\..\..\w32deps\gtk2\include\gtk-2.0;$(SolutionDir)\..\..\..\w32deps\gtk2\include\pango-1.0;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\glib-2.0\include;$(SolutionDir)\..\..\..\w32deps\gtk2\lib\gtk-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -216,8 +216,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ResourceCompile Include="gdkmm.rc" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="..\..\gdk\gdkmm\bitmap.cc" />
-    <ClCompile Include="..\blank.cpp" />
     <ClCompile Include="..\..\gdk\gdkmm\color.cc" />
     <ClCompile Include="..\..\gdk\gdkmm\colormap.cc" />
     <ClCompile Include="..\..\gdk\gdkmm\cursor.cc" />
@@ -276,9 +278,6 @@
     <ClInclude Include="..\..\gdk\gdkmm\visual.h" />
     <ClInclude Include="..\..\gdk\gdkmm\window.h" />
     <ClInclude Include="..\..\gdk\gdkmm\wrap_init.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="gdkmm.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

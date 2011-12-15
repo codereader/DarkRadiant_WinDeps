@@ -41,7 +41,7 @@ namespace Gtk
 {
 
 
-/** @addtogroup gtkmmEnums Enums and Flags */
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
 
 /**
  * @ingroup gtkmmEnums
@@ -154,6 +154,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -166,20 +168,14 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual int on_input(double* new_value);
   virtual bool on_output();
   virtual void on_value_changed();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -192,9 +188,15 @@ public:
   // climb_rate:
   // digits: number of decimal digits (has to be < 6)
   SpinButton(double climb_rate = 0.0, guint digits = 0);
-  explicit SpinButton(Adjustment& adjustment, double climb_rate = 0.0, guint digits = 0);
+    explicit SpinButton(Adjustment& adjustment, double climb_rate =  0.0, guint digits =  0);
 
 
+  /** Changes the properties of an existing spin button. The adjustment, climb rate,
+   * and number of decimal places are all changed accordingly, after this function call.
+   * @param adjustment A Gtk::Adjustment.
+   * @param climb_rate The new climb rate.
+   * @param digits The number of decimal places to display in the spin button.
+   */
   void configure(Adjustment& adjustment, double climb_rate, guint digits);
 
   
@@ -289,9 +291,10 @@ public:
    * the spin button.
    * @param numeric Flag indicating if only numeric entry is allowed.
    */
-  void set_numeric(bool numeric = true);
+  void set_numeric(bool numeric =  true);
   
-  /** Return value: <tt>true</tt> if only numeric text can be entered
+  /** Returns whether non-numeric text can be typed into the spin button.
+   * See set_numeric().
    * @return <tt>true</tt> if only numeric text can be entered.
    */
   bool get_numeric() const;
@@ -309,9 +312,11 @@ public:
    * opposite limit when the upper or lower limit of the range is exceeded.
    * @param wrap A flag indicating if wrapping behavior is performed.
    */
-  void set_wrap(bool wrap = true);
+  void set_wrap(bool wrap =  true);
   
-  /** Return value: <tt>true</tt> if the spin button wraps around
+  /** Returns whether the spin button's value wraps around to the
+   * opposite limit when the upper or lower limit of the range is
+   * exceeded. See set_wrap().
    * @return <tt>true</tt> if the spin button wraps around.
    */
   bool get_wrap() const;
@@ -321,9 +326,10 @@ public:
    * increment when a spin button is activated after providing an invalid value.
    * @param snap_to_ticks A flag indicating if invalid values should be corrected.
    */
-  void set_snap_to_ticks(bool snap_to_ticks = true);
+  void set_snap_to_ticks(bool snap_to_ticks =  true);
   
-  /** Return value: <tt>true</tt> if values are snapped to the nearest step.
+  /** Returns whether the values are corrected to the nearest step. See
+   * set_snap_to_ticks().
    * @return <tt>true</tt> if values are snapped to the nearest step.
    */
   bool get_snap_to_ticks() const;
@@ -500,7 +506,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether the spin button should update always
+/** Whether the spin button should update always, or only when the value is legal.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -510,7 +516,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether the spin button should update always
+/** Whether the spin button should update always, or only when the value is legal.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -520,7 +526,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Reads the current value
+/** Reads the current value, or sets a new value.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -530,7 +536,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Reads the current value
+/** Reads the current value, or sets a new value.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when

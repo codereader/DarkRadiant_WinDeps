@@ -3,6 +3,8 @@
 #ifndef _GTKMM_TREEITER_H
 #define _GTKMM_TREEITER_H
 
+#include <gtkmmconfig.h>
+
 
 #include <glibmm.h>
 
@@ -27,12 +29,8 @@
 
 
 #include <gtkmm/treemodelcolumn.h>
-#include <gtkmmconfig.h>
 #include <iterator>
 #include <gtk/gtk.h> /* for GtkTreeIter */
-
-GLIBMM_USING_STD(forward_iterator_tag)
-
 
 namespace Gtk
 {

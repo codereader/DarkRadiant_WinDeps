@@ -83,20 +83,16 @@ const Glib::Class& CheckButton_Class::init()
   return *this;
 }
 
+
 void CheckButton_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
   klass->draw_indicator = &draw_indicator_vfunc_callback;
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
 void CheckButton_Class::draw_indicator_vfunc_callback(GtkCheckButton* self, GdkRectangle* area)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -128,7 +124,7 @@ void CheckButton_Class::draw_indicator_vfunc_callback(GtkCheckButton* self, GdkR
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -138,10 +134,6 @@ void CheckButton_Class::draw_indicator_vfunc_callback(GtkCheckButton* self, GdkR
     (*base->draw_indicator)(self, area);
 
 }
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* CheckButton_Class::wrap_new(GObject* o)
@@ -177,6 +169,7 @@ GType CheckButton::get_type()
   return checkbutton_class_.init().get_type();
 }
 
+
 GType CheckButton::get_base_type()
 {
   return gtk_check_button_get_type();
@@ -194,10 +187,6 @@ CheckButton::CheckButton()
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
 void Gtk::CheckButton::draw_indicator_vfunc(GdkRectangle* area) 
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -207,7 +196,6 @@ void Gtk::CheckButton::draw_indicator_vfunc(GdkRectangle* area)
   if(base && base->draw_indicator)
     (*base->draw_indicator)(gobj(),area);
 }
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

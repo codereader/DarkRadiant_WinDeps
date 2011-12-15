@@ -8,8 +8,6 @@
 
 #include <glibmm.h>
 
-/* $Id: toolbar.hg,v 1.19 2006/04/12 11:11:25 murrayc Exp $ */
-
 /* Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -27,7 +25,7 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// This is for including the config header before any code (such as
+ // This is for including the config header before any code (such as
 // the #ifndef GTKMM_DISABLE_DEPRECATED in deprecated classes) is generated:
 
 
@@ -88,6 +86,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -100,20 +100,14 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_orientation_changed(Orientation orientation);
   virtual void on_toolbar_style_changed(ToolbarStyle style);
   virtual bool on_popup_context_menu(int x, int y, int button_number);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -126,60 +120,64 @@ public:
    * 0 the item is prepended to the start of the toolbar. If @a pos is
    * negative, the item is appended to the end of the toolbar.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param item A Gtk::ToolItem.
    * @param pos The position of the new item.
    */
   void insert(ToolItem& item, int pos);
   void insert(ToolButton& item, int pos, const sigc::slot<void>& clicked_slot);
   void insert(ToggleToolButton& item, int pos, const sigc::slot<void>& toggled_slot);
-  
+
   void append(ToolItem& item);
   void append(ToolButton& item, const sigc::slot<void>& clicked_slot);
   void append(ToggleToolButton& item, const sigc::slot<void>& toggled_slot);
-  
+
   void prepend(ToolItem& item);
   void prepend(ToolButton& item, const sigc::slot<void>& clicked_slot);
   void prepend(ToggleToolButton& item, const sigc::slot<void>& toggled_slot);
+
   
-  
-  /** Return value: the position of item on the toolbar.
+  /** Returns the position of @a item on the toolbar, starting from 0.
+   * It is an error if @a item is not a child of the toolbar.
+   * 
+   * @newin{2,4}
    * @param item A Gtk::ToolItem that is a child of @a toolbar.
    * @return The position of item on the toolbar.
-   * 
-   * @newin2p4.
    */
   int get_item_index(const ToolItem& item) const;
   
-  /** Return value: the number of items on the toolbar
-   * @return The number of items on the toolbar
+  /** Returns the number of items on the toolbar.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return The number of items on the toolbar.
    */
   int get_n_items() const;
   
-  /** Return value: The @a n<!-- -->'th Gtk::ToolItem on @a toolbar, or <tt>0</tt> if there
-   * @param n A position on the toolbar.
-   * @return The @a n<!-- -->'th Gtk::ToolItem on @a toolbar, or <tt>0</tt> if there
-   * isn't an @a n<!-- -->'th item.
+  /** Returns the @a n<!-- -->'th item on @a toolbar, or <tt>0</tt> if the
+   * toolbar does not contain an @a n<!-- -->'th item.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @param n A position on the toolbar.
+   * @return The @a n<!-- -->'th Gtk::ToolItem on @a toolbar,
+   * or <tt>0</tt> if there isn't an @a n<!-- -->'th item.
    */
   ToolItem* get_nth_item(int n);
   
-  /** Return value: The @a n<!-- -->'th Gtk::ToolItem on @a toolbar, or <tt>0</tt> if there
-   * @param n A position on the toolbar.
-   * @return The @a n<!-- -->'th Gtk::ToolItem on @a toolbar, or <tt>0</tt> if there
-   * isn't an @a n<!-- -->'th item.
+  /** Returns the @a n<!-- -->'th item on @a toolbar, or <tt>0</tt> if the
+   * toolbar does not contain an @a n<!-- -->'th item.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @param n A position on the toolbar.
+   * @return The @a n<!-- -->'th Gtk::ToolItem on @a toolbar,
+   * or <tt>0</tt> if there isn't an @a n<!-- -->'th item.
    */
   const ToolItem* get_nth_item(int n) const;
   
-  /** Return value: <tt>true</tt> if the toolbar has an overflow menu.
-   * @return <tt>true</tt> if the toolbar has an overflow menu.
+  /** Returns whether the toolbar has an overflow menu.
+   * See set_show_arrow().
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return <tt>true</tt> if the toolbar has an overflow menu.
    */
   bool get_show_arrow() const;
   
@@ -188,15 +186,14 @@ public:
    * items that there are not room are available through an
    * overflow menu.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param show_arrow Whether to show an overflow menu.
    */
-  void set_show_arrow(bool show_arrow = true);
-
+  void set_show_arrow(bool show_arrow =  true);
 
 /* Style methods */
 
-  //TODO: Probably remove these when we derive from ToolShell, which has the same methods:
+  // TODO: Remove these when we derive from ToolShell, which has the same methods:
   
   /** Sets whether a toolbar should appear horizontally or vertically.
    * 
@@ -207,9 +204,9 @@ public:
   
   /** Retrieves the current orientation of the toolbar. See
    * set_orientation().
-   * @return The orientation
    * 
    * Deprecated: 2.16: Use Gtk::Orientable::get_orientation() instead.
+   * @return The orientation.
    */
   Orientation get_orientation() const;
 
@@ -235,7 +232,7 @@ public:
    * @deprecated Use The toolkit-wide Gtk::Settings::property_gtk_enable_tooltips instead
    * @param enable Set to <tt>false</tt> to disable the tooltips, or <tt>true</tt> to enable them.
    */
-  void set_tooltips(bool enable = true);
+  void set_tooltips(bool enable =  true);
 #endif // GTKMM_DISABLE_DEPRECATED
 
 
@@ -243,11 +240,11 @@ public:
 
   /** Retrieves whether tooltips are enabled. See
    * set_tooltips().
-   * @deprecated Use The toolkit-wide Gtk::Settings::property_gtk_enable_tooltips instead
-   * @return <tt>true</tt> if tooltips are enabled
    * 
    * Deprecated: 2.14: The toolkit-wide Gtk::Settings:gtk-enable-tooltips property
    * is now used instead.
+   * @deprecated Use The toolkit-wide Gtk::Settings::property_gtk_enable_tooltips instead
+   * @return <tt>true</tt> if tooltips are enabled.
    */
   bool get_tooltips() const;
 #endif // GTKMM_DISABLE_DEPRECATED
@@ -257,8 +254,8 @@ public:
    * user preferences will be used to determine the toolbar style.
    */
   void unset_toolbar_style();
-  
-  //Note that gtk_toolbar_set_icon_size() and gtk_toolbar_unset_icon_size() were 
+
+  //Note that gtk_toolbar_set_icon_size() and gtk_toolbar_unset_icon_size() were
   //deprecated sometime before GTK+ 2.4, but were undeprecated in GTK+ 2.12.
   
   /** This function sets the size of stock icons in the toolbar. You
@@ -270,7 +267,7 @@ public:
    * application toolbars should respect the user preferences for the
    * size of icons.
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param icon_size The Gtk::IconSize that stock icons in the toolbar shall have.
    */
   void set_icon_size(IconSize icon_size);
@@ -278,35 +275,42 @@ public:
   /** Unsets toolbar icon size set with set_icon_size(), so that
    * user preferences will be used to determine the icon size.
    * 
-   * @newin2p12
+   * @newin{2,12}
    */
   void unset_icon_size();
 
   
   /** Retrieves the icon size for the toolbar. See set_icon_size().
-   * @return The current icon size for the icons on the toolbar.
+   * @return The current icon size for the icons on
+   * the toolbar.
    */
   IconSize get_icon_size() const;
- 
+
   
-  /** Return value: The relief style of buttons on @a toolbar.
-   * @return The relief style of buttons on @a toolbar.
+  /** Returns the relief style of buttons on @a toolbar. See
+   * Gtk::Button::set_relief().
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return The relief style of buttons on @a toolbar.
    */
   ReliefStyle get_relief_style() const;
   
-  /** Return value: The position corresponding to the point ( @a x, @a y) on the toolbar.
+  /** Returns the position corresponding to the indicated point on
+   *  @a toolbar. This is useful when dragging items to the toolbar:
+   * this function returns the position a new item should be
+   * inserted.
+   * 
+   *  @a x and @a y are in @a toolbar coordinates.
+   * 
+   * @newin{2,4}
    * @param x X coordinate of a point on the toolbar.
    * @param y Y coordinate of a point on the toolbar.
    * @return The position corresponding to the point ( @a x, @a y) on the toolbar.
-   * 
-   * @newin2p4.
    */
   int get_drop_index(int x, int y) const;
   
   /** Highlights @a toolbar to give an idea of what it would look like
-   * if @a item was added to @a toolbar at the position indicated by @a index. 
+   * if @a item was added to @a toolbar at the position indicated by @a index.
    * If @a item is <tt>0</tt>, highlighting is turned off. In that case @a index 
    * is ignored.
    * 
@@ -315,7 +319,7 @@ public:
    * added to any widget hierarchy or used as highlight item for another
    * toolbar.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param tool_item A Gtk::ToolItem, or <tt>0</tt> to turn of highlighting.
    * @param index A position on @a toolbar.
    */
@@ -332,9 +336,9 @@ public:
 
   Glib::SignalProxy1< void,Orientation > signal_orientation_changed();
 
-  
-  /** Emitted when the style of the toolbar changes. 
-   * 
+
+  /** Emitted when the style of the toolbar changes.
+   *
    * @param @style The new ToolbarStyle of the toolbar.
    *
    * @par Prototype:
@@ -343,7 +347,7 @@ public:
 
   Glib::SignalProxy1< void,ToolbarStyle > signal_toolbar_style_changed();
 
-  
+
   /** Emitted when the user right-clicks the toolbar or uses the
    * keybinding to display a popup menu.
    *
@@ -364,30 +368,18 @@ public:
 
   Glib::SignalProxy3< bool,int,int,int > signal_popup_context_menu();
 
-  
+
   #ifndef GTKMM_DISABLE_DEPRECATED
   //This was called get_tooltips_object() to avoid a clash with get_tooltips(), which just says whether they are enabled.
-  ///@deprecated Use the Gtk::Tooltip API instead. 
+  ///@deprecated Use the Gtk::Tooltip API instead.
   Tooltips* get_tooltips_object() const;
   #endif //GTKMM_DISABLE_DEPRECATED
-  
-  //This is probably the same as Container::children().size(), which is deprecated anyway?
-  //_MEMBER_GET(num_children, num_children, int, gint)
-
-  //There is already set/get_orientation():
-  //_MEMBER_GET(orientation, orientation, GtkOrientation, Orientation)
-
-  //There is already set/get_toolbar_style():
-  //_MEMBER_GET(style, style, GtkToolbarStyle, ToolbarStyle)
-
-  //There is already set/get_icon_size():
-  //_MEMBER_GET(icon_size, icon_size, int, gint)
 
   //Ignore deprecated GtkToolbarAPI:
   //Normally we just deprecate it in gtkmm too,
   //but the GtkToolbar compatibility system is particularly unpleasant, so we just removed it in gtkmm 2.4. murrayc.
   
-    
+
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The orientation of the orientable.
    *
@@ -446,6 +438,66 @@ public:
    * the value of the property changes.
    */
   Glib::PropertyProxy_ReadOnly<bool> property_show_arrow() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** If the tooltips of the toolbar should be active or not.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_tooltips() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** If the tooltips of the toolbar should be active or not.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_tooltips() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Size of icons in this toolbar.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<IconSize> property_icon_size() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Size of icons in this toolbar.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<IconSize> property_icon_size() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the icon-size property has been set.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_icon_size_set() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the icon-size property has been set.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_icon_size_set() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

@@ -29,20 +29,16 @@ public:
 
 protected:
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   //Callbacks (default signal handlers):
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
   static void ready_callback(GtkPrintOperationPreview* self, GtkPrintContext* p0);
   static void got_page_size_callback(GtkPrintOperationPreview* self, GtkPrintContext* p0, GtkPageSetup* p1);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
   //Callbacks (virtual functions):
-#ifdef GLIBMM_VFUNCS_ENABLED
   static void render_page_vfunc_callback(GtkPrintOperationPreview* self, gint page_nr);
   static void end_preview_vfunc_callback(GtkPrintOperationPreview* self);
   static gboolean is_selected_vfunc_callback(GtkPrintOperationPreview* self, gint page_nr);
-#endif //GLIBMM_VFUNCS_ENABLED
 };
 
 

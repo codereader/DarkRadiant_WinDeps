@@ -35,6 +35,13 @@ ThemedIcon::ThemedIcon(const std::string& iconname, bool use_default_callbacks)
   Glib::Object(Glib::ConstructParams(themedicon_class_.init(), "name",iconname.c_str(),"use-default-fallbacks",gboolean(use_default_callbacks), static_cast<char*>(0)))
 {}
 
+Glib::StringArrayHandle ThemedIcon::get_names() const
+{
+ return Glib::StringArrayHandle(
+    g_themed_icon_get_names(const_cast<GThemedIcon*>(gobj())),
+    Glib::OWNERSHIP_DEEP);
+
+}
 
 } //namespace Gio
 
@@ -89,18 +96,8 @@ void ThemedIcon_Class::class_init_function(void* g_class, void* class_data)
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* ThemedIcon_Class::wrap_new(GObject* object)
@@ -152,6 +149,7 @@ Glib::RefPtr<ThemedIcon> ThemedIcon::create(const std::string& iconname, bool us
 {
   return Glib::RefPtr<ThemedIcon>( new ThemedIcon(iconname, use_default_callbacks) );
 }
+
 void ThemedIcon::prepend_name(const std::string& iconname)
 {
 g_themed_icon_prepend_name(gobj(), iconname.c_str()); 
@@ -169,13 +167,6 @@ Glib::PropertyProxy_ReadOnly<bool> ThemedIcon::property_use_default_fallbacks() 
   return Glib::PropertyProxy_ReadOnly<bool>(this, "use-default-fallbacks");
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gio

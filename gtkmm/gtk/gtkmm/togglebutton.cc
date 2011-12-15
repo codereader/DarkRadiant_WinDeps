@@ -100,23 +100,17 @@ const Glib::Class& ToggleButton_Class::init()
   return *this;
 }
 
+
 void ToggleButton_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->toggled = &toggled_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void ToggleButton_Class::toggled_callback(GtkToggleButton* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -148,7 +142,7 @@ void ToggleButton_Class::toggled_callback(GtkToggleButton* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -157,7 +151,6 @@ void ToggleButton_Class::toggled_callback(GtkToggleButton* self)
   if(base && base->toggled)
     (*base->toggled)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* ToggleButton_Class::wrap_new(GObject* o)
@@ -192,6 +185,7 @@ GType ToggleButton::get_type()
 {
   return togglebutton_class_.init().get_type();
 }
+
 
 GType ToggleButton::get_base_type()
 {
@@ -294,7 +288,6 @@ Glib::PropertyProxy_ReadOnly<bool> ToggleButton::property_draw_indicator() const
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::ToggleButton::on_toggled()
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -304,10 +297,6 @@ void Gtk::ToggleButton::on_toggled()
   if(base && base->toggled)
     (*base->toggled)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

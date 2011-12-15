@@ -20,19 +20,33 @@
 #include <glibmm/helperlist.h>
 #include <gtkmm/container.h>
 #include <gtkmm/enums.h>
+
+//TODO: Careful of including this before box.h,
+//because we need to undef some things first.
+//TODO: Maybe do all includes of gtk.h in a single file.
 #include <gtk/gtk.h> /* for GtkTableChild */
 
 _DEFS(gtkmm,gtk)
 _PINCLUDE(gtkmm/private/container_p.h)
+
+#m4 _PUSH(SECTION_CC_PRE_INCLUDES)
+//Allow us to use the ->children struct field.
+//TODO: We probably need to remove the entire STL-style children() API in a future ABI break.
+#undef GSEAL_ENABLE
+#m4 _POP()
 
 namespace Gtk
 {
 
 class Table;
 
+/** @deprecated Use Container::get_children() instead.
+ */
 namespace Table_Helpers
 {
 
+/** @deprecated Use Container::get_children() instead.
+ */
 class Child : protected _GtkTableChild
 {
 private:
@@ -43,6 +57,7 @@ public:
   inline _GtkTableChild* gobj() {return (this);}
   inline const _GtkTableChild* gobj() const {return (this);}
 
+_DEPRECATE_IFDEF_START
   Widget* get_widget() const;
 
   //TODO: Which of the GtkTableChild's fields are public API?
@@ -62,10 +77,11 @@ public:
   bool get_yshrink() const;
   bool get_xfill() const;
   bool get_yfill() const;
+_DEPRECATE_IFDEF_END
 
 protected:
   inline GtkTable* parent()
-    { return (GtkTable*) (gobj()->widget->parent); }
+    { return GTK_TABLE(gtk_widget_get_parent(gobj()->widget)); }
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   friend class Dummy_; // silence the compiler (Child has only private ctors)
@@ -161,16 +177,27 @@ public:
   _WRAP_METHOD(void set_homogeneous(bool homogeneous = true), gtk_table_set_homogeneous)
   _WRAP_METHOD(bool get_homogeneous() const, gtk_table_get_homogeneous)
 
+  _WRAP_METHOD(void get_size(guint& rows,  guint& columns) const, gtk_table_get_size)
+
+  /** @deprecated Use Container::get_children() instead.
+   */
   typedef Table_Helpers::TableList TableList;
 
-
+_DEPRECATE_IFDEF_START
+  /** @deprecated Use Container::get_children() instead.
+   */
   TableList& children();
+
+  /** @deprecated Use Container::get_children() instead.
+   */
   const TableList& children() const;
+_DEPRECATE_IFDEF_END
 
   _WRAP_PROPERTY("n-rows", guint)
   _WRAP_PROPERTY("n-columns", guint)
   _WRAP_PROPERTY("column-spacing", guint)
   _WRAP_PROPERTY("row-spacing", guint)
+  _WRAP_PROPERTY("homogeneous", bool)
 
 protected:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -179,4 +206,3 @@ protected:
 };
 
 } // namespace Gtk
-

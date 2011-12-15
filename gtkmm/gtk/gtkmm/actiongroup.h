@@ -72,6 +72,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -88,7 +90,8 @@ private:
 
 
 protected:
-  explicit ActionGroup(const Glib::ustring& name = Glib::ustring());
+    explicit ActionGroup(const Glib::ustring& name =  Glib::ustring());
+
 
 public:
   
@@ -96,70 +99,76 @@ public:
 
   
   /** Gets the name of the action group.
-   * @return The name of the action group.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return The name of the action group.
    */
   Glib::ustring get_name() const;
 
   
-  /** Return value: <tt>true</tt> if the group is sensitive.
-   * @return <tt>true</tt> if the group is sensitive.
+  /** Returns <tt>true</tt> if the group is sensitive.  The constituent actions
+   * can only be logically sensitive (see is_sensitive()) if
+   * they are sensitive (see get_sensitive()) and their group
+   * is sensitive.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return <tt>true</tt> if the group is sensitive.
    */
   bool get_sensitive() const;
   
   /** Changes the sensitivity of @a action_group
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param sensitive New sensitivity.
    */
-  void set_sensitive(bool sensitive = true);
+  void set_sensitive(bool sensitive =  true);
   
-  /** Return value: <tt>true</tt> if the group is visible.
-   * @return <tt>true</tt> if the group is visible.
+  /** Returns <tt>true</tt> if the group is visible.  The constituent actions
+   * can only be logically visible (see is_visible()) if
+   * they are visible (see get_visible()) and their group
+   * is visible.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return <tt>true</tt> if the group is visible.
    */
   bool get_visible() const;
   
   /** Changes the visible of @a action_group.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param visible New visiblity.
    */
-  void set_visible(bool visible = true);
+  void set_visible(bool visible =  true);
                                       
   
   /** Looks up an action in the action group by name.
-   * @param action_name The name of the action.
-   * @return The action, or <tt>0</tt> if no action by that name exists
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @param action_name The name of the action.
+   * @return The action, or <tt>0</tt> if no action by that name exists.
    */
   Glib::RefPtr<Action> get_action(const Glib::ustring& action_name);
   
   /** Looks up an action in the action group by name.
-   * @param action_name The name of the action.
-   * @return The action, or <tt>0</tt> if no action by that name exists
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @param action_name The name of the action.
+   * @return The action, or <tt>0</tt> if no action by that name exists.
    */
   Glib::RefPtr<const Action> get_action(const Glib::ustring& action_name) const;
 
   
   /** Lists the actions in the action group.
-   * @return An allocated list of the action objects in the action group
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return An allocated list of the action objects in the action group.
    */
   Glib::ListHandle< Glib::RefPtr<Action> > get_actions();
   
   /** Lists the actions in the action group.
-   * @return An allocated list of the action objects in the action group
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return An allocated list of the action objects in the action group.
    */
   Glib::ListHandle< Glib::RefPtr<const Action> > get_actions() const;
     
@@ -180,7 +189,7 @@ public:
   
   /** Removes an action object from the action group.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param action An action.
    */
   void remove(const Glib::RefPtr<Action>& action);
@@ -189,10 +198,10 @@ public:
   
   /** Translates a string using the specified translate_func(). This
    * is mainly intended for language bindings.
-   * @param string A string.
-   * @return The translation of @a string
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @param string A string.
+   * @return The translation of @a string.
    */
   Glib::ustring translate_string(const Glib::ustring& str) const;
   
@@ -269,23 +278,69 @@ public:
    */
 
   Glib::SignalProxy1< void,const Glib::RefPtr<Action>& > signal_post_activate();
- 
+
+  
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** A name for the action group.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_name() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the action group is enabled.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_sensitive() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the action group is enabled.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_sensitive() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the action group is visible.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_visible() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the action group is visible.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_visible() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

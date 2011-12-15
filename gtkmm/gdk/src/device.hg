@@ -17,8 +17,12 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <gdkmm/window.h>
+#include <vector>
+
+//#include <gdkmm/window.h>
+#include <gdkmm/cursor.h>
 #include <gdkmm/event.h>
+#include <gdkmm/timecoord.h>
 #include <gdk/gdk.h>
 
 
@@ -29,8 +33,15 @@ _PINCLUDE(glibmm/private/object_p.h)
 namespace Gdk
 {
 
+_WRAP_ENUM(EventMask, GdkEventMask)
 _WRAP_ENUM(InputMode, GdkInputMode)
 _WRAP_ENUM(InputSource, GdkInputSource)
+_WRAP_ENUM(DeviceType, GdkDeviceType)
+_WRAP_ENUM(GrabOwnership, GdkGrabOwnership)
+_WRAP_ENUM(GrabStatus, GdkGrabStatus)
+
+class Display;
+class Window;
 
 /** A Gdk::Device instance contains a detailed description of an extended input device.
  */
@@ -43,41 +54,66 @@ protected:
 
 public:
 
-  _WRAP_METHOD(void set_source(InputSource source), gdk_device_set_source)
+  _WRAP_METHOD(Glib::ustring get_name() const, gdk_device_get_name)
+  _WRAP_METHOD(bool get_has_cursor() const, gdk_device_get_has_cursor)
+
+  _WRAP_METHOD(InputSource get_source() const, gdk_device_get_source)
+  _WRAP_METHOD(InputMode get_mode() const, gdk_device_get_mode)
   _WRAP_METHOD(bool set_mode(InputMode mode), gdk_device_set_mode)
+  _WRAP_METHOD(bool get_key(guint index_, guint& keyval, ModifierType& modifiers) const, gdk_device_get_key)
   _WRAP_METHOD(void set_key(guint index_, guint keyval, ModifierType modifiers), gdk_device_set_key)
+  _WRAP_METHOD(AxisUse get_axis_use(guint index_) const, gdk_device_get_axis_use)
   _WRAP_METHOD(void set_axis_use(guint index_, AxisUse use), gdk_device_set_axis_use)
   _WRAP_METHOD(void get_state(const Glib::RefPtr<Window>& window, double& axes, ModifierType& mask), gdk_device_get_state)
-  _WRAP_METHOD(bool get_history(const Glib::RefPtr<Window>& window, guint32 start, guint32 stop, GdkTimeCoord**& events, int& n_events), gdk_device_get_history)
+
+  // TODO: docs.
+  std::vector<TimeCoord> get_history(const Glib::RefPtr<Window>& window, guint32 start, guint32 stop) const;
+  _IGNORE(gdk_device_get_history)
+//#m4 _CONVERSION(`GList*',`std::vector<Glib::RefPtr<Gdk::Device> >',`Glib::ListHandler<Glib::RefPtr<Gdk::Device> >::list_to_vector($3, Glib::OWNERSHIP_SHALLOW)')
+  //_WRAP_METHOD(std::vector<Glib::RefPtr<Gdk::Device> > list_slave_devices(), gdk_device_list_slave_devices)
+  //_WRAP_METHOD(std::vector<Glib::RefPtr<const Gdk::Device> > list_slave_devices() const, gdk_device_list_slave_devices, constversion)
+
+  _WRAP_METHOD(int get_n_axes() const, gdk_device_get_n_axes)
+ //TODO: A list of GdkAtom, which we should show as strings: _WRAP_METHOD(GList *  gdk_device_list_axes      () const, gdk_device_list_axes)
+
+  //TODO: Use a string instead of a GdkAtom:
+  _WRAP_METHOD(bool get_axis_value(double& axes, GdkAtom axis_label, double& value) const, gdk_device_get_axis_value )
+
   _WRAP_METHOD(bool get_axis(double& axes, AxisUse use, double& value) const, gdk_device_get_axis)
 
-  /** Gets the name of this device.
-   * @result The name of this device.
-   */
-  _MEMBER_GET(name, name, Glib::ustring, gchar*)
+  _WRAP_METHOD(Glib::RefPtr<Display> get_display(), gdk_device_get_display, refreturn)
+  _WRAP_METHOD(Glib::RefPtr<const Display> get_display() const, gdk_device_get_display, refreturn, constversion)
+
+  _WRAP_METHOD(Glib::RefPtr<Device> get_associated_device(), gdk_device_get_associated_device, refreturn)
+  _WRAP_METHOD(Glib::RefPtr<const Device> get_associated_device() const, gdk_device_get_associated_device, refreturn, constversion)
+
+  _WRAP_METHOD(DeviceType get_device_type() const, gdk_device_get_device_type)
+
+  _WRAP_METHOD(GrabStatus grab(const Glib::RefPtr<Window>& window, GrabOwnership grab_ownership, bool owner_events, EventMask event_mask, const Glib::RefPtr<Cursor>& cursor, guint32 time_), gdk_device_grab)
+
+  // TODO: docs.
+  GrabStatus grab(const Glib::RefPtr<Window>& window, GrabOwnership grab_ownership, bool owner_events, EventMask event_mask, guint32 time_);
+
+  _WRAP_METHOD(void ungrab(guint32 time_), gdk_device_ungrab)
+  _WRAP_METHOD(void warp(const Glib::RefPtr<Screen>&, int x, int y), gdk_device_warp)
+
+  // TODO: docs.
+  void get_position(int& x, int& y) const;
   
-  /** Gets the type of this device.
-   * @result The type of this device.
-   */
-  _MEMBER_GET(source, source, InputSource, GdkInputSource)
+  // TODO: docs.
+  void get_position(Glib::RefPtr<Screen>& screen, int& x, int& y) const;
+  _IGNORE(gdk_device_get_position)
 
-  /** Gets the mode of this device.
-   * @result The mode of this device.
-   */
-  _MEMBER_GET(mode, mode, InputMode, GdkInputMode)
-    
-  /** Discover whether the pointer follows device motion.
-   * @result true if the pointer follows device motion.
-   */
-  _MEMBER_GET(has_cursor, has_cursor, bool, gboolean)
+  _WRAP_METHOD(Glib::RefPtr<Window> get_window_at_position(int& win_x, int& win_y), gdk_device_get_window_at_position, refreturn)
 
-  //TODO: Add suitable accessor for the information in these fields. For now, people must use gobj() and access them directly.
-  //gint num_axes	the length of the axes array.
-  //GdkDeviceAxis *axes	an array of GdkDeviceAxis, describing the axes of this device.
-  //
-  //gint num_keys	the length of the keys array.
-  //GdkDeviceKey *keys	an array of GdkDeviceKey, describing the mapped macro buttons of this device.      
+  _WRAP_METHOD(Glib::RefPtr<const Window> get_window_at_position(int& win_x, int& win_y) const, gdk_device_get_window_at_position, refreturn, constversion)
+  
+  //TODO: Documentation
+  Glib::RefPtr<Window> get_window_at_position();
+  
+  //TODO: Documentation
+  Glib::RefPtr<const Window> get_window_at_position() const;
+  
 };
 
 } // namespace Gdk
-

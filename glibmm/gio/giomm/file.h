@@ -25,6 +25,7 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+ 
 #include <glibmm/error.h>
 #include <glibmm/interface.h>
 #include <giomm/appinfo.h>
@@ -33,9 +34,11 @@
 #include <giomm/fileenumerator.h>
 #include <giomm/fileinfo.h>
 #include <giomm/fileinputstream.h>
+#include <giomm/fileiostream.h>
 #include <giomm/filemonitor.h>
 #include <giomm/fileoutputstream.h>
 #include <giomm/mountoperation.h>
+#include <giomm/drive.h>
 #include <giomm/error.h> //Because this is thrown by some of these methods.
 //#include <giomm/volume.h>
 
@@ -58,7 +61,7 @@ namespace Gio
 class Mount;
 class Volume;
 
-/** @addtogroup giommEnums Enums and Flags */
+/** @addtogroup giommEnums giomm Enums and Flags */
 
 /**
  * @ingroup giommEnums
@@ -73,8 +76,8 @@ class Volume;
  */
 enum FileQueryInfoFlags
 {
-  FILE_QUERY_INFO_NONE = 0,
-  FILE_QUERY_INFO_NOFOLLOW_SYMLINKS = 1 << 0
+  FILE_QUERY_INFO_NONE = 0x0,
+  FILE_QUERY_INFO_NOFOLLOW_SYMLINKS = (1 << 0)
 };
 
 /** @ingroup giommEnums */
@@ -119,9 +122,9 @@ inline FileQueryInfoFlags& operator^=(FileQueryInfoFlags& lhs, FileQueryInfoFlag
  */
 enum FileCreateFlags
 {
-  FILE_CREATE_NONE = 0,
-  FILE_CREATE_PRIVATE = 1 << 0,
-  FILE_CREATE_REPLACE_DESTINATION = 1 << 1
+  FILE_CREATE_NONE = 0x0,
+  FILE_CREATE_PRIVATE = (1 << 0),
+  FILE_CREATE_REPLACE_DESTINATION = (1 << 1)
 };
 
 /** @ingroup giommEnums */
@@ -166,13 +169,13 @@ inline FileCreateFlags& operator^=(FileCreateFlags& lhs, FileCreateFlags rhs)
  */
 enum FileCopyFlags
 {
-  FILE_COPY_NONE = 0,
-  FILE_COPY_OVERWRITE = 1 << 0,
-  FILE_COPY_BACKUP = 1 << 1,
-  FILE_COPY_NOFOLLOW_SYMLINKS = 1 << 2,
-  FILE_COPY_ALL_METADATA = 1 << 3,
-  FILE_COPY_NO_FALLBACK_FOR_MOVE = 1 << 4,
-  FILE_COPY_TARGET_DEFAULT_PERMS = 1 << 5
+  FILE_COPY_NONE = 0x0,
+  FILE_COPY_OVERWRITE = (1 << 0),
+  FILE_COPY_BACKUP = (1 << 1),
+  FILE_COPY_NOFOLLOW_SYMLINKS = (1 << 2),
+  FILE_COPY_ALL_METADATA = (1 << 3),
+  FILE_COPY_NO_FALLBACK_FOR_MOVE = (1 << 4),
+  FILE_COPY_TARGET_DEFAULT_PERMS = (1 << 5)
 };
 
 /** @ingroup giommEnums */
@@ -217,8 +220,9 @@ inline FileCopyFlags& operator^=(FileCopyFlags& lhs, FileCopyFlags rhs)
  */
 enum FileMonitorFlags
 {
-  FILE_MONITOR_NONE = 0,
-  FILE_MONITOR_WATCH_MOUNTS = 1 << 0
+  FILE_MONITOR_NONE = 0x0,
+  FILE_MONITOR_WATCH_MOUNTS = (1 << 0),
+  FILE_MONITOR_SEND_MOVED = (1 << 1)
 };
 
 /** @ingroup giommEnums */
@@ -248,61 +252,6 @@ inline FileMonitorFlags& operator&=(FileMonitorFlags& lhs, FileMonitorFlags rhs)
 /** @ingroup giommEnums */
 inline FileMonitorFlags& operator^=(FileMonitorFlags& lhs, FileMonitorFlags rhs)
   { return (lhs = static_cast<FileMonitorFlags>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs))); }
-
-
-/**
- * @ingroup giommEnums
- * @par Bitwise operators:
- * <tt>%MountUnmountFlags operator|(MountUnmountFlags, MountUnmountFlags)</tt><br>
- * <tt>%MountUnmountFlags operator&(MountUnmountFlags, MountUnmountFlags)</tt><br>
- * <tt>%MountUnmountFlags operator^(MountUnmountFlags, MountUnmountFlags)</tt><br>
- * <tt>%MountUnmountFlags operator~(MountUnmountFlags)</tt><br>
- * <tt>%MountUnmountFlags& operator|=(MountUnmountFlags&, MountUnmountFlags)</tt><br>
- * <tt>%MountUnmountFlags& operator&=(MountUnmountFlags&, MountUnmountFlags)</tt><br>
- * <tt>%MountUnmountFlags& operator^=(MountUnmountFlags&, MountUnmountFlags)</tt><br>
- */
-enum MountUnmountFlags
-{
-  MOUNT_UNMOUNT_NONE = 0,
-  MOUNT_UNMOUNT_FORCE = 1 << 0
-};
-
-/** @ingroup giommEnums */
-inline MountUnmountFlags operator|(MountUnmountFlags lhs, MountUnmountFlags rhs)
-  { return static_cast<MountUnmountFlags>(static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs)); }
-
-/** @ingroup giommEnums */
-inline MountUnmountFlags operator&(MountUnmountFlags lhs, MountUnmountFlags rhs)
-  { return static_cast<MountUnmountFlags>(static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs)); }
-
-/** @ingroup giommEnums */
-inline MountUnmountFlags operator^(MountUnmountFlags lhs, MountUnmountFlags rhs)
-  { return static_cast<MountUnmountFlags>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs)); }
-
-/** @ingroup giommEnums */
-inline MountUnmountFlags operator~(MountUnmountFlags flags)
-  { return static_cast<MountUnmountFlags>(~static_cast<unsigned>(flags)); }
-
-/** @ingroup giommEnums */
-inline MountUnmountFlags& operator|=(MountUnmountFlags& lhs, MountUnmountFlags rhs)
-  { return (lhs = static_cast<MountUnmountFlags>(static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs))); }
-
-/** @ingroup giommEnums */
-inline MountUnmountFlags& operator&=(MountUnmountFlags& lhs, MountUnmountFlags rhs)
-  { return (lhs = static_cast<MountUnmountFlags>(static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs))); }
-
-/** @ingroup giommEnums */
-inline MountUnmountFlags& operator^=(MountUnmountFlags& lhs, MountUnmountFlags rhs)
-  { return (lhs = static_cast<MountUnmountFlags>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs))); }
-
-
-/**
- * @ingroup giommEnums
- */
-enum MountMountFlags
-{
-  MOUNT_MOUNT_NONE
-};
 
 
 /** File and directory handling.
@@ -382,7 +331,7 @@ public:
   ///Provides access to the underlying C GObject.
   GFile*       gobj()       { return reinterpret_cast<GFile*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const GFile* gobj() const { return reinterpret_cast<GFile*>(gobject_); }
 
 private:
@@ -450,6 +399,8 @@ public:
   /** Creates a hash value for a File.
    * 
    * This call does no blocking i/o.
+   * 
+   * Virtual: hash
    * @param file #gconstpointer to a File.
    * @return 0 if @a file is not a valid File, otherwise an 
    * integer that can be used as hash value for the File. 
@@ -460,8 +411,8 @@ public:
 
   //Not that the implementation of equal() is already virtual via equal_vfunc().
   
-  /** Checks equality of two given File&lt;!-- --&gt;s. Note that two
-   * File&lt;!-- --&gt;s that differ can still refer to the same
+  /** Checks equality of two given File<!-- -->s. Note that two
+   * File<!-- -->s that differ can still refer to the same
    * file on the filesystem due to various forms of filename
    * aliasing.
    * 
@@ -547,6 +498,27 @@ public:
   Glib::RefPtr<File> get_parent() const;
 
   
+  /** Checks if @a file has a parent, and optionally, if it is @a parent.
+   * 
+   * If @a parent is <tt>0</tt> then this function returns <tt>true</tt> if @a file has any
+   * parent at all.  If @a parent is non-<tt>0</tt> then <tt>true</tt> is only returned
+   * if @a file is a child of @a parent.
+   * 
+   * @newin{2,24}
+   * @param parent The parent to check for, or <tt>0</tt>.
+   * @return <tt>true</tt> if @a file is a child of @a parent (or any parent in the
+   * case that @a parent is <tt>0</tt>).
+   */
+  bool has_parent(const Glib::RefPtr<File>& parent) const;
+
+  /** Checks if the file has any parent at all.
+   * @result true if the file is a child of any parent.
+   *
+   * @newin2p24
+   */
+  bool has_parent() const;
+
+  
   /** Gets a child of @a file with basename equal to @a name.
    * 
    * Note that the file with that specific name might not exist, but
@@ -573,20 +545,20 @@ public:
    * <tt>0</tt> if the display name couldn't be converted.  
    * Free the returned object with Glib::object_unref().
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<File> get_child_for_display_name(const Glib::ustring& display_name) const;
-#else
-  Glib::RefPtr<File> get_child_for_display_name(const Glib::ustring& display_name, std::auto_ptr<Glib::Error>& error) const;
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
+  
   /** Checks whether @a file has the prefix specified by @a prefix. In other word, 
-   * if the names of inital elements of @a file&lt;!-- --&gt;s pathname match @a prefix.
+   * if the names of inital elements of @a file<!-- -->s pathname match @a prefix.
+   * Only full pathname elements are matched, so a path like /foo is not
+   * considered a prefix of /foobar, only of /foo/bar.
    * 
    * This call does no i/o, as it works purely on names. As such it can 
    * sometimes return <tt>false</tt> even if @a file is inside a @a prefix (from a 
    * filesystem point of view), because the prefix of @a file is an alias 
    * of @a prefix.
+   * 
+   * Virtual: prefix_matches
    * @param prefix Input File.
    * @return <tt>true</tt> if the @a files's parent, grandparent, etc is @a prefix. 
    * <tt>false</tt> otherwise.
@@ -669,12 +641,7 @@ public:
    * @param cancellable A Cancellable.
    * @return FileInputStream or <tt>0</tt> on error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileInputStream> read(const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  Glib::RefPtr<FileInputStream> read(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Opens a file for reading. The result is a FileInputStream that
    * can be used to read the contents of the file.
@@ -684,11 +651,7 @@ public:
    * Other errors are possible too, and depend on what kind of filesystem the file is on.
    * @return FileInputStream or an empty RefPtr on error.
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileInputStream> read();
-  #else
-  Glib::RefPtr<FileInputStream> read(std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Asynchronously opens the file for reading.
    * For more details, see read() which is the synchronous version of this call.
@@ -716,11 +679,7 @@ public:
    * @return A FileInputStream or <tt>0</tt> on error.
    * Free the returned object with Glib::object_unref().
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileInputStream> read_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  Glib::RefPtr<FileInputStream> read_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
   /** Gets an output stream for appending data to the file. If
@@ -744,11 +703,7 @@ public:
    * @param cancellable Optional Cancellable object.
    * @return A FileOutputStream.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileOutputStream> append_to(const Glib::RefPtr<Cancellable>& cancellable, FileCreateFlags flags = FILE_CREATE_NONE);
-#else
-  Glib::RefPtr<FileOutputStream> append_to(const Glib::RefPtr<Cancellable>& cancellable, FileCreateFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Gets an output stream for appending data to the file. If
    * the file doesn't already exist it is created.
@@ -766,18 +721,14 @@ public:
    * @param flags A set of FileCreateFlags.
    * @return A FileOutputStream.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileOutputStream> append_to(FileCreateFlags flags = FILE_CREATE_NONE);
-#else
-  Glib::RefPtr<FileOutputStream> append_to(FileCreateFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
-  //We renamed this to create_file from (g_file_create()), to avoid confusion with static create() methods, 
+  //We renamed this to create_file from (g_file_create() and g_file_create_readwrite), to avoid confusion with static create() methods, 
   //but I would still like to choose a different word, but can't think of a good one. murrayc.
 
   /** Creates a new file and returns an output stream for writing to it.
-   * The file must not already exists.
+   * The file must not already exist.
    * 
    * By default files created are generally readable by everyone,
    * but if you pass FILE_CREATE_PRIVATE in @a flags the file
@@ -801,14 +752,10 @@ public:
    * @param flags a set of FileCreateFlags.
    * @return A FileOutputStream for the newly created file.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileOutputStream> create_file(const Glib::RefPtr<Cancellable>& cancellable, FileCreateFlags flags = FILE_CREATE_NONE);
-#else
-  Glib::RefPtr<FileOutputStream> create_file(const Glib::RefPtr<Cancellable>& cancellable, FileCreateFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Creates a new file and returns an output stream for writing to it.
-   * The file must not already exists.
+   * The file must not already exist.
    * 
    * By default files created are generally readable by everyone,
    * but if you pass FILE_CREATE_PRIVATE in @a flags the file
@@ -828,11 +775,66 @@ public:
    * @param flags a set of FileCreateFlags.
    * @return A FileOutputStream for the newly created file.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileOutputStream> create_file(FileCreateFlags flags = FILE_CREATE_NONE);
-#else
-  Glib::RefPtr<FileOutputStream> create_file(FileCreateFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
+  
+
+  /** Creates a new file and returns a stream for reading and writing to it.
+   * The file must not already exist.
+   * 
+   * By default files created are generally readable by everyone,
+   * but if you pass FILE_CREATE_PRIVATE in @a flags the file
+   * will be made readable only to the current user, to the level that
+   * is supported on the target filesystem.
+   * 
+   * The operation can be cancelled by triggering the cancellable object from another thread. 
+   * If the operation was cancelled, a Gio::Error with CANCELLED will be thrown.
+   * 
+   * If a file with this name already exists a Gio::Error with EXISTS 
+   * will be thrown. If the file is a directory a Gio::Error with IS_DIRECTORY
+   * will be thrown.
+   *
+   * Some filesystems don't allow all filenames, and may
+   * throw a Gio::Error with INVALID_FILENAME, and if the name
+   * is to longa Gio::Error with FILENAME_TOO_LONG will be thrown.
+   * Other errors are possible too, and depend on what kind of
+   * filesystem the file is on.
+   *
+   * Note that in many non-local file cases read and write streams are not
+   * supported, so make sure you really need to do read and write streaming,
+   * rather than just opening for reading or writing.
+   *
+   * @param cancellable A Cancellable object which can be used to cancel the operation.
+   * @param flags a set of FileCreateFlags.
+   * @return A FileOutputStream for the newly created file.
+   */
+  Glib::RefPtr<FileIOStream> create_file_readwrite(const Glib::RefPtr<Cancellable>& cancellable, FileCreateFlags flags = FILE_CREATE_NONE);
+
+  /** Creates a new file and returns a stream for reading and writing to it.
+   * The file must not already exist.
+   * 
+   * By default files created are generally readable by everyone,
+   * but if you pass FILE_CREATE_PRIVATE in @a flags the file
+   * will be made readable only to the current user, to the level that
+   * is supported on the target filesystem.
+   * 
+   * If a file with this name already exists a Gio::Error with EXISTS 
+   * will be thrown. If the file is a directory a Gio::Error with IS_DIRECTORY
+   * will be thrown.
+   *
+   * Some filesystems don't allow all filenames, and may
+   * throw a Gio::Error with INVALID_FILENAME, and if the name
+   * is to longa Gio::Error with FILENAME_TOO_LONG will be thrown.
+   * Other errors are possible too, and depend on what kind of
+   * filesystem the file is on.
+   *
+   * Note that in many non-local file cases read and write streams are not
+   * supported, so make sure you really need to do read and write streaming,
+   * rather than just opening for reading or writing.
+   *
+   * @param flags a set of FileCreateFlags.
+   * @return A FileOutputStream for the newly created file.
+   */
+  Glib::RefPtr<FileIOStream> create_file_readwrite(FileCreateFlags flags = FILE_CREATE_NONE);
   
 
   /** Returns an output stream for overwriting the file, possibly creating a backup copy of the file first.
@@ -868,11 +870,7 @@ public:
    * @param flags A set of FileCreateFlags.
    * @return A FileOutputStream.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileOutputStream> replace(const Glib::RefPtr<Cancellable>& cancellable, const std::string& etag = std::string(), bool make_backup = false, FileCreateFlags flags = FILE_CREATE_NONE);
-#else
-  Glib::RefPtr<FileOutputStream> replace(const Glib::RefPtr<Cancellable>& cancellable, const std::string& etag, bool make_backup, FileCreateFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
   /** Returns an output stream for overwriting the file, possibly creating a backup copy of the file first.
@@ -905,11 +903,7 @@ public:
    * @param flags A set of FileCreateFlags.
    * @return A FileOutputStream.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileOutputStream> replace(const std::string& etag = std::string(), bool make_backup = false, FileCreateFlags flags = FILE_CREATE_NONE);
-#else
-  Glib::RefPtr<FileOutputStream> replace(const std::string& etag, bool make_backup, FileCreateFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Asynchronously opens the file for appending.
@@ -940,14 +934,10 @@ public:
    * @return A valid FileOutputStream or <tt>0</tt> on error.
    * Free the returned object with Glib::object_unref().
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileOutputStream> append_to_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  Glib::RefPtr<FileOutputStream> append_to_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
-  //We renamed this to create_file_async from (g_file_create_async()), to avoid confusion with static create() methods, 
+  //We renamed this to create_file_async from (g_file_create_async() and g_file_create_readwrite_async), to avoid confusion with static create() methods, 
   //but I would still like to choose a different word, but can't think of a good one. murrayc. See also create_file().
 
   /** Asynchronously creates a new file and returns an output stream for writing to it. The file must not already exist.
@@ -955,10 +945,10 @@ public:
    *
    * When the operation is finished, @a slot will be called. You can then call create_file_finish() to get the result of the operation.
    * 
+   * @param slot A callback slot which will be called when the request is satisfied.
+   * @param cancellable A Cancellable object which can be used to cancel the operation.
    * @param flags a set of FileCreateFlags.
    * @param io_priority The I/O priority of the request.
-   * @param cancellable A Cancellable object which can be used to cancel the operation.
-   * @param slot A callback slot which will be called when the request is satisfied.
    */
   void create_file_async(const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, FileCreateFlags flags = FILE_CREATE_NONE, int io_priority = Glib::PRIORITY_DEFAULT);
 
@@ -967,9 +957,9 @@ public:
    *
    * When the operation is finished, @a slot will be called. You can then call create_file_finish() to get the result of the operation.
    * 
+   * @param slot A callback slot which will be called when the request is satisfied.
    * @param flags a set of FileCreateFlags.
    * @param io_priority The I/O priority of the request.
-   * @param slot A callback slot which will be called when the request is satisfied.
    */
   void create_file_async(const SlotAsyncReady& slot, FileCreateFlags flags = FILE_CREATE_NONE, int io_priority = Glib::PRIORITY_DEFAULT);
   
@@ -980,11 +970,50 @@ public:
    * @return A FileOutputStream or <tt>0</tt> on error.
    * Free the returned object with Glib::object_unref().
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileOutputStream> create_file_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  Glib::RefPtr<FileOutputStream> create_file_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
+
+
+  /** Asynchronously creates a new file and returns a stream for reading and
+   * writing to it. The file must not already exist.
+   *
+   * For more details, see create_file_readwrite() which is the synchronous version of this call.
+   *
+   * When the operation is finished, @a slot will be called. You can then call create_file_readwrite_finish() to get the result of the operation.
+   * 
+   * @param slot A callback slot which will be called when the request is satisfied.
+   * @param cancellable A Cancellable object which can be used to cancel the operation.
+   * @param flags a set of FileCreateFlags.
+   * @param io_priority The I/O priority of the request.
+   *
+   * @newin2p24
+   */
+  void create_file_readwrite_async(const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, FileCreateFlags flags = FILE_CREATE_NONE, int io_priority = Glib::PRIORITY_DEFAULT);
+
+  /** Asynchronously creates a new file and returns a stream for reading and
+   * writing to it. The file must not already exist.
+   *
+   * For more details, see create_file_readwrite() which is the synchronous version of this call.
+   *
+   * When the operation is finished, @a slot will be called. You can then call create_file_readwrite_finish() to get the result of the operation.
+   * 
+   * @param slot A callback slot which will be called when the request is satisfied.
+   * @param flags a set of FileCreateFlags.
+   * @param io_priority The I/O priority of the request.
+   *
+   * @newin2p24
+   */
+  void create_file_readwrite_async(const SlotAsyncReady& slot, FileCreateFlags flags = FILE_CREATE_NONE, int io_priority = Glib::PRIORITY_DEFAULT);
+  
+
+  /** Finishes an asynchronous file create operation started with
+   * g_file_create_readwrite_async().
+   * 
+   * @newin{2,22}
+   * @param res A AsyncResult.
+   * @return A FileIOStream or <tt>0</tt> on error.
+   * Free the returned object with Glib::object_unref().
+   */
+  Glib::RefPtr<FileIOStream> create_file_readwrite_finish(const Glib::RefPtr<AsyncResult>& result);
 
 
   /** Asyncronously overwrites the file, replacing the contents, possibly creating a backup copy of the file first.
@@ -1019,11 +1048,165 @@ public:
    * @return A FileOutputStream, or <tt>0</tt> on error.
    * Free the returned object with Glib::object_unref().
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileOutputStream> replace_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  Glib::RefPtr<FileOutputStream> replace_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
+
+
+  /** Opens an existing file for reading and writing. The result is
+   * a FileIOStream that can be used to read and write the contents of the file.
+   * 
+   * If @a cancellable is not <tt>0</tt>, then the operation can be cancelled by
+   * triggering the cancellable object from another thread. If the operation
+   * was cancelled, the error IO_ERROR_CANCELLED will be returned.
+   * 
+   * If the file does not exist, the G_IO_ERROR_NOT_FOUND error will be returned.
+   * If the file is a directory, the G_IO_ERROR_IS_DIRECTORY error will be returned.
+   * Other errors are possible too, and depend on what kind of filesystem the file is on.
+   * Note that in many non-local file cases read and write streams are not supported,
+   * so make sure you really need to do read and write streaming, rather than
+   * just opening for reading or writing.
+   * 
+   * @newin{2,22}
+   * @param cancellable A Cancellable.
+   * @return FileIOStream or <tt>0</tt> on error.
+   * Free the returned object with Glib::object_unref().
+   */
+  Glib::RefPtr<FileIOStream> open_readwrite(const Glib::RefPtr<Cancellable>& cancellable);
+
+  /** Opens an existing file for reading and writing.
+   * The result is a FileIOStream that can be used to read and write the contents of the file.
+   *
+   * For more details, see open_readwrite() which is the synchronous version of this call.
+   * When the operation is finished, @a slot will be called. You can then call open_readwrite_finish() to get the result of the operation.
+   * If the file does not exist, a Gio::Error with NOT_FOUND will be thrown.
+   * If the file is a directory, a Gio::Error with IS_DIRECTORY will be thrown.
+   * Other errors are possible too, and depend on what kind of filesystem the file is on.
+   *
+   * Note that in many non-local file cases read and write streams are not supported,
+   * so make sure you really need to do read and write streaming, rather than
+   * just opening for reading or writing.
+   *
+   * @param slot A callback slot which will be called when the request is satisfied.
+   * @param cancellable A Cancellable object which can be used to cancel the operation.
+   * @param io_priority The I/O priority of the request.
+   *
+   * @newin2p24
+   */
+  void open_readwrite_async(const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, int io_priority = Glib::PRIORITY_DEFAULT);
+
+  /** Opens an existing file for reading and writing.
+   * The result is a FileIOStream that can be used to read and write the contents of the file.
+   *
+   * For more details, see open_readwrite() which is the synchronous version of this call.
+   * When the operation is finished, @a slot will be called. You can then call open_readwrite_finish() to get the result of the operation.
+   * If the file does not exist, a Gio::Error with NOT_FOUND will be thrown.
+   * If the file is a directory, a Gio::Error with IS_DIRECTORY will be thrown.
+   * Other errors are possible too, and depend on what kind of filesystem the file is on.
+   *
+   * Note that in many non-local file cases read and write streams are not supported,
+   * so make sure you really need to do read and write streaming, rather than
+   * just opening for reading or writing.
+   *
+   * @param slot A callback slot which will be called when the request is satisfied.
+   * @param io_priority The I/O priority of the request.
+   *
+   * @newin2p24
+   */
+  void open_readwrite_async(const SlotAsyncReady& slot, int io_priority = Glib::PRIORITY_DEFAULT);
+  
+
+  /** Finishes an asynchronous file read operation started with
+   * g_file_open_readwrite_async().
+   * 
+   * @newin{2,22}
+   * @param res A AsyncResult.
+   * @return A FileIOStream or <tt>0</tt> on error.
+   * Free the returned object with Glib::object_unref().
+   */
+  Glib::RefPtr<FileIOStream> open_readwrite_finish(const Glib::RefPtr<AsyncResult>& result);
+
+
+  /** Returns an output stream for overwriting the file in readwrite mode, possibly creating a backup copy of the file first.
+   * 
+   * If the file doesn't exist, it will be created.
+   *
+   * For details about the behaviour, see replace() which does the same thing but returns an output stream only.
+   *
+   * Note that in many non-local file cases read and write streams are not supported, 
+   * so make sure you really need to do read and write streaming,
+   * rather than just opening for reading or writing.
+   * 
+   * @param etag An optional entity tag for the current Glib::File.
+   * @param make_backup <tt>true</tt> if a backup should be created.
+   * @param flags A set of FileCreateFlags.
+   * @return A FileOutputStream.
+   *
+   * @newin2p24
+   */
+  Glib::RefPtr<FileIOStream> replace_readwrite(const Glib::RefPtr<Cancellable>& cancellable, const std::string& etag = std::string(), bool make_backup = false, FileCreateFlags flags = FILE_CREATE_NONE);
+
+
+  /** Returns an output stream for overwriting the file in readwrite mode, possibly creating a backup copy of the file first.
+   * 
+   * If the file doesn't exist, it will be created.
+   *
+   * For details about the behaviour, see replace() which does the same thing but returns an output stream only.
+   *
+   * Note that in many non-local file cases read and write streams are not supported, 
+   * so make sure you really need to do read and write streaming,
+   * rather than just opening for reading or writing.
+   * 
+   * @param etag An optional entity tag for the current Glib::File.
+   * @param make_backup <tt>true</tt> if a backup should be created.
+   * @param flags A set of FileCreateFlags.
+   * @return A FileOutputStream.
+   *
+   * @newin2p24
+   */
+  Glib::RefPtr<FileIOStream> replace_readwrite(const std::string& etag = std::string(), bool make_backup = false, FileCreateFlags flags = FILE_CREATE_NONE);
+
+  
+  /** Asyncronously overwrites the file in read-write mode, replacing the contents, possibly creating a backup copy of the file first.
+   *
+   * For more details, see replace_readwrite() which is the synchronous version of this call.
+   *
+   * When the operation is finished, @a slot will be called. You can then call replace_readwrite_finish() to get the result of the operation.
+   *
+   * @param slot A callback slot which will be called when the request is satisfied.
+   * @param cancellable A Cancellable object which can be used to cancel the operation.
+   * @param etag An entity tag for the current Gio::File.
+   * @param make_backup true if a backup of the existing file should be made.
+   * @param flags A set of FileCreateFlags.
+   * @param io_priority The I/O priority of the request.
+   *
+   * @newin2p24
+   */
+  void replace_readwrite_async(const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, const std::string& etag = std::string(), bool make_backup = false, FileCreateFlags flags = FILE_CREATE_NONE, int io_priority = Glib::PRIORITY_DEFAULT);
+
+  /** Asyncronously overwrites the file in read-write mode, replacing the contents, possibly creating a backup copy of the file first.
+   *
+   * For more details, see replace_readwrite() which is the synchronous version of this call.
+   * When the operation is finished, @a slot will be called. You can then call replace_readwrite_finish() to get the result of the operation.
+   *
+   * @param slot A callback slot which will be called when the request is satisfied.
+   * @param etag An entity tag for the current Gio::File.
+   * @param make_backup true if a backup of the existing file should be made.
+   * @param flags A set of FileCreateFlags.
+   * @param io_priority The I/O priority of the request.
+   *
+   * @newin2p24
+   */
+  void replace_readwrite_async(const SlotAsyncReady& slot, const std::string& etag = std::string(), bool make_backup = false, FileCreateFlags flags = FILE_CREATE_NONE, int io_priority = Glib::PRIORITY_DEFAULT);
+  
+
+  /** Finishes an asynchronous file replace operation started with
+   * g_file_replace_readwrite_async().
+   * 
+   * @newin{2,22}
+   * @param res A AsyncResult.
+   * @return A FileIOStream, or <tt>0</tt> on error.
+   * Free the returned object with Glib::object_unref().
+   */
+  Glib::RefPtr<FileIOStream> replace_readwrite_finish(const Glib::RefPtr<AsyncResult>& result);
 
 
   /** Gets the requested information about the file. The result
@@ -1057,11 +1240,7 @@ public:
    * @param flags: A set of FileQueryInfoFlags.
    * @result a FileInfo for the file, or an empty RefPtr on error.
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileInfo> query_info(const Glib::RefPtr<Cancellable>& cancellable, const std::string& attributes = "*", FileQueryInfoFlags flags = FILE_QUERY_INFO_NONE) const;
-  #else
-  Glib::RefPtr<FileInfo> query_info(const Glib::RefPtr<Cancellable>& cancellable, const std::string& attributes, FileQueryInfoFlags flags, std::auto_ptr<Glib::Error>& error) const;
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Gets the requested information about the file. The result
    * is a FileInfo object that contains key-value attributes (such as the  type or size
@@ -1089,11 +1268,7 @@ public:
    * @param flags: A set of FileQueryInfoFlags.
    * @result a FileInfo for the file, or an empty RefPtr on error.
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileInfo> query_info(const std::string& attributes = "*", FileQueryInfoFlags flags = FILE_QUERY_INFO_NONE) const;
-  #else
-  Glib::RefPtr<FileInfo> query_info(const std::string& attributes, FileQueryInfoFlags flags, std::auto_ptr<Glib::Error>& error) const;
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Utility function to check if a particular file exists. This is
@@ -1156,12 +1331,12 @@ public:
    * 
    * The primary use case of this method is to check if a file is a regular file,
    * directory, or symlink.
+   * 
+   * @newin{2,18}
    * @param flags A set of FileQueryInfoFlags passed to g_file_query_info().
    * @param cancellable Optional Cancellable object, <tt>0</tt> to ignore.
    * @return The FileType of the file and FILE_TYPE_UNKNOWN if the file
-   * does not exist
-   * 
-   * @newin{2,18}.
+   * does not exist.
    */
   FileType query_file_type(FileQueryInfoFlags flags, const Glib::RefPtr<Cancellable>& cancellable) const;
 
@@ -1210,12 +1385,7 @@ public:
    * @return FileInfo for given @a file or <tt>0</tt> on error.
    * Free the returned object with Glib::object_unref().
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileInfo> query_info_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  Glib::RefPtr<FileInfo> query_info_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Similar to query_info(), but obtains information
    * about the filesystem the file is on, rather than the file itself.
@@ -1242,11 +1412,7 @@ public:
    * @param attributes An attribute query string.
    * @return A FileInfo or an empty RefPtr if there was an error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileInfo> query_filesystem_info(const Glib::RefPtr<Cancellable>& cancellable, const std::string& attributes = "*");
-#else
-  Glib::RefPtr<FileInfo> query_filesystem_info(const Glib::RefPtr<Cancellable>& cancellable, const std::string& attributes, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Similar to query_info(), but obtains information
    * about the filesystem the file is on, rather than the file itself.
@@ -1269,11 +1435,7 @@ public:
    * @param attributes An attribute query string.
    * @return A FileInfo or an empty RefPtr if there was an error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileInfo> query_filesystem_info(const std::string& attributes = "*");
-#else
-  Glib::RefPtr<FileInfo> query_filesystem_info(const std::string& attributes, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
   /** Gets a Mount for the File. 
@@ -1288,11 +1450,7 @@ public:
    * @param cancellable Cancellable object.
    * @return A Mount where the @a file is located or <tt>0</tt> on error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<Mount> find_enclosing_mount(const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  Glib::RefPtr<Mount> find_enclosing_mount(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
   /** Asynchronously gets the requested information about the filesystem
@@ -1333,11 +1491,7 @@ public:
    * @return FileInfo for given @a file or <tt>0</tt> on error.
    * Free the returned object with Glib::object_unref().
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileInfo> query_filesystem_info_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  Glib::RefPtr<FileInfo> query_filesystem_info_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
   /** Gets a Mount for the File. 
@@ -1349,11 +1503,7 @@ public:
    * @param cancellable Cancellable object.
    * @return A Mount where the file is located.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<Mount> find_enclosing_mount();
-#else
-  Glib::RefPtr<Mount> find_enclosing_mount(std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
   /** Asynchronously gets the mount for the file.
@@ -1390,11 +1540,7 @@ public:
    * @return Mount for given @a file or <tt>0</tt> on error.
    * Free the returned object with Glib::object_unref().
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<Mount> find_enclosing_mount_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  Glib::RefPtr<Mount> find_enclosing_mount_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
   /** Gets the requested information about the files in a directory. The result
@@ -1422,11 +1568,7 @@ public:
    * @param flags A set of FileQueryInfoFlags.
    * @return A FileEnumerator if successful.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileEnumerator> enumerate_children(const Glib::RefPtr<Cancellable>& cancellable, const std::string& attributes = "*", FileQueryInfoFlags flags = FILE_QUERY_INFO_NONE);
-#else
-  Glib::RefPtr<FileEnumerator> enumerate_children(const Glib::RefPtr<Cancellable>& cancellable, const std::string& attributes, FileQueryInfoFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
   /** Gets the requested information about the files in a directory. The result
@@ -1449,11 +1591,7 @@ public:
    * @param flags A set of FileQueryInfoFlags.
    * @return A FileEnumerator if successful.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileEnumerator> enumerate_children(const std::string& attributes = "*", FileQueryInfoFlags flags = FILE_QUERY_INFO_NONE);
-#else
-  Glib::RefPtr<FileEnumerator> enumerate_children(const std::string& attributes, FileQueryInfoFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
   /** Asynchronously gets the requested information about the files in a directory. The result is a GFileEnumerator object that will give out GFileInfo objects for all the files in the directory.
@@ -1488,13 +1626,9 @@ public:
    * @return A FileEnumerator or <tt>0</tt> if an error occurred.
    * Free the returned object with Glib::object_unref().
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileEnumerator> enumerate_children_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  Glib::RefPtr<FileEnumerator> enumerate_children_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
+  
   /** Renames @a file to the specified display name.
    * 
    * The display name is converted from UTF8 to the correct encoding for the target
@@ -1513,12 +1647,7 @@ public:
    * @param cancellable Cancellable object.
    * @return A File specifying what @a file was renamed to, or <tt>0</tt> if there was an error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<File> set_display_name(const Glib::ustring& display_name, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  Glib::RefPtr<File> set_display_name(const Glib::ustring& display_name, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Renames the file to the specified display name.
    * 
@@ -1537,11 +1666,7 @@ public:
    * @param display_name A string.
    * @return A Glib::File specifying what the file was renamed to, or an empty RefPtr if there was an error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<File> set_display_name(const Glib::ustring& display_name);
-#else
-  Glib::RefPtr<File> set_display_name(const Glib::ustring& display_name, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
   /** Asynchronously sets the display name for a given Gio::File. For the synchronous version of this function, see set_display_name().
@@ -1570,39 +1695,25 @@ public:
    * @return A File or <tt>0</tt> on error.
    * Free the returned object with Glib::object_unref().
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<File> set_display_name_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  Glib::RefPtr<File> set_display_name_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
-  //TODO: remember to add the docs manually, as we name the method differently.
-   
-  /** Deletes a file.
-   * 
-   * The operation can be cancelled by
-   * triggering the cancellable object from another thread. If the operation
-   * was cancelled, a Gio::Error will be thrown with CANCELLED.
-   * @param cancellable Cancellable object.
+  
+  /** Deletes a file. 
+   * If the file is a directory, it will only be deleted if it is empty.
+   * The operation can be cancelled by triggering the cancellable object from another thread. 
+   * If the operation was cancelled, a Glib::FileError with ERROR_CANCELLED will be thrown.
+   *
+   * @param cancellable A Cancellable object which can be used to cancel the operation.
    * @return <tt>true</tt> if the file was deleted. <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool remove(const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool remove(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Deletes a file.
+   * If the file is a directory, it will only be deleted if it is empty.
    * 
    * @return <tt>true</tt> if the file was deleted. <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool remove();
-#else
-  bool remove(std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Sends @a file to the "Trashcan", if possible. This is similar to
@@ -1617,12 +1728,7 @@ public:
    * @param cancellable Cancellable object.
    * @return <tt>true</tt> on successful trash, <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool trash(const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool trash(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Sends the file to the "Trashcan", if possible. This is similar to
    * deleting it, but the user can recover it before emptying the trashcan.
@@ -1631,11 +1737,7 @@ public:
    *
    * @return <tt>true</tt> on successful trash, <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool trash();
-#else
-  bool trash(std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
   /** A signal handler would be, for instance:
@@ -1663,24 +1765,45 @@ public:
    *
    * If you are interested in copying the Gio::File object itself (not the on-disk file), see File::dup().
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool copy(const Glib::RefPtr<File>& destination, const SlotFileProgress& slot, const Glib::RefPtr<Cancellable>& cancellable, FileCopyFlags flags = FILE_COPY_NONE);
-#else
-  bool copy(const Glib::RefPtr<File>& destination, const SlotFileProgress& slot, const Glib::RefPtr<Cancellable>& cancellable, FileCopyFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif
 
-  //TODO: Documentation.
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  /** Copies the file source to the location specified by destination. Can not handle recursive copies of directories.
+   * If the flag FILE_COPY_OVERWRITE is specified an already existing destination file is overwritten.
+   * If the flag FILE_COPY_NOFOLLOW_SYMLINKS is specified then symlinks will be copied as symlinks, otherwise the target of the source symlink will be copied.
+   *
+   * The operation can be monitored via the @a slot callback.
+   *
+   * If the source file does not exist then a Gio::Error with NOT_FOUND will be thrown, independent on the status of the destination.
+   *
+   * If FILE_COPY_OVERWRITE is not specified and the target exists, then a Gio::Error with EXISTS will be thrown.
+   *
+   * If trying to overwrite a file over a directory a Gio::Error with IS_DIRECTORY will be thrown. 
+   * If trying to overwrite a directory with a directory a Gio::Error with WOULD_MERGE will be thrown.
+   *
+   * If the source is a directory and the target does not exist, or FILE_COPY_OVERWRITE is specified and the target is a file, 
+   * then a Gio::Error with WOULD_RECURSE will be thrown.
+   *
+   * If you are interested in copying the Gio::File object itself (not the on-disk file), see File::dup().
+   */
   bool copy(const Glib::RefPtr<File>& destination, const SlotFileProgress& slot, FileCopyFlags flags = FILE_COPY_NONE);
-#else
-  bool copy(const Glib::RefPtr<File>& destination, const SlotFileProgress& slot, FileCopyFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  /** Copies the file source to the location specified by destination. Can not handle recursive copies of directories.
+   * If the flag FILE_COPY_OVERWRITE is specified an already existing destination file is overwritten.
+   * If the flag FILE_COPY_NOFOLLOW_SYMLINKS is specified then symlinks will be copied as symlinks, otherwise the target of the source symlink will be copied.
+   *
+   * If the source file does not exist then a Gio::Error with NOT_FOUND will be thrown, independent on the status of the destination.
+   *
+   * If FILE_COPY_OVERWRITE is not specified and the target exists, then a Gio::Error with EXISTS will be thrown.
+   *
+   * If trying to overwrite a file over a directory a Gio::Error with IS_DIRECTORY will be thrown. 
+   * If trying to overwrite a directory with a directory a Gio::Error with WOULD_MERGE will be thrown.
+   *
+   * If the source is a directory and the target does not exist, or FILE_COPY_OVERWRITE is specified and the target is a file, 
+   * then a Gio::Error with WOULD_RECURSE will be thrown.
+   *
+   * If you are interested in copying the Gio::File object itself (not the on-disk file), see File::dup().
+   */
   bool copy(const Glib::RefPtr<File>& destination, FileCopyFlags flags = FILE_COPY_NONE);
-#else
-  bool copy(const Glib::RefPtr<File>& destination, FileCopyFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif // GLIBMM_EXCEPTIONS_ENABLED
   
 
   /** Copies the file to the location specified by @a destination asynchronously.
@@ -1753,12 +1876,7 @@ public:
    * @param res A AsyncResult.
    * @return A <tt>true</tt> on success, <tt>false</tt> on error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool copy_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  bool copy_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Tries to move the file or directory source to the location specified by destination. If native move operations are supported then this is 
    * used, otherwise a copy and delete fallback is used. The native implementation may support moving directories (for instance on moves inside 
@@ -1780,23 +1898,11 @@ public:
    * 
    * If the source is a directory and the target does not exist, or FILE_COPY_OVERWRITE is specified and the target is a file, then a Gio::Error with WOULD_RECURSE may be thrown (if the native move operation isn't available).
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool move(const Glib::RefPtr<File>& destination, const SlotFileProgress& slot, const Glib::RefPtr<Cancellable>& cancellable, FileCopyFlags flags = FILE_COPY_NONE);
-#else
-  bool move(const Glib::RefPtr<File>& destination, const SlotFileProgress& slot, const Glib::RefPtr<Cancellable>& cancellable, FileCopyFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool move(const Glib::RefPtr<File>& destination, const SlotFileProgress& slot, FileCopyFlags flags = FILE_COPY_NONE);
-#else
-  bool move(const Glib::RefPtr<File>& destination, const SlotFileProgress& slot, FileCopyFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool move(const Glib::RefPtr<File>& destination, FileCopyFlags flags = FILE_COPY_NONE);
-#else
-  bool move(const Glib::RefPtr<File>& destination, FileCopyFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif // GLIBMM_EXCEPTIONS_ENABLED
   
 
   /** Creates a directory.
@@ -1807,12 +1913,7 @@ public:
    * @param cancellable Cancellable object.
    * @return <tt>true</tt> on successful creation, <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool make_directory(const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool make_directory(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Creates a directory. 
    * Note that this will only create a child directory of the immediate parent 
@@ -1824,11 +1925,7 @@ public:
    * 
    * @return <tt>true</tt> on successful creation, <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool make_directory();
-#else
-  bool make_directory(std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
   /** Creates a directory and any parent directories that may not exist similar to
@@ -1840,19 +1937,14 @@ public:
    * 
    * If @a cancellable is not <tt>0</tt>, then the operation can be cancelled by
    * triggering the cancellable object from another thread. If the operation
-   * was cancelled, the error IO_ERROR_CANCELLED will be returned.
+   * was cancelled, the error IO_ERROR_CANCELLED will be returned. 
+   * 
+   * @newin{2,18}
    * @param cancellable Optional Cancellable object, <tt>0</tt> to ignore.
    * @return <tt>true</tt> if all directories have been successfully created, <tt>false</tt>
    * otherwise.
-   * 
-   * @newin{2,18}.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool make_directory_with_parents(const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool make_directory_with_parents(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Creates a directory and any parent directories that may not exist, similar to 'mkdir -p'. 
    * If the file system does not support creating directories, this function will fail, 
@@ -1862,11 +1954,7 @@ public:
    *
    * @newin{2,18}
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool make_directory_with_parents();
-#else
-  bool make_directory_with_parents(std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Creates a symbolic link.
@@ -1878,49 +1966,29 @@ public:
    * @param cancellable Cancellable object.
    * @return <tt>true</tt> on the creation of a new symlink, <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool make_symbolic_link(const std::string& symlink_value, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool make_symbolic_link(const std::string& symlink_value, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Creates a symbolic link.
    * 
    * @param symlink_value A string with the value of the new symlink.
    * @return <tt>true</tt> on the creation of a new symlink, <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool make_symbolic_link(const std::string& symlink_value);
-#else
-  bool make_symbolic_link(const std::string& symlink_value, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Obtain the list of settable attributes for the file.
-   * 
-   * Returns: a FileAttributeInfoList describing the settable attributes.
    * @param cancellable Optional Cancellable object, <tt>0</tt> to ignore.
    * @return A FileAttributeInfoList describing the settable attributes.
    * When you are done with it, release it with g_file_attribute_info_list_unref().
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileAttributeInfoList> query_settable_attributes(const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  Glib::RefPtr<FileAttributeInfoList> query_settable_attributes(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Obtain the list of settable attributes for the file.
    * 
    * Returns: a FileAttributeInfoList describing the settable attributes.
    * @return A FileAttributeInfoList describing the settable attributes.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileAttributeInfoList> query_settable_attributes();
-#else
-  Glib::RefPtr<FileAttributeInfoList> query_settable_attributes(std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Obtain the list of attribute namespaces where new attributes 
@@ -1934,12 +2002,7 @@ public:
    * @return A FileAttributeInfoList describing the writable namespaces.
    * When you are done with it, release it with g_file_attribute_info_list_unref().
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileAttributeInfoList> query_writable_namespaces(const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  Glib::RefPtr<FileAttributeInfoList> query_writable_namespaces(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Obtain the list of attribute namespaces where new attributes 
    * can be created by a user. An example of this is extended
@@ -1947,11 +2010,7 @@ public:
    * 
    * @return A FileAttributeInfoList describing the writable namespaces.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileAttributeInfoList> query_writable_namespaces();
-#else
-  Glib::RefPtr<FileAttributeInfoList> query_writable_namespaces(std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
   /* This seems to be very generic (see the gpointer parameter),
@@ -1982,11 +2041,7 @@ public:
    * @param flags A set of FileQueryInfoFlags.
    * @return <tt>true</tt> if there was any error, <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool set_attributes_from_info(const Glib::RefPtr<FileInfo>& info, const Glib::RefPtr<Cancellable>& cancellable, FileQueryInfoFlags flags = FILE_QUERY_INFO_NONE);
-#else
-  bool set_attributes_from_info(const Glib::RefPtr<FileInfo>& info, const Glib::RefPtr<Cancellable>& cancellable, FileQueryInfoFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Tries to set all attributes in the FileInfo on the target values, 
    * not stopping on the first error.
@@ -2004,11 +2059,7 @@ public:
    * @param flags A set of FileQueryInfoFlags.
    * @return <tt>true</tt> if there was any error, <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool set_attributes_from_info(const Glib::RefPtr<FileInfo>& info, FileQueryInfoFlags flags = FILE_QUERY_INFO_NONE);
-#else
-  bool set_attributes_from_info(const Glib::RefPtr<FileInfo>& info, FileQueryInfoFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
   /** Asynchronously sets the attributes of file with info.
@@ -2038,11 +2089,7 @@ public:
   
    // takes GFileInfo**
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool set_attributes_finish(const Glib::RefPtr<AsyncResult>& result, const Glib::RefPtr<FileInfo>& info);
-#else
-  bool set_attributes_finish(const Glib::RefPtr<AsyncResult>& result, const Glib::RefPtr<FileInfo>& info, std::auto_ptr<Glib::Error>& error);
-#endif // GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Sets @a attribute of type FILE_ATTRIBUTE_TYPE_STRING to @a value. 
@@ -2057,12 +2104,7 @@ public:
    * @param cancellable Cancellable object.
    * @return <tt>true</tt> if the @a attribute was successfully set, <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool set_attribute_string(const std::string& attribute, const std::string& value, FileQueryInfoFlags flags, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool set_attribute_string(const std::string& attribute, const std::string& value, FileQueryInfoFlags flags, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Sets @a attribute of type FILE_ATTRIBUTE_TYPE_STRING to @a value. 
    * If @a attribute is of a different type, this operation will fail.
@@ -2072,11 +2114,7 @@ public:
    * @param flags FileQueryInfoFlags.
    * @return <tt>true</tt> if the @a attribute was successfully set, <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool set_attribute_string(const std::string& attribute, const std::string& value, FileQueryInfoFlags flags);
-#else
-  bool set_attribute_string(const std::string& attribute, const std::string& value, FileQueryInfoFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Sets @a attribute of type FILE_ATTRIBUTE_TYPE_BYTE_STRING to @a value. 
@@ -2093,12 +2131,7 @@ public:
    * @return <tt>true</tt> if the @a attribute was successfully set to @a value 
    * in the @a file, <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool set_attribute_byte_string(const std::string& attribute, const std::string& value, FileQueryInfoFlags flags, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool set_attribute_byte_string(const std::string& attribute, const std::string& value, FileQueryInfoFlags flags, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Sets @a attribute of type FILE_ATTRIBUTE_TYPE_BYTE_STRING to @a value. 
    * If @a attribute is of a different type, this operation will fail, 
@@ -2110,11 +2143,7 @@ public:
    * @return <tt>true</tt> if the @a attribute was successfully set to @a value 
    * in the @a file, <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool set_attribute_byte_string(const std::string& attribute, const std::string& value, FileQueryInfoFlags flags);
-#else
-  bool set_attribute_byte_string(const std::string& attribute, const std::string& value, FileQueryInfoFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Sets @a attribute of type FILE_ATTRIBUTE_TYPE_UINT32 to @a value. 
@@ -2130,12 +2159,7 @@ public:
    * @return <tt>true</tt> if the @a attribute was successfully set to @a value 
    * in the @a file, <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool set_attribute_uint32(const std::string& attribute, guint32 value, FileQueryInfoFlags flags, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool set_attribute_uint32(const std::string& attribute, guint32 value, FileQueryInfoFlags flags, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Sets @a attribute of type FILE_ATTRIBUTE_TYPE_UINT32 to @a value. 
    * If @a attribute is of a different type, this operation will fail.
@@ -2146,11 +2170,7 @@ public:
    * @return <tt>true</tt> if the @a attribute was successfully set to @a value 
    * in the @a file, <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool set_attribute_uint32(const std::string& attribute, guint32 value, FileQueryInfoFlags flags);
-#else
-  bool set_attribute_uint32(const std::string& attribute, guint32 value, FileQueryInfoFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Sets @a attribute of type FILE_ATTRIBUTE_TYPE_INT32 to @a value. 
@@ -2166,12 +2186,7 @@ public:
    * @return <tt>true</tt> if the @a attribute was successfully set to @a value 
    * in the @a file, <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool set_attribute_int32(const std::string& attribute, gint32 value, FileQueryInfoFlags flags, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool set_attribute_int32(const std::string& attribute, gint32 value, FileQueryInfoFlags flags, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Sets @a attribute of type FILE_ATTRIBUTE_TYPE_INT32 to @a value. 
    * If @a attribute is of a different type, this operation will fail.
@@ -2182,11 +2197,7 @@ public:
    * @return <tt>true</tt> if the @a attribute was successfully set to @a value 
    * in the @a file, <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool set_attribute_int32(const std::string& attribute, gint32 value, FileQueryInfoFlags flags);
-#else
-  bool set_attribute_int32(const std::string& attribute, gint32 value, FileQueryInfoFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Sets @a attribute of type FILE_ATTRIBUTE_TYPE_UINT64 to @a value. 
@@ -2202,12 +2213,7 @@ public:
    * @return <tt>true</tt> if the @a attribute was successfully set to @a value 
    * in the @a file, <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool set_attribute_uint64(const std::string& attribute, guint64 value, FileQueryInfoFlags flags, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool set_attribute_uint64(const std::string& attribute, guint64 value, FileQueryInfoFlags flags, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Sets @a attribute of type FILE_ATTRIBUTE_TYPE_UINT64 to @a value. 
    * If @a attribute is of a different type, this operation will fail.
@@ -2218,11 +2224,7 @@ public:
    * @return <tt>true</tt> if the @a attribute was successfully set to @a value 
    * in the @a file, <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool set_attribute_uint64(const std::string& attribute, guint64 value, FileQueryInfoFlags flags);
-#else
-  bool set_attribute_uint64(const std::string& attribute, guint64 value, FileQueryInfoFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Sets @a attribute of type FILE_ATTRIBUTE_TYPE_INT64 to @a value. 
@@ -2237,12 +2239,7 @@ public:
    * @param cancellable Cancellable object.
    * @return <tt>true</tt> if the @a attribute was successfully set, <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool set_attribute_int64(const std::string& attribute, gint64 value, FileQueryInfoFlags flags, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool set_attribute_int64(const std::string& attribute, gint64 value, FileQueryInfoFlags flags, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Sets @a attribute of type FILE_ATTRIBUTE_TYPE_INT64 to @a value. 
    * If @a attribute is of a different type, this operation will fail.
@@ -2252,11 +2249,7 @@ public:
    * @param flags A FileQueryInfoFlags.
    * @return <tt>true</tt> if the @a attribute was successfully set, <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool set_attribute_int64(const std::string& attribute, gint64 value, FileQueryInfoFlags flags);
-#else
-  bool set_attribute_int64(const std::string& attribute, gint64 value, FileQueryInfoFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Starts a @a mount_operation, mounting the volume that contains the file. 
    * 
@@ -2304,12 +2297,7 @@ public:
    * has occurred, this function will return <tt>false</tt> and set @a error
    * appropriately if present.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool mount_enclosing_volume_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  bool mount_enclosing_volume_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Mounts a file of type FILE_TYPE_MOUNTABLE. Using @a mount_operation, you can request callbacks when, for instance, 
    * passwords are needed during authentication.
@@ -2356,12 +2344,7 @@ public:
    * @return A File or <tt>0</tt> on error.
    * Free the returned object with Glib::object_unref().
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<File> mount_mountable_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  Glib::RefPtr<File> mount_mountable_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Unmounts a file of type FILE_TYPE_MOUNTABLE.
    *
@@ -2390,22 +2373,56 @@ public:
    * @param flags Flags affecting the operation.
    */
   void unmount_mountable(MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
-  
 
-  /** Finishes an unmount operation, see g_file_unmount_mountable() for details.
+  /** Unmounts a file of type FILE_TYPE_MOUNTABLE.
+   *
+   * The operation can be cancelled by triggering the cancellable object from another thread. If the operation was cancelled, 
+   * a Gio::Error with CANCELLED will be thrown.
+   *
+   * When the operation is finished, @a slot will be called. You can then call unmount_mountable_finish() to get the result of the operation.
+   *
+   * @param slot A callback slot which will be called when the request is satisfied.
+   * @param cancellable A Cancellable object which can be used to cancel the operation.
+   * @param mount_operation A MountOperation
+   * @param flags Flags affecting the operation.
+   *
+   * @newin2p24
+   */
+  void unmount_mountable(const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, const Glib::RefPtr<MountOperation>& mount_operation, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+
+  /** Unmounts a file of type FILE_TYPE_MOUNTABLE.
+   *
+   * When the operation is finished, @a slot will be called. You can then call unmount_mountable_finish() to get the result of the operation.
+   *
+   * @param slot A callback slot which will be called when the request is satisfied.
+   * @param mount_operation A MountOperation
+   * @param flags Flags affecting the operation.
+   *
+   * @newin2p24
+   */
+  void unmount_mountable(const SlotAsyncReady& slot, const Glib::RefPtr<MountOperation>& mount_operation, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+
+  /** Unmounts a file of type FILE_TYPE_MOUNTABLE.
+   *
+   * @param mount_operation A MountOperation
+   * @param flags Flags affecting the operation.
+   *
+   * @newin2p24
+   */
+  void unmount_mountable(const Glib::RefPtr<MountOperation>& mount_operation, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+
+  
+  /** Finishes an unmount operation, see g_file_unmount_mountable_with_operation() for details.
    * 
-   * Finish an asynchronous unmount operation that was started 
-   * with g_file_unmount_mountable().
+   * Finish an asynchronous unmount operation that was started
+   * with g_file_unmount_mountable_with_operation().
+   * 
+   * @newin{2,22}
    * @param result A AsyncResult.
    * @return <tt>true</tt> if the operation finished successfully. <tt>false</tt>
    * otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool unmount_mountable_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  bool unmount_mountable_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Starts an asynchronous eject on a mountable.
    *
@@ -2414,9 +2431,9 @@ public:
    *
    * When the operation is finished, @a slot will be called. You can then call eject_mountable_finish() to get the result of the operation.
    *
-   * @param flags Flags affecting the operation.
-   * @param cancellable A Cancellable object which can be used to cancel the operation.
    * @param slot A callback slot which will be called when the request is satisfied.
+   * @param cancellable A Cancellable object which can be used to cancel the operation.
+   * @param flags Flags affecting the operation.
    */
   void eject_mountable(const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
 
@@ -2434,19 +2451,54 @@ public:
    * @param flags Flags affecting the operation.
    */
   void eject_mountable(MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
-  
 
-  /** Finishes an asynchronous eject operation started by 
-   * g_file_eject_mountable().
+  /** Starts an asynchronous eject on a mountable.
+   *
+   * The operation can be cancelled by triggering the cancellable object from another thread. If the operation was cancelled, 
+   * a Gio::Error with CANCELLED will be thrown.
+   *
+   * When the operation is finished, @a slot will be called. You can then call eject_mountable_finish() to get the result of the operation.
+   *
+   * @param slot A callback slot which will be called when the request is satisfied.
+   * @param cancellable A Cancellable object which can be used to cancel the operation.
+   * @param mount_operation A MountOperation
+   * @param flags Flags affecting the operation.
+   *
+   * @newin2p24
+   */
+  void eject_mountable(const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, const Glib::RefPtr<MountOperation>& mount_operation, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+
+  /** Starts an asynchronous eject on a mountable.
+   *
+   * When the operation is finished, @a slot will be called. You can then call eject_mountable_finish() to get the result of the operation.
+   *
+   * @param slot A callback slot which will be called when the request is satisfied.
+   * @param mount_operation A MountOperation
+   * @param flags Flags affecting the operation.
+   *
+   * @newin2p24
+   */
+  void eject_mountable(const SlotAsyncReady& slot, const Glib::RefPtr<MountOperation>& mount_operation, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+
+  /** Starts an asynchronous eject on a mountable.
+   *
+   * @param mount_operation A MountOperation
+   * @param flags Flags affecting the operation.
+   *
+   * @newin2p24
+   */
+  void eject_mountable(const Glib::RefPtr<MountOperation>& mount_operation, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+
+  
+  /** Finishes an asynchronous eject operation started by
+   * g_file_eject_mountable_with_operation().
+   * 
+   * @newin{2,22}
    * @param result A AsyncResult.
-   * @return <tt>true</tt> if the @a file was ejected successfully. <tt>false</tt> 
+   * @return <tt>true</tt> if the @a file was ejected successfully. <tt>false</tt>
    * otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool eject_mountable_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  bool eject_mountable_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
   /** Copies the file attributes from @a source to @a destination. 
@@ -2462,11 +2514,7 @@ public:
    * @param flags A set of FileMonitorFlags.
    * @result true if the attributes were copied successfully, false otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool copy_attributes(const Glib::RefPtr<File>& destination, const Glib::RefPtr<Cancellable>& cancellable, FileCopyFlags flags = FILE_COPY_NONE);
-#else
-  bool copy_attributes(const Glib::RefPtr<File>& destination, const Glib::RefPtr<Cancellable>& cancellable, FileCopyFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif
 
   /** Copies the file attributes from @a source to @a destination. 
    *
@@ -2480,11 +2528,7 @@ public:
    * @param flags A set of FileMonitorFlags.
    * @result true if the attributes were copied successfully, false otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool copy_attributes(const Glib::RefPtr<File>& destination, FileCopyFlags flags = FILE_COPY_NONE);
-#else
-  bool copy_attributes(const Glib::RefPtr<File>& destination, FileCopyFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif
   
  
   /** Obtains a directory monitor for the given file.
@@ -2497,11 +2541,7 @@ public:
    * @param flags A set of FileMonitorFlags.
    * @return A FileMonitor for the file.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileMonitor> monitor_directory(const Glib::RefPtr<Cancellable>& cancellable, FileMonitorFlags flags = FILE_MONITOR_NONE);
-#else
-  Glib::RefPtr<FileMonitor> monitor_directory(const Glib::RefPtr<Cancellable>& cancellable, FileMonitorFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Obtains a directory monitor for the given file.
    * This may fail if directory monitoring is not supported.
@@ -2509,11 +2549,7 @@ public:
    * @param flags A set of FileMonitorFlags.
    * @return A FileMonitor for the file.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileMonitor> monitor_directory(FileMonitorFlags flags = FILE_MONITOR_NONE);
-#else
-  Glib::RefPtr<FileMonitor> monitor_directory(FileMonitorFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
   /** Obtains a file monitor for the given file. If no file notification
@@ -2526,11 +2562,7 @@ public:
    * @param A Cancellable object.
    * @return A FileMonitor for the file.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileMonitor> monitor_file(const Glib::RefPtr<Cancellable>& cancellable, FileMonitorFlags flags = FILE_MONITOR_NONE);
-#else
-  Glib::RefPtr<FileMonitor> monitor_file(const Glib::RefPtr<Cancellable>& cancellable, FileMonitorFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Obtains a file monitor for the given file. If no file notification
    * mechanism exists, then regular polling of the file is used.
@@ -2542,11 +2574,7 @@ public:
    * @param A Cancellable object.
    * @return A FileMonitor for the file.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileMonitor> monitor_file(FileMonitorFlags flags = FILE_MONITOR_NONE);
-#else
-  Glib::RefPtr<FileMonitor> monitor_file(FileMonitorFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
   /** Obtains a file monitor for the given file. If no file notification
@@ -2561,11 +2589,7 @@ public:
    *
    * @newin{2,18}
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileMonitor> monitor(const Glib::RefPtr<Cancellable>& cancellable, FileMonitorFlags flags = FILE_MONITOR_NONE);
-#else
-  Glib::RefPtr<FileMonitor> monitor(const Glib::RefPtr<Cancellable>& cancellable, FileMonitorFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Obtains a file monitor for the given file. If no file notification
    * mechanism exists, then regular polling of the file is used.
@@ -2579,35 +2603,184 @@ public:
    *
    * @newin{2,18}
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileMonitor> monitor(FileMonitorFlags flags = FILE_MONITOR_NONE);
-#else
-  Glib::RefPtr<FileMonitor> monitor(FileMonitorFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
-  /** Returns: a AppInfo if the handle was found, <tt>0</tt> if there were errors.
+ //TODO: The documentation for these start/stop/poll_mountable functions needs to be improved once we've figured out what they do and what the C documentation means. murrayc.
+
+ /** Starts a file of type Mountable.
+  * Using @a start_operation, you can request callbacks when, for instance,
+  * passwords are needed during authentication.
+  *
+  * When this operation has completed, @a slot will be called 
+  * and the operation can be finalized with start_mountable_finish().
+  * 
+  * The operation can be cancelled by
+  * triggering the cancellable object from another thread. If the operation
+  * was cancelled, a Gio::Error with CANCELLED will be thrown. 
+  *
+  * @param slot: A callback to call when the request is satisfied.
+  * @param cancellable A Cancellable object.
+  * @param flags Flags affecting the operation
+  *
+  * @newin2p24
+  */
+  void start_mountable(const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, const Glib::RefPtr<MountOperation>& start_operation, DriveStartFlags flags = DRIVE_START_NONE);
+
+ /** Starts a file of type Mountable.
+  * Using @a start_operation, you can request callbacks when, for instance,
+  * passwords are needed during authentication.
+  *
+  * When this operation has completed, @a slot will be called 
+  * and the operation can be finalized with start_mountable_finish().
+  * 
+  * The operation can be cancelled by
+  * triggering the cancellable object from another thread. If the operation
+  * was cancelled, a Gio::Error with CANCELLED will be thrown. 
+  *
+  * @param slot: A callback to call when the request is satisfied.
+  * @param cancellable A Cancellable object.
+  * @param flags Flags affecting the operation
+  *
+  * @newin2p24
+  */
+  void start_mountable(const SlotAsyncReady& slot, const Glib::RefPtr<MountOperation>& start_operation, DriveStartFlags flags =  DRIVE_START_NONE);
+  
+
+  /** Finishes a start operation. See g_file_start_mountable() for details.
+   * 
+   * Finish an asynchronous start operation that was started
+   * with g_file_start_mountable().
+   * 
+   * @newin{2,22}
+   * @param result A AsyncResult.
+   * @return <tt>true</tt> if the operation finished successfully. <tt>false</tt>
+   * otherwise.
+   */
+  bool start_mountable_finish(const Glib::RefPtr<AsyncResult>& result);
+
+
+ /** Stops a file of type Mountable.
+  * Using @a start_operation, you can request callbacks when, for instance,
+  * passwords are needed during authentication.
+  *
+  * When this operation has completed, @a slot will be called 
+  * and the operation can be finalized with stop_mountable_finish().
+  * 
+  * The operation can be cancelled by
+  * triggering the cancellable object from another thread. If the operation
+  * was cancelled, a Gio::Error with CANCELLED will be thrown. 
+  *
+  * @param slot: A callback to call when the request is satisfied.
+  * @param cancellable A Cancellable object.
+  * @param flags Flags affecting the operation
+  *
+  * @newin2p24
+  */
+  void stop_mountable(const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, const Glib::RefPtr<MountOperation>& start_operation, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+
+
+ /** Stops a file of type Mountable.
+  * Using @a start_operation, you can request callbacks when, for instance,
+  * passwords are needed during authentication.
+  *
+  * When this operation has completed, @a slot will be called 
+  * and the operation can be finalized with stop_mountable_finish().
+  * 
+  * The operation can be cancelled by
+  * triggering the cancellable object from another thread. If the operation
+  * was cancelled, a Gio::Error with CANCELLED will be thrown. 
+  *
+  * @param slot: A callback to call when the request is satisfied.
+  * @param start_operation A Cancellable object.
+  * @param flags Flags affecting the operation
+  *
+  * @newin2p24
+  */
+  void stop_mountable(const SlotAsyncReady& slot, const Glib::RefPtr<MountOperation>& start_operation, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  
+
+  /** Finishes an stop operation, see g_file_stop_mountable() for details.
+   * 
+   * Finish an asynchronous stop operation that was started
+   * with g_file_stop_mountable().
+   * 
+   * @newin{2,22}
+   * @param result A AsyncResult.
+   * @return <tt>true</tt> if the operation finished successfully. <tt>false</tt>
+   * otherwise.
+   */
+  bool stop_mountable_finish(const Glib::RefPtr<AsyncResult>& result);
+
+
+ /** Polls a file of type Mountable.
+  * Using @a start_operation, you can request callbacks when, for instance,
+  * passwords are needed during authentication.
+  *
+  * When this operation has completed, @a slot will be called 
+  * and the operation can be finalized with stop_mountable_finish().
+  * 
+  * The operation can be cancelled by
+  * triggering the cancellable object from another thread. If the operation
+  * was cancelled, a Gio::Error with CANCELLED will be thrown. 
+  *
+  * @param slot: A callback to call when the request is satisfied.
+  * @param cancellable A Cancellable object.
+  *
+  * @newin2p24
+  */
+  void poll_mountable(const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable);
+
+
+ /** Polls a file of type Mountable.
+  * Using @a start_operation, you can request callbacks when, for instance,
+  * passwords are needed during authentication.
+  *
+  * When this operation has completed, @a slot will be called 
+  * and the operation can be finalized with stop_mountable_finish().
+  * 
+  * The operation can be cancelled by
+  * triggering the cancellable object from another thread. If the operation
+  * was cancelled, a Gio::Error with CANCELLED will be thrown. 
+  *
+  * @param slot: A callback to call when the request is satisfied.
+  *
+  * @newin2p24
+  */
+  void poll_mountable(const SlotAsyncReady& slot);
+  
+
+  /** Finishes a poll operation. See g_file_poll_mountable() for details.
+   * 
+   * Finish an asynchronous poll operation that was polled
+   * with g_file_poll_mountable().
+   * 
+   * @newin{2,22}
+   * @param result A AsyncResult.
+   * @return <tt>true</tt> if the operation finished successfully. <tt>false</tt>
+   * otherwise.
+   */
+  bool poll_mountable_finish(const Glib::RefPtr<AsyncResult>& result);
+
+  
+  /** Returns the AppInfo that is registered as the default
+   * application to handle the file specified by @a file.
+   * 
+   * If @a cancellable is not <tt>0</tt>, then the operation can be cancelled by
+   * triggering the cancellable object from another thread. If the operation
+   * was cancelled, the error IO_ERROR_CANCELLED will be returned.
    * @param cancellable Optional Cancellable object, <tt>0</tt> to ignore.
    * @return A AppInfo if the handle was found, <tt>0</tt> if there were errors.
    * When you are done with it, release it with Glib::object_unref().
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<AppInfo> query_default_handler(const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  Glib::RefPtr<AppInfo> query_default_handler(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
 /** Returns the AppInfo that is registered as the default
  * application to handle the file specified by the file.
  *
  * @result A AppInfo if the handle was found, or an empty RefPtr if there were errors.
  **/
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<AppInfo> query_default_handler();
-#else
-  Glib::RefPtr<AppInfo> query_default_handler(std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   //TODO: Something better than char*& for contents?
   /** Loads the content of the file into memory, returning the size of the data. 
@@ -2621,11 +2794,21 @@ public:
    * @param length A location to place the length of the contents of the file.
    * @param etag_out A location to place the current entity tag for the file.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool load_contents(const Glib::RefPtr<Cancellable>& cancellable, char*& contents, gsize& length, std::string& etag_out);
-#else
-  bool load_contents(const Glib::RefPtr<Cancellable>& cancellable, char*& contents, gsize& length, std::string& etag_out, std::auto_ptr<Glib::Error>& error);
-#endif
+
+  /** Loads the content of the file into memory, returning the size of the data. 
+   * The data is always zero terminated, but this is not included in the resultant @a length.
+   * 
+   * The operation can be cancelled by triggering the cancellable object from another thread. 
+   * If the operation was cancelled, a Gio::Error exception with CANCELLED will be returned.
+   *
+   * @param cancellable A cancellable object.
+   * @param contents A location to place the contents of the file. 
+   * @param length A location to place the length of the contents of the file.
+   * @newin{2,22}
+   */
+  bool load_contents(const Glib::RefPtr<Cancellable>& cancellable, char*& contents, gsize& length);
+
   //TODO: Something better than char*& for contents?
   /** Loads the content of the file into memory, returning the size of the data. 
    * The data is always zero terminated, but this is not included in the resultant @a length.
@@ -2634,12 +2817,16 @@ public:
    * @param length A location to place the length of the contents of the file.
    * @param etag_out A location to place the current entity tag for the file.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool load_contents(char*& contents, gsize& length, std::string& etag_out);
-#else
-  bool load_contents(char*& contents, gsize& length, std::string& etag_out,
-                     std::auto_ptr<Glib::Error>& error);
-#endif
+
+  /** Loads the content of the file into memory, returning the size of the data. 
+   * The data is always zero terminated, but this is not included in the resultant @a length.
+   *
+   * @param contents A location to place the contents of the file. 
+   * @param length A location to place the length of the contents of the file.
+   * @newin{2,22}
+   */
+  bool load_contents(char*& contents, gsize& length);
   
 
   /** Starts an asynchronous load of the file's contents.
@@ -2678,11 +2865,20 @@ public:
    * @return <tt>true</tt> if the load was successful. If <tt>false</tt> and @a error is 
    * present, it will be set appropriately.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool load_contents_finish(const Glib::RefPtr<AsyncResult>& result, char*& contents, gsize& length, std::string& etag_out);
-#else
-  bool load_contents_finish(const Glib::RefPtr<AsyncResult>& result, char*& contents, gsize& length, std::string& etag_out, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
+
+  /** Finishes an asynchronous load of the @a file's contents. 
+   * The contents are placed in @a contents, and @a length is set to the 
+   * size of the @a contents string. If @a etag_out is present, it will be 
+   * set to the new entity tag for the @a file.
+   * @param res A AsyncResult.
+   * @param contents A location to place the contents of the file.
+   * @param length A location to place the length of the contents of the file.
+   * @return <tt>true</tt> if the load was successful. If <tt>false</tt> and @a error is 
+   * present, it will be set appropriately.
+   * @newin{2,22}
+   */
+  bool load_contents_finish(const Glib::RefPtr<AsyncResult>& result, char*& contents, gsize& length);
   
 
   /** A signal handler would be, for instance:
@@ -2730,11 +2926,18 @@ public:
    * @return <tt>true</tt> if the load was successful. If <tt>false</tt> and @a error is 
    * present, it will be set appropriately.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool load_partial_contents_finish(const Glib::RefPtr<AsyncResult>& result, char*& contents, gsize& length, std::string& etag_out);
-#else
-  bool load_partial_contents_finish(const Glib::RefPtr<AsyncResult>& result, char*& contents, gsize& length, std::string& etag_out, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
+
+  /** Finishes an asynchronous partial load operation that was started
+   * with load_partial_contents_async().
+   * @param res A AsyncResult.
+   * @param contents A location to place the contents of the file.
+   * @param length A location to place the length of the contents of the file.
+   * @return <tt>true</tt> if the load was successful. If <tt>false</tt> and @a error is 
+   * present, it will be set appropriately.
+   * @newin{2,22}
+   */
+  bool load_partial_contents_finish(const Glib::RefPtr<AsyncResult>& result, char*& contents, gsize& length);
   
 
   /** Replaces the contents of the file with @a contents of @a length bytes.
@@ -2760,11 +2963,7 @@ public:
    * for the document.
    * @param cancellable A Cancellable object.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   void replace_contents(const char* contents, gsize length, const std::string& etag, std::string& new_etag, const Glib::RefPtr<Cancellable>& cancellable, bool make_backup = false, FileCreateFlags flags = FILE_CREATE_NONE);
-#else
-  void replace_contents(const char* contents, gsize length, const std::string& etag, std::string& new_etag, const Glib::RefPtr<Cancellable>& cancellable, bool make_backup, FileCreateFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Replaces the contents of the file with @a contents of @a length bytes.
    *  
@@ -2784,11 +2983,7 @@ public:
    * @param new_etag A location to a new entity tag
    * for the document.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   void replace_contents(const char* contents, gsize length, const std::string& etag, std::string& new_etag, bool make_backup = false, FileCreateFlags flags = FILE_CREATE_NONE);
-#else
-  void replace_contents(const char* contents, gsize length, const std::string& etag, std::string& new_etag, bool make_backup, FileCreateFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Replaces the contents of the file with @a contents.
    *  
@@ -2812,11 +3007,7 @@ public:
    * for the document.
    * @param cancellable A Cancellable object.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   void replace_contents(const std::string& contents, const std::string& etag, std::string& new_etag, const Glib::RefPtr<Cancellable>& cancellable, bool make_backup = false, FileCreateFlags flags = FILE_CREATE_NONE);
-#else
-  void replace_contents(const std::string& contents, const std::string& etag, std::string& new_etag, const Glib::RefPtr<Cancellable>& cancellable, bool make_backup, FileCreateFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Replaces the contents of the file with @a contents.
    *  
@@ -2835,11 +3026,7 @@ public:
    * @param new_etag A location to a new entity tag
    * for the document.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   void replace_contents(const std::string& contents, const std::string& etag, std::string& new_etag, bool make_backup = false, FileCreateFlags flags = FILE_CREATE_NONE);
-#else
-  void replace_contents(const std::string& contents, const std::string& etag, std::string& new_etag, bool make_backup, FileCreateFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
   //TODO: Add replace_contents() without the etags?
@@ -2941,11 +3128,7 @@ public:
    * @param new_etag A location of a new entity tag 
    * for the document.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   void replace_contents_finish(const Glib::RefPtr<AsyncResult>& result, std::string& etag);
-#else
-  void replace_contents_finish(const Glib::RefPtr<AsyncResult>& result, std::string& etag, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Finishes an asynchronous replace of the given file . See
    * replace_contents_async(). Sets @a new_etag to the new entity 
@@ -2953,12 +3136,17 @@ public:
    * @param result A AsyncResult.
    * for the document.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   void replace_contents_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  void replace_contents_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   
+
+  /** Checks if @a file supports . If this returns <tt>false</tt>, you cannot perform
+   * asynchronous operations on @a file in a thread that has a
+   * thread-default context.
+   * 
+   * @newin{2,22}
+   * @return Whether or not @a file supports thread-default contexts.
+   */
+  bool supports_thread_contexts() const;
 
   // *** vfuncs ***
 
@@ -2996,23 +3184,58 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };
 
 
 } // namespace Gio
+
+namespace Glib
+{
+
+//Pre-declare this so we can use it in TypeTrait:
+Glib::RefPtr<Gio::File> wrap(GFile* object, bool take_copy);
+
+namespace Container_Helpers
+{
+
+/** This specialization of TypeTraits exists 
+ * because the default use of Glib::wrap(GObject*), 
+ * instead of a specific Glib::wrap(GSomeInterface*),
+ * would not return a wrapper for an interface.
+ */ 
+template <>
+struct TypeTraits< Glib::RefPtr<Gio::File> >
+{
+  typedef Glib::RefPtr<Gio::File> CppType;
+  typedef GFile* CType;
+  typedef GFile* CTypeNonConst;
+
+  static CType   to_c_type      (const CppType& item)
+  { return Glib::unwrap (item); }
+
+  static CppType to_cpp_type    (const CType& item)
+  {
+    //Use a specific Glib::wrap() function, 
+    //because CType has the specific type (not just GObject):
+    return Glib::wrap(item, true /* take_copy */);
+  }
+
+  static void    release_c_type (CType item)
+  {
+    GLIBMM_DEBUG_UNREFERENCE(0, item);
+    g_object_unref(item);
+  }
+};
+
+} // Container_Helpers
+} // Glib
 
 
 namespace Glib

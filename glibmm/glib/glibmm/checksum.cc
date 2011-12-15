@@ -136,7 +136,7 @@ g_checksum_reset(gobj());
 
 void Checksum::update(const guchar* data, gsize length)
 {
-g_checksum_update(gobj(), data, length); 
+g_checksum_update(gobj(), data, (gssize)(length)); 
 }
 
 void Checksum::get_digest(guint8 * buffer, gsize * digest_len) const

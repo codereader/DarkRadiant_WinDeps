@@ -4,7 +4,8 @@
 #define _PANGOMM_CONTEXT_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: context.hg,v 1.7 2006/06/10 15:26:24 murrayc Exp $ */
 
@@ -13,16 +14,16 @@
  * Copyright (C) 1998-1999 The gtkmm Development Team 
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
+ * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
@@ -55,7 +56,7 @@ namespace Pango
 {
 
 
-/** @addtogroup pangommEnums Enums and Flags */
+/** @addtogroup pangommEnums pangomm Enums and Flags */
 
 /**
  * @ingroup pangommEnums
@@ -180,6 +181,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -218,18 +221,18 @@ public:
 
   
   /** Gets the Pango::Fontmap used to look up fonts for this context.
+   * 
+   * @newin{1,6}
    * @return The font map for the Pango::Context. This value
    * is owned by Pango and should not be unreferenced.
-   * 
-   * Since: 1.6.
    */
   Glib::RefPtr<FontMap> get_font_map();
   
   /** Gets the Pango::Fontmap used to look up fonts for this context.
+   * 
+   * @newin{1,6}
    * @return The font map for the Pango::Context. This value
    * is owned by Pango and should not be unreferenced.
-   * 
-   * Since: 1.6.
    */
   Glib::RefPtr<const FontMap> get_font_map() const;  
 
@@ -294,7 +297,7 @@ public:
   
   /** Sets the global language tag for the context.  The default language
    * for the locale of the running process can be found using
-   * pango_language_get_default().
+   * Pango::Language::get_default().
    * @param language The new language tag.
    */
   void set_language(const Language& language);
@@ -312,7 +315,7 @@ public:
   void set_base_dir(Direction direction);
   
   /** Retrieves the base direction for the context. See
-   * pango_context_set_base_dir().
+   * set_base_dir().
    * @return The base direction for the context.
    */
   Direction get_base_dir() const;
@@ -322,45 +325,45 @@ public:
    * 
    * The base gravity is used in laying vertical text out.
    * 
-   * Since: 1.16
+   * @newin{1,16}
    * @param gravity The new base gravity.
    */
   void set_base_gravity(Gravity gravity);
   
   /** Retrieves the base gravity for the context. See
-   * pango_context_set_base_gravity().
-   * @return The base gravity for the context.
+   * set_base_gravity().
    * 
-   * Since: 1.16.
+   * @newin{1,16}
+   * @return The base gravity for the context.
    */
   Gravity get_base_gravity() const;
   
   /** Retrieves the gravity for the context. This is similar to
-   * pango_context_get_base_gravity(), except for when the base gravity
+   * get_base_gravity(), except for when the base gravity
    * is Pango::GRAVITY_AUTO for which pango_gravity_get_for_matrix() is used
    * to return the gravity from the current context matrix.
-   * @return The resolved gravity for the context.
    * 
-   * Since: 1.16.
+   * @newin{1,16}
+   * @return The resolved gravity for the context.
    */
   Gravity get_gravity() const;
   
   /** Sets the gravity hint for the context.
    * 
    * The gravity hint is used in laying vertical text out, and is only relevant
-   * if gravity of the context as returned by pango_context_get_gravity()
+   * if gravity of the context as returned by get_gravity()
    * is set Pango::GRAVITY_EAST or Pango::GRAVITY_WEST.
    * 
-   * Since: 1.16
+   * @newin{1,16}
    * @param hint The new gravity hint.
    */
   void set_gravity_hint(GravityHint hint);
   
   /** Retrieves the gravity hint for the context. See
-   * pango_context_set_gravity_hint() for details.
-   * @return The gravity hint for the context.
+   * set_gravity_hint() for details.
    * 
-   * Since: 1.16.
+   * @newin{1,16}
+   * @return The gravity hint for the context.
    */
   GravityHint get_gravity_hint() const;
 
@@ -372,7 +375,7 @@ public:
    * with the matrix, though they may change slightly for different
    * matrices, depending on how the text is fit to the pixel grid.
    * 
-   * Since: 1.6
+   * @newin{1,6}
    * @param matrix A Pango::Matrix, or <tt>0</tt> to unset any existing matrix.
    * (No matrix set is the same as setting the identity matrix.).
    */
@@ -426,8 +429,8 @@ public:
    * These options override any options that pango_cairo_update_context()
    * derives from the target surface.
    * 
-   * Since: 1.10
-   * @param context A Pango::Context, from Pango::CairoFontMap::create_context().
+   * @newin{1,10}
+   * @param context A Pango::Context, from a pangocairo font map.
    * @param options A #cairo_font_options_t, or <tt>0</tt> to unset any previously set
    * options. A copy is made.
    */
@@ -435,14 +438,14 @@ public:
 
  
   /** Retrieves any font rendering options previously set with
-   * pango_cairo_font_map_set_font_options(). This functions not report options
+   * pango_cairo_font_map_set_font_options(). This function does not report options
    * that are derived from the target surface by pango_cairo_update_context()
-   * @param context A Pango::Context, from Pango::CairoFontMap::create_context().
+   * 
+   * @newin{1,10}
+   * @param context A Pango::Context, from a pangocairo font map.
    * @return The font options previously set on the context, or <tt>0</tt>
    * if no options have been set. This value is owned by the context
    * and must not be modified or freed.
-   * 
-   * Since: 1.10.
    */
   Cairo::FontOptions get_font_options() const;
 
@@ -452,8 +455,8 @@ public:
    * default value is 96, meaning that a 10 point font will be 13
    * units high. (10 * 96. / 72. = 13.3).
    * 
-   * Since: 1.10
-   * @param context A Pango::Context, from Pango::CairoFontMap::create_context().
+   * @newin{1,10}
+   * @param context A Pango::Context, from a pangocairo font map.
    * @param dpi The resolution in "dots per inch". (Physical inches aren't actually
    * involved; the terminology is conventional.) A 0 or negative value
    * means to use the resolution from the font map.
@@ -461,11 +464,11 @@ public:
   void set_resolution(double dpi);
   
   /** Gets the resolution for the context. See pango_cairo_context_set_resolution()
-   * @param context A Pango::Context, from Pango::CairoFontMap::create_context().
+   * 
+   * @newin{1,10}
+   * @param context A Pango::Context, from a pangocairo font map.
    * @return The resolution in "dots per inch". A negative value will
    * be returned if no resolution has previously been set.
-   * 
-   * Since: 1.10.
    */
   double get_resolution() const;
 
@@ -474,17 +477,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

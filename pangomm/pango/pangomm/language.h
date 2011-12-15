@@ -4,25 +4,28 @@
 #define _PANGOMM_LANGUAGE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
+ * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <glibmm/value.h>
+#include <glibmm/arrayhandle.h>
 #include <pango/pango-attributes.h>
 
 
@@ -33,7 +36,7 @@ extern "C" { typedef struct _PangoLanguage PangoLanguage; }
 namespace Pango
 {
 
-/** @addtogroup pangommEnums Enums and Flags */
+/** @addtogroup pangommEnums pangomm Enums and Flags */
 
 /**
  * @ingroup pangommEnums
@@ -208,7 +211,7 @@ public:
    * @param range_list A list of language ranges, separated by ';', ':',
    * ',', or space characters.
    * Each element must either be '*', or a RFC 3066 language range
-   * canonicalized as by pango_language_from_string().
+   * canonicalized as by from_string().
    * @return <tt>true</tt> if a match was found.
    */
   bool matches(const Glib::ustring & range_list) const;
@@ -223,13 +226,15 @@ public:
    * determining if a supplied language tag is relevant to
    * a particular section of text. It probably is not useful for
    * applications in most circumstances.
+   * 
+   * This function uses get_scripts() internally.
+   * 
+   * @newin{1,4}
    * @param script A Pango::Script.
    * @return <tt>true</tt> if @a script is one of the scripts used
    * to write @a language or if nothing is known about @a language
    * (including the case that @a language is <tt>0</tt>),
    * <tt>false</tt> otherwise.
-   *  
-   * Since: 1.4.
    */
   bool includes_script(Script script) const;
 
@@ -247,7 +252,7 @@ public:
    *
    * @result A container of Script values.
    *
-   * @newin2p14
+   * @newin{2,14}
    */
   Glib::ArrayHandle<Script> get_scripts() const;
   

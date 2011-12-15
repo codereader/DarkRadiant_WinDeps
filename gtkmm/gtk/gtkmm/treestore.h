@@ -25,13 +25,14 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+// We couldn't include it in treemodel.h, but doing it here makes it easier for people.
+#include <gtkmm/treepath.h>
+
 #include <gtkmm/treeiter.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treesortable.h>
 #include <gtkmm/treedragdest.h>
 #include <gtkmm/treedragsource.h>
-// We couldn't include it in treemodel.h, but doing it here makes it easier for people.
-#include <gtkmm/treepath.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -84,6 +85,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -107,7 +110,7 @@ protected:
    * constructor should only be used by derived classes.
    */
   TreeStore();
-  
+
   explicit TreeStore(const TreeModelColumnRecord& columns);
 
 public:
@@ -184,14 +187,14 @@ public:
    *
    * @param node The list of the parent row's children, as returned by Gtk::TreeModel::iterator::children().
    * @result An iterator to the new row.
-   */  
+   */
   iterator append(const TreeNodeChildren& node);
 
   
   /** Swaps @a a and @a b in the same level of @a tree_store. Note that this function
    * only works with unsorted stores.
    * 
-   * @newin2p2
+   * @newin{2,2}
    * @param a A Gtk::TreeIter.
    * @param b Another Gtk::TreeIter.
    */
@@ -215,14 +218,16 @@ public:
    */
   void clear();
   
-  /** Return value: <tt>true</tt>, if @a iter is an ancestor of @a descendant
+  /** Returns <tt>true</tt> if @a iter is an ancestor of @a descendant.  That is, @a iter is the
+   * parent (or grandparent or great-grandparent) of @a descendant.
    * @param iter A valid Gtk::TreeIter.
    * @param descendant A valid Gtk::TreeIter.
    * @return <tt>true</tt>, if @a iter is an ancestor of @a descendant.
    */
   bool is_ancestor(const iterator& iter, const iterator& descendant) const;
   
-  /** Return value: The depth of @a iter
+  /** Returns the depth of @a iter.  This will be 0 for anything on the root level, 1
+   * for anything down a level, etc.
    * @param iter A valid Gtk::TreeIter.
    * @return The depth of @a iter.
    */
@@ -233,10 +238,10 @@ public:
    * purposes.
    * 
    * Checks if the given iter is a valid iter for this Gtk::TreeStore.
+   * 
+   * @newin{2,2}
    * @param iter A Gtk::TreeIter.
    * @return <tt>true</tt> if the iter is valid, <tt>false</tt> if the iter is invalid.
-   * 
-   * @newin2p2.
    */
   bool iter_is_valid(const iterator& iter) const;
 
@@ -248,17 +253,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

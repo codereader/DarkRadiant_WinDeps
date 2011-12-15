@@ -77,18 +77,8 @@ void DesktopAppInfo_Class::class_init_function(void* g_class, void* class_data)
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* DesktopAppInfo_Class::wrap_new(GObject* object)
@@ -154,6 +144,11 @@ Glib::RefPtr<DesktopAppInfo> DesktopAppInfo::create_from_filename(const std::str
 }
 
 
+std::string DesktopAppInfo::get_filename() const
+{
+  return Glib::convert_const_gchar_ptr_to_stdstring(g_desktop_app_info_get_filename(const_cast<GDesktopAppInfo*>(gobj())));
+}
+
 bool DesktopAppInfo::is_hidden() const
 {
   return g_desktop_app_info_get_is_hidden(const_cast<GDesktopAppInfo*>(gobj()));
@@ -163,13 +158,6 @@ void DesktopAppInfo::set_desktop_env(const std::string& desktop_env)
 {
 g_desktop_app_info_set_desktop_env(desktop_env.c_str());
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gio

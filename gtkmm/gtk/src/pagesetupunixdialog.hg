@@ -31,13 +31,14 @@ namespace Gtk
  * the portability offered by the high-level printing API exposed
  * through PrintOperation.
  *
- * @newin2p10
+ * @newin{2,10}
  *
  * @ingroup Printing
  */
 class PageSetupUnixDialog : public Dialog
 {
   _CLASS_GTKOBJECT(PageSetupUnixDialog, GtkPageSetupUnixDialog, GTK_PAGE_SETUP_UNIX_DIALOG, Gtk::Dialog, GtkDialog)
+  _UNMANAGEABLE
   _GTKMMPROC_WIN32_NO_WRAP
 
 public:

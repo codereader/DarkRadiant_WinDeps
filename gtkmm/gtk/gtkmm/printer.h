@@ -37,7 +37,7 @@ namespace Gtk
 namespace Gtk
 {
 
-/** @addtogroup gtkmmEnums Enums and Flags */
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
 
 /**
  * @ingroup gtkmmEnums
@@ -114,14 +114,14 @@ namespace Gtk
 {
 
 
-/** A Printer object represents a printer. You only need to deal directly with printers if you use the 
+/** A Printer object represents a printer. You only need to deal directly with printers if you use the
  * non-portable PrintUnixDialog API.
  *
- * A Printer object allows to get status information about the printer, such as its description, its location, 
- * the number of queued jobs, etc. Most importantly, a Printer object can be used to create a PrintJob object, 
+ * A Printer object allows to get status information about the printer, such as its description, its location,
+ * the number of queued jobs, etc. Most importantly, a Printer object can be used to create a PrintJob object,
  * which lets you print to the printer.
  *
- * @newin2p10
+ * @newin{2,10}
  *
  * @ingroup Printing
  */
@@ -156,6 +156,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -187,94 +189,102 @@ public:
   //_WRAP_METHOD(Glib::RefPtr<const PrintBackend> get_backend() const, gtk_printer_get_backend, refreturn, constversion)
   
 
-  /** Return value: the name of @a printer
-   * @return The name of @a printer
+  /** Returns the name of the printer.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The name of @a printer.
    */
   Glib::ustring get_name() const;
   
-  /** Return value: the state message of @a printer
-   * @return The state message of @a printer
+  /** Returns the state message describing the current state
+   * of the printer.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The state message of @a printer.
    */
   Glib::ustring get_state_message() const;
   
   /** Gets the description of the printer.
-   * @return The description of @a printer
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The description of @a printer.
    */
   Glib::ustring get_description() const;
   
-  /** Return value: the location of @a printer
-   * @return The location of @a printer
+  /** Returns a description of the location of the printer.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The location of @a printer.
    */
   Glib::ustring get_location() const;
   
   /** Gets the name of the icon to use for the printer.
-   * @return The icon name for @a printer
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The icon name for @a printer.
    */
   Glib::ustring get_icon_name() const;
   
   /** Gets the number of jobs currently queued on the printer.
-   * @return The number of jobs on @a printer
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The number of jobs on @a printer.
    */
   int get_job_count() const;
   
-  /** Return value: <tt>true</tt> if @a printer is active
-   * @return <tt>true</tt> if @a printer is active
+  /** Returns whether the printer is currently active (i.e.\ 
+   * accepts new jobs).
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return <tt>true</tt> if @a printer is active.
    */
   bool is_active() const;
   
-  /** Return value: <tt>true</tt> if @a printer is paused
-   * @return <tt>true</tt> if @a printer is paused
+  /** Returns whether the printer is currently paused.
+   * A paused printer still accepts jobs, but it is not
+   * printing them.
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return <tt>true</tt> if @a printer is paused.
    */
   bool is_paused() const;
   
-  /** Return value: <tt>true</tt> if @a printer is accepting jobs
-   * @return <tt>true</tt> if @a printer is accepting jobs
+  /** Returns whether the printer is accepting jobs
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return <tt>true</tt> if @a printer is accepting jobs.
    */
   bool is_accepting_jobs() const;
   
-  /** Return value: <tt>true</tt> if @a printer is virtual
-   * @return <tt>true</tt> if @a printer is virtual
+  /** Returns whether the printer is virtual (i.e.\ does not
+   * represent actual printer hardware, but something like 
+   * a CUPS class).
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return <tt>true</tt> if @a printer is virtual.
    */
   bool is_virtual() const;
   
-  /** Return value: <tt>true</tt> if @a printer is the default
-   * @return <tt>true</tt> if @a printer is the default
+  /** Returns whether the printer is the default printer.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return <tt>true</tt> if @a printer is the default.
    */
   bool is_default() const;
   
-  /** Return value: <tt>true</tt> if @a printer accepts PDF
-   * @return <tt>true</tt> if @a printer accepts PDF
+  /** Returns whether the printer accepts input in
+   * PDF format.  
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return <tt>true</tt> if @a printer accepts PDF.
    */
   bool accepts_pdf() const;
   
-  /** Return value: <tt>true</tt> if @a printer accepts PostScript
-   * @return <tt>true</tt> if @a printer accepts PostScript
+  /** Returns whether the printer accepts input in
+   * PostScript format.  
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return <tt>true</tt> if @a printer accepts PostScript.
    */
   bool accepts_ps() const;
 
@@ -282,17 +292,17 @@ public:
   /** Lists all the paper sizes @a printer supports.
    * This will return and empty list unless the printer's details are 
    * available, see has_details() and request_details().
-   * @return A newly allocated list of newly allocated Gtk::PageSetup s.
    * 
-   * @newin2p12.
+   * @newin{2,12}
+   * @return A newly allocated list of newly allocated Gtk::PageSetup s.
    */
   Glib::ListHandle< Glib::RefPtr<PageSetup> > list_papers();
 
   
-  /** Return value: a newly allocated Gtk::PageSetup with default page size of the printer.
-   * @return A newly allocated Gtk::PageSetup with default page size of the printer.
+  /** Returns default page size of @a printer.
    * 
-   * Since: 2.13.
+   * @newin{2,14}
+   * @return A newly allocated Gtk::PageSetup with default page size of the printer.
    */
   Glib::RefPtr<PageSetup> get_default_page_size() const;
 
@@ -300,35 +310,57 @@ public:
   /** Lists all the paper sizes @a printer supports.
    * This will return and empty list unless the printer's details are 
    * available, see has_details() and request_details().
-   * @return A newly allocated list of newly allocated Gtk::PageSetup s.
    * 
-   * @newin2p12.
+   * @newin{2,12}
+   * @return A newly allocated list of newly allocated Gtk::PageSetup s.
    */
   Glib::ListHandle< Glib::RefPtr<const PageSetup> > list_papers() const;
 
   
-  /** Return value: <tt>true</tt> if @a printer details are available
-   * @return <tt>true</tt> if @a printer details are available
+  /** Returns whether the printer details are available.
    * 
-   * @newin2p12.
+   * @newin{2,12}
+   * @return <tt>true</tt> if @a printer details are available.
    */
   bool has_details() const;
   
   /** Requests the printer details. When the details are available,
    * the details_acquired signal will be emitted.
    * 
-   * @newin2p12
+   * @newin{2,12}
    */
   void request_details();
   
-  /** Return value: the printer's capabilities
-   * @return The printer's capabilities
+  /** Returns the printer's capabilities.
    * 
-   * @newin2p12.
+   * This is useful when you're using Gtk::PrintUnixDialog's manual-capabilities 
+   * setting and need to know which settings the printer can handle and which 
+   * you must handle yourself.
+   * 
+   * This will return 0 unless the printer's details are available, see
+   * has_details() and request_details().
+   * 
+   * @newin{2,12}
+   * @return The printer's capabilities.
    */
   PrintCapabilities get_capabilities() const;
+  
+  /** Retrieve the hard margins of @a printer, i.e.\ the margins that define
+   * the area at the borders of the paper that the printer cannot print to.
+   * 
+   * @note This will not succeed unless the printer's details are available,
+   * see has_details() and request_details().
+   * 
+   * @newin{2,20}
+   * @param top A location to store the top margin in.
+   * @param bottom A location to store the bottom margin in.
+   * @param left A location to store the left margin in.
+   * @param right A location to store the right margin in.
+   * @return <tt>true</tt> iff the hard margins were retrieved.
+   */
+  bool get_hard_margins(double& top, double& bottom, double& left, double& right) const;
 
-
+  
   /**
    * @par Prototype:
    * <tt>void on_my_%details_acquired(bool success)</tt>
@@ -336,7 +368,7 @@ public:
 
   Glib::SignalProxy1< void,bool > signal_details_acquired();
 
-  
+
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** Name of the printer.
    *
@@ -428,22 +460,38 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** TRUE if this printer is paused.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_paused() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** TRUE if this printer is accepting new jobs.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_accepting_jobs() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_details_acquired(bool success);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };
@@ -456,10 +504,10 @@ inline bool operator==(const Glib::RefPtr<Printer>& lhs, const Glib::RefPtr<Prin
 inline bool operator!=(const Glib::RefPtr<Printer>& lhs, const Glib::RefPtr<Printer>& rhs)
   { return !lhs->equal(rhs); }
 
-/** For example, 
+/** For example,
  * bool on_enumerate_printers(const Glib::RefPtr<Printer>& printer);
  * @param printer A printer.
- * @param result true to stop the enumeration, false to continue. 
+ * @param result true to stop the enumeration, false to continue.
  *
  * @relates Gtk::Printer
  */

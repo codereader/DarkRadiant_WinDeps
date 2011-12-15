@@ -9,7 +9,7 @@
 /* $Id: buttonbox.hg,v 1.3 2003/10/12 09:38:11 murrayc Exp $ */
 
 /* buttonbox.h
- * 
+ *
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -102,6 +102,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -114,17 +116,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -135,7 +131,7 @@ public:
   ButtonBoxStyle get_layout() const;
   
   void set_layout(ButtonBoxStyle layout_style);
-  
+
   
   /** Sets whether @a child should appear in a secondary group of children.
    * A typical use of a secondary child is the help button in a dialog.
@@ -153,30 +149,41 @@ public:
    * @param is_secondary If <tt>true</tt>, the @a child appears in a secondary group of the
    * button box.
    */
-  void set_child_secondary(Widget& child, bool is_secondary = true);
+  void set_child_secondary(Widget& child, bool is_secondary =  true);
   
-  /** Return value: whether @a child should appear in a secondary group of children.
+  /** Returns whether @a child should appear in a secondary group of children.
+   * 
+   * @newin{2,4}
    * @param child A child of @a widget.
    * @return Whether @a child should appear in a secondary group of children.
-   * 
-   * @newin2p4.
    */
   bool get_child_secondary(const Gtk::Widget& child) const;
 
-   int get_child_min_width() const;
-    void set_child_min_width(const int& value);
- 
-   int get_child_min_height() const;
-    void set_child_min_height(const int& value);
- 
-   int get_child_ipadding_x() const;
-    void set_child_ipadding_x(const int& value);
- 
-   int get_child_ipadding_y() const;
-    void set_child_ipadding_y(const int& value);
- 
+//TODO: Replace (and deprecate) with use of properties:
+
+
+  int get_child_min_width() const;
+
+  //Note that the const int& is silly, but was once generated and must be kept for ABI.
+  void set_child_min_width(const int& value);
+
+  int get_child_min_height() const;
+
+  //Note that the const int& is silly, but was once generated and must be kept for ABI.
+  void set_child_min_height(const int& value);
+
+  int get_child_ipadding_x() const;
+
+  //Note that the const int& is silly, but was once generated and must be kept for ABI.
+  void set_child_ipadding_x(const int& value);
+
+  int get_child_ipadding_y() const;
+
+  //Note that the const int& is silly, but was once generated and must be kept for ABI.
+  void set_child_ipadding_y(const int& value);
+
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** How to layout the buttons in the box. Possible values are default
+/** How to lay out the buttons in the box. Possible values are: default, spread, edge, start and end.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -186,7 +193,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** How to layout the buttons in the box. Possible values are default
+/** How to lay out the buttons in the box. Possible values are: default, spread, edge, start and end.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -202,10 +209,10 @@ public:
  *
  * A button box should be used to provide a consistent layout of buttons
  * throughout your application. There is one default layout and a default spacing
- * value that are persistant across all Gtk::VButtonBox widgets. 
+ * value that are persistant across all Gtk::VButtonBox widgets.
  *
  * The layout/spacing can then be altered by the programmer, or if desired,
- * by the user to alter the 'feel' of a program to a small degree. 
+ * by the user to alter the 'feel' of a program to a small degree.
  *
  * @ingroup Widgets
  * @ingroup Containers
@@ -242,6 +249,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -254,17 +263,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -279,10 +282,10 @@ public:
  *
  * A button box should be used to provide a consistent layout of buttons
  * throughout your application. There is one default layout and a default spacing
- * value that are persistant across all Gtk::HButtonBox widgets. 
+ * value that are persistant across all Gtk::HButtonBox widgets.
  *
  * The layout/spacing can then be altered by the programmer, or if desired,
- * by the user to alter the 'feel' of a program to a small degree. 
+ * by the user to alter the 'feel' of a program to a small degree.
  *
  * The HButtonBox widget looks like this:
  * @image html hbuttonbox1.png
@@ -322,6 +325,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -334,17 +339,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:

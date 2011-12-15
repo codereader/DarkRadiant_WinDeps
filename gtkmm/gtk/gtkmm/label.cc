@@ -107,6 +107,70 @@ static const Glib::SignalProxyInfo Label_signal_populate_popup_info =
 };
 
 
+static gboolean Label_signal_activate_link_callback(GtkLabel* self, const gchar* p0,void* data)
+{
+  using namespace Gtk;
+  typedef sigc::slot< bool,const Glib::ustring& > SlotType;
+
+  // Do not try to call a signal on a disassociated wrapper.
+  if(Glib::ObjectBase::_get_current_wrapper((GObject*) self))
+  {
+    #ifdef GLIBMM_EXCEPTIONS_ENABLED
+    try
+    {
+    #endif //GLIBMM_EXCEPTIONS_ENABLED
+      if(sigc::slot_base *const slot = Glib::SignalProxyNormal::data_to_slot(data))
+        return static_cast<int>((*static_cast<SlotType*>(slot))(Glib::convert_const_gchar_ptr_to_ustring(p0)
+));
+    #ifdef GLIBMM_EXCEPTIONS_ENABLED
+    }
+    catch(...)
+    {
+      Glib::exception_handlers_invoke();
+    }
+    #endif //GLIBMM_EXCEPTIONS_ENABLED
+  }
+
+  typedef gboolean RType;
+  return RType();
+}
+
+static gboolean Label_signal_activate_link_notify_callback(GtkLabel* self, const gchar* p0, void* data)
+{
+  using namespace Gtk;
+  typedef sigc::slot< void,const Glib::ustring& > SlotType;
+
+  // Do not try to call a signal on a disassociated wrapper.
+  if(Glib::ObjectBase::_get_current_wrapper((GObject*) self))
+  {
+    #ifdef GLIBMM_EXCEPTIONS_ENABLED
+    try
+    {
+    #endif //GLIBMM_EXCEPTIONS_ENABLED
+      if(sigc::slot_base *const slot = Glib::SignalProxyNormal::data_to_slot(data))
+        (*static_cast<SlotType*>(slot))(Glib::convert_const_gchar_ptr_to_ustring(p0)
+);
+    #ifdef GLIBMM_EXCEPTIONS_ENABLED
+    }
+    catch(...)
+    {
+      Glib::exception_handlers_invoke();
+    }
+    #endif //GLIBMM_EXCEPTIONS_ENABLED
+  }
+
+  typedef gboolean RType;
+  return RType();
+}
+
+static const Glib::SignalProxyInfo Label_signal_activate_link_info =
+{
+  "activate-link",
+  (GCallback) &Label_signal_activate_link_callback,
+  (GCallback) &Label_signal_activate_link_notify_callback
+};
+
+
 } // anonymous namespace
 
 
@@ -147,23 +211,17 @@ const Glib::Class& Label_Class::init()
   return *this;
 }
 
+
 void Label_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->populate_popup = &populate_popup_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Label_Class::populate_popup_callback(GtkLabel* self, GtkMenu* p0)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -196,7 +254,7 @@ void Label_Class::populate_popup_callback(GtkLabel* self, GtkMenu* p0)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -205,7 +263,6 @@ void Label_Class::populate_popup_callback(GtkLabel* self, GtkMenu* p0)
   if(base && base->populate_popup)
     (*base->populate_popup)(self, p0);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Label_Class::wrap_new(GObject* o)
@@ -240,6 +297,7 @@ GType Label::get_type()
 {
   return label_class_.init().get_type();
 }
+
 
 GType Label::get_base_type()
 {
@@ -424,7 +482,7 @@ gtk_label_select_region(gobj(), start_offset, end_offset);
 
 bool Label::get_selection_bounds(int& start, int& end) const
 {
-  return gtk_label_get_selection_bounds(const_cast<GtkLabel*>(gobj()), &start, &end);
+  return gtk_label_get_selection_bounds(const_cast<GtkLabel*>(gobj()), &(start), &(end));
 }
 
 Glib::RefPtr<Pango::Layout> Label::get_layout()
@@ -444,7 +502,7 @@ Glib::RefPtr<const Pango::Layout> Label::get_layout() const
 
 void Label::get_layout_offsets(int& x, int& y) const
 {
-gtk_label_get_layout_offsets(const_cast<GtkLabel*>(gobj()), &x, &y); 
+gtk_label_get_layout_offsets(const_cast<GtkLabel*>(gobj()), &(x), &(y)); 
 }
 
 void Label::set_single_line_mode(bool single_line_mode)
@@ -457,10 +515,31 @@ bool Label::get_single_line_mode() const
   return gtk_label_get_single_line_mode(const_cast<GtkLabel*>(gobj()));
 }
 
+Glib::ustring Label::get_current_uri() const
+{
+  return Glib::convert_const_gchar_ptr_to_ustring(gtk_label_get_current_uri(const_cast<GtkLabel*>(gobj())));
+}
+
+void Label::set_track_visited_links(bool track_links)
+{
+gtk_label_set_track_visited_links(gobj(), static_cast<int>(track_links)); 
+}
+
+bool Label::get_track_visited_links() const
+{
+  return gtk_label_get_track_visited_links(const_cast<GtkLabel*>(gobj()));
+}
+
 
 Glib::SignalProxy1< void,Menu* > Label::signal_populate_popup()
 {
   return Glib::SignalProxy1< void,Menu* >(this, &Label_signal_populate_popup_info);
+}
+
+
+Glib::SignalProxy1< bool,const Glib::ustring& > Label::signal_activate_link()
+{
+  return Glib::SignalProxy1< bool,const Glib::ustring& >(this, &Label_signal_activate_link_info);
 }
 
 
@@ -688,8 +767,21 @@ Glib::PropertyProxy_ReadOnly<int> Label::property_max_width_chars() const
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
 
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<bool> Label::property_track_visited_links() 
+{
+  return Glib::PropertyProxy<bool>(this, "track-visited-links");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> Label::property_track_visited_links() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "track-visited-links");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+
 void Gtk::Label::on_populate_popup(Menu* menu)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -699,10 +791,6 @@ void Gtk::Label::on_populate_popup(Menu* menu)
   if(base && base->populate_popup)
     (*base->populate_popup)(gobj(),(GtkMenu*)Glib::unwrap(menu));
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

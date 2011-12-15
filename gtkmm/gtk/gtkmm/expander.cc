@@ -83,23 +83,14 @@ const Glib::Class& Expander_Class::init()
   return *this;
 }
 
+
 void Expander_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Expander_Class::wrap_new(GObject* o)
@@ -134,6 +125,7 @@ GType Expander::get_type()
 {
   return expander_class_.init().get_type();
 }
+
 
 GType Expander::get_base_type()
 {
@@ -214,6 +206,16 @@ Widget* Expander::get_label_widget()
 const Widget* Expander::get_label_widget() const
 {
   return const_cast<Expander*>(this)->get_label_widget();
+}
+
+void Expander::set_label_fill(bool label_fill)
+{
+gtk_expander_set_label_fill(gobj(), static_cast<int>(label_fill)); 
+}
+
+bool Expander::get_label_fill() const
+{
+  return gtk_expander_get_label_fill(const_cast<GtkExpander*>(gobj()));
 }
 
 
@@ -301,12 +303,19 @@ Glib::PropertyProxy_ReadOnly<Widget*> Expander::property_label_widget() const
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
 
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<bool> Expander::property_label_fill() 
+{
+  return Glib::PropertyProxy<bool>(this, "label-fill");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> Expander::property_label_fill() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "label-fill");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
 
 } // namespace Gtk

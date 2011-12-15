@@ -64,8 +64,10 @@ Glib::ustring SelectionData::get_text() const
 
 std::string SelectionData::get_data_as_string() const
 {
-  if(gobj()->data && gobj()->length > 0)
-    return std::string(reinterpret_cast<char*>(gobj()->data), gobj()->length);
+  const guchar* data = get_data();
+  const int length = get_length();
+  if(data && length > 0)
+    return std::string(reinterpret_cast<const char*>(data), length);
   else
     return std::string();
 }
@@ -97,7 +99,6 @@ std::string SelectionData::get_data_type() const
 
 
 } // namespace Gtk
-
 
 namespace
 {

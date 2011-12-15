@@ -31,20 +31,16 @@ static void SignalProxy_CellData_gtk_callback(GtkCellLayout* /* cell_layout */, 
 {
   Gtk::CellLayout::SlotCellData* the_slot = static_cast<Gtk::CellLayout::SlotCellData*>(data);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     //We ignore the cell, because that was given as an argument to the connecting method, so the caller should know which one it is already.
     //And we ignore the tree_model because that can be obtained from the iter or from the CellLayout itself.
     (*the_slot)(Gtk::TreeModel::const_iterator(tree_model, iter));
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
 static void SignalProxy_CellData_gtk_callback_destroy(void* data)
@@ -55,13 +51,11 @@ static void SignalProxy_CellData_gtk_callback_destroy(void* data)
 namespace Gtk
 {
 
-#ifdef GLIBMM_PROPERTIES_ENABLED
 void CellLayout::add_attribute(const Glib::PropertyProxy_Base& property, const TreeModelColumnBase& column)
 {
   gtk_cell_layout_add_attribute(gobj(),
       (GtkCellRenderer*) property.get_object()->gobj(), property.get_name(), column.index());
 }
-#endif //GLIBMM_PROPERTIES_ENABLED
 
 void CellLayout::add_attribute(CellRenderer& cell, const Glib::ustring& attribute, const TreeModelColumnBase& column)
 {
@@ -131,20 +125,15 @@ void CellLayout_Class::iface_init_function(void* g_iface, void*)
   //This is a temporary fix until I find out why I can not seem to derive a GtkFileChooser interface. murrayc
   g_assert(klass != 0); 
 
-#ifdef GLIBMM_VFUNCS_ENABLED
   klass->pack_start = &pack_start_vfunc_callback;
   klass->pack_end = &pack_end_vfunc_callback;
   klass->clear = &clear_vfunc_callback;
   klass->add_attribute = &add_attribute_vfunc_callback;
   klass->clear_attributes = &clear_attributes_vfunc_callback;
   klass->reorder = &reorder_vfunc_callback;
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
 void CellLayout_Class::pack_start_vfunc_callback(GtkCellLayout* self, GtkCellRenderer* cell, gboolean expand)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -178,7 +167,7 @@ void CellLayout_Class::pack_start_vfunc_callback(GtkCellLayout* self, GtkCellRen
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -222,7 +211,7 @@ void CellLayout_Class::pack_end_vfunc_callback(GtkCellLayout* self, GtkCellRende
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -264,7 +253,7 @@ void CellLayout_Class::clear_vfunc_callback(GtkCellLayout* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -309,7 +298,7 @@ void CellLayout_Class::add_attribute_vfunc_callback(GtkCellLayout* self, GtkCell
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -352,7 +341,7 @@ void CellLayout_Class::clear_attributes_vfunc_callback(GtkCellLayout* self, GtkC
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -396,7 +385,7 @@ void CellLayout_Class::reorder_vfunc_callback(GtkCellLayout* self, GtkCellRender
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -407,10 +396,6 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Ge
     (*base->reorder)(self, cell, position);
 
 }
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* CellLayout_Class::wrap_new(GObject* object)
@@ -451,6 +436,7 @@ GType CellLayout::get_type()
 {
   return celllayout_class_.init().get_type();
 }
+
 
 GType CellLayout::get_base_type()
 {
@@ -499,10 +485,6 @@ gtk_cell_layout_reorder(gobj(), (cell).gobj(), position);
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
 void Gtk::CellLayout::pack_start_vfunc(CellRenderer* cell, bool expand) 
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -563,7 +545,6 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(gobject_), CppObjectType::get_type()) /
   if(base && base->reorder)
     (*base->reorder)(gobj(),(GtkCellRenderer*)Glib::unwrap(cell),position);
 }
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

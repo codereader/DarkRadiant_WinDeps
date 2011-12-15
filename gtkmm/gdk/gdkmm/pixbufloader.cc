@@ -197,25 +197,19 @@ const Glib::Class& PixbufLoader_Class::init()
   return *this;
 }
 
+
 void PixbufLoader_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->area_prepared = &area_prepared_callback;
   klass->area_updated = &area_updated_callback;
   klass->closed = &closed_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void PixbufLoader_Class::area_prepared_callback(GdkPixbufLoader* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -247,7 +241,7 @@ void PixbufLoader_Class::area_prepared_callback(GdkPixbufLoader* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -291,7 +285,7 @@ void PixbufLoader_Class::area_updated_callback(GdkPixbufLoader* self, gint p0, g
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -331,7 +325,7 @@ void PixbufLoader_Class::closed_callback(GdkPixbufLoader* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -340,7 +334,6 @@ void PixbufLoader_Class::closed_callback(GdkPixbufLoader* self)
   if(base && base->closed)
     (*base->closed)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* PixbufLoader_Class::wrap_new(GObject* object)
@@ -369,6 +362,7 @@ PixbufLoader::PixbufLoader(GdkPixbufLoader* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 PixbufLoader::~PixbufLoader()
 {}
 
@@ -379,6 +373,7 @@ GType PixbufLoader::get_type()
 {
   return pixbufloader_class_.init().get_type();
 }
+
 
 GType PixbufLoader::get_base_type()
 {
@@ -400,49 +395,33 @@ Glib::RefPtr<PixbufLoader> PixbufLoader::create()
 {
   return Glib::RefPtr<PixbufLoader>( new PixbufLoader() );
 }
+
 Glib::RefPtr<PixbufLoader> PixbufLoader::create(const Glib::ustring& image_type, bool mime_type)
 {
   return Glib::RefPtr<PixbufLoader>( new PixbufLoader(image_type, mime_type) );
 }
+
 void PixbufLoader::set_size(int width, int height)
 {
 gdk_pixbuf_loader_set_size(gobj(), width, height); 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void PixbufLoader::write(const guint8* buf, gsize count)
-#else
-void PixbufLoader::write(const guint8* buf, gsize count, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   gdk_pixbuf_loader_write(gobj(), (buf), count, &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void PixbufLoader::close()
-#else
-void PixbufLoader::close(std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   gdk_pixbuf_loader_close(gobj(), &(gerror));
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
 }
@@ -497,7 +476,6 @@ Glib::SignalProxy2< void,int,int > PixbufLoader::signal_size_prepared()
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gdk::PixbufLoader::on_area_prepared()
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -525,10 +503,6 @@ void Gdk::PixbufLoader::on_closed()
   if(base && base->closed)
     (*base->closed)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gdk

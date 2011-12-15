@@ -20,7 +20,6 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <gdkmm/colormap.h>
 #include <gdk/gdk.h>
 
 namespace Gdk
@@ -67,7 +66,7 @@ void Color::set_rgb_p(double red_, double green_, double blue_)
 void Color::set_hsv(double h, double s, double v)
 {
   //TODO: Comments/Documentation. I have no idea what this code does. murrayc.
-  
+
   h /= 60.0;
   int i = (int)h;
   double p = v * (1 - s);
@@ -145,13 +144,6 @@ bool Color::set(const Glib::ustring& value)
   return gdk_color_parse(value.c_str(), gobj());
 }
 
-_DEPRECATE_IFDEF_START
-bool Color::parse(const Glib::ustring& spec)
-{
-  return set(spec);
-}
-_DEPRECATE_IFDEF_END
-
 gushort Color::get_red() const
 {
   return gobject_->red;
@@ -182,11 +174,6 @@ void Color::set_blue(gushort value)
   gobject_->blue = value;
 }
 
-void Color::rgb_find_color(const Glib::RefPtr<Gdk::Colormap>& map)
-{
-  gdk_rgb_find_color(map->gobj(), gobj());
-}
-
 guint Color::get_pixel() const
 {
   return gobject_->pixel;
@@ -213,4 +200,3 @@ Glib::ustring Color::to_string() const
 }
 
 } //namespace Gdk
-

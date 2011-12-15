@@ -89,6 +89,40 @@ void Surface::finish()
   check_object_status_and_throw_exception(*this);
 }
 
+const unsigned char* Surface::get_mime_data(const std::string& mime_type, unsigned long& length)
+{
+  const unsigned char* data = 0;
+  cairo_surface_get_mime_data(const_cast<cobject*>(cobj()), mime_type.c_str(), &data, &length);
+  check_object_status_and_throw_exception(*this);
+  return data;
+}
+
+
+static void on_cairo_destroy(void *data)
+{
+  Surface::SlotDestroy* slot = static_cast<Surface::SlotDestroy*>(data);
+  if(!slot)
+    return;
+
+  (*slot)();
+  delete slot;
+}
+
+void Surface::set_mime_data(const std::string& mime_type, unsigned char* data, unsigned long length, const SlotDestroy& slot_destroy)
+{
+  SlotDestroy* copy = new SlotDestroy(slot_destroy); //Deleted when the callback is called once.
+  cairo_surface_set_mime_data(const_cast<cobject*>(cobj()), mime_type.c_str(), data, length,
+    &on_cairo_destroy, copy);
+  check_object_status_and_throw_exception(*this);
+}
+
+void Surface::unset_mime_data(const std::string& mime_type)
+{
+  cairo_surface_set_mime_data(const_cast<cobject*>(cobj()), mime_type.c_str(),
+    0, 0, 0, 0);
+  check_object_status_and_throw_exception(*this);
+}
+
 void Surface::get_font_options(FontOptions& options) const
 {
   cairo_font_options_t* cfontoptions = cairo_font_options_create();
@@ -205,6 +239,16 @@ void Surface::write_to_png(cairo_write_func_t write_func, void *closure)
 }
 #endif
 
+RefPtr<Device> Surface::get_device()
+{
+  cairo_device_t *d = cairo_surface_get_device (m_cobject);
+
+  if (!d)
+    return RefPtr<Device>();
+
+  return RefPtr<Device>(new Device(d, true));
+}
+
 void Surface::reference() const
 {
   cairo_surface_reference(const_cast<cobject*>(cobj()));
@@ -222,6 +266,12 @@ RefPtr<Surface> Surface::create(const RefPtr<Surface> other, Content content, in
   return RefPtr<Surface>(new Surface(cobject, true /* has reference */));
 }
 
+RefPtr<Surface> Surface::create(const RefPtr<Surface>& target, double x, double y, double width, double height)
+{
+  cairo_surface_t* cobject = cairo_surface_create_for_rectangle(target->cobj(), x, y, width, height);
+  check_status_and_throw_exception(cairo_surface_status(cobject));
+  return RefPtr<Surface>(new Surface(cobject, true /* has reference */));
+}
 
 
 ImageSurface::ImageSurface(cairo_surface_t* cobject, bool has_reference)
@@ -362,6 +412,33 @@ void PdfSurface::set_size(double width_in_points, double height_in_points)
 {
   cairo_pdf_surface_set_size(cobj(), width_in_points, height_in_points);
   check_object_status_and_throw_exception(*this);
+}
+
+void PdfSurface::restrict_to_version(PdfVersion version)
+{
+  cairo_pdf_surface_restrict_to_version(cobj(), static_cast<cairo_pdf_version_t>(version));
+  check_object_status_and_throw_exception(*this);
+}
+
+const std::vector<PdfVersion> PdfSurface::get_versions()
+{
+  cairo_pdf_version_t const *versions;
+  int num_versions;
+  cairo_pdf_get_versions(&versions, &num_versions);
+
+  // Just copy the version array out into a std::vector.
+  std::vector<PdfVersion> vec;
+  for (int i = 0; i < num_versions; ++i)
+  {
+    vec.push_back(static_cast<PdfVersion>(versions[i]));
+  }
+  return vec;
+}
+
+std::string PdfSurface::version_to_string(PdfVersion version)
+{
+  const char *cstring = cairo_pdf_version_to_string(static_cast<cairo_pdf_version_t>(version));
+  return cstring ? std::string(cstring) : std::string();
 }
 
 #endif // CAIRO_HAS_PDF_SURFACE

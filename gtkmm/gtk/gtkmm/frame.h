@@ -87,6 +87,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -99,17 +101,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -117,17 +113,14 @@ private:
 public:
 
   Frame();
-  explicit Frame(const Glib::ustring& label);
+    explicit Frame(const Glib::ustring& label);
+
 
   //TODO: Add a bool use_markup arg to set_label() as a convenience - it would have to use set_label_widget().
     
+  
   /** Set the label to appear in the top edge of the frame.
    * Label alignment defaults to the upper left corner of the frame.
-   */
-  
-  /** Sets the text of the label. If @a label is <tt>0</tt>,
-   * the current label is removed.
-   * @param label The text to use as the label of the frame.
    */
   void set_label(const Glib::ustring& label);
   void unset_label();
@@ -163,12 +156,14 @@ public:
    */
   const Widget* get_label_widget() const;
 
+  
   /** Set the alignment of the Frame's label.
    * @param xalign The position of the label along the top edge of the widget.
    * A value of 0.0 represents left alignment; 1.0 represents right alignment.
    * The default value for a newly created Frame is 0.0.
    * @param yalign The y alignment of the label. Currently ignored.
    */
+  void set_label_align(float xalign =  0.0, float yalign =  0.5);
   
   /** Sets the alignment of the frame widget's label. The
    * default values for a newly created frame are 0.0 and 0.5.
@@ -180,19 +175,7 @@ public:
    * 0.0 or 1.0 the gap in the frame won't be painted because the label
    * will be completely above or below the frame.
    */
-  void set_label_align(float xalign = 0.0, float yalign = 0.5);
-  
-  /** Sets the alignment of the frame widget's label. The
-   * default values for a newly created frame are 0.0 and 0.5.
-   * @param xalign The position of the label along the top edge
-   * of the widget. A value of 0.0 represents left alignment;
-   * 1.0 represents right alignment.
-   * @param yalign The y alignment of the label. A value of 0.0 aligns under 
-   * the frame; 1.0 aligns above the frame. If the values are exactly
-   * 0.0 or 1.0 the gap in the frame won't be painted because the label
-   * will be completely above or below the frame.
-   */
-  void set_label_align(AlignmentEnum xalign, AlignmentEnum yalign = Gtk::ALIGN_CENTER);
+  void set_label_align(AlignmentEnum xalign, AlignmentEnum yalign =  Gtk::ALIGN_CENTER);
 
   
   /** Retrieves the X and Y alignment of the frame's label. See
@@ -202,11 +185,8 @@ public:
    */
   void get_label_align(float& xalign, float& yalign) const;
 
-  /** Sets shadow type of the frame.
-   */
   
-  /** Sets the shadow type for @a frame.
-   * @param type The new Gtk::ShadowType.
+  /** Sets shadow type of the frame.
    */
   void set_shadow_type(ShadowType type);
   
@@ -276,6 +256,7 @@ public:
   Glib::PropertyProxy_ReadOnly<double> property_label_yalign() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
+  //deprecated: _WRAP_PROPERTY("shadow", ShadowType)
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** Appearance of the frame border.
    *
@@ -318,9 +299,7 @@ public:
 
 
 protected:
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void compute_child_allocation_vfunc(Allocation& allocation);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void compute_child_allocation_vfunc(Allocation& allocation);
 
 
 };

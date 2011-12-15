@@ -26,13 +26,13 @@ public:
 
   const Glib::Class& init();
 
+
   static void class_init_function(void* g_class, void* class_data);
 
   static Glib::ObjectBase* wrap_new(GObject*);
 
 protected:
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   //Callbacks (default signal handlers):
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
@@ -40,11 +40,8 @@ protected:
   static void apply_callback(GtkAssistant* self);
   static void close_callback(GtkAssistant* self);
   static void cancel_callback(GtkAssistant* self);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
   //Callbacks (virtual functions):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 };
 
 

@@ -4,7 +4,8 @@
 #define _PANGOMM_LAYOUTLINE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: layoutline.hg,v 1.5 2006/05/30 17:14:21 murrayc Exp $ */
 
@@ -13,16 +14,16 @@
  * Copyright (C) 1998-1999 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
+ * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
@@ -30,6 +31,7 @@
 #include <glibmm/slisthandle.h> // For the Glib::SListHandle typedef
 #include <pangomm/rectangle.h>
 #include <cairomm/context.h>
+#include <glibmm/arrayhandle.h>
 #include <pango/pango-layout.h>
 
 
@@ -52,8 +54,14 @@ class LayoutLine
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 
-  // For use with Glib::RefPtr<> only.
+  /** Increment the reference count for this object.
+   * You should never need to do this manually - use the object via a RefPtr instead.
+   */
   void reference()   const;
+
+  /** Decrement the reference count for this object.
+   * You should never need to do this manually - use the object via a RefPtr instead.
+   */
   void unreference() const;
 
   ///Provides access to the underlying C instance.
@@ -148,7 +156,7 @@ public:
   /** Compute the logical and ink extents of a layout line. See the documentation
    * for Pango::Font::get_glyph_extents() for details about the interpretation
    * of the rectangles. The returned rectangles are in device units, as
-   * opposed to pango_layout_line_get_extents(), which returns the extents in
+   * opposed to get_extents(), which returns the extents in
    * units of device unit / PANGO_SCALE.
    * @param ink_rect Rectangle used to store the extents of the glyph string as drawn.
    * @param logical_rect Rectangle used to store the logical extents of the glyph string.

@@ -27,9 +27,9 @@
 #include "pixbuf.h"
 #include "pixbufanimation.h"
 #include "pixbufanimationiter.h"
-#include "pixmap.h"
 #include "pixbufformat.h"
 #include "pixbufloader.h"
+#include "pixmap.h"
 #include "rectangle.h"
 #include "region.h"
 #include "rgbcmap.h"
@@ -90,7 +90,7 @@ namespace Gdk {
 void wrap_init()
 {
   // Register Error domains:
-  Glib::Error::register_domain(gdk_pixbuf_error_quark(), &Gdk::PixbufError::throw_func);
+  Glib::Error::register_domain(gdk_pixbuf_error_quark(), &::Gdk::PixbufError::throw_func);
 
 // Map gtypes to gtkmm wrapper-creation functions:
   Glib::wrap_register(gdk_colormap_get_type(), &Gdk::Colormap_Class::wrap_new);

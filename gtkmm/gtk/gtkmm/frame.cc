@@ -79,20 +79,16 @@ const Glib::Class& Frame_Class::init()
   return *this;
 }
 
+
 void Frame_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
   klass->compute_child_allocation = &compute_child_allocation_vfunc_callback;
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
 void Frame_Class::compute_child_allocation_vfunc_callback(GtkFrame* self, GtkAllocation* allocation)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -125,7 +121,7 @@ void Frame_Class::compute_child_allocation_vfunc_callback(GtkFrame* self, GtkAll
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -135,10 +131,6 @@ void Frame_Class::compute_child_allocation_vfunc_callback(GtkFrame* self, GtkAll
     (*base->compute_child_allocation)(self, allocation);
 
 }
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Frame_Class::wrap_new(GObject* o)
@@ -173,6 +165,7 @@ GType Frame::get_type()
 {
   return frame_class_.init().get_type();
 }
+
 
 GType Frame::get_base_type()
 {
@@ -322,10 +315,6 @@ Glib::PropertyProxy_ReadOnly<Widget*> Frame::property_label_widget() const
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
 void Gtk::Frame::compute_child_allocation_vfunc(Allocation& allocation) 
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -335,7 +324,6 @@ void Gtk::Frame::compute_child_allocation_vfunc(Allocation& allocation)
   if(base && base->compute_child_allocation)
     (*base->compute_child_allocation)(gobj(),(GtkAllocation*)(allocation.gobj()));
 }
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

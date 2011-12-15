@@ -82,6 +82,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -94,17 +96,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -118,7 +114,7 @@ public:
    * Use get_group() to retrieve this group and pass it to other radio buttons to assign
    * them to this group.
    *
-   * @newin2p4
+   * @newin{2,4}
    */
   RadioToolButton();
   
@@ -130,7 +126,7 @@ public:
    * @param group The existing group which will be used for this RadioButton.
    * @param label The string used to display the label for this RadioToolButton.
    *
-   * @newin2p4
+   * @newin{2,4}
    */
   explicit RadioToolButton(Group& group, const Glib::ustring& label = Glib::ustring());
   
@@ -143,7 +139,7 @@ public:
    * @param group The existing group which will be used for this RadioButton.
    * @param stock_id The StockID which determines the look of the RadioToolButton.
    *
-   * @newin2p4
+   * @newin{2,4}
    */
   RadioToolButton(Group& group, const Gtk::StockID& stock_id);
   
@@ -164,24 +160,26 @@ public:
    * @param icon_widget The widget placed as the RadioToolButton's icon.
    * @param label The string used to display the label for this RadioToolButton.
    *
-   * @newin2p4
+   * @newin{2,4}
    */
   explicit RadioToolButton(Widget& icon_widget, const Glib::ustring& label = Glib::ustring());
 
   
-  /** Return value: The group @a button belongs to.
-   * @return The group @a button belongs to.
+  /** Returns the radio button group @a button belongs to.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return The group @a button belongs to.
    */
   Group get_group();
   
   /** Adds @a button to @a group, removing it from the group it belonged to before.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param group An existing radio button group.
    */
   void set_group(Group& group);
+  
+  //Probably wouldn't work: _WRAP_PROPERTY("group", Group)
 
 
 };

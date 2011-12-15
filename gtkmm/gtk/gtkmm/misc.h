@@ -83,6 +83,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -95,17 +97,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -115,9 +111,9 @@ protected:
 public:
 
   
-  void set_alignment(float xalign = 0.0, float yalign = 0.5);
+  void set_alignment(float xalign =  0.0, float yalign =  0.5);
   
-  void set_alignment(AlignmentEnum xalign = Gtk::ALIGN_LEFT, AlignmentEnum yalign = Gtk::ALIGN_CENTER);
+  void set_alignment(AlignmentEnum xalign =  Gtk::ALIGN_START, AlignmentEnum yalign =  Gtk::ALIGN_CENTER);
 
   
   /** Gets the X and Y alignment of the widget within its allocation. 
@@ -138,7 +134,7 @@ public:
   void get_padding(int& xpad, int& ypad) const;
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The horizontal alignment
+/** The horizontal alignment, from 0 (left) to 1 (right). Reversed for RTL layouts.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -148,7 +144,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The horizontal alignment
+/** The horizontal alignment, from 0 (left) to 1 (right). Reversed for RTL layouts.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -158,7 +154,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The vertical alignment
+/** The vertical alignment, from 0 (top) to 1 (bottom).
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -168,7 +164,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The vertical alignment
+/** The vertical alignment, from 0 (top) to 1 (bottom).
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -178,7 +174,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The amount of space to add on the left and right of the widget
+/** The amount of space to add on the left and right of the widget, in pixels.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -188,7 +184,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The amount of space to add on the left and right of the widget
+/** The amount of space to add on the left and right of the widget, in pixels.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -198,7 +194,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The amount of space to add on the top and bottom of the widget
+/** The amount of space to add on the top and bottom of the widget, in pixels.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -208,7 +204,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The amount of space to add on the top and bottom of the widget
+/** The amount of space to add on the top and bottom of the widget, in pixels.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when

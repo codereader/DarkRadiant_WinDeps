@@ -9,7 +9,7 @@
 /* $Id: iconview.hg,v 1.11 2006/07/08 16:31:38 murrayc Exp $ */
 
 /* iconview.h
- * 
+ *
  * Copyright (C) 1998-2004 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -46,7 +46,7 @@ namespace Gtk
 namespace Gtk
 {
 
-/** @addtogroup gtkmmEnums Enums and Flags */
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
 
 /**
  * @ingroup gtkmmEnums
@@ -86,8 +86,8 @@ namespace Gtk
 //TODO: This should derive+implement from CellLayout when we can break ABI.
 
 /** The IconView provides an alternative view of a list model.
- * It displays the model as a grid of icons with labels. 
- * Like the TreeView, it allows the user to select one or multiple items 
+ * It displays the model as a grid of icons with labels.
+ * Like the TreeView, it allows the user to select one or multiple items
  * (depending on the selection mode - see set_selection_mode()).
  * In addition to selection with the arrow keys, the IconView supports
  * rubberband selection, by dragging the pointer.
@@ -127,6 +127,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -139,20 +141,14 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_set_scroll_adjustments(Adjustment* hadjustment, Adjustment* vadjustment);
   virtual void on_item_activated(const TreeModel::Path& path);
   virtual void on_selection_changed();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -160,7 +156,7 @@ private:
 public:
 
   IconView();
-  explicit IconView(const Glib::RefPtr<TreeModel>& model);
+    explicit IconView(const Glib::RefPtr<TreeModel>& model);
 
 
   /** Sets the model for a Gtk::IconView.
@@ -168,22 +164,26 @@ public:
    * it before setting the new model. Use unset_model() to
    * unset the old model.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param model The model.
    */
   void set_model(const Glib::RefPtr<TreeModel>& model);
   
-  /** Return value: A Gtk::TreeModel, or <tt>0</tt> if none is currently being used.
-   * @return A Gtk::TreeModel, or <tt>0</tt> if none is currently being used.
+  /** Returns the model the Gtk::IconView is based on.  Returns <tt>0</tt> if the
+   * model is unset.
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return A Gtk::TreeModel, or <tt>0</tt> if none is
+   * currently being used.
    */
   Glib::RefPtr<TreeModel> get_model();
   
-  /** Return value: A Gtk::TreeModel, or <tt>0</tt> if none is currently being used.
-   * @return A Gtk::TreeModel, or <tt>0</tt> if none is currently being used.
+  /** Returns the model the Gtk::IconView is based on.  Returns <tt>0</tt> if the
+   * model is unset.
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return A Gtk::TreeModel, or <tt>0</tt> if none is
+   * currently being used.
    */
   Glib::RefPtr<const TreeModel> get_model() const;
 
@@ -191,7 +191,7 @@ public:
    *
    * @see set_model().
    *
-   * @newin2p16
+   * @newin{2,16}
    */
   void unset_model();
 
@@ -199,7 +199,7 @@ public:
   /** Sets the column with text for @a icon_view to be @a column. The text
    * column must be of type TYPE_STRING.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param column A column in the currently used model, or -1 to display no text.
    */
   void set_text_column(int column);
@@ -207,15 +207,15 @@ public:
   /** Sets the column with text for @a icon_view to be @a column. The text
    * column must be of type TYPE_STRING.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param column A column in the currently used model, or -1 to display no text.
    */
   void set_text_column(const TreeModelColumnBase& model_column);
   
-  /** Returns: the text column, or -1 if it's unset.
-   * @return The text column, or -1 if it's unset.
+  /** Returns the column with text for @a icon_view.
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return The text column, or -1 if it's unset.
    */
   int get_text_column() const;
   
@@ -224,7 +224,7 @@ public:
    * If the markup column is set to something, it overrides
    * the text column set by set_text_column().
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param column A column in the currently used model, or -1 to display no text.
    */
   void set_markup_column(int column);
@@ -234,22 +234,22 @@ public:
    * If the markup column is set to something, it overrides
    * the text column set by set_text_column().
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param column A column in the currently used model, or -1 to display no text.
    */
-  void set_markup_column(const TreeModelColumnBase& column); 
+  void set_markup_column(const TreeModelColumnBase& column);
   
-  /** Returns: the markup column, or -1 if it's unset.
-   * @return The markup column, or -1 if it's unset.
+  /** Returns the column with markup text for @a icon_view.
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return The markup column, or -1 if it's unset.
    */
   int get_markup_column() const;
   
   /** Sets the column with pixbufs for @a icon_view to be @a column. The pixbuf
    * column must be of type Gdk::TYPE_PIXBUF
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param column A column in the currently used model, or -1 to disable.
    */
   void set_pixbuf_column(int column);
@@ -257,15 +257,15 @@ public:
   /** Sets the column with pixbufs for @a icon_view to be @a column. The pixbuf
    * column must be of type Gdk::TYPE_PIXBUF
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param column A column in the currently used model, or -1 to disable.
    */
-  void set_pixbuf_column(const TreeModelColumnBase& column);  
+  void set_pixbuf_column(const TreeModelColumnBase& column);
   
-  /** Returns: the pixbuf column, or -1 if it's unset.
-   * @return The pixbuf column, or -1 if it's unset.
+  /** Returns the column with pixbufs for @a icon_view.
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return The pixbuf column, or -1 if it's unset.
    */
   int get_pixbuf_column() const;
 
@@ -273,17 +273,39 @@ public:
   /** Sets the ::orientation property which determines whether the labels 
    * are drawn beside the icons instead of below.
    * 
-   * @newin2p6
+   * @newin{2,6}
+   * 
+   * Deprecated: 2.22: Use set_item_orientation()
    * @param orientation The relative position of texts and icons.
    */
   void set_orientation(Orientation orientation);
   
-  /** Return value: the relative position of texts and icons
-   * @return The relative position of texts and icons 
+  /** Returns the value of the ::orientation property which determines 
+   * whether the labels are drawn beside the icons instead of below. 
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * 
+   * Deprecated: 2.22: Use get_item_orientation()
+   * @return The relative position of texts and icons.
    */
   Orientation get_orientation() const;
+
+  
+  /** Sets the ::item-orientation property which determines whether
+   * the labels are drawn beside the icons instead of below.
+   * 
+   * @newin{2,22}
+   * @param orientation The relative position of texts and icons.
+   */
+  void set_item_orientation(Orientation orientation);
+  
+  /** Returns the value of the ::item-orientation property which determines
+   * whether the labels are drawn beside the icons instead of below.
+   * 
+   * @newin{2,22}
+   * @return The relative position of texts and icons.
+   */
+  Orientation get_item_orientation() const;
 
   
   /** Sets the ::columns property which determines in how
@@ -291,15 +313,15 @@ public:
    * -1, the number of columns will be chosen automatically 
    * to fill the available area. 
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param columns The number of columns.
    */
   void set_columns(int columns);
   
-  /** Return value: the number of columns, or -1
-   * @return The number of columns, or -1
+  /** Returns the value of the ::columns property.
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return The number of columns, or -1.
    */
   int get_columns() const;
   
@@ -307,15 +329,15 @@ public:
    * to use for each item. If it is set to -1, the icon view will 
    * automatically determine a suitable item size.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param item_width The width for each item.
    */
   void set_item_width(int item_width);
   
-  /** Return value: the width of a single item, or -1
-   * @return The width of a single item, or -1
+  /** Returns the value of the ::item-width property.
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return The width of a single item, or -1.
    */
   int get_icon_width() const;
   
@@ -323,45 +345,45 @@ public:
    * which is inserted between the cells (i.e.\ the icon and 
    * the text) of an item.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param spacing The spacing.
    */
   void set_spacing(int spacing);
   
-  /** Return value: the space between cells
-   * @return The space between cells 
+  /** Returns the value of the ::spacing property.
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return The space between cells.
    */
   int get_spacing() const;
   
   /** Sets the ::row-spacing property which specifies the space 
    * which is inserted between the rows of the icon view.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param row_spacing The row spacing.
    */
   void set_row_spacing(int row_spacing);
   
-  /** Return value: the space between rows
-   * @return The space between rows
+  /** Returns the value of the ::row-spacing property.
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return The space between rows.
    */
   gint get_row_spacing() const;
   
   /** Sets the ::column-spacing property which specifies the space 
    * which is inserted between the columns of the icon view.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param column_spacing The column spacing.
    */
   void set_column_spacing(int column_spacing);
   
-  /** Return value: the space between columns
-   * @return The space between columns
+  /** Returns the value of the ::column-spacing property.
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return The space between columns.
    */
   int get_column_spacing() const;
 
@@ -370,15 +392,15 @@ public:
    * which is inserted at the top, bottom, left and right 
    * of the icon view.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param margin The margin.
    */
   void set_margin(int margin);
   
-  /** Return value: the space at the borders
-   * @return The space at the borders 
+  /** Returns the value of the ::margin property.
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return The space at the borders.
    */
   int get_margin() const;
 
@@ -388,12 +410,12 @@ public:
    * the cell at the specified position. 
    * See convert_widget_to_bin_window_coords() for converting
    * widget coordinates to bin_window coordinates.
+   * 
+   * @newin{2,6}
    * @param x The x position to be identified.
    * @param y The y position to be identified.
    * @return The Gtk::TreePath corresponding to the icon or <tt>0</tt>
    * if no icon exists at that position.
-   * 
-   * @newin2p6.
    */
   TreeModel::Path get_path_at_pos(int x, int y) const;
 
@@ -404,10 +426,10 @@ public:
    * @param y The y position to be identified.
    * @param path The path.
    * @param cell The renderer responsible for the cell at (@a x, @a y).
-   * 
+   *
    * @result true if an item exists at the specified position.
    *
-   * @newin2p6
+   * @newin{2,6}
    */
   bool get_item_at_pos(int x, int y, TreeModel::Path& path, CellRenderer*& cell) const;
 
@@ -416,10 +438,10 @@ public:
    * @param x The x position to be identified.
    * @param y The y position to be identified.
    * @param path The path.
-   * 
+   *
    * @result true if an item exists at the specified position.
    *
-   * @newin2p6
+   * @newin{2,6}
    */
   bool get_item_at_pos(int x, int y, TreeModel::Path& path) const;
 
@@ -428,10 +450,10 @@ public:
    * @param x The x position to be identified.
    * @param y The y position to be identified.
    * @param path The path.
-   * 
+   *
    * @result true if an item exists at the specified position.
    *
-   * @newin2p6
+   * @newin{2,6}
    */
   bool get_item_at_pos(int x, int y, CellRenderer*& cell) const;
   
@@ -439,7 +461,7 @@ public:
   bool get_visible_range(TreeModel::Path& start_path, TreeModel::Path& end_path) const;
   
 
-  /** For instance, 
+  /** For instance,
    * void on_foreach(const Gtk::TreeModel::Path& path);
    */
   typedef sigc::slot<void, const TreeModel::Path&> SlotForeach;
@@ -456,37 +478,38 @@ public:
   
   /** Sets the selection mode of the @a icon_view.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param mode The selection mode.
    */
   void set_selection_mode(SelectionMode mode);
   
   /** Gets the selection mode of the @a icon_view.
-   * @return The current selection mode
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return The current selection mode.
    */
   SelectionMode get_selection_mode() const;
   
   /** Selects the row at @a path.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param path The Gtk::TreePath to be selected.
    */
   void select_path(const TreeModel::Path& path);
   
   /** Unselects the row at @a path.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param path The Gtk::TreePath to be unselected.
    */
   void unselect_path(const TreeModel::Path& path);
   
-  /** Return value: <tt>true</tt> if @a path is selected.
+  /** Returns <tt>true</tt> if the icon pointed to by @a path is currently
+   * selected. If @a path does not point to a valid location, <tt>false</tt> is returned.
+   * 
+   * @newin{2,6}
    * @param path A Gtk::TreePath to check selection on.
    * @return <tt>true</tt> if @a path is selected.
-   * 
-   * @newin2p6.
    */
   bool path_is_selected(const TreeModel::Path& path) const;
 
@@ -512,16 +535,16 @@ public:
   /** Creates a list of paths of all selected items. Additionally, if you are
    * planning on modifying the model after calling this function, you may
    * want to convert the returned list into a list of Gtk::TreeRowReference<!-- -->s.
-   * To do this, you can use Gtk::Tree::row_reference_new().
+   * To do this, you can use Gtk::TreeRowReference::new().
    * 
    * To free the return value, use:
    * |[
-   * g_list_foreach (list, gtk_tree_path_free, <tt>0</tt>);
+   * g_list_foreach (list, (GFunc)gtk_tree_path_free, <tt>0</tt>);
    * g_list_free (list);
    * ]|
-   * @return A List containing a Gtk::TreePath for each selected row.
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return A List containing a Gtk::TreePath for each selected row.
    */
   ArrayHandle_TreePaths get_selected_items() const;
 
@@ -529,19 +552,19 @@ public:
   /** Selects all the icons. @a icon_view must has its selection mode set
    * to Gtk::SELECTION_MULTIPLE.
    * 
-   * @newin2p6
+   * @newin{2,6}
    */
   void select_all();
   
   /** Unselects all the icons.
    * 
-   * @newin2p6
+   * @newin{2,6}
    */
   void unselect_all();
   
   /** Activates the item determined by @a path.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param path The Gtk::TreePath to be activated.
    */
   void item_activated(const TreeModel::Path& path);
@@ -549,23 +572,23 @@ public:
   //TODO: Add a version with no cell parameter.
   
   /** Sets the current keyboard focus to be at @a path, and selects it.  This is
-   * useful when you want to focus the user's attention on a particular item.  
+   * useful when you want to focus the user's attention on a particular item.
    * If @a cell is not <tt>0</tt>, then focus is given to the cell specified by 
    * it. Additionally, if @a start_editing is <tt>true</tt>, then editing should be 
    * started in the specified cell.  
    * 
-   * This function is often followed by <literal>gtk_widget_grab_focus 
-   * (icon_view)</literal> in order to give keyboard focus to the widget.  
+   * This function is often followed by <tt>gtk_widget_grab_focus 
+   * (icon_view)</tt> in order to give keyboard focus to the widget.  
    * Please note that editing can only happen when the widget is realized.
    * 
-   * @newin2p8
+   * @newin{2,8}
    * @param path A Gtk::TreePath.
    * @param cell One of the cell renderers of @a icon_view, or <tt>0</tt>.
    * @param start_editing <tt>true</tt> if the specified cell should start being edited.
    */
   void set_cursor(const TreeModel::Path& path, CellRenderer& cell, bool start_editing);
 
-  /** Fills in @a path and @a cell with the current cursor path and cell. 
+  /** Fills in @a path and @a cell with the current cursor path and cell.
    * If the cursor isn't currently set, then @a path will be empty.
    * If no cell currently has focus, then @a cell will be NULL.
    *
@@ -573,29 +596,29 @@ public:
    * @param cell The current focus cell.
    * @result true if the cursor is set.
    *
-   * @newin2p8
+   * @newin{2,8}
    */
   bool get_cursor(TreeModel::Path& path, CellRenderer*& cell) const;
 
-  /** Fills in @a path and @a cell with the current cursor path and cell. 
+  /** Fills in @a path and @a cell with the current cursor path and cell.
    * If the cursor isn't currently set, then @a path will be empty.
    * If no cell currently has focus, then @a cell will be NULL.
    *
    * @param path The current cursor path.
    * @result true if the cursor is set.
    *
-   * @newin2p8
+   * @newin{2,8}
    */
   bool get_cursor(TreeModel::Path& path) const;
 
-  /** Fills in @a path and @a cell with the current cursor path and cell. 
+  /** Fills in @a path and @a cell with the current cursor path and cell.
    * If the cursor isn't currently set, then @a path will be empty.
    * If no cell currently has focus, then @a cell will be NULL.
    *
    * @param cell The current focus cell.
    * @result true if the cursor is set.
    *
-   * @newin2p8
+   * @newin{2,8}
    */
   bool get_cursor(CellRenderer*& cell) const;
   
@@ -615,7 +638,7 @@ public:
    * the model. If the model changes before the @a icon_view is realized, the 
    * centered path will be modified to reflect this change.
    * 
-   * @newin2p8
+   * @newin{2,8}
    * @param path The path of the item to move to.
    * @param use_align Whether to use alignment arguments, or <tt>false</tt>.
    * @param row_align The vertical alignment of the item specified by @a path.
@@ -647,14 +670,14 @@ public:
   /** Undoes the effect of enable_model_drag_source(). Calling this
    * method sets Gtk::IconView:reorderable to <tt>false</tt>.
    * 
-   * @newin2p8
+   * @newin{2,8}
    */
   void unset_model_drag_source();
   
   /** Undoes the effect of enable_model_drag_dest(). Calling this
    * method sets Gtk::IconView:reorderable to <tt>false</tt>.
    * 
-   * @newin2p8
+   * @newin{2,8}
    */
   void unset_model_drag_dest();
 
@@ -672,16 +695,16 @@ public:
    * reordering is allowed.  If more control is needed, you should probably
    * handle drag and drop manually.
    * 
-   * @newin2p8
+   * @newin{2,8}
    * @param reorderable <tt>true</tt>, if the list of items can be reordered.
    */
-  void set_reorderable(bool reorderable = true);
+  void set_reorderable(bool reorderable =  true);
   
   /** Retrieves whether the user can reorder the list via drag-and-drop. 
    * See set_reorderable().
-   * @return <tt>true</tt> if the list can be reordered.
    * 
-   * @newin2p8.
+   * @newin{2,8}
+   * @return <tt>true</tt> if the list can be reordered.
    */
   bool get_reorderable() const;
 
@@ -691,7 +714,7 @@ public:
   
   /** Sets the item that is highlighted for feedback.
    * 
-   * @newin2p8
+   * @newin{2,8}
    * @param path The path of the item to highlight, or <tt>0</tt>.
    * @param pos Specifies where to drop, relative to the item.
    */
@@ -702,7 +725,7 @@ public:
    * @param path The highlighted item.
    * @pos The drop position.
    *
-   * @newin2p10
+   * @newin{2,10}
    */
   void get_drag_dest_item(TreeModel::Path& path, IconViewDropPosition& pos) const;
 
@@ -710,7 +733,7 @@ public:
    *
    * @param path The highlighted item.
    *
-   * @newin2p10
+   * @newin{2,10}
    */
   void get_drag_dest_item(TreeModel::Path& path) const;
 
@@ -718,7 +741,7 @@ public:
    *
    * @pos The drop position.
    *
-   * @newin2p10
+   * @newin{2,10}
    */
   void get_drag_dest_item(IconViewDropPosition& pos) const;
   
@@ -731,7 +754,7 @@ public:
    * @param pos: The drop position.
    * @result whether there is an item at the given position.
    *
-   * @newin2p10
+   * @newin{2,10}
    */
   bool get_dest_item_at_pos(int drag_x, int drag_y, TreeModel::Path& path, IconViewDropPosition& pos) const;
 
@@ -742,36 +765,36 @@ public:
    * @param path The path of the item.
    * @result whether there is an item at the given position.
    *
-   * @newin2p10
+   * @newin{2,10}
    */
   bool get_dest_item_at_pos(int drag_x, int drag_y, TreeModel::Path& path) const;
 
   /** Determines the destination item for a given position.
-   * 
+   *
    * @param drag_x The position to determine the destination item for.
    * @param drag_y the position to determine the destination item for.
    * @param pos: The drop position.
    * @result whether there is an item at the given position.
    *
-   * @newin2p10
+   * @newin{2,10}
    */
   bool get_dest_item_at_pos(int drag_x, int drag_y, IconViewDropPosition& pos) const;
   
 
-  /** Creates a Gdk::Pixmap representation of the item at @a path.  
+  /** Creates a Gdk::Pixmap representation of the item at @a path.
    * This image is used for a drag icon.
+   * 
+   * @newin{2,8}
    * @param path A Gtk::TreePath in @a icon_view.
    * @return A newly-allocated pixmap of the drag icon.
-   * 
-   * @newin2p8.
    */
-  Glib::RefPtr<Gdk::Pixmap> create_drag_icon( const TreeModel::Path& path);
+  Glib::RefPtr<Gdk::Pixmap> create_drag_icon(const TreeModel::Path& path);
 
   
   /** Converts widget coordinates to coordinates for the bin_window,
    * as expected by e.g.\ get_path_at_pos(). 
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param wx X coordinate relative to the widget.
    * @param wy Y coordinate relative to the widget.
    * @param bx Return location for bin_window X coordinate.
@@ -783,7 +806,7 @@ public:
   /** Sets the tip area of @a tooltip to be the area covered by the item at @a path.
    * See also Tooltip::set_tip_area().
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param tooltip A Gtk::Tooltip.
    * @param path A Gtk::TreePath.
    */
@@ -792,17 +815,17 @@ public:
   /** Sets the tip area of @a tooltip to the area which @a cell occupies in
    * the item pointed to by @a path. See also Tooltip::set_tip_area().
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param tooltip A Gtk::Tooltip.
    * @param path A Gtk::TreePath.
    * @param cell A Gtk::CellRenderer.
    */
   void set_tooltip_cell(const Glib::RefPtr<Tooltip>& tooltip, const TreeModel::Path& path, CellRenderer& cell);
 
-  /** Sets the tip area of @a tooltip to the area occupied by 
+  /** Sets the tip area of @a tooltip to the area occupied by
    * the item pointed to by @a path. See also Tooltip::set_tip_area().
-   * 
-   * @newin2p12
+   *
+   * @newin{2,12}
    * @param tooltip A Gtk::Tooltip.
    * @param path A Gtk::TreePath.
    */
@@ -829,7 +852,7 @@ public:
    *
    * Return value: whether or not the given tooltip context points to a item.
    *
-   * @newin2p12
+   * @newin{2,12}
    */
   bool get_tooltip_context_path(int& x, int& y,
                                 bool keyboard_tip,
@@ -855,7 +878,7 @@ public:
    *
    * Return value: whether or not the given tooltip context points to a item.
    *
-   * @newin2p12
+   * @newin{2,12}
    */
   bool get_tooltip_context_iter(int& x, int& y,
                                 bool keyboard_tip,
@@ -870,16 +893,17 @@ public:
    * When enabled, Gtk::Widget::has-tooltip will be set to <tt>true</tt> and
    *  @a icon_view will connect a Gtk::Widget::query-tooltip signal handler.
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param column An integer, which is a valid column number for @a icon_view's model.
    */
   void set_tooltip_column(int column);
   
-  /** Return value: the index of the tooltip column that is currently being
+  /** Returns the column of @a icon_view's model which is being used for
+   * displaying tooltips on @a icon_view's rows.
+   * 
+   * @newin{2,12}
    * @return The index of the tooltip column that is currently being
    * used, or -1 if this is disabled.
-   * 
-   * @newin2p12.
    */
   int get_tooltip_column() const;
 
@@ -890,7 +914,7 @@ public:
    */
 
   Glib::SignalProxy2< void,Adjustment*,Adjustment* > signal_set_scroll_adjustments();
- 
+
   
   /**
    * @par Prototype:
@@ -972,6 +996,26 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The column in the model containing the tooltip texts for the items.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<int> property_tooltip_column() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The column in the model containing the tooltip texts for the items.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<int> property_tooltip_column() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The selection mode.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
@@ -1009,6 +1053,46 @@ public:
    * the value of the property changes.
    */
   Glib::PropertyProxy_ReadOnly<Orientation> property_orientation() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+ //deprecated
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** How the text and icon of each item are positioned relative to each other.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<Orientation> property_item_orientation() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** How the text and icon of each item are positioned relative to each other.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<Orientation> property_item_orientation() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** View is reorderable.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_reorderable() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** View is reorderable.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_reorderable() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1149,6 +1233,26 @@ public:
    * the value of the property changes.
    */
   Glib::PropertyProxy_ReadOnly<int> property_margin() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Padding around icon view items.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<int> property_item_padding() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Padding around icon view items.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<int> property_item_padding() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

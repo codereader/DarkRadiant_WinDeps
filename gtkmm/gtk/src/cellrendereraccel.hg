@@ -29,6 +29,8 @@ _PINCLUDE(gtkmm/private/cellrenderertext_p.h)
 namespace Gtk
 {
 
+_WRAP_ENUM(CellRendererAccelMode, GtkCellRendererAccelMode)
+
 /**  .
  * Renders a keyboard accelerator in a cell
  *
@@ -38,7 +40,7 @@ namespace Gtk
  * simply typing the new combination.
  *
  * @ingroup TreeView
- * @newin2p10
+ * @newin{2,10}
  */
 class CellRendererAccel : public CellRendererText
 {
@@ -56,10 +58,9 @@ public:
   _WRAP_PROPERTY("accel-key", guint)
   _WRAP_PROPERTY("accel-mods", Gdk::ModifierType)
   _WRAP_PROPERTY("keycode", guint)
+  _WRAP_PROPERTY("accel-mode", CellRendererAccelMode)
 
-#ifdef GLIBMM_PROPERTIES_ENABLED
   virtual Glib::PropertyProxy_Base _property_renderable(); //override
-#endif //GLIBMM_PROPERTIES_ENABLED
 };
 
 } /* namespace Gtk */

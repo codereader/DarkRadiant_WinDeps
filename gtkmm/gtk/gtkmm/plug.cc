@@ -113,23 +113,17 @@ const Glib::Class& Plug_Class::init()
   return *this;
 }
 
+
 void Plug_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->embedded = &embedded_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Plug_Class::embedded_callback(GtkPlug* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -161,7 +155,7 @@ void Plug_Class::embedded_callback(GtkPlug* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -170,12 +164,11 @@ void Plug_Class::embedded_callback(GtkPlug* self)
   if(base && base->embedded)
     (*base->embedded)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Plug_Class::wrap_new(GObject* o)
 {
-  return manage(new Plug((GtkPlug*)(o)));
+  return new Plug((GtkPlug*)(o)); //top-level windows can not be manage()ed.
 
 }
 
@@ -205,6 +198,7 @@ GType Plug::get_type()
 {
   return plug_class_.init().get_type();
 }
+
 
 GType Plug::get_base_type()
 {
@@ -259,7 +253,6 @@ Glib::PropertyProxy_ReadOnly< Glib::RefPtr<Gdk::Window> > Plug::property_socket_
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::Plug::on_embedded()
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -269,10 +262,6 @@ void Gtk::Plug::on_embedded()
   if(base && base->embedded)
     (*base->embedded)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

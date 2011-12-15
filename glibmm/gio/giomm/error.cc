@@ -50,17 +50,30 @@ Gio::Error::Code Gio::Error::code() const
   return static_cast<Code>(Glib::Error::code());
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void Gio::Error::throw_func(GError* gobject)
 {
   throw Gio::Error(gobject);
 }
-#else
-//When not using exceptions, we just pass the Exception object around without throwing it:
-std::auto_ptr<Glib::Error> Gio::Error::throw_func(GError* gobject)
+
+
+Gio::ResolverError::ResolverError(Gio::ResolverError::Code error_code, const Glib::ustring& error_message)
+:
+  Glib::Error (G_RESOLVER_ERROR, error_code, error_message)
+{}
+
+Gio::ResolverError::ResolverError(GError* gobject)
+:
+  Glib::Error (gobject)
+{}
+
+Gio::ResolverError::Code Gio::ResolverError::code() const
 {
-  return std::auto_ptr<Glib::Error>(new Gio::Error(gobject));
+  return static_cast<Code>(Glib::Error::code());
 }
-#endif //GLIBMM_EXCEPTIONS_ENABLED
+
+void Gio::ResolverError::throw_func(GError* gobject)
+{
+  throw Gio::ResolverError(gobject);
+}
 
 

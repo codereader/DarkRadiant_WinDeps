@@ -4,7 +4,8 @@
 #define _ATKMM_IMPLEMENTOR_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: implementor.hg,v 1.1 2004/04/11 21:00:53 murrayc Exp $ */
 
@@ -101,33 +102,25 @@ public:
   ///Provides access to the underlying C GObject.
   AtkImplementor*       gobj()       { return reinterpret_cast<AtkImplementor*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const AtkImplementor* gobj() const { return reinterpret_cast<AtkImplementor*>(gobject_); }
 
 private:
 
 
 protected:
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual Glib::RefPtr<Object> ref_accessibile_vfunc();
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual Glib::RefPtr<Object> ref_accessibile_vfunc();
 
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

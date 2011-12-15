@@ -5,16 +5,16 @@
  * Copyright(C) 1998-1999 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
+ * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or(at your option) any later version.
+ * version 2.1 of the License, or(at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
@@ -233,10 +233,22 @@ public:
   _WRAP_METHOD(SListHandle_LayoutLine get_lines(), pango_layout_get_lines)
   _WRAP_METHOD(SListHandle_ConstLayoutLine get_lines() const, pango_layout_get_lines_readonly)
   
+_DEPRECATE_IFDEF_START
   /** Gets an iterator to iterate over the visual extents of the layout.
    * @param iter Location to store the iterator.
+   *
+   * @deprecated Use the get_iter() that returns the LayoutIter instead of 
+   * using an output parameter.
    */
   void get_iter(LayoutIter& iter);
+_DEPRECATE_IFDEF_END
+  
+  /** Gets an iterator to iterate over the visual extents of the layout.
+   * @result The iterator.
+   *
+   * @newin{2,28}
+   */
+  LayoutIter get_iter();
 
 
   /** Adds the text in this LayoutLine to the current path in the
@@ -246,6 +258,16 @@ public:
    * @param context A Cairo context.
    */
   void add_to_cairo_context(const Cairo::RefPtr<Cairo::Context>& context);
+
+  /** Draws a Layout in the specified Cairo @a context. The top-left
+   *  corner of the Layout will be drawn at the current point of the
+   *  cairo context.
+   *
+   * @param context A Cairo context.
+   *
+   * @newin{2,16}
+   */
+  void show_in_cairo_context(const Cairo::RefPtr<Cairo::Context>& context);
 };
 
 } /* namespace Pango */

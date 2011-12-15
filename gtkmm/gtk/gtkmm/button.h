@@ -9,7 +9,7 @@
 /* $Id: button.hg,v 1.10 2006/08/21 19:07:14 jjongsma Exp $ */
 
 /* box.h
- * 
+ *
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -27,6 +27,7 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+ 
 #include <gtkmm/bin.h>
 #include <gtkmm/stockid.h>
 
@@ -88,6 +89,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -100,23 +103,17 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_pressed();
   virtual void on_released();
   virtual void on_clicked();
   virtual void on_enter();
   virtual void on_leave();
   virtual void on_activate();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -149,17 +146,32 @@ public:
   explicit Button(const StockID& stock_id);
 
 
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   void pressed();
-  
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   void released();
-  
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
   void clicked();
   
-  void enter();
-  
-  void leave();
+#ifndef GTKMM_DISABLE_DEPRECATED
 
-  
+  void enter();
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+  void leave();
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
   void set_relief(ReliefStyle newstyle);
   
   ReliefStyle get_relief() const;
@@ -188,9 +200,10 @@ public:
    * the next character should be used for the mnemonic accelerator key.
    * @param use_underline <tt>true</tt> if underlines in the text indicate mnemonics.
    */
-  void set_use_underline(bool use_underline = true);
+  void set_use_underline(bool use_underline =  true);
   
-  /** Return value: <tt>true</tt> if an embedded underline in the button label
+  /** Returns whether an embedded underline in the button label indicates a
+   * mnemonic. See set_use_underline().
    * @return <tt>true</tt> if an embedded underline in the button label
    * indicates the mnemonic accelerator keys.
    */
@@ -200,9 +213,9 @@ public:
    * stock id to select the stock item for the button.
    * @param use_stock <tt>true</tt> if the button should use a stock item.
    */
-  void set_use_stock(bool use_stock = true);
+  void set_use_stock(bool use_stock =  true);
   
-  /** Return value: <tt>true</tt> if the button label is used to
+  /** Returns whether the button label is a stock item.
    * @return <tt>true</tt> if the button label is used to
    * select a stock item instead of being
    * used directly as the label text.
@@ -215,16 +228,17 @@ public:
    * you don't want the keyboard focus removed from the main area of the
    * application.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param focus_on_click Whether the button grabs focus when clicked with the mouse.
    */
-  void set_focus_on_click(bool focus_on_click = true);
+  void set_focus_on_click(bool focus_on_click =  true);
   
-  /** Return value: <tt>true</tt> if the button grabs focus when it is clicked with
+  /** Returns whether the button grabs focus when it is clicked with the mouse.
+   * See set_focus_on_click().
+   * 
+   * @newin{2,4}
    * @return <tt>true</tt> if the button grabs focus when it is clicked with
    * the mouse.
-   * 
-   * @newin2p4.
    */
   bool get_focus_on_click() const;
 
@@ -232,7 +246,7 @@ public:
   /** Sets the alignment of the child. This property has no effect unless 
    * the child is a Gtk::Misc or a Gtk::Aligment.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param xalign The horizontal position of the child, 0.0 is left aligned, 
    * 1.0 is right aligned.
    * @param yalign The vertical position of the child, 0.0 is top aligned, 
@@ -242,7 +256,7 @@ public:
   
   /** Gets the alignment of the child in the button.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param xalign Return location for horizontal alignment.
    * @param yalign Return location for vertical alignment.
    */
@@ -254,7 +268,7 @@ public:
    * image will be displayed or not, you don't have to call
    * Gtk::Widget::show() on @a image yourself.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param image A widget to set as the image for the button.
    */
   void set_image(Widget& image);
@@ -263,7 +277,7 @@ public:
    *     This may have been explicitly set by set_image()
    *     or specified as a stock item to the constructor.
    * 
-   *     @a newin2p6
+   *     @newin{2,6}
    */
   Widget* get_image();
   
@@ -271,7 +285,7 @@ public:
    *     This may have been explicitly set by set_image()
    *     or specified as a stock item to the constructor.
    * 
-   *     @a newin2p6
+   *     @newin{2,6}
    */
   const Widget* get_image() const;
 
@@ -279,18 +293,35 @@ public:
   /** Sets the position of the image relative to the text 
    * inside the button.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param position The position.
    */
   void set_image_position(PositionType position);
   
   /** Gets the position of the image relative to the text 
    * inside the button.
-   * @return The position
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The position.
    */
   PositionType get_image_position() const;
+
+  
+  /** Returns the button's event window if it is realized, <tt>0</tt> otherwise.
+   * This function should be rarely needed.
+   * 
+   * @newin{2,22}
+   * @return  @a button's event window.
+   */
+  Glib::RefPtr<Gdk::Window> get_event_window();
+  
+  /** Returns the button's event window if it is realized, <tt>0</tt> otherwise.
+   * This function should be rarely needed.
+   * 
+   * @newin{2,22}
+   * @return  @a button's event window.
+   */
+  Glib::RefPtr<const Gdk::Window> get_event_window() const;
 
   
   /**
@@ -342,7 +373,7 @@ public:
 
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Text of the label widget inside the button
+/** Text of the label widget inside the button, if the button contains a label widget.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -352,7 +383,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Text of the label widget inside the button
+/** Text of the label widget inside the button, if the button contains a label widget.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -381,28 +412,9 @@ public:
   Glib::PropertyProxy_ReadOnly<ReliefStyle> property_relief() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
+  //Ignored because it's write-only and construct: _WRAP_PROPERTY("use-underline", bool)
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If set
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<bool> property_use_underline() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** If set
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<bool> property_use_underline() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If set
+/** If set, the label is used to pick a stock item instead of being displayed.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -412,7 +424,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If set
+/** If set, the label is used to pick a stock item instead of being displayed.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -442,7 +454,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Horizontal position of child in available space. 0.0 is left aligned
+/** Horizontal position of child in available space. 0.0 is left aligned, 1.0 is right aligned.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -452,7 +464,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Horizontal position of child in available space. 0.0 is left aligned
+/** Horizontal position of child in available space. 0.0 is left aligned, 1.0 is right aligned.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -462,7 +474,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Vertical position of child in available space. 0.0 is top aligned
+/** Vertical position of child in available space. 0.0 is top aligned, 1.0 is bottom aligned.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -472,7 +484,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Vertical position of child in available space. 0.0 is top aligned
+/** Vertical position of child in available space. 0.0 is top aligned, 1.0 is bottom aligned.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when

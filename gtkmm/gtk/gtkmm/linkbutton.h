@@ -54,7 +54,7 @@ namespace Gtk
  * The LinkButton widget looks like this:
  * @image html linkbutton1.png
  *
- * @newin2p10
+ * @newin{2,10}
  * @ingroup Widgets
  */
 
@@ -89,6 +89,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -101,17 +103,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -120,21 +116,21 @@ public:
   LinkButton();
   explicit LinkButton(const Glib::ustring& uri);
   
-  explicit LinkButton(const Glib::ustring& uri, const Glib::ustring& label);
+    explicit LinkButton(const Glib::ustring& uri, const Glib::ustring& label);
 
-  
+
   /** Retrieves the URI set using set_uri().
+   * 
+   * @newin{2,10}
    * @return A valid URI.  The returned string is owned by the link button
    * and should not be modified or freed.
-   * 
-   * @newin2p10.
    */
   Glib::ustring get_uri() const;
   
   /** Sets @a uri as the URI where the Gtk::LinkButton points. As a side-effect
    * this unsets the 'visited' state of the button.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param uri A valid URI.
    */
   void set_uri(const Glib::ustring& uri);
@@ -145,24 +141,28 @@ public:
    * is changed on the button, the 'visited' state is unset again.
    * 
    * The state may also be changed using set_visited().
-   * @return <tt>true</tt> if the link has been visited, <tt>false</tt> otherwise
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return <tt>true</tt> if the link has been visited, <tt>false</tt> otherwise.
    */
   bool get_visited() const;
   
   /** Sets the 'visited' state of the URI where the Gtk::LinkButton
    * points.  See get_visited() for more details.
    * 
-   * @newin2p14
+   * @newin{2,14}
    * @param visited The new 'visited' state.
    */
-  void set_visited(bool visited = true);
+  void set_visited(bool visited =  true);
+
+#ifndef GTKMM_DISABLE_DEPRECATED
 
   /** For instance,
    * void on_linkbutton_uri(Gtk::LinkButton *button, const Glib::ustring& uri);
    *
    * @see set_uri_hook().
+   *
+   * @deprecated Use Button::signal_clicked() instead.
    */
   typedef sigc::slot<void, Gtk::LinkButton*, const Glib::ustring&> SlotUri;
 
@@ -170,16 +170,21 @@ public:
    * This function is called before every signal handler registered for the "clicked" signal.
    *
    * @param slot A function called each time a LinkButton is clicked.
-   * @newin2p12
+   * @newin{2,12}
+   *
+   * @deprecated Use Button::signal_clicked()  instead.
    */
   static void set_uri_hook(const SlotUri& slot);
   
 
   /** Unsets any previously set slot as the function that should be invoked every time a user clicks a LinkButton. 
    * @see set_uri_hook().
-   * @newin2p12
+   * @newin{2,
+   *
+   * @deprecated Use  Button::signal_clicked() instead.
    */
   static void unset_uri_hook();
+#endif // GTKMM_DISABLE_DEPRECATED
 
 
   #ifdef GLIBMM_PROPERTIES_ENABLED

@@ -91,17 +91,12 @@ void CellEditable_Class::iface_init_function(void* g_iface, void*)
   //This is a temporary fix until I find out why I can not seem to derive a GtkFileChooser interface. murrayc
   g_assert(klass != 0); 
 
-#ifdef GLIBMM_VFUNCS_ENABLED
   klass->start_editing = &start_editing_vfunc_callback;
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->editing_done = &editing_done_callback;
   klass->remove_widget = &remove_widget_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
 void CellEditable_Class::start_editing_vfunc_callback(GtkCellEditable* self, GdkEvent* event)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -133,7 +128,7 @@ void CellEditable_Class::start_editing_vfunc_callback(GtkCellEditable* self, Gdk
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -144,9 +139,7 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Ge
     (*base->start_editing)(self, event);
 
 }
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void CellEditable_Class::editing_done_callback(GtkCellEditable* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -178,7 +171,7 @@ void CellEditable_Class::editing_done_callback(GtkCellEditable* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -219,7 +212,7 @@ void CellEditable_Class::remove_widget_callback(GtkCellEditable* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -229,7 +222,6 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Ge
   if(base && base->remove_widget)
     (*base->remove_widget)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* CellEditable_Class::wrap_new(GObject* object)
@@ -271,6 +263,7 @@ GType CellEditable::get_type()
   return celleditable_class_.init().get_type();
 }
 
+
 GType CellEditable::get_base_type()
 {
   return gtk_cell_editable_get_type();
@@ -305,7 +298,21 @@ Glib::SignalProxy0< void > CellEditable::signal_remove_widget()
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<bool> CellEditable::property_editing_canceled() 
+{
+  return Glib::PropertyProxy<bool>(this, "editing-canceled");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> CellEditable::property_editing_canceled() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "editing-canceled");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+
 void Gtk::CellEditable::on_editing_done()
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -326,9 +333,7 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(gobject_), CppObjectType::get_type()) /
   if(base && base->remove_widget)
     (*base->remove_widget)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
-#ifdef GLIBMM_VFUNCS_ENABLED
 void Gtk::CellEditable::start_editing_vfunc(GdkEvent* event) 
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -339,7 +344,6 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(gobject_), CppObjectType::get_type()) /
   if(base && base->start_editing)
     (*base->start_editing)(gobj(),event);
 }
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

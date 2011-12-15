@@ -1,6 +1,6 @@
 #ifndef _GTKMM_CELLRENDERER_GENERATION_H
 #define _GTKMM_CELLRENDERER_GENERATION_H
-/* $Id: cellrenderer_generation.h 1082 2009-01-19 17:55:19Z murrayc $ */
+/* $Id$ */
 
 /* cellrenderer_generation.h
  *
@@ -39,11 +39,7 @@ CellRenderer* generate_cellrenderer(bool editable = false)
   CellRendererText* pCellRenderer = new CellRendererText(); //the default - template specializations will use other renderers.
   //CellRendererText can render both strings and numerical values.
 
-#ifdef GLIBMM_PROPERTIES_ENABLED
   pCellRenderer->property_editable() = editable;
-#else
-  pCellRenderer->set_property("editable", editable);
-#endif
 
   return pCellRenderer;
 }

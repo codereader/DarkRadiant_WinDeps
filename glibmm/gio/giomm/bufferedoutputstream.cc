@@ -28,9 +28,10 @@
 
 namespace Gio
 {
+
 Glib::RefPtr<BufferedOutputStream> BufferedOutputStream::create_sized(const Glib::RefPtr<OutputStream>& base_stream, gsize size)
 {
-    return Glib::RefPtr<Gio::BufferedOutputStream>(new BufferedOutputStream(base_stream, size));
+  return Glib::RefPtr<Gio::BufferedOutputStream>(new BufferedOutputStream(base_stream, size));
 }
 
 }   // namespace Gio
@@ -85,18 +86,8 @@ void BufferedOutputStream_Class::class_init_function(void* g_class, void* class_
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* BufferedOutputStream_Class::wrap_new(GObject* object)
@@ -154,11 +145,11 @@ BufferedOutputStream::BufferedOutputStream(const Glib::RefPtr<OutputStream>& bas
 
 }
 
-BufferedOutputStream::BufferedOutputStream(const Glib::RefPtr<OutputStream>& base_stream, gsize size)
+BufferedOutputStream::BufferedOutputStream(const Glib::RefPtr<OutputStream>& base_stream, gsize buffer_size)
 :
   // Mark this class as non-derived to allow C++ vfuncs to be skipped.
   Glib::ObjectBase(0),
-  Gio::FilterOutputStream(Glib::ConstructParams(bufferedoutputstream_class_.init(), "base_stream", const_cast<GOutputStream*>(Glib::unwrap(base_stream)), "size", size, static_cast<char*>(0)))
+  Gio::FilterOutputStream(Glib::ConstructParams(bufferedoutputstream_class_.init(), "base_stream", const_cast<GOutputStream*>(Glib::unwrap(base_stream)), "buffer_size", buffer_size, static_cast<char*>(0)))
 {
   
 
@@ -168,6 +159,7 @@ Glib::RefPtr<BufferedOutputStream> BufferedOutputStream::create(const Glib::RefP
 {
   return Glib::RefPtr<BufferedOutputStream>( new BufferedOutputStream(base_stream) );
 }
+
 gsize BufferedOutputStream::get_buffer_size() const
 {
   return g_buffered_output_stream_get_buffer_size(const_cast<GBufferedOutputStream*>(gobj()));
@@ -216,13 +208,6 @@ Glib::PropertyProxy_ReadOnly<bool> BufferedOutputStream::property_auto_grow() co
   return Glib::PropertyProxy_ReadOnly<bool>(this, "auto-grow");
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gio

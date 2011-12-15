@@ -19,9 +19,16 @@
 
 #include <glibmm/interface.h>
 #include <gtkmm/enums.h>
-#include <gtk/gtk.h>
+
 _DEFS(gtkmm,gtk)
 _PINCLUDE(glibmm/private/interface_p.h)
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+extern "C"
+{
+typedef struct _GtkOrientableIface GtkOrientableIface;
+}
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 
 namespace Gtk
@@ -33,7 +40,7 @@ namespace Gtk
  * GtkScale/GtkHScale/GtkVScale). GtkOrientable is more flexible in that it 
  * allows the orientation to be changed at runtime, allowing the widgets to 'flip'.
  *
- * @newin2p16
+ * @newin{2,16}
  */
 class Orientable : public Glib::Interface
 {

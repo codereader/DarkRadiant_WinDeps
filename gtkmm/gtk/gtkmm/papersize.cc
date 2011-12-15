@@ -26,6 +26,7 @@
 namespace Gtk
 {
 
+typedef PaperSize::ListHandle_PaperSizes  ListHandle_PaperSizes;
 //PaperSize::PaperSize()
 //:
 //  gobject_(gtk_paper_size_new(gtk_paper_size_get_default()))
@@ -54,6 +55,7 @@ PaperSize::PaperSize(const Glib::ustring& name, const Glib::ustring& display_nam
 {}
 
 //TODO: Add an operator bool() so we can detect if this succeeded:
+//TODO: No, throw the error/exception instead.
 PaperSize::PaperSize(const Glib::KeyFile& key_file, const Glib::ustring& group_name)
 :
   gobject_(gtk_paper_size_new_from_key_file(const_cast<GKeyFile*>(key_file.gobj()), (group_name.empty() ? NULL : group_name.c_str()) , NULL /* GError */))
@@ -72,7 +74,7 @@ PaperSize::operator bool() const
 
 void PaperSize::save_to_key_file(Glib::KeyFile& key_file)
 {
-  gtk_paper_size_to_key_file( gobj(), (key_file).gobj(), 0); 
+  gtk_paper_size_to_key_file( gobj(), (key_file).gobj(), 0);
 }
 
 
@@ -151,6 +153,12 @@ void PaperSize::swap(PaperSize& other)
 GtkPaperSize* PaperSize::gobj_copy() const
 {
   return gtk_paper_size_copy(gobject_);
+}
+
+
+ListHandle_PaperSizes PaperSize::get_paper_sizes(bool include_custom)
+{
+  return ListHandle_PaperSizes(gtk_paper_size_get_paper_sizes(static_cast<int>(include_custom)), Glib::OWNERSHIP_DEEP);
 }
 
 

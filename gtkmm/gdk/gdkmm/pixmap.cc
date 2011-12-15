@@ -71,7 +71,7 @@ Pixmap::Pixmap(const Glib::RefPtr<Drawable>& drawable, const char* data, int wid
 
 Pixmap::Pixmap(const Glib::RefPtr<Display>& display, NativeWindow anid)
 :
-  Drawable( (GdkDrawable*) gdk_pixmap_foreign_new_for_display(display->gobj(), anid) )
+  Drawable( (GdkDrawable*) gdk_pixmap_foreign_new_for_display(Glib::unwrap(display), anid) )
 {
   //gdk_pixmap_new() is implemented differently for x11, win32, etc,
   //so we can't really derived a new GType for GdkPixmap.
@@ -253,23 +253,14 @@ const Glib::Class& Pixmap_Class::init()
   return *this;
 }
 
+
 void Pixmap_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 /* The implementation: */
@@ -292,6 +283,7 @@ Pixmap::Pixmap(GdkPixmap* castitem)
   Gdk::Drawable((GdkDrawable*)(castitem))
 {}
 
+
 Pixmap::~Pixmap()
 {}
 
@@ -302,6 +294,7 @@ GType Pixmap::get_type()
 {
   return pixmap_class_.init().get_type();
 }
+
 
 GType Pixmap::get_base_type()
 {
@@ -323,21 +316,16 @@ Glib::RefPtr<Pixmap> Pixmap::create(const Glib::RefPtr<Drawable>& drawable, int 
 {
   return Glib::RefPtr<Pixmap>( new Pixmap(drawable, width, height, depth) );
 }
+
 Glib::RefPtr<Pixmap> Pixmap::create(const Glib::RefPtr<Drawable>& drawable, const char* data, int width, int height, int depth, const Color& fg, const Color& bg)
 {
   return Glib::RefPtr<Pixmap>( new Pixmap(drawable, data, width, height, depth, fg, bg) );
 }
+
 Glib::RefPtr<Pixmap> Pixmap::create(const Glib::RefPtr<Display>& display, NativeWindow anid)
 {
   return Glib::RefPtr<Pixmap>( new Pixmap(display, anid) );
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gdk

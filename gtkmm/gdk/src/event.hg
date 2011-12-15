@@ -1,5 +1,3 @@
-/* $Id: event.hg,v 1.4 2006/04/12 11:11:24 murrayc Exp $ */
-
 /* Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -20,7 +18,7 @@
 _DEFS(gdkmm,gdk)
 _CC_INCLUDE(gdk/gdk.h)
 
-#include <gdkmm/window.h>
+#include <gdkmm/types.h>
 #include <gdkmm/screen.h>
 
 /* Shadow DELETE macro (from winnt.h).
@@ -46,7 +44,6 @@ _WRAP_ENUM(EventType, GdkEventType,
     s#^3BUTTON_PRESS#TRIPLE_BUTTON_PRESS#
 )
 
-_WRAP_ENUM(ExtensionMode, GdkExtensionMode)
 _WRAP_ENUM(AxisUse, GdkAxisUse)
 
 //TODO: Actually use this class instead of GdkEvent?
@@ -59,7 +56,7 @@ public:
 
   _WRAP_METHOD(static Event get(), gdk_event_get)
   _WRAP_METHOD(static Event peek(), gdk_event_peek)
-  _WRAP_METHOD(static Event get_graphics_expose(const Glib::RefPtr<Window>& window), gdk_event_get_graphics_expose)
+  _IGNORE(gdk_event_get_graphics_expose) //deprecated
   _WRAP_METHOD(void put(), gdk_event_put)
 
   _WRAP_METHOD(static bool events_pending(), gdk_events_pending)
@@ -74,13 +71,9 @@ public:
   _WRAP_METHOD(static void set_show_events(bool show_events), gdk_set_show_events)
   _WRAP_METHOD(static bool get_show_events(), gdk_get_show_events)
 
-  _WRAP_METHOD(void set_screen(const Glib::RefPtr<Screen>& screen), gdk_event_set_screen)
+  _IGNORE(gdk_event_set_screen) //deprecated
   _WRAP_METHOD(Glib::RefPtr<Screen> get_screen(), gdk_event_get_screen, refreturn)
   _WRAP_METHOD(Glib::RefPtr<const Screen> get_screen() const, gdk_event_get_screen, refreturn, constversion)
-
-  _WRAP_METHOD(bool send_client_message(NativeWindow winid), gdk_event_send_client_message)
-  bool send_client_message(const Glib::RefPtr<Display>& display, NativeWindow winid);
-  _IGNORE(gdk_event_send_client_message_for_display)
 };
 
 } // namespace Gdk

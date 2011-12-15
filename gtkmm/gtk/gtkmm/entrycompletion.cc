@@ -33,15 +33,12 @@ static gboolean SignalProxy_Match_gtk_callback(GtkEntryCompletion* completion, c
 {
   Gtk::EntryCompletion::SlotMatch* the_slot = static_cast<Gtk::EntryCompletion::SlotMatch*>(user_data);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     GtkTreeModel* tree_model = gtk_entry_completion_get_model(completion);
     return (*the_slot)(Glib::convert_const_gchar_ptr_to_ustring(key),
                          Gtk::TreeModel::const_iterator(tree_model, iter)
                          );
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
@@ -49,7 +46,6 @@ static gboolean SignalProxy_Match_gtk_callback(GtkEntryCompletion* completion, c
   }
 
   return false; //An arbitary default, just to avoid the compiler warning.
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
 static void SignalProxy_Match_gtk_callback_destroy(void* data)
@@ -118,10 +114,8 @@ static gboolean Widget_signal_match_selected_callback(GtkEntryCompletion* self, 
   // Do not try to call a signal on a disassociated wrapper.
   if(Glib::ObjectBase::_get_current_wrapper((GObject*) self))
   {
-    #ifdef GLIBMM_EXCEPTIONS_ENABLED
     try
     {
-    #endif //GLIBMM_EXCEPTIONS_ENABLED
       if(sigc::slot_base *const slot = Glib::SignalProxyNormal::data_to_slot(data))
       {
         //This conversion is the custom-written part:
@@ -129,13 +123,11 @@ static gboolean Widget_signal_match_selected_callback(GtkEntryCompletion* self, 
 
         return static_cast<int>( (*static_cast<SlotType*>(slot))(cppIter) );
       }
-    #ifdef GLIBMM_EXCEPTIONS_ENABLED
     }
     catch(...)
     {
       Glib::exception_handlers_invoke();
     }
-    #endif //GLIBMM_EXCEPTIONS_ENABLED
   }
 
   typedef gboolean RType;
@@ -150,10 +142,8 @@ static gboolean Widget_signal_match_selected_notify_callback(GtkEntryCompletion*
   // Do not try to call a signal on a disassociated wrapper.
   if(Glib::ObjectBase::_get_current_wrapper((GObject*) self))
   {
-    #ifdef GLIBMM_EXCEPTIONS_ENABLED
     try
     {
-    #endif //GLIBMM_EXCEPTIONS_ENABLED
       if(sigc::slot_base *const slot = Glib::SignalProxyNormal::data_to_slot(data))
       {
         //This conversion is the custom-written part:
@@ -161,13 +151,11 @@ static gboolean Widget_signal_match_selected_notify_callback(GtkEntryCompletion*
 
         (*static_cast<SlotType*>(slot))(cppIter);
       }
-    #ifdef GLIBMM_EXCEPTIONS_ENABLED
     }
     catch(...)
     {
       Glib::exception_handlers_invoke();
     }
-    #endif //GLIBMM_EXCEPTIONS_ENABLED
   }
 
   typedef gboolean RType;
@@ -190,10 +178,8 @@ static gboolean Widget_signal_cursor_on_match_callback(GtkEntryCompletion* self,
   // Do not try to call a signal on a disassociated wrapper.
   if(Glib::ObjectBase::_get_current_wrapper((GObject*) self))
   {
-    #ifdef GLIBMM_EXCEPTIONS_ENABLED
     try
     {
-    #endif //GLIBMM_EXCEPTIONS_ENABLED
       if(sigc::slot_base *const slot = Glib::SignalProxyNormal::data_to_slot(data))
       {
         //This conversion is the custom-written part:
@@ -201,13 +187,11 @@ static gboolean Widget_signal_cursor_on_match_callback(GtkEntryCompletion* self,
 
         return static_cast<int>( (*static_cast<SlotType*>(slot))(cppIter) );
       }
-    #ifdef GLIBMM_EXCEPTIONS_ENABLED
     }
     catch(...)
     {
       Glib::exception_handlers_invoke();
     }
-    #endif //GLIBMM_EXCEPTIONS_ENABLED
   }
 
   typedef gboolean RType;
@@ -222,10 +206,8 @@ static gboolean Widget_signal_cursor_on_match_notify_callback(GtkEntryCompletion
   // Do not try to call a signal on a disassociated wrapper.
   if(Glib::ObjectBase::_get_current_wrapper((GObject*) self))
   {
-    #ifdef GLIBMM_EXCEPTIONS_ENABLED
     try
     {
-    #endif //GLIBMM_EXCEPTIONS_ENABLED
       if(sigc::slot_base *const slot = Glib::SignalProxyNormal::data_to_slot(data))
       {
         //This conversion is the custom-written part:
@@ -233,13 +215,11 @@ static gboolean Widget_signal_cursor_on_match_notify_callback(GtkEntryCompletion
 
         (*static_cast<SlotType*>(slot))(cppIter);
       }
-    #ifdef GLIBMM_EXCEPTIONS_ENABLED
     }
     catch(...)
     {
       Glib::exception_handlers_invoke();
     }
-    #endif //GLIBMM_EXCEPTIONS_ENABLED
   }
 
   typedef gboolean RType;
@@ -260,7 +240,6 @@ const Glib::SignalProxyInfo EntryCompletion_signal_cursor_on_match_info =
 namespace Gtk
 {
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 //Hand-coded signal wrapping:
 
 bool Gtk::EntryCompletion::on_match_selected(const TreeModel::iterator& iter)
@@ -290,22 +269,18 @@ gboolean EntryCompletion_Class::match_selected_callback_custom(GtkEntryCompletio
   // being overridden:
   if(obj && obj->is_derived_())
   {
-    #ifdef GLIBMM_EXCEPTIONS_ENABLED
     try // Trap C++ exceptions which would normally be lost because this is a C callback.
     {
-    #endif //GLIBMM_EXCEPTIONS_ENABLED
       // Call the virtual member method, which derived classes might override.
 
       //This conversion is the custom-written part:
       Gtk::TreeModel::iterator cppIter(c_model, c_iter);
       return obj->on_match_selected(cppIter);
-    #ifdef GLIBMM_EXCEPTIONS_ENABLED
     }
     catch(...)
     {
       Glib::exception_handlers_invoke();
     }
-    #endif //GLIBMM_EXCEPTIONS_ENABLED
   }
   else
   {
@@ -321,7 +296,6 @@ gboolean EntryCompletion_Class::match_selected_callback_custom(GtkEntryCompletio
   typedef gboolean RType;
   return RType();
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 Glib::SignalProxy1< bool, const TreeModel::iterator& > EntryCompletion::signal_match_selected()
 {
@@ -480,24 +454,18 @@ const Glib::Class& EntryCompletion_Class::init()
   return *this;
 }
 
+
 void EntryCompletion_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->action_activated = &action_activated_callback;
     klass->match_selected = &match_selected_callback_custom;
-  #endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-}
+  }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void EntryCompletion_Class::action_activated_callback(GtkEntryCompletion* self, gint p0)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -530,7 +498,7 @@ void EntryCompletion_Class::action_activated_callback(GtkEntryCompletion* self, 
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -539,7 +507,6 @@ void EntryCompletion_Class::action_activated_callback(GtkEntryCompletion* self, 
   if(base && base->action_activated)
     (*base->action_activated)(self, p0);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* EntryCompletion_Class::wrap_new(GObject* object)
@@ -568,6 +535,7 @@ EntryCompletion::EntryCompletion(GtkEntryCompletion* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 EntryCompletion::~EntryCompletion()
 {}
 
@@ -578,6 +546,7 @@ GType EntryCompletion::get_type()
 {
   return entrycompletion_class_.init().get_type();
 }
+
 
 GType EntryCompletion::get_base_type()
 {
@@ -599,6 +568,7 @@ Glib::RefPtr<EntryCompletion> EntryCompletion::create()
 {
   return Glib::RefPtr<EntryCompletion>( new EntryCompletion() );
 }
+
 Entry* EntryCompletion::get_entry()
 {
   return Glib::wrap((GtkEntry*)(gtk_entry_completion_get_entry(gobj())));
@@ -868,7 +838,6 @@ Glib::PropertyProxy_ReadOnly<bool> EntryCompletion::property_inline_selection() 
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::EntryCompletion::on_action_activated(int index)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -878,10 +847,6 @@ void Gtk::EntryCompletion::on_action_activated(int index)
   if(base && base->action_activated)
     (*base->action_activated)(gobj(),index);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

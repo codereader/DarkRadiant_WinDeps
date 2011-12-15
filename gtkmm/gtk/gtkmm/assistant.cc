@@ -33,19 +33,15 @@ static gint SignalProxy_SlotForwardPage_gtk_callback(gint current_page, gpointer
 {
   Gtk::Assistant::SlotForwardPage* the_slot = static_cast<Gtk::Assistant::SlotForwardPage*>(data);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     return (*the_slot)(current_page);
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
     return gint();
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
 static void SignalProxy_SlotForwardPage_gtk_callback_destroy(void* data)
@@ -180,26 +176,20 @@ const Glib::Class& Assistant_Class::init()
   return *this;
 }
 
+
 void Assistant_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->prepare = &prepare_callback;
   klass->apply = &apply_callback;
   klass->close = &close_callback;
   klass->cancel = &cancel_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Assistant_Class::prepare_callback(GtkAssistant* self, GtkWidget* p0)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -232,7 +222,7 @@ void Assistant_Class::prepare_callback(GtkAssistant* self, GtkWidget* p0)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -272,7 +262,7 @@ void Assistant_Class::apply_callback(GtkAssistant* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -312,7 +302,7 @@ void Assistant_Class::close_callback(GtkAssistant* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -352,7 +342,7 @@ void Assistant_Class::cancel_callback(GtkAssistant* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -361,7 +351,6 @@ void Assistant_Class::cancel_callback(GtkAssistant* self)
   if(base && base->cancel)
     (*base->cancel)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Assistant_Class::wrap_new(GObject* o)
@@ -396,6 +385,7 @@ GType Assistant::get_type()
 {
   return assistant_class_.init().get_type();
 }
+
 
 GType Assistant::get_base_type()
 {
@@ -528,6 +518,11 @@ void Assistant::update_buttons_state()
 gtk_assistant_update_buttons_state(gobj()); 
 }
 
+void Assistant::commit()
+{
+gtk_assistant_commit(gobj()); 
+}
+
 
 Glib::SignalProxy1< void,Gtk::Widget* > Assistant::signal_prepare()
 {
@@ -553,7 +548,6 @@ Glib::SignalProxy0< void > Assistant::signal_cancel()
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::Assistant::on_prepare(Gtk::Widget* page)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -590,10 +584,6 @@ void Gtk::Assistant::on_cancel()
   if(base && base->cancel)
     (*base->cancel)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

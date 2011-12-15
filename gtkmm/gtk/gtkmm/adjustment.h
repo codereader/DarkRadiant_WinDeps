@@ -89,6 +89,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -101,19 +103,13 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_changed();
   virtual void on_value_changed();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -177,15 +173,15 @@ public:
    * to change, or using configure() has the same effect
    * of compressing "changed" emissions.
    * 
-   * @newin2p14
+   * @newin{2,14}
    * @param lower The new minimum value.
    */
   void set_lower(double lower);
   
   /** Retrieves the minimum value of the adjustment.
-   * @return The current minimum value of the adjustment.
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The current minimum value of the adjustment.
    */
   double get_lower() const;
   
@@ -193,22 +189,22 @@ public:
   /** Sets the maximum value of the adjustment.
    * 
    * Note that values will be restricted by
-   * <literal>upper - page-size</literal> if the page-size
+   * <tt>upper - page-size</tt> if the page-size
    * property is nonzero.
    * 
    * See set_lower() about how to compress multiple
    * emissions of the "changed" signal when setting multiple adjustment
    * properties.
    * 
-   * @newin2p14
+   * @newin{2,14}
    * @param upper The new maximum value.
    */
   void set_upper(double upper);
   
   /** Retrieves the maximum value of the adjustment.
-   * @return The current maximum value of the adjustment.
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The current maximum value of the adjustment.
    */
   double get_upper() const;
 
@@ -219,15 +215,15 @@ public:
    * emissions of the "changed" signal when setting multiple adjustment
    * properties.
    * 
-   * @newin2p14
+   * @newin{2,14}
    * @param step_increment The new step increment.
    */
   void set_step_increment(double step_increment);
   
   /** Retrieves the step increment of the adjustment.
-   * @return The current step increment of the adjustment.
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The current step increment of the adjustment.
    */
   double get_step_increment() const;
 
@@ -238,15 +234,15 @@ public:
    * emissions of the "changed" signal when setting multiple adjustment
    * properties.
    * 
-   * @newin2p14
+   * @newin{2,14}
    * @param page_increment The new page increment.
    */
   void set_page_increment(double page_increment);
   
   /** Retrieves the page increment of the adjustment.
-   * @return The current page increment of the adjustment.
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The current page increment of the adjustment.
    */
   double get_page_increment() const;
 
@@ -257,15 +253,15 @@ public:
    * emissions of the "changed" signal when setting multiple adjustment
    * properties.
    * 
-   * @newin2p14
+   * @newin{2,14}
    * @param page_size The new page size.
    */
   void set_page_size(double page_size);
   
   /** Retrieves the page size of the adjustment.
-   * @return The current page size of the adjustment.
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The current page size of the adjustment.
    */
   double get_page_size() const;
 
@@ -276,7 +272,7 @@ public:
    * signal. See set_lower() for an alternative way
    * of compressing multiple emissions of "changed" into one.
    * 
-   * @newin2p14
+   * @newin{2,14}
    * @param value The new value.
    * @param lower The new minimum value.
    * @param upper The new maximum value.
@@ -301,6 +297,127 @@ public:
    */
 
   Glib::SignalProxy0< void > signal_value_changed();
+
+  
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The value of the adjustment.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<double> property_value() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The value of the adjustment.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<double> property_value() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The minimum value of the adjustment.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<double> property_lower() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The minimum value of the adjustment.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<double> property_lower() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The maximum value of the adjustment.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<double> property_upper() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The maximum value of the adjustment.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<double> property_upper() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The step increment of the adjustment.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<double> property_step_increment() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The step increment of the adjustment.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<double> property_step_increment() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The page increment of the adjustment.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<double> property_page_increment() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The page increment of the adjustment.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<double> property_page_increment() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The page size of the adjustment.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<double> property_page_size() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The page size of the adjustment.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<double> property_page_size() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
 
 
 };

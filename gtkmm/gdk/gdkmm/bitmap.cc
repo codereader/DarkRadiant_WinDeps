@@ -24,9 +24,8 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <gdk/gdk.h>
 #include <gdkmm/window.h>
-
+#include <gdk/gdk.h>
 
 namespace Gdk
 {
@@ -62,10 +61,12 @@ Glib::RefPtr<Bitmap> Bitmap::create(const char* data, int width, int height)
 {
   return Glib::RefPtr<Bitmap>( new Bitmap(data, width, height) );
 }
+
 Glib::RefPtr<Bitmap> Bitmap::create(const Glib::RefPtr<Gdk::Drawable>& drawable, const char* data, int width, int height)
 {
   return Glib::RefPtr<Bitmap>( new Bitmap(drawable, data, width, height) );
 }
+
 
 } // namespace Gdk
 

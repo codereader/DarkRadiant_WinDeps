@@ -156,23 +156,17 @@ const Glib::Class& RadioAction_Class::init()
   return *this;
 }
 
+
 void RadioAction_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->changed = &changed_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void RadioAction_Class::changed_callback(GtkRadioAction* self, GtkRadioAction* p0)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -205,7 +199,7 @@ void RadioAction_Class::changed_callback(GtkRadioAction* self, GtkRadioAction* p
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -214,7 +208,6 @@ void RadioAction_Class::changed_callback(GtkRadioAction* self, GtkRadioAction* p
   if(base && base->changed)
     (*base->changed)(self, p0);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* RadioAction_Class::wrap_new(GObject* object)
@@ -243,6 +236,7 @@ RadioAction::RadioAction(GtkRadioAction* castitem)
   Gtk::ToggleAction((GtkToggleAction*)(castitem))
 {}
 
+
 RadioAction::~RadioAction()
 {}
 
@@ -253,6 +247,7 @@ GType RadioAction::get_type()
 {
   return radioaction_class_.init().get_type();
 }
+
 
 GType RadioAction::get_base_type()
 {
@@ -274,6 +269,7 @@ Glib::RefPtr<RadioAction> RadioAction::create()
 {
   return Glib::RefPtr<RadioAction>( new RadioAction() );
 }
+
 Group RadioAction::get_group()
 {
   return Group(gtk_radio_action_get_group(gobj()));
@@ -325,7 +321,6 @@ Glib::PropertyProxy_ReadOnly<int> RadioAction::property_current_value() const
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::RadioAction::on_changed(const Glib::RefPtr<RadioAction>& current)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -335,10 +330,6 @@ void Gtk::RadioAction::on_changed(const Glib::RefPtr<RadioAction>& current)
   if(base && base->changed)
     (*base->changed)(gobj(),Glib::unwrap(current));
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

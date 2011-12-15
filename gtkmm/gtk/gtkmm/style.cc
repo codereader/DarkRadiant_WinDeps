@@ -302,12 +302,12 @@ const Glib::Class& Style_Class::init()
   return *this;
 }
 
+
 void Style_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
   klass->realize = &realize_vfunc_callback;
   klass->unrealize = &unrealize_vfunc_callback;
   klass->copy = &copy_vfunc_callback;
@@ -336,15 +336,11 @@ void Style_Class::class_init_function(void* g_class, void* class_data)
   klass->draw_expander = &draw_expander_vfunc_callback;
   klass->draw_layout = &draw_layout_vfunc_callback;
   klass->draw_resize_grip = &draw_resize_grip_vfunc_callback;
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->realize = &realize_callback;
   klass->unrealize = &unrealize_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
 void Style_Class::realize_vfunc_callback(GtkStyle* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -376,7 +372,7 @@ void Style_Class::realize_vfunc_callback(GtkStyle* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -417,7 +413,7 @@ void Style_Class::unrealize_vfunc_callback(GtkStyle* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -459,7 +455,7 @@ void Style_Class::copy_vfunc_callback(GtkStyle* self, GtkStyle* src)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -499,7 +495,7 @@ GtkStyle* Style_Class::clone_vfunc_callback(GtkStyle* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -532,7 +528,7 @@ void Style_Class::init_from_rc_vfunc_callback(GtkStyle* self, GtkRcStyle* rc_sty
       {
       #endif //GLIBMM_EXCEPTIONS_ENABLED
         // Call the virtual member method, which derived classes might override.
-        obj->init_from_rc_vfunc(Glib::wrap(rc_style)
+        obj->init_from_rc_vfunc(Glib::wrap(rc_style, true)
 );
         return;
       #ifdef GLIBMM_EXCEPTIONS_ENABLED
@@ -544,7 +540,7 @@ void Style_Class::init_from_rc_vfunc_callback(GtkStyle* self, GtkRcStyle* rc_sty
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -587,7 +583,7 @@ void Style_Class::set_background_vfunc_callback(GtkStyle* self, GdkWindow* windo
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -633,7 +629,7 @@ GdkPixbuf* Style_Class::render_icon_vfunc_callback(GtkStyle* self, const GtkIcon
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -685,7 +681,7 @@ void Style_Class::draw_hline_vfunc_callback(GtkStyle* self, GdkWindow* window, G
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -734,7 +730,7 @@ void Style_Class::draw_vline_vfunc_callback(GtkStyle* self, GdkWindow* window, G
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -785,7 +781,7 @@ void Style_Class::draw_shadow_vfunc_callback(GtkStyle* self, GdkWindow* window, 
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -834,7 +830,7 @@ void Style_Class::draw_polygon_vfunc_callback(GtkStyle* self, GdkWindow* window,
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -887,7 +883,7 @@ void Style_Class::draw_arrow_vfunc_callback(GtkStyle* self, GdkWindow* window, G
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -938,7 +934,7 @@ void Style_Class::draw_diamond_vfunc_callback(GtkStyle* self, GdkWindow* window,
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -987,7 +983,7 @@ void Style_Class::draw_string_vfunc_callback(GtkStyle* self, GdkWindow* window, 
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -1038,7 +1034,7 @@ void Style_Class::draw_box_vfunc_callback(GtkStyle* self, GdkWindow* window, Gtk
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -1089,7 +1085,7 @@ void Style_Class::draw_flat_box_vfunc_callback(GtkStyle* self, GdkWindow* window
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -1140,7 +1136,7 @@ void Style_Class::draw_check_vfunc_callback(GtkStyle* self, GdkWindow* window, G
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -1191,7 +1187,7 @@ void Style_Class::draw_option_vfunc_callback(GtkStyle* self, GdkWindow* window, 
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -1242,7 +1238,7 @@ void Style_Class::draw_tab_vfunc_callback(GtkStyle* self, GdkWindow* window, Gtk
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -1296,7 +1292,7 @@ void Style_Class::draw_shadow_gap_vfunc_callback(GtkStyle* self, GdkWindow* wind
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -1350,7 +1346,7 @@ void Style_Class::draw_box_gap_vfunc_callback(GtkStyle* self, GdkWindow* window,
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -1402,7 +1398,7 @@ void Style_Class::draw_extension_vfunc_callback(GtkStyle* self, GdkWindow* windo
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -1452,7 +1448,7 @@ void Style_Class::draw_focus_vfunc_callback(GtkStyle* self, GdkWindow* window, G
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -1504,7 +1500,7 @@ void Style_Class::draw_slider_vfunc_callback(GtkStyle* self, GdkWindow* window, 
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -1556,7 +1552,7 @@ void Style_Class::draw_handle_vfunc_callback(GtkStyle* self, GdkWindow* window, 
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -1605,7 +1601,7 @@ void Style_Class::draw_expander_vfunc_callback(GtkStyle* self, GdkWindow* window
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -1643,7 +1639,7 @@ void Style_Class::draw_layout_vfunc_callback(GtkStyle* self, GdkWindow* window, 
 , Glib::convert_const_gchar_ptr_to_ustring(detail)
 , x
 , y
-, Glib::wrap(layout)
+, Glib::wrap(layout, true)
 );
         return;
       #ifdef GLIBMM_EXCEPTIONS_ENABLED
@@ -1655,7 +1651,7 @@ void Style_Class::draw_layout_vfunc_callback(GtkStyle* self, GdkWindow* window, 
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -1706,7 +1702,7 @@ void Style_Class::draw_resize_grip_vfunc_callback(GtkStyle* self, GdkWindow* win
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -1716,9 +1712,7 @@ void Style_Class::draw_resize_grip_vfunc_callback(GtkStyle* self, GdkWindow* win
     (*base->draw_resize_grip)(self, window, state_type, area, widget, detail, edge, x, y, width, height);
 
 }
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Style_Class::realize_callback(GtkStyle* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -1750,7 +1744,7 @@ void Style_Class::realize_callback(GtkStyle* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -1790,7 +1784,7 @@ void Style_Class::unrealize_callback(GtkStyle* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -1799,7 +1793,6 @@ void Style_Class::unrealize_callback(GtkStyle* self)
   if(base && base->unrealize)
     (*base->unrealize)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Style_Class::wrap_new(GObject* object)
@@ -1828,6 +1821,7 @@ Style::Style(GtkStyle* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 Style::~Style()
 {}
 
@@ -1838,6 +1832,7 @@ GType Style::get_type()
 {
   return style_class_.init().get_type();
 }
+
 
 GType Style::get_base_type()
 {
@@ -1859,6 +1854,7 @@ Glib::RefPtr<Style> Style::create()
 {
   return Glib::RefPtr<Style>( new Style() );
 }
+
 void Style::set_fg(StateType state, const Gdk::Color& color)
 {
   gobj()->fg[state] = *color.gobj();
@@ -2104,9 +2100,18 @@ void Style::paint_resize_grip(const Glib::RefPtr<Gdk::Window>& window, Gtk::Stat
 gtk_paint_resize_grip(const_cast<GtkStyle*>(gobj()), Glib::unwrap(window), ((GtkStateType)(state_type)), (area).gobj(), (widget).gobj(), detail.c_str(), ((GdkWindowEdge)(edge)), x, y, width, height); 
 }
 
+#ifndef GTKMM_DISABLE_DEPRECATED
+
 Glib::RefPtr<Style> Style::copy()
 {
   return Glib::wrap(gtk_style_copy(gobj()));
+}
+
+#endif // GTKMM_DISABLE_DEPRECATED
+
+Glib::RefPtr<Style> Style::copy() const
+{
+  return Glib::wrap(gtk_style_copy(const_cast<GtkStyle*>(gobj())));
 }
 
 Glib::RefPtr<Style> Style::attach(const Glib::RefPtr<Gdk::Window>& window)
@@ -2157,7 +2162,6 @@ Glib::SignalProxy0< void > Style::signal_unrealize()
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::Style::on_realize()
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -2176,9 +2180,7 @@ void Gtk::Style::on_unrealize()
   if(base && base->unrealize)
     (*base->unrealize)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
-#ifdef GLIBMM_VFUNCS_ENABLED
 void Gtk::Style::realize_vfunc() 
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -2213,7 +2215,7 @@ Glib::RefPtr<Style> Gtk::Style::clone_vfunc()
   );
 
   if(base && base->clone)
-    return Glib::wrap((*base->clone)(gobj()));
+    return Glib::wrap((*base->clone)(gobj()), true);
 
   typedef Glib::RefPtr<Style> RType;
   return RType();
@@ -2437,7 +2439,6 @@ void Gtk::Style::draw_resize_grip_vfunc(const Glib::RefPtr<Gdk::Window>& window,
   if(base && base->draw_resize_grip)
     (*base->draw_resize_grip)(gobj(),Glib::unwrap(window),((GtkStateType)(state_type)),const_cast<GdkRectangle*>(area.gobj()),(GtkWidget*)Glib::unwrap(widget),detail.c_str(),((GdkWindowEdge)(edge)),x,y,width,height);
 }
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

@@ -4,7 +4,8 @@
 #define _PANGOMM_FONTDESCRIPTION_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: fontdescription.hg,v 1.2 2006/06/08 20:39:39 murrayc Exp $ */
 
@@ -13,20 +14,21 @@
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
+ * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <glibmm/value.h>
 #include <pango/pango-font.h>
 
 
@@ -38,7 +40,7 @@ namespace Pango
 {
 
 
-/** @addtogroup pangommEnums Enums and Flags */
+/** @addtogroup pangommEnums pangomm Enums and Flags */
 
 /**
  * @ingroup pangommEnums
@@ -360,7 +362,7 @@ public:
   void set_family(const Glib::ustring& family);
   
   /** Gets the family name field of a font description. See
-   * pango_font_description_set_family().
+   * set_family().
    * @return The family name field for the font description, or
    * <tt>0</tt> if not previously set.  This has the same life-time
    * as the font description itself and should not be freed.
@@ -380,9 +382,9 @@ public:
   void set_style(Style style);
   
   /** Gets the style field of a Pango::FontDescription. See
-   * pango_font_description_set_style().
+   * set_style().
    * @return The style field for the font description.
-   * Use pango_font_description_get_set_fields() to find out if
+   * Use get_set_fields() to find out if
    * the field was explicitly set or not.
    */
   Style get_style() const;
@@ -394,9 +396,9 @@ public:
   void set_variant(Variant variant);
   
   /** Gets the variant field of a Pango::FontDescription. See
-   * pango_font_description_set_variant().
+   * set_variant().
    * @return The variant field for the font description. Use
-   * pango_font_description_get_set_fields() to find out if
+   * get_set_fields() to find out if
    * the field was explicitly set or not.
    */
   Variant get_variant() const;
@@ -410,9 +412,9 @@ public:
   void set_weight(Weight weight);
   
   /** Gets the weight field of a font description. See
-   * pango_font_description_set_weight().
+   * set_weight().
    * @return The weight field for the font description. Use
-   * pango_font_description_get_set_fields() to find out if
+   * get_set_fields() to find out if
    * the field was explicitly set or not.
    */
   Weight get_weight() const;
@@ -424,41 +426,41 @@ public:
   void set_stretch(Stretch stretch);
   
   /** Gets the stretch field of a font description.
-   * See pango_font_description_set_stretch().
+   * See set_stretch().
    * @return The stretch field for the font description. Use
-   * pango_font_description_get_set_fields() to find out if
+   * get_set_fields() to find out if
    * the field was explicitly set or not.
    */
   Stretch get_stretch() const;
   
   /** Sets the size field of a font description in fractional points. This is mutually
-   * exclusive with pango_font_description_set_absolute_size().
+   * exclusive with set_absolute_size().
    * @param size The size of the font in points, scaled by PANGO_SCALE. (That is,
    * a @a size value of 10 * PANGO_SCALE is a 10 point font. The conversion
    * factor between points and device units depends on system configuration
    * and the output device. For screen display, a logical DPI of 96 is
    * common, in which case a 10 point font corresponds to a 10 * (96 / 72) = 13.3
-   * pixel font. Use pango_font_description_set_absolute_size() if you need
+   * pixel font. Use set_absolute_size() if you need
    * a particular size in device units.
    */
   void set_size(int size);
   
   /** Gets the size field of a font description.
-   * See pango_font_description_set_size().
+   * See set_size().
    * @return The size field for the font description in points or device units.
-   * You must call pango_font_description_get_size_is_absolute()
+   * You must call get_size_is_absolute()
    * to find out which is the case. Returns 0 if the size field has not
    * previously been set or it has been set to 0 explicitly.
-   * Use pango_font_description_get_set_fields() to
+   * Use get_set_fields() to
    * find out if the field was explicitly set or not.
    */
   int get_size() const;
   
   /** Sets the size field of a font description, in device units. This is mutually
-   * exclusive with pango_font_description_set_size() which sets the font size
+   * exclusive with set_size() which sets the font size
    * in points.
    * 
-   * Since: 1.8
+   * @newin{1,8}
    * @param size The new size, in Pango units. There are Pango::SCALE Pango units in one
    * device unit. For an output backend where a device unit is a pixel, a @a size
    * value of 10 * PANGO_SCALE gives a 10 pixel font.
@@ -466,12 +468,12 @@ public:
   void set_absolute_size(double size);
   
   /** Determines whether the size of the font is in points (not absolute) or device units (absolute).
-   * See pango_font_description_set_size() and pango_font_description_set_absolute_size().
-   * @return Whether the size for the font description is in
-   * points or device units.  Use pango_font_description_get_set_fields() to
-   * find out if the size field of the font description was explicitly set or not.
+   * See set_size() and set_absolute_size().
    * 
-   * Since: 1.8.
+   * @newin{1,8}
+   * @return Whether the size for the font description is in
+   * points or device units.  Use get_set_fields() to
+   * find out if the size field of the font description was explicitly set or not.
    */
   bool get_size_is_absolute() const;
   
@@ -483,18 +485,18 @@ public:
    * This function is seldom useful to the user.  Gravity should normally
    * be set on a Pango::Context.
    * 
-   * Since: 1.16
+   * @newin{1,16}
    * @param gravity The gravity for the font description.
    */
   void set_gravity(Gravity gravity);
   
   /** Gets the gravity field of a font description. See
-   * pango_font_description_set_gravity().
-   * @return The gravity field for the font description. Use
-   * pango_font_description_get_set_fields() to find out if
-   * the field was explicitly set or not.
+   * set_gravity().
    * 
-   * Since: 1.16.
+   * @newin{1,16}
+   * @return The gravity field for the font description. Use
+   * get_set_fields() to find out if
+   * the field was explicitly set or not.
    */
   Gravity get_gravity() const;
   
@@ -514,7 +516,9 @@ public:
    *  @a desc.  If @a replace_existing is <tt>false</tt>, only fields in @a desc that
    * are not already set are affected. If <tt>true</tt>, then fields that are
    * already set will be replaced as well.
-   * @param desc_to_merge The Pango::FontDescription to merge from.
+   * 
+   * If @a desc_to_merge is <tt>0</tt>, this function performs nothing.
+   * @param desc_to_merge The Pango::FontDescription to merge from, or <tt>0</tt>.
    * @param replace_existing If <tt>true</tt>, replace fields in @a desc with the
    * corresponding values from @a desc_to_merge, even if they
    * are already exist.
@@ -522,9 +526,16 @@ public:
   void merge(const FontDescription& desc_to_merge, bool replace_existing);
   
   /** Determines if the style attributes of @a new_match are a closer match
-   * for @a desc than @a old_match, or if @a old_match is <tt>0</tt>, determines if
-   *  @a new_match is a match at all. Approximate matching is done for
-   * weight and style; other attributes must match exactly.
+   * for @a desc than those of @a old_match are, or if @a old_match is <tt>0</tt>,
+   * determines if @a new_match is a match at all.
+   * Approximate matching is done for
+   * weight and style; other style attributes must match exactly.
+   * Style attributes are all attributes other than family and size-related
+   * attributes.  Approximate matching for style considers PANGO_STYLE_OBLIQUE
+   * and PANGO_STYLE_ITALIC as matches, but not as good a match as when the
+   * styles are equal.
+   * 
+   * Note that @a old_match must match @a desc.
    * @param old_match A Pango::FontDescription, or <tt>0</tt>.
    * @param new_match A Pango::FontDescription.
    * @return <tt>true</tt> if @a new_match is a better match.
@@ -532,7 +543,7 @@ public:
   bool better_match(const FontDescription& old_match, const FontDescription& new_match) const;
   
   /** Creates a string representation of a font description. See
-   * description_from_string() for a description of the
+   * from_string() for a description of the
    * format of the string representation. The family list in the
    * string description will only have a terminating comma if the
    * last word of the list is a valid style option.
@@ -542,7 +553,7 @@ public:
   
   /** Creates a filename representation of a font description. The
    * filename is identical to the result from calling
-   * pango_font_description_to_string(), but with underscores instead of
+   * to_string(), but with underscores instead of
    * characters that are untypical in filenames, and in lower case only.
    * @return The filename.
    */

@@ -25,6 +25,8 @@
  */
 
 #include <gdk/gdk.h>
+#include <gdkmm/cursor.h>
+#include <gdkmm/display.h>
 
 namespace Gdk
 {
@@ -89,23 +91,14 @@ const Glib::Class& Device_Class::init()
   return *this;
 }
 
+
 void Device_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Device_Class::wrap_new(GObject* object)
@@ -134,6 +127,7 @@ Device::Device(GdkDevice* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 Device::~Device()
 {}
 
@@ -144,6 +138,7 @@ GType Device::get_type()
 {
   return device_class_.init().get_type();
 }
+
 
 GType Device::get_base_type()
 {
@@ -171,9 +166,19 @@ bool Device::set_mode(InputMode mode)
   return gdk_device_set_mode(gobj(), ((GdkInputMode)(mode)));
 }
 
+void Device::get_key(guint index_, guint& keyval, ModifierType& modifiers) const
+{
+gdk_device_get_key(const_cast<GdkDevice*>(gobj()), index_, &(keyval), ((GdkModifierType*) &(modifiers))); 
+}
+
 void Device::set_key(guint index_, guint keyval, ModifierType modifiers)
 {
 gdk_device_set_key(gobj(), index_, keyval, ((GdkModifierType)(modifiers))); 
+}
+
+AxisUse Device::get_axis_use(guint index_) const
+{
+  return ((AxisUse)(gdk_device_get_axis_use(const_cast<GdkDevice*>(gobj()), index_)));
 }
 
 void Device::set_axis_use(guint index_, AxisUse use)
@@ -188,7 +193,7 @@ gdk_device_get_state(gobj(), Glib::unwrap(window), &(axes), ((GdkModifierType*) 
 
 bool Device::get_history(const Glib::RefPtr<Window>& window, guint32 start, guint32 stop, GdkTimeCoord**& events, int& n_events)
 {
-  return gdk_device_get_history(gobj(), Glib::unwrap(window), start, stop, &(events), &n_events);
+  return gdk_device_get_history(gobj(), Glib::unwrap(window), start, stop, &(events), &(n_events));
 }
 
 bool Device::get_axis(double& axes, AxisUse use, double& value) const
@@ -196,32 +201,30 @@ bool Device::get_axis(double& axes, AxisUse use, double& value) const
   return gdk_device_get_axis(const_cast<GdkDevice*>(gobj()), &(axes), ((GdkAxisUse)(use)), &(value));
 }
 
- Glib::ustring Device::get_name() const
+Glib::ustring Device::get_name() const
 {
-  return Glib::convert_const_gchar_ptr_to_ustring(gobj()->name);
+  return Glib::convert_const_gchar_ptr_to_ustring(gdk_device_get_name(const_cast<GdkDevice*>(gobj())));
 }
- 
- InputSource Device::get_source() const
-{
-  return ((InputSource)(gobj()->source));
-}
- 
- InputMode Device::get_mode() const
-{
-  return ((InputMode)(gobj()->mode));
-}
- 
- bool Device::get_has_cursor() const
-{
-  return gobj()->has_cursor;
-}
- 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+InputSource Device::get_source() const
+{
+  return ((InputSource)(gdk_device_get_source(const_cast<GdkDevice*>(gobj()))));
+}
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
+InputMode Device::get_mode() const
+{
+  return ((InputMode)(gdk_device_get_mode(const_cast<GdkDevice*>(gobj()))));
+}
+
+bool Device::get_has_cursor() const
+{
+  return gdk_device_get_has_cursor(const_cast<GdkDevice*>(gobj()));
+}
+
+gint Device::get_n_axes() const
+{
+  return gdk_device_get_n_axes(const_cast<GdkDevice*>(gobj()));
+}
 
 
 } // namespace Gdk

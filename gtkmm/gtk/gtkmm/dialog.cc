@@ -146,23 +146,17 @@ const Glib::Class& Dialog_Class::init()
   return *this;
 }
 
+
 void Dialog_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->response = &response_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Dialog_Class::response_callback(GtkDialog* self, gint p0)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -195,7 +189,7 @@ void Dialog_Class::response_callback(GtkDialog* self, gint p0)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -204,7 +198,6 @@ void Dialog_Class::response_callback(GtkDialog* self, gint p0)
   if(base && base->response)
     (*base->response)(self, p0);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Dialog_Class::wrap_new(GObject* o)
@@ -239,6 +232,7 @@ GType Dialog::get_type()
 {
   return dialog_class_.init().get_type();
 }
+
 
 GType Dialog::get_base_type()
 {
@@ -281,6 +275,16 @@ void Dialog::set_default_response(int response_id)
 gtk_dialog_set_default_response(gobj(), response_id); 
 }
 
+Widget* Dialog::get_widget_for_response(int response_id)
+{
+  return Glib::wrap(gtk_dialog_get_widget_for_response(gobj(), response_id));
+}
+
+const Widget* Dialog::get_widget_for_response(int response_id) const
+{
+  return const_cast<Dialog*>(this)->get_widget_for_response(response_id);
+}
+
 int Dialog::get_response_for_widget(const Gtk::Widget& widget) const
 {
   return gtk_dialog_get_response_for_widget(const_cast<GtkDialog*>(gobj()), const_cast<GtkWidget*>(widget.gobj()));
@@ -312,12 +316,12 @@ int Dialog::run()
   return gtk_dialog_run(gobj());
 }
 
-HButtonBox* Dialog::get_action_area()
+ButtonBox* Dialog::get_action_area()
 {
-  return Glib::wrap((GtkHButtonBox*)(gtk_dialog_get_action_area(gobj())));
+  return Glib::wrap((GtkButtonBox*)(gtk_dialog_get_action_area(gobj())));
 }
 
-const HButtonBox* Dialog::get_action_area() const
+const ButtonBox* Dialog::get_action_area() const
 {
   return const_cast<Dialog*>(this)->get_action_area();
 }
@@ -354,7 +358,6 @@ Glib::PropertyProxy_ReadOnly<bool> Dialog::property_has_separator() const
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::Dialog::on_response(int response_id)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -364,10 +367,6 @@ void Gtk::Dialog::on_response(int response_id)
   if(base && base->response)
     (*base->response)(gobj(),response_id);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

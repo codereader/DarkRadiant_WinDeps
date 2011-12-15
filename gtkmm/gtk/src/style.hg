@@ -390,8 +390,8 @@ public:
                   int                               height) const, gtk_paint_resize_grip)
 
 
-//TODO: This should be const:
-  _WRAP_METHOD(Glib::RefPtr<Style> copy(), gtk_style_copy)
+  _WRAP_METHOD(Glib::RefPtr<Style> copy(), gtk_style_copy, deprecated "Use the const version")
+  _WRAP_METHOD(Glib::RefPtr<Style> copy() const, gtk_style_copy)
 
   _WRAP_METHOD(Glib::RefPtr<Style> attach(const Glib::RefPtr<Gdk::Window>& window), gtk_style_attach)
   _WRAP_METHOD(void detach(), gtk_style_detach)
@@ -423,7 +423,7 @@ public:
    * @param property_name The name of the style property to get.
    * @param value: An output parameter in which  the value of the property being queried will be stored.
    *
-   * @newin2p16
+   * @newin{2,16}
    */
   template <class PropertyType>
   void get_style_property(GType widget_type, const Glib::ustring& property_name, PropertyType& value) const;
@@ -436,9 +436,11 @@ protected:
 #m4 _CONVERSION(`GtkStyle*',`const Glib::RefPtr<Style>&',`Glib::wrap($3, true)')
   _WRAP_VFUNC(void copy(const Glib::RefPtr<Style>& src), copy)
 
+#m4 _CONVERSION(`GtkStyle*', `Glib::RefPtr<Style>', `Glib::wrap($3, true)')
   _WRAP_VFUNC(Glib::RefPtr<Style> clone(), clone)
+#m4 _CONVERSION(`GtkStyle*', `Glib::RefPtr<Style>', `Glib::wrap($3)')
 
-#m4 _CONVERSION(`GtkRcStyle*',`const Glib::RefPtr<RcStyle>&',`Glib::wrap($3)')
+#m4 _CONVERSION(`GtkRcStyle*',`const Glib::RefPtr<RcStyle>&',`Glib::wrap($3, true)')
   _WRAP_VFUNC(void init_from_rc(const Glib::RefPtr<RcStyle>& rc_style), init_from_rc)
 
 #m4 _CONVERSION(`GdkWindow*',`const Glib::RefPtr<Gdk::Window>&', `Glib::wrap((GdkWindowObject*)($3), true)')
@@ -585,6 +587,7 @@ protected:
          Widget* widget,
          const Glib::ustring& detail,
          int x, int y, ExpanderStyle expander_style), draw_expander)
+#m4 _CONVERSION(`PangoLayout*',`const Glib::RefPtr<Pango::Layout>&',Glib::wrap($3, true))
   _WRAP_VFUNC(void draw_layout(const Glib::RefPtr<Gdk::Window>& window,
          Gtk::StateType state_type,
          bool use_text,
@@ -612,7 +615,13 @@ void Style::get_style_property(GType widget_type, const Glib::ustring& property_
   Glib::Value<PropertyType> property_value;
   property_value.init(Glib::Value<PropertyType>::value_type());
 
-  this->get_style_property_value(widget_type, property_name, property_value);
+  //We cast away the const.
+  //TODO: Either this get_style_property() should be non-const, 
+  //or get_style_property_value() should be const.
+  //We can't really have both const and unconst versions of them because output parameters can't be const.
+  //Bug https://bugzilla.gnome.org/show_bug.cgi?id=594171
+  Style* unconst_this = const_cast<Style*>(this);
+  unconst_this->get_style_property_value(widget_type, property_name, property_value);
 
   value = property_value.get();
 }

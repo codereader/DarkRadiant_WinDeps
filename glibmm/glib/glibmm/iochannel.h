@@ -43,7 +43,7 @@ namespace Glib
 class Source;
 class IOSource;
 
-/** @addtogroup glibmmEnums Enums and Flags */
+/** @addtogroup glibmmEnums glibmm Enums and Flags */
 
 /**
  * @ingroup glibmmEnums
@@ -86,8 +86,9 @@ enum IOFlags
   IO_FLAG_IS_READABLE = 1 << 2,
   IO_FLAG_IS_WRITEABLE = 1 << 3,
   IO_FLAG_IS_SEEKABLE = 1 << 4,
-  IO_FLAG_GET_MASK = 0x0,
-  IO_FLAG_SET_MASK = 0x1
+  IO_FLAG_MASK = (1 << 5) - 1,
+  IO_FLAG_GET_MASK = 0x1F,
+  IO_FLAG_SET_MASK = 0x3
 };
 
 /** @ingroup glibmmEnums */
@@ -144,15 +145,11 @@ public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 private:
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static void throw_func(GError* gobject);
-#else
-  //When not using exceptions, we just pass the Exception object around without throwing it:
-  static std::auto_ptr<Glib::Error> throw_func(GError* gobject);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   friend void wrap_init(); // uses throw_func()
-#endif
+
+  #endif //DOXYGEN_SHOULD_SKIP_THIS
 };
 
 
@@ -205,11 +202,7 @@ public:
    * @return An IOChannel for the opened file.
    * @throw Glib::FileError
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static Glib::RefPtr<IOChannel> create_from_file(const std::string& filename, const std::string& mode);
-#else
-  static Glib::RefPtr<IOChannel> create_from_file(const std::string& filename, const std::string& mode, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
   /** Creates an I/O channel from a file descriptor.
@@ -265,13 +258,9 @@ public:
    * @throw Glib::IOChannelError
    * @throw Glib::ConvertError
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   IOStatus read(gunichar& thechar);
-#else
-  IOStatus read(gunichar& thechar, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
+  
   /** Read a character sequence into memory.
    * @param buf A buffer to read data into.
    * @param count The size of the buffer in bytes.  Note that the buffer may
@@ -284,12 +273,7 @@ public:
    * @throw Glib::IOChannelError
    * @throw Glib::ConvertError
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   IOStatus read(char* buf, gsize count, gsize& bytes_read);
-#else
-  IOStatus read(char* buf, gsize count, gsize& bytes_read, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Read a maximum of @a count bytes into @a str.
    * @param count The maximum number of bytes to read.
@@ -298,11 +282,7 @@ public:
    * @throw Glib::IOChannelError
    * @throw Glib::ConvertError
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   IOStatus read(Glib::ustring& str, gsize count);
-#else
-  IOStatus read(Glib::ustring& str, gsize count, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Read a whole line.
    * Reads until the line separator is found, which is included
@@ -312,11 +292,7 @@ public:
    * @throw Glib::IOChannelError
    * @throw Glib::ConvertError
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   IOStatus read_line(Glib::ustring& line);
-#else
-  IOStatus read_line(Glib::ustring& line, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
   /** Reads all the remaining data from the file.
@@ -326,11 +302,7 @@ public:
    * @throw Glib::IOChannelError
    * @throw Glib::ConvertError
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   IOStatus read_to_end(Glib::ustring& str);
-#else
-  IOStatus read_to_end(Glib::ustring& str, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
   /** Write a string to the I/O channel.
@@ -342,11 +314,7 @@ public:
    * @throw Glib::IOChannelError
    * @throw Glib::ConvertError
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   IOStatus write(const Glib::ustring& str);
-#else
-  IOStatus write(const Glib::ustring& str, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Write a memory area of @a count bytes to the I/O channel.
@@ -357,26 +325,18 @@ public:
    * @throw Glib::IOChannelError
    * @throw Glib::ConvertError
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   IOStatus write(const char* buf, gssize count, gsize& bytes_written);
-#else
-  IOStatus write(const char* buf, gssize count, gsize& bytes_written, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
+  
   /** Write a single UCS-4 character to the I/O channel.
    * @param unichar The character to write.
    * @return The status of the operation.
    * @throw Glib::IOChannelError
    * @throw Glib::ConvertError
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   IOStatus write(gunichar unichar);
-#else
-  IOStatus write(gunichar unichar, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
+  
   /** Seek the I/O channel to a specific position.
    * @param offset The offset in bytes from the position specified by @a type.
    * @param type A SeekType. The type Glib::SEEK_TYPE_CUR is only allowed in
@@ -386,25 +346,17 @@ public:
    * @throw Glib::IOChannelError
    * @throw Glib::ConvertError
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
-  IOStatus seek(gint64 offset, SeekType type = SEEK_TYPE_SET);
-#else
-  IOStatus seek(gint64 offset, SeekType type, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
+  IOStatus seek(gint64 offset, SeekType type =  SEEK_TYPE_SET);
 
-
+  
   /** Flush the buffers of the I/O channel.
    * @return The status of the operation.
    * @throw Glib::IOChannelError
    * @throw Glib::ConvertError
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   IOStatus flush();
-#else
-  IOStatus flush(std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
+  
   /** Close the I/O channel.
    * Any pending data to be written will be flushed if @a flush is <tt>true</tt>.
    * The channel will not be freed until the last reference is dropped.
@@ -413,13 +365,9 @@ public:
    * @return The status of the operation.
    * @throw Glib::IOChannelError
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
-  IOStatus close(bool flush = true);
-#else
-  IOStatus close(bool flush, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
+  IOStatus close(bool flush =  true);
 
-
+  
   /** Get the IOChannel internal buffer size.
    * @return The buffer size.
    */
@@ -451,13 +399,9 @@ public:
    * @return The operation result code.
    * @throw Glib::IOChannelError
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   IOStatus set_flags(IOFlags flags);
-#else
-  IOStatus set_flags(IOFlags flags, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
+  
   /** Set the buffering status of the I/O channel.
    * The buffering state can only be set if the channel's encoding is
    * <tt>""</tt>. For any other encoding, the channel must be buffered.
@@ -541,11 +485,7 @@ public:
    * @return Glib::IO_STATUS_NORMAL if the encoding was successfully set.
    * @throw Glib::IOChannelError
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   IOStatus set_encoding(const std::string& encoding = std::string());
-#else
-  IOStatus set_encoding(const std::string& encoding, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
   /** Get the encoding of the I/O channel.

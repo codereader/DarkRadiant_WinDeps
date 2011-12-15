@@ -77,23 +77,14 @@ const Glib::Class& Invisible_Class::init()
   return *this;
 }
 
+
 void Invisible_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Invisible_Class::wrap_new(GObject* o)
@@ -128,6 +119,7 @@ GType Invisible::get_type()
 {
   return invisible_class_.init().get_type();
 }
+
 
 GType Invisible::get_base_type()
 {
@@ -174,13 +166,6 @@ void Invisible::set_screen(const Glib::RefPtr<Gdk::Screen>& screen)
 {
 gtk_invisible_set_screen(gobj(), Glib::unwrap(screen)); 
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

@@ -81,18 +81,8 @@ void Emblem_Class::class_init_function(void* g_class, void* class_data)
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Emblem_Class::wrap_new(GObject* object)
@@ -164,10 +154,12 @@ Glib::RefPtr<Emblem> Emblem::create(const Glib::RefPtr<Icon>& icon)
 {
   return Glib::RefPtr<Emblem>( new Emblem(icon) );
 }
+
 Glib::RefPtr<Emblem> Emblem::create(const Glib::RefPtr<Icon>& icon, EmblemOrigin origin)
 {
   return Glib::RefPtr<Emblem>( new Emblem(icon, origin) );
 }
+
 Glib::RefPtr<Icon> Emblem::get_icon()
 {
   return Glib::wrap(g_emblem_get_icon(gobj()));
@@ -182,13 +174,6 @@ EmblemOrigin Emblem::get_origin() const
 {
   return ((EmblemOrigin)(g_emblem_get_origin(const_cast<GEmblem*>(gobj()))));
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gio

@@ -1,5 +1,5 @@
 // -*- c++ -*-
-/* $Id: init.cc 1082 2009-01-19 17:55:19Z murrayc $ */
+/* $Id$ */
 
 /* Copyright (C) 2003 The atkmm Development Team
  *

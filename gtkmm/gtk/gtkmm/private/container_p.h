@@ -26,13 +26,13 @@ public:
 
   const Glib::Class& init();
 
+
   static void class_init_function(void* g_class, void* class_data);
 
   static Glib::ObjectBase* wrap_new(GObject*);
 
 protected:
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   //Callbacks (default signal handlers):
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
@@ -42,16 +42,13 @@ protected:
   static void set_focus_child_callback(GtkContainer* self, GtkWidget* p0);
     static void destroy_callback(GtkObject* self);
     static void remove_callback_normal(GtkContainer* self, GtkWidget* p0);
-  #endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
+  
   //Callbacks (virtual functions):
-#ifdef GLIBMM_VFUNCS_ENABLED
   static GType child_type_vfunc_callback(GtkContainer* self);
   static void forall_vfunc_callback(GtkContainer* self, gboolean include_internals, GtkCallback callback, gpointer callback_data);
   static gchar* composite_name_vfunc_callback(GtkContainer* self, GtkWidget* child);
   static void set_child_property_vfunc_callback(GtkContainer* self, GtkWidget* child, guint property_id, const GValue* value, GParamSpec* pspec);
   static void get_child_property_vfunc_callback(GtkContainer* self, GtkWidget* child, guint property_id, GValue* value, GParamSpec* pspec);
-#endif //GLIBMM_VFUNCS_ENABLED
 };
 
 

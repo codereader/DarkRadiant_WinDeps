@@ -4,7 +4,8 @@
 #define _PANGOMM_FONTFACE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: fontface.hg,v 1.3 2004/03/03 01:07:40 murrayc Exp $ */
 
@@ -13,23 +14,24 @@
  * Copyright 2001      The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
+ * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
 
-#include <glibmm/object.h>
 #include <pangomm/fontdescription.h>
+#include <glibmm/object.h>
+#include <glibmm/arrayhandle.h>
 #include <pango/pango-font.h>
 
 
@@ -77,6 +79,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -118,10 +122,12 @@ public:
   Glib::ArrayHandle<int> list_sizes() const;
   
 
-  /** Return value: whether @a face is synthesized.
-   * @return Whether @a face is synthesized.
+  /** Returns whether a Pango::FontFace is synthesized by the underlying
+   * font rendering engine from another face, perhaps by shearing, emboldening,
+   * or lightening it.
    * 
-   * Since: 1.18.
+   * @newin{1,18}
+   * @return Whether @a face is synthesized.
    */
   bool is_synthesized() const;
   
@@ -136,17 +142,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

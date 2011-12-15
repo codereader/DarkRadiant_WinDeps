@@ -30,7 +30,7 @@ namespace Gtk
 
 void Tooltip::trigger_tooltip_query(const Glib::RefPtr<Gdk::Display>& display)
 {
-  gtk_tooltip_trigger_tooltip_query(display->gobj());
+  gtk_tooltip_trigger_tooltip_query(Glib::unwrap(display));
 }
 
 } // namespace Gtk
@@ -79,23 +79,14 @@ const Glib::Class& Tooltip_Class::init()
   return *this;
 }
 
+
 void Tooltip_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Tooltip_Class::wrap_new(GObject* object)
@@ -124,6 +115,7 @@ Tooltip::Tooltip(GtkTooltip* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 Tooltip::~Tooltip()
 {}
 
@@ -134,6 +126,7 @@ GType Tooltip::get_type()
 {
   return tooltip_class_.init().get_type();
 }
+
 
 GType Tooltip::get_base_type()
 {
@@ -156,6 +149,11 @@ void Tooltip::set_icon(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf)
 gtk_tooltip_set_icon(gobj(), Glib::unwrap(pixbuf)); 
 }
 
+void Tooltip::set_icon(const Glib::RefPtr<Gio::Icon>& icon, IconSize size)
+{
+gtk_tooltip_set_icon_from_gicon(gobj(), const_cast<GIcon*>(Glib::unwrap<Gio::Icon>(icon)), static_cast<GtkIconSize>(int(size))); 
+}
+
 void Tooltip::set_icon_from_stock(const StockID& stock_id, IconSize size)
 {
 gtk_tooltip_set_icon_from_stock(gobj(), (stock_id).get_c_str(), static_cast<GtkIconSize>(int(size))); 
@@ -175,13 +173,6 @@ void Tooltip::set_tip_area(const Gdk::Rectangle& rect)
 {
 gtk_tooltip_set_tip_area(gobj(), (rect).gobj()); 
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

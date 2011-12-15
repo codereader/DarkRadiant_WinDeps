@@ -37,7 +37,7 @@ namespace Gdk
 {
 
 GC::GC(const Glib::RefPtr<Drawable>& drawable)
-: Object( G_OBJECT( gdk_gc_new(drawable->gobj()) ) )
+: Object( G_OBJECT( gdk_gc_new(Glib::unwrap(drawable)) ) )
 {
   //We need a construct function if we really want to use our own GClass. Bug #86867
 }
@@ -132,23 +132,14 @@ const Glib::Class& GC_Class::init()
   return *this;
 }
 
+
 void GC_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* GC_Class::wrap_new(GObject* object)
@@ -177,6 +168,7 @@ GC::GC(GdkGC* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 GC::~GC()
 {}
 
@@ -187,6 +179,7 @@ GType GC::get_type()
 {
   return gc_class_.init().get_type();
 }
+
 
 GType GC::get_base_type()
 {
@@ -208,10 +201,12 @@ Glib::RefPtr<GC> GC::create()
 {
   return Glib::RefPtr<GC>( new GC() );
 }
+
 Glib::RefPtr<GC> GC::create(const Glib::RefPtr<Drawable>& drawable)
 {
   return Glib::RefPtr<GC>( new GC(drawable) );
 }
+
 void GC::set_foreground(const Color& color)
 {
 gdk_gc_set_foreground(gobj(), (color).gobj()); 
@@ -257,10 +252,14 @@ void GC::set_clip_mask(const Glib::RefPtr<Bitmap>& mask)
 gdk_gc_set_clip_mask(gobj(), Glib::unwrap(mask)); 
 }
 
+#ifndef GDKMM_DISABLE_DEPRECATED
+
 void GC::set_clip_rectangle(Rectangle& rectangle)
 {
 gdk_gc_set_clip_rectangle(gobj(), (rectangle).gobj()); 
 }
+
+#endif // GDKMM_DISABLE_DEPRECATED
 
 void GC::set_clip_rectangle(const Rectangle& rectangle)
 {
@@ -336,13 +335,6 @@ Glib::RefPtr<const Screen> GC::get_screen() const
 {
   return const_cast<GC*>(this)->get_screen();
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gdk

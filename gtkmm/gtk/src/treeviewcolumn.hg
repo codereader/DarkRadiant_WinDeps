@@ -1,5 +1,3 @@
-/* $Id: treeviewcolumn.hg,v 1.16 2006/07/08 16:31:38 murrayc Exp $ */
-
 /* Copyright(C) 2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -17,20 +15,22 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#m4 _PUSH(SECTION_CC_PRE_INCLUDES)
+#undef GTK_DISABLE_DEPRECATED
+#m4 _POP()
 // This is for including the config header before any code (such as
 // the #ifndef GTKMM_DISABLE_DEPRECATED in deprecated classes) is generated:
 _CONFIGINCLUDE(gtkmmconfig.h)
 
 #include <gtkmm/object.h>
-#include <gtkmm/treeiter.h>
 #include <gtkmm/widget.h>
 #include <gdkmm/window.h>
+#include <gtkmm/treeiter.h>
 #include <gtkmm/treemodel.h>
 #include <glibmm/listhandle.h>
 #include <gtkmm/cellrenderer_generation.h>
 _DEFS(gtkmm,gtk)
 _PINCLUDE(gtkmm/private/object_p.h)
-
 
 namespace Gtk
 {
@@ -38,9 +38,8 @@ namespace Gtk
 _CC_INCLUDE(gtk/gtk.h)
 _WRAP_ENUM(TreeViewColumnSizing, GtkTreeViewColumnSizing)
 
-
-// We use GTKMM_API here because gcc needs the extra help on win32 , even 
-// when using --export-all and auto-import. 
+// We use GTKMM_API here because gcc needs the extra help on win32 , even
+// when using --export-all and auto-import.
 // See http://bugzilla.gnome.org/show_bug.cgi?id=309030.
 
 //TODO: This should derive+implement from CellLayout when we can break ABI.
@@ -77,7 +76,7 @@ public:
    * the cell is allocated no more space than it needs. Any unused space is divided
    * evenly between cells for which @a expand is <tt>true</tt>.
    *
-   * You can use get_first_cell_renderer() or get_cell_renderers() to access the generated CellRenderer.
+   * You can use get_first_cell() or get_cell_renderers() to access the generated CellRenderer.
    *
    * @param column The model column that will be rendered by the view cell.
    * @param expand <tt>true</tt> if the cell is to be given extra space allocated to the view column.
@@ -90,7 +89,7 @@ public:
    * the cell is allocated no more space than it needs. Any unused space is divided
    * evenly between cells for which @a expand is <tt>true</tt>.
    *
-   * You can use get_first_cell_renderer() or get_cell_renderers() to access the generated CellRenderer.
+   * You can use get_first_cell() or get_cell_renderers() to access the generated CellRenderer.
    *
    * @param column The model column that will be rendered by the view cell.
    * @param expand <tt>true</tt> if the cell is to be given extra space allocated to the view column.
@@ -100,27 +99,49 @@ public:
 
   _WRAP_METHOD(void clear(), gtk_tree_view_column_clear)
 
+  //We replaced get_first_cell() with get_first_cell() because that
+  //is the name of the method in CellLayout, which this class derives from in gtkmm-3.0.
+  //That allows more code to be ported before actually using gtkmm-3.0.
+
   /** Gets the CellRenderer for the column.
     * You should dynamic_cast<> to the expected derived CellRenderer type.
     * This assumes that the TreeViewColumn contains only one CellRenderer.
+    */
+  CellRenderer* get_first_cell();
+
+  /** Gets the CellRenderer for the column.
+    * You should dynamic_cast<> to the expected derived CellRenderer type.
+    * This assumes that the TreeViewColumn contains only one CellRenderer.
+    */
+  const CellRenderer* get_first_cell() const;
+
+  _DEPRECATE_IFDEF_START
+  /** Gets the CellRenderer for the column.
+    * You should dynamic_cast<> to the expected derived CellRenderer type.
+    * This assumes that the TreeViewColumn contains only one CellRenderer.
+    *
+    * @deprecated Use get_first_cell().
     */
   CellRenderer* get_first_cell_renderer();
 
   /** Gets the CellRenderer for the column.
     * You should dynamic_cast<> to the expected derived CellRenderer type.
     * This assumes that the TreeViewColumn contains only one CellRenderer.
+    *
+    * @deprecated Use get_first_cell().
     */
   const CellRenderer* get_first_cell_renderer() const;
+  _DEPRECATE_IFDEF_END
 
+  // TODO: Should be deprecated, but we cannot derive from CellLayout
+  // without breaking API and ABI.
   _WRAP_METHOD(Glib::ListHandle<CellRenderer*> get_cell_renderers(), gtk_tree_view_column_get_cell_renderers)
   _WRAP_METHOD(Glib::ListHandle<const CellRenderer*> get_cell_renderers() const, gtk_tree_view_column_get_cell_renderers)
 
   _WRAP_METHOD(void add_attribute(CellRenderer& cell_renderer, const Glib::ustring& attribute, int column),
                gtk_tree_view_column_add_attribute)
 
-#ifdef GLIBMM_PROPERTIES_ENABLED
   void add_attribute(const Glib::PropertyProxy_Base& property, const TreeModelColumnBase& column);
-#endif
 
   void add_attribute(Gtk::CellRenderer& cell, const Glib::ustring& property_name, const TreeModelColumnBase& column);
   _IGNORE(gtk_tree_view_column_set_attributes)
@@ -150,11 +171,11 @@ public:
    *
    * @param cell_renderer A Gtk::CellRenderer
    * @param slot The callback slot to use. Create this with sigc::mem_fun(), or sigc::ptr_fun().
-   */  
+   */
   void set_cell_data_func(CellRenderer& cell_renderer, const SlotCellData& slot);
 
   /** Removes a previously set callback slot. See set_cell_data_func().
-   */ 
+   */
   void unset_cell_data_func(CellRenderer& cell_renderer);
 
   _WRAP_METHOD(void clear_attributes(CellRenderer& cell_renderer), gtk_tree_view_column_clear_attributes)
@@ -236,7 +257,9 @@ public:
   _WRAP_SIGNAL(void clicked(), "clicked")
 
   _WRAP_PROPERTY("visible", bool)
+  _WRAP_PROPERTY("resizable", bool)
   _WRAP_PROPERTY("width", int)
+  _WRAP_PROPERTY("spacing", int)
   _WRAP_PROPERTY("sizing", TreeViewColumnSizing)
   _WRAP_PROPERTY("fixed-width", int)
   _WRAP_PROPERTY("min-width", int)
@@ -249,6 +272,7 @@ public:
   _WRAP_PROPERTY("reorderable", bool)
   _WRAP_PROPERTY("sort-indicator", bool)
   _WRAP_PROPERTY("sort-order", SortType)
+  _WRAP_PROPERTY("sort-column-id", int)
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 private:
@@ -281,7 +305,6 @@ void TreeViewColumn::pack_end(const TreeModelColumn<T_ModelColumnType>& column, 
   set_renderer(*pCellRenderer, column);
 }
 
-
 template <class T_ModelColumnType> inline
 TreeViewColumn::TreeViewColumn(const Glib::ustring& title,
                                const TreeModelColumn<T_ModelColumnType>& column)
@@ -292,9 +315,6 @@ TreeViewColumn::TreeViewColumn(const Glib::ustring& title,
   pack_start(column, true /* expand */);
 }
 
-
-
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 } // namespace Gtk
-

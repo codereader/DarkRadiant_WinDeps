@@ -41,7 +41,7 @@ namespace Gtk
 namespace Gtk
 {
 
-/** @addtogroup gtkmmEnums Enums and Flags */
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
 
 /**
  * @ingroup gtkmmEnums
@@ -110,15 +110,11 @@ public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 private:
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static void throw_func(GError* gobject);
-#else
-  //When not using exceptions, we just pass the Exception object around without throwing it:
-  static std::auto_ptr<Glib::Error> throw_func(GError* gobject);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   friend void wrap_init(); // uses throw_func()
-#endif
+
+  #endif //DOXYGEN_SHOULD_SKIP_THIS
 };
 
 } // namespace Gtk
@@ -172,6 +168,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -196,12 +194,12 @@ public:
   
   /** Gets the icon theme for the default screen. See
    * get_for_screen().
+   * 
+   * @newin{2,4}
    * @return A unique Gtk::IconTheme associated with
    * the default screen. This icon theme is associated with
    * the screen and can be used as long as the screen
    * is open. Do not ref or unref it.
-   * 
-   * @newin2p4.
    */
   static Glib::RefPtr<IconTheme> get_default();
   
@@ -213,13 +211,13 @@ public:
    * is usually a better choice than calling than new()
    * and setting the screen yourself; by using this function
    * a single icon theme object will be shared between users.
+   * 
+   * @newin{2,4}
    * @param screen A Gdk::Screen.
    * @return A unique Gtk::IconTheme associated with
    * the given screen. This icon theme is associated with
    * the screen and can be used as long as the screen
    * is open. Do not ref or unref it.
-   * 
-   * @newin2p4.
    */
   static Glib::RefPtr<IconTheme> get_for_screen(const Glib::RefPtr<Gdk::Screen>& screen);
   
@@ -227,7 +225,7 @@ public:
    * to track the user's currently configured icon theme,
    * which might be different for different screens.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param screen A Gdk::Screen.
    */
   void set_screen(const Glib::RefPtr<Gdk::Screen>& screen);
@@ -237,7 +235,7 @@ public:
   /** Appends a directory to the search path. 
    * See set_search_path(). 
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param path Directory name to append to the icon path.
    */
   void append_search_path(const Glib::ustring& path);
@@ -245,7 +243,7 @@ public:
   /** Prepends a directory to the search path. 
    * See set_search_path().
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param path Directory name to prepend to the icon path.
    */
   void prepend_search_path(const Glib::ustring& path);
@@ -255,7 +253,7 @@ public:
    * on the icon theme objects returned from get_default()
    * and get_for_screen().
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param theme_name Name of icon theme to use instead of configured theme,
    * or <tt>0</tt> to unset a previously set custom theme.
    */
@@ -263,11 +261,11 @@ public:
   
   /** Checks whether an icon theme includes an icon
    * for a particular name.
+   * 
+   * @newin{2,4}
    * @param icon_name The name of an icon.
    * @return <tt>true</tt> if @a icon_theme includes an
    * icon for @a icon_name.
-   * 
-   * @newin2p4.
    */
   bool has_icon(const Glib::ustring& icon_name) const;
 
@@ -277,7 +275,7 @@ public:
   /** Looks up a named icon and returns a structure containing
    * information such as the filename of the icon. The icon
    * can then be rendered into a pixbuf using
-   * gtk_icon_info_load_icon(). (load_icon()
+   * Gtk::IconInfo::load_icon(). (load_icon()
    * combines these two steps if all you need is the pixbuf.)
    * @param icon_name The name of the icon to lookup.
    * @param size Desired icon size.
@@ -286,7 +284,7 @@ public:
    * about the icon. IconInfo::operator bool() will return false if the icon wasn't found.
    * For instance, if (icon_info) { ... }.
    * 
-   * @newin2p4.
+   * @newin{2,4}.
    */
   IconInfo lookup_icon(const Glib::ustring& icon_name, int size, IconLookupFlags flags) const;
 
@@ -294,15 +292,15 @@ public:
   /** Looks up an icon and returns a structure containing
    * information such as the filename of the icon. 
    * The icon can then be rendered into a pixbuf using
-   * gtk_icon_info_load_icon().
+   * Gtk::IconInfo::load_icon().
+   * 
+   * @newin{2,14}
    * @param icon The Icon to look up.
    * @param size Desired icon size.
    * @param flags Flags modifying the behavior of the icon lookup.
    * @return A Gtk::IconInfo structure containing 
    * information about the icon, or <tt>0</tt> if the icon 
-   * wasn't found. Free with gtk_icon_info_free()
-   * 
-   * @newin2p14.
+   * wasn't found. Free with Gtk::IconInfo::free().
    */
   IconInfo lookup_icon(const Glib::RefPtr<const Gio::Icon>& icon, int size, IconLookupFlags flags) const;
 
@@ -310,7 +308,7 @@ public:
   /** Looks up a named icon and returns a structure containing
    * information such as the filename of the icon. The icon
    * can then be rendered into a pixbuf using
-   * gtk_icon_info_load_icon(). (load_icon()
+   * Gtk::IconInfo::load_icon(). (load_icon()
    * combines these two steps if all you need is the pixbuf.)
    * 
    * If @a icon_names contains more than one name, this function 
@@ -323,7 +321,7 @@ public:
    * about the icon. IconInfo::operator bool() will be false if the icon wasn't found - 
    * for instance, if (icon_info) { ... }.
    * 
-   * @newin2p12.
+   * @newin{2,12}.
    */
   IconInfo choose_icon(const Glib::StringArrayHandle& icon_names, int size, IconLookupFlags flags);
 
@@ -331,7 +329,7 @@ public:
   /** Looks up an icon in an icon theme, scales it to the given size
    * and renders it into a pixbuf. This is a convenience function;
    * if more details about the icon are needed, use
-   * lookup_icon() followed by gtk_icon_info_load_icon().
+   * lookup_icon() followed by Gtk::IconInfo::load_icon().
    * 
    * Note that you probably want to listen for icon theme changes and
    * update the icon. This is usually done by connecting to the 
@@ -340,21 +338,17 @@ public:
    * using gdk_pixbuf_copy() to make a private copy of the pixbuf
    * returned by this function. Otherwise GTK+ may need to keep the old 
    * icon theme loaded, which would be a waste of memory.
+   * 
+   * @newin{2,4}
    * @param icon_name The name of the icon to lookup.
-   * @param size The desired icon size. The resulting icon may not be exactly this size; see gtk_icon_info_load_icon().
+   * @param size The desired icon size. The resulting icon may not be exactly this size; see Gtk::IconInfo::load_icon().
    * @param flags Flags modifying the behavior of the icon lookup.
-   * @return The rendered icon; this may be a newly created icon
-   * or a new reference to an internal icon, so you must not modify
+   * @return The rendered icon; this may be a newly
+   * created icon or a new reference to an internal icon, so you must not modify
    * the icon. Use Glib::object_unref() to release your reference to the
    * icon. <tt>0</tt> if the icon isn't found.
-   * 
-   * @newin2p4.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
-  Glib::RefPtr<Gdk::Pixbuf> load_icon(const Glib::ustring& icon_name, int size, IconLookupFlags flags = (IconLookupFlags)0) const;
-#else
-  Glib::RefPtr<Gdk::Pixbuf> load_icon(const Glib::ustring& icon_name, int size, IconLookupFlags flags, std::auto_ptr<Glib::Error>& error) const;
-#endif //GLIBMM_EXCEPTIONS_ENABLED
+  Glib::RefPtr<Gdk::Pixbuf> load_icon(const Glib::ustring& icon_name, int size, IconLookupFlags flags =  (IconLookupFlags)0) const;
 
 
   /** Lists a subset of icons in the current icon theme, by providing a context string.
@@ -365,7 +359,7 @@ public:
    * @return The names of all the
    * icons in the theme.
    * 
-   * @newin2p4.
+   * @newin{2,4}.
    */
   Glib::ListHandle<Glib::ustring> list_icons(const Glib::ustring& context) const;
 
@@ -374,7 +368,7 @@ public:
    * @return A list holding the names of all the
    * icons in the theme.
    * 
-   * @newin2p10.
+   * @newin{2,10}.
    */
    Glib::ListHandle<Glib::ustring> list_icons() const;
 
@@ -384,7 +378,7 @@ public:
    * @return A list holding the names of all the
    * contexts in the theme.
    * 
-   * @newin2p12.
+   * @newin{2,12}.
    */
   Glib::ListHandle<Glib::ustring> list_contexts() const;
 
@@ -393,17 +387,17 @@ public:
    * current theme (for instance, to use when presenting
    * a list of themes to the user.)
    * 
-   * @newin2p4
+   * @newin{2,4}
    */
   Glib::ustring get_example_icon_name() const;
   
   /** Checks to see if the icon theme has changed; if it has, any
    * currently cached information is discarded and will be reloaded
    * next time @a icon_theme is accessed.
+   * 
+   * @newin{2,4}
    * @return <tt>true</tt> if the icon theme has changed and needed
    * to be reloaded.
-   * 
-   * @newin2p4.
    */
   bool rescan_if_needed();
   
@@ -421,7 +415,7 @@ public:
    * This function will generally be used with pixbufs loaded
    * via gdk_pixbuf_new_from_inline().
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param icon_name The name of the icon to register.
    * @param size The size at which to register the icon (different
    * images can be registered for the same icon name
@@ -444,18 +438,12 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_changed();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

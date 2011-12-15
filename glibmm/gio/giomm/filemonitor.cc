@@ -118,18 +118,11 @@ void FileMonitor_Class::class_init_function(void* g_class, void* class_data)
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->changed = &changed_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void FileMonitor_Class::changed_callback(GFileMonitor* self, GFile* p0, GFile* p1, GFileMonitorEvent p2)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -164,7 +157,7 @@ void FileMonitor_Class::changed_callback(GFileMonitor* self, GFile* p0, GFile* p
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -173,7 +166,6 @@ void FileMonitor_Class::changed_callback(GFileMonitor* self, GFile* p0, GFile* p
   if(base && base->changed)
     (*base->changed)(self, p0, p1, p2);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* FileMonitor_Class::wrap_new(GObject* object)
@@ -265,7 +257,6 @@ Glib::PropertyProxy_ReadOnly<bool> FileMonitor::property_cancelled() const
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gio::FileMonitor::on_changed(const Glib::RefPtr<File>& file, const Glib::RefPtr<File>& other_file, FileMonitorEvent event_type)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -275,10 +266,6 @@ void Gio::FileMonitor::on_changed(const Glib::RefPtr<File>& file, const Glib::Re
   if(base && base->changed)
     (*base->changed)(gobj(),Glib::unwrap(file),Glib::unwrap(other_file),((GFileMonitorEvent)(event_type)));
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gio

@@ -4,7 +4,8 @@
 #define _ATKMM_EDITABLETEXT_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: editabletext.hg,v 1.2 2004/01/02 09:56:43 murrayc Exp $ */
 
@@ -108,7 +109,7 @@ public:
   ///Provides access to the underlying C GObject.
   AtkEditableText*       gobj()       { return reinterpret_cast<AtkEditableText*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const AtkEditableText* gobj() const { return reinterpret_cast<AtkEditableText*>(gobject_); }
 
 private:
@@ -168,52 +169,32 @@ public:
   void paste_text(int position);
 
 protected:
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool set_run_attributes_vfunc(AtkAttributeSet* attrib_set, int start_offset, int end_offset);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool set_run_attributes_vfunc(AtkAttributeSet* attrib_set, int start_offset, int end_offset);
 
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void set_text_contents_vfunc(const Glib::ustring& string);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void set_text_contents_vfunc(const Glib::ustring& string);
 
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void insert_text_vfunc(const Glib::ustring& string, int length, int& position);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void insert_text_vfunc(const Glib::ustring& string, int length, int& position);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void copy_text_vfunc(int start_pos, int end_pos);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void copy_text_vfunc(int start_pos, int end_pos);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void cut_text_vfunc(int start_pos, int end_pos);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void cut_text_vfunc(int start_pos, int end_pos);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void delete_text_vfunc(int start_pos, int end_pos);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void delete_text_vfunc(int start_pos, int end_pos);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void paste_text_vfunc(int position);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void paste_text_vfunc(int position);
 
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

@@ -4,7 +4,8 @@
 #define _ATKMM_STREAMABLECONTENT_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: streamablecontent.hg,v 1.3 2004/01/19 19:48:36 murrayc Exp $ */
 
@@ -25,6 +26,9 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+
+#include <glibmm/interface.h>
+#include <glibmm/iochannel.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 extern "C"
@@ -103,7 +107,7 @@ public:
   ///Provides access to the underlying C GObject.
   AtkStreamableContent*       gobj()       { return reinterpret_cast<AtkStreamableContent*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const AtkStreamableContent* gobj() const { return reinterpret_cast<AtkStreamableContent*>(gobject_); }
 
 private:
@@ -119,7 +123,7 @@ public:
   /** Gets the character string of the specified mime type. The first mime
    * type is at position 0, the second at position 1, and so on.
    * @param i A <tt>int</tt> representing the position of the mime type starting from 0.
-   * @return : a gchar* representing the specified mime type; the caller
+   * @return A gchar* representing the specified mime type; the caller
    * should not free the character string.
    */
   Glib::ustring get_mime_type(int i) const;
@@ -132,35 +136,23 @@ public:
   Glib::RefPtr<Glib::IOChannel> get_stream(const Glib::ustring& mime_type);
 
 protected:
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual int get_n_mime_types_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual int get_n_mime_types_vfunc() const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual const gchar* get_mime_type_vfunc(int i) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual const gchar* get_mime_type_vfunc(int i) const;
 
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual GIOChannel* get_stream_vfunc(const Glib::ustring& mime_type);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual GIOChannel* get_stream_vfunc(const Glib::ustring& mime_type);
                                                    
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

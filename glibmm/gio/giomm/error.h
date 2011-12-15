@@ -83,7 +83,19 @@ public:
     HOST_WAS_NOT_FOUND = HOST_NOT_FOUND,
     WOULD_MERGE,
     FAILED_HANDLED,
-    TOO_MANY_OPEN_FILES
+    TOO_MANY_OPEN_FILES,
+    NOT_INITIALIZED,
+    ADDRESS_IN_USE,
+    PARTIAL_INPUT,
+    INVALID_DATA,
+    DBUS_ERROR,
+    HOST_UNREACHABLE,
+    NETWORK_UNREACHABLE,
+    CONNECTION_REFUSED,
+    PROXY_FAILED,
+    PROXY_AUTH_FAILED,
+    PROXY_NEED_AUTH,
+    PROXY_NOT_ALLOWED
   };
 
   Error(Code error_code, const Glib::ustring& error_message);
@@ -93,15 +105,36 @@ public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 private:
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static void throw_func(GError* gobject);
-#else
-  //When not using exceptions, we just pass the Exception object around without throwing it:
-  static std::auto_ptr<Glib::Error> throw_func(GError* gobject);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   friend void wrap_init(); // uses throw_func()
-#endif
+
+  #endif //DOXYGEN_SHOULD_SKIP_THIS
+};
+
+
+class ResolverError : public Glib::Error
+{
+public:
+  enum Code
+  {
+    NOT_FOUND,
+    TEMPORARY_FAILURE,
+    INTERNAL
+  };
+
+  ResolverError(Code error_code, const Glib::ustring& error_message);
+  explicit ResolverError(GError* gobject);
+  Code code() const;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+private:
+
+  static void throw_func(GError* gobject);
+
+  friend void wrap_init(); // uses throw_func()
+
+  #endif //DOXYGEN_SHOULD_SKIP_THIS
 };
 
 

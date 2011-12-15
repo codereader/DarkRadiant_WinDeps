@@ -3,13 +3,12 @@
 #ifndef _GTKMM_CALENDAR_H
 #define _GTKMM_CALENDAR_H
 
+#include <gtkmmconfig.h>
+
 
 #include <glibmm.h>
 
-/* $Id: calendar.hg,v 1.6 2006/02/25 12:38:11 murrayc Exp $ */
-
-/* calendar.h
- * 
+/*
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -27,6 +26,7 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+ 
 #include <gtkmm/widget.h>
 #include <glibmm/date.h>
 
@@ -43,7 +43,7 @@ namespace Gtk
 {
 
 
-/** @addtogroup gtkmmEnums Enums and Flags */
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
 
 /**
  * @ingroup gtkmmEnums
@@ -169,6 +169,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -181,16 +183,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_month_changed();
   virtual void on_day_selected();
   virtual void on_day_selected_double_click();
@@ -198,16 +195,19 @@ protected:
   virtual void on_next_month();
   virtual void on_prev_year();
   virtual void on_next_year();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
 
 public:
   Calendar();
-  
+
   
   /** Shifts the calendar to a different month.
+   * 
+   * Note that this function always returns <tt>true</tt>, and you should
+   * ignore the return value. In GTK+ 3, this function will not
+   * return a value.
    * @param month A month number between 0 and 11.
    * @param year The year the month is in.
    * @return <tt>true</tt>, always.
@@ -221,12 +221,20 @@ public:
   void select_day(guint day);
   
   /** Places a visual marker on a particular day.
+   * 
+   * Note that this function always returns <tt>true</tt>, and you should
+   * ignore the return value. In GTK+ 3, this function will not
+   * return a value.
    * @param day The day number to mark between 1 and 31.
    * @return <tt>true</tt>, always.
    */
   int mark_day(guint day);
   
   /** Removes the visual marker from a particular day.
+   * 
+   * Note that this function always returns <tt>true</tt>, and you should
+   * ignore the return value. In GTK+ 3, this function will not
+   * return a value.
    * @param day The day number to unmark between 1 and 31.
    * @return <tt>true</tt>, always.
    */
@@ -251,15 +259,15 @@ public:
   /** Sets display options (whether to display the heading and the month  
    * headings).
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param flags The display options to set.
    */
   void set_display_options(CalendarDisplayOptions flags);
   
-  /** Return value: the display options.
-   * @return The display options.
+  /** Returns the current display options of @a calendar. 
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return The display options.
    */
   CalendarDisplayOptions get_display_options() const;
 
@@ -276,9 +284,9 @@ public:
    * @param date Referenz to set the date
    */
   void get_date(Glib::Date& date) const;
-  
 
-  /** For instance,
+  /** Detail markup handler.
+   * For instance,
    * @code
    * Glib::ustring on_calendar_details(guint year, guint month, guint day);
    * @endcode
@@ -292,10 +300,9 @@ public:
    * specified day. Examples for such details are holidays or appointments. The
    * function should return an empty string when no information is available.
    *
-   * @newin2p14
+   * @newin{2,14}
    */
   typedef sigc::slot<Glib::ustring, guint, guint, guint> SlotDetails;
-
 
   /** Installs a function which provides Pango markup with detail information
    * for each day. Examples for such details are holidays or appointments. That
@@ -309,15 +316,15 @@ public:
    *
    * @param slot A callback function providing details for each day.
    *
-   * @newin2p14
+   * @newin{2,14}
    */
   void set_detail_func(const SlotDetails& slot);
   
-  	 
+
   /** Updates the width of detail cells.
    * See Gtk::Calendar:detail-width-chars.
    * 
-   * @newin2p14
+   * @newin{2,14}
    * @param chars Detail width in characters.
    */
   void set_detail_width_chars(int chars);
@@ -325,16 +332,16 @@ public:
   /** Updates the height of detail cells.
    * See Gtk::Calendar:detail-height-rows.
    * 
-   * @newin2p14
+   * @newin{2,14}
    * @param rows Detail height in rows.
    */
   void set_detail_height_rows(int rows);
-	  	 
+
   
   /** Queries the width of detail cells, in characters.
    * See Gtk::Calendar:detail-width-chars.
    * 
-   * @newin2p14
+   * @newin{2,14}
    * @return The width of detail cells, in characters.
    */
   int get_detail_width_chars() const;
@@ -342,27 +349,34 @@ public:
   /** Queries the height of detail cells, in rows.
    * See Gtk::Calendar:detail-width-chars.
    * 
-   * @newin2p14
+   * @newin{2,14}
    * @return The height of detail cells, in rows.
    */
   int get_detail_height_rows() const;
 
   
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   /** Does nothing. Previously locked the display of the calendar until
    * it was thawed with thaw().
    * 
    * Deprecated: 2.8:
    */
   void freeze();
-  
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   /** Does nothing. Previously defrosted a calendar; all the changes made
    * since the last freeze() were displayed.
    * 
    * Deprecated: 2.8:
    */
   void thaw();
+#endif // GTKMM_DISABLE_DEPRECATED
 
-  
+
   /**
    * @par Prototype:
    * <tt>void on_my_%month_changed()</tt>
@@ -480,7 +494,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If TRUE
+/** If TRUE, a heading is displayed.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -490,7 +504,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If TRUE
+/** If TRUE, a heading is displayed.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -500,7 +514,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If TRUE
+/** If TRUE, day names are displayed.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -510,7 +524,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If TRUE
+/** If TRUE, day names are displayed.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -520,7 +534,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If TRUE
+/** If TRUE, the selected month cannot be changed.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -530,7 +544,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If TRUE
+/** If TRUE, the selected month cannot be changed.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -540,7 +554,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If TRUE
+/** If TRUE, week numbers are displayed.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -550,7 +564,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If TRUE
+/** If TRUE, week numbers are displayed.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -560,7 +574,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If TRUE
+/** If TRUE, details are shown.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -570,7 +584,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If TRUE
+/** If TRUE, details are shown.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -622,7 +636,7 @@ public:
 
 };
 
-} /* namespace Gtk */
+} // namespace Gtk
 
 
 namespace Glib

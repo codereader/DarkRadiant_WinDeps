@@ -30,13 +30,27 @@ namespace Gio
 
 void MemoryInputStream::add_data(const std::string& data)
 {
-  g_memory_input_stream_add_data(gobj(), data.c_str(), data.size(), NULL);
+  char *data_copy = g_strdup (data.c_str ());
+  g_memory_input_stream_add_data(gobj(), data_copy, -1, g_free);
 }
 
 
 void MemoryInputStream::add_data(const void* data, gssize len)
 {
-  g_memory_input_stream_add_data(gobj(), data, len, NULL);
+  char *data_copy = 0;
+
+  // copy the data so that the caller doesn't need to keep the data alive
+  if (len < 0)
+    data_copy = g_strdup (static_cast<const gchar*>(data));
+  else
+    data_copy = static_cast<gchar*>(g_memdup (data, len));
+
+  g_memory_input_stream_add_data(gobj(), data_copy, len, g_free);
+}
+
+void MemoryInputStream::add_data(const void* data, gssize len, GDestroyNotify destroy)
+{
+  g_memory_input_stream_add_data(gobj(), data, len, destroy);
 }
 
 } // namespace Gio
@@ -92,18 +106,8 @@ void MemoryInputStream_Class::class_init_function(void* g_class, void* class_dat
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* MemoryInputStream_Class::wrap_new(GObject* object)
@@ -165,13 +169,6 @@ Glib::RefPtr<MemoryInputStream> MemoryInputStream::create()
 {
   return Glib::RefPtr<MemoryInputStream>( new MemoryInputStream() );
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gio

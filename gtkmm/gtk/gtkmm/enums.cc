@@ -43,18 +43,14 @@ float _gtkmm_align_float_from_enum(AlignmentEnum value)
   //Choose the float alignment value appropriate for this human-readable enum value:
   switch(value)
   {
-    case ALIGN_LEFT:
+    case ALIGN_START:
       return 0.0; break;
     case ALIGN_CENTER:
       return 0.5; break;
-    case ALIGN_RIGHT:
+    case ALIGN_END:
       return 1.0; break;
-    case ALIGN_TOP:
-      return _gtkmm_align_float_from_enum(ALIGN_LEFT); break;
-    case ALIGN_BOTTOM:
-      return _gtkmm_align_float_from_enum(ALIGN_RIGHT); break;
     default:
-      return _gtkmm_align_float_from_enum(ALIGN_LEFT); break;
+      return _gtkmm_align_float_from_enum(ALIGN_START); break;
   }
 }
 
@@ -144,6 +140,12 @@ GType Glib::Value<Gtk::MenuDirectionType>::value_type()
 }
 
 // static
+GType Glib::Value<Gtk::MessageType>::value_type()
+{
+  return gtk_message_type_get_type();
+}
+
+// static
 GType Glib::Value<Gtk::MetricType>::value_type()
 {
   return gtk_metric_type_get_type();
@@ -189,6 +191,12 @@ GType Glib::Value<Gtk::PathType>::value_type()
 GType Glib::Value<Gtk::PolicyType>::value_type()
 {
   return gtk_policy_type_get_type();
+}
+
+// static
+GType Glib::Value<Gtk::ProgressBarOrientation>::value_type()
+{
+  return gtk_progress_bar_orientation_get_type();
 }
 
 // static

@@ -76,23 +76,14 @@ const Glib::Class& Misc_Class::init()
   return *this;
 }
 
+
 void Misc_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Misc_Class::wrap_new(GObject* o)
@@ -127,6 +118,7 @@ GType Misc::get_type()
 {
   return misc_class_.init().get_type();
 }
+
 
 GType Misc::get_base_type()
 {
@@ -166,7 +158,7 @@ gtk_misc_set_padding(gobj(), xpad, ypad);
 
 void Misc::get_padding(int& xpad, int& ypad) const
 {
-gtk_misc_get_padding(const_cast<GtkMisc*>(gobj()), &xpad, &ypad); 
+gtk_misc_get_padding(const_cast<GtkMisc*>(gobj()), &(xpad), &(ypad)); 
 }
 
 
@@ -225,13 +217,6 @@ Glib::PropertyProxy_ReadOnly<int> Misc::property_ypad() const
   return Glib::PropertyProxy_ReadOnly<int>(this, "ypad");
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

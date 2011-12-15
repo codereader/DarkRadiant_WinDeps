@@ -97,21 +97,17 @@ const Glib::Class& CheckMenuItem_Class::init()
   return *this;
 }
 
+
 void CheckMenuItem_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
   klass->draw_indicator = &draw_indicator_vfunc_callback;
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->toggled = &toggled_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
 void CheckMenuItem_Class::draw_indicator_vfunc_callback(GtkCheckMenuItem* self, GdkRectangle* area)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -143,7 +139,7 @@ void CheckMenuItem_Class::draw_indicator_vfunc_callback(GtkCheckMenuItem* self, 
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
   );
@@ -153,9 +149,7 @@ void CheckMenuItem_Class::draw_indicator_vfunc_callback(GtkCheckMenuItem* self, 
     (*base->draw_indicator)(self, area);
 
 }
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void CheckMenuItem_Class::toggled_callback(GtkCheckMenuItem* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -187,7 +181,7 @@ void CheckMenuItem_Class::toggled_callback(GtkCheckMenuItem* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -196,7 +190,6 @@ void CheckMenuItem_Class::toggled_callback(GtkCheckMenuItem* self)
   if(base && base->toggled)
     (*base->toggled)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* CheckMenuItem_Class::wrap_new(GObject* o)
@@ -231,6 +224,7 @@ GType CheckMenuItem::get_type()
 {
   return checkmenuitem_class_.init().get_type();
 }
+
 
 GType CheckMenuItem::get_base_type()
 {
@@ -333,7 +327,6 @@ Glib::PropertyProxy_ReadOnly<bool> CheckMenuItem::property_draw_as_radio() const
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::CheckMenuItem::on_toggled()
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -343,9 +336,7 @@ void Gtk::CheckMenuItem::on_toggled()
   if(base && base->toggled)
     (*base->toggled)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
-#ifdef GLIBMM_VFUNCS_ENABLED
 void Gtk::CheckMenuItem::draw_indicator_vfunc(GdkRectangle* area) 
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -355,7 +346,6 @@ void Gtk::CheckMenuItem::draw_indicator_vfunc(GdkRectangle* area)
   if(base && base->draw_indicator)
     (*base->draw_indicator)(gobj(),area);
 }
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

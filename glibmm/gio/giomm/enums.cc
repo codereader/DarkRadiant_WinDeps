@@ -28,4 +28,10 @@ namespace
 {
 } // anonymous namespace
 
+// static
+GType Glib::Value<Gio::SocketFamily>::value_type()
+{
+  return g_socket_family_get_type();
+}
+
 

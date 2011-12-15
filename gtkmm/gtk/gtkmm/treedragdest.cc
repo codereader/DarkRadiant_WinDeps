@@ -75,16 +75,11 @@ void TreeDragDest_Class::iface_init_function(void* g_iface, void*)
   //This is a temporary fix until I find out why I can not seem to derive a GtkFileChooser interface. murrayc
   g_assert(klass != 0); 
 
-#ifdef GLIBMM_VFUNCS_ENABLED
   klass->drag_data_received = &drag_data_received_vfunc_callback;
   klass->row_drop_possible = &row_drop_possible_vfunc_callback;
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
 gboolean TreeDragDest_Class::drag_data_received_vfunc_callback(GtkTreeDragDest* self, GtkTreePath* dest, GtkSelectionData* selection_data)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -117,7 +112,7 @@ gboolean TreeDragDest_Class::drag_data_received_vfunc_callback(GtkTreeDragDest* 
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -163,7 +158,7 @@ gboolean TreeDragDest_Class::row_drop_possible_vfunc_callback(GtkTreeDragDest* s
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -177,10 +172,6 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Ge
   typedef gboolean RType;
   return RType();
 }
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* TreeDragDest_Class::wrap_new(GObject* object)
@@ -222,6 +213,7 @@ GType TreeDragDest::get_type()
   return treedragdest_class_.init().get_type();
 }
 
+
 GType TreeDragDest::get_base_type()
 {
   return gtk_tree_drag_dest_get_type();
@@ -239,10 +231,6 @@ bool TreeDragDest::row_drop_possible(const TreeModel::Path& dest_path, const Sel
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
 bool Gtk::TreeDragDest::drag_data_received_vfunc(const TreeModel::Path& dest, const SelectionData& selection_data) 
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -269,7 +257,6 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(gobject_), CppObjectType::get_type()) /
   typedef bool RType;
   return RType();
 }
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

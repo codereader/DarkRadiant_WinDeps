@@ -121,23 +121,17 @@ const Glib::Class& ToggleAction_Class::init()
   return *this;
 }
 
+
 void ToggleAction_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->toggled = &toggled_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void ToggleAction_Class::toggled_callback(GtkToggleAction* self)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -169,7 +163,7 @@ void ToggleAction_Class::toggled_callback(GtkToggleAction* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -178,7 +172,6 @@ void ToggleAction_Class::toggled_callback(GtkToggleAction* self)
   if(base && base->toggled)
     (*base->toggled)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* ToggleAction_Class::wrap_new(GObject* object)
@@ -207,6 +200,7 @@ ToggleAction::ToggleAction(GtkToggleAction* castitem)
   Gtk::Action((GtkAction*)(castitem))
 {}
 
+
 ToggleAction::~ToggleAction()
 {}
 
@@ -217,6 +211,7 @@ GType ToggleAction::get_type()
 {
   return toggleaction_class_.init().get_type();
 }
+
 
 GType ToggleAction::get_base_type()
 {
@@ -238,6 +233,7 @@ Glib::RefPtr<ToggleAction> ToggleAction::create()
 {
   return Glib::RefPtr<ToggleAction>( new ToggleAction() );
 }
+
 void ToggleAction::toggled()
 {
 gtk_toggle_action_toggled(gobj()); 
@@ -284,8 +280,21 @@ Glib::PropertyProxy_ReadOnly<bool> ToggleAction::property_draw_as_radio() const
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
 
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<bool> ToggleAction::property_active() 
+{
+  return Glib::PropertyProxy<bool>(this, "active");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> ToggleAction::property_active() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "active");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+
 void Gtk::ToggleAction::on_toggled()
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -295,10 +304,6 @@ void Gtk::ToggleAction::on_toggled()
   if(base && base->toggled)
     (*base->toggled)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

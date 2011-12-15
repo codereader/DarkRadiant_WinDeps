@@ -27,6 +27,7 @@
 
 #include <gtkmm/widget.h>
 #include <gtkmm/enums.h> //For SensitivityType.
+#include <gtkmm/border.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -78,6 +79,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -90,20 +93,14 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_value_changed();
   virtual void on_adjust_bounds(double new_value);
   virtual void on_move_slider(ScrollType scroll);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -113,6 +110,8 @@ protected:
 public:
   
 
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   /** Sets the update policy for the range. Gtk::UPDATE_CONTINUOUS means that
    * anytime the range slider is moved, the range value will change and the
    * value_changed signal will be emitted. Gtk::UPDATE_DELAYED means that
@@ -121,15 +120,27 @@ public:
    * continuous. Gtk::UPDATE_DISCONTINUOUS means that the value will only
    * be updated when the user releases the button and ends the slider
    * drag operation.
+   * 
+   * Deprecated: 2.24: There is no replacement. If you require delayed
+   * updates, you need to code it yourself.
    * @param policy Update policy.
    */
   void set_update_policy(UpdateType policy);
-  
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   /** Gets the update policy of @a range. See set_update_policy().
+   * 
+   * Deprecated: 2.24: There is no replacement. If you require delayed
+   * updates, you need to code it yourself.
    * @return The current update policy.
    */
   UpdateType get_update_policy() const;
-  
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
   /** Sets the adjustment to be used as the "model" object for this range
    * widget. The adjustment indicates the current range value, the
    * minimum and maximum range values, the step/page increments used
@@ -165,43 +176,122 @@ public:
    * on the bottom or left.
    * @param setting <tt>true</tt> to invert the range.
    */
-  void set_inverted(bool setting = true);
+  void set_inverted(bool setting =  true);
   
   /** Gets the value set by set_inverted().
    * @return <tt>true</tt> if the range is inverted.
    */
   bool get_inverted() const;
+  
+  /** If a range is flippable, it will switch its direction if it is
+   * horizontal and its direction is Gtk::TEXT_DIR_RTL.
+   * 
+   * See Gtk::Widget::get_direction().
+   * 
+   * @newin{2,18}
+   * @param flippable <tt>true</tt> to make the range flippable.
+   */
+  void set_flippable(bool flippable =  true);
+  
+  /** Gets the value set by set_flippable().
+   * 
+   * @newin{2,18}
+   * @return <tt>true</tt> if the range is flippable.
+   */
+  bool get_flippable() const;
+
+  
+  /** Sets whether the range's slider has a fixed size, or a size that
+   * depends on it's adjustment's page size.
+   * 
+   * This function is useful mainly for Gtk::Range subclasses.
+   * 
+   * @newin{2,20}
+   * @param size_fixed <tt>true</tt> to make the slider size constant.
+   */
+  void set_slider_size_fixed(bool size_fixed =  true);
+  
+  /** This function is useful mainly for Gtk::Range subclasses.
+   * 
+   * See set_slider_size_fixed().
+   * 
+   * @newin{2,20}
+   * @return Whether the range's slider has a fixed size.
+   */
+  bool get_slider_size_fixed() const;
+
+  
+  /** Sets the minimum size of the range's slider.
+   * 
+   * This function is useful mainly for Gtk::Range subclasses.
+   * 
+   * @newin{2,20}
+   * @param min_size The slider's minimum size.
+   */
+  void set_min_slider_size(bool min_size =  true);
+  
+  /** This function is useful mainly for Gtk::Range subclasses.
+   * 
+   * See set_min_slider_size().
+   * 
+   * @newin{2,20}
+   * @return The minimum size of the range's slider.
+   */
+  int get_min_slider_size() const;
+
+  /** This method returns the area that contains the range's trough
+   * and its steppers, in the widget's Gdk::Window coordinates.
+   *
+   * This method is useful mainly for Range subclasses.
+   *
+   * @result The range rectangle.
+   *
+   * @@newin{2,20}
+   */
+  Gdk::Rectangle get_range_rect() const;
+  
+
+  /** This function returns sliders range along the long dimension,
+   * in widget->window coordinates.
+   * 
+   * This function is useful mainly for Gtk::Range subclasses.
+   * 
+   * @newin{2,20}
+   * @param slider_start Return location for the slider's start, or <tt>0</tt>.
+   * @param slider_end Return location for the slider's end, or <tt>0</tt>.
+   */
+  void get_slider_range(int& slider_start, int& slider_end) const;
 
   
   /** Sets the sensitivity policy for the stepper that points to the
    * 'lower' end of the GtkRange's adjustment.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param sensitivity The lower stepper's sensitivity policy.
    */
   void set_lower_stepper_sensitivity(SensitivityType sensitivity);
   
   /** Gets the sensitivity policy for the stepper that points to the
    * 'lower' end of the GtkRange's adjustment.
-   * @return The lower stepper's sensitivity policy.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The lower stepper's sensitivity policy.
    */
   SensitivityType get_lower_stepper_sensitivity() const;
   
   /** Sets the sensitivity policy for the stepper that points to the
    * 'upper' end of the GtkRange's adjustment.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param sensitivity The upper stepper's sensitivity policy.
    */
   void set_upper_stepper_sensitivity(SensitivityType sensitivity);
   
   /** Gets the sensitivity policy for the stepper that points to the
    * 'upper' end of the GtkRange's adjustment.
-   * @return The upper stepper's sensitivity policy.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The upper stepper's sensitivity policy.
    */
   SensitivityType get_upper_stepper_sensitivity() const;
 
@@ -213,7 +303,7 @@ public:
    * @param step Step size.
    * @param page Page size.
    */
-  void set_increments(double step, double  page);
+  void set_increments(double step, double page);
   
   /** Sets the allowable values in the Gtk::Range, and clamps the range
    * value to be between @a min and @a max. (If the range has a non-zero
@@ -241,15 +331,15 @@ public:
    * set_fill_level() for a general description of the fill
    * level concept.
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param show_fill_level Whether a fill level indicator graphics is shown.
    */
-  void set_show_fill_level(bool show_fill_level = true);
+  void set_show_fill_level(bool show_fill_level =  true);
   
   /** Gets whether the range displays the fill level graphically.
-   * @return <tt>true</tt> if @a range shows the fill level.
    * 
-   * @newin2p12.
+   * @newin{2,12}
+   * @return <tt>true</tt> if @a range shows the fill level.
    */
   bool get_show_fill_level() const;
   
@@ -257,15 +347,15 @@ public:
    * set_fill_level() for a general description of the fill
    * level concept.
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param restrict_to_fill_level Whether the fill level restricts slider movement.
    */
-  void set_restrict_to_fill_level(bool restrict_to_fill_level = true);
+  void set_restrict_to_fill_level(bool restrict_to_fill_level =  true);
   
   /** Gets whether the range is restricted to the fill level.
-   * @return <tt>true</tt> if @a range is restricted to the fill level.
    * 
-   * @newin2p12.
+   * @newin{2,12}
+   * @return <tt>true</tt> if @a range is restricted to the fill level.
    */
   bool get_restrict_to_fill_level() const;
   
@@ -287,17 +377,19 @@ public:
    * by set_restrict_to_fill_level() and is by default
    * enabled.
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param fill_level The new position of the fill level indicator.
    */
   void set_fill_level(double fill_level);
   
   /** Gets the current position of the fill level indicator.
-   * @return The current fill level
    * 
-   * @newin2p12.
+   * @newin{2,12}
+   * @return The current fill level.
    */
   double get_fill_level() const;
+  //gtkmmproc error: gtk_range_set_round_digits : method defs lookup failed (1)
+  //gtkmmproc error: gtk_range_get_round_digits : method defs lookup failed (1)
 
   
   /**
@@ -514,11 +606,12 @@ public:
   Glib::PropertyProxy_ReadOnly<double> property_fill_level() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
+  //gtkmmproc error: round-digits : property defs lookup failed.
   
 protected:
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void get_range_border_vfunc(GtkBorder* border) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+ 
+
+    virtual void get_range_border_vfunc(Gtk::Border* border) const;
 
 
 };

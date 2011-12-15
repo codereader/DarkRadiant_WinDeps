@@ -1,7 +1,7 @@
 /* $Id: button.hg,v 1.10 2006/08/21 19:07:14 jjongsma Exp $ */
 
 /* box.h
- * 
+ *
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -18,6 +18,12 @@
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+
+#m4 _PUSH(SECTION_CC_PRE_INCLUDES)
+// So we can still wrap the (deprecated) gtk_button_pressed(), gtk_button_clicked(),
+// and gtk_button_enter functions.
+#undef GTK_DISABLE_DEPRECATED
+#m4 _POP()
 
 #include <gtkmm/bin.h>
 #include <gtkmm/stockid.h>
@@ -73,11 +79,11 @@ public:
   explicit Button(const StockID& stock_id);
 
 
-  _WRAP_METHOD(void pressed(), gtk_button_pressed)
-  _WRAP_METHOD(void released(),gtk_button_released)
+  _WRAP_METHOD(void pressed(), gtk_button_pressed, deprecated)
+  _WRAP_METHOD(void released(),gtk_button_released, deprecated)
   _WRAP_METHOD(void clicked(), gtk_button_clicked)
-  _WRAP_METHOD(void enter(), gtk_button_enter)
-  _WRAP_METHOD(void leave(), gtk_button_leave)
+  _WRAP_METHOD(void enter(), gtk_button_enter, deprecated)
+  _WRAP_METHOD(void leave(), gtk_button_leave, deprecated)
 
   _WRAP_METHOD(void set_relief(ReliefStyle newstyle), gtk_button_set_relief)
   _WRAP_METHOD(ReliefStyle get_relief() const, gtk_button_get_relief)
@@ -102,6 +108,9 @@ public:
   _WRAP_METHOD(void set_image_position(PositionType position), gtk_button_set_image_position)
   _WRAP_METHOD(PositionType get_image_position() const, gtk_button_get_image_position)
 
+  _WRAP_METHOD(Glib::RefPtr<Gdk::Window> get_event_window(), gtk_button_get_event_window, refreturn)
+  _WRAP_METHOD(Glib::RefPtr<const Gdk::Window> get_event_window() const, gtk_button_get_event_window, refreturn, constversion)
+
   _WRAP_SIGNAL(void pressed(), "pressed")
   _WRAP_SIGNAL(void released(), "released")
   _WRAP_SIGNAL(void clicked(), "clicked")
@@ -111,7 +120,7 @@ public:
 
   _WRAP_PROPERTY("label", Glib::ustring)
   _WRAP_PROPERTY("relief", ReliefStyle)
-  _WRAP_PROPERTY("use-underline", bool)
+  //Ignored because it's write-only and construct: _WRAP_PROPERTY("use-underline", bool)
   _WRAP_PROPERTY("use-stock", bool)
   _WRAP_PROPERTY("focus-on-click", bool)
   _WRAP_PROPERTY("xalign", float)
@@ -127,4 +136,3 @@ public:
  */
 
 } // namespace Gtk
-

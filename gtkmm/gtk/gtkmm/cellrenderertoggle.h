@@ -79,6 +79,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -91,18 +93,12 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_toggled(const Glib::ustring& path);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -112,7 +108,7 @@ public:
   CellRendererToggle();
   
 
-  /** Return value: <tt>true</tt> if we're rendering radio toggles rather than checkboxes
+  /** Returns whether we're rendering radio toggles rather than checkboxes.
    * @return <tt>true</tt> if we're rendering radio toggles rather than checkboxes.
    */
   bool get_radio() const;
@@ -126,9 +122,10 @@ public:
    * columns with cell renderer properties).
    * @param radio <tt>true</tt> to make the toggle look like a radio button.
    */
-  void set_radio(bool radio = true);
+  void set_radio(bool radio =  true);
   
-  /** Return value: <tt>true</tt> if the cell renderer is active.
+  /** Returns whether the cell renderer is active. See
+   * set_active().
    * @return <tt>true</tt> if the cell renderer is active.
    */
   bool get_active() const;
@@ -136,9 +133,24 @@ public:
   /** Activates or deactivates a cell renderer.
    * @param setting The value to set.
    */
-  void set_active(bool setting = true);
+  void set_active(bool setting =  true);
+  
+  /** Returns whether the cell renderer is activatable. See
+   * set_activatable().
+   * 
+   * @newin{2,18}
+   * @return <tt>true</tt> if the cell renderer is activatable.
+   */
+  bool get_activatable() const;
+  
+  /** Makes the cell renderer activatable.
+   * 
+   * @newin{2,18}
+   * @param setting The value to set.
+   */
+  void set_activatable(bool setting =  true);
 
- 
+
    //TODO: Maybe the parameter should be a TreePath.
   /** The toggled signal is emitted when the cell is toggled.
    *
@@ -192,6 +204,26 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The inconsistent state of the button.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_inconsistent() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The inconsistent state of the button.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_inconsistent() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
 /** Draw the toggle button as a radio button.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
@@ -232,11 +264,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_PROPERTIES_ENABLED
   virtual Glib::PropertyProxy_Base _property_renderable();
-#else
-  virtual Glib::ustring _property_renderable();
-#endif
 
 
 };

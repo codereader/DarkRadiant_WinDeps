@@ -56,73 +56,23 @@ public:
   PixbufFormat& operator=(const PixbufFormat& src);
 
   
-  /** Return value: the name of the format.
-   * @return The name of the format. 
-   * 
-   * @newin2p2.
-   */
   Glib::ustring get_name() const;
   
-  /** Return value: a description of the format.
-   * @return A description of the format.
-   * 
-   * @newin2p2.
-   */
   Glib::ustring get_description() const;
   
-  /** Return value: a <tt>0</tt>-terminated array of mime types which must be freed with
-   * @return A <tt>0</tt>-terminated array of mime types which must be freed with 
-   * Glib::strfreev() when it is no longer needed.
-   * 
-   * @newin2p2.
-   */
   Glib::StringArrayHandle get_mime_types() const;
   
-  /** Return value: a <tt>0</tt>-terminated array of filename extensions which must be
-   * @return A <tt>0</tt>-terminated array of filename extensions which must be
-   * freed with Glib::strfreev() when it is no longer needed.
-   * 
-   * @newin2p2.
-   */
   Glib::StringArrayHandle get_extensions() const;
   
-  /** Return value: whether pixbufs can be saved in the given format.
-   * @return Whether pixbufs can be saved in the given format.
-   * 
-   * @newin2p2.
-   */
   bool is_writable() const;
   
   
-  /** Return value: whether this image format is scalable.
-   * @return Whether this image format is scalable.
-   * 
-   * @newin2p6.
-   */
   bool is_scalable() const;
   
-  /** Return value: whether this image format is disabled.
-   * @return Whether this image format is disabled.
-   * 
-   * @newin2p6.
-   */
   bool is_disabled() const;
   
-  /** Disables or enables an image format. If a format is disabled, 
-   * gdk-pixbuf won't use the image loader for this format to load 
-   * images. Applications can use this to avoid using image loaders 
-   * with an inappropriate license, see gdk_pixbuf_format_get_license().
-   * 
-   * @newin2p6
-   * @param disabled <tt>true</tt> to disable the format @a format.
-   */
-  void set_disabled(bool disabled = true);
+  void set_disabled(bool disabled =  true);
   
-  /** Returns: a string describing the license of @a format.
-   * @return A string describing the license of @a format. 
-   * 
-   * @newin2p6.
-   */
   Glib::ustring get_license() const;
 
   /// Provides access to the underlying C GObject.

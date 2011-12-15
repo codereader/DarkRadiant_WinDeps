@@ -99,7 +99,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;../..;$(SolutionDir)\..\..\..\w32deps\gtk2\include\cairo;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../..;$(SolutionDir)\..\..\..\w32deps\gtk2\include\cairo;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\..\w32deps\gtk2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;CAIROMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -132,7 +132,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;../..;$(SolutionDir)\..\..\..\w32deps\gtk2\include\cairo;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../..;$(SolutionDir)\..\..\..\w32deps\gtk2\include\cairo;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\..\w32deps\gtk2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;CAIROMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -162,7 +162,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.;../..;$(SolutionDir)\..\..\..\w32deps\gtk2\include\cairo;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../..;$(SolutionDir)\..\..\..\w32deps\gtk2\include\cairo;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\..\w32deps\gtk2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;CAIROMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -191,7 +191,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>.;../..;$(SolutionDir)\..\..\..\w32deps\gtk2\include\cairo;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../..;$(SolutionDir)\..\..\..\w32deps\gtk2\include\cairo;$(SolutionDir)\..\..\libsigc++;$(SolutionDir)\..\..\libsigc++\MSVC_Net2010;$(SolutionDir)\..\..\..\w32deps\gtk2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;CAIROMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -217,28 +217,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\blank.cpp" />
-    <ClCompile Include="..\..\cairomm\context.cc" />
-    <ClCompile Include="..\..\cairomm\context_surface_quartz.cc" />
-    <ClCompile Include="..\..\cairomm\context_surface_win32.cc" />
-    <ClCompile Include="..\..\cairomm\context_surface_xlib.cc" />
-    <ClCompile Include="..\..\cairomm\exception.cc" />
-    <ClCompile Include="..\..\cairomm\fontface.cc" />
-    <ClCompile Include="..\..\cairomm\fontoptions.cc" />
-    <ClCompile Include="..\..\cairomm\matrix.cc" />
-    <ClCompile Include="..\..\cairomm\path.cc" />
-    <ClCompile Include="..\..\cairomm\pattern.cc" />
-    <ClCompile Include="..\..\cairomm\private.cc" />
-    <ClCompile Include="..\..\cairomm\quartz_surface.cc" />
-    <ClCompile Include="..\..\cairomm\scaledfont.cc" />
-    <ClCompile Include="..\..\cairomm\surface.cc" />
-    <ClCompile Include="..\..\cairomm\win32_font.cc" />
-    <ClCompile Include="..\..\cairomm\win32_surface.cc" />
-    <ClCompile Include="..\..\cairomm\xlib_surface.cc" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\..\cairomm\cairomm.h" />
     <ClInclude Include="..\..\cairomm\context.h" />
+    <ClInclude Include="..\..\cairomm\context_private.h" />
+    <ClInclude Include="..\..\cairomm\device.h" />
     <ClInclude Include="..\..\cairomm\enums.h" />
     <ClInclude Include="..\..\cairomm\exception.h" />
     <ClInclude Include="..\..\cairomm\fontface.h" />
@@ -247,13 +229,38 @@
     <ClInclude Include="..\..\cairomm\path.h" />
     <ClInclude Include="..\..\cairomm\pattern.h" />
     <ClInclude Include="..\..\cairomm\private.h" />
+    <ClInclude Include="..\..\cairomm\quartz_font.h" />
     <ClInclude Include="..\..\cairomm\quartz_surface.h" />
     <ClInclude Include="..\..\cairomm\refptr.h" />
+    <ClInclude Include="..\..\cairomm\region.h" />
     <ClInclude Include="..\..\cairomm\scaledfont.h" />
     <ClInclude Include="..\..\cairomm\surface.h" />
+    <ClInclude Include="..\..\cairomm\types.h" />
     <ClInclude Include="..\..\cairomm\win32_font.h" />
     <ClInclude Include="..\..\cairomm\win32_surface.h" />
     <ClInclude Include="..\..\cairomm\xlib_surface.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\cairomm\context.cc" />
+    <ClCompile Include="..\..\cairomm\context_surface_quartz.cc" />
+    <ClCompile Include="..\..\cairomm\context_surface_win32.cc" />
+    <ClCompile Include="..\..\cairomm\context_surface_xlib.cc" />
+    <ClCompile Include="..\..\cairomm\device.cc" />
+    <ClCompile Include="..\..\cairomm\exception.cc" />
+    <ClCompile Include="..\..\cairomm\fontface.cc" />
+    <ClCompile Include="..\..\cairomm\fontoptions.cc" />
+    <ClCompile Include="..\..\cairomm\matrix.cc" />
+    <ClCompile Include="..\..\cairomm\path.cc" />
+    <ClCompile Include="..\..\cairomm\pattern.cc" />
+    <ClCompile Include="..\..\cairomm\private.cc" />
+    <ClCompile Include="..\..\cairomm\quartz_font.cc" />
+    <ClCompile Include="..\..\cairomm\quartz_surface.cc" />
+    <ClCompile Include="..\..\cairomm\region.cc" />
+    <ClCompile Include="..\..\cairomm\scaledfont.cc" />
+    <ClCompile Include="..\..\cairomm\surface.cc" />
+    <ClCompile Include="..\..\cairomm\win32_font.cc" />
+    <ClCompile Include="..\..\cairomm\win32_surface.cc" />
+    <ClCompile Include="..\..\cairomm\xlib_surface.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

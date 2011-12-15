@@ -38,12 +38,9 @@ static guint8* SignalProxy_Serialize(GtkTextBuffer* , GtkTextBuffer* content_buf
 {
   Gtk::TextBuffer::SlotSerialize* the_slot = static_cast<Gtk::TextBuffer::SlotSerialize*>(user_data);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     return (*the_slot)(Glib::wrap(content_buffer), Glib::wrap(start), Glib::wrap(end), *length);
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
@@ -51,7 +48,6 @@ static guint8* SignalProxy_Serialize(GtkTextBuffer* , GtkTextBuffer* content_buf
   }
 
   return 0; // arbitrary value
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
 static void SignalProxy_Serialize_gtk_callback_destroy(void* user_data)
@@ -67,13 +63,10 @@ static gboolean SignalProxy_Deserialize(GtkTextBuffer* , GtkTextBuffer* content_
 {
   Gtk::TextBuffer::SlotDeserialize* the_slot = static_cast<Gtk::TextBuffer::SlotDeserialize*>(user_data);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     (*the_slot)(Glib::wrap(content_buffer, true), Glib::wrap(iter), data, length, create_tags);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
@@ -82,7 +75,6 @@ static gboolean SignalProxy_Deserialize(GtkTextBuffer* , GtkTextBuffer* content_
   }
 
   return 0; // arbitrary value
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
 static void SignalProxy_Deserialize_gtk_callback_destroy(void* user_data)
@@ -540,9 +532,19 @@ static listStrings util_convert_atoms_to_strings(GdkAtom* targets, int n_targets
   return listTargets;
 }
 
+#ifndef GTKMM_DISABLE_DEPRECATED
+
 Glib::ustring TextBuffer::get_text(bool include_hidden_chars)
 {
   return get_text(begin(), end(), include_hidden_chars);
+}
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+Glib::ustring TextBuffer::get_text(bool include_hidden_chars) const
+{
+  TextBuffer* unconst = const_cast<TextBuffer*>(this); //Because begin() and end() are not const.
+  return get_text(unconst->begin(), unconst->end(), include_hidden_chars);
 }
 
 Glib::StringArrayHandle TextBuffer::get_serialize_formats() const
@@ -984,15 +986,13 @@ const Glib::Class& TextBuffer_Class::init()
   return *this;
 }
 
+
 void TextBuffer_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->insert_text = &insert_text_callback;
   klass->insert_pixbuf = &insert_pixbuf_callback;
   klass->insert_child_anchor = &insert_child_anchor_callback;
@@ -1005,13 +1005,9 @@ void TextBuffer_Class::class_init_function(void* g_class, void* class_data)
   klass->remove_tag = &remove_tag_callback;
   klass->begin_user_action = &begin_user_action_callback;
   klass->end_user_action = &end_user_action_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void TextBuffer_Class::insert_text_callback(GtkTextBuffer* self, GtkTextIter* p0, const gchar* p1, gint p2)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -1046,7 +1042,7 @@ void TextBuffer_Class::insert_text_callback(GtkTextBuffer* self, GtkTextIter* p0
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -1088,7 +1084,7 @@ void TextBuffer_Class::insert_pixbuf_callback(GtkTextBuffer* self, GtkTextIter* 
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -1130,7 +1126,7 @@ void TextBuffer_Class::insert_child_anchor_callback(GtkTextBuffer* self, GtkText
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -1172,7 +1168,7 @@ void TextBuffer_Class::delete_range_callback(GtkTextBuffer* self, GtkTextIter* p
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -1212,7 +1208,7 @@ void TextBuffer_Class::changed_callback(GtkTextBuffer* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -1252,7 +1248,7 @@ void TextBuffer_Class::modified_changed_callback(GtkTextBuffer* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -1294,7 +1290,7 @@ void TextBuffer_Class::mark_set_callback(GtkTextBuffer* self, const GtkTextIter*
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -1335,7 +1331,7 @@ void TextBuffer_Class::mark_deleted_callback(GtkTextBuffer* self, GtkTextMark* p
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -1378,7 +1374,7 @@ void TextBuffer_Class::apply_tag_callback(GtkTextBuffer* self, GtkTextTag* p0, c
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -1421,7 +1417,7 @@ void TextBuffer_Class::remove_tag_callback(GtkTextBuffer* self, GtkTextTag* p0, 
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -1461,7 +1457,7 @@ void TextBuffer_Class::begin_user_action_callback(GtkTextBuffer* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -1501,7 +1497,7 @@ void TextBuffer_Class::end_user_action_callback(GtkTextBuffer* self)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -1510,7 +1506,6 @@ void TextBuffer_Class::end_user_action_callback(GtkTextBuffer* self)
   if(base && base->end_user_action)
     (*base->end_user_action)(self);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* TextBuffer_Class::wrap_new(GObject* object)
@@ -1539,6 +1534,7 @@ TextBuffer::TextBuffer(GtkTextBuffer* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 TextBuffer::~TextBuffer()
 {}
 
@@ -1549,6 +1545,7 @@ GType TextBuffer::get_type()
 {
   return textbuffer_class_.init().get_type();
 }
+
 
 GType TextBuffer::get_base_type()
 {
@@ -1570,10 +1567,12 @@ Glib::RefPtr<TextBuffer> TextBuffer::create()
 {
   return Glib::RefPtr<TextBuffer>( new TextBuffer() );
 }
+
 Glib::RefPtr<TextBuffer> TextBuffer::create(const Glib::RefPtr<TagTable>& tag_table)
 {
   return Glib::RefPtr<TextBuffer>( new TextBuffer(tag_table) );
 }
+
 int TextBuffer::get_line_count() const
 {
   return gtk_text_buffer_get_line_count(const_cast<GtkTextBuffer*>(gobj()));
@@ -1599,20 +1598,28 @@ Glib::RefPtr<const TextBuffer::TagTable> TextBuffer::get_tag_table() const
   return const_cast<TextBuffer*>(this)->get_tag_table();
 }
 
+#ifndef GTKMM_DISABLE_DEPRECATED
+
 Glib::ustring TextBuffer::get_text(const iterator& start, const iterator& end, bool include_hidden_chars)
 {
   return Glib::convert_return_gchar_ptr_to_ustring(gtk_text_buffer_get_text(gobj(), (start).gobj(), (end).gobj(), static_cast<int>(include_hidden_chars)));
 }
+
+#endif // GTKMM_DISABLE_DEPRECATED
 
 Glib::ustring TextBuffer::get_text(const iterator& start, const iterator& end, bool include_hidden_chars) const
 {
   return Glib::convert_return_gchar_ptr_to_ustring(gtk_text_buffer_get_text(const_cast<GtkTextBuffer*>(gobj()), (start).gobj(), (end).gobj(), static_cast<int>(include_hidden_chars)));
 }
 
+#ifndef GTKMM_DISABLE_DEPRECATED
+
 Glib::ustring TextBuffer::get_slice(const iterator& start, const iterator& end, bool include_hidden_chars)
 {
   return Glib::convert_return_gchar_ptr_to_ustring(gtk_text_buffer_get_slice(gobj(), (start).gobj(), (end).gobj(), static_cast<int>(include_hidden_chars)));
 }
+
+#endif // GTKMM_DISABLE_DEPRECATED
 
 Glib::ustring TextBuffer::get_slice(const iterator& start, const iterator& end, bool include_hidden_chars) const
 {
@@ -1779,6 +1786,26 @@ void TextBuffer::end_user_action()
 gtk_text_buffer_end_user_action(gobj()); 
 }
 
+Glib::RefPtr<TargetList> TextBuffer::get_copy_target_list() const
+{
+
+  Glib::RefPtr<TargetList> retvalue = Glib::wrap(gtk_text_buffer_get_copy_target_list(const_cast<GtkTextBuffer*>(gobj())));
+  if(retvalue)
+    retvalue->reference(); //The function does not do a ref for us.
+  return retvalue;
+
+}
+
+Glib::RefPtr<TargetList> TextBuffer::get_paste_target_list() const
+{
+
+  Glib::RefPtr<TargetList> retvalue = Glib::wrap(gtk_text_buffer_get_paste_target_list(const_cast<GtkTextBuffer*>(gobj())));
+  if(retvalue)
+    retvalue->reference(); //The function does not do a ref for us.
+  return retvalue;
+
+}
+
 Glib::ustring TextBuffer::register_serialize_tagset(const Glib::ustring& tagset_name)
 {
   return Gdk::AtomString::to_cpp_type(gtk_text_buffer_register_serialize_tagset(gobj(), tagset_name.c_str()));
@@ -1889,6 +1916,13 @@ Glib::SignalProxy1< void,const Glib::RefPtr<Gtk::Clipboard>& > TextBuffer::signa
 
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly< Glib::RefPtr<TextBuffer::TagTable> > TextBuffer::property_tag_table() const
+{
+  return Glib::PropertyProxy_ReadOnly< Glib::RefPtr<TextBuffer::TagTable> >(this, "tag-table");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
 Glib::PropertyProxy<Glib::ustring> TextBuffer::property_text() 
 {
   return Glib::PropertyProxy<Glib::ustring>(this, "text");
@@ -1917,7 +1951,6 @@ Glib::PropertyProxy_ReadOnly<int> TextBuffer::property_cursor_position() const
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::TextBuffer::on_insert(const TextBuffer::iterator& pos, const Glib::ustring& text, int bytes)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -2026,10 +2059,6 @@ void Gtk::TextBuffer::on_end_user_action()
   if(base && base->end_user_action)
     (*base->end_user_action)(gobj());
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

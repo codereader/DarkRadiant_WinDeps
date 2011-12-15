@@ -47,10 +47,25 @@ class BufferedInputStream : public Gio::FilterInputStream
   _CLASS_GOBJECT(BufferedInputStream, GBufferedInputStream, G_BUFFERED_INPUT_STREAM, Gio::FilterInputStream, GFilterInputStream)
 protected:
   _WRAP_CTOR(BufferedInputStream(const Glib::RefPtr<InputStream>& base_stream), g_buffered_input_stream_new)
-  _WRAP_CTOR(BufferedInputStream(const Glib::RefPtr<InputStream>& base_stream, gsize size), g_buffered_input_stream_new_sized)
+  
+  //Note that we rename the size parameter to buffer_size because that is the actual name of the property.
+  _WRAP_CTOR(BufferedInputStream(const Glib::RefPtr<InputStream>& base_stream, gsize buffer_size), g_buffered_input_stream_new_sized)
+
 public:
+  /** Creates a new InputStream from the given base_stream, with a buffer set to the default size (4 kilobytes). 
+   *
+   * @param base_stream An InputStream.
+   * @result an InputStream for the given base_stream.
+	 */
   _WRAP_CREATE(const Glib::RefPtr<InputStream>& base_stream)
-  static Glib::RefPtr<BufferedInputStream> create_sized(const Glib::RefPtr<InputStream>& base_stream, gsize size);
+  
+  /** Creates a new InputStream from the given base_stream, with a buffer set to size.
+   *
+   * @param base_stream An InputStream.
+   * @param size A size.
+   * @result an InputStream for the given base_stream.
+	 */
+  static Glib::RefPtr<BufferedInputStream> create_sized(const Glib::RefPtr<InputStream>& base_stream, gsize buffer_size);
 
   _WRAP_METHOD(gsize get_buffer_size() const, g_buffered_input_stream_get_buffer_size)
   _WRAP_METHOD(void set_buffer_size(gsize size), g_buffered_input_stream_set_buffer_size)
@@ -61,11 +76,7 @@ public:
 
   /** non-cancellable version of fill()
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   gssize fill(gssize count);
-#else
-  gssize fill(gssize count, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   _IGNORE(g_buffered_input_stream_fill_async)
 
@@ -101,11 +112,7 @@ public:
 
   /** Non-cancellable version of read_byte().
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   int read_byte();
-#else
-  int read_byte(std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   _WRAP_PROPERTY("buffer-size", guint)
 

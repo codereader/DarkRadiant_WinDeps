@@ -12,10 +12,6 @@
 
 // #include the widget headers so that we can call the get_type() static methods:
 
-#include "pagesetupunixdialog.h"
-#include "printunixdialog.h"
-#include "printer.h"
-#include "printjob.h"
 #include "aboutdialog.h"
 #include "accelgroup.h"
 #include "accellabel.h"
@@ -35,52 +31,64 @@
 #include "calendar.h"
 #include "celleditable.h"
 #include "celllayout.h"
-#include "cellview.h"
 #include "cellrenderer.h"
 #include "cellrendereraccel.h"
 #include "cellrenderercombo.h"
 #include "cellrendererpixbuf.h"
 #include "cellrendererprogress.h"
 #include "cellrendererspin.h"
+#include "cellrendererspinner.h"
 #include "cellrenderertext.h"
 #include "cellrenderertoggle.h"
+#include "cellview.h"
 #include "checkbutton.h"
 #include "checkmenuitem.h"
 #include "clipboard.h"
-#include "colorselection.h"
 #include "colorbutton.h"
+#include "colorselection.h"
+#ifndef GTKMM_DISABLE_DEPRECATED
+#include "combo.h"
+#endif // *_DISABLE_DEPRECATED
 #include "combobox.h"
+#ifndef GTKMM_DISABLE_DEPRECATED
 #include "comboboxentry.h"
+#endif // *_DISABLE_DEPRECATED
 #include "container.h"
 #include "curve.h"
 #include "dialog.h"
 #include "drawingarea.h"
 #include "editable.h"
 #include "entry.h"
+#include "entrybuffer.h"
 #include "entrycompletion.h"
 #include "enums.h"
 #include "eventbox.h"
 #include "expander.h"
 #include "filechooser.h"
 #include "filechooserbutton.h"
-#include "filechooserwidget.h"
 #include "filechooserdialog.h"
+#include "filechooserwidget.h"
 #include "filefilter.h"
+#ifndef GTKMM_DISABLE_DEPRECATED
 #include "fileselection.h"
+#endif // *_DISABLE_DEPRECATED
 #include "fixed.h"
 #include "fontbutton.h"
 #include "fontselection.h"
 #include "frame.h"
 #include "handlebox.h"
 #include "iconfactory.h"
+#include "iconinfo.h"
 #include "iconset.h"
 #include "iconsource.h"
-#include "iconinfo.h"
 #include "icontheme.h"
 #include "iconview.h"
 #include "image.h"
 #include "imagemenuitem.h"
+#include "infobar.h"
+#ifndef GTKMM_DISABLE_DEPRECATED
 #include "inputdialog.h"
+#endif // *_DISABLE_DEPRECATED
 #include "invisible.h"
 #include "item.h"
 #include "label.h"
@@ -97,17 +105,34 @@
 #include "misc.h"
 #include "notebook.h"
 #include "object.h"
+#include "offscreenwindow.h"
+#ifndef GTKMM_DISABLE_DEPRECATED
 #include "optionmenu.h"
+#endif // *_DISABLE_DEPRECATED
 #include "orientable.h"
-#include "paned.h"
-#include "plug.h"
-#include "progressbar.h"
-#include "papersize.h"
 #include "pagesetup.h"
-#include "printsettings.h"
+#ifndef G_OS_WIN32
+#include "pagesetupunixdialog.h"
+#endif //G_OS_WIN32
+#include "paned.h"
+#include "papersize.h"
+#ifndef G_OS_WIN32
+#include "plug.h"
+#endif //G_OS_WIN32
 #include "printcontext.h"
+#ifndef G_OS_WIN32
+#include "printer.h"
+#endif //G_OS_WIN32
+#ifndef G_OS_WIN32
+#include "printjob.h"
+#endif //G_OS_WIN32
 #include "printoperation.h"
 #include "printoperationpreview.h"
+#include "printsettings.h"
+#ifndef G_OS_WIN32
+#include "printunixdialog.h"
+#endif //G_OS_WIN32
+#include "progressbar.h"
 #include "radioaction.h"
 #include "radiobutton.h"
 #include "radiomenuitem.h"
@@ -122,7 +147,9 @@
 #include "recentfilter.h"
 #include "recentinfo.h"
 #include "recentmanager.h"
+#ifndef GTKMM_DISABLE_DEPRECATED
 #include "ruler.h"
+#endif // *_DISABLE_DEPRECATED
 #include "scale.h"
 #include "scalebutton.h"
 #include "scrollbar.h"
@@ -133,8 +160,11 @@
 #include "separatortoolitem.h"
 #include "settings.h"
 #include "sizegroup.h"
+#ifndef G_OS_WIN32
 #include "socket.h"
+#endif //G_OS_WIN32
 #include "spinbutton.h"
+#include "spinner.h"
 #include "statusbar.h"
 #include "statusicon.h"
 #include "stockitem.h"
@@ -154,30 +184,33 @@
 #include "togglebutton.h"
 #include "toggletoolbutton.h"
 #include "toolbar.h"
-#include "toolitem.h"
 #include "toolbutton.h"
+#include "toolitem.h"
+#include "toolitemgroup.h"
+#include "toolpalette.h"
 #include "toolshell.h"
-#include "tooltips.h"
 #include "tooltip.h"
+#ifndef GTKMM_DISABLE_DEPRECATED
+#include "tooltips.h"
+#endif // *_DISABLE_DEPRECATED
 #include "treedragdest.h"
 #include "treedragsource.h"
-#include "treepath.h"
-#include "treerowreference.h"
-#include "treeselection.h"
-#include "treesortable.h"
 #include "treeiter.h"
 #include "treemodel.h"
 #include "treemodelfilter.h"
 #include "treemodelsort.h"
+#include "treepath.h"
+#include "treerowreference.h"
+#include "treeselection.h"
+#include "treesortable.h"
 #include "treestore.h"
 #include "treeview.h"
 #include "treeviewcolumn.h"
+#include "uimanager.h"
 #include "viewport.h"
 #include "volumebutton.h"
-#include "uimanager.h"
 #include "widget.h"
 #include "window.h"
-#include "combo.h"
 
 extern "C"
 {
@@ -206,6 +239,7 @@ GType gtk_cell_renderer_combo_get_type(void);
 GType gtk_cell_renderer_pixbuf_get_type(void);
 GType gtk_cell_renderer_progress_get_type(void);
 GType gtk_cell_renderer_spin_get_type(void);
+GType gtk_cell_renderer_spinner_get_type(void);
 GType gtk_cell_renderer_text_get_type(void);
 GType gtk_cell_renderer_toggle_get_type(void);
 GType gtk_cell_view_get_type(void);
@@ -219,7 +253,9 @@ GType gtk_color_selection_dialog_get_type(void);
 GType gtk_combo_get_type(void);
 #endif // *_DISABLE_DEPRECATED
 GType gtk_combo_box_get_type(void);
+#ifndef GTKMM_DISABLE_DEPRECATED
 GType gtk_combo_box_entry_get_type(void);
+#endif // *_DISABLE_DEPRECATED
 #ifndef GTKMM_DISABLE_DEPRECATED
 GType gtk_list_get_type(void);
 #endif // *_DISABLE_DEPRECATED
@@ -227,10 +263,13 @@ GType gtk_list_get_type(void);
 GType gtk_list_item_get_type(void);
 #endif // *_DISABLE_DEPRECATED
 GType gtk_container_get_type(void);
+#ifndef GTKMM_DISABLE_DEPRECATED
 GType gtk_curve_get_type(void);
+#endif // *_DISABLE_DEPRECATED
 GType gtk_dialog_get_type(void);
 GType gtk_drawing_area_get_type(void);
 GType gtk_entry_get_type(void);
+GType gtk_entry_buffer_get_type(void);
 GType gtk_entry_completion_get_type(void);
 GType gtk_event_box_get_type(void);
 GType gtk_expander_get_type(void);
@@ -250,7 +289,9 @@ GType gtk_gamma_curve_get_type(void);
 GType gtk_hbox_get_type(void);
 GType gtk_hbutton_box_get_type(void);
 GType gtk_hpaned_get_type(void);
+#ifndef GTKMM_DISABLE_DEPRECATED
 GType gtk_hruler_get_type(void);
+#endif // *_DISABLE_DEPRECATED
 GType gtk_hscale_get_type(void);
 GType gtk_hscrollbar_get_type(void);
 GType gtk_hseparator_get_type(void);
@@ -260,7 +301,10 @@ GType gtk_icon_theme_get_type(void);
 GType gtk_icon_view_get_type(void);
 GType gtk_image_get_type(void);
 GType gtk_image_menu_item_get_type(void);
+GType gtk_info_bar_get_type(void);
+#ifndef GTKMM_DISABLE_DEPRECATED
 GType gtk_input_dialog_get_type(void);
+#endif // *_DISABLE_DEPRECATED
 GType gtk_invisible_get_type(void);
 GType gtk_item_get_type(void);
 GType gtk_label_get_type(void);
@@ -276,6 +320,7 @@ GType gtk_message_dialog_get_type(void);
 GType gtk_misc_get_type(void);
 GType gtk_notebook_get_type(void);
 GType gtk_object_get_type(void);
+GType gtk_offscreen_window_get_type(void);
 #ifndef GTKMM_DISABLE_DEPRECATED
 GType gtk_option_menu_get_type(void);
 #endif // *_DISABLE_DEPRECATED
@@ -312,7 +357,9 @@ GType gtk_recent_chooser_menu_get_type(void);
 GType gtk_recent_chooser_widget_get_type(void);
 GType gtk_recent_filter_get_type(void);
 GType gtk_recent_manager_get_type(void);
+#ifndef GTKMM_DISABLE_DEPRECATED
 GType gtk_ruler_get_type(void);
+#endif // *_DISABLE_DEPRECATED
 GType gtk_scale_get_type(void);
 GType gtk_scale_button_get_type(void);
 GType gtk_scrollbar_get_type(void);
@@ -326,6 +373,7 @@ GType gtk_size_group_get_type(void);
 GType gtk_socket_get_type(void);
 #endif //G_OS_WIN32
 GType gtk_spin_button_get_type(void);
+GType gtk_spinner_get_type(void);
 GType gtk_status_icon_get_type(void);
 GType gtk_statusbar_get_type(void);
 GType gtk_style_get_type(void);
@@ -342,6 +390,8 @@ GType gtk_toggle_button_get_type(void);
 GType gtk_toggle_tool_button_get_type(void);
 GType gtk_tool_button_get_type(void);
 GType gtk_tool_item_get_type(void);
+GType gtk_tool_item_group_get_type(void);
+GType gtk_tool_palette_get_type(void);
 GType gtk_toolbar_get_type(void);
 GType gtk_tooltip_get_type(void);
 #ifndef GTKMM_DISABLE_DEPRECATED
@@ -357,7 +407,9 @@ GType gtk_ui_manager_get_type(void);
 GType gtk_vbox_get_type(void);
 GType gtk_vbutton_box_get_type(void);
 GType gtk_vpaned_get_type(void);
+#ifndef GTKMM_DISABLE_DEPRECATED
 GType gtk_vruler_get_type(void);
+#endif // *_DISABLE_DEPRECATED
 GType gtk_vscale_get_type(void);
 GType gtk_vscrollbar_get_type(void);
 GType gtk_vseparator_get_type(void);
@@ -402,6 +454,7 @@ namespace Gtk {  class CellRendererCombo_Class { public: static Glib::ObjectBase
 namespace Gtk {  class CellRendererPixbuf_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class CellRendererProgress_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class CellRendererSpin_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
+namespace Gtk {  class CellRendererSpinner_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class CellRendererText_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class CellRendererToggle_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class CellView_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
@@ -415,7 +468,9 @@ namespace Gtk {  class ColorSelectionDialog_Class { public: static Glib::ObjectB
 namespace Gtk {  class Combo_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 #endif // *_DISABLE_DEPRECATED
 namespace Gtk {  class ComboBox_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
+#ifndef GTKMM_DISABLE_DEPRECATED
 namespace Gtk {  class ComboBoxEntry_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
+#endif // *_DISABLE_DEPRECATED
 #ifndef GTKMM_DISABLE_DEPRECATED
 namespace Gtk {  class ComboDropDown_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 #endif // *_DISABLE_DEPRECATED
@@ -423,10 +478,13 @@ namespace Gtk {  class ComboDropDown_Class { public: static Glib::ObjectBase* wr
 namespace Gtk {  class ComboDropDownItem_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 #endif // *_DISABLE_DEPRECATED
 namespace Gtk {  class Container_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
+#ifndef GTKMM_DISABLE_DEPRECATED
 namespace Gtk {  class Curve_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
+#endif // *_DISABLE_DEPRECATED
 namespace Gtk {  class Dialog_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class DrawingArea_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class Entry_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
+namespace Gtk {  class EntryBuffer_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class EntryCompletion_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class EventBox_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class Expander_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
@@ -446,7 +504,9 @@ namespace Gtk {  class GammaCurve_Class { public: static Glib::ObjectBase* wrap_
 namespace Gtk {  class HBox_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class HButtonBox_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class HPaned_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
+#ifndef GTKMM_DISABLE_DEPRECATED
 namespace Gtk {  class HRuler_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
+#endif // *_DISABLE_DEPRECATED
 namespace Gtk {  class HScale_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class HScrollbar_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class HSeparator_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
@@ -456,7 +516,10 @@ namespace Gtk {  class IconTheme_Class { public: static Glib::ObjectBase* wrap_n
 namespace Gtk {  class IconView_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class Image_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class ImageMenuItem_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
+namespace Gtk {  class InfoBar_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
+#ifndef GTKMM_DISABLE_DEPRECATED
 namespace Gtk {  class InputDialog_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
+#endif // *_DISABLE_DEPRECATED
 namespace Gtk {  class Invisible_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class Item_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class Label_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
@@ -472,6 +535,7 @@ namespace Gtk {  class MessageDialog_Class { public: static Glib::ObjectBase* wr
 namespace Gtk {  class Misc_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class Notebook_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class Object_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
+namespace Gtk {  class OffscreenWindow_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 #ifndef GTKMM_DISABLE_DEPRECATED
 namespace Gtk {  class OptionMenu_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 #endif // *_DISABLE_DEPRECATED
@@ -508,7 +572,9 @@ namespace Gtk {  class RecentChooserMenu_Class { public: static Glib::ObjectBase
 namespace Gtk {  class RecentChooserWidget_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class RecentFilter_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class RecentManager_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
+#ifndef GTKMM_DISABLE_DEPRECATED
 namespace Gtk {  class Ruler_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
+#endif // *_DISABLE_DEPRECATED
 namespace Gtk {  class Scale_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class ScaleButton_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class Scrollbar_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
@@ -522,6 +588,7 @@ namespace Gtk {  class SizeGroup_Class { public: static Glib::ObjectBase* wrap_n
 namespace Gtk {  class Socket_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 #endif //G_OS_WIN32
 namespace Gtk {  class SpinButton_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
+namespace Gtk {  class Spinner_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class StatusIcon_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class Statusbar_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class Style_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
@@ -538,6 +605,8 @@ namespace Gtk {  class ToggleButton_Class { public: static Glib::ObjectBase* wra
 namespace Gtk {  class ToggleToolButton_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class ToolButton_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class ToolItem_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
+namespace Gtk {  class ToolItemGroup_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
+namespace Gtk {  class ToolPalette_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class Toolbar_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class Tooltip_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 #ifndef GTKMM_DISABLE_DEPRECATED
@@ -553,7 +622,9 @@ namespace Gtk {  class UIManager_Class { public: static Glib::ObjectBase* wrap_n
 namespace Gtk {  class VBox_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class VButtonBox_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class VPaned_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
+#ifndef GTKMM_DISABLE_DEPRECATED
 namespace Gtk {  class VRuler_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
+#endif // *_DISABLE_DEPRECATED
 namespace Gtk {  class VScale_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class VScrollbar_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
 namespace Gtk {  class VSeparator_Class { public: static Glib::ObjectBase* wrap_new(GObject*); };  }
@@ -568,12 +639,12 @@ namespace Gtk {
 void wrap_init()
 {
   // Register Error domains:
-  Glib::Error::register_domain(gtk_builder_error_quark(), &Gtk::BuilderError::throw_func);
-  Glib::Error::register_domain(gtk_file_chooser_error_quark(), &Gtk::FileChooserError::throw_func);
-  Glib::Error::register_domain(gtk_icon_theme_error_quark(), &Gtk::IconThemeError::throw_func);
-  Glib::Error::register_domain(gtk_print_error_quark(), &Gtk::PrintError::throw_func);
-  Glib::Error::register_domain(gtk_recent_chooser_error_quark(), &Gtk::RecentChooserError::throw_func);
-  Glib::Error::register_domain(gtk_recent_manager_error_quark(), &Gtk::RecentManagerError::throw_func);
+  Glib::Error::register_domain(gtk_builder_error_quark(), &::Gtk::BuilderError::throw_func);
+  Glib::Error::register_domain(gtk_file_chooser_error_quark(), &::Gtk::FileChooserError::throw_func);
+  Glib::Error::register_domain(gtk_icon_theme_error_quark(), &::Gtk::IconThemeError::throw_func);
+  Glib::Error::register_domain(gtk_print_error_quark(), &::Gtk::PrintError::throw_func);
+  Glib::Error::register_domain(gtk_recent_chooser_error_quark(), &::Gtk::RecentChooserError::throw_func);
+  Glib::Error::register_domain(gtk_recent_manager_error_quark(), &::Gtk::RecentManagerError::throw_func);
 
 // Map gtypes to gtkmm wrapper-creation functions:
   Glib::wrap_register(gtk_about_dialog_get_type(), &Gtk::AboutDialog_Class::wrap_new);
@@ -598,6 +669,7 @@ void wrap_init()
   Glib::wrap_register(gtk_cell_renderer_pixbuf_get_type(), &Gtk::CellRendererPixbuf_Class::wrap_new);
   Glib::wrap_register(gtk_cell_renderer_progress_get_type(), &Gtk::CellRendererProgress_Class::wrap_new);
   Glib::wrap_register(gtk_cell_renderer_spin_get_type(), &Gtk::CellRendererSpin_Class::wrap_new);
+  Glib::wrap_register(gtk_cell_renderer_spinner_get_type(), &Gtk::CellRendererSpinner_Class::wrap_new);
   Glib::wrap_register(gtk_cell_renderer_text_get_type(), &Gtk::CellRendererText_Class::wrap_new);
   Glib::wrap_register(gtk_cell_renderer_toggle_get_type(), &Gtk::CellRendererToggle_Class::wrap_new);
   Glib::wrap_register(gtk_cell_view_get_type(), &Gtk::CellView_Class::wrap_new);
@@ -611,7 +683,9 @@ void wrap_init()
   Glib::wrap_register(gtk_combo_get_type(), &Gtk::Combo_Class::wrap_new);
 #endif // *_DISABLE_DEPRECATED
   Glib::wrap_register(gtk_combo_box_get_type(), &Gtk::ComboBox_Class::wrap_new);
+#ifndef GTKMM_DISABLE_DEPRECATED
   Glib::wrap_register(gtk_combo_box_entry_get_type(), &Gtk::ComboBoxEntry_Class::wrap_new);
+#endif // *_DISABLE_DEPRECATED
 #ifndef GTKMM_DISABLE_DEPRECATED
   Glib::wrap_register(gtk_list_get_type(), &Gtk::ComboDropDown_Class::wrap_new);
 #endif // *_DISABLE_DEPRECATED
@@ -619,10 +693,13 @@ void wrap_init()
   Glib::wrap_register(gtk_list_item_get_type(), &Gtk::ComboDropDownItem_Class::wrap_new);
 #endif // *_DISABLE_DEPRECATED
   Glib::wrap_register(gtk_container_get_type(), &Gtk::Container_Class::wrap_new);
+#ifndef GTKMM_DISABLE_DEPRECATED
   Glib::wrap_register(gtk_curve_get_type(), &Gtk::Curve_Class::wrap_new);
+#endif // *_DISABLE_DEPRECATED
   Glib::wrap_register(gtk_dialog_get_type(), &Gtk::Dialog_Class::wrap_new);
   Glib::wrap_register(gtk_drawing_area_get_type(), &Gtk::DrawingArea_Class::wrap_new);
   Glib::wrap_register(gtk_entry_get_type(), &Gtk::Entry_Class::wrap_new);
+  Glib::wrap_register(gtk_entry_buffer_get_type(), &Gtk::EntryBuffer_Class::wrap_new);
   Glib::wrap_register(gtk_entry_completion_get_type(), &Gtk::EntryCompletion_Class::wrap_new);
   Glib::wrap_register(gtk_event_box_get_type(), &Gtk::EventBox_Class::wrap_new);
   Glib::wrap_register(gtk_expander_get_type(), &Gtk::Expander_Class::wrap_new);
@@ -642,7 +719,9 @@ void wrap_init()
   Glib::wrap_register(gtk_hbox_get_type(), &Gtk::HBox_Class::wrap_new);
   Glib::wrap_register(gtk_hbutton_box_get_type(), &Gtk::HButtonBox_Class::wrap_new);
   Glib::wrap_register(gtk_hpaned_get_type(), &Gtk::HPaned_Class::wrap_new);
+#ifndef GTKMM_DISABLE_DEPRECATED
   Glib::wrap_register(gtk_hruler_get_type(), &Gtk::HRuler_Class::wrap_new);
+#endif // *_DISABLE_DEPRECATED
   Glib::wrap_register(gtk_hscale_get_type(), &Gtk::HScale_Class::wrap_new);
   Glib::wrap_register(gtk_hscrollbar_get_type(), &Gtk::HScrollbar_Class::wrap_new);
   Glib::wrap_register(gtk_hseparator_get_type(), &Gtk::HSeparator_Class::wrap_new);
@@ -652,7 +731,10 @@ void wrap_init()
   Glib::wrap_register(gtk_icon_view_get_type(), &Gtk::IconView_Class::wrap_new);
   Glib::wrap_register(gtk_image_get_type(), &Gtk::Image_Class::wrap_new);
   Glib::wrap_register(gtk_image_menu_item_get_type(), &Gtk::ImageMenuItem_Class::wrap_new);
+  Glib::wrap_register(gtk_info_bar_get_type(), &Gtk::InfoBar_Class::wrap_new);
+#ifndef GTKMM_DISABLE_DEPRECATED
   Glib::wrap_register(gtk_input_dialog_get_type(), &Gtk::InputDialog_Class::wrap_new);
+#endif // *_DISABLE_DEPRECATED
   Glib::wrap_register(gtk_invisible_get_type(), &Gtk::Invisible_Class::wrap_new);
   Glib::wrap_register(gtk_item_get_type(), &Gtk::Item_Class::wrap_new);
   Glib::wrap_register(gtk_label_get_type(), &Gtk::Label_Class::wrap_new);
@@ -668,6 +750,7 @@ void wrap_init()
   Glib::wrap_register(gtk_misc_get_type(), &Gtk::Misc_Class::wrap_new);
   Glib::wrap_register(gtk_notebook_get_type(), &Gtk::Notebook_Class::wrap_new);
   Glib::wrap_register(gtk_object_get_type(), &Gtk::Object_Class::wrap_new);
+  Glib::wrap_register(gtk_offscreen_window_get_type(), &Gtk::OffscreenWindow_Class::wrap_new);
 #ifndef GTKMM_DISABLE_DEPRECATED
   Glib::wrap_register(gtk_option_menu_get_type(), &Gtk::OptionMenu_Class::wrap_new);
 #endif // *_DISABLE_DEPRECATED
@@ -704,7 +787,9 @@ void wrap_init()
   Glib::wrap_register(gtk_recent_chooser_widget_get_type(), &Gtk::RecentChooserWidget_Class::wrap_new);
   Glib::wrap_register(gtk_recent_filter_get_type(), &Gtk::RecentFilter_Class::wrap_new);
   Glib::wrap_register(gtk_recent_manager_get_type(), &Gtk::RecentManager_Class::wrap_new);
+#ifndef GTKMM_DISABLE_DEPRECATED
   Glib::wrap_register(gtk_ruler_get_type(), &Gtk::Ruler_Class::wrap_new);
+#endif // *_DISABLE_DEPRECATED
   Glib::wrap_register(gtk_scale_get_type(), &Gtk::Scale_Class::wrap_new);
   Glib::wrap_register(gtk_scale_button_get_type(), &Gtk::ScaleButton_Class::wrap_new);
   Glib::wrap_register(gtk_scrollbar_get_type(), &Gtk::Scrollbar_Class::wrap_new);
@@ -718,6 +803,7 @@ void wrap_init()
   Glib::wrap_register(gtk_socket_get_type(), &Gtk::Socket_Class::wrap_new);
 #endif //G_OS_WIN32
   Glib::wrap_register(gtk_spin_button_get_type(), &Gtk::SpinButton_Class::wrap_new);
+  Glib::wrap_register(gtk_spinner_get_type(), &Gtk::Spinner_Class::wrap_new);
   Glib::wrap_register(gtk_status_icon_get_type(), &Gtk::StatusIcon_Class::wrap_new);
   Glib::wrap_register(gtk_statusbar_get_type(), &Gtk::Statusbar_Class::wrap_new);
   Glib::wrap_register(gtk_style_get_type(), &Gtk::Style_Class::wrap_new);
@@ -734,6 +820,8 @@ void wrap_init()
   Glib::wrap_register(gtk_toggle_tool_button_get_type(), &Gtk::ToggleToolButton_Class::wrap_new);
   Glib::wrap_register(gtk_tool_button_get_type(), &Gtk::ToolButton_Class::wrap_new);
   Glib::wrap_register(gtk_tool_item_get_type(), &Gtk::ToolItem_Class::wrap_new);
+  Glib::wrap_register(gtk_tool_item_group_get_type(), &Gtk::ToolItemGroup_Class::wrap_new);
+  Glib::wrap_register(gtk_tool_palette_get_type(), &Gtk::ToolPalette_Class::wrap_new);
   Glib::wrap_register(gtk_toolbar_get_type(), &Gtk::Toolbar_Class::wrap_new);
   Glib::wrap_register(gtk_tooltip_get_type(), &Gtk::Tooltip_Class::wrap_new);
 #ifndef GTKMM_DISABLE_DEPRECATED
@@ -749,7 +837,9 @@ void wrap_init()
   Glib::wrap_register(gtk_vbox_get_type(), &Gtk::VBox_Class::wrap_new);
   Glib::wrap_register(gtk_vbutton_box_get_type(), &Gtk::VButtonBox_Class::wrap_new);
   Glib::wrap_register(gtk_vpaned_get_type(), &Gtk::VPaned_Class::wrap_new);
+#ifndef GTKMM_DISABLE_DEPRECATED
   Glib::wrap_register(gtk_vruler_get_type(), &Gtk::VRuler_Class::wrap_new);
+#endif // *_DISABLE_DEPRECATED
   Glib::wrap_register(gtk_vscale_get_type(), &Gtk::VScale_Class::wrap_new);
   Glib::wrap_register(gtk_vscrollbar_get_type(), &Gtk::VScrollbar_Class::wrap_new);
   Glib::wrap_register(gtk_vseparator_get_type(), &Gtk::VSeparator_Class::wrap_new);
@@ -782,6 +872,7 @@ void wrap_init()
   Gtk::CellRendererPixbuf::get_type();
   Gtk::CellRendererProgress::get_type();
   Gtk::CellRendererSpin::get_type();
+  Gtk::CellRendererSpinner::get_type();
   Gtk::CellRendererText::get_type();
   Gtk::CellRendererToggle::get_type();
   Gtk::CellView::get_type();
@@ -795,7 +886,9 @@ void wrap_init()
   Gtk::Combo::get_type();
 #endif // *_DISABLE_DEPRECATED
   Gtk::ComboBox::get_type();
+#ifndef GTKMM_DISABLE_DEPRECATED
   Gtk::ComboBoxEntry::get_type();
+#endif // *_DISABLE_DEPRECATED
 #ifndef GTKMM_DISABLE_DEPRECATED
   Gtk::ComboDropDown::get_type();
 #endif // *_DISABLE_DEPRECATED
@@ -803,10 +896,13 @@ void wrap_init()
   Gtk::ComboDropDownItem::get_type();
 #endif // *_DISABLE_DEPRECATED
   Gtk::Container::get_type();
+#ifndef GTKMM_DISABLE_DEPRECATED
   Gtk::Curve::get_type();
+#endif // *_DISABLE_DEPRECATED
   Gtk::Dialog::get_type();
   Gtk::DrawingArea::get_type();
   Gtk::Entry::get_type();
+  Gtk::EntryBuffer::get_type();
   Gtk::EntryCompletion::get_type();
   Gtk::EventBox::get_type();
   Gtk::Expander::get_type();
@@ -826,7 +922,9 @@ void wrap_init()
   Gtk::HBox::get_type();
   Gtk::HButtonBox::get_type();
   Gtk::HPaned::get_type();
+#ifndef GTKMM_DISABLE_DEPRECATED
   Gtk::HRuler::get_type();
+#endif // *_DISABLE_DEPRECATED
   Gtk::HScale::get_type();
   Gtk::HScrollbar::get_type();
   Gtk::HSeparator::get_type();
@@ -836,7 +934,10 @@ void wrap_init()
   Gtk::IconView::get_type();
   Gtk::Image::get_type();
   Gtk::ImageMenuItem::get_type();
+  Gtk::InfoBar::get_type();
+#ifndef GTKMM_DISABLE_DEPRECATED
   Gtk::InputDialog::get_type();
+#endif // *_DISABLE_DEPRECATED
   Gtk::Invisible::get_type();
   Gtk::Item::get_type();
   Gtk::Label::get_type();
@@ -852,6 +953,7 @@ void wrap_init()
   Gtk::Misc::get_type();
   Gtk::Notebook::get_type();
   Gtk::Object::get_type();
+  Gtk::OffscreenWindow::get_type();
 #ifndef GTKMM_DISABLE_DEPRECATED
   Gtk::OptionMenu::get_type();
 #endif // *_DISABLE_DEPRECATED
@@ -888,7 +990,9 @@ void wrap_init()
   Gtk::RecentChooserWidget::get_type();
   Gtk::RecentFilter::get_type();
   Gtk::RecentManager::get_type();
+#ifndef GTKMM_DISABLE_DEPRECATED
   Gtk::Ruler::get_type();
+#endif // *_DISABLE_DEPRECATED
   Gtk::Scale::get_type();
   Gtk::ScaleButton::get_type();
   Gtk::Scrollbar::get_type();
@@ -902,6 +1006,7 @@ void wrap_init()
   Gtk::Socket::get_type();
 #endif //G_OS_WIN32
   Gtk::SpinButton::get_type();
+  Gtk::Spinner::get_type();
   Gtk::StatusIcon::get_type();
   Gtk::Statusbar::get_type();
   Gtk::Style::get_type();
@@ -918,6 +1023,8 @@ void wrap_init()
   Gtk::ToggleToolButton::get_type();
   Gtk::ToolButton::get_type();
   Gtk::ToolItem::get_type();
+  Gtk::ToolItemGroup::get_type();
+  Gtk::ToolPalette::get_type();
   Gtk::Toolbar::get_type();
   Gtk::Tooltip::get_type();
 #ifndef GTKMM_DISABLE_DEPRECATED
@@ -933,7 +1040,9 @@ void wrap_init()
   Gtk::VBox::get_type();
   Gtk::VButtonBox::get_type();
   Gtk::VPaned::get_type();
+#ifndef GTKMM_DISABLE_DEPRECATED
   Gtk::VRuler::get_type();
+#endif // *_DISABLE_DEPRECATED
   Gtk::VScale::get_type();
   Gtk::VScrollbar::get_type();
   Gtk::VSeparator::get_type();

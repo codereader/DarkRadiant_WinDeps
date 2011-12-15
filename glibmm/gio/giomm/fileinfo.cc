@@ -184,18 +184,8 @@ void FileInfo_Class::class_init_function(void* g_class, void* class_data)
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* FileInfo_Class::wrap_new(GObject* object)
@@ -269,7 +259,7 @@ bool FileInfo::has_attribute(const std::string& attribute) const
 
 Glib::StringArrayHandle FileInfo::list_attributes(const std::string& name_space) const
 {
-  return Glib::StringArrayHandle(g_file_info_list_attributes(const_cast<GFileInfo*>(gobj()), name_space.c_str()));
+  return Glib::StringArrayHandle(g_file_info_list_attributes(const_cast<GFileInfo*>(gobj()), name_space.c_str()), Glib::OWNERSHIP_DEEP);
 }
 
 FileAttributeType FileInfo::get_attribute_type(const std::string& attribute) const
@@ -516,13 +506,6 @@ void FileInfo::set_sort_order(gint32 sort_order)
 {
 g_file_info_set_sort_order(gobj(), sort_order); 
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gio

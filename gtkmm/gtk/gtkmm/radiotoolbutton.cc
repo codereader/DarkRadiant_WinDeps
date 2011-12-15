@@ -115,23 +115,14 @@ const Glib::Class& RadioToolButton_Class::init()
   return *this;
 }
 
+
 void RadioToolButton_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* RadioToolButton_Class::wrap_new(GObject* o)
@@ -167,6 +158,7 @@ GType RadioToolButton::get_type()
   return radiotoolbutton_class_.init().get_type();
 }
 
+
 GType RadioToolButton::get_base_type()
 {
   return gtk_radio_tool_button_get_type();
@@ -192,13 +184,6 @@ void RadioToolButton::set_group(Group& group)
 {
 gtk_radio_tool_button_set_group(gobj(), group.group_); 
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

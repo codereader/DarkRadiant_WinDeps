@@ -46,8 +46,11 @@ namespace Gtk
  * valid choices is not restricted to a flat list, it can be a real tree, and the popup will reflect the tree 
  * structure.
  *
- * The ComboBox widget looks like this:
+ * The ComboBox widget looks like this with has_entry = false:
  * @image html combobox1.png
+ *
+ * The ComboBox widget looks like this with has_entry = true:
+ * @image html comboboxentry1.png
  *
  * See also ComboBoxText, which is specialised for a single text column.
  *
@@ -68,6 +71,23 @@ public:
   _WRAP_CTOR(ComboBox(const Glib::RefPtr<TreeModel>& model), gtk_combo_box_new_with_model)
   _IGNORE(gtk_combo_box_new, gtk_combo_box_new_text) //See ComboBoxText for an equivalent of gtk_combo_box_new_text().
 
+  /** Creates a new empty #GtkComboBox, optionally with an entry.
+   * @param has_entry If this is true then this will have an Entry widget.
+   *
+   * newin{2,24}
+   */
+  explicit ComboBox(bool has_entry); //has_entry has a default value in gtkmm-3.0 but can't here because we already have a default constructor.
+  
+  /** Creates a new ComboBox with the model initialized to @a model.
+   * @param model The model containing data to display in the ComboBox.
+   * @param has_entry If this is true then this will have an Entry widget.
+   *
+   * newin{2,24}
+   */
+  explicit ComboBox(const Glib::RefPtr<TreeModel>& model, bool has_entry); //has_entry has a default value in gtkmm-3.0 but can't here because we already have a default constructor.
+  
+  _IGNORE(gtk_combo_box_new_with_model, gtk_combo_box_new_with_model_and_entry)
+  
 
   _WRAP_METHOD(void set_wrap_width(int width), gtk_combo_box_set_wrap_width)
   _WRAP_METHOD(int get_wrap_width() const, gtk_combo_box_get_wrap_width)
@@ -104,6 +124,13 @@ public:
   _WRAP_METHOD(void set_active(int index), gtk_combo_box_set_active)
   _WRAP_METHOD(void set_active(const TreeModel::iterator& iter), gtk_combo_box_set_active_iter)
   
+  //TODO: See https://bugzilla.gnome.org/show_bug.cgi?id=612396#c30
+  /** Get the text in the entry, if there is an entry.
+   *
+   * @newin{2,24}
+   */
+  Glib::ustring get_entry_text() const;
+
   /** Causes no item to be active. See also set_active().
    */
   void unset_active();
@@ -116,7 +143,7 @@ public:
    *
    * @see set_model().
    *
-   * @newin2p16
+   * @newin{2,16}
    */
   void unset_model();
 
@@ -137,6 +164,13 @@ public:
   _WRAP_METHOD(void set_button_sensitivity(SensitivityType sensitivity), gtk_combo_box_set_button_sensitivity)
   _WRAP_METHOD(SensitivityType get_button_sensitivity() const, gtk_combo_box_get_button_sensitivity)
 
+  _WRAP_METHOD(bool get_has_entry() const, gtk_combo_box_get_has_entry)
+
+  _WRAP_METHOD(void set_entry_text_column(const TreeModelColumnBase& text_column) const, gtk_combo_box_set_entry_text_column)
+  _WRAP_METHOD(void set_entry_text_column(int text_column), gtk_combo_box_set_entry_text_column)
+
+  _WRAP_METHOD(int get_entry_text_column() const, gtk_combo_box_get_entry_text_column)
+
   _WRAP_METHOD(void popup(), gtk_combo_box_popup)
   _WRAP_METHOD(void popdown(), gtk_combo_box_popdown)
 
@@ -145,6 +179,16 @@ public:
 
   _IGNORE(gtk_combo_box_append_text, gtk_combo_box_insert_text, gtk_combo_box_prepend_text, gtk_combo_box_remove_text, gtk_combo_box_get_active_text) //These are in ComboBoxText.
 
+  /** @see Bin::get_child().
+   * @newin{2,24}
+   */
+  Entry* get_entry();
+
+  /** @see Bin::get_child().
+   * @newin{2,24}
+   */
+  const Entry* get_entry() const;
+  
   _WRAP_PROPERTY("model", Glib::RefPtr<TreeModel>)
   _WRAP_PROPERTY("wrap_width", int)
   _WRAP_PROPERTY("row_span_column", int)
@@ -154,6 +198,8 @@ public:
   _WRAP_PROPERTY("has-frame", bool)
   _WRAP_PROPERTY("focus-on-click", bool)
   _WRAP_PROPERTY("tearoff-title", Glib::ustring)
+  _WRAP_PROPERTY("popup-shown", bool)
+  _WRAP_PROPERTY("button-sensitivity", SensitivityType)
 
   /** The changed signal gets emitted when the active
    * item is changed. This can be due to the user selecting

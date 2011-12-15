@@ -30,17 +30,10 @@
 namespace Gtk
 {
 
-#ifdef GLIBMM_PROPERTIES_ENABLED
 Glib::PropertyProxy_Base CellRendererPixbuf::_property_renderable()
 {
   return property_pixbuf();
 }
-#else
-Glib::ustring CellRendererPixbuf::_property_renderable()
-{
-  return "pixbuf";
-}
-#endif //GLIBMM_PROPERTIES_ENABLED
 
 } //namespace Gtk
 
@@ -86,23 +79,14 @@ const Glib::Class& CellRendererPixbuf_Class::init()
   return *this;
 }
 
+
 void CellRendererPixbuf_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* CellRendererPixbuf_Class::wrap_new(GObject* o)
@@ -137,6 +121,7 @@ GType CellRendererPixbuf::get_type()
 {
   return cellrendererpixbuf_class_.init().get_type();
 }
+
 
 GType CellRendererPixbuf::get_base_type()
 {
@@ -280,13 +265,6 @@ Glib::PropertyProxy_ReadOnly< Glib::RefPtr<Gio::Icon> > CellRendererPixbuf::prop
   return Glib::PropertyProxy_ReadOnly< Glib::RefPtr<Gio::Icon> >(this, "gicon");
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

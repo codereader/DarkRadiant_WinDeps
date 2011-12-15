@@ -29,14 +29,11 @@ public:
 
 protected:
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   //Callbacks (default signal handlers):
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
   //Callbacks (virtual functions):
-#ifdef GLIBMM_VFUNCS_ENABLED
   static gchar* get_current_uri_vfunc_callback(GtkRecentChooser* self);
   static void unselect_uri_vfunc_callback(GtkRecentChooser* self, const gchar* uri);
   static void select_all_vfunc_callback(GtkRecentChooser* self);
@@ -44,7 +41,6 @@ protected:
   static GtkRecentManager* get_recent_manager_vfunc_callback(GtkRecentChooser* self);
   static void add_filter_vfunc_callback(GtkRecentChooser* self, GtkRecentFilter* filter);
   static void remove_filter_vfunc_callback(GtkRecentChooser* self, GtkRecentFilter* filter);
-#endif //GLIBMM_VFUNCS_ENABLED
 };
 
 

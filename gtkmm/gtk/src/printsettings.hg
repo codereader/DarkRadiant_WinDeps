@@ -40,7 +40,7 @@ _WRAP_ENUM(NumberUpLayout, GtkNumberUpLayout)
  * next time your app runs, or even store them in a document. The predefined keys try to use shared 
  * values as much as possible so that moving such a document between systems still works. 
  *
- * @newin2p10
+ * @newin{2,10}
  *
  * @ingroup Printing
  */
@@ -50,9 +50,6 @@ class PrintSettings : public Glib::Object
 protected:
   _CTOR_DEFAULT
 
- //TODO: We need fuller information about the GError domains:
- //http://bugzilla.gnome.org/show_bug.cgi?id=544706
-
  /** Reads the print settings from the @a key_file.
   * Returns a new PrintSettings object with the restored settings,
   * or an empty RefPtr if an error occurred.
@@ -61,15 +58,11 @@ protected:
   * @param key_file The KeyFile to retrieve the settings from.
   * @result the restored PrintSettings
   *
-  * @throws KeyFileError
+  * @throws KeyFileError, FileError
   *
-  * @newin2p14
+  * @newin{2,14}
   */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static Glib::RefPtr<PrintSettings> create_from_key_file(const Glib::KeyFile& key_file);
-#else
-  static Glib::RefPtr<PrintSettings> create_from_key_file(const Glib::KeyFile& key_file, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
  /** Reads the print settings from the group @a group_name in @a key_file.
   * Returns a new PrintSettings object with the restored settings,
@@ -80,15 +73,11 @@ protected:
   * @param group_name The name of the group to use.
   * @result the restored PrintSettings
   *
-  * @throws KeyFileError
+  * @throws KeyFileError, FileError
   *
-  * @newin2p14
+  * @newin{2,14}
   */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static Glib::RefPtr<PrintSettings> create_from_key_file(const Glib::KeyFile& key_file, const Glib::ustring& group_name);
-#else
-  static Glib::RefPtr<PrintSettings> create_from_key_file(const Glib::KeyFile& key_file, const Glib::ustring& group_name, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   _IGNORE(gtk_print_settings_new_from_key_file)
 
  /** Reads the print settings from @a file_name. Returns a new PrintSettings
@@ -98,15 +87,11 @@ protected:
   * @param file_name The filename to read the settings from.
   * @result the restored PrintSettings
   *
-  * @throws KeyFileError
+  * @throws KeyFileError, FileError
   *
-  * @newin2p14
+  * @newin{2,14}
   */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static Glib::RefPtr<PrintSettings> create_from_file(const std::string& file_name);
-#else
-  static Glib::RefPtr<PrintSettings> create_from_file(const std::string& file_name, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   _IGNORE(gtk_print_settings_new_from_file)
 
 public:
@@ -162,15 +147,11 @@ public:
   * @param key_file The KeyFile to retrieve the settings from.
   * @result true on success.
   *
-  * @throws KeyFileError
+  * @throws KeyFileError, FileError
   *
-  * @newin2p14
+  * @newin{2,14}
   */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool load_from_key_file(const Glib::KeyFile& key_file);
-#else
-  bool load_from_key_file(const Glib::KeyFile& key_file, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
   //The save_ prefix was added to these functions to make them clearer. GTK+ didn't want to change them.
@@ -183,7 +164,7 @@ public:
   /** This function adds the print settings from @a settings to @a key_file,
    * in the "Print Settings" group.
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param key_file The Glib::KeyFile to save the print settings to.
    *
    * @deprecated Use the const version.
@@ -194,7 +175,7 @@ public:
   /** This function adds the print settings from @a settings to @a key_file,
    * in the "Print Settings" group.
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param key_file The Glib::KeyFile to save the print settings to.
    */
   void save_to_key_file(Glib::KeyFile& key_file) const;

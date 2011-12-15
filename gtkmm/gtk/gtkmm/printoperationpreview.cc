@@ -139,19 +139,14 @@ void PrintOperationPreview_Class::iface_init_function(void* g_iface, void*)
   //This is a temporary fix until I find out why I can not seem to derive a GtkFileChooser interface. murrayc
   g_assert(klass != 0); 
 
-#ifdef GLIBMM_VFUNCS_ENABLED
   klass->render_page = &render_page_vfunc_callback;
   klass->end_preview = &end_preview_vfunc_callback;
   klass->is_selected = &is_selected_vfunc_callback;
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->ready = &ready_callback;
   klass->got_page_size = &got_page_size_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
 void PrintOperationPreview_Class::render_page_vfunc_callback(GtkPrintOperationPreview* self, gint page_nr)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -184,7 +179,7 @@ void PrintOperationPreview_Class::render_page_vfunc_callback(GtkPrintOperationPr
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -226,7 +221,7 @@ void PrintOperationPreview_Class::end_preview_vfunc_callback(GtkPrintOperationPr
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -268,7 +263,7 @@ gboolean PrintOperationPreview_Class::is_selected_vfunc_callback(GtkPrintOperati
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
       g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -282,9 +277,7 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Ge
   typedef gboolean RType;
   return RType();
 }
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void PrintOperationPreview_Class::ready_callback(GtkPrintOperationPreview* self, GtkPrintContext* p0)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -317,7 +310,7 @@ void PrintOperationPreview_Class::ready_callback(GtkPrintOperationPreview* self,
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -360,7 +353,7 @@ void PrintOperationPreview_Class::got_page_size_callback(GtkPrintOperationPrevie
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_interface_peek_parent( // Get the parent interface of the interface (The original underlying C interface).
 g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Get the interface.
@@ -370,7 +363,6 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(self), CppObjectType::get_type()) // Ge
   if(base && base->got_page_size)
     (*base->got_page_size)(self, p0, p1);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* PrintOperationPreview_Class::wrap_new(GObject* object)
@@ -412,6 +404,7 @@ GType PrintOperationPreview::get_type()
   return printoperationpreview_class_.init().get_type();
 }
 
+
 GType PrintOperationPreview::get_base_type()
 {
   return gtk_print_operation_preview_get_type();
@@ -446,7 +439,6 @@ Glib::SignalProxy2< void,const Glib::RefPtr<PrintContext>&,const Glib::RefPtr<Pa
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gtk::PrintOperationPreview::on_ready(const Glib::RefPtr<PrintContext>& context)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -467,9 +459,7 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(gobject_), CppObjectType::get_type()) /
   if(base && base->got_page_size)
     (*base->got_page_size)(gobj(),Glib::unwrap(context),Glib::unwrap(page_setup));
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
-#ifdef GLIBMM_VFUNCS_ENABLED
 void Gtk::PrintOperationPreview::render_page_vfunc(int page_nr) 
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -503,7 +493,6 @@ g_type_interface_peek(G_OBJECT_GET_CLASS(gobject_), CppObjectType::get_type()) /
   typedef bool RType;
   return RType();
 }
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

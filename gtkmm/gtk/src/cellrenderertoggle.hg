@@ -45,6 +45,9 @@ public:
   _WRAP_METHOD(void set_radio(bool radio = true), gtk_cell_renderer_toggle_set_radio)
   _WRAP_METHOD(bool get_active() const, gtk_cell_renderer_toggle_get_active)
   _WRAP_METHOD(void set_active(bool setting = true), gtk_cell_renderer_toggle_set_active)
+  _WRAP_METHOD(bool get_activatable() const, gtk_cell_renderer_toggle_get_activatable)
+  _WRAP_METHOD(void set_activatable(bool setting = true), gtk_cell_renderer_toggle_set_activatable)
+
 
 #m4 _CONVERSION(`const char*',`const Glib::ustring&',__GCHARP_TO_USTRING)
    //TODO: Maybe the parameter should be a TreePath.
@@ -56,14 +59,11 @@ public:
 
   _WRAP_PROPERTY("activatable", bool)
   _WRAP_PROPERTY("active", bool)
+  _WRAP_PROPERTY("inconsistent", bool)
   _WRAP_PROPERTY("radio", bool)
   _WRAP_PROPERTY("indicator-size", int)
 
-#ifdef GLIBMM_PROPERTIES_ENABLED
   virtual Glib::PropertyProxy_Base _property_renderable();
-#else
-  virtual Glib::ustring _property_renderable();
-#endif
 };
 
 } /* namespace Gtk */

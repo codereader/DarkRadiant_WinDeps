@@ -29,20 +29,16 @@ public:
 
 protected:
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   //Callbacks (default signal handlers):
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
   //Callbacks (virtual functions):
-#ifdef GLIBMM_VFUNCS_ENABLED
   static GtkIconSize get_icon_size_vfunc_callback(GtkToolShell* self);
   static GtkOrientation get_orientation_vfunc_callback(GtkToolShell* self);
   static GtkToolbarStyle get_style_vfunc_callback(GtkToolShell* self);
   static GtkReliefStyle get_relief_style_vfunc_callback(GtkToolShell* self);
   static void rebuild_menu_vfunc_callback(GtkToolShell* self);
-#endif //GLIBMM_VFUNCS_ENABLED
 };
 
 

@@ -104,11 +104,20 @@ private:
 
   
 protected:
-  //TODO: Documentation:
+  /** Creates a new themed icon for @ iconname, and optionally all the names that can be created by shortening @a iconname at '-' characters.
+   *
+   * @param iconname A string containing an icon name.
+   * use_default_callbacks Whether to use all the names that can be created by shortening @a iconname at '-' characters.
+   */
   explicit ThemedIcon(const std::string& iconname, bool use_default_callbacks = false);
   
 
 public:
+  /** Creates a new themed icon for @ iconname, and optionally all the names that can be created by shortening @a iconname at '-' characters.
+   *
+   * @param iconname A string containing an icon name.
+   * use_default_callbacks Whether to use all the names that can be created by shortening @a iconname at '-' characters.
+   */
   
   static Glib::RefPtr<ThemedIcon> create(const std::string& iconname, bool use_default_callbacks =  false);
 
@@ -118,10 +127,10 @@ public:
   
   /** Prepend a name to the list of icons from within @a icon.
    * 
-   * &lt;note&gt;
+   * <note>
    * Note that doing so invalidates the hash computed by prior calls
    * to g_icon_hash().
-   * &lt;/note&gt;
+   * </note>
    * 
    * @newin{2,18}
    * @param iconname Name of icon to prepend to list of icons from within @a icon.
@@ -130,23 +139,24 @@ public:
   
   /** Append a name to the list of icons from within @a icon.
    * 
-   * &lt;note&gt;
+   * <note>
    * Note that doing so invalidates the hash computed by prior calls
    * to g_icon_hash().
-   * &lt;/note&gt;
+   * </note>
    * @param iconname Name of icon to append to list of icons from within @a icon.
    */
   void append_name(const std::string& iconname);
 
- 
+  //TODO: Use _WRAP_METHOD() instead, but:
+  //#m4 __CONVERSION(`const char*const*',`Glib::StringArrayHandle',`Glib::StringArrayHandle($3, Glib::OWNERSHIP_DEEP)')
   //TODO: gmmproc complains about the wrong number of arguments, but I can't see why. murrayc.
   //_WRAP_METHOD(Glib::StringArrayHandle get_names() const, g_themed_icon_get_names)
-
+  Glib::StringArrayHandle get_names() const;
+  
 
   //There are no signals.
 
-  //TODO: Remove these when we can break ABI. They are write-only and construct-only.
-  //gtkmmproc error: name : attempt to wrap write-only and construct-only property.
+  //The "name" property is write-only and construct-only so it should not be wrapped.
   //An array: This is awkward to wrap_WRAP_PROPERTY("names", )
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** Whether to use default fallbacks found by shortening the name at '-' characters. Ignores names after the first if multiple names are given.
@@ -163,17 +173,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

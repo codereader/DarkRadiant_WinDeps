@@ -85,23 +85,14 @@ const Glib::Class& Visual_Class::init()
   return *this;
 }
 
+
 void Visual_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Visual_Class::wrap_new(GObject* object)
@@ -130,6 +121,7 @@ Visual::Visual(GdkVisual* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 Visual::~Visual()
 {}
 
@@ -140,6 +132,7 @@ GType Visual::get_type()
 {
   return visual_class_.init().get_type();
 }
+
 
 GType Visual::get_base_type()
 {
@@ -163,7 +156,7 @@ Glib::RefPtr<Visual> Visual::get_system()
   Glib::RefPtr<Visual> retvalue = Glib::wrap(gdk_visual_get_system());
 
   if(retvalue)
-    retvalue->reference(); //The function does not do a ref for us.
+    retvalue->reference(); //The function does not do a ref for us
   return retvalue;
 }
 
@@ -174,7 +167,7 @@ Glib::RefPtr<Visual> Visual::get_best()
   Glib::RefPtr<Visual> retvalue = Glib::wrap(gdk_visual_get_best());
 
   if(retvalue)
-    retvalue->reference(); //The function does not do a ref for us.
+    retvalue->reference(); //The function does not do a ref for us
   return retvalue;
 }
 
@@ -185,7 +178,7 @@ Glib::RefPtr<Visual> Visual::get_best(int depth)
   Glib::RefPtr<Visual> retvalue = Glib::wrap(gdk_visual_get_best_with_depth(depth));
 
   if(retvalue)
-    retvalue->reference(); //The function does not do a ref for us.
+    retvalue->reference(); //The function does not do a ref for us
   return retvalue;
 }
 
@@ -196,7 +189,7 @@ Glib::RefPtr<Visual> Visual::get_best(VisualType visual_type)
   Glib::RefPtr<Visual> retvalue = Glib::wrap(gdk_visual_get_best_with_type(((GdkVisualType)(visual_type))));
 
   if(retvalue)
-    retvalue->reference(); //The function does not do a ref for us.
+    retvalue->reference(); //The function does not do a ref for us
   return retvalue;
 }
 
@@ -207,7 +200,7 @@ Glib::RefPtr<Visual> Visual::get_best(int depth, VisualType visual_type)
   Glib::RefPtr<Visual> retvalue = Glib::wrap(gdk_visual_get_best_with_both(depth, ((GdkVisualType)(visual_type))));
 
   if(retvalue)
-    retvalue->reference(); //The function does not do a ref for us.
+    retvalue->reference(); //The function does not do a ref for us
   return retvalue;
 }
 
@@ -239,12 +232,45 @@ Glib::RefPtr<const Screen> Visual::get_screen() const
   return const_cast<Visual*>(this)->get_screen();
 }
 
+VisualType Visual::get_visual_type() const
+{
+  return ((VisualType)(gdk_visual_get_visual_type(const_cast<GdkVisual*>(gobj()))));
+}
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+int Visual::get_depth() const
+{
+  return gdk_visual_get_depth(const_cast<GdkVisual*>(gobj()));
+}
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
+ByteOrder Visual::get_byte_order()
+{
+  return ((ByteOrder)(gdk_visual_get_byte_order(gobj())));
+}
+
+int Visual::get_colormap_size() const
+{
+  return gdk_visual_get_colormap_size(const_cast<GdkVisual*>(gobj()));
+}
+
+int Visual::get_bits_per_rgb() const
+{
+  return gdk_visual_get_bits_per_rgb(const_cast<GdkVisual*>(gobj()));
+}
+
+void Visual::get_red_pixel_details(guint32& mask, int& shift, int& precision) const
+{
+gdk_visual_get_red_pixel_details(const_cast<GdkVisual*>(gobj()), &(mask), &(shift), &(precision)); 
+}
+
+void Visual::get_green_pixel_details(guint32& mask, int& shift, int& precision) const
+{
+gdk_visual_get_green_pixel_details(const_cast<GdkVisual*>(gobj()), &(mask), &(shift), &(precision)); 
+}
+
+void Visual::get_blue_pixel_details(guint32& mask, int& shift, int& precision) const
+{
+gdk_visual_get_blue_pixel_details(const_cast<GdkVisual*>(gobj()), &(mask), &(shift), &(precision)); 
+}
 
 
 } // namespace Gdk

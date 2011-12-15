@@ -26,9 +26,8 @@
  */
 
 
-#include <gtkmm/treemodel.h>
 #include <gtkmm/treepath.h>
-
+#include <gtkmm/treemodel.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 extern "C" { typedef struct _GtkTreeRowReference GtkTreeRowReference; }
@@ -86,28 +85,30 @@ public:
   operator bool() const;
 
   
-  /** Return value: A current path, or <tt>0</tt>.
+  /** Returns a path that the row reference currently points to, or <tt>0</tt> if the
+   * path pointed to is no longer valid.
    * @return A current path, or <tt>0</tt>.
    */
   TreeModel::Path get_path() const;
 
   
-  /** Return value: the model
-   * @return The model
+  /** Returns the model that the row reference is monitoring.
    * 
-   * @newin2p8.
+   * @newin{2,8}
+   * @return The model.
    */
   Glib::RefPtr<TreeModel> get_model();
   
-  /** Return value: the model
-   * @return The model
+  /** Returns the model that the row reference is monitoring.
    * 
-   * @newin2p8.
+   * @newin{2,8}
+   * @return The model.
    */
   Glib::RefPtr<const TreeModel> get_model() const;
 
   
-  /** Return value: <tt>true</tt> if @a reference points to a valid path.
+  /** Returns <tt>true</tt> if the @a reference is non-<tt>0</tt> and refers to a current valid
+   * path.
    * @return <tt>true</tt> if @a reference points to a valid path.
    */
   bool is_valid() const;

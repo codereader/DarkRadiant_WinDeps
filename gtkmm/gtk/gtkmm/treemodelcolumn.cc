@@ -1,4 +1,4 @@
-/* $Id: treemodelcolumn.cc 1082 2009-01-19 17:55:19Z murrayc $ */
+/* $Id$ */
 
 /* Copyright (c) 2002 The gtkmm Development Team
  *

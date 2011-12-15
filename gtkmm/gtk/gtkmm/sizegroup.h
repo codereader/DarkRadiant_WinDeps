@@ -43,7 +43,7 @@ namespace Gtk
 {
 
 
-/** @addtogroup gtkmmEnums Enums and Flags */
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
 
 /**
  * @ingroup gtkmmEnums
@@ -126,6 +126,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -168,16 +170,16 @@ public:
   /** Sets whether unmapped widgets should be ignored when
    * calculating the size.
    * 
-   * @newin2p8
+   * @newin{2,8}
    * @param ignore_hidden Whether unmapped widgets should be ignored
    * when calculating the size.
    */
-  void set_ignore_hidden(bool ignore_hidden = true);
+  void set_ignore_hidden(bool ignore_hidden =  true);
   
-  /** Returns: <tt>true</tt> if invisible widgets are ignored.
-   * @return <tt>true</tt> if invisible widgets are ignored.
+  /** Returns if invisible widgets are ignored when calculating the size.
    * 
-   * @newin2p8.
+   * @newin{2,8}
+   * @return <tt>true</tt> if invisible widgets are ignored.
    */
   bool get_ignore_hidden() const;
 
@@ -200,19 +202,19 @@ public:
   void remove_widget(Widget& widget);
 
   
-  /** Return value: a SList of widgets. The list is owned by GTK+
-   * @return A SList of widgets. The list is owned by GTK+ 
-   * and should not be modified.
+  /** Returns the list of widgets associated with @a size_group.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return A SList of
+   * widgets. The list is owned by GTK+ and should not be modified.
    */
   Glib::SListHandle<Widget*> get_widgets();
   
-  /** Return value: a SList of widgets. The list is owned by GTK+
-   * @return A SList of widgets. The list is owned by GTK+ 
-   * and should not be modified.
+  /** Returns the list of widgets associated with @a size_group.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return A SList of
+   * widgets. The list is owned by GTK+ and should not be modified.
    */
   Glib::SListHandle<const Widget*> get_widgets() const;
 
@@ -237,7 +239,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If TRUE
+/** If TRUE, unmapped widgets are ignored when determining the size of the group.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -247,7 +249,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If TRUE
+/** If TRUE, unmapped widgets are ignored when determining the size of the group.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -261,17 +263,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

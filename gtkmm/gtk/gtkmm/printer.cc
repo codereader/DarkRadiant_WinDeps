@@ -30,22 +30,18 @@ static gboolean SignalProxy_Custom_gtk_callback(GtkPrinter* gtk_printer, gpointe
 {
   const Gtk::SlotPrinterEnumerator* the_slot = static_cast<Gtk::SlotPrinterEnumerator*>(data);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     // Create a suitable C++ instance to pass to the C++ method;
     Glib::RefPtr<Gtk::Printer> printer = Glib::wrap(gtk_printer, true);
 
     return (*the_slot)(printer);
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
     return false; // arbitrary default;
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
 static void SignalProxy_Custom_gtk_callback_destroy(void* data)
@@ -161,23 +157,17 @@ const Glib::Class& Printer_Class::init()
   return *this;
 }
 
+
 void Printer_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->details_acquired = &details_acquired_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Printer_Class::details_acquired_callback(GtkPrinter* self, gboolean p0)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -210,7 +200,7 @@ void Printer_Class::details_acquired_callback(GtkPrinter* self, gboolean p0)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -219,7 +209,6 @@ void Printer_Class::details_acquired_callback(GtkPrinter* self, gboolean p0)
   if(base && base->details_acquired)
     (*base->details_acquired)(self, p0);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Printer_Class::wrap_new(GObject* object)
@@ -248,6 +237,7 @@ Printer::Printer(GtkPrinter* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 Printer::~Printer()
 {}
 
@@ -258,6 +248,7 @@ GType Printer::get_type()
 {
   return printer_class_.init().get_type();
 }
+
 
 GType Printer::get_base_type()
 {
@@ -365,6 +356,11 @@ PrintCapabilities Printer::get_capabilities() const
   return (PrintCapabilities)gtk_printer_get_capabilities(const_cast<GtkPrinter*>(gobj()));
 }
 
+bool Printer::get_hard_margins(double& top, double& bottom, double& left, double& right) const
+{
+  return gtk_printer_get_hard_margins(const_cast<GtkPrinter*>(gobj()), &(top), &(bottom), &(left), &(right));
+}
+
 
 Glib::SignalProxy1< void,bool > Printer::signal_details_acquired()
 {
@@ -428,8 +424,21 @@ Glib::PropertyProxy_ReadOnly<bool> Printer::property_accepts_ps() const
 }
 #endif //GLIBMM_PROPERTIES_ENABLED
 
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> Printer::property_paused() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "paused");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> Printer::property_accepting_jobs() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "accepting-jobs");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+
 void Gtk::Printer::on_details_acquired(bool success)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -439,10 +448,6 @@ void Gtk::Printer::on_details_acquired(bool success)
   if(base && base->details_acquired)
     (*base->details_acquired)(gobj(),static_cast<int>(success));
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

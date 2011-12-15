@@ -44,11 +44,15 @@ Glib::RefPtr<Window> Display::get_selection_owner(const Glib::ustring& selection
 }
 
 #ifdef G_OS_WIN32
+#ifndef GDKMM_DISABLE_DEPRECATED
+
 guint32 Display::get_drag_protocol(guint32 xid, GdkDragProtocol& protocol)
 {
   return GPOINTER_TO_UINT(gdk_drag_get_protocol_for_display(gobj(), GUINT_TO_POINTER(xid), &(protocol)));
 }
+#endif // GDKMM_DISABLE_DEPRECATED
 
+  
 void Display::selection_send_notify(guint32 requestor, Glib::ustring& selection, Glib::ustring& target, Glib::ustring& property, guint32 time_)
 {
   gdk_selection_send_notify_for_display(gobj(), GUINT_TO_POINTER(requestor), Gdk::AtomString::to_c_type(selection), Gdk::AtomString::to_c_type(target), Gdk::AtomString::to_c_type(property), time_);
@@ -59,7 +63,7 @@ void Display::selection_send_notify(GdkNativeWindow requestor, Glib::ustring& se
 {
   gdk_selection_send_notify_for_display(gobj(), requestor, Gdk::AtomString::to_c_type(selection), Gdk::AtomString::to_c_type(target), Gdk::AtomString::to_c_type(property), time_);
 }
-
+   
 void Display::get_pointer(Glib::RefPtr<Screen>& screen, int& x, int& y, ModifierType& mask)
 {
   GdkScreen* cScreen = 0;
@@ -97,10 +101,14 @@ Glib::RefPtr<const Window> Display::get_window_at_pointer() const
   return retvalue;
 }
 
+#ifndef GDKMM_DISABLE_DEPRECATED
+
 GdkDisplayPointerHooks*  Display::unset_pointer_hooks()
 {
   return gdk_display_set_pointer_hooks(gobj(), 0 /* See GDK docs */);  
 }
+#endif // GDKMM_DISABLE_DEPRECATED
+
 
  void Display::store_clipboard(const Glib::RefPtr<Gdk::Window>& clipboard_window, guint32 time_)
  {
@@ -210,23 +218,17 @@ const Glib::Class& Display_Class::init()
   return *this;
 }
 
+
 void Display_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->closed = &closed_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Display_Class::closed_callback(GdkDisplay* self, gboolean p0)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -259,7 +261,7 @@ void Display_Class::closed_callback(GdkDisplay* self, gboolean p0)
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -268,7 +270,6 @@ void Display_Class::closed_callback(GdkDisplay* self, gboolean p0)
   if(base && base->closed)
     (*base->closed)(self, p0);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Display_Class::wrap_new(GObject* object)
@@ -297,6 +298,7 @@ Display::Display(GdkDisplay* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 Display::~Display()
 {}
 
@@ -307,6 +309,7 @@ GType Display::get_type()
 {
   return display_class_.init().get_type();
 }
+
 
 GType Display::get_base_type()
 {
@@ -330,7 +333,7 @@ Glib::RefPtr<Display> Display::open(const Glib::ustring& display_name)
   Glib::RefPtr<Display> retvalue = Glib::wrap(gdk_display_open(display_name.c_str()));
 
   if(retvalue)
-    retvalue->reference(); //The function does not do a ref for us.
+    retvalue->reference(); //The function does not do a ref for us
   return retvalue;
 }
 
@@ -461,7 +464,7 @@ Glib::RefPtr<Display> Display::get_default()
   Glib::RefPtr<Display> retvalue = Glib::wrap(gdk_display_get_default());
 
   if(retvalue)
-    retvalue->reference(); //The function does not do a ref for us.
+    retvalue->reference(); //The function does not do a ref for us
   return retvalue;
 }
 
@@ -489,7 +492,7 @@ Glib::RefPtr<const Device> Display::get_core_pointer() const
 Glib::RefPtr<Window> Display::get_window_at_pointer(int& win_x, int& win_y)
 {
 
-  Glib::RefPtr<Window> retvalue = Glib::wrap((GdkWindowObject*)(gdk_display_get_window_at_pointer(gobj(), &win_x, &win_y)));
+  Glib::RefPtr<Window> retvalue = Glib::wrap((GdkWindowObject*)(gdk_display_get_window_at_pointer(gobj(), &(win_x), &(win_y))));
   if(retvalue)
     retvalue->reference(); //The function does not do a ref for us.
   return retvalue;
@@ -506,10 +509,14 @@ void Display::warp_pointer(const Glib::RefPtr<Screen>& screen, int x, int y)
 gdk_display_warp_pointer(gobj(), Glib::unwrap(screen), x, y); 
 }
 
+#ifndef GDKMM_DISABLE_DEPRECATED
+
 GdkDisplayPointerHooks* Display::set_pointer_hooks(const GdkDisplayPointerHooks* new_hooks)
 {
   return gdk_display_set_pointer_hooks(gobj(), new_hooks);
 }
+
+#endif // GDKMM_DISABLE_DEPRECATED
 
 Glib::RefPtr<Display> Display::open_default_libgtk_only()
 {
@@ -517,7 +524,7 @@ Glib::RefPtr<Display> Display::open_default_libgtk_only()
   Glib::RefPtr<Display> retvalue = Glib::wrap(gdk_display_open_default_libgtk_only());
 
   if(retvalue)
-    retvalue->reference(); //The function does not do a ref for us.
+    retvalue->reference(); //The function does not do a ref for us
   return retvalue;
 }
 
@@ -624,7 +631,6 @@ Glib::SignalProxy1< void,bool > Display::signal_closed()
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gdk::Display::on_closed(bool is_error)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -634,10 +640,6 @@ void Gdk::Display::on_closed(bool is_error)
   if(base && base->closed)
     (*base->closed)(gobj(),static_cast<int>(is_error));
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gdk

@@ -18,9 +18,11 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <glibmm/vectorutils.h>
+
+#include <gdkmm/window.h>
 #include <gdk/gdk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-
 
 namespace
 {
@@ -30,18 +32,14 @@ static void pixbuf_destroy_data_callback(guint8* pixels, void* user_data)
   Gdk::Pixbuf::SlotDestroyData *const slot = static_cast<Gdk::Pixbuf::SlotDestroyData*>(user_data);
   g_return_if_fail(slot != 0);
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     (*slot)(pixels); // invoke callback
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   delete slot;
 }
@@ -52,83 +50,20 @@ static void pixbuf_destroy_data_callback(guint8* pixels, void* user_data)
 namespace Gdk
 {
 
-_DEPRECATE_IFDEF_START
-Pixbuf::Pixbuf(const Glib::RefPtr<Image>& src,
-               const Glib::RefPtr<Colormap>& cmap,
-               int src_x, int src_y,
-               int dest_x, int dest_y,
-               int width, int height)
-:
-  Object((GObject*) gdk_pixbuf_get_from_image(
-      0, src->gobj(), cmap->gobj(), src_x, src_y, dest_x, dest_y, width, height))
-{}
-_DEPRECATE_IFDEF_END
-
-Pixbuf::Pixbuf(const Glib::RefPtr<Image>& src,
-               const Glib::RefPtr<Colormap>& cmap,
+Pixbuf::Pixbuf(const Glib::RefPtr<Window>& src,
                int src_x, int src_y,
                int width, int height)
 :
-  Object((GObject*) gdk_pixbuf_get_from_image(
-      0, src->gobj(), cmap->gobj(), src_x, src_y, 0, 0, width, height))
+  Object((GObject*) gdk_pixbuf_get_from_window(
+    src->gobj(), src_x, src_y, width, height))
 {}
 
-Pixbuf::Pixbuf(const Glib::RefPtr<Image>& src,
-               int src_x, int src_y,
-               int width, int height)
+Pixbuf::Pixbuf(const Cairo::RefPtr<Cairo::Surface>& src,
+         int src_x, int src_y, int width, int height)
 :
-  Object((GObject*) gdk_pixbuf_get_from_image(
-      0, src->gobj(), 0, src_x, src_y, 0, 0, width, height))
+  Object((GObject*) gdk_pixbuf_get_from_surface(
+    src->cobj(), src_x, src_y, width, height))
 {}
-
-_DEPRECATE_IFDEF_START
-Pixbuf::Pixbuf(const Glib::RefPtr<Drawable>& src,
-               const Glib::RefPtr<Colormap>& cmap,
-               int src_x, int src_y,
-               int dest_x, int dest_y,
-               int width, int height)
-:
-  Object((GObject*) gdk_pixbuf_get_from_drawable(
-      0, src->gobj(), cmap->gobj(), src_x, src_y, dest_x, dest_y, width, height))
-{}
-_DEPRECATE_IFDEF_END
-
-Pixbuf::Pixbuf(const Glib::RefPtr<Drawable>& src,
-               const Glib::RefPtr<Colormap>& cmap,
-               int src_x, int src_y,
-               int width, int height)
-:
-  Object((GObject*) gdk_pixbuf_get_from_drawable(
-      0, src->gobj(), cmap->gobj(), src_x, src_y, 0, 0, width, height))
-{}
-
-Pixbuf::Pixbuf(const Glib::RefPtr<Drawable>& src,
-               int src_x, int src_y,
-               int width, int height)
-:
-  Object((GObject*) gdk_pixbuf_get_from_drawable(
-      0, src->gobj(), 0, src_x, src_y, 0, 0, width, height))
-{}
-
-_DEPRECATE_IFDEF_START
-Glib::RefPtr<Pixbuf> Pixbuf::create(const Glib::RefPtr<Drawable>& src,
-                                    const Glib::RefPtr<Colormap>& cmap,
-                                    int src_x, int src_y,
-                                    int dest_x, int dest_y,
-                                    int width, int height)
-{
-  return Glib::RefPtr<Pixbuf>( new Pixbuf(src, cmap, src_x, src_y, dest_x, dest_y, width, height) );
-}
-
-Glib::RefPtr<Pixbuf> Pixbuf::create(const Glib::RefPtr<Image>& src,
-                                    const Glib::RefPtr<Colormap>& cmap,
-                                    int src_x, int src_y,
-                                    int dest_x, int dest_y,
-                                    int width, int height)
-{
-  return Glib::RefPtr<Pixbuf>( new Pixbuf(src, cmap, src_x, src_y, dest_x, dest_y, width, height) );
-}
-_DEPRECATE_IFDEF_END
 
 Glib::RefPtr<Pixbuf> Pixbuf::create_from_data(const guint8* data, Colorspace colorspace,
                                               bool has_alpha, int bits_per_sample,
@@ -153,88 +88,57 @@ Glib::RefPtr<Pixbuf> Pixbuf::create_from_data(const guint8* data, Colorspace col
   return Glib::wrap(pixbuf);
 }
 
-void Pixbuf::render_pixmap_and_mask_for_colormap(const Glib::RefPtr<Colormap>& colormap,
-                                                 Glib::RefPtr<Pixmap>& pixmap_return,
-                                                 Glib::RefPtr<Bitmap>& mask_return,
-                                                 int alpha_threshold)
+Glib::RefPtr<Pixbuf> Pixbuf::create_from_stream(const Glib::RefPtr<Gio::InputStream>& stream)
 {
-  GdkPixmap* pPixmap = 0;
-  GdkBitmap* pBitmap = 0;
+  GError* gerror = 0;
+  Glib::RefPtr<Pixbuf> retvalue = Glib::wrap(gdk_pixbuf_new_from_stream(const_cast<GInputStream*>(Glib::unwrap(stream)), 0, &(gerror)));
 
-  gdk_pixbuf_render_pixmap_and_mask_for_colormap(
-      gobj(), colormap->gobj(), &pPixmap, &pBitmap, alpha_threshold);
+  if(gerror)
+    ::Glib::Error::throw_exception(gerror);
 
-  pixmap_return = Glib::wrap((GdkPixmapObject*) pPixmap);
-  mask_return   = Glib::RefPtr<Gdk::Bitmap>::cast_dynamic(Glib::wrap((GdkPixmapObject*) pBitmap));
+  return retvalue;
 }
 
-void Pixbuf::render_pixmap_and_mask(Glib::RefPtr<Pixmap>& pixmap_return,
-                                    Glib::RefPtr<Bitmap>& mask_return,
-                                    int alpha_threshold)
+Glib::RefPtr<Pixbuf> Pixbuf::create_from_stream_at_scale(const Glib::RefPtr<Gio::InputStream>& stream, int width, int height, bool preserve_aspect_ratio)
 {
-  GdkPixmap* pPixmap = 0;
-  GdkBitmap* pBitmap = 0;
+  GError* gerror = 0;
+  Glib::RefPtr<Pixbuf> retvalue = Glib::wrap(gdk_pixbuf_new_from_stream_at_scale(const_cast<GInputStream*>(Glib::unwrap(stream)), width, height, static_cast<int>(preserve_aspect_ratio), 0, &(gerror)));
 
-  gdk_pixbuf_render_pixmap_and_mask(gobj(), &pPixmap, &pBitmap, alpha_threshold);
+  if(gerror)
+    ::Glib::Error::throw_exception(gerror);
 
-  pixmap_return = Glib::wrap((GdkPixmapObject*) pPixmap);
-  mask_return   = Glib::RefPtr<Gdk::Bitmap>::cast_dynamic(Glib::wrap((GdkPixmapObject*) pBitmap));
+  return retvalue;
 }
 
-
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void Pixbuf::save(const std::string& filename, const Glib::ustring& type)
-#else
-void Pixbuf::save(const std::string& filename, const Glib::ustring& type, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
   gdk_pixbuf_savev(gobj(), filename.c_str(), type.c_str(), 0, 0, &gerror);
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void Pixbuf::save(const std::string& filename, const Glib::ustring& type,
-                  const Glib::StringArrayHandle& option_keys,
-                  const Glib::StringArrayHandle& option_values)
-#else
-void Pixbuf::save(const std::string& filename, const Glib::ustring& type,
-                  const Glib::StringArrayHandle& option_keys,
-                  const Glib::StringArrayHandle& option_values, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
+                  const std::vector<Glib::ustring>& option_keys,
+                  const std::vector<Glib::ustring>& option_values)
 {
   GError* gerror = 0;
 
   gdk_pixbuf_savev(
       gobj(), filename.c_str(), type.c_str(),
-      const_cast<char**>(option_keys.data()), const_cast<char**>(option_values.data()),
+      const_cast<char**>(Glib::ArrayHandler<Glib::ustring>::vector_to_array(option_keys).data ()),
+      const_cast<char**>(Glib::ArrayHandler<Glib::ustring>::vector_to_array(option_values).data ()),
       &gerror);
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void Pixbuf::save_to_buffer(gchar*& buffer, gsize& buffer_size,
                             const Glib::ustring& type)
-#else
-void Pixbuf::save_to_buffer(gchar*& buffer, gsize& buffer_size,
-                            const Glib::ustring& type, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 {
   GError* gerror = 0;
 
@@ -243,48 +147,31 @@ void Pixbuf::save_to_buffer(gchar*& buffer, gsize& buffer_size,
       type.c_str(),
       &gerror, NULL);
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 void Pixbuf::save_to_buffer(gchar*& buffer, gsize& buffer_size,
                             const Glib::ustring& type,
-                            const Glib::StringArrayHandle& option_keys,
-                            const Glib::StringArrayHandle& option_values)
-#else
-void Pixbuf::save_to_buffer(gchar*& buffer, gsize& buffer_size,
-                            const Glib::ustring& type,
-                            const Glib::StringArrayHandle& option_keys,
-                            const Glib::StringArrayHandle& option_values, std::auto_ptr<Glib::Error>& error)
-#endif //GLIBMM_EXCEPTIONS_ENABLED
+                            const std::vector<Glib::ustring>& option_keys,
+                            const std::vector<Glib::ustring>& option_values)
 {
   GError* gerror = 0;
 
   gdk_pixbuf_save_to_bufferv(
       gobj(), &buffer, &buffer_size,
       type.c_str(),
-      const_cast<char**>(option_keys.data()), const_cast<char**>(option_values.data()),
+      const_cast<char**>(Glib::ArrayHandler<Glib::ustring>::vector_to_array(option_keys).data ()),
+      const_cast<char**>(Glib::ArrayHandler<Glib::ustring>::vector_to_array(option_values).data ()),
       &gerror);
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   if(gerror)
     ::Glib::Error::throw_exception(gerror);
-#else
-  if(gerror)
-    error = ::Glib::Error::throw_exception(gerror);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
-Pixbuf::SListHandle_PixbufFormat Pixbuf::get_formats()
+std::vector<PixbufFormat> Pixbuf::get_formats()
 {
-  return SListHandle_PixbufFormat(gdk_pixbuf_get_formats(), Glib::OWNERSHIP_SHALLOW);
+  return Glib::SListHandler<PixbufFormat, PixbufFormatTraits>::slist_to_vector(gdk_pixbuf_get_formats(), Glib::OWNERSHIP_SHALLOW);
 }
 
 } // namespace Gdk
-

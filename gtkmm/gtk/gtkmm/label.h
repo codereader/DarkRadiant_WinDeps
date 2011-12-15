@@ -84,6 +84,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -96,18 +98,12 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_populate_popup(Menu* menu);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -146,15 +142,9 @@ public:
   Label(const Glib::ustring& label, AlignmentEnum xalign, AlignmentEnum yalign = ALIGN_CENTER, bool mnemonic = false);
 
 
-  /// Doesn't use markup.
-  
-  /** Sets the text within the Gtk::Label widget. It overwrites any text that
-   * was there before.  
-   * 
-   * This will also clear any previously set mnemonic accelerators.
-   * @param str The text you want to set.
+  /** Doesn't use markup.
    */
-  void set_text(const Glib::ustring &str);
+  void set_text(const Glib::ustring & str);
   
   /** Fetches the text from a label widget, as displayed on the
    * screen. This does not include any embedded underlines
@@ -167,12 +157,12 @@ public:
   /** Sets a Pango::AttrList; the attributes in the list are applied to the
    * label text. 
    * 
-   * <note><para>The attributes set with this function will be applied
+   * <note>The attributes set with this function will be applied
    * and merged with any other attributes previously effected by way
    * of the Gtk::Label:use-underline or Gtk::Label:use-markup properties.
    * While it is not recommended to mix markup strings with manually set
    * attributes, if you must; know that the attributes will be applied
-   * to the label after the markup string is parsed.</para></note>
+   * to the label after the markup string is parsed.</note>
    * @param attrs A Pango::AttrList.
    */
   void set_attributes(Pango::AttrList& attrs);
@@ -183,7 +173,8 @@ public:
    * (see set_markup()). If you want to get the
    * effective attributes for the label, use
    * pango_layout_get_attribute (gtk_label_get_layout (label)).
-   * @return The attribute list, or <tt>0</tt> if none was set.
+   * @return The attribute list, or <tt>0</tt>
+   * if none was set.
    */
   Pango::AttrList get_attributes() const;
 
@@ -203,30 +194,21 @@ public:
    */
   Glib::ustring get_label() const;
   
-  /** Parses @a str which is marked up with the <link
-   * linkend="PangoMarkupFormat">Pango text markup language</link>, setting the
-   * label's text and attribute list based on the parse results. If the @a str is
-   * external data, you may need to escape it with Glib::markup_escape_text() or
-   * Glib::markup_printf_escaped()<!-- -->:
-   * |[
-   * char *markup;
-   * 
-   * markup = g_markup_printf_escaped ("<span style=\"italic\">%s</span>", str);
+  /** Parses @a str which is marked up with the ", str);
    * gtk_label_set_markup (GTK_LABEL (label), markup);
    * g_free (markup);
    * ]|
-   * @param str A markup string (see <link linkend="PangoMarkupFormat">Pango markup format</link>).
+   * @param str A markup string (see ).
    */
   void set_markup(const Glib::ustring& str);
   
-  /** Sets whether the text of the label contains markup in <link
-   * linkend="PangoMarkupFormat">Pango's text markup
-   * language</link>. See set_markup().
+  /** Sets whether the text of the label contains markup in . See set_markup().
    * @param setting <tt>true</tt> if the label's text should be parsed for markup.
    */
-  void set_use_markup(bool setting = true);
+  void set_use_markup(bool setting =  true);
   
-  /** Return value: <tt>true</tt> if the label's text will be parsed for markup.
+  /** Returns whether the label's text is interpreted as marked up with
+   * the . See set_use_markup().
    * @return <tt>true</tt> if the label's text will be parsed for markup.
    */
   bool get_use_markup() const;
@@ -235,28 +217,30 @@ public:
    * used for the mnemonic accelerator key.
    * @param setting <tt>true</tt> if underlines in the text indicate mnemonics.
    */
-  void set_use_underline(bool setting = true);
+  void set_use_underline(bool setting =  true);
   
-  /** Return value: <tt>true</tt> whether an embedded underline in the label indicates
+  /** Returns whether an embedded underline in the label indicates a
+   * mnemonic. See set_use_underline().
    * @return <tt>true</tt> whether an embedded underline in the label indicates
    * the mnemonic accelerator keys.
    */
   bool get_use_underline() const;
 
   
-  /** Parses @a str which is marked up with the <link linkend="PangoMarkupFormat">Pango text markup language</link>,
+  /** Parses @a str which is marked up with the ,
    * setting the label's text and attribute list based on the parse results.
    * If characters in @a str are preceded by an underscore, they are underlined
    * indicating that they represent a keyboard accelerator called a mnemonic.
    * 
    * The mnemonic key can be used to activate another widget, chosen 
    * automatically, or explicitly using set_mnemonic_widget().
-   * @param str A markup string (see <link linkend="PangoMarkupFormat">Pango markup format</link>).
+   * @param str A markup string (see ).
    */
   void set_markup_with_mnemonic(const Glib::ustring& str);
   
   /** If the label has been set so that it has an mnemonic key this function
-   * Returns: GDK keyval usable for accelerators, or #GDK_VoidSymbol
+   * returns the keyval used for the mnemonic accelerator. If there is no
+   * mnemonic set up it returns #GDK_VoidSymbol.
    * @return GDK keyval usable for accelerators, or #GDK_VoidSymbol.
    */
   guint get_mnemonic_keyval() const;
@@ -281,15 +265,15 @@ public:
   
   /** Retrieves the target of the mnemonic (keyboard shortcut) of this
    * label. See set_mnemonic_widget().
-   * @return The target of the label's mnemonic, or <tt>0</tt> if none
-   * has been set and the default algorithm will be used.
+   * @return The target of the label's mnemonic,
+   * or <tt>0</tt> if none has been set and the default algorithm will be used.
    */
   Widget* get_mnemonic_widget();
   
   /** Retrieves the target of the mnemonic (keyboard shortcut) of this
    * label. See set_mnemonic_widget().
-   * @return The target of the label's mnemonic, or <tt>0</tt> if none
-   * has been set and the default algorithm will be used.
+   * @return The target of the label's mnemonic,
+   * or <tt>0</tt> if none has been set and the default algorithm will be used.
    */
   const Widget* get_mnemonic_widget() const;
   
@@ -312,7 +296,7 @@ public:
    */
   void set_justify(Justification jtype);
   
-  /** Return value: Gtk::Justification
+  /** Returns the justification of the label. See set_justify().
    * @return Gtk::Justification.
    */
   Justification get_justify() const;
@@ -321,47 +305,47 @@ public:
   /** Sets the mode used to ellipsize (add an ellipsis: "...") to the text 
    * if there is not enough space to render the entire string.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param mode A Pango::EllipsizeMode.
    */
   void set_ellipsize(Pango::EllipsizeMode mode);
   
-  /** Return value: Pango::EllipsizeMode
-   * @return Pango::EllipsizeMode
+  /** Returns the ellipsizing position of the label. See set_ellipsize().
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return Pango::EllipsizeMode.
    */
   Pango::EllipsizeMode get_ellipsize() const;
 
   
   /** Sets the desired width in characters of @a label to @a n_chars.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param n_chars The new desired width, in characters.
    */
   void set_width_chars(int n_chars);
   
   /** Retrieves the desired width of @a label, in characters. See
    * set_width_chars().
-   * @return The width of the label in characters.
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return The width of the label in characters.
    */
   int get_width_chars() const;
 
   
   /** Sets the desired maximum width in characters of @a label to @a n_chars.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param n_chars The new desired maximum width, in characters.
    */
   void set_max_width_chars(int n_chars);
   
   /** Retrieves the desired maximum width of @a label, in characters. See
    * set_width_chars().
-   * @return The maximum width of the label in characters.
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return The maximum width of the label in characters.
    */
   int get_max_width_chars() const;
 
@@ -379,9 +363,10 @@ public:
    * set the label's width using Gtk::Widget::set_size_request().
    * @param wrap The setting.
    */
-  void set_line_wrap(bool wrap = true);
+  void set_line_wrap(bool wrap =  true);
   
-  /** Return value: <tt>true</tt> if the lines of the label are automatically wrapped.
+  /** Returns whether lines in the label are automatically wrapped. 
+   * See set_line_wrap().
    * @return <tt>true</tt> if the lines of the label are automatically wrapped.
    */
   bool get_line_wrap() const;
@@ -390,15 +375,15 @@ public:
    * the line wrapping is done. The default is Pango::WRAP_WORD which means
    * wrap on word boundaries.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param wrap_mode The line wrapping mode.
    */
   void set_line_wrap_mode(Pango::WrapMode wrap_mode);
   
-  /** Return value: <tt>true</tt> if the lines of the label are automatically wrapped.
-   * @return <tt>true</tt> if the lines of the label are automatically wrapped.
+  /** Returns line wrap mode used by the label. See set_line_wrap_mode().
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return <tt>true</tt> if the lines of the label are automatically wrapped.
    */
   Pango::WrapMode get_line_wrap_mode() const;
   
@@ -406,7 +391,7 @@ public:
    * copy-and-paste.
    * @param setting <tt>true</tt> to allow selecting text in the label.
    */
-  void set_selectable(bool setting = true);
+  void set_selectable(bool setting =  true);
   
   /** Gets the value set by set_selectable().
    * @return <tt>true</tt> if the user can copy text from the label.
@@ -418,7 +403,7 @@ public:
    * setting for the label is ignored if the label is selectable,
    * wrapped, or ellipsized.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param angle The angle that the baseline of the label makes with
    * the horizontal, in degrees, measured counterclockwise.
    */
@@ -426,9 +411,9 @@ public:
   
   /** Gets the angle of rotation for the label. See
    * set_angle().
-   * @return The angle of rotation for the label
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return The angle of rotation for the label.
    */
   double get_angle() const;
   
@@ -490,17 +475,49 @@ public:
   
   /** Sets whether the label is in single line mode.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param single_line_mode <tt>true</tt> if the label should be in single line mode.
    */
-  void set_single_line_mode(bool single_line_mode = true);
+  void set_single_line_mode(bool single_line_mode =  true);
   
-  /** Return value: <tt>true</tt> when the label is in single line mode.
-   * @return <tt>true</tt> when the label is in single line mode.
+  /** Returns whether the label is in single line mode.
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return <tt>true</tt> when the label is in single line mode.
    */
   bool get_single_line_mode() const;
+  
+  
+  /** Returns the URI for the currently active link in the label.
+   * The active link is the one under the mouse pointer or, in a
+   * selectable label, the link in which the text cursor is currently
+   * positioned.
+   * 
+   * This function is intended for use in a Gtk::Label::activate-link handler
+   * or for use in a Gtk::Widget::query-tooltip handler.
+   * 
+   * @newin{2,18}
+   * @return The currently active URI. The string is owned by GTK+ and must
+   * not be freed or modified.
+   */
+  Glib::ustring get_current_uri() const;
+
+  
+  /** Sets whether the label should keep track of clicked
+   * links (and use a different color for them).
+   * 
+   * @newin{2,18}
+   * @param track_links <tt>true</tt> to track visited links.
+   */
+  void set_track_visited_links(bool track_links =  true);
+  
+  /** Returns whether the label is currently keeping track
+   * of clicked links.
+   * 
+   * @newin{2,18}
+   * @return <tt>true</tt> if clicked links are remembered.
+   */
+  bool get_track_visited_links() const;
 
   
   /**
@@ -509,6 +526,14 @@ public:
    */
 
   Glib::SignalProxy1< void,Menu* > signal_populate_popup();
+
+
+  /**
+   * @par Prototype:
+   * <tt>bool on_my_%activate_link(const Glib::ustring& uri)</tt>
+   */
+
+  Glib::SignalProxy1< bool,const Glib::ustring& > signal_activate_link();
 
 
   //Keybinding signals:
@@ -575,7 +600,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If set
+/** If set, an underline in the text indicates the next character should be used for the mnemonic accelerator key.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -585,7 +610,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If set
+/** If set, an underline in the text indicates the next character should be used for the mnemonic accelerator key.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -626,7 +651,7 @@ public:
 
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If set
+/** If set, wrap lines if the text becomes too wide.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -636,7 +661,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If set
+/** If set, wrap lines if the text becomes too wide.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -646,7 +671,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If wrap is set
+/** If wrap is set, controls how linewrapping is done.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -656,7 +681,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If wrap is set
+/** If wrap is set, controls how linewrapping is done.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -739,7 +764,7 @@ public:
 
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The preferred place to ellipsize the string
+/** The preferred place to ellipsize the string, if the label does not have enough room to display the entire string.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -749,7 +774,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The preferred place to ellipsize the string
+/** The preferred place to ellipsize the string, if the label does not have enough room to display the entire string.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -759,7 +784,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The desired width of the label
+/** The desired width of the label, in characters.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -769,7 +794,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The desired width of the label
+/** The desired width of the label, in characters.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -819,7 +844,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The desired maximum width of the label
+/** The desired maximum width of the label, in characters.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -829,13 +854,33 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The desired maximum width of the label
+/** The desired maximum width of the label, in characters.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
   Glib::PropertyProxy_ReadOnly<int> property_max_width_chars() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether visited links should be tracked.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_track_visited_links() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether visited links should be tracked.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_track_visited_links() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

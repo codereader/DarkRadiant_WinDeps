@@ -4,36 +4,32 @@
 #define _PANGOMM_TABARRAY_H
 
 
-#include <glibmm.h>
-
-/* $Id: tabarray.hg,v 1.2 2003/01/22 12:10:11 murrayc Exp $ */
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* tabarray.h
  *
  * Copyright (C) 1998-1999 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
+ * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
 #include <pangomm/attrlist.h>
 #include <pango/pango-tabs.h>
-#include <pango/pango-break.h> //For PangoLogAttrs.
-
+#include <pango/pango-break.h> /* For PangoLogAttrs */
 #include <utility>
-#include <glibmmconfig.h>
-GLIBMM_USING_STD(pair)
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -44,7 +40,7 @@ namespace Pango
 {
 
 
-/** @addtogroup pangommEnums Enums and Flags */
+/** @addtogroup pangommEnums pangomm Enums and Flags */
 
 /**
  * @ingroup pangommEnums
@@ -150,7 +146,8 @@ public:
   Glib::ArrayHandle< std::pair<TabAlign,int> > get_tabs() const;
 
   
-  /** Return value: whether positions are in pixels.
+  /** Returns <tt>true</tt> if the tab positions are in pixels, <tt>false</tt> if they are
+   * in Pango units.
    * @return Whether positions are in pixels.
    */
   bool get_positions_in_pixels() const;

@@ -81,23 +81,14 @@ const Glib::Class& PixbufAnimationIter_Class::init()
   return *this;
 }
 
+
 void PixbufAnimationIter_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* PixbufAnimationIter_Class::wrap_new(GObject* object)
@@ -126,6 +117,7 @@ PixbufAnimationIter::PixbufAnimationIter(GdkPixbufAnimationIter* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 PixbufAnimationIter::~PixbufAnimationIter()
 {}
 
@@ -136,6 +128,7 @@ GType PixbufAnimationIter::get_type()
 {
   return pixbufanimationiter_class_.init().get_type();
 }
+
 
 GType PixbufAnimationIter::get_base_type()
 {
@@ -172,13 +165,6 @@ bool PixbufAnimationIter::advance(const Glib::TimeVal& current_time)
 {
   return gdk_pixbuf_animation_iter_advance(gobj(), static_cast<const GTimeVal*>(&current_time));
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gdk

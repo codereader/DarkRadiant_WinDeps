@@ -85,6 +85,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -97,17 +99,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -123,10 +119,11 @@ public:
    *
    * @param action Open or save mode for the widget
    * 
-   * @newin2p4
+   * @newin{2,4}
    */
-  explicit FileChooserWidget(FileChooserAction action);
-  explicit FileChooserWidget(FileChooserAction action, const Glib::ustring& backend);
+    explicit FileChooserWidget(FileChooserAction action);
+
+    explicit FileChooserWidget(FileChooserAction action, const Glib::ustring& backend);
 
 
 };

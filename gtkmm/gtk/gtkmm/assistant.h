@@ -42,7 +42,7 @@ namespace Gtk
 namespace Gtk
 {
 
-/** @addtogroup gtkmmEnums Enums and Flags */
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
 
 /**
  * @ingroup gtkmmEnums
@@ -84,7 +84,7 @@ namespace Gtk
  * operation split into several steps, guiding the user through its
  * pages and controlling the page flow to collect the necessary data.
  *
- * @newin2p10
+ * @newin{2,10}
  * @ingroup Dialogs
  */
 
@@ -119,6 +119,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -131,21 +133,15 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_prepare(Gtk::Widget* page);
   virtual void on_apply();
   virtual void on_close();
   virtual void on_cancel();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -155,11 +151,11 @@ public:
   Assistant();
 
   
-  /** Return value: The index (starting from 0) of the current page in
-   * @return The index (starting from 0) of the current page in
-   * the @a assistant, if the @a assistant has no pages, -1 will be returned
+  /** Returns the page number of the current page
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The index (starting from 0) of the current page in
+   * the @a assistant, if the @a assistant has no pages, -1 will be returned.
    */
   int get_current_page() const;
   
@@ -167,7 +163,7 @@ public:
    * in custom buttons, as the @a assistant flow can be set with
    * set_forward_page_func().
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param page_num Index of the page to switch to, starting from 0.
    * If negative, the last page will be used. If greater
    * than the number of pages in the @a assistant, nothing
@@ -175,52 +171,54 @@ public:
    */
   void set_current_page(int page_num);
   
-  /** Return value: The number of pages in the @a assistant.
-   * @return The number of pages in the @a assistant.
+  /** Returns the number of pages in the @a assistant
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The number of pages in the @a assistant.
    */
   int get_n_pages() const;
   
-  /** Return value: The child widget, or <tt>0</tt> if @a page_num is out of bounds.
-   * @param page_num The index of a page in the @a assistant, or -1 to get the last page;.
-   * @return The child widget, or <tt>0</tt> if @a page_num is out of bounds.
+  /** Returns the child widget contained in page number @a page_num.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @param page_num The index of a page in the @a assistant, or -1 to get the last page;.
+   * @return The child widget, or <tt>0</tt>
+   * if @a page_num is out of bounds.
    */
   Widget* get_nth_page(int page_num);
   
-  /** Return value: The child widget, or <tt>0</tt> if @a page_num is out of bounds.
-   * @param page_num The index of a page in the @a assistant, or -1 to get the last page;.
-   * @return The child widget, or <tt>0</tt> if @a page_num is out of bounds.
+  /** Returns the child widget contained in page number @a page_num.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @param page_num The index of a page in the @a assistant, or -1 to get the last page;.
+   * @return The child widget, or <tt>0</tt>
+   * if @a page_num is out of bounds.
    */
   const Widget* get_nth_page(int page_num) const;
   
   /** Prepends a page to the @a assistant.
-   * @param page A Gtk::Widget.
-   * @return The index (starting at 0) of the inserted page
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @param page A Gtk::Widget.
+   * @return The index (starting at 0) of the inserted page.
    */
   int prepend_page(Widget& page);
   
   /** Appends a page to the @a assistant.
-   * @param page A Gtk::Widget.
-   * @return The index (starting at 0) of the inserted page
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @param page A Gtk::Widget.
+   * @return The index (starting at 0) of the inserted page.
    */
   int append_page(Widget& page);
   
   /** Inserts a page in the @a assistant at a given position.
+   * 
+   * @newin{2,10}
    * @param page A Gtk::Widget.
    * @param position The index (starting at 0) at which to insert the page,
    * or -1 to append the page to the @a assistant.
-   * @return The index (starting from 0) of the inserted page
-   * 
-   * @newin2p10.
+   * @return The index (starting from 0) of the inserted page.
    */
   int insert_page(Widget& page, int position);
   
@@ -232,118 +230,118 @@ public:
   /** Sets the page type for @a page. The page type determines the page
    * behavior in the @a assistant.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param page A page of @a assistant.
    * @param type The new type for @a page.
    */
   void set_page_type(const Widget& page, AssistantPageType type);
   
   /** Gets the page type of @a page.
+   * 
+   * @newin{2,10}
    * @param page A page of @a assistant.
    * @return The page type of @a page.
-   * 
-   * @newin2p10.
    */
-  AssistantPageType  get_page_type(const Widget& page) const;
+  AssistantPageType get_page_type(const Widget& page) const;
   
   /** Sets a title for @a page. The title is displayed in the header
    * area of the assistant when @a page is the current page.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param page A page of @a assistant.
    * @param title The new title for @a page.
    */
   void set_page_title(const Widget& page, const Glib::ustring& title);
   
-  /** Gets the title for @a page.
+  /** Gets the title for @a page. 
+   * 
+   * @newin{2,10}
    * @param page A page of @a assistant.
    * @return The title for @a page.
-   * 
-   * @newin2p10.
    */
   Glib::ustring get_page_title(const Widget& page) const;
   
   /** Sets a header image for @a page. This image is displayed in the header
    * area of the assistant when @a page is the current page.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param page A page of @a assistant.
    * @param pixbuf The new header image @a page.
    */
   void set_page_header_image(const Widget& page, const Glib::RefPtr<Gdk::Pixbuf>& pixbuf);
   
   /** Gets the header image for @a page.
+   * 
+   * @newin{2,10}
    * @param page A page of @a assistant.
    * @return The header image for @a page, or <tt>0</tt>
    * if there's no header image for the page.
-   * 
-   * @newin2p10.
    */
   Glib::RefPtr<Gdk::Pixbuf> get_page_header_image(const Widget& page);
   
   /** Gets the header image for @a page.
+   * 
+   * @newin{2,10}
    * @param page A page of @a assistant.
    * @return The header image for @a page, or <tt>0</tt>
    * if there's no header image for the page.
-   * 
-   * @newin2p10.
    */
   Glib::RefPtr<const Gdk::Pixbuf> get_page_header_image(const Widget& page) const;
   
   /** Sets a header image for @a page. This image is displayed in the side
    * area of the assistant when @a page is the current page.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param page A page of @a assistant.
    * @param pixbuf The new header image @a page.
    */
   void set_page_side_image(const Widget& page, const Glib::RefPtr<Gdk::Pixbuf>& pixbuf);
   
   /** Gets the header image for @a page.
+   * 
+   * @newin{2,10}
    * @param page A page of @a assistant.
    * @return The side image for @a page, or <tt>0</tt>
    * if there's no side image for the page.
-   * 
-   * @newin2p10.
    */
   Glib::RefPtr<Gdk::Pixbuf> get_page_side_image(const Widget& page);
   
   /** Gets the header image for @a page.
+   * 
+   * @newin{2,10}
    * @param page A page of @a assistant.
    * @return The side image for @a page, or <tt>0</tt>
    * if there's no side image for the page.
-   * 
-   * @newin2p10.
    */
   Glib::RefPtr<const Gdk::Pixbuf> get_page_side_image(const Widget& page) const;
   
   /** Sets whether @a page contents are complete. This will make
    *  @a assistant update the buttons state to be able to continue the task.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param page A page of @a assistant.
    * @param complete The completeness status of the page.
    */
-  void set_page_complete(const Widget& page, bool complete = true);
+  void set_page_complete(const Widget& page, bool complete =  true);
   
-  /** Gets whether @a page is complete..
+  /** Gets whether @a page is complete.
+   * 
+   * @newin{2,10}
    * @param page A page of @a assistant.
    * @return <tt>true</tt> if @a page is complete.
-   * 
-   * @newin2p10.
    */
   bool get_page_complete(const Widget& page) const;
   
   /** Adds a widget to the action area of a Gtk::Assistant.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param child A Gtk::Widget.
    */
   void add_action_widget(Widget& child);
   
   /** Removes a widget from the action area of a Gtk::Assistant.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param child A Gtk::Widget.
    */
   void remove_action_widget(Widget& child);
@@ -358,9 +356,23 @@ public:
    * function is when changing a value on the current page
    * affects the future page flow of the assistant.
    * 
-   * @newin2p10
+   * @newin{2,10}
    */
   void update_buttons_state();
+  
+  /** Erases the visited page history so the back button is not
+   * shown on the current page, and removes the cancel button
+   * from subsequent pages.
+   * 
+   * Use this when the information provided up to the current
+   * page is hereafter deemed permanent and cannot be modified
+   * or undone.  For example, showing a progress page to track
+   * a long-running, unreversible operation after the user has
+   * clicked apply on a confirmation page.
+   * 
+   * @newin{2,22}
+   */
+  void commit();
 
   
   /**
@@ -395,6 +407,7 @@ public:
   Glib::SignalProxy0< void > signal_cancel();
 
 
+  //There are no normal properties.
   //TODO: Child properties?
 
 

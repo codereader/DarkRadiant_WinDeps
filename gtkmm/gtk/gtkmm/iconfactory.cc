@@ -41,7 +41,7 @@ bool IconSize::lookup(IconSize size, int& width, int& height)
 // static
 bool IconSize::lookup(IconSize size, int& width, int& height, const Glib::RefPtr<Gtk::Settings>& settings)
 {
-  return gtk_icon_size_lookup_for_settings(settings->gobj(), (GtkIconSize) int(size), &width, &height);
+  return gtk_icon_size_lookup_for_settings(Glib::unwrap(settings), (GtkIconSize) int(size), &width, &height);
 }
 
 
@@ -118,23 +118,14 @@ const Glib::Class& IconFactory_Class::init()
   return *this;
 }
 
+
 void IconFactory_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* IconFactory_Class::wrap_new(GObject* object)
@@ -163,6 +154,7 @@ IconFactory::IconFactory(GtkIconFactory* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 IconFactory::~IconFactory()
 {}
 
@@ -173,6 +165,7 @@ GType IconFactory::get_type()
 {
   return iconfactory_class_.init().get_type();
 }
+
 
 GType IconFactory::get_base_type()
 {
@@ -194,6 +187,7 @@ Glib::RefPtr<IconFactory> IconFactory::create()
 {
   return Glib::RefPtr<IconFactory>( new IconFactory() );
 }
+
 void IconFactory::add(const Gtk::StockID& stock_id, const IconSet& icon_set)
 {
 gtk_icon_factory_add(gobj(), (stock_id).get_c_str(), const_cast<GtkIconSet*>((icon_set).gobj())); 
@@ -208,13 +202,6 @@ void IconFactory::remove_default()
 {
 gtk_icon_factory_remove_default(gobj()); 
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gtk

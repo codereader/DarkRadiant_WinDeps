@@ -31,14 +31,13 @@
 #include <gtkmm/texttag.h>
 #include <gtkmm/textchildanchor.h>
 #include <gtkmm/textattributes.h>
-#include <gtk/gtk.h> /* we need the definition of GtkTextIter */
 
 
 namespace Gtk
 {
 
 
-/** @addtogroup gtkmmEnums Enums and Flags */
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
 
 /**
  * @ingroup gtkmmEnums
@@ -193,82 +192,112 @@ protected:
    * @param limit Search limit, or <tt>0</tt> for none.
    * @return Whether a match was found.
    */
-  bool forward_find_char_impl(GtkTextCharPredicate predicate,
-                                           void* user_data,
-                                           const GtkTextIter* limit);
+  bool forward_find_char_impl(GtkTextCharPredicate predicate, void* user_data, const GtkTextIter* limit);
 
   
-  /** Same as gtk_text_iter_forward_find_char(), but goes backward from @a iter.
+  /** Same as forward_find_char(), but goes backward from @a iter.
    * @param pred Function to be called on each character.
    * @param user_data User data for @a pred.
    * @param limit Search limit, or <tt>0</tt> for none.
    * @return Whether a match was found.
    */
-  bool backward_find_char_impl(GtkTextCharPredicate predicate,
-                                            void* user_data,
-                                            const GtkTextIter* limit);
+  bool backward_find_char_impl(GtkTextCharPredicate predicate, void* user_data, const GtkTextIter* limit);
 
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
   
-  /** Return value: the buffer
+  /** Returns the Gtk::TextBuffer this iterator is associated with.
    * @return The buffer.
    */
   Glib::RefPtr<TextBuffer> get_buffer() const;
 
   
-  /** Return value: a character offset
+  /** Returns the character offset of an iterator.
+   * Each character in a Gtk::TextBuffer has an offset,
+   * starting with 0 for the first character in the buffer.
+   * Use Gtk::TextBuffer::get_iter_at_offset() to convert an
+   * offset back into an iterator.
    * @return A character offset.
    */
   int get_offset() const;
   
-  /** Return value: a line number
+  /** Returns the line number containing the iterator. Lines in
+   * a Gtk::TextBuffer are numbered beginning with 0 for the first
+   * line in the buffer.
    * @return A line number.
    */
   int get_line() const;
   
-  /** Return value: offset from start of line
+  /** Returns the character offset of the iterator,
+   * counting from the start of a newline-terminated line.
+   * The first character on the line has offset 0.
    * @return Offset from start of line.
    */
   int get_line_offset() const;
   
-  /** Return value: distance from start of line, in bytes
+  /** Returns the byte index of the iterator, counting
+   * from the start of a newline-terminated line.
+   * Remember that Gtk::TextBuffer encodes text in
+   * UTF-8, and that characters can require a variable
+   * number of bytes to represent.
    * @return Distance from start of line, in bytes.
    */
   int get_line_index() const;
 
   
-  /** Return value: offset in visible characters from the start of the line
+  /** Returns the offset in characters from the start of the
+   * line to the given @a iter, not counting characters that
+   * are invisible due to tags with the "invisible" flag
+   * toggled on.
    * @return Offset in visible characters from the start of the line.
    */
   int get_visible_line_offset() const;
   
-  /** Return value: byte index of @a iter with respect to the start of the line
+  /** Returns the number of bytes from the start of the
+   * line to the given @a iter, not counting bytes that
+   * are invisible due to tags with the "invisible" flag
+   * toggled on.
    * @return Byte index of @a iter with respect to the start of the line.
    */
   int get_visible_line_index() const;
 
   
-  /** returns 0.
-   * Return value: a Unicode character, or 0 if @a iter is not dereferenceable
+  /** Returns the Unicode character at this iterator.  (Equivalent to
+   * operator* on a C++ iterator.)  If the element at this iterator is a
+   * non-character element, such as an image embedded in the buffer, the
+   * Unicode "unknown" character 0xFFFC is returned. If invoked on
+   * the end iterator, zero is returned; zero is not a valid Unicode character.
+   * So you can write a loop which ends when get_char()
+   * returns 0.
    * @return A Unicode character, or 0 if @a iter is not dereferenceable.
    */
   gunichar get_char() const;
   
-  /** Return value: slice of text from the buffer
+  /** Returns the text in the given range. A "slice" is an array of
+   * characters encoded in UTF-8 format, including the Unicode "unknown"
+   * character 0xFFFC for iterable non-character elements in the buffer,
+   * such as images.  Because images are encoded in the slice, byte and
+   * character offsets in the returned array will correspond to byte
+   * offsets in the text buffer. Note that 0xFFFC can occur in normal
+   * text as well, so it is not a reliable indicator that a pixbuf or
+   * widget is in the buffer.
    * @param end Iterator at end of a range.
    * @return Slice of text from the buffer.
    */
   Glib::ustring get_slice(const TextIter& end) const;
   
-  /** Return value: array of characters from the buffer
+  /** Returns <em>text</em> in the given range.  If the range
+   * contains non-text elements such as images, the character and byte
+   * offsets in the returned string will not correspond to character and
+   * byte offsets in the buffer. If you want offsets to correspond, see
+   * get_slice().
    * @param end Iterator at end of a range.
    * @return Array of characters from the buffer.
    */
   Glib::ustring get_text(const TextIter& end) const;
   
-  /** Like gtk_text_iter_get_slice(), but invisible text is not included.
+  /** Like get_slice(), but invisible text is not included.
    * Invisible text is usually invisible because a Gtk::TextTag with the
    * "invisible" attribute turned on has been applied to it.
    * @param end Iterator at end of range.
@@ -276,7 +305,7 @@ public:
    */
   Glib::ustring get_visible_slice(const TextIter& end) const;
   
-  /** Like gtk_text_iter_get_text(), but invisible text is not included.
+  /** Like get_text(), but invisible text is not included.
    * Invisible text is usually invisible because a Gtk::TextTag with the
    * "invisible" attribute turned on has been applied to it.
    * @param end Iterator at end of range.
@@ -292,12 +321,20 @@ public:
    */
   Glib::RefPtr<Gdk::Pixbuf> get_pixbuf() const;
   
-  /** Return value: list of Gtk::TextMark
+  /** Returns a list of all Gtk::TextMark at this location. Because marks
+   * are not iterable (they don't take up any "space" in the buffer,
+   * they are just marks in between iterable locations), multiple marks
+   * can exist in the same place. The returned list is not in any
+   * meaningful order.
    * @return List of Gtk::TextMark.
    */
   Glib::SListHandle< Glib::RefPtr<TextMark> > get_marks();
   
-  /** Return value: list of Gtk::TextMark
+  /** Returns a list of all Gtk::TextMark at this location. Because marks
+   * are not iterable (they don't take up any "space" in the buffer,
+   * they are just marks in between iterable locations), multiple marks
+   * can exist in the same place. The returned list is not in any
+   * meaningful order.
    * @return List of Gtk::TextMark.
    */
   Glib::SListHandle< Glib::RefPtr<const TextMark> > get_marks() const;
@@ -318,36 +355,56 @@ public:
   Glib::RefPtr<const TextChildAnchor> get_child_anchor() const;
 
   
-  /** Return value: tags toggled at this point
+  /** Returns a list of Gtk::TextTag that are toggled on or off at this
+   * point.  (If @a toggled_on is <tt>true</tt>, the list contains tags that are
+   * toggled on.) If a tag is toggled on at @a iter, then some non-empty
+   * range of characters following @a iter has that tag applied to it.  If
+   * a tag is toggled off, then some non-empty range following @a iter
+   * does <em>not</em> have the tag applied to it.
    * @param toggled_on <tt>true</tt> to get toggled-on tags.
    * @return Tags toggled at this point.
    */
-  Glib::SListHandle< Glib::RefPtr<TextTag> > get_toggled_tags(bool toggled_on = true);
+  Glib::SListHandle< Glib::RefPtr<TextTag> > get_toggled_tags(bool toggled_on =  true);
   
-  /** Return value: tags toggled at this point
+  /** Returns a list of Gtk::TextTag that are toggled on or off at this
+   * point.  (If @a toggled_on is <tt>true</tt>, the list contains tags that are
+   * toggled on.) If a tag is toggled on at @a iter, then some non-empty
+   * range of characters following @a iter has that tag applied to it.  If
+   * a tag is toggled off, then some non-empty range following @a iter
+   * does <em>not</em> have the tag applied to it.
    * @param toggled_on <tt>true</tt> to get toggled-on tags.
    * @return Tags toggled at this point.
    */
-  Glib::SListHandle< Glib::RefPtr<const TextTag> > get_toggled_tags(bool toggled_on = true) const;
+  Glib::SListHandle< Glib::RefPtr<const TextTag> > get_toggled_tags(bool toggled_on =  true) const;
 
   
-  /** Return value: whether @a iter is the start of a range tagged with @a tag
+  /** Returns <tt>true</tt> if @a tag is toggled on at exactly this point. If @a tag
+   * is <tt>0</tt>, returns <tt>true</tt> if any tag is toggled on at this point. Note
+   * that the begins_tag() returns <tt>true</tt> if @a iter is the
+   * <em>start</em> of the tagged range;
+   * has_tag() tells you whether an iterator is
+   * <em>within</em> a tagged range.
    * @param tag A Gtk::TextTag, or <tt>0</tt>.
    * @return Whether @a iter is the start of a range tagged with @a tag.
    */
   bool begins_tag(const Glib::RefPtr<const TextTag>& tag) const;
   bool begins_tag() const;
   
-  /** Return value: whether @a iter is the end of a range tagged with @a tag
+  /** Returns <tt>true</tt> if @a tag is toggled off at exactly this point. If @a tag
+   * is <tt>0</tt>, returns <tt>true</tt> if any tag is toggled off at this point. Note
+   * that the ends_tag() returns <tt>true</tt> if @a iter is the
+   * <em>end</em> of the tagged range;
+   * has_tag() tells you whether an iterator is
+   * <em>within</em> a tagged range.
    * @param tag A Gtk::TextTag, or <tt>0</tt>.
    * @return Whether @a iter is the end of a range tagged with @a tag.
    */
   bool ends_tag(const Glib::RefPtr<const TextTag>& tag) const;
   bool ends_tag() const;
   
-  /** This is equivalent to (gtk_text_iter_begins_tag() ||
-   * gtk_text_iter_ends_tag()), i.e.\ it tells you whether a range with
-   *  @a tag applied to it begins <emphasis>or</emphasis> ends at @a iter.
+  /** This is equivalent to (begins_tag() ||
+   * ends_tag()), i.e.\ it tells you whether a range with
+   *  @a tag applied to it begins <em>or</em> ends at @a iter.
    * @param tag A Gtk::TextTag, or <tt>0</tt>.
    * @return Whether @a tag is toggled on or off at @a iter.
    */
@@ -355,7 +412,7 @@ public:
   bool toggles_tag() const;
 
   
-  /** Return value: whether @a iter is tagged with @a tag
+  /** Returns <tt>true</tt> if @a iter is within a range tagged with @a tag.
    * @param tag A Gtk::TextTag.
    * @return Whether @a iter is tagged with @a tag.
    */
@@ -376,11 +433,22 @@ public:
   Glib::SListHandle< Glib::RefPtr<const TextTag> > get_tags() const;
 
   
-  /** Return value: whether @a iter is inside an editable range
+  /** Returns whether the character at @a iter is within an editable region
+   * of text.  Non-editable text is "locked" and can't be changed by the
+   * user via Gtk::TextView. This function is simply a convenience
+   * wrapper around get_attributes(). If no tags applied
+   * to this text affect editability, @a default_setting will be returned.
+   * 
+   * You don't want to use this function to decide whether text can be
+   * inserted at @a iter, because for insertion you don't want to know
+   * whether the char at @a iter is inside an editable range, you want to
+   * know whether a new character inserted at @a iter would be inside an
+   * editable range. Use can_insert() to handle this
+   * case.
    * @param default_setting <tt>true</tt> if text is editable by default.
    * @return Whether @a iter is inside an editable range.
    */
-  bool editable(bool default_setting = true) const;
+  bool editable(bool default_setting =  true) const;
   
   /** Considering the default editability of the buffer, and tags that
    * affect editability, determines whether text inserted at @a iter would
@@ -391,7 +459,7 @@ public:
    * @param default_editability <tt>true</tt> if text is editable by default.
    * @return Whether text inserted at @a iter would be editable.
    */
-  bool can_insert(bool default_editability = true) const;
+  bool can_insert(bool default_editability =  true) const;
 
   
   /** Determines whether @a iter begins a natural-language word.  Word
@@ -443,36 +511,49 @@ public:
    */
   bool inside_sentence() const;
   
-  /** Return value: whether @a iter begins a line
+  /** Returns <tt>true</tt> if @a iter begins a paragraph,
+   * i.e.\ if get_line_offset() would return 0.
+   * However this function is potentially more efficient than
+   * get_line_offset() because it doesn't have to compute
+   * the offset, it just has to see whether it's 0.
    * @return Whether @a iter begins a line.
    */
   bool starts_line() const;
   
-  /** Return value: whether @a iter is at the end of a line
+  /** Returns <tt>true</tt> if @a iter points to the start of the paragraph
+   * delimiter characters for a line (delimiters will be either a
+   * newline, a carriage return, a carriage return followed by a
+   * newline, or a Unicode paragraph separator character). Note that an
+   * iterator pointing to the <tt>\\n</tt> of a <tt>\\r</tt><tt>\\n</tt> pair will not be counted as
+   * the end of a line, the line ends before the <tt>\\r</tt>. The end iterator is
+   * considered to be at the end of a line, even though there are no
+   * paragraph delimiter chars there.
    * @return Whether @a iter is at the end of a line.
    */
   bool ends_line() const;
   
-  /** See gtk_text_iter_forward_cursor_position() or Pango::LogAttr or
+  /** See forward_cursor_position() or Pango::LogAttr or
    * pango_break() for details on what a cursor position is.
    * @return <tt>true</tt> if the cursor can be placed at @a iter.
    */
   bool is_cursor_position() const;
 
   
-  /** Return value: number of characters in the line
+  /** Returns the number of characters in the line containing @a iter,
+   * including the paragraph delimiters.
    * @return Number of characters in the line.
    */
   int get_chars_in_line() const;
   
-  /** Return value: number of bytes in the line
+  /** Returns the number of bytes in the line containing @a iter,
+   * including the paragraph delimiters.
    * @return Number of bytes in the line.
    */
   int get_bytes_in_line() const;
 
   bool get_attributes(TextAttributes& values) const;
   
-  /** A convenience wrapper around gtk_text_iter_get_attributes(),
+  /** A convenience wrapper around get_attributes(),
    * which returns the language in effect at @a iter. If no tags affecting
    * language apply to @a iter, the return value is identical to that of
    * gtk_get_default_language().
@@ -480,12 +561,16 @@ public:
    */
   Pango::Language get_language() const;
   
-  /** Return value: whether @a iter is the end iterator
+  /** Returns <tt>true</tt> if @a iter is the end iterator, i.e.\ one past the last
+   * dereferenceable iterator in the buffer. is_end() is
+   * the most efficient way to check whether an iterator is the end
+   * iterator.
    * @return Whether @a iter is the end iterator.
    */
   bool is_end() const;
   
-  /** Return value: whether @a iter is the first in the buffer
+  /** Returns <tt>true</tt> if @a iter is the first iterator in the buffer, that is
+   * if @a iter has a character offset of 0.
    * @return Whether @a iter is the first in the buffer.
    */
   bool is_start() const;
@@ -493,10 +578,10 @@ public:
   
   /** Moves @a iter forward by one character offset. Note that images
    * embedded in the buffer occupy 1 character slot, so
-   * gtk_text_iter_forward_char() may actually move onto an image instead
+   * forward_char() may actually move onto an image instead
    * of a character, if you have images in your buffer.  If @a iter is the
    * end iterator or one character before it, @a iter will now point at
-   * the end iterator, and gtk_text_iter_forward_char() returns <tt>false</tt> for
+   * the end iterator, and forward_char() returns <tt>false</tt> for
    * convenience when writing loops.
    * @return Whether @a iter moved and is dereferenceable.
    */
@@ -504,7 +589,7 @@ public:
   
   /** Moves backward by one character offset. Returns <tt>true</tt> if movement
    * was possible; if @a iter was the first in the buffer (character
-   * offset 0), gtk_text_iter_backward_char() returns <tt>false</tt> for convenience when
+   * offset 0), backward_char() returns <tt>false</tt> for convenience when
    * writing loops.
    * @return Whether movement was possible.
    */
@@ -593,13 +678,13 @@ public:
    */
   bool backward_word_start();
   
-  /** Calls gtk_text_iter_forward_word_end() up to @a count times.
+  /** Calls forward_word_end() up to @a count times.
    * @param count Number of times to move.
    * @return <tt>true</tt> if @a iter moved and is not the end iterator.
    */
   bool forward_word_ends(int count);
   
-  /** Calls gtk_text_iter_backward_word_start() up to @a count times.
+  /** Calls backward_word_start() up to @a count times.
    * @param count Number of times to move.
    * @return <tt>true</tt> if @a iter moved and is not the end iterator.
    */
@@ -610,9 +695,9 @@ public:
    * was a next line to move to, and <tt>false</tt> if @a iter was simply moved to
    * the end of the buffer and is now not dereferenceable, or if @a iter was
    * already at the end of the buffer.
-   * @return Whether @a iter can be dereferenced
    * 
-   * @newin2p8.
+   * @newin{2,8}
+   * @return Whether @a iter can be dereferenced.
    */
   bool forward_visible_line();
   
@@ -623,9 +708,9 @@ public:
    * the line and the function returns <tt>true</tt>. (Note that this implies that
    * in a loop calling this function, the line number may not change on
    * every iteration, if your first iteration is on line 0.)
-   * @return Whether @a iter moved
    * 
-   * @newin2p8.
+   * @newin{2,8}
+   * @return Whether @a iter moved.
    */
   bool backward_visible_line();
   
@@ -636,10 +721,10 @@ public:
    * moved onto the end iterator, then <tt>false</tt> is returned. If @a count is 0,
    * the function does nothing and returns <tt>false</tt>. If @a count is negative,
    * moves backward by 0 - @a count lines.
-   * @param count Number of lines to move forward.
-   * @return Whether @a iter moved and is dereferenceable
    * 
-   * @newin2p8.
+   * @newin{2,8}
+   * @param count Number of lines to move forward.
+   * @return Whether @a iter moved and is dereferenceable.
    */
   bool forward_visible_line(int count);
   
@@ -650,10 +735,10 @@ public:
    * moved onto the end iterator, then <tt>false</tt> is returned. If @a count is 0,
    * the function does nothing and returns <tt>false</tt>. If @a count is negative,
    * moves forward by 0 - @a count lines.
-   * @param count Number of lines to move backward.
-   * @return Whether @a iter moved and is dereferenceable
    * 
-   * @newin2p8.
+   * @newin{2,8}
+   * @param count Number of lines to move backward.
+   * @return Whether @a iter moved and is dereferenceable.
    */
   bool backward_visible_lines(int count);
 
@@ -666,9 +751,9 @@ public:
    * are determined by Pango and should be correct for nearly any
    * language (if not, the correct fix would be to the Pango word break
    * algorithms).
-   * @return <tt>true</tt> if @a iter moved and is not the end iterator 
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return <tt>true</tt> if @a iter moved and is not the end iterator.
    */
   bool forward_visible_word_end();
   
@@ -677,25 +762,25 @@ public:
    * are determined by Pango and should be correct for nearly any
    * language (if not, the correct fix would be to the Pango word break
    * algorithms).
-   * @return <tt>true</tt> if @a iter moved and is not the end iterator 
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return <tt>true</tt> if @a iter moved and is not the end iterator.
    */
   bool backward_visible_word_start();
   
-  /** Calls gtk_text_iter_forward_visible_word_end() up to @a count times.
-   * @param count Number of times to move.
-   * @return <tt>true</tt> if @a iter moved and is not the end iterator 
+  /** Calls forward_visible_word_end() up to @a count times.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @param count Number of times to move.
+   * @return <tt>true</tt> if @a iter moved and is not the end iterator.
    */
   bool forward_visible_word_ends(int count);
   
-  /** Calls gtk_text_iter_backward_visible_word_start() up to @a count times.
-   * @param count Number of times to move.
-   * @return <tt>true</tt> if @a iter moved and is not the end iterator 
+  /** Calls backward_visible_word_start() up to @a count times.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @param count Number of times to move.
+   * @return <tt>true</tt> if @a iter moved and is not the end iterator.
    */
   bool backward_visible_word_starts(int count);
 
@@ -718,15 +803,15 @@ public:
    */
   bool backward_sentence_start();
   
-  /** Calls gtk_text_iter_forward_sentence_end() @a count times (or until
-   * gtk_text_iter_forward_sentence_end() returns <tt>false</tt>). If @a count is
+  /** Calls forward_sentence_end() @a count times (or until
+   * forward_sentence_end() returns <tt>false</tt>). If @a count is
    * negative, moves backward instead of forward.
    * @param count Number of sentences to move.
    * @return <tt>true</tt> if @a iter moved and is not the end iterator.
    */
   bool forward_sentence_ends(int count);
   
-  /** Calls gtk_text_iter_backward_sentence_start() up to @a count times,
+  /** Calls backward_sentence_start() up to @a count times,
    * or until it returns <tt>false</tt>. If @a count is negative, moves forward
    * instead of backward.
    * @param count Number of sentences to move.
@@ -749,20 +834,20 @@ public:
    */
   bool forward_cursor_position();
   
-  /** Like gtk_text_iter_forward_cursor_position(), but moves backward.
+  /** Like forward_cursor_position(), but moves backward.
    * @return <tt>true</tt> if we moved.
    */
   bool backward_cursor_position();
   
   /** Moves up to @a count cursor positions. See
-   * gtk_text_iter_forward_cursor_position() for details.
+   * forward_cursor_position() for details.
    * @param count Number of positions to move.
    * @return <tt>true</tt> if we moved and the new position is dereferenceable.
    */
   bool forward_cursor_positions(int count);
   
   /** Moves up to @a count cursor positions. See
-   * gtk_text_iter_forward_cursor_position() for details.
+   * forward_cursor_position() for details.
    * @param count Number of positions to move.
    * @return <tt>true</tt> if we moved and the new position is dereferenceable.
    */
@@ -770,36 +855,36 @@ public:
 
   
   /** Moves @a iter forward to the next visible cursor position. See 
-   * gtk_text_iter_forward_cursor_position() for details.
-   * @return <tt>true</tt> if we moved and the new position is dereferenceable
+   * forward_cursor_position() for details.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return <tt>true</tt> if we moved and the new position is dereferenceable.
    */
   bool forward_visible_cursor_position();
   
   /** Moves @a iter forward to the previous visible cursor position. See 
-   * gtk_text_iter_backward_cursor_position() for details.
-   * @return <tt>true</tt> if we moved and the new position is dereferenceable
+   * backward_cursor_position() for details.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return <tt>true</tt> if we moved and the new position is dereferenceable.
    */
   bool backward_visible_cursor_position();
   
   /** Moves up to @a count visible cursor positions. See
-   * gtk_text_iter_forward_cursor_position() for details.
-   * @param count Number of positions to move.
-   * @return <tt>true</tt> if we moved and the new position is dereferenceable
+   * forward_cursor_position() for details.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @param count Number of positions to move.
+   * @return <tt>true</tt> if we moved and the new position is dereferenceable.
    */
   bool forward_visible_cursor_positions(int count);
   
   /** Moves up to @a count visible cursor positions. See
-   * gtk_text_iter_backward_cursor_position() for details.
-   * @param count Number of positions to move.
-   * @return <tt>true</tt> if we moved and the new position is dereferenceable
+   * backward_cursor_position() for details.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @param count Number of positions to move.
+   * @return <tt>true</tt> if we moved and the new position is dereferenceable.
    */
   bool backward_visible_cursor_positions(int count);
 
@@ -817,18 +902,18 @@ public:
    */
   void set_line(int line_number);
   
-  /** Moves @a iter within a line, to a new <emphasis>character</emphasis>
+  /** Moves @a iter within a line, to a new <em>character</em>
    * (not byte) offset. The given character offset must be less than or
    * equal to the number of characters in the line; if equal, @a iter
    * moves to the start of the next line. See
-   * gtk_text_iter_set_line_index() if you have a byte index rather than
+   * set_line_index() if you have a byte index rather than
    * a character offset.
    * @param char_on_line A character offset relative to the start of @a iter's current line.
    */
   void set_line_offset(int char_on_line);
   
-  /** Same as gtk_text_iter_set_line_offset(), but works with a
-   * <emphasis>byte</emphasis> index. The given byte index must be at
+  /** Same as set_line_offset(), but works with a
+   * <em>byte</em> index. The given byte index must be at
    * the start of a character, it can't be in the middle of a UTF-8
    * encoded character.
    * @param byte_on_line A byte index relative to the start of @a iter's current line.
@@ -836,7 +921,7 @@ public:
   void set_line_index(int byte_on_line);
   
   /** Moves @a iter forward to the "end iterator," which points one past the last
-   * valid character in the buffer. gtk_text_iter_get_char() called on the
+   * valid character in the buffer. get_char() called on the
    * end iterator returns 0, which is convenient for writing loops.
    */
   void forward_to_end();
@@ -854,14 +939,14 @@ public:
   bool forward_to_line_end();
 
   
-  /** Like gtk_text_iter_set_line_offset(), but the offset is in visible
+  /** Like set_line_offset(), but the offset is in visible
    * characters, i.e.\ text with a tag making it invisible is not
    * counted in the offset.
    * @param char_on_line A character offset.
    */
   void set_visible_line_offset(int char_on_line);
   
-  /** Like gtk_text_iter_set_line_index(), but the index is in visible
+  /** Like set_line_index(), but the index is in visible
    * bytes, i.e.\ text with a tag making it invisible is not counted
    * in the index.
    * @param byte_on_line A byte index.
@@ -872,7 +957,10 @@ public:
   /** Moves forward to the next toggle (on or off) of the
    * Gtk::TextTag @a tag, or to the next toggle of any tag if
    *  @a tag is <tt>0</tt>. If no matching tag toggles are found,
-   * Return value: whether we found a tag toggle after @a iter
+   * returns <tt>false</tt>, otherwise <tt>true</tt>. Does not return toggles
+   * located at @a iter, only toggles after @a iter. Sets @a iter to
+   * the location of the toggle, or to the end of the buffer
+   * if no toggle is found.
    * @param tag A Gtk::TextTag, or <tt>0</tt>.
    * @return Whether we found a tag toggle after @a iter.
    */
@@ -881,7 +969,10 @@ public:
   /** Moves backward to the next toggle (on or off) of the
    * Gtk::TextTag @a tag, or to the next toggle of any tag if
    *  @a tag is <tt>0</tt>. If no matching tag toggles are found,
-   * Return value: whether we found a tag toggle before @a iter
+   * returns <tt>false</tt>, otherwise <tt>true</tt>. Does not return toggles
+   * located at @a iter, only toggles before @a iter. Sets @a iter
+   * to the location of the toggle, or the start of the buffer
+   * if no toggle is found.
    * @param tag A Gtk::TextTag, or <tt>0</tt>.
    * @return Whether we found a tag toggle before @a iter.
    */
@@ -914,11 +1005,7 @@ public:
    * @param limit Bound for the search.
    * @return Whether a match was found.
    */
-  bool forward_search(const Glib::ustring& str,
-                                   TextSearchFlags flags,
-                                   TextIter& match_start,
-                                   TextIter& match_end,
-                                   const TextIter& limit) const;
+  bool forward_search(const Glib::ustring& str, TextSearchFlags flags, TextIter& match_start, TextIter& match_end, const TextIter& limit) const;
          
   /** Same as forward_search(), but searchs to the end.
    *
@@ -931,7 +1018,7 @@ public:
    bool forward_search(const Glib::ustring& str, TextSearchFlags flags, TextIter& match_start, TextIter& match_end) const;
 
   
-  /** Same as gtk_text_iter_forward_search(), but moves backward.
+  /** Same as forward_search(), but moves backward.
    * @param str Search string.
    * @param flags Bitmask of flags affecting the search.
    * @param match_start Return location for start of match.
@@ -939,11 +1026,7 @@ public:
    * @param limit Location of last possible @a match_start.
    * @return Whether a match was found.
    */
-  bool backward_search(const Glib::ustring& str,
-                                    TextSearchFlags flags,
-                                    TextIter& match_start,
-                                    TextIter& match_end,
-                                    const TextIter& limit) const;
+  bool backward_search(const Glib::ustring& str, TextSearchFlags flags, TextIter& match_start, TextIter& match_end, const TextIter& limit) const;
 
   /** Same as backward_search(), but searches to the start.
    * @param str Search string.
@@ -976,7 +1059,7 @@ public:
    *  @a first in the buffer. That is, ensures that @a first and @a second are
    * in sequence. Most text buffer functions that take a range call this
    * automatically on your behalf, so there's no real reason to call it yourself
-   * in those cases. There are some exceptions, such as gtk_text_iter_in_range(),
+   * in those cases. There are some exceptions, such as in_range(),
    * that expect a pre-sorted range.
    * @param second Another Gtk::TextIter.
    */
@@ -998,22 +1081,18 @@ TextIter::PredicateAdapter<Predicate>::PredicateAdapter(const Predicate& predica
 template <class Predicate>
 gboolean TextIter::PredicateAdapter<Predicate>::gtk_callback(gunichar uc, void* user_data)
 {
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   try
   {
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
     // This will either use Predicate::operator(), or call a function pointer.
     // The explicit conditional expression avoids relying on an implicit
     // conversion of the return type to int, which might be not available.
     return (static_cast<TextIter::PredicateAdapter<Predicate>*>(user_data)->predicate_(uc)) ? 1 : 0;
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   }
   catch(...)
   {
     Glib::exception_handlers_invoke();
     return 0;
   }
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 }
 
 inline

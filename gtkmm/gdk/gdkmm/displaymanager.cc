@@ -113,23 +113,17 @@ const Glib::Class& DisplayManager_Class::init()
   return *this;
 }
 
+
 void DisplayManager_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   klass->display_opened = &display_opened_callback;
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void DisplayManager_Class::display_opened_callback(GdkDisplayManager* self, GdkDisplay* p0)
 {
   Glib::ObjectBase *const obj_base = static_cast<Glib::ObjectBase*>(
@@ -162,7 +156,7 @@ void DisplayManager_Class::display_opened_callback(GdkDisplayManager* self, GdkD
       #endif //GLIBMM_EXCEPTIONS_ENABLED
     }
   }
-  
+
   BaseClassType *const base = static_cast<BaseClassType*>(
         g_type_class_peek_parent(G_OBJECT_GET_CLASS(self)) // Get the parent class of the object class (The original underlying C class).
     );
@@ -171,7 +165,6 @@ void DisplayManager_Class::display_opened_callback(GdkDisplayManager* self, GdkD
   if(base && base->display_opened)
     (*base->display_opened)(self, p0);
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* DisplayManager_Class::wrap_new(GObject* object)
@@ -200,6 +193,7 @@ DisplayManager::DisplayManager(GdkDisplayManager* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 DisplayManager::~DisplayManager()
 {}
 
@@ -210,6 +204,7 @@ GType DisplayManager::get_type()
 {
   return displaymanager_class_.init().get_type();
 }
+
 
 GType DisplayManager::get_base_type()
 {
@@ -223,7 +218,7 @@ Glib::RefPtr<DisplayManager> DisplayManager::get()
   Glib::RefPtr<DisplayManager> retvalue = Glib::wrap(gdk_display_manager_get());
 
   if(retvalue)
-    retvalue->reference(); //The function does not do a ref for us.
+    retvalue->reference(); //The function does not do a ref for us
   return retvalue;
 }
 
@@ -275,7 +270,6 @@ Glib::PropertyProxy_ReadOnly< Glib::RefPtr<Display> > DisplayManager::property_d
 #endif //GLIBMM_PROPERTIES_ENABLED
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 void Gdk::DisplayManager::on_display_opened(const Glib::RefPtr<Display>& display)
 {
   BaseClassType *const base = static_cast<BaseClassType*>(
@@ -285,10 +279,6 @@ void Gdk::DisplayManager::on_display_opened(const Glib::RefPtr<Display>& display
   if(base && base->display_opened)
     (*base->display_opened)(gobj(),Glib::unwrap(display));
 }
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gdk

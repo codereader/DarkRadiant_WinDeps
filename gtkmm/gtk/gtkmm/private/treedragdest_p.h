@@ -29,17 +29,13 @@ public:
 
 protected:
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   //Callbacks (default signal handlers):
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
   //Callbacks (virtual functions):
-#ifdef GLIBMM_VFUNCS_ENABLED
   static gboolean drag_data_received_vfunc_callback(GtkTreeDragDest* self, GtkTreePath* dest, GtkSelectionData* selection_data);
   static gboolean row_drop_possible_vfunc_callback(GtkTreeDragDest* self, GtkTreePath* dest_path, GtkSelectionData* selection_data);
-#endif //GLIBMM_VFUNCS_ENABLED
 };
 
 

@@ -32,6 +32,8 @@
 namespace Gdk
 {
 
+#ifndef GDKMM_DISABLE_DEPRECATED
+
 void Drawable::draw_points(const Glib::RefPtr<const GC>& gc, const Glib::ArrayHandle<Point>& points)
 {
   // Don't assume the reinterpret_cast<> works everywhere.  Gdk::Point is *special*.
@@ -59,6 +61,8 @@ void Drawable::draw_polygon(const Glib::RefPtr<const GC>& gc, bool filled,
       reinterpret_cast<GdkPoint*>(const_cast<Point*>(points.data())),
       points.size());
 }
+#endif // GDKMM_DISABLE_DEPRECATED
+
 
 void Drawable::copy_to_image(const Glib::RefPtr<Image>& image, int src_x, int src_y, int dest_x, int dest_y, int width, int height) const
 {
@@ -124,23 +128,14 @@ const Glib::Class& Drawable_Class::init()
   return *this;
 }
 
+
 void Drawable_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* Drawable_Class::wrap_new(GObject* object)
@@ -169,6 +164,7 @@ Drawable::Drawable(GdkDrawable* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 Drawable::~Drawable()
 {}
 
@@ -179,6 +175,7 @@ GType Drawable::get_type()
 {
   return drawable_class_.init().get_type();
 }
+
 
 GType Drawable::get_base_type()
 {
@@ -200,19 +197,24 @@ Glib::RefPtr<Drawable> Drawable::create()
 {
   return Glib::RefPtr<Drawable>( new Drawable() );
 }
+
 #ifndef GDKMM_DISABLE_DEPRECATED
 
 void Drawable::get_size(int& width, int& height)
 {
-gdk_drawable_get_size(gobj(), &width, &height); 
+gdk_drawable_get_size(gobj(), &(width), &(height)); 
 }
 
 #endif // GDKMM_DISABLE_DEPRECATED
 
+#ifndef GDKMM_DISABLE_DEPRECATED
+
 void Drawable::get_size(int& width, int& height) const
 {
-gdk_drawable_get_size(const_cast<GdkDrawable*>(gobj()), &width, &height); 
+gdk_drawable_get_size(const_cast<GdkDrawable*>(gobj()), &(width), &(height)); 
 }
+
+#endif // GDKMM_DISABLE_DEPRECATED
 
 int Drawable::get_depth() const
 {
@@ -234,6 +236,8 @@ Glib::RefPtr<Colormap> Drawable::get_colormap()
 
 }
 
+#ifndef GDKMM_DISABLE_DEPRECATED
+
 Glib::RefPtr<Visual> Drawable::get_visual()
 {
 
@@ -244,70 +248,124 @@ Glib::RefPtr<Visual> Drawable::get_visual()
 
 }
 
+#endif // GDKMM_DISABLE_DEPRECATED
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
 void Drawable::draw_point(const Glib::RefPtr<const GC>& gc, int x, int y)
 {
 gdk_draw_point(gobj(), const_cast<GdkGC*>(Glib::unwrap<GC>(gc)), x, y); 
 }
+
+#endif // GDKMM_DISABLE_DEPRECATED
+
+#ifndef GDKMM_DISABLE_DEPRECATED
 
 void Drawable::draw_line(const Glib::RefPtr<const GC>& gc, int x1, int y1, int x2, int y2)
 {
 gdk_draw_line(gobj(), const_cast<GdkGC*>(Glib::unwrap<GC>(gc)), x1, y1, x2, y2); 
 }
 
+#endif // GDKMM_DISABLE_DEPRECATED
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
 void Drawable::draw_rectangle(const Glib::RefPtr<const GC>& gc, bool filled, int x, int y, int width, int height)
 {
 gdk_draw_rectangle(gobj(), const_cast<GdkGC*>(Glib::unwrap<GC>(gc)), static_cast<int>(filled), x, y, width, height); 
 }
+
+#endif // GDKMM_DISABLE_DEPRECATED
+
+#ifndef GDKMM_DISABLE_DEPRECATED
 
 void Drawable::draw_arc(const Glib::RefPtr<const GC>& gc, bool filled, int x, int y, int width, int height, int angle1, int angle2)
 {
 gdk_draw_arc(gobj(), const_cast<GdkGC*>(Glib::unwrap<GC>(gc)), static_cast<int>(filled), x, y, width, height, angle1, angle2); 
 }
 
+#endif // GDKMM_DISABLE_DEPRECATED
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
 void Drawable::draw_drawable(const Glib::RefPtr<const GC>& gc, const Glib::RefPtr<const Drawable>& src, int xsrc, int ysrc, int xdest, int ydest, int width, int height)
 {
 gdk_draw_drawable(gobj(), const_cast<GdkGC*>(Glib::unwrap<GC>(gc)), const_cast<GdkDrawable*>(Glib::unwrap<Drawable>(src)), xsrc, ysrc, xdest, ydest, width, height); 
 }
+
+#endif // GDKMM_DISABLE_DEPRECATED
+
+#ifndef GDKMM_DISABLE_DEPRECATED
 
 void Drawable::draw_image(const Glib::RefPtr<const GC>& gc, const Glib::RefPtr<const Image>& image, int xsrc, int ysrc, int xdest, int ydest, int width, int height)
 {
 gdk_draw_image(gobj(), const_cast<GdkGC*>(Glib::unwrap<GC>(gc)), const_cast<GdkImage*>(Glib::unwrap<Image>(image)), xsrc, ysrc, xdest, ydest, width, height); 
 }
 
+#endif // GDKMM_DISABLE_DEPRECATED
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
 void Drawable::draw_segments(const Glib::RefPtr<const GC>& gc, GdkSegment* segs, int nsegs)
 {
 gdk_draw_segments(gobj(), const_cast<GdkGC*>(Glib::unwrap<GC>(gc)), (segs), nsegs); 
 }
+
+#endif // GDKMM_DISABLE_DEPRECATED
+
+#ifndef GDKMM_DISABLE_DEPRECATED
 
 void Drawable::draw_glyphs(const Glib::RefPtr<const GC>& gc, const Glib::RefPtr<const Pango::Font>& font, int x, int y, const Pango::GlyphString& glyphs)
 {
 gdk_draw_glyphs(gobj(), const_cast<GdkGC*>(Glib::unwrap<GC>(gc)), const_cast<PangoFont*>(Glib::unwrap<Pango::Font>(font)), x, y, const_cast<PangoGlyphString*>(glyphs.gobj())); 
 }
 
+#endif // GDKMM_DISABLE_DEPRECATED
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
 void Drawable::draw_layout_line(const Glib::RefPtr<const GC>& gc, int x, int y, const Glib::RefPtr<const Pango::LayoutLine>& line)
 {
 gdk_draw_layout_line(gobj(), const_cast<GdkGC*>(Glib::unwrap<GC>(gc)), x, y, const_cast<PangoLayoutLine*>(Glib::unwrap<Pango::LayoutLine>(line))); 
 }
+
+#endif // GDKMM_DISABLE_DEPRECATED
+
+#ifndef GDKMM_DISABLE_DEPRECATED
 
 void Drawable::draw_layout_line(const Glib::RefPtr<const GC>& gc, int x, int y, const Glib::RefPtr<const Pango::LayoutLine>& line, const Color& foreground, const Color& background)
 {
 gdk_draw_layout_line_with_colors(gobj(), const_cast<GdkGC*>(Glib::unwrap<GC>(gc)), x, y, const_cast<PangoLayoutLine*>(Glib::unwrap<Pango::LayoutLine>(line)), (foreground).gobj(), (background).gobj()); 
 }
 
+#endif // GDKMM_DISABLE_DEPRECATED
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
 void Drawable::draw_layout(const Glib::RefPtr<const GC>& gc, int x, int y, const Glib::RefPtr<const Pango::Layout>& layout)
 {
 gdk_draw_layout(gobj(), const_cast<GdkGC*>(Glib::unwrap<GC>(gc)), x, y, const_cast<PangoLayout*>(Glib::unwrap<Pango::Layout>(layout))); 
 }
+
+#endif // GDKMM_DISABLE_DEPRECATED
+
+#ifndef GDKMM_DISABLE_DEPRECATED
 
 void Drawable::draw_layout(const Glib::RefPtr<const GC>& gc, int x, int y, const Glib::RefPtr<const Pango::Layout>& layout, const Color& foreground, const Color& background)
 {
 gdk_draw_layout_with_colors(gobj(), const_cast<GdkGC*>(Glib::unwrap<GC>(gc)), x, y, const_cast<PangoLayout*>(Glib::unwrap<Pango::Layout>(layout)), (foreground).gobj(), (background).gobj()); 
 }
 
+#endif // GDKMM_DISABLE_DEPRECATED
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
 void Drawable::draw_pixbuf(const Glib::RefPtr<const GC>& gc, const Glib::RefPtr<Pixbuf>& pixbuf, int src_x, int src_y, int dest_x, int dest_y, int width, int height, RgbDither dither, int x_dither, int y_dither)
 {
 gdk_draw_pixbuf(gobj(), const_cast<GdkGC*>(Glib::unwrap<GC>(gc)), Glib::unwrap(pixbuf), src_x, src_y, dest_x, dest_y, width, height, ((GdkRgbDither)(dither)), x_dither, y_dither); 
 }
+
+#endif // GDKMM_DISABLE_DEPRECATED
 
 Glib::RefPtr<Image> Drawable::get_image(int x, int y, int width, int height) const
 {
@@ -324,35 +382,61 @@ Region Drawable::get_visible_region() const
   return Region(gdk_drawable_get_visible_region(const_cast<GdkDrawable*>(gobj())));
 }
 
+#ifndef GDKMM_DISABLE_DEPRECATED
+
 void Drawable::draw_rgb_image(const Glib::RefPtr<const GC>& gc, int x, int y, int width, int height, RgbDither dith, const guchar* rgb_buf, int rowstride)
 {
 gdk_draw_rgb_image(gobj(), const_cast<GdkGC*>(Glib::unwrap<GC>(gc)), x, y, width, height, ((GdkRgbDither)(dith)), rgb_buf, rowstride); 
 }
+
+#endif // GDKMM_DISABLE_DEPRECATED
+
+#ifndef GDKMM_DISABLE_DEPRECATED
 
 void Drawable::draw_rgb_image_dithalign(const Glib::RefPtr<const GC>& gc, int x, int y, int width, int height, RgbDither dith, const guchar* rgb_buf, int rowstride, int xdith, int ydith)
 {
 gdk_draw_rgb_image_dithalign(gobj(), const_cast<GdkGC*>(Glib::unwrap<GC>(gc)), x, y, width, height, ((GdkRgbDither)(dith)), rgb_buf, rowstride, xdith, ydith); 
 }
 
+#endif // GDKMM_DISABLE_DEPRECATED
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
 void Drawable::draw_rgb_32_image(const Glib::RefPtr<const GC>& gc, int x, int y, int width, int height, RgbDither dith, const guchar* rgb_buf, int rowstride)
 {
 gdk_draw_rgb_32_image(gobj(), const_cast<GdkGC*>(Glib::unwrap<GC>(gc)), x, y, width, height, ((GdkRgbDither)(dith)), rgb_buf, rowstride); 
 }
+
+#endif // GDKMM_DISABLE_DEPRECATED
+
+#ifndef GDKMM_DISABLE_DEPRECATED
 
 void Drawable::draw_rgb_32_image_dithalign(const Glib::RefPtr<const GC>& gc, int x, int y, int width, int height, RgbDither dith, const guchar* buf, int rowstride, int xdith, int ydith)
 {
 gdk_draw_rgb_32_image_dithalign(gobj(), const_cast<GdkGC*>(Glib::unwrap<GC>(gc)), x, y, width, height, ((GdkRgbDither)(dith)), buf, rowstride, xdith, ydith); 
 }
 
+#endif // GDKMM_DISABLE_DEPRECATED
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
 void Drawable::draw_gray_image(const Glib::RefPtr<const GC>& gc, int x, int y, int width, int height, RgbDither dith, const guchar* rgb_buf, int rowstride)
 {
 gdk_draw_gray_image(gobj(), const_cast<GdkGC*>(Glib::unwrap<GC>(gc)), x, y, width, height, ((GdkRgbDither)(dith)), rgb_buf, rowstride); 
 }
 
+#endif // GDKMM_DISABLE_DEPRECATED
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
 void Drawable::draw_indexed_image(const Glib::RefPtr<const GC>& gc, int x, int y, int width, int height, RgbDither dith, const guchar* rgb_buf, int rowstride, const RgbCmap& cmap)
 {
 gdk_draw_indexed_image(gobj(), const_cast<GdkGC*>(Glib::unwrap<GC>(gc)), x, y, width, height, ((GdkRgbDither)(dith)), rgb_buf, rowstride, const_cast<GdkRgbCmap*>(cmap.gobj())); 
 }
+
+#endif // GDKMM_DISABLE_DEPRECATED
+
+#ifndef GDKMM_DISABLE_DEPRECATED
 
 Glib::RefPtr<Screen> Drawable::get_screen()
 {
@@ -364,10 +448,18 @@ Glib::RefPtr<Screen> Drawable::get_screen()
 
 }
 
+#endif // GDKMM_DISABLE_DEPRECATED
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
 Glib::RefPtr<const Screen> Drawable::get_screen() const
 {
   return const_cast<Drawable*>(this)->get_screen();
 }
+
+#endif // GDKMM_DISABLE_DEPRECATED
+
+#ifndef GDKMM_DISABLE_DEPRECATED
 
 Glib::RefPtr<Display> Drawable::get_display()
 {
@@ -379,22 +471,21 @@ Glib::RefPtr<Display> Drawable::get_display()
 
 }
 
+#endif // GDKMM_DISABLE_DEPRECATED
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
 Glib::RefPtr<const Display> Drawable::get_display() const
 {
   return const_cast<Drawable*>(this)->get_display();
 }
 
+#endif // GDKMM_DISABLE_DEPRECATED
+
 Cairo::RefPtr<Cairo::Context> Drawable::create_cairo_context()
 {
   return Cairo::RefPtr<Cairo::Context>(new Cairo::Context(gdk_cairo_create(gobj()), true /* has_reference */));
 }
-
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 
 } // namespace Gdk

@@ -28,7 +28,6 @@
 
 #include <gdkmmconfig.h>
 
-
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 extern "C" { typedef struct _GdkRgbCmap GdkRgbCmap; }
 #endif
@@ -48,8 +47,11 @@ private:
 
   
 public:
-  explicit RgbCmap(const Glib::ArrayHandle<guint32>& colors);
+
   virtual ~RgbCmap();
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+  explicit RgbCmap(const Glib::ArrayHandle<guint32>& colors);
 
   ///Number of colors.
   unsigned long size() const;
@@ -59,10 +61,11 @@ public:
 
   ///Access the colors.
   const guint32& operator[](unsigned long index) const;
+#endif //GDKMM_DISABLE_DEPRECATED
 
   /// Provides access to the underlying C GObject.
   GdkRgbCmap*       gobj()       { return gobject_; }
-  /// Provides access to the underlying C GObject.  
+  /// Provides access to the underlying C GObject.
   const GdkRgbCmap* gobj() const { return gobject_; }
 
 protected:

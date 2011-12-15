@@ -56,7 +56,7 @@ void ActionGroup::add(const Glib::RefPtr<Action>& action, const AccelKey& accel_
       //Copied from the gtk_action_group_add_action_with_accel() implementation:
 
       gchar* action_name = 0;
-      g_object_get(G_OBJECT(action->gobj()), "name", &action_name, static_cast<char*>(0));
+      g_object_get(G_OBJECT(Glib::unwrap(action)), "name", &action_name, static_cast<char*>(0));
       if(action_name)
       {
         accel_path =  "<Actions>/" + get_name() + '/' + action_name;
@@ -294,23 +294,14 @@ const Glib::Class& ActionGroup_Class::init()
   return *this;
 }
 
+
 void ActionGroup_Class::class_init_function(void* g_class, void* class_data)
 {
   BaseClassType *const klass = static_cast<BaseClassType*>(g_class);
   CppClassParent::class_init_function(klass, class_data);
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 }
-
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
-
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 Glib::ObjectBase* ActionGroup_Class::wrap_new(GObject* object)
@@ -339,6 +330,7 @@ ActionGroup::ActionGroup(GtkActionGroup* castitem)
   Glib::Object((GObject*)(castitem))
 {}
 
+
 ActionGroup::~ActionGroup()
 {}
 
@@ -349,6 +341,7 @@ GType ActionGroup::get_type()
 {
   return actiongroup_class_.init().get_type();
 }
+
 
 GType ActionGroup::get_base_type()
 {
@@ -370,6 +363,7 @@ Glib::RefPtr<ActionGroup> ActionGroup::create(const Glib::ustring& name)
 {
   return Glib::RefPtr<ActionGroup>( new ActionGroup(name) );
 }
+
 Glib::ustring ActionGroup::get_name() const
 {
   return Glib::convert_const_gchar_ptr_to_ustring(gtk_action_group_get_name(const_cast<GtkActionGroup*>(gobj())));
@@ -455,11 +449,40 @@ Glib::SignalProxy1< void,const Glib::RefPtr<Action>& > ActionGroup::signal_post_
 }
 
 
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<Glib::ustring> ActionGroup::property_name() const
+{
+  return Glib::PropertyProxy_ReadOnly<Glib::ustring>(this, "name");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<bool> ActionGroup::property_sensitive() 
+{
+  return Glib::PropertyProxy<bool>(this, "sensitive");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> ActionGroup::property_sensitive() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "sensitive");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy<bool> ActionGroup::property_visible() 
+{
+  return Glib::PropertyProxy<bool>(this, "visible");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+Glib::PropertyProxy_ReadOnly<bool> ActionGroup::property_visible() const
+{
+  return Glib::PropertyProxy_ReadOnly<bool>(this, "visible");
+}
+#endif //GLIBMM_PROPERTIES_ENABLED
 
 
 } // namespace Gtk
