@@ -19,46 +19,46 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\w32deps\libzlib\include\crc32.h" />
-    <ClInclude Include="..\..\..\w32deps\libzlib\include\deflate.h" />
-    <ClInclude Include="..\..\..\w32deps\libzlib\include\gzguts.h" />
-    <ClInclude Include="..\..\..\w32deps\libzlib\include\inffast.h" />
-    <ClInclude Include="..\..\..\w32deps\libzlib\include\inffixed.h" />
-    <ClInclude Include="..\..\..\w32deps\libzlib\include\inflate.h" />
-    <ClInclude Include="..\..\..\w32deps\libzlib\include\inftrees.h" />
-    <ClInclude Include="..\..\..\w32deps\libzlib\include\trees.h" />
-    <ClInclude Include="..\..\..\w32deps\libzlib\include\zconf.h" />
-    <ClInclude Include="..\..\..\w32deps\libzlib\include\zlib.h" />
-    <ClInclude Include="..\..\..\w32deps\libzlib\include\zutil.h" />
+    <ClInclude Include="..\..\w32deps\libzlib\include\crc32.h" />
+    <ClInclude Include="..\..\w32deps\libzlib\include\deflate.h" />
+    <ClInclude Include="..\..\w32deps\libzlib\include\gzguts.h" />
+    <ClInclude Include="..\..\w32deps\libzlib\include\inffast.h" />
+    <ClInclude Include="..\..\w32deps\libzlib\include\inffixed.h" />
+    <ClInclude Include="..\..\w32deps\libzlib\include\inflate.h" />
+    <ClInclude Include="..\..\w32deps\libzlib\include\inftrees.h" />
+    <ClInclude Include="..\..\w32deps\libzlib\include\trees.h" />
+    <ClInclude Include="..\..\w32deps\libzlib\include\zconf.h" />
+    <ClInclude Include="..\..\w32deps\libzlib\include\zlib.h" />
+    <ClInclude Include="..\..\w32deps\libzlib\include\zutil.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\adler32.c" />
-    <ClCompile Include="..\src\compress.c" />
-    <ClCompile Include="..\src\crc32.c" />
-    <ClCompile Include="..\src\deflate.c" />
-    <ClCompile Include="..\src\example.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    <ClCompile Include="..\libzlib\src\adler32.c" />
+    <ClCompile Include="..\libzlib\src\compress.c" />
+    <ClCompile Include="..\libzlib\src\crc32.c" />
+    <ClCompile Include="..\libzlib\src\deflate.c" />
+    <ClCompile Include="..\libzlib\src\example.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\src\gzclose.c" />
-    <ClCompile Include="..\src\gzlib.c" />
-    <ClCompile Include="..\src\gzread.c" />
-    <ClCompile Include="..\src\gzwrite.c" />
-    <ClCompile Include="..\src\infback.c" />
-    <ClCompile Include="..\src\inffast.c" />
-    <ClCompile Include="..\src\inflate.c" />
-    <ClCompile Include="..\src\inftrees.c" />
-    <ClCompile Include="..\src\minigzip.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    <ClCompile Include="..\libzlib\src\gzclose.c" />
+    <ClCompile Include="..\libzlib\src\gzlib.c" />
+    <ClCompile Include="..\libzlib\src\gzread.c" />
+    <ClCompile Include="..\libzlib\src\gzwrite.c" />
+    <ClCompile Include="..\libzlib\src\infback.c" />
+    <ClCompile Include="..\libzlib\src\inffast.c" />
+    <ClCompile Include="..\libzlib\src\inflate.c" />
+    <ClCompile Include="..\libzlib\src\inftrees.c" />
+    <ClCompile Include="..\libzlib\src\minigzip.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\src\trees.c" />
-    <ClCompile Include="..\src\uncompr.c" />
-    <ClCompile Include="..\src\zutil.c" />
+    <ClCompile Include="..\libzlib\src\trees.c" />
+    <ClCompile Include="..\libzlib\src\uncompr.c" />
+    <ClCompile Include="..\libzlib\src\zutil.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{6780EE95-8768-4138-A89B-47D3504A6E5D}</ProjectGuid>
@@ -81,27 +81,27 @@
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\msvc2010\properties\Common Release.props" />
-    <Import Project="..\..\msvc2010\properties\Common x86 Settings.props" />
-    <Import Project="..\..\msvc2010\properties\zlib.props" />
+    <Import Project="properties\Common Release.props" />
+    <Import Project="properties\Common x86 Settings.props" />
+    <Import Project="properties\zlib.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\msvc2010\properties\Common Debug.props" />
-    <Import Project="..\..\msvc2010\properties\Common x86 Settings.props" />
-    <Import Project="..\..\msvc2010\properties\zlib.props" />
+    <Import Project="properties\Common Debug.props" />
+    <Import Project="properties\Common x86 Settings.props" />
+    <Import Project="properties\zlib.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\msvc2010\properties\Common Release.props" />
-    <Import Project="..\..\msvc2010\properties\Common x64 Settings.props" />
-    <Import Project="..\..\msvc2010\properties\zlib.props" />
+    <Import Project="properties\Common Release.props" />
+    <Import Project="properties\Common x64 Settings.props" />
+    <Import Project="properties\zlib.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\msvc2010\properties\Common Debug.props" />
-    <Import Project="..\..\msvc2010\properties\Common x64 Settings.props" />
-    <Import Project="..\..\msvc2010\properties\zlib.props" />
+    <Import Project="properties\Common Debug.props" />
+    <Import Project="properties\Common x64 Settings.props" />
+    <Import Project="properties\zlib.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
