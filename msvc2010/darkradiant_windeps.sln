@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libpng", "libpng.vcxproj", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pixman", "pixman.vcxproj", "{198DEC2B-566D-4EDE-A400-5B4285C41D86}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libjpeg", "libjpeg.vcxproj", "{13F034FC-2F0F-474E-B362-1C5750613C52}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -38,6 +40,14 @@ Global
 		{198DEC2B-566D-4EDE-A400-5B4285C41D86}.Release|Win32.Build.0 = Release|Win32
 		{198DEC2B-566D-4EDE-A400-5B4285C41D86}.Release|x64.ActiveCfg = Release|x64
 		{198DEC2B-566D-4EDE-A400-5B4285C41D86}.Release|x64.Build.0 = Release|x64
+		{13F034FC-2F0F-474E-B362-1C5750613C52}.Debug|Win32.ActiveCfg = Debug|Win32
+		{13F034FC-2F0F-474E-B362-1C5750613C52}.Debug|Win32.Build.0 = Debug|Win32
+		{13F034FC-2F0F-474E-B362-1C5750613C52}.Debug|x64.ActiveCfg = Debug|x64
+		{13F034FC-2F0F-474E-B362-1C5750613C52}.Debug|x64.Build.0 = Debug|x64
+		{13F034FC-2F0F-474E-B362-1C5750613C52}.Release|Win32.ActiveCfg = Release|Win32
+		{13F034FC-2F0F-474E-B362-1C5750613C52}.Release|Win32.Build.0 = Release|Win32
+		{13F034FC-2F0F-474E-B362-1C5750613C52}.Release|x64.ActiveCfg = Release|x64
+		{13F034FC-2F0F-474E-B362-1C5750613C52}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
