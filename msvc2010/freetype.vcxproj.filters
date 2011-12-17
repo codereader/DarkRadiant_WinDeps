@@ -131,6 +131,9 @@
     <ClCompile Include="..\freetype\winfonts\winfnt.c">
       <Filter>Source Files\FT_MODULES</Filter>
     </ClCompile>
+    <ClCompile Include="..\freetype\base\ftbdf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\w32deps\freetype\include\ft2build.h">
