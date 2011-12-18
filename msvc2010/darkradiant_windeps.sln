@@ -19,6 +19,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fontconfig", "fontconfig.vc
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B} = {78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gettext", "gettext.vcxproj", "{56ED427B-0428-48B0-BD86-58AD1EEFEEEF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1} = {C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libiconv", "win_iconv.vcxproj", "{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -83,6 +90,22 @@ Global
 		{E82C60A1-5613-4DB5-B965-5F1E11CB68BD}.Release|Win32.Build.0 = Release|Win32
 		{E82C60A1-5613-4DB5-B965-5F1E11CB68BD}.Release|x64.ActiveCfg = Release|x64
 		{E82C60A1-5613-4DB5-B965-5F1E11CB68BD}.Release|x64.Build.0 = Release|x64
+		{56ED427B-0428-48B0-BD86-58AD1EEFEEEF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{56ED427B-0428-48B0-BD86-58AD1EEFEEEF}.Debug|Win32.Build.0 = Debug|Win32
+		{56ED427B-0428-48B0-BD86-58AD1EEFEEEF}.Debug|x64.ActiveCfg = Debug|x64
+		{56ED427B-0428-48B0-BD86-58AD1EEFEEEF}.Debug|x64.Build.0 = Debug|x64
+		{56ED427B-0428-48B0-BD86-58AD1EEFEEEF}.Release|Win32.ActiveCfg = Release|Win32
+		{56ED427B-0428-48B0-BD86-58AD1EEFEEEF}.Release|Win32.Build.0 = Release|Win32
+		{56ED427B-0428-48B0-BD86-58AD1EEFEEEF}.Release|x64.ActiveCfg = Release|x64
+		{56ED427B-0428-48B0-BD86-58AD1EEFEEEF}.Release|x64.Build.0 = Release|x64
+		{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}.Debug|Win32.Build.0 = Debug|Win32
+		{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}.Debug|x64.ActiveCfg = Debug|x64
+		{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}.Debug|x64.Build.0 = Debug|x64
+		{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}.Release|Win32.ActiveCfg = Release|Win32
+		{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}.Release|Win32.Build.0 = Release|Win32
+		{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}.Release|x64.ActiveCfg = Release|x64
+		{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
