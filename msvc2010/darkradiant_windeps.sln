@@ -26,6 +26,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gettext", "gettext.vcxproj"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libiconv", "win_iconv.vcxproj", "{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libffi", "libffi.vcxproj", "{8B7F7E4C-CEFE-4440-8F46-FAEE748BB811}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -106,6 +108,14 @@ Global
 		{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}.Release|Win32.Build.0 = Release|Win32
 		{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}.Release|x64.ActiveCfg = Release|x64
 		{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}.Release|x64.Build.0 = Release|x64
+		{8B7F7E4C-CEFE-4440-8F46-FAEE748BB811}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8B7F7E4C-CEFE-4440-8F46-FAEE748BB811}.Debug|Win32.Build.0 = Debug|Win32
+		{8B7F7E4C-CEFE-4440-8F46-FAEE748BB811}.Debug|x64.ActiveCfg = Debug|x64
+		{8B7F7E4C-CEFE-4440-8F46-FAEE748BB811}.Debug|x64.Build.0 = Debug|x64
+		{8B7F7E4C-CEFE-4440-8F46-FAEE748BB811}.Release|Win32.ActiveCfg = Release|Win32
+		{8B7F7E4C-CEFE-4440-8F46-FAEE748BB811}.Release|Win32.Build.0 = Release|Win32
+		{8B7F7E4C-CEFE-4440-8F46-FAEE748BB811}.Release|x64.ActiveCfg = Release|x64
+		{8B7F7E4C-CEFE-4440-8F46-FAEE748BB811}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

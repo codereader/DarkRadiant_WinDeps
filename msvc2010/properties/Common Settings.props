@@ -6,7 +6,7 @@
     <W64DepsDir>$(SolutionDir)../../w64deps/</W64DepsDir>
   </PropertyGroup>
   <PropertyGroup>
-    <IntDir>$(SolutionDir)\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <BuildLogFile>$(IntDir)\$(MSBuildProjectName).log</BuildLogFile>
