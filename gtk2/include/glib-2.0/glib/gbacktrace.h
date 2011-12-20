@@ -36,32 +36,28 @@
 
 G_BEGIN_DECLS
 
-/* Fatal error handlers.
- * g_on_error_query() will prompt the user to either
- * [E]xit, [H]alt, [P]roceed or show [S]tack trace.
- * g_on_error_stack_trace() invokes gdb, which attaches to the current
- * process and shows a stack trace.
- * These function may cause different actions on non-unix platforms.
- * The prg_name arg is required by gdb to find the executable, if it is
- * passed as NULL, g_on_error_query() will try g_get_prgname().
- */
 void g_on_error_query (const gchar *prg_name);
 void g_on_error_stack_trace (const gchar *prg_name);
 
-/* Hacker macro to place breakpoints for selected machines.
- * Actual use is strongly discouraged of course ;)
+/**
+ * G_BREAKPOINT:
+ *
+ * Inserts a breakpoint instruction into the code.
+ *
+ * On x86 and alpha systems this is implemented as a soft interrupt
+ * and on other architectures it raises a %SIGTRAP signal.
  */
 #if (defined (__i386__) || defined (__x86_64__)) && defined (__GNUC__) && __GNUC__ >= 2
-#  define G_BREAKPOINT()	G_STMT_START{ __asm__ __volatile__ ("int $03"); }G_STMT_END
+#  define G_BREAKPOINT()        G_STMT_START{ __asm__ __volatile__ ("int $03"); }G_STMT_END
 #elif (defined (_MSC_VER) || defined (__DMC__)) && defined (_M_IX86)
-#  define G_BREAKPOINT()	G_STMT_START{ __asm int 3h }G_STMT_END
+#  define G_BREAKPOINT()        G_STMT_START{ __asm int 3h }G_STMT_END
 #elif defined (_MSC_VER)
-#  define G_BREAKPOINT()	G_STMT_START{ __debugbreak(); }G_STMT_END
+#  define G_BREAKPOINT()        G_STMT_START{ __debugbreak(); }G_STMT_END
 #elif defined (__alpha__) && !defined(__osf__) && defined (__GNUC__) && __GNUC__ >= 2
-#  define G_BREAKPOINT()	G_STMT_START{ __asm__ __volatile__ ("bpt"); }G_STMT_END
-#else	/* !__i386__ && !__alpha__ */
-#  define G_BREAKPOINT()	G_STMT_START{ raise (SIGTRAP); }G_STMT_END
-#endif	/* __i386__ */
+#  define G_BREAKPOINT()        G_STMT_START{ __asm__ __volatile__ ("bpt"); }G_STMT_END
+#else   /* !__i386__ && !__alpha__ */
+#  define G_BREAKPOINT()        G_STMT_START{ raise (SIGTRAP); }G_STMT_END
+#endif  /* __i386__ */
 
 G_END_DECLS
 

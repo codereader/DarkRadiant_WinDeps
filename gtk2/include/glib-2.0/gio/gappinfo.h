@@ -61,7 +61,7 @@ typedef struct _GAppLaunchContextPrivate GAppLaunchContextPrivate;
  * @get_id: Gets a string identifier for a #GAppInfo.
  * @get_name: Gets the name of the application for a #GAppInfo.
  * @get_description: Gets a short description for the application described by the #GAppInfo.
- * @get_executable: Gets the execuable name for the #GAppInfo.
+ * @get_executable: Gets the executable name for the #GAppInfo.
  * @get_icon: Gets the #GIcon for the #GAppInfo.
  * @launch: Launches an application specified by the #GAppInfo.
  * @supports_uris: Indicates whether the application specified supports launching URIs.
@@ -71,13 +71,15 @@ typedef struct _GAppLaunchContextPrivate GAppLaunchContextPrivate;
  * <ulink url="http://standards.freedesktop.org/startup-notification-spec/startup-notification-latest.txt">
  * <citetitle>FreeDesktop.Org Startup Notification Specification</citetitle></ulink>.
  * @set_as_default_for_type: Sets an application as default for a given content type.
- * @set_as_default_for_extension: Sets an application as default for a given file extention.
+ * @set_as_default_for_extension: Sets an application as default for a given file extension.
  * @add_supports_type: Adds to the #GAppInfo information about supported file types.
  * @can_remove_supports_type: Checks for support for removing supported file types from a #GAppInfo.
  * @remove_supports_type: Removes a supported application type from a #GAppInfo.
  * @can_delete: Checks if a #GAppInfo can be deleted. Since 2.20
  * @do_delete: Deletes a #GAppInfo. Since 2.20
  * @get_commandline: Gets the commandline for the #GAppInfo. Since 2.20
+ * @get_display_name: Gets the display name for the #GAppInfo. Since 2.24
+ * @set_as_last_used_for_type: Sets the application as the last used. See g_app_info_set_as_last_used_for_type().
  *
  * Application Information interface, for operating system portability.
  */
@@ -98,7 +100,7 @@ struct _GAppInfoIface
   const char * (* get_executable)               (GAppInfo           *appinfo);
   GIcon *      (* get_icon)                     (GAppInfo           *appinfo);
   gboolean     (* launch)                       (GAppInfo           *appinfo,
-                                                 GList              *filenames,
+                                                 GList              *files,
                                                  GAppLaunchContext  *launch_context,
                                                  GError            **error);
   gboolean     (* supports_uris)                (GAppInfo           *appinfo);
@@ -126,6 +128,10 @@ struct _GAppInfoIface
   gboolean     (* can_delete)                   (GAppInfo           *appinfo);
   gboolean     (* do_delete)                    (GAppInfo           *appinfo);
   const char * (* get_commandline)              (GAppInfo           *appinfo);
+  const char * (* get_display_name)             (GAppInfo           *appinfo);
+  gboolean     (* set_as_last_used_for_type)    (GAppInfo           *appinfo,
+                                                 const char         *content_type,
+                                                 GError            **error);
 };
 
 GType       g_app_info_get_type                     (void) G_GNUC_CONST;
@@ -138,6 +144,7 @@ gboolean    g_app_info_equal                        (GAppInfo             *appin
 						     GAppInfo             *appinfo2);
 const char *g_app_info_get_id                       (GAppInfo             *appinfo);
 const char *g_app_info_get_name                     (GAppInfo             *appinfo);
+const char *g_app_info_get_display_name             (GAppInfo             *appinfo);
 const char *g_app_info_get_description              (GAppInfo             *appinfo);
 const char *g_app_info_get_executable               (GAppInfo             *appinfo);
 const char *g_app_info_get_commandline              (GAppInfo             *appinfo);
@@ -170,8 +177,15 @@ gboolean    g_app_info_remove_supports_type         (GAppInfo             *appin
 gboolean    g_app_info_can_delete                   (GAppInfo   *appinfo);
 gboolean    g_app_info_delete                       (GAppInfo   *appinfo);
 
+gboolean    g_app_info_set_as_last_used_for_type    (GAppInfo             *appinfo,
+						     const char           *content_type,
+						     GError              **error);
+
 GList *   g_app_info_get_all                     (void);
 GList *   g_app_info_get_all_for_type            (const char  *content_type);
+GList *   g_app_info_get_recommended_for_type    (const gchar *content_type);
+GList *   g_app_info_get_fallback_for_type       (const gchar *content_type);
+
 void      g_app_info_reset_type_associations     (const char  *content_type);
 GAppInfo *g_app_info_get_default_for_type        (const char  *content_type,
 						  gboolean     must_support_uris);
@@ -183,7 +197,6 @@ gboolean  g_app_info_launch_default_for_uri      (const char              *uri,
 
 /**
  * GAppLaunchContext:
- * @parent_instance: The parent instance.
  *
  * Integrating the launch with the launching application. This is used to
  * handle for instance startup notification and launching the new application

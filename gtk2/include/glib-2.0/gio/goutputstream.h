@@ -100,7 +100,7 @@ struct _GOutputStreamClass
                                  int                       io_priority,
                                  GCancellable             *cancellable,
                                  GAsyncReadyCallback       callback,
-                                 gpointer                  data);
+                                 gpointer                  user_data);
   gssize      (* splice_finish) (GOutputStream            *stream,
                                  GAsyncResult             *result,
                                  GError                  **error);
@@ -195,6 +195,7 @@ gboolean g_output_stream_close_finish  (GOutputStream             *stream,
 					GError                   **error);
 
 gboolean g_output_stream_is_closed     (GOutputStream             *stream);
+gboolean g_output_stream_is_closing    (GOutputStream             *stream);
 gboolean g_output_stream_has_pending   (GOutputStream             *stream);
 gboolean g_output_stream_set_pending   (GOutputStream             *stream,
 					GError                   **error);

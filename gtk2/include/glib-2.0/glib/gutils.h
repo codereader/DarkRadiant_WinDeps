@@ -108,33 +108,34 @@ G_BEGIN_DECLS
 #  define G_INLINE_FUNC
 #endif /* !G_INLINE_FUNC */
 
-/* Retrive static string info
- */
+#ifndef __GTK_DOC_IGNORE__
 #ifdef G_OS_WIN32
 #define g_get_user_name g_get_user_name_utf8
 #define g_get_real_name g_get_real_name_utf8
 #define g_get_home_dir g_get_home_dir_utf8
 #define g_get_tmp_dir g_get_tmp_dir_utf8
 #endif
+#endif
 
-G_CONST_RETURN gchar* g_get_user_name        (void);
-G_CONST_RETURN gchar* g_get_real_name        (void);
-G_CONST_RETURN gchar* g_get_home_dir         (void);
-G_CONST_RETURN gchar* g_get_tmp_dir          (void);
-G_CONST_RETURN gchar* g_get_host_name	     (void);
-gchar*                g_get_prgname          (void);
+const gchar *         g_get_user_name        (void);
+const gchar *         g_get_real_name        (void);
+const gchar *         g_get_home_dir         (void);
+const gchar *         g_get_tmp_dir          (void);
+const gchar *         g_get_host_name	     (void);
+gchar *               g_get_prgname          (void);
 void                  g_set_prgname          (const gchar *prgname);
-G_CONST_RETURN gchar* g_get_application_name (void);
+const gchar *         g_get_application_name (void);
 void                  g_set_application_name (const gchar *application_name);
 
-G_CONST_RETURN gchar*    g_get_user_data_dir      (void);
-G_CONST_RETURN gchar*    g_get_user_config_dir    (void);
-G_CONST_RETURN gchar*    g_get_user_cache_dir     (void);
-G_CONST_RETURN gchar* G_CONST_RETURN * g_get_system_data_dirs   (void);
+void      g_reload_user_special_dirs_cache     (void);
+const gchar *         g_get_user_data_dir      (void);
+const gchar *         g_get_user_config_dir    (void);
+const gchar *         g_get_user_cache_dir     (void);
+const gchar * const * g_get_system_data_dirs   (void);
 
 #ifdef G_OS_WIN32
 /* This functions is not part of the public GLib API */
-G_CONST_RETURN gchar* G_CONST_RETURN * g_win32_get_system_data_dirs_for_module (void (*address_of_function)());
+const gchar * const * g_win32_get_system_data_dirs_for_module (void (*address_of_function)(void));
 #endif
 
 #if defined (G_OS_WIN32) && defined (G_CAN_INLINE) && !defined (__cplusplus)
@@ -142,17 +143,21 @@ G_CONST_RETURN gchar* G_CONST_RETURN * g_win32_get_system_data_dirs_for_module (
  * g_get_system_data_dirs() in your code, never mind that that is
  * actually a macro and you will in fact call this inline function.
  */
-static inline G_CONST_RETURN gchar * G_CONST_RETURN *
+static inline const gchar * const *
 _g_win32_get_system_data_dirs (void)
 {
-  return g_win32_get_system_data_dirs_for_module ((void (*)()) &_g_win32_get_system_data_dirs);
+  return g_win32_get_system_data_dirs_for_module ((void (*)(void)) &_g_win32_get_system_data_dirs);
 }
 #define g_get_system_data_dirs _g_win32_get_system_data_dirs
 #endif
 
-G_CONST_RETURN gchar* G_CONST_RETURN * g_get_system_config_dirs (void);
+const gchar * const * g_get_system_config_dirs (void);
 
-G_CONST_RETURN gchar* G_CONST_RETURN * g_get_language_names (void);
+const gchar * g_get_user_runtime_dir (void);
+
+const gchar * const * g_get_language_names (void);
+
+gchar **g_get_locale_variants (const gchar *locale);
 
 /**
  * GUserDirectory:
@@ -189,9 +194,17 @@ typedef enum {
   G_USER_N_DIRECTORIES
 } GUserDirectory;
 
-G_CONST_RETURN gchar* g_get_user_special_dir (GUserDirectory directory);
+const gchar * g_get_user_special_dir (GUserDirectory directory);
 
-typedef struct _GDebugKey	GDebugKey;
+/**
+ * GDebugKey:
+ * @key: the string
+ * @value: the flag
+ *
+ * Associates a string with a bit flag.
+ * Used in g_parse_debug_string().
+ */
+typedef struct _GDebugKey GDebugKey;
 struct _GDebugKey
 {
   const gchar *key;
@@ -217,21 +230,19 @@ gint                  g_vsnprintf          (gchar       *string,
 gboolean              g_path_is_absolute   (const gchar *file_name);
 
 /* In case of absolute paths, skip the root part */
-G_CONST_RETURN gchar* g_path_skip_root     (const gchar *file_name);
+const gchar *         g_path_skip_root     (const gchar *file_name);
 
 #ifndef G_DISABLE_DEPRECATED
 
-/* These two functions are deprecated and will be removed in the next
- * major release of GLib. Use g_path_get_dirname/g_path_get_basename
- * instead. Whatch out! The string returned by g_path_get_basename
- * must be g_freed, while the string returned by g_basename must not.*/
-G_CONST_RETURN gchar* g_basename           (const gchar *file_name);
+const gchar *         g_basename           (const gchar *file_name);
 #define g_dirname g_path_get_dirname
 
 #endif /* G_DISABLE_DEPRECATED */
 
+#ifndef __GTK_DOC_IGNORE__
 #ifdef G_OS_WIN32
 #define g_get_current_dir g_get_current_dir_utf8
+#endif
 #endif
 
 /* The returned strings are newly allocated with g_malloc() */
@@ -244,31 +255,37 @@ void                  g_nullify_pointer    (gpointer    *nullify_location);
 
 /* return the environment string for the variable. The returned memory
  * must not be freed. */
+#ifndef __GTK_DOC_IGNORE__
 #ifdef G_OS_WIN32
 #define g_getenv g_getenv_utf8
 #define g_setenv g_setenv_utf8
 #define g_unsetenv g_unsetenv_utf8
 #define g_find_program_in_path g_find_program_in_path_utf8
 #endif
+#endif
 
-G_CONST_RETURN gchar* g_getenv             (const gchar *variable);
+const gchar *         g_getenv             (const gchar *variable);
 gboolean              g_setenv             (const gchar *variable,
 					    const gchar *value,
 					    gboolean     overwrite);
 void                  g_unsetenv           (const gchar *variable);
 gchar**               g_listenv            (void);
+gchar**               g_get_environ        (void);
 
 /* private */
 const gchar*	     _g_getenv_nomalloc	   (const gchar	*variable,
 					    gchar        buffer[1024]);
 
-/* we try to provide a useful equivalent for ATEXIT if it is
- * not defined, but use is actually abandoned. people should
- * use g_atexit() instead.
+/**
+ * GVoidFunc:
+ *
+ * Declares a type of function which takes no arguments
+ * and has no return value. It is used to specify the type
+ * function passed to g_atexit().
  */
-typedef	void		(*GVoidFunc)		(void);
+typedef void (*GVoidFunc) (void);
 #ifndef ATEXIT
-# define ATEXIT(proc)	g_ATEXIT(proc)
+# define ATEXIT(proc) g_ATEXIT(proc)
 #else
 # define G_NATIVE_ATEXIT
 #endif /* ATEXIT */
@@ -286,7 +303,9 @@ void	g_atexit		(GVoidFunc    func);
  * wants the function to be called when it *itself* exits (or is
  * detached, in case the caller, too, is a DLL).
  */
+#if (defined(__MINGW_H) && !defined(_STDLIB_H_)) || (defined(_MSC_VER) && !defined(_INC_STDLIB))
 int atexit (void (*)(void));
+#endif
 #define g_atexit(func) atexit(func)
 #endif
 
@@ -352,7 +371,7 @@ g_bit_storage (gulong number)
 {
 #if defined(__GNUC__) && (__GNUC__ >= 4) && defined(__OPTIMIZE__)
   return G_LIKELY (number) ?
-	   ((GLIB_SIZEOF_LONG * 8 - 1) ^ __builtin_clzl(number)) + 1 : 1;
+	   ((GLIB_SIZEOF_LONG * 8U - 1) ^ __builtin_clzl(number)) + 1 : 1;
 #else
   register guint n_bits = 0;
   
@@ -427,6 +446,28 @@ const gchar * glib_check_version (guint required_major,
                                   guint required_minor,
                                   guint required_micro);
 
+/**
+ * GLIB_CHECK_VERSION:
+ * @major: the major version to check for
+ * @minor: the minor version to check for
+ * @micro: the micro version to check for
+ *
+ * Checks the version of the GLib library that is being compiled
+ * against.
+ *
+ * <example>
+ * <title>Checking the version of the GLib library</title>
+ * <programlisting>
+ *   if (!GLIB_CHECK_VERSION (1, 2, 0))
+ *     g_error ("GLib version 1.2.0 or above is needed");
+ * </programlisting>
+ * </example>
+ *
+ * See glib_check_version() for a runtime check.
+ *
+ * Returns: %TRUE if the version of the GLib header files
+ * is the same as or newer than the passed-in version.
+ */
 #define GLIB_CHECK_VERSION(major,minor,micro)    \
     (GLIB_MAJOR_VERSION > (major) || \
      (GLIB_MAJOR_VERSION == (major) && GLIB_MINOR_VERSION > (minor)) || \

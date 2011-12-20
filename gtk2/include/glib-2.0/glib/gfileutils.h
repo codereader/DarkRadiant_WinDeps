@@ -77,11 +77,13 @@ GQuark     g_file_error_quark      (void);
 /* So other code can generate a GFileError */
 GFileError g_file_error_from_errno (gint err_no);
 
+#ifndef __GTK_DOC_IGNORE__
 #ifdef G_OS_WIN32
 #define g_file_test g_file_test_utf8
 #define g_file_get_contents g_file_get_contents_utf8
 #define g_mkstemp g_mkstemp_utf8
 #define g_file_open_tmp g_file_open_tmp_utf8
+#endif
 #endif
 
 gboolean g_file_test         (const gchar  *filename,
@@ -97,15 +99,38 @@ gboolean g_file_set_contents (const gchar *filename,
 gchar   *g_file_read_link    (const gchar  *filename,
 			      GError      **error);
 
+/* Wrapper / workalike for mkdtemp() */
+gchar   *g_mkdtemp            (gchar        *tmpl);
+gchar   *g_mkdtemp_full       (gchar        *tmpl,
+                               gint          mode);
+
 /* Wrapper / workalike for mkstemp() */
 gint    g_mkstemp            (gchar        *tmpl);
+gint    g_mkstemp_full       (gchar        *tmpl,
+                              gint          flags,
+                              gint          mode);
 
-/* Wrapper for g_mkstemp */
+/* Wrappers for g_mkstemp and g_mkdtemp() */
 gint    g_file_open_tmp      (const gchar  *tmpl,
-			      gchar       **name_used,
-			      GError      **error);
+                              gchar       **name_used,
+                              GError      **error);
+gchar  *g_dir_make_tmp       (const gchar  *tmpl,
+                              GError      **error);
 
+typedef enum
+{
+  G_FORMAT_SIZE_DEFAULT     = 0,
+  G_FORMAT_SIZE_LONG_FORMAT = 1 << 0,
+  G_FORMAT_SIZE_IEC_UNITS   = 1 << 1
+} GFormatSizeFlags;
+
+gchar * g_format_size_full   (guint64          size,
+                              GFormatSizeFlags flags);
+gchar * g_format_size        (guint64          size);
+
+#ifndef G_DISABLE_DEPRECATED
 char *g_format_size_for_display (goffset size);
+#endif
 
 gchar *g_build_path     (const gchar *separator,
 			 const gchar *first_element,

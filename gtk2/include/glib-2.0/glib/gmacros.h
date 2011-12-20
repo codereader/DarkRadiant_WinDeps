@@ -107,6 +107,13 @@
 #define G_GNUC_DEPRECATED
 #endif /* __GNUC__ */
 
+#if    __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5)
+#define G_GNUC_DEPRECATED_FOR(f)                        \
+  __attribute__((deprecated("Use " #f " instead")))
+#else
+#define G_GNUC_DEPRECATED_FOR(f)        G_GNUC_DEPRECATED
+#endif /* __GNUC__ */
+
 #if     __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 3)
 #  define G_GNUC_MAY_ALIAS __attribute__((may_alias))
 #else
@@ -137,9 +144,16 @@
 #define G_STRINGIFY(macro_or_string)	G_STRINGIFY_ARG (macro_or_string)
 #define	G_STRINGIFY_ARG(contents)	#contents
 
+#ifndef __GI_SCANNER__ /* The static assert macro really confuses the introspection parser */
 #define G_PASTE_ARGS(identifier1,identifier2) identifier1 ## identifier2
 #define G_PASTE(identifier1,identifier2)      G_PASTE_ARGS (identifier1, identifier2)
-#define G_STATIC_ASSERT(expr) typedef struct { char Compile_Time_Assertion[(expr) ? 1 : -1]; } G_PASTE (_GStaticAssert_, __LINE__)
+#ifdef __COUNTER__
+#define G_STATIC_ASSERT(expr) typedef char G_PASTE (_GStaticAssertCompileTimeAssertion_, __COUNTER__)[(expr) ? 1 : -1]
+#else
+#define G_STATIC_ASSERT(expr) typedef char G_PASTE (_GStaticAssertCompileTimeAssertion_, __LINE__)[(expr) ? 1 : -1]
+#endif
+#define G_STATIC_ASSERT_EXPR(expr) ((void) sizeof (char[(expr) ? 1 : -1]))
+#endif
 
 /* Provide a string identifying the current code position */
 #if defined(__GNUC__) && (__GNUC__ < 3) && !defined(__cplusplus)
@@ -239,14 +253,13 @@
 #  define G_STMT_END    while (0)
 #endif
 
-/* Allow the app programmer to select whether or not return values
- * (usually char*) are const or not.  Don't try using this feature for
- * functions with C++ linkage.
- */
+/* Deprecated -- do not use. */
+#ifndef G_DISABLE_DEPRECATED
 #ifdef G_DISABLE_CONST_RETURNS
 #define G_CONST_RETURN
 #else
 #define G_CONST_RETURN const
+#endif
 #endif
 
 /*
@@ -259,7 +272,7 @@
  */
 #if defined(__GNUC__) && (__GNUC__ > 2) && defined(__OPTIMIZE__)
 #define _G_BOOLEAN_EXPR(expr)                   \
- __extension__ ({                               \
+ G_GNUC_EXTENSION ({                            \
    int _g_boolean_var_;                         \
    if (expr)                                    \
       _g_boolean_var_ = 1;                      \

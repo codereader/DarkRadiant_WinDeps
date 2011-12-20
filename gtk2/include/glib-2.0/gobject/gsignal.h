@@ -48,8 +48,8 @@ typedef GClosureMarshal			 GSignalCMarshaller;
  * @ihint: Signal invocation hint, see #GSignalInvocationHint.
  * @n_param_values: the number of parameters to the function, including
  *  the instance on which the signal was emitted.
- * @param_values: the instance on which the signal was emitted, followed by the 
- *  parameters of the emission.
+ * @param_values: (array length=n_param_values): the instance on which
+ *  the signal was emitted, followed by the parameters of the emission.
  * @data: user data associated with the hook.
  * 
  * A simple function pointer to get invoked when the signal is emitted. This 
@@ -108,6 +108,8 @@ typedef gboolean (*GSignalAccumulator)	(GSignalInvocationHint *ihint,
  *  of as object methods which can be called generically by 
  *  third-party code.
  * @G_SIGNAL_NO_HOOKS: No emissions hooks are supported for this signal.
+ * @G_SIGNAL_MUST_COLLECT: Varargs signal emission will always collect the
+ *   arguments, even if there are no signal handlers connected.  Since 2.30.
  * 
  * The signal flags are used to specify a signal's behaviour, the overall
  * signal description outlines how especially the RUN flags control the
@@ -121,14 +123,15 @@ typedef enum
   G_SIGNAL_NO_RECURSE	= 1 << 3,
   G_SIGNAL_DETAILED	= 1 << 4,
   G_SIGNAL_ACTION	= 1 << 5,
-  G_SIGNAL_NO_HOOKS	= 1 << 6
+  G_SIGNAL_NO_HOOKS	= 1 << 6,
+  G_SIGNAL_MUST_COLLECT = 1 << 7
 } GSignalFlags;
 /**
  * G_SIGNAL_FLAGS_MASK:
  * 
  * A mask for all #GSignalFlags bits.
  */
-#define G_SIGNAL_FLAGS_MASK  0x7f
+#define G_SIGNAL_FLAGS_MASK  0xff
 /**
  * GConnectFlags:
  * @G_CONNECT_AFTER: whether the handler should be called before or after the 
@@ -227,8 +230,8 @@ struct _GSignalInvocationHint
  *  effective callback signature is:
  *  <programlisting>
  *  @return_type callback (#gpointer     data1,
- *  [#param_types param_names,]
- *  #gpointer     data2);
+ *  [param_types param_names,]
+ *  gpointer     data2);
  *  </programlisting>
  * 
  * A structure holding in-depth information for a specific signal. It is
@@ -305,7 +308,7 @@ void                  g_signal_emit_by_name (gpointer            instance,
 					     ...);
 guint                 g_signal_lookup       (const gchar        *name,
 					     GType               itype);
-G_CONST_RETURN gchar* g_signal_name         (guint               signal_id);
+const gchar *         g_signal_name         (guint               signal_id);
 void                  g_signal_query        (guint               signal_id,
 					     GSignalQuery       *query);
 guint*                g_signal_list_ids     (GType               itype,
@@ -499,6 +502,11 @@ gboolean g_signal_accumulator_true_handled (GSignalInvocationHint *ihint,
 					    GValue                *return_accu,
 					    const GValue          *handler_return,
 					    gpointer               dummy);
+
+gboolean g_signal_accumulator_first_wins   (GSignalInvocationHint *ihint,
+                                            GValue                *return_accu,
+                                            const GValue          *handler_return,
+                                            gpointer               dummy);
 
 /*< private >*/
 void	 g_signal_handlers_destroy	      (gpointer		  instance);

@@ -132,6 +132,10 @@ G_BEGIN_DECLS
  *  unmodified for the lifetime of the parameter. 
  *  Since 2.8
  * @G_PARAM_PRIVATE: internal
+ * @G_PARAM_DEPRECATED: the parameter is deprecated and will be removed
+ *  in a future version. A warning will be generated if it is used
+ *  while running with G_ENABLE_DIAGNOSTIC=1.
+ *  Since: 2.26
  * 
  * Through the #GParamFlags flag values, certain aspects of parameters
  * can be configured.
@@ -148,7 +152,9 @@ typedef enum
   G_PARAM_PRIVATE	      = G_PARAM_STATIC_NAME,
 #endif
   G_PARAM_STATIC_NICK	      = 1 << 6,
-  G_PARAM_STATIC_BLURB	      = 1 << 7
+  G_PARAM_STATIC_BLURB	      = 1 << 7,
+  /* User defined flags go up to 30 */
+  G_PARAM_DEPRECATED          = 1 << 31
 } GParamFlags;
 /**
  * G_PARAM_READWRITE:
@@ -175,10 +181,9 @@ typedef enum
  * G_PARAM_USER_SHIFT:
  * 
  * Minimum shift count to be used for user defined flags, to be stored in
- * #GParamSpec.flags.
+ * #GParamSpec.flags. The maximum allowed is 30 + G_PARAM_USER_SHIFT.
  */
 #define	G_PARAM_USER_SHIFT	(8)
-
 
 /* --- typedefs & structures --- */
 typedef struct _GParamSpec      GParamSpec;
@@ -188,10 +193,10 @@ typedef struct _GParamSpecPool  GParamSpecPool;
 /**
  * GParamSpec:
  * @g_type_instance: private #GTypeInstance portion
- * @name: name of this parameter
+ * @name: name of this parameter: always an interned string
  * @flags: #GParamFlags flags for this parameter
  * @value_type: the #GValue type for this parameter
- * @owner_type: #GType type that uses (introduces) this paremeter
+ * @owner_type: #GType type that uses (introduces) this parameter
  * 
  * All other fields of the <structname>GParamSpec</structname> struct are private and
  * should not be used directly.
@@ -200,7 +205,7 @@ struct _GParamSpec
 {
   GTypeInstance  g_type_instance;
 
-  gchar         *name;
+  const gchar   *name;          /* interned string */
   GParamFlags    flags;
   GType		 value_type;
   GType		 owner_type;	/* class or interface using this property */
@@ -223,7 +228,7 @@ struct _GParamSpec
  *  g_param_value_set_default().
  * @value_validate: Ensures that the contents of @value comply with the 
  *  specifications set out by this type (optional), see 
- *  g_param_value_set_validate().
+ *  g_param_value_validate().
  * @values_cmp: Compares @value1 with @value2 according to this type
  *  (recommended, the default is memcmp()), see g_param_values_cmp().
  * 
@@ -258,7 +263,7 @@ struct _GParamSpecClass
  * The <structname>GParameter</structname> struct is an auxiliary structure used
  * to hand parameter name/value pairs to g_object_newv().
  */
-struct _GParameter /* auxillary structure for _setv() variants */
+struct _GParameter /* auxiliary structure for _setv() variants */
 {
   const gchar *name;
   GValue       value;
@@ -296,9 +301,9 @@ gboolean	g_param_value_convert		(GParamSpec    *pspec,
 gint		g_param_values_cmp		(GParamSpec    *pspec,
 						 const GValue  *value1,
 						 const GValue  *value2);
-G_CONST_RETURN gchar*	g_param_spec_get_name	(GParamSpec    *pspec);
-G_CONST_RETURN gchar*	g_param_spec_get_nick	(GParamSpec    *pspec);
-G_CONST_RETURN gchar*	g_param_spec_get_blurb	(GParamSpec    *pspec);
+const gchar *   g_param_spec_get_name           (GParamSpec    *pspec);
+const gchar *   g_param_spec_get_nick           (GParamSpec    *pspec);
+const gchar *   g_param_spec_get_blurb          (GParamSpec    *pspec);
 void            g_value_set_param               (GValue	       *value,
 						 GParamSpec    *param);
 GParamSpec*     g_value_get_param               (const GValue  *value);
@@ -326,7 +331,7 @@ typedef struct _GParamSpecTypeInfo GParamSpecTypeInfo;
  *  g_param_value_set_default().
  * @value_validate: Ensures that the contents of @value comply with the 
  *  specifications set out by @pspec (optional), see 
- *  g_param_value_set_validate().
+ *  g_param_value_validate().
  * @values_cmp: Compares @value1 with @value2 according to @pspec 
  *  (recommended, the default is memcmp()), see g_param_values_cmp().
  * 

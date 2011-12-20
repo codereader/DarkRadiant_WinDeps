@@ -83,7 +83,7 @@ typedef enum
   G_SEEK_END
 } GSeekType;
 
-typedef enum
+typedef enum /*< flags >*/
 {
   G_IO_IN	GLIB_SYSDEF_POLLIN,
   G_IO_OUT	GLIB_SYSDEF_POLLOUT,
@@ -215,7 +215,7 @@ GIOFlags              g_io_channel_get_flags            (GIOChannel   *channel);
 void                  g_io_channel_set_line_term        (GIOChannel   *channel,
 							 const gchar  *line_term,
 							 gint          length);
-G_CONST_RETURN gchar* g_io_channel_get_line_term        (GIOChannel   *channel,
+const gchar *         g_io_channel_get_line_term        (GIOChannel   *channel,
 							 gint         *length);
 void		      g_io_channel_set_buffered		(GIOChannel   *channel,
 							 gboolean      buffered);
@@ -223,7 +223,7 @@ gboolean	      g_io_channel_get_buffered		(GIOChannel   *channel);
 GIOStatus             g_io_channel_set_encoding         (GIOChannel   *channel,
 							 const gchar  *encoding,
 							 GError      **error);
-G_CONST_RETURN gchar* g_io_channel_get_encoding         (GIOChannel   *channel);
+const gchar *         g_io_channel_get_encoding         (GIOChannel   *channel);
 void                  g_io_channel_set_close_on_unref	(GIOChannel   *channel,
 							 gboolean      do_close);
 gboolean              g_io_channel_get_close_on_unref	(GIOChannel   *channel);
