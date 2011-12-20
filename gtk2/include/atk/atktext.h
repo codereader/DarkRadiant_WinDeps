@@ -43,7 +43,7 @@ G_BEGIN_DECLS
  *@ATK_TEXT_ATTR_PIXELS_INSIDE_WRAP: Pixels of blank space to leave between wrapped lines inside the same newline-terminated line (paragraph).
  *@ATK_TEXT_ATTR_BG_FULL_HEIGHT: "true" or "false" whether to make the background color for each character the height of the highest font used on the current line, or the height of the font used for the current character.
  *@ATK_TEXT_ATTR_RISE: Number of pixels that the characters are risen above the baseline
- *@ATK_TEXT_ATTR_UNDERLINE: "none", "single", "double" or "low"
+ *@ATK_TEXT_ATTR_UNDERLINE: "none", "single", "double", "low", or "error"
  *@ATK_TEXT_ATTR_STRIKETHROUGH: "true" or "false" whether the text is strikethrough 
  *@ATK_TEXT_ATTR_SIZE: The size of the characters. 
  *@ATK_TEXT_ATTR_SCALE: The scale of the characters. The value is a string representation of a double 
@@ -54,7 +54,7 @@ G_BEGIN_DECLS
  *@ATK_TEXT_ATTR_FG_COLOR:The foreground color. The value is an RGB value of the format "%u,%u,%u"
  *@ATK_TEXT_ATTR_BG_STIPPLE: "true" if a #GdkBitmap is set for stippling the background color.
  *@ATK_TEXT_ATTR_FG_STIPPLE: "true" if a #GdkBitmap is set for stippling the foreground color.
- *@ATK_TEXT_ATTR_WRAP_MODE: The wrap mode of the text, if any. Values are "none", "char" or "word" 
+ *@ATK_TEXT_ATTR_WRAP_MODE: The wrap mode of the text, if any. Values are "none", "char", "word", or "word_char".
  *@ATK_TEXT_ATTR_DIRECTION: The direction of the text, if set. Values are "none", "ltr" or "rtl" 
  *@ATK_TEXT_ATTR_JUSTIFICATION: The justification of the text, if set. Values are "left", "right", "center" or "fill" 
  *@ATK_TEXT_ATTR_STRETCH: The stretch of the text, if set. Values are "ultra_condensed", "extra_condensed", "condensed", "semi_condensed", "normal", "semi_expanded", "expanded", "extra_expanded" or "ultra_expanded"
@@ -173,6 +173,8 @@ struct _AtkTextRange {
   gint end_offset;
   gchar* content;
 };
+
+GType atk_text_range_get_type (void);
 
 /**
  *AtkTextClipType
@@ -355,9 +357,9 @@ AtkTextRange**  atk_text_get_bounded_ranges               (AtkText          *tex
                                                            AtkTextClipType  y_clip_type);
 void          atk_text_free_ranges                        (AtkTextRange     **ranges);
 void 	      atk_attribute_set_free                      (AtkAttributeSet  *attrib_set);
-G_CONST_RETURN gchar*  atk_text_attribute_get_name        (AtkTextAttribute attr);
+const gchar*  atk_text_attribute_get_name                 (AtkTextAttribute attr);
 AtkTextAttribute       atk_text_attribute_for_name        (const gchar      *name);
-G_CONST_RETURN gchar*  atk_text_attribute_get_value       (AtkTextAttribute attr,
+const gchar*  atk_text_attribute_get_value                (AtkTextAttribute attr,
                                                            gint             index_);
 
 G_END_DECLS
