@@ -59,4 +59,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\libffi\libffi.def">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

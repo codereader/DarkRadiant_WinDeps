@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="UserMacros">
+    <AtkApiVersion>1.0</AtkApiVersion>
+    <AtkDummyPrefix>\"/dummy\"</AtkDummyPrefix>
+    <AtkEtcInstallRoot>..\..\..\..\..\vs10\$(Platform)</AtkEtcInstallRoot>
+    <CopyDir>$(AtkEtcInstallRoot)</CopyDir>
+    <AtkDoInstall>
+mkdir $(CopyDir)\bin
+
+copy $(SolutionDir)$(Configuration)\$(Platform)\bin\*.dll $(CopyDir)\bin
+
+
+mkdir $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atk.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atkaction.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atkcomponent.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atkdocument.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atkeditabletext.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atkgobjectaccessible.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atkhyperlink.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atkhyperlinkimpl.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atkhypertext.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atknoopobject.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atknoopobjectfactory.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atkobject.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atkobjectfactory.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atkplug.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atkimage.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atkregistry.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atkrelation.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atkrelationtype.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atkrelationset.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atkselection.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atksocket.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atkstate.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atkstateset.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atkstreamablecontent.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atktable.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atktext.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atkutil.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atkmisc.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atkvalue.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atkwindow.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+copy ..\..\..\atk\atk-enum-types.h $(CopyDir)\include\atk-$(AtkApiVersion)\atk
+
+
+mkdir $(CopyDir)\lib
+
+copy $(SolutionDir)$(Configuration)\$(Platform)\bin\*-$(AtkApiVersion).lib $(CopyDir)\lib
+
+</AtkDoInstall>
+    <GenerateAtkDef>echo EXPORTS &gt; "$(IntDir)atk.def" &amp;&amp; cl /EP ..\gtk2\atk\atk.symbols &gt;&gt;"$(IntDir)atk.def"</GenerateAtkDef>
+    <AtkDefines>ATK_COMPILATION;DLL_EXPORT;ATK_LOCALEDIR="$(AtkDummyPrefix)/share/locale"</AtkDefines>
+    <AtkLibtoolCompatibleDllPrefix>lib</AtkLibtoolCompatibleDllPrefix>
+    <AtkLibtoolCompatibleDllSuffix>-1.0-0</AtkLibtoolCompatibleDllSuffix>
+    <AtkSeparateVS10DllPrefix />
+    <AtkSeparateVS10DllSuffix>-1-vs10</AtkSeparateVS10DllSuffix>
+    <AtkDllPrefix>$(AtkSeparateVS10DllPrefix)</AtkDllPrefix>
+    <AtkDllSuffix>$(AtkSeparateVS10DllSuffix)</AtkDllSuffix>
+  </PropertyGroup>
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <_PropertySheetDisplayName>atkprops</_PropertySheetDisplayName>
+    <OutDir>$(OutputBase)/gtk2/bin/</OutDir>
+    <TargetName>$(ProjectName)$(LibSuffix)-vc$(PlatformToolsetVersion)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(W32DepsDir)gtk2/include/atk;$(W32DepsDir)gtk2/include/glib-2.0;$(W32DepsDir)gtk2/include/glib-2.0/glib;$(W32DepsDir)gtk2/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>HAVE_CONFIG_H;G_DISABLE_DEPRECATED;G_DISABLE_SINGLE_INCLUDES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>glib$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gobject$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gmodule$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gettext$(LibSuffix)-vc$(PlatformToolsetVersion).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutputBase)/gtk2/lib/;$(OutputBase)/gettext/lib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>$(OutputBase)/gtk2/lib/$(ProjectName)$(LibSuffix)-vc$(PlatformToolsetVersion).lib</ImportLibrary>
+    </Link>
+    <PreBuildEvent />
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <BuildMacro Include="AtkApiVersion">
+      <Value>$(AtkApiVersion)</Value>
+    </BuildMacro>
+    <BuildMacro Include="AtkDummyPrefix">
+      <Value>$(AtkDummyPrefix)</Value>
+    </BuildMacro>
+    <BuildMacro Include="AtkEtcInstallRoot">
+      <Value>$(AtkEtcInstallRoot)</Value>
+    </BuildMacro>
+    <BuildMacro Include="CopyDir">
+      <Value>$(CopyDir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="AtkDoInstall">
+      <Value>$(AtkDoInstall)</Value>
+    </BuildMacro>
+    <BuildMacro Include="GenerateAtkDef">
+      <Value>$(GenerateAtkDef)</Value>
+    </BuildMacro>
+    <BuildMacro Include="AtkDefines">
+      <Value>$(AtkDefines)</Value>
+    </BuildMacro>
+    <BuildMacro Include="AtkLibtoolCompatibleDllPrefix">
+      <Value>$(AtkLibtoolCompatibleDllPrefix)</Value>
+    </BuildMacro>
+    <BuildMacro Include="AtkLibtoolCompatibleDllSuffix">
+      <Value>$(AtkLibtoolCompatibleDllSuffix)</Value>
+    </BuildMacro>
+    <BuildMacro Include="AtkSeparateVS10DllPrefix">
+      <Value>$(AtkSeparateVS10DllPrefix)</Value>
+    </BuildMacro>
+    <BuildMacro Include="AtkSeparateVS10DllSuffix">
+      <Value>$(AtkSeparateVS10DllSuffix)</Value>
+    </BuildMacro>
+    <BuildMacro Include="AtkDllPrefix">
+      <Value>$(AtkDllPrefix)</Value>
+    </BuildMacro>
+    <BuildMacro Include="AtkDllSuffix">
+      <Value>$(AtkDllSuffix)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>

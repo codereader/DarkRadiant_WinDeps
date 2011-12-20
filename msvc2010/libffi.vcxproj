@@ -49,6 +49,9 @@
     <ClCompile Include="..\libffi\raw_api.c" />
     <ClCompile Include="..\libffi\types.c" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\libffi\libffi.def" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8B7F7E4C-CEFE-4440-8F46-FAEE748BB811}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
