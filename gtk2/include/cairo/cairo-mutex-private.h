@@ -1,6 +1,8 @@
 /* cairo - a vector graphics library with display and print output
  *
  * Copyright © 2002 University of Southern California
+ * Copyright © 2005,2007 Red Hat, Inc.
+ * Copyright © 2007 Mathias Hasselmann
  *
  * This library is free software; you can redistribute it and/or
  * modify it either under the terms of the GNU Lesser General Public
@@ -32,63 +34,34 @@
  *
  * Contributor(s):
  *	Carl D. Worth <cworth@cworth.org>
+ *	Mathias Hasselmann <mathias.hasselmann@gmx.de>
+ *	Behdad Esfahbod <behdad@behdad.org>
  */
 
-#ifndef CAIRO_PDF_H
-#define CAIRO_PDF_H
+#ifndef CAIRO_MUTEX_PRIVATE_H
+#define CAIRO_MUTEX_PRIVATE_H
 
-#include "cairo.h"
-
-#if CAIRO_HAS_PDF_SURFACE
+#include "cairo-mutex-type-private.h"
 
 CAIRO_BEGIN_DECLS
 
-/**
- * cairo_pdf_version_t:
- * @CAIRO_PDF_VERSION_1_4: The version 1.4 of the PDF specification.
- * @CAIRO_PDF_VERSION_1_5: The version 1.5 of the PDF specification.
- *
- * #cairo_pdf_version_t is used to describe the version number of the PDF
- * specification that a generated PDF file will conform to.
- *
- * Since 1.10
- */
-typedef enum _cairo_pdf_version {
-    CAIRO_PDF_VERSION_1_4,
-    CAIRO_PDF_VERSION_1_5
-} cairo_pdf_version_t;
+#if _CAIRO_MUTEX_IMPL_USE_STATIC_INITIALIZER
+cairo_private void _cairo_mutex_initialize (void);
+#endif
+#if _CAIRO_MUTEX_IMPL_USE_STATIC_FINALIZER
+cairo_private void _cairo_mutex_finalize (void);
+#endif
+/* only if using static initializer and/or finalizer define the boolean */
+#if _CAIRO_MUTEX_IMPL_USE_STATIC_INITIALIZER || _CAIRO_MUTEX_IMPL_USE_STATIC_FINALIZER
+  cairo_private extern cairo_bool_t _cairo_mutex_initialized;
+#endif
 
-cairo_public cairo_surface_t *
-cairo_pdf_surface_create (const char		*filename,
-			  double		 width_in_points,
-			  double		 height_in_points);
+/* Finally, extern the static mutexes and undef */
 
-cairo_public cairo_surface_t *
-cairo_pdf_surface_create_for_stream (cairo_write_func_t	write_func,
-				     void	       *closure,
-				     double		width_in_points,
-				     double		height_in_points);
-
-cairo_public void
-cairo_pdf_surface_restrict_to_version (cairo_surface_t 		*surface,
-				       cairo_pdf_version_t  	 version);
-
-cairo_public void
-cairo_pdf_get_versions (cairo_pdf_version_t const	**versions,
-                        int                      	 *num_versions);
-
-cairo_public const char *
-cairo_pdf_version_to_string (cairo_pdf_version_t version);
-
-cairo_public void
-cairo_pdf_surface_set_size (cairo_surface_t	*surface,
-			    double		 width_in_points,
-			    double		 height_in_points);
+#define CAIRO_MUTEX_DECLARE(mutex) cairo_private extern cairo_mutex_t mutex;
+#include "cairo-mutex-list-private.h"
+#undef CAIRO_MUTEX_DECLARE
 
 CAIRO_END_DECLS
 
-#else  /* CAIRO_HAS_PDF_SURFACE */
-# error Cairo was not compiled with support for the pdf backend
-#endif /* CAIRO_HAS_PDF_SURFACE */
-
-#endif /* CAIRO_PDF_H */
+#endif

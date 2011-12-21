@@ -1,8 +1,7 @@
+/* -*- Mode: c; c-basic-offset: 4; indent-tabs-mode: t; tab-width: 8; -*- */
 /* cairo - a vector graphics library with display and print output
  *
- * cairo-svg.h
- *
- * Copyright © 2005 Emmanuel Pacaud <emmanuel.pacaud@univ-poitiers.fr>
+ * Copyright © 2008 Mozilla Corporation
  *
  * This library is free software; you can redistribute it and/or
  * modify it either under the terms of the GNU Lesser General Public
@@ -27,56 +26,60 @@
  * OF ANY KIND, either express or implied. See the LGPL or the MPL for
  * the specific language governing rights and limitations.
  *
+ * The Original Code is the cairo graphics library.
+ *
+ * The Initial Developer of the Original Code is Mozilla Corporation.
+ *
+ * Contributor(s):
+ *      Vladimir Vukicevic <vladimir@mozilla.com>
  */
 
-#ifndef CAIRO_SVG_H
-#define CAIRO_SVG_H
+#ifndef CAIRO_QT_H
+#define CAIRO_QT_H
 
 #include "cairo.h"
 
-#if CAIRO_HAS_SVG_SURFACE
+#if CAIRO_HAS_QT_SURFACE
+
+#include <QtGui/QImage>
+#include <QtGui/QPainter>
 
 CAIRO_BEGIN_DECLS
 
-/**
- * cairo_svg_version_t:
- * @CAIRO_SVG_VERSION_1_1: The version 1.1 of the SVG specification.
- * @CAIRO_SVG_VERSION_1_2: The version 1.2 of the SVG specification.
- *
- * #cairo_svg_version_t is used to describe the version number of the SVG
- * specification that a generated SVG file will conform to.
- */
-typedef enum _cairo_svg_version {
-    CAIRO_SVG_VERSION_1_1,
-    CAIRO_SVG_VERSION_1_2
-} cairo_svg_version_t;
+cairo_public cairo_surface_t *
+cairo_qt_surface_create (QPainter *painter);
 
 cairo_public cairo_surface_t *
-cairo_svg_surface_create (const char   *filename,
-			  double	width_in_points,
-			  double	height_in_points);
+cairo_qt_surface_create_with_qimage (cairo_format_t format,
+				     int width,
+				     int height);
 
 cairo_public cairo_surface_t *
-cairo_svg_surface_create_for_stream (cairo_write_func_t	write_func,
-				     void	       *closure,
-				     double		width_in_points,
-				     double		height_in_points);
+cairo_qt_surface_create_with_qpixmap (cairo_content_t content,
+				      int width,
+				      int height);
 
+cairo_public QPainter *
+cairo_qt_surface_get_qpainter (cairo_surface_t *surface);
+
+/* XXX needs hooking to generic surface layer, my vote is for
+cairo_public cairo_surface_t *
+cairo_surface_map_image (cairo_surface_t *surface);
 cairo_public void
-cairo_svg_surface_restrict_to_version (cairo_surface_t 		*surface,
-				       cairo_svg_version_t  	 version);
+cairo_surface_unmap_image (cairo_surface_t *surface, cairo_surface_t *image);
+*/
+cairo_public cairo_surface_t *
+cairo_qt_surface_get_image (cairo_surface_t *surface);
 
-cairo_public void
-cairo_svg_get_versions (cairo_svg_version_t const	**versions,
-                        int                      	 *num_versions);
-
-cairo_public const char *
-cairo_svg_version_to_string (cairo_svg_version_t version);
+cairo_public QImage *
+cairo_qt_surface_get_qimage (cairo_surface_t *surface);
 
 CAIRO_END_DECLS
 
-#else  /* CAIRO_HAS_SVG_SURFACE */
-# error Cairo was not compiled with support for the svg backend
-#endif /* CAIRO_HAS_SVG_SURFACE */
+#else /* CAIRO_HAS_QT_SURFACE */
 
-#endif /* CAIRO_SVG_H */
+# error Cairo was not compiled with support for the Qt backend
+
+#endif /* CAIRO_HAS_QT_SURFACE */
+
+#endif /* CAIRO_QT_H */

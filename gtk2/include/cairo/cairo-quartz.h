@@ -1,8 +1,6 @@
 /* cairo - a vector graphics library with display and print output
  *
- * cairo-svg.h
- *
- * Copyright Â© 2005 Emmanuel Pacaud <emmanuel.pacaud@univ-poitiers.fr>
+ * Copyright © 2006, 2007 Mozilla Corporation
  *
  * This library is free software; you can redistribute it and/or
  * modify it either under the terms of the GNU Lesser General Public
@@ -27,56 +25,60 @@
  * OF ANY KIND, either express or implied. See the LGPL or the MPL for
  * the specific language governing rights and limitations.
  *
+ * The Original Code is the cairo graphics library.
+ *
+ * The Initial Developer of the Original Code is Mozilla Foundation.
+ *
+ * Contributor(s):
+ *      Vladimir Vukicevic <vladimir@mozilla.com>
  */
 
-#ifndef CAIRO_SVG_H
-#define CAIRO_SVG_H
+#ifndef CAIRO_QUARTZ_H
+#define CAIRO_QUARTZ_H
 
 #include "cairo.h"
 
-#if CAIRO_HAS_SVG_SURFACE
+#if CAIRO_HAS_QUARTZ_SURFACE
+
+#include <ApplicationServices/ApplicationServices.h>
 
 CAIRO_BEGIN_DECLS
 
-/**
- * cairo_svg_version_t:
- * @CAIRO_SVG_VERSION_1_1: The version 1.1 of the SVG specification.
- * @CAIRO_SVG_VERSION_1_2: The version 1.2 of the SVG specification.
- *
- * #cairo_svg_version_t is used to describe the version number of the SVG
- * specification that a generated SVG file will conform to.
+cairo_public cairo_surface_t *
+cairo_quartz_surface_create (cairo_format_t format,
+                             unsigned int width,
+                             unsigned int height);
+
+cairo_public cairo_surface_t *
+cairo_quartz_surface_create_for_cg_context (CGContextRef cgContext,
+                                            unsigned int width,
+                                            unsigned int height);
+
+cairo_public CGContextRef
+cairo_quartz_surface_get_cg_context (cairo_surface_t *surface);
+
+#if CAIRO_HAS_QUARTZ_FONT
+
+/*
+ * Quartz font support
  */
-typedef enum _cairo_svg_version {
-    CAIRO_SVG_VERSION_1_1,
-    CAIRO_SVG_VERSION_1_2
-} cairo_svg_version_t;
 
-cairo_public cairo_surface_t *
-cairo_svg_surface_create (const char   *filename,
-			  double	width_in_points,
-			  double	height_in_points);
+cairo_public cairo_font_face_t *
+cairo_quartz_font_face_create_for_cgfont (CGFontRef font);
 
-cairo_public cairo_surface_t *
-cairo_svg_surface_create_for_stream (cairo_write_func_t	write_func,
-				     void	       *closure,
-				     double		width_in_points,
-				     double		height_in_points);
+#ifndef __LP64__
+cairo_public cairo_font_face_t *
+cairo_quartz_font_face_create_for_atsu_font_id (ATSUFontID font_id);
+#endif
 
-cairo_public void
-cairo_svg_surface_restrict_to_version (cairo_surface_t 		*surface,
-				       cairo_svg_version_t  	 version);
-
-cairo_public void
-cairo_svg_get_versions (cairo_svg_version_t const	**versions,
-                        int                      	 *num_versions);
-
-cairo_public const char *
-cairo_svg_version_to_string (cairo_svg_version_t version);
+#endif /* CAIRO_HAS_QUARTZ_FONT */
 
 CAIRO_END_DECLS
 
-#else  /* CAIRO_HAS_SVG_SURFACE */
-# error Cairo was not compiled with support for the svg backend
-#endif /* CAIRO_HAS_SVG_SURFACE */
+#else
 
-#endif /* CAIRO_SVG_H */
+# error Cairo was not compiled with support for the quartz backend
+
+#endif /* CAIRO_HAS_QUARTZ_SURFACE */
+
+#endif /* CAIRO_QUARTZ_H */

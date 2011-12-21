@@ -34,61 +34,67 @@
  *	Carl D. Worth <cworth@cworth.org>
  */
 
-#ifndef CAIRO_PDF_H
-#define CAIRO_PDF_H
+#ifndef CAIRO_XLIB_H
+#define CAIRO_XLIB_H
 
 #include "cairo.h"
 
-#if CAIRO_HAS_PDF_SURFACE
+#if CAIRO_HAS_XLIB_SURFACE
+
+#include <X11/Xlib.h>
 
 CAIRO_BEGIN_DECLS
 
-/**
- * cairo_pdf_version_t:
- * @CAIRO_PDF_VERSION_1_4: The version 1.4 of the PDF specification.
- * @CAIRO_PDF_VERSION_1_5: The version 1.5 of the PDF specification.
- *
- * #cairo_pdf_version_t is used to describe the version number of the PDF
- * specification that a generated PDF file will conform to.
- *
- * Since 1.10
- */
-typedef enum _cairo_pdf_version {
-    CAIRO_PDF_VERSION_1_4,
-    CAIRO_PDF_VERSION_1_5
-} cairo_pdf_version_t;
+cairo_public cairo_surface_t *
+cairo_xlib_surface_create (Display     *dpy,
+			   Drawable	drawable,
+			   Visual      *visual,
+			   int		width,
+			   int		height);
 
 cairo_public cairo_surface_t *
-cairo_pdf_surface_create (const char		*filename,
-			  double		 width_in_points,
-			  double		 height_in_points);
-
-cairo_public cairo_surface_t *
-cairo_pdf_surface_create_for_stream (cairo_write_func_t	write_func,
-				     void	       *closure,
-				     double		width_in_points,
-				     double		height_in_points);
+cairo_xlib_surface_create_for_bitmap (Display  *dpy,
+				      Pixmap	bitmap,
+				      Screen	*screen,
+				      int	width,
+				      int	height);
 
 cairo_public void
-cairo_pdf_surface_restrict_to_version (cairo_surface_t 		*surface,
-				       cairo_pdf_version_t  	 version);
+cairo_xlib_surface_set_size (cairo_surface_t *surface,
+			     int              width,
+			     int              height);
 
 cairo_public void
-cairo_pdf_get_versions (cairo_pdf_version_t const	**versions,
-                        int                      	 *num_versions);
+cairo_xlib_surface_set_drawable (cairo_surface_t *surface,
+				 Drawable	  drawable,
+				 int              width,
+				 int              height);
 
-cairo_public const char *
-cairo_pdf_version_to_string (cairo_pdf_version_t version);
+cairo_public Display *
+cairo_xlib_surface_get_display (cairo_surface_t *surface);
 
-cairo_public void
-cairo_pdf_surface_set_size (cairo_surface_t	*surface,
-			    double		 width_in_points,
-			    double		 height_in_points);
+cairo_public Drawable
+cairo_xlib_surface_get_drawable (cairo_surface_t *surface);
+
+cairo_public Screen *
+cairo_xlib_surface_get_screen (cairo_surface_t *surface);
+
+cairo_public Visual *
+cairo_xlib_surface_get_visual (cairo_surface_t *surface);
+
+cairo_public int
+cairo_xlib_surface_get_depth (cairo_surface_t *surface);
+
+cairo_public int
+cairo_xlib_surface_get_width (cairo_surface_t *surface);
+
+cairo_public int
+cairo_xlib_surface_get_height (cairo_surface_t *surface);
 
 CAIRO_END_DECLS
 
-#else  /* CAIRO_HAS_PDF_SURFACE */
-# error Cairo was not compiled with support for the pdf backend
-#endif /* CAIRO_HAS_PDF_SURFACE */
+#else  /* CAIRO_HAS_XLIB_SURFACE */
+# error Cairo was not compiled with support for the xlib backend
+#endif /* CAIRO_HAS_XLIB_SURFACE */
 
-#endif /* CAIRO_PDF_H */
+#endif /* CAIRO_XLIB_H */
