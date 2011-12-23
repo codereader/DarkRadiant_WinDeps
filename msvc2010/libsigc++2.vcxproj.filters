@@ -47,7 +47,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="sigc.rc">
+    <ResourceCompile Include="..\gtkmm\sigc++\sigc.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>

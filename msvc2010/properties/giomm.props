@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>_USRDLL;GIOMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(W32DepsDir)gtkmm\include\sigc++;$(W32DepsDir)gtkmm\include\giomm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>glib$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gobject$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gmodule$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gio$(LibSuffix)-vc$(PlatformToolsetVersion).lib;libsigc++$(LibSuffix)-vc$(PlatformToolsetVersion).lib;glibmm$(LibSuffix)-vc$(PlatformToolsetVersion).lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PreLinkEvent>
+      <Command>$(DefGen)</Command>
+      <Message>Build $(ProjectName) .def File</Message>
+    </PreLinkEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup />
+</Project>

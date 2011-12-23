@@ -10,7 +10,7 @@
     <Link>
       <AdditionalDependencies>glib$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdk$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdk-win32$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gobject$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdk-pixbuf$(LibSuffix)-vc$(PlatformToolsetVersion).lib;pango$(LibSuffix)-vc$(PlatformToolsetVersion).lib;pangowin32$(LibSuffix)-vc$(PlatformToolsetVersion).lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutputBase)gtk2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImportLibrary>$(OutputBase)/gtk2/lib/$(ProjectName)$(LibSuffix)-vc$(PlatformToolsetVersion).lib</ImportLibrary>
+      <ImportLibrary>$(OutputBase)/gtkglext/lib/$(ProjectName)$(LibSuffix)-vc$(PlatformToolsetVersion).lib</ImportLibrary>
     </Link>
     <ClCompile>
       <PreprocessorDefinitions>GDK_GL_COMPILATION;PANGO_DISABLE_DEPRECATED;%(PreprocessorDefinitions)</PreprocessorDefinitions>

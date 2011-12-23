@@ -8,6 +8,10 @@
       <PreprocessorDefinitions>_CONSOLE;SIGC_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(W32DepsDir)gtkmm\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup />
 </Project>

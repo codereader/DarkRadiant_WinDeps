@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>_USRDLL;GLIBMM_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(W32DepsDir)gtkmm\include\glibmm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>glib$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gobject$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gmodule$(LibSuffix)-vc$(PlatformToolsetVersion).lib;libsigc++$(LibSuffix)-vc$(PlatformToolsetVersion).lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>
+      </Message>
+    </PreBuildEvent>
+    <PreLinkEvent>
+      <Command>$(DefGen)</Command>
+    </PreLinkEvent>
+    <PreLinkEvent>
+      <Message>Build $(ProjectName) .def File</Message>
+    </PreLinkEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup />
+</Project>

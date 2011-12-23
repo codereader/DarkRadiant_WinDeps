@@ -16,7 +16,7 @@
     <Link>
       <AdditionalLibraryDirectories>$(OutputBase)gtk2\lib;$(OutputBase)gtkglext\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>gtk$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdk$(LibSuffix)-vc$(PlatformToolsetVersion).lib;glib$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdk-win32$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gobject$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdk-pixbuf$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdkglext$(LibSuffix)-vc$(PlatformToolsetVersion).lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ImportLibrary>$(OutputBase)/gtk2/lib/$(ProjectName)$(LibSuffix)-vc$(PlatformToolsetVersion).lib</ImportLibrary>
+      <ImportLibrary>$(OutputBase)/gtkglext/lib/$(ProjectName)$(LibSuffix)-vc$(PlatformToolsetVersion).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup />
