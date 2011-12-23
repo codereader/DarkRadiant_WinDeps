@@ -16,6 +16,8 @@
       <ImportLibrary>$(OutputBase)/gtk2/lib/$(ProjectName)$(LibSuffix)-vc$(PlatformToolsetVersion).lib</ImportLibrary>
       <AdditionalDependencies>libzlib$(LibSuffix)-vc$(PlatformToolsetVersion).lib;libpng$(LibSuffix)-vc$(PlatformToolsetVersion).lib;pixman$(LibSuffix)-vc$(PlatformToolsetVersion).lib;freetype$(LibSuffix)-vc$(PlatformToolsetVersion).lib;fontconfig$(LibSuffix)-vc$(PlatformToolsetVersion).lib;msimg32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutputBase)gtk2\lib;$(OutputBase)libpng\lib;$(OutputBase)pixman\lib;$(OutputBase)freetype\lib;$(OutputBase)fontconfig\lib;$(OutputBase)libzlib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup />

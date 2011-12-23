@@ -19,19 +19,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{86EACD59-F69F-4AAD-854B-AA03D5447360}</ProjectGuid>
-    <RootNamespace>atk</RootNamespace>
+    <ProjectGuid>{68CC80B9-7225-4FB5-B9AB-9C1DF50B6C76}</ProjectGuid>
+    <RootNamespace>pangocairo</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <ProjectName>pangocairo</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -48,149 +48,106 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="properties\Common Release.props" />
     <Import Project="properties\Common x86 Settings.props" />
-    <Import Project="properties\atk.props" />
-    <Import Project="properties\Common Debug.props" />
+    <Import Project="properties\pango.props" />
+    <Import Project="properties\pangocairo.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="properties\Common Debug.props" />
     <Import Project="properties\Common x86 Settings.props" />
-    <Import Project="properties\atk.props" />
+    <Import Project="properties\pango.props" />
+    <Import Project="properties\pangocairo.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="properties\Common Release.props" />
     <Import Project="properties\Common x64 Settings.props" />
-    <Import Project="properties\atk.props" />
-    <Import Project="properties\Common Debug.props" />
+    <Import Project="properties\pango.props" />
+    <Import Project="properties\pangocairo.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="properties\Common Debug.props" />
     <Import Project="properties\Common x64 Settings.props" />
-    <Import Project="properties\atk.props" />
+    <Import Project="properties\pango.props" />
+    <Import Project="properties\pangocairo.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</LinkIncremental>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;$(AtkDefines);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PrecompiledHeader>
       </PrecompiledHeader>
     </ClCompile>
-    <PreLinkEvent>
-      <Command>$(GenerateAtkDef)</Command>
-    </PreLinkEvent>
     <Link>
-      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ModuleDefinitionFile>$(IntDir)atk.def</ModuleDefinitionFile>
-      <SubSystem>Windows</SubSystem>
-      <ImportLibrary>$(OutDir)$(ProjectName)-$(AtkApiVersion).lib</ImportLibrary>
+      <ModuleDefinitionFile>..\gtk2\pango\pangocairo.def</ModuleDefinitionFile>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <Optimization>MaxSpeed</Optimization>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>$(AtkDefines);%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>
       </PrecompiledHeader>
     </ClCompile>
-    <PreLinkEvent>
-      <Command>$(GenerateAtkDef)</Command>
-    </PreLinkEvent>
     <Link>
-      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ModuleDefinitionFile>$(IntDir)atk.def</ModuleDefinitionFile>
-      <SubSystem>Windows</SubSystem>
+      <ModuleDefinitionFile>..\gtk2\pango\pangocairo.def</ModuleDefinitionFile>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <ImportLibrary>$(OutDir)$(ProjectName)-$(AtkApiVersion).lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;$(AtkDefines);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PrecompiledHeader>
       </PrecompiledHeader>
     </ClCompile>
-    <PreLinkEvent>
-      <Command>$(GenerateAtkDef)</Command>
-    </PreLinkEvent>
     <Link>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <ModuleDefinitionFile>$(IntDir)atk.def</ModuleDefinitionFile>
-      <SubSystem>Windows</SubSystem>
-      <ImportLibrary>$(TargetDir)$(ProjectName)-$(AtkApiVersion).lib</ImportLibrary>
+      <ModuleDefinitionFile>..\gtk2\pango\pangocairo.def</ModuleDefinitionFile>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PreprocessorDefinitions>$(AtkDefines);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>
       </PrecompiledHeader>
     </ClCompile>
-    <PreLinkEvent>
-      <Command>$(GenerateAtkDef)</Command>
-    </PreLinkEvent>
     <Link>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <ModuleDefinitionFile>$(IntDir)atk.def</ModuleDefinitionFile>
-      <SubSystem>Windows</SubSystem>
+      <ModuleDefinitionFile>..\gtk2\pango\pangocairo.def</ModuleDefinitionFile>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <ImportLibrary>$(TargetDir)$(ProjectName)-$(AtkApiVersion).lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\gtk2\atk\atkaction.c" />
-    <ClCompile Include="..\gtk2\atk\atkcomponent.c" />
-    <ClCompile Include="..\gtk2\atk\atkdocument.c" />
-    <ClCompile Include="..\gtk2\atk\atkeditabletext.c" />
-    <ClCompile Include="..\gtk2\atk\atkgobjectaccessible.c" />
-    <ClCompile Include="..\gtk2\atk\atkhyperlink.c" />
-    <ClCompile Include="..\gtk2\atk\atkhyperlinkimpl.c" />
-    <ClCompile Include="..\gtk2\atk\atkhypertext.c" />
-    <ClCompile Include="..\gtk2\atk\atkimage.c" />
-    <ClCompile Include="..\gtk2\atk\atknoopobject.c" />
-    <ClCompile Include="..\gtk2\atk\atknoopobjectfactory.c" />
-    <ClCompile Include="..\gtk2\atk\atkobject.c" />
-    <ClCompile Include="..\gtk2\atk\atkobjectfactory.c" />
-    <ClCompile Include="..\gtk2\atk\atkplug.c" />
-    <ClCompile Include="..\gtk2\atk\atkregistry.c" />
-    <ClCompile Include="..\gtk2\atk\atkrelation.c" />
-    <ClCompile Include="..\gtk2\atk\atkrelationset.c" />
-    <ClCompile Include="..\gtk2\atk\atkselection.c" />
-    <ClCompile Include="..\gtk2\atk\atksocket.c" />
-    <ClCompile Include="..\gtk2\atk\atkstate.c" />
-    <ClCompile Include="..\gtk2\atk\atkstateset.c" />
-    <ClCompile Include="..\gtk2\atk\atkstreamablecontent.c" />
-    <ClCompile Include="..\gtk2\atk\atktable.c" />
-    <ClCompile Include="..\gtk2\atk\atktext.c" />
-    <ClCompile Include="..\gtk2\atk\atkutil.c" />
-    <ClCompile Include="..\gtk2\atk\atkmisc.c" />
-    <ClCompile Include="..\gtk2\atk\atkvalue.c" />
-    <ClCompile Include="..\gtk2\atk\atkwindow.c" />
-    <ClCompile Include="..\gtk2\atk\atk-enum-types.c" />
+    <ResourceCompile Include="..\gtk2\pango\pangocairo.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\gtk2\atk\atk.rc" />
+    <ClCompile Include="..\gtk2\pango\pangocairo-fcfont.c" />
+    <ClCompile Include="..\gtk2\pango\pangocairo-fcfontmap.c" />
+    <ClCompile Include="..\gtk2\pango\pangocairo-win32font.c" />
+    <ClCompile Include="..\gtk2\pango\pangocairo-win32fontmap.c" />
+    <ClCompile Include="..\gtk2\pango\pangocairo-context.c" />
+    <ClCompile Include="..\gtk2\pango\pangocairo-font.c" />
+    <ClCompile Include="..\gtk2\pango\pangocairo-fontmap.c" />
+    <ClCompile Include="..\gtk2\pango\pangocairo-render.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="pangoft2.vcxproj">
+      <Project>{68cc80b9-7225-4fb5-b9ab-9c1df50b6c73}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="pangowin32.vcxproj">
+      <Project>{68cc80b9-7225-4fb5-b9ab-9c1df50b6c74}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
