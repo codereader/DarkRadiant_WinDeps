@@ -39,6 +39,7 @@
 #include <gtk/gtkeditable.h>
 #include <gtk/gtkimcontext.h>
 #include <gtk/gtkmenu.h>
+#include <gtk/gtkentrybuffer.h>
 #include <gtk/gtkentrycompletion.h>
 #include <gtk/gtkimage.h>
 #include <gtk/gtkselection.h>
@@ -66,7 +67,7 @@ struct _GtkEntry
 {
   GtkWidget  widget;
 
-  gchar       *GSEAL (text);
+  gchar       *GSEAL (text);                        /* COMPAT: Deprecated, not used. Remove in GTK+ 3.x */
 
   guint        GSEAL (editable) : 1;
   guint        GSEAL (visible)  : 1;
@@ -74,8 +75,8 @@ struct _GtkEntry
   guint        GSEAL (in_drag) : 1;	            /* FIXME: Should be private?
                                                        Dragging within the selection */
 
-  guint16      GSEAL (text_length);	            /* length in use, in chars */
-  guint16      GSEAL (text_max_length);
+  guint16      GSEAL (text_length);                 /* COMPAT: Deprecated, not used. Remove in GTK+ 3.x */
+  guint16      GSEAL (text_max_length);             /* COMPAT: Deprecated, not used. Remove in GTK+ 3.x */
 
   /*< private >*/
   GdkWindow    *GSEAL (text_area);
@@ -108,8 +109,8 @@ struct _GtkEntry
   gint          GSEAL (ascent);	                    /* font ascent in pango units  */
   gint          GSEAL (descent);	            /* font descent in pango units */
 
-  guint16       GSEAL (text_size);	            /* allocated size, in bytes */
-  guint16       GSEAL (n_bytes);	            /* length in use, in bytes */
+  guint16       GSEAL (x_text_size);	            /* allocated size, in bytes */
+  guint16       GSEAL (x_n_bytes);	            /* length in use, in bytes */
 
   guint16       GSEAL (preedit_length);	            /* length of preedit string, in bytes */
   guint16       GSEAL (preedit_cursor);	            /* offset of cursor within preedit string, in chars */
@@ -164,27 +165,41 @@ struct _GtkEntryClass
 
 GType      gtk_entry_get_type       		(void) G_GNUC_CONST;
 GtkWidget* gtk_entry_new            		(void);
+GtkWidget* gtk_entry_new_with_buffer            (GtkEntryBuffer *buffer);
+
+GtkEntryBuffer* gtk_entry_get_buffer            (GtkEntry       *entry);
+void       gtk_entry_set_buffer                 (GtkEntry       *entry,
+                                                 GtkEntryBuffer *buffer);
+
+GdkWindow *gtk_entry_get_text_window            (GtkEntry      *entry);
+
 void       gtk_entry_set_visibility 		(GtkEntry      *entry,
 						 gboolean       visible);
 gboolean   gtk_entry_get_visibility             (GtkEntry      *entry);
+
 void       gtk_entry_set_invisible_char         (GtkEntry      *entry,
                                                  gunichar       ch);
 gunichar   gtk_entry_get_invisible_char         (GtkEntry      *entry);
 void       gtk_entry_unset_invisible_char       (GtkEntry      *entry);
+
 void       gtk_entry_set_has_frame              (GtkEntry      *entry,
                                                  gboolean       setting);
 gboolean   gtk_entry_get_has_frame              (GtkEntry      *entry);
+
 void       gtk_entry_set_inner_border                (GtkEntry        *entry,
                                                       const GtkBorder *border);
-G_CONST_RETURN GtkBorder* gtk_entry_get_inner_border (GtkEntry        *entry);
+const GtkBorder* gtk_entry_get_inner_border          (GtkEntry        *entry);
+
 void       gtk_entry_set_overwrite_mode         (GtkEntry      *entry,
                                                  gboolean       overwrite);
 gboolean   gtk_entry_get_overwrite_mode         (GtkEntry      *entry);
+
 /* text is truncated if needed */
 void       gtk_entry_set_max_length 		(GtkEntry      *entry,
 						 gint           max);
 gint       gtk_entry_get_max_length             (GtkEntry      *entry);
 guint16    gtk_entry_get_text_length            (GtkEntry      *entry);
+
 void       gtk_entry_set_activates_default      (GtkEntry      *entry,
                                                  gboolean       setting);
 gboolean   gtk_entry_get_activates_default      (GtkEntry      *entry);
@@ -198,7 +213,7 @@ gint       gtk_entry_get_width_chars            (GtkEntry      *entry);
 void       gtk_entry_set_text                   (GtkEntry      *entry,
                                                  const gchar   *text);
 /* returns a reference to the text */
-G_CONST_RETURN gchar* gtk_entry_get_text        (GtkEntry      *entry);
+const gchar* gtk_entry_get_text                 (GtkEntry      *entry);
 
 PangoLayout* gtk_entry_get_layout               (GtkEntry      *entry);
 void         gtk_entry_get_layout_offsets       (GtkEntry      *entry,
@@ -287,6 +302,13 @@ void         gtk_entry_set_icon_drag_source              (GtkEntry             *
 							  GtkTargetList        *target_list,
 							  GdkDragAction         actions);
 gint         gtk_entry_get_current_icon_drag_source      (GtkEntry             *entry);
+
+GdkWindow  * gtk_entry_get_icon_window                   (GtkEntry             *entry,
+                                                          GtkEntryIconPosition  icon_pos);
+
+gboolean    gtk_entry_im_context_filter_keypress         (GtkEntry             *entry,
+                                                          GdkEventKey          *event);
+void        gtk_entry_reset_im_context                   (GtkEntry             *entry);
 
 
 /* Deprecated compatibility functions

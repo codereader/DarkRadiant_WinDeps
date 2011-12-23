@@ -31,6 +31,8 @@
 G_BEGIN_DECLS
 
 cairo_t *gdk_cairo_create            (GdkDrawable        *drawable);
+void     gdk_cairo_reset_clip        (cairo_t            *cr,
+				      GdkDrawable        *drawable);
 
 void     gdk_cairo_set_source_color  (cairo_t            *cr,
                                       const GdkColor     *color);
@@ -42,6 +44,10 @@ void     gdk_cairo_set_source_pixmap (cairo_t            *cr,
                                       GdkPixmap          *pixmap,
                                       double              pixmap_x,
                                       double              pixmap_y);
+void     gdk_cairo_set_source_window (cairo_t            *cr,
+                                      GdkWindow          *window,
+                                      double              x,
+                                      double              y);
 
 void     gdk_cairo_rectangle         (cairo_t            *cr,
                                       const GdkRectangle *rectangle);

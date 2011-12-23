@@ -92,7 +92,7 @@ struct _GtkMenu
   /* When a submenu of this menu is popped up, motion in this
    * region is ignored
    */
-  GdkRegion *GSEAL (navigation_region);
+  GdkRegion *GSEAL (navigation_region); /* unused */
   guint GSEAL (navigation_timeout);
 
   guint GSEAL (needs_destruction_ref_count) : 1;
@@ -182,7 +182,7 @@ gboolean   gtk_menu_get_tearoff_state     (GtkMenu             *menu);
  */
 void       gtk_menu_set_title             (GtkMenu             *menu,
 					   const gchar         *title);
-G_CONST_RETURN gchar *gtk_menu_get_title  (GtkMenu             *menu);
+const gchar *gtk_menu_get_title           (GtkMenu             *menu);
 
 void       gtk_menu_reorder_child         (GtkMenu             *menu,
                                            GtkWidget           *child,
@@ -208,6 +208,11 @@ GList*     gtk_menu_get_for_attach_widget (GtkWidget           *widget);
 #define gtk_menu_prepend(menu,child)    gtk_menu_shell_prepend ((GtkMenuShell *)(menu),(child))
 #define gtk_menu_insert(menu,child,pos)	gtk_menu_shell_insert ((GtkMenuShell *)(menu),(child),(pos))
 #endif /* GTK_DISABLE_DEPRECATED */
+
+void     gtk_menu_set_reserve_toggle_size (GtkMenu  *menu,
+                                          gboolean   reserve_toggle_size);
+gboolean gtk_menu_get_reserve_toggle_size (GtkMenu  *menu);
+
 
 G_END_DECLS
 

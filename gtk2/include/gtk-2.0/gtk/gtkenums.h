@@ -94,6 +94,7 @@ typedef enum
   GTK_BUTTONBOX_CENTER
 } GtkButtonBoxStyle;
 
+#ifndef GTK_DISABLE_DEPRECATED
 /* Curve types */
 typedef enum
 {
@@ -101,6 +102,7 @@ typedef enum
   GTK_CURVE_TYPE_SPLINE,       /* spline interpolation */
   GTK_CURVE_TYPE_FREE          /* free form curve */
 } GtkCurveType;
+#endif
 
 typedef enum
 {
@@ -206,6 +208,25 @@ typedef enum
   GTK_MENU_DIR_PREV
 } GtkMenuDirectionType;
 
+/**
+ * GtkMessageType:
+ * @GTK_MESSAGE_INFO: Informational message
+ * @GTK_MESSAGE_WARNING: Nonfatal warning message
+ * @GTK_MESSAGE_QUESTION: Question requiring a choice
+ * @GTK_MESSAGE_ERROR: Fatal error message
+ * @GTK_MESSAGE_OTHER: None of the above, doesn't get an icon
+ *
+ * The type of message being displayed in the dialog.
+ */
+typedef enum
+{
+  GTK_MESSAGE_INFO,
+  GTK_MESSAGE_WARNING,
+  GTK_MESSAGE_QUESTION,
+  GTK_MESSAGE_ERROR,
+  GTK_MESSAGE_OTHER
+} GtkMessageType;
+
 typedef enum
 {
   GTK_PIXELS,
@@ -219,7 +240,7 @@ typedef enum
   GTK_MOVEMENT_VISUAL_POSITIONS,  /* move by left/right graphemes */
   GTK_MOVEMENT_WORDS,             /* move by forward/back words */
   GTK_MOVEMENT_DISPLAY_LINES,     /* move up/down lines (wrapped lines) */
-  GTK_MOVEMENT_DISPLAY_LINE_ENDS, /* move up/down lines (wrapped lines) */
+  GTK_MOVEMENT_DISPLAY_LINE_ENDS, /* move to either end of a line */
   GTK_MOVEMENT_PARAGRAPHS,        /* move up/down paragraphs (newline-ended lines) */
   GTK_MOVEMENT_PARAGRAPH_ENDS,    /* move to either end of a paragraph */
   GTK_MOVEMENT_PAGES,	          /* move by pages */
@@ -485,7 +506,8 @@ typedef enum
 {
   GTK_PRINT_PAGES_ALL,
   GTK_PRINT_PAGES_CURRENT,
-  GTK_PRINT_PAGES_RANGES
+  GTK_PRINT_PAGES_RANGES,
+  GTK_PRINT_PAGES_SELECTION
 } GtkPrintPages;
 
 typedef enum

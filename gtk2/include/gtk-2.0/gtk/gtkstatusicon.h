@@ -100,8 +100,8 @@ void                  gtk_status_icon_set_from_gicon     (GtkStatusIcon      *st
 GtkImageType          gtk_status_icon_get_storage_type   (GtkStatusIcon      *status_icon);
 
 GdkPixbuf            *gtk_status_icon_get_pixbuf         (GtkStatusIcon      *status_icon);
-G_CONST_RETURN gchar *gtk_status_icon_get_stock          (GtkStatusIcon      *status_icon);
-G_CONST_RETURN gchar *gtk_status_icon_get_icon_name      (GtkStatusIcon      *status_icon);
+const gchar *         gtk_status_icon_get_stock          (GtkStatusIcon      *status_icon);
+const gchar *         gtk_status_icon_get_icon_name      (GtkStatusIcon      *status_icon);
 GIcon                *gtk_status_icon_get_gicon          (GtkStatusIcon      *status_icon);
 
 gint                  gtk_status_icon_get_size           (GtkStatusIcon      *status_icon);
@@ -120,13 +120,20 @@ void                  gtk_status_icon_set_tooltip_text   (GtkStatusIcon      *st
                                                           const gchar        *text);
 void                  gtk_status_icon_set_tooltip_markup (GtkStatusIcon      *status_icon,
                                                           const gchar        *markup);
+void                  gtk_status_icon_set_title          (GtkStatusIcon      *status_icon,
+                                                          const gchar        *title);
+const gchar *         gtk_status_icon_get_title          (GtkStatusIcon      *status_icon);
+void                  gtk_status_icon_set_name           (GtkStatusIcon      *status_icon,
+                                                          const gchar        *name);
 void                  gtk_status_icon_set_visible        (GtkStatusIcon      *status_icon,
 							  gboolean            visible);
 gboolean              gtk_status_icon_get_visible        (GtkStatusIcon      *status_icon);
 
+#if !defined (GTK_DISABLE_DEPRECATED) || defined (GTK_COMPILATION)
 void                  gtk_status_icon_set_blinking       (GtkStatusIcon      *status_icon,
 							  gboolean            blinking);
 gboolean              gtk_status_icon_get_blinking       (GtkStatusIcon      *status_icon);
+#endif
 
 gboolean              gtk_status_icon_is_embedded        (GtkStatusIcon      *status_icon);
 

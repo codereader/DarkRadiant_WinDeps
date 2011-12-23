@@ -148,12 +148,16 @@ void gtk_dialog_set_response_sensitive (GtkDialog *dialog,
                                         gboolean   setting);
 void gtk_dialog_set_default_response   (GtkDialog *dialog,
                                         gint       response_id);
+GtkWidget* gtk_dialog_get_widget_for_response (GtkDialog *dialog,
+                                               gint       response_id);
 gint gtk_dialog_get_response_for_widget (GtkDialog *dialog,
 					 GtkWidget *widget);
 
+#if !defined (GTK_DISABLE_DEPRECATED) || defined (GTK_COMPILATION)
 void     gtk_dialog_set_has_separator (GtkDialog *dialog,
                                        gboolean   setting);
 gboolean gtk_dialog_get_has_separator (GtkDialog *dialog);
+#endif
 
 gboolean gtk_alternative_dialog_button_order (GdkScreen *screen);
 void     gtk_dialog_set_alternative_button_order (GtkDialog *dialog,

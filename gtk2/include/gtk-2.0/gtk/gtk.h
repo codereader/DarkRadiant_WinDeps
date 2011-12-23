@@ -59,6 +59,7 @@
 #include <gtk/gtkcellrendererpixbuf.h>
 #include <gtk/gtkcellrendererprogress.h>
 #include <gtk/gtkcellrendererspin.h>
+#include <gtk/gtkcellrendererspinner.h>
 #include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkcellrenderertoggle.h>
 #include <gtk/gtkcellview.h>
@@ -70,14 +71,15 @@
 #include <gtk/gtkcolorseldialog.h>
 #include <gtk/gtkcombobox.h>
 #include <gtk/gtkcomboboxentry.h>
+#include <gtk/gtkcomboboxtext.h>
 #include <gtk/gtkcontainer.h>
-#include <gtk/gtkcurve.h>
 #include <gtk/gtkdebug.h>
 #include <gtk/gtkdialog.h>
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkdrawingarea.h>
 #include <gtk/gtkeditable.h>
 #include <gtk/gtkentry.h>
+#include <gtk/gtkentrybuffer.h>
 #include <gtk/gtkentrycompletion.h>
 #include <gtk/gtkenums.h>
 #include <gtk/gtkeventbox.h>
@@ -91,7 +93,6 @@
 #include <gtk/gtkfontbutton.h>
 #include <gtk/gtkfontsel.h>
 #include <gtk/gtkframe.h>
-#include <gtk/gtkgamma.h>
 #include <gtk/gtkgc.h>
 #include <gtk/gtkhandlebox.h>
 #include <gtk/gtkhbbox.h>
@@ -110,7 +111,7 @@
 #include <gtk/gtkimcontext.h>
 #include <gtk/gtkimcontextsimple.h>
 #include <gtk/gtkimmulticontext.h>
-#include <gtk/gtkinputdialog.h>
+#include <gtk/gtkinfobar.h>
 #include <gtk/gtkinvisible.h>
 #include <gtk/gtkitem.h>
 #include <gtk/gtklabel.h>
@@ -129,6 +130,7 @@
 #include <gtk/gtkmountoperation.h>
 #include <gtk/gtknotebook.h>
 #include <gtk/gtkobject.h>
+#include <gtk/gtkoffscreenwindow.h>
 #include <gtk/gtkorientable.h>
 #include <gtk/gtkpagesetup.h>
 #include <gtk/gtkpapersize.h>
@@ -166,6 +168,7 @@
 #include <gtk/gtksizegroup.h>
 #include <gtk/gtksocket.h>
 #include <gtk/gtkspinbutton.h>
+#include <gtk/gtkspinner.h>
 #include <gtk/gtkstatusbar.h>
 #include <gtk/gtkstatusicon.h>
 #include <gtk/gtkstock.h>
@@ -186,6 +189,8 @@
 #include <gtk/gtktoolbar.h>
 #include <gtk/gtktoolbutton.h>
 #include <gtk/gtktoolitem.h>
+#include <gtk/gtktoolitemgroup.h>
+#include <gtk/gtktoolpalette.h>
 #include <gtk/gtktoolshell.h>
 #include <gtk/gtktooltip.h>
 #include <gtk/gtktestutils.h>
@@ -222,7 +227,10 @@
 #include <gtk/gtkclist.h>
 #include <gtk/gtkcombo.h>
 #include <gtk/gtkctree.h>
+#include <gtk/gtkcurve.h>
 #include <gtk/gtkfilesel.h>
+#include <gtk/gtkgamma.h>
+#include <gtk/gtkinputdialog.h>
 #include <gtk/gtkitemfactory.h>
 #include <gtk/gtklist.h>
 #include <gtk/gtklistitem.h>
