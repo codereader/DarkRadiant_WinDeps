@@ -46,31 +46,35 @@
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+    <Import Project="properties\Common Release.props" />
+    <Import Project="properties\Common x86 Settings.props" />
+    <Import Project="properties\gtkmmbase.props" />
+    <Import Project="properties\sigc++.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+    <Import Project="properties\Common Debug.props" />
+    <Import Project="properties\Common x86 Settings.props" />
+    <Import Project="properties\gtkmmbase.props" />
+    <Import Project="properties\sigc++.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+    <Import Project="properties\Common Release.props" />
+    <Import Project="properties\Common x64 Settings.props" />
+    <Import Project="properties\gtkmmbase.props" />
+    <Import Project="properties\sigc++.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+    <Import Project="properties\Common Debug.props" />
+    <Import Project="properties\Common x64 Settings.props" />
+    <Import Project="properties\gtkmmbase.props" />
+    <Import Project="properties\sigc++.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionPath)\..\..\..\..\w32deps\gtkmm\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\$(Configuration)</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionPath)\..\..\..\..\w64deps\gtkmm\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)\$(Configuration)</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionPath)\..\..\..\..\w32deps\gtkmm\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\$(Configuration)</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionPath)\..\..\..\..\w64deps\gtkmm\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\$(Configuration)</IntDir>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
@@ -83,33 +87,21 @@
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">sigc-vc100-2_0</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">sigc-vc100-2_0</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">sigc-vc100-d-2_0</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">sigc-vc100-d-2_0</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;SIGC_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <OutputFile>$(SolutionPath)\..\..\..\..\w32deps\gtkmm\bin\$(TargetName).dll</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>
       </ProgramDatabaseFile>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>$(SolutionPath)\..\..\..\..\w32deps\gtkmm\lib\$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -118,44 +110,28 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;SIGC_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <OutputFile>$(SolutionPath)\..\..\..\..\w64deps\gtkmm\bin\$(TargetName).dll</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>
       </ProgramDatabaseFile>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>$(SolutionPath)\..\..\..\..\w64deps\gtkmm\lib\$(TargetName).lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;SIGC_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <OutputFile>$(SolutionPath)\..\..\..\..\w32deps\gtkmm\bin\$(TargetName).dll</OutputFile>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>$(SolutionPath)\..\..\..\..\w32deps\gtkmm\lib\$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -163,26 +139,17 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;SIGC_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <OutputFile>$(SolutionPath)\..\..\..\..\w64deps\gtkmm\bin\$(TargetName).dll</OutputFile>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>$(SolutionPath)\..\..\..\..\w64deps\gtkmm\lib\$(TargetName).lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="blank.cpp" />
-    <ClCompile Include="..\sigc++\connection.cc">
+    <ClCompile Include="..\gtkmm\sigc++\connection.cc">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -202,7 +169,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\sigc++\adaptors\lambda\lambda.cc">
+    <ClCompile Include="..\gtkmm\sigc++\adaptors\lambda\lambda.cc">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -222,7 +189,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\sigc++\signal.cc">
+    <ClCompile Include="..\gtkmm\sigc++\signal.cc">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -242,7 +209,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\sigc++\signal_base.cc">
+    <ClCompile Include="..\gtkmm\sigc++\signal_base.cc">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -262,7 +229,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\sigc++\functors\slot.cc">
+    <ClCompile Include="..\gtkmm\sigc++\functors\slot.cc">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -282,7 +249,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\sigc++\functors\slot_base.cc">
+    <ClCompile Include="..\gtkmm\sigc++\functors\slot_base.cc">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -302,7 +269,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\sigc++\trackable.cc">
+    <ClCompile Include="..\gtkmm\sigc++\trackable.cc">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -324,50 +291,50 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\sigc++\adaptors\adaptor_trait.h" />
-    <ClInclude Include="..\sigc++\adaptors\adaptors.h" />
-    <ClInclude Include="..\sigc++\adaptors\lambda\base.h" />
-    <ClInclude Include="..\sigc++\bind.h" />
-    <ClInclude Include="..\sigc++\adaptors\bind.h" />
-    <ClInclude Include="..\sigc++\adaptors\bind_return.h" />
-    <ClInclude Include="..\sigc++\bind_return.h" />
-    <ClInclude Include="..\sigc++\class_slot.h" />
-    <ClInclude Include="..\sigc++\compatibility.h" />
-    <ClInclude Include="..\sigc++\adaptors\compose.h" />
-    <ClInclude Include="..\sigc++\connection.h" />
-    <ClInclude Include="..\sigc++\adaptors\deduce_result_type.h" />
-    <ClInclude Include="..\sigc++\adaptors\exception_catch.h" />
-    <ClInclude Include="..\sigc++\functors\functor_trait.h" />
-    <ClInclude Include="..\sigc++\functors\functors.h" />
-    <ClInclude Include="..\sigc++\adaptors\lambda\group.h" />
-    <ClInclude Include="..\sigc++\hide.h" />
-    <ClInclude Include="..\sigc++\adaptors\hide.h" />
-    <ClInclude Include="..\sigc++\adaptors\lambda\lambda.h" />
-    <ClInclude Include="..\sigc++\functors\mem_fun.h" />
-    <ClInclude Include="..\sigc++\method_slot.h" />
-    <ClInclude Include="..\sigc++\object.h" />
-    <ClInclude Include="..\sigc++\object_slot.h" />
-    <ClInclude Include="..\sigc++\adaptors\lambda\operator.h" />
-    <ClInclude Include="..\sigc++\functors\ptr_fun.h" />
-    <ClInclude Include="..\sigc++\reference_wrapper.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="..\sigc++\adaptors\retype.h" />
-    <ClInclude Include="..\sigc++\retype.h" />
-    <ClInclude Include="..\sigc++\retype_return.h" />
-    <ClInclude Include="..\sigc++\adaptors\retype_return.h" />
-    <ClInclude Include="..\sigc++\adaptors\lambda\select.h" />
-    <ClInclude Include="..\sigc++\sigc++.h" />
-    <ClInclude Include="..\sigc++\signal.h" />
-    <ClInclude Include="..\sigc++\signal_base.h" />
-    <ClInclude Include="..\sigc++\functors\slot.h" />
-    <ClInclude Include="..\sigc++\slot.h" />
-    <ClInclude Include="..\sigc++\functors\slot_base.h" />
-    <ClInclude Include="..\sigc++\trackable.h" />
-    <ClInclude Include="..\sigc++\type_traits.h" />
-    <ClInclude Include="..\sigc++\visit_each.h" />
+    <ResourceCompile Include="..\gtkmm\sigc++\sigc.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="sigc.rc" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\adaptors.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\adaptor_trait.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\bind.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\bind_return.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\bound_argument.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\compose.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\deduce_result_type.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\exception_catch.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\hide.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\lambda\base.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\lambda\group.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\lambda\lambda.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\lambda\operator.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\lambda\select.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\retype.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\retype_return.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\bind.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\bind_return.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\class_slot.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\connection.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\functors\functors.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\functors\functor_trait.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\functors\mem_fun.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\functors\ptr_fun.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\functors\slot.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\functors\slot_base.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\hide.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\limit_reference.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\method_slot.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\object.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\object_slot.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\reference_wrapper.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\retype.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\retype_return.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\sigc++.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\signal.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\signal_base.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\slot.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\trackable.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\type_traits.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\visit_each.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

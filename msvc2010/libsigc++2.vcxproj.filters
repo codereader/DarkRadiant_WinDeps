@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx</Extensions>
+    </Filter>
+    <Filter Include="Header Files\adaptors">
+      <UniqueIdentifier>{9bce0003-49d7-4670-9a0a-3cb53cf63160}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\functors">
+      <UniqueIdentifier>{cc7aeb6f-cd0e-44e3-a955-036ff25e349f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\adaptors\lambda">
+      <UniqueIdentifier>{3abc4d7d-9330-4c49-9eaf-880d0bcff6fd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\gtkmm\sigc++\connection.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\sigc++\adaptors\lambda\lambda.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\sigc++\signal.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\sigc++\signal_base.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\sigc++\functors\slot.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\sigc++\functors\slot_base.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\sigc++\trackable.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="sigc.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\bind.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\bind_return.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\class_slot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\connection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\hide.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\limit_reference.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\method_slot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\object_slot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\reference_wrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\retype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\retype_return.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\sigc++.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\signal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\signal_base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\slot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\trackable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\type_traits.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\visit_each.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\functors\functors.h">
+      <Filter>Header Files\functors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\functors\mem_fun.h">
+      <Filter>Header Files\functors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\functors\ptr_fun.h">
+      <Filter>Header Files\functors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\functors\slot.h">
+      <Filter>Header Files\functors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\functors\slot_base.h">
+      <Filter>Header Files\functors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\functors\functor_trait.h">
+      <Filter>Header Files\functors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\deduce_result_type.h">
+      <Filter>Header Files\adaptors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\exception_catch.h">
+      <Filter>Header Files\adaptors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\hide.h">
+      <Filter>Header Files\adaptors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\retype.h">
+      <Filter>Header Files\adaptors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\retype_return.h">
+      <Filter>Header Files\adaptors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\adaptor_trait.h">
+      <Filter>Header Files\adaptors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\adaptors.h">
+      <Filter>Header Files\adaptors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\bind.h">
+      <Filter>Header Files\adaptors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\bind_return.h">
+      <Filter>Header Files\adaptors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\bound_argument.h">
+      <Filter>Header Files\adaptors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\compose.h">
+      <Filter>Header Files\adaptors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\lambda\group.h">
+      <Filter>Header Files\adaptors\lambda</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\lambda\lambda.h">
+      <Filter>Header Files\adaptors\lambda</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\lambda\operator.h">
+      <Filter>Header Files\adaptors\lambda</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\lambda\select.h">
+      <Filter>Header Files\adaptors\lambda</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\sigc++\adaptors\lambda\base.h">
+      <Filter>Header Files\adaptors\lambda</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
