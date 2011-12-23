@@ -149,6 +149,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "giomm", "giomm.vcxproj", "{
 		{58B2B53C-C4FF-47FD-817B-095E45B7F7D4} = {58B2B53C-C4FF-47FD-817B-095E45B7F7D4}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cairomm", "cairomm.vcxproj", "{AEE3F01F-E4F1-4B03-9F15-EF102D629983}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E82F3508-C849-4D33-86AF-13300224A169} = {E82F3508-C849-4D33-86AF-13300224A169}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -405,6 +410,14 @@ Global
 		{EE6C0430-C2C9-425C-8EBA-963FAC3E9832}.Release|Win32.Build.0 = Release|Win32
 		{EE6C0430-C2C9-425C-8EBA-963FAC3E9832}.Release|x64.ActiveCfg = Release|x64
 		{EE6C0430-C2C9-425C-8EBA-963FAC3E9832}.Release|x64.Build.0 = Release|x64
+		{AEE3F01F-E4F1-4B03-9F15-EF102D629983}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AEE3F01F-E4F1-4B03-9F15-EF102D629983}.Debug|Win32.Build.0 = Debug|Win32
+		{AEE3F01F-E4F1-4B03-9F15-EF102D629983}.Debug|x64.ActiveCfg = Debug|x64
+		{AEE3F01F-E4F1-4B03-9F15-EF102D629983}.Debug|x64.Build.0 = Debug|x64
+		{AEE3F01F-E4F1-4B03-9F15-EF102D629983}.Release|Win32.ActiveCfg = Release|Win32
+		{AEE3F01F-E4F1-4B03-9F15-EF102D629983}.Release|Win32.Build.0 = Release|Win32
+		{AEE3F01F-E4F1-4B03-9F15-EF102D629983}.Release|x64.ActiveCfg = Release|x64
+		{AEE3F01F-E4F1-4B03-9F15-EF102D629983}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
