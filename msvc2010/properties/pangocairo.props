@@ -6,7 +6,7 @@
   <ItemDefinitionGroup>
     <Link>
       <AdditionalDependencies>cairo$(LibSuffix)-vc$(PlatformToolsetVersion).lib;fontconfig$(LibSuffix)-vc$(PlatformToolsetVersion).lib;freetype$(LibSuffix)-vc$(PlatformToolsetVersion).lib;pango$(LibSuffix)-vc$(PlatformToolsetVersion).lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(W32DepsDir)freetype\lib;$(W32DepsDir)fontconfig\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutputBase)freetype\lib;$(OutputBase)fontconfig\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)..\fontconfig;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

@@ -69,6 +69,7 @@ copy $(Configuration)\$(Platform)\bin\*-$(GdkPixbufApiVersion).lib $(CopyDir)\\l
   <PropertyGroup>
     <_PropertySheetDisplayName>gdk-pixbufprops</_PropertySheetDisplayName>
     <TargetName>$(ProjectName)$(LibSuffix)-vc$(PlatformToolsetVersion)</TargetName>
+    <OutDir>$(OutputBase)/gtk2/bin/</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>

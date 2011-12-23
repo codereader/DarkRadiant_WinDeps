@@ -6,7 +6,7 @@
   <ItemDefinitionGroup>
     <Link>
       <AdditionalDependencies>fontconfig$(LibSuffix)-vc$(PlatformToolsetVersion).lib;freetype$(LibSuffix)-vc$(PlatformToolsetVersion).lib;pango$(LibSuffix)-vc$(PlatformToolsetVersion).lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(W32DepsDir)fontconfig\lib;$(W32DepsDir)freetype\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutputBase)fontconfig\lib;$(OutputBase)freetype\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <ClCompile>
       <PreprocessorDefinitions>HAVE_GLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>

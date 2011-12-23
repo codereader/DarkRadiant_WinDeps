@@ -128,7 +128,7 @@ copy ..\..\..\pango\pangoft2.h $(CopyDir)\include\pango-$(PangoApiVersion)\pango
     </ClCompile>
     <Link>
       <AdditionalDependencies>gio$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gmodule$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gobject$(LibSuffix)-vc$(PlatformToolsetVersion).lib;glib$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gettext$(LibSuffix)-vc$(PlatformToolsetVersion).lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(W32DepsDir)gtk2\lib;$(W32DepsDir)gettext\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutputBase)gtk2\lib;$(OutputBase)gettext\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>$(OutputBase)/gtk2/lib/$(ProjectName)$(LibSuffix)-vc$(PlatformToolsetVersion).lib</ImportLibrary>
     </Link>
     <PreBuildEvent />

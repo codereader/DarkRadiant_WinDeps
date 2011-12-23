@@ -136,7 +136,6 @@
     </ClCompile>
     <Link>
       <ModuleDefinitionFile>..\gtk2\pango\pango.def</ModuleDefinitionFile>
-      <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_NoFC|Win32'">
@@ -169,7 +168,6 @@
       <ModuleDefinitionFile>..\gtk2\pango\pango.def</ModuleDefinitionFile>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_NoFC|Win32'">
@@ -202,7 +200,6 @@
     </ClCompile>
     <Link>
       <ModuleDefinitionFile>..\gtk2\pango\pango.def</ModuleDefinitionFile>
-      <TargetMachine>MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_NoFC|x64'">
@@ -235,7 +232,6 @@
       <ModuleDefinitionFile>..\gtk2\pango\pango.def</ModuleDefinitionFile>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <TargetMachine>MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_NoFC|x64'">
