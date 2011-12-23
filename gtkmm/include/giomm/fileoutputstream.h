@@ -128,11 +128,7 @@ public:
    * @param attributes A file attribute query string.
    * @return A FileInfo for the stream, or an empty RefPtr on error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileInfo> query_info(const Glib::RefPtr<Cancellable>& cancellable, const std::string& attributes = "*");
-#else
-  Glib::RefPtr<FileInfo> query_info(const Glib::RefPtr<Cancellable>& cancellable, const std::string& attributes, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Queries a file output stream for the given @a attributes . 
    * This function blocks while querying the stream. For the asynchronous 
@@ -155,11 +151,7 @@ public:
    * @param attributes A file attribute query string.
    * @return A FileInfo for the stream, or an empty RefPtr on error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileInfo> query_info(const std::string& attributes = "*");
-#else
-  Glib::RefPtr<FileInfo> query_info(const std::string& attributes, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
   /** Queries the stream information asynchronously.
@@ -170,7 +162,7 @@ public:
    * For the synchronous version of this function, 
    * see query_info(). 
    * 
-   * If @a cancellable is not %NULL, then the operation can be cancelled by
+   * The operation can be cancelled by
    * triggering the cancellable object from another thread. If the operation
    * was cancelled, a Gio::Error with CANCELLED may be thrown
    * 
@@ -201,13 +193,9 @@ public:
    * @param result A AsyncResult.
    * @return A FileInfo for the finished query.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileInfo> query_info_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  Glib::RefPtr<FileInfo> query_info_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
+  
   /** Gets the entity tag for the file when it has been written.
    * This must be called after the stream has been written
    * and closed, as the etag can change while writing.
@@ -233,17 +221,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

@@ -97,7 +97,8 @@ private:
 
 
 protected:
-  explicit DataOutputStream(const Glib::RefPtr<OutputStream>& base_stream);
+    explicit DataOutputStream(const Glib::RefPtr<OutputStream>& base_stream);
+
 
 public:
 
@@ -121,20 +122,11 @@ public:
    * @param cancellable Optional Cancellable object, <tt>0</tt> to ignore.
    * @return <tt>true</tt> if @a data was successfully added to the @a stream.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool put_byte(guchar data, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool put_byte(guchar data, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** non-cancellable version of put_byte()
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool put_byte(guchar data);
-#else
-  bool put_byte(guchar data, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Puts a signed 16-bit integer into the output stream.
@@ -142,19 +134,10 @@ public:
    * @param cancellable Optional Cancellable object, <tt>0</tt> to ignore.
    * @return <tt>true</tt> if @a data was successfully added to the @a stream.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool put_int16(gint16 data, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool put_int16(gint16 data, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
   /** non-cancellable version of put_int16()
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool put_int16(gint16 data);
-#else
-  bool put_int16(gint16 data, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Puts an unsigned 16-bit integer into the output stream.
@@ -162,19 +145,10 @@ public:
    * @param cancellable Optional Cancellable object, <tt>0</tt> to ignore.
    * @return <tt>true</tt> if @a data was successfully added to the @a stream.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool put_uint16(guint16 data, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool put_uint16(guint16 data, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
   /** non-cancellable version of put_uint16()
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool put_uint16(guint16 data);
-#else
-  bool put_uint16(guint16 data, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Puts a signed 32-bit integer into the output stream.
@@ -182,20 +156,11 @@ public:
    * @param cancellable Optional Cancellable object, <tt>0</tt> to ignore.
    * @return <tt>true</tt> if @a data was successfully added to the @a stream.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool put_int32(gint32 data, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool put_int32(gint32 data, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** non-cancellable version of put_int32()
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool put_int32(gint32 data);
-#else
-  bool put_int32(gint32 data, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Puts an unsigned 32-bit integer into the stream.
@@ -203,19 +168,10 @@ public:
    * @param cancellable Optional Cancellable object, <tt>0</tt> to ignore.
    * @return <tt>true</tt> if @a data was successfully added to the @a stream.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool put_uint32(guint32 data, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool put_uint32(guint32 data, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
   /** non-cancellable version of put_uint32()
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool put_uint32(guint32 data);
-#else
-  bool put_uint32(guint32 data, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Puts a signed 64-bit integer into the stream.
@@ -223,19 +179,10 @@ public:
    * @param cancellable Optional Cancellable object, <tt>0</tt> to ignore.
    * @return <tt>true</tt> if @a data was successfully added to the @a stream.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool put_int64(gint64 data, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool put_int64(gint64 data, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
   /** non-cancellable version of put_int64()
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool put_int64(gint64 data);
-#else
-  bool put_int64(gint64 data, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Puts an unsigned 64-bit integer into the stream.
@@ -243,20 +190,11 @@ public:
    * @param cancellable Optional Cancellable object, <tt>0</tt> to ignore.
    * @return <tt>true</tt> if @a data was successfully added to the @a stream.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool put_uint64(guint64 data, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool put_uint64(guint64 data, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** non-cancellable version of put_uint64()
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool put_uint64(guint64 data);
-#else
-  bool put_uint64(guint64 data, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Puts a string into the output stream.
@@ -264,20 +202,11 @@ public:
    * @param cancellable Optional Cancellable object, <tt>0</tt> to ignore.
    * @return <tt>true</tt> if @a string was successfully added to the @a stream.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool put_string(std::string str, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool put_string(std::string str, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** non-cancellable version of put_string()
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool put_string(std::string str);
-#else
-  bool put_string(std::string str, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The byte order.
@@ -304,17 +233,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

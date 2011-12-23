@@ -100,17 +100,35 @@ private:
 
 
 protected:
-  explicit UnixOutputStream(int fd, bool close_fd_at_close);
+    explicit UnixOutputStream(int fd, bool close_fd);
+
 
 public:
   
-  static Glib::RefPtr<UnixOutputStream> create(int fd, bool close_fd_at_close);
+  static Glib::RefPtr<UnixOutputStream> create(int fd, bool close_fd);
 
 
-  void set_close_fd(bool close_fd = true);
+  /** Sets whether the file descriptor of @a stream shall be closed
+   * when the stream is closed.
+   * 
+   * @newin{2,20}
+   * @param close_fd <tt>true</tt> to close the file descriptor when done.
+   */
+  void set_close_fd(bool close_fd =  true);
   
+  /** Returns whether the file descriptor of @a stream will be
+   * closed when the stream is closed.
+   * 
+   * @newin{2,20}
+   * @return <tt>true</tt> if the file descriptor is closed when done.
+   */
   bool get_close_fd() const;
   
+  /** Return the UNIX file descriptor that the stream writes to.
+   * 
+   * @newin{2,20}
+   * @return The file descriptor of @a stream.
+   */
   int get_fd() const;
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -149,17 +167,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

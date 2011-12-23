@@ -25,9 +25,7 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
 #include <exception>
-#endif
 
 #include <string>
 
@@ -60,7 +58,7 @@ namespace Gio
 namespace Gio
 {
 
-/** @addtogroup giommEnums Enums and Flags */
+/** @addtogroup giommEnums giomm Enums and Flags */
 
 /**
  * @ingroup giommEnums
@@ -75,9 +73,10 @@ namespace Gio
  */
 enum AppInfoCreateFlags
 {
-  APP_INFO_CREATE_NONE = 0,
-  APP_INFO_CREATE_NEEDS_TERMINAL = 1 << 0,
-  APP_INFO_CREATE_SUPPORTS_URIS = 1 << 1
+  APP_INFO_CREATE_NONE = 0x0,
+  APP_INFO_CREATE_NEEDS_TERMINAL = (1 << 0),
+  APP_INFO_CREATE_SUPPORTS_URIS = (1 << 1),
+  APP_INFO_CREATE_SUPPORTS_STARTUP_NOTIFICATION = (1 << 2)
 };
 
 /** @ingroup giommEnums */
@@ -173,9 +172,9 @@ public:
   static Glib::RefPtr<AppLaunchContext> create();
 
 
-  /** Gets the display string for the display. This is used to ensure new
-   * applications are started on the same display as the launching 
-   * application.
+  /** Gets the display string for the @a context. This is used to ensure new
+   * applications are started on the same display as the launching
+   * application, by setting the <envar>DISPLAY</envar> environment variable.
    * @param info A AppInfo.
    * @param files A List of File objects.
    * @return A display string for the display.
@@ -184,13 +183,13 @@ public:
 
   
   /** Initiates startup notification for the application and returns the
-   * DESKTOP_STARTUP_ID for the launched operation, if supported.
+   * <envar>DESKTOP_STARTUP_ID</envar> for the launched operation,
+   * if supported.
    * 
-   * Startup notification IDs are defined in the 
-   * FreeDesktop.Org Startup Notifications standard.
+   * Startup notification IDs are defined in the .
    * @param info A AppInfo.
    * @param files A List of of File objects.
-   * @return A startup notification ID for the application, or <tt>0</tt> if 
+   * @return A startup notification ID for the application, or <tt>0</tt> if
    * not supported.
    */
   std::string get_startup_notify_id(const Glib::RefPtr<AppInfo>& info, const Glib::ListHandle< Glib::RefPtr<Gio::File> >& files);
@@ -206,17 +205,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };
@@ -280,30 +273,23 @@ public:
   ///Provides access to the underlying C GObject.
   GAppInfo*       gobj()       { return reinterpret_cast<GAppInfo*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const GAppInfo* gobj() const { return reinterpret_cast<GAppInfo*>(gobject_); }
 
 private:
 
 
 public:
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static Glib::RefPtr<AppInfo> create_from_commandline(const std::string& commandline,
                                                        const std::string& application_name,
                                                        AppInfoCreateFlags flags);
-#else
-  static Glib::RefPtr<AppInfo> create_from_commandline(const std::string& commandline,
-                                                       const std::string& application_name,
-                                                       AppInfoCreateFlags flags,
-                                                       std::auto_ptr<Glib::Error>& error);
-#endif // GLIBMM_EXCEPTIONS_ENABLED
 
   //__IGNORE(g_app_info_dup)
   
 
   // Note that the implementation of equal() is virtual via equal_vfunc().
   
-  /** Checks if two AppInfos are equal.
+  /** Checks if two AppInfo<!-- -->s are equal.
    * @param appinfo2 The second AppInfo.
    * @return <tt>true</tt> if @a appinfo1 is equal to @a appinfo2. <tt>false</tt> otherwise.
    */
@@ -334,16 +320,16 @@ public:
   
   /** Gets the executable's name for the installed application.
    * @return A string containing the @a appinfo's application 
-   * binary's name.
+   * binaries name.
    */
   std::string get_executable() const;
   
   /** Gets the commandline with which the application will be
-   * started.
-   * @return A string containing the @a appinfo's commandline, 
-   * or <tt>0</tt> if this information is not available
+   * started.  
    * 
-   * @newin{2,20}.
+   * @newin{2,20}
+   * @return A string containing the @a appinfo's commandline, 
+   * or <tt>0</tt> if this information is not available.
    */
   std::string get_commandline() const;
 
@@ -359,12 +345,12 @@ public:
   const Glib::RefPtr<const Icon> get_icon() const;
 
   
-  /** Launches the application. Passes @a files to the launched application 
+  /** Launches the application. Passes @a files to the launched application
    * as arguments, using the optional @a launch_context to get information
    * about the details of the launcher (like what screen it is on).
    * On error, @a error will be set accordingly.
    * 
-   * To lauch the application without arguments pass a <tt>0</tt> @a files list.
+   * To launch the application without arguments pass a <tt>0</tt> @a files list.
    * 
    * Note that even if the launch is successful the application launched
    * can fail to start if it runs into problems during startup. There is
@@ -374,17 +360,20 @@ public:
    * unsupported uris with strange formats like mailto:), so if you have
    * a textual uri you want to pass in as argument, consider using
    * g_app_info_launch_uris() instead.
+   * 
+   * On UNIX, this function sets the <envar>GIO_LAUNCHED_DESKTOP_FILE</envar>
+   * environment variable with the path of the launched desktop file and
+   * <envar>GIO_LAUNCHED_DESKTOP_FILE_PID</envar> to the process
+   * id of the launched process. This can be used to ignore
+   * <envar>GIO_LAUNCHED_DESKTOP_FILE</envar>, should it be inherited
+   * by further processes. The <envar>DISPLAY</envar> and
+   * <envar>DESKTOP_STARTUP_ID</envar> environment variables are also
+   * set, based on information provided in @a launch_context.
    * @param files A List of File objects.
    * @param launch_context A AppLaunchContext or <tt>0</tt>.
    * @return <tt>true</tt> on successful launch, <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
-  bool launch(const Glib::ListHandle<std::string>& files,
-                           const Glib::RefPtr<AppLaunchContext>& launch_context);
-#else
-  bool launch(const Glib::ListHandle<std::string>& files, const Glib::RefPtr<AppLaunchContext>& launch_context, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
+  bool launch(const Glib::ListHandle<std::string>& files, const Glib::RefPtr<AppLaunchContext>& launch_context);
   
   /** Checks if the application supports reading files and directories from URIs.
    * @return <tt>true</tt> if the @a appinfo supports URIs.
@@ -396,7 +385,7 @@ public:
    */
   bool supports_files() const;
   
-  /** Launches the application. Passes @a uris to the launched application 
+  /** Launches the application. Passes @a uris to the launched application
    * as arguments, using the optional @a launch_context to get information
    * about the details of the launcher (like what screen it is on).
    * On error, @a error will be set accordingly.
@@ -410,13 +399,7 @@ public:
    * @param launch_context A AppLaunchContext or <tt>0</tt>.
    * @return <tt>true</tt> on successful launch, <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
-  bool launch_uris(const Glib::ListHandle<std::string>& uris,
-                                GAppLaunchContext* launch_context);
-#else
-  bool launch_uris(const Glib::ListHandle<std::string>& uris, GAppLaunchContext* launch_context, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
+  bool launch_uris(const Glib::ListHandle<std::string>& uris, GAppLaunchContext* launch_context);
   
   /** Checks if the application info should be shown in menus that 
    * list available applications.
@@ -425,22 +408,23 @@ public:
   bool should_show() const;
   // FIXME: use better terminology than delete/do_delete
   
-  /** Obtains the information whether the GAppInfo can be deleted.
+  /** Obtains the information whether the AppInfo can be deleted.
    * See g_app_info_delete().
-   * @return <tt>true</tt> if @a appinfo can be deleted
    * 
-   * @newin{2,20}.
+   * @newin{2,20}
+   * @return <tt>true</tt> if @a appinfo can be deleted.
    */
   bool can_delete() const;
   
-  /** Tries to delete an AppInfo. 
+  /** Tries to delete a AppInfo.
    * 
    * On some platforms, there may be a difference between user-defined
-   * AppInfo&lt;!-- --&gt;s which can be deleted, and system-wide ones which
+   * AppInfo<!-- -->s which can be deleted, and system-wide ones which
    * cannot. See g_app_info_can_delete().
-   * @return <tt>true</tt> if @a appinfo has been deleted
    * 
-   * @newin{2,20}.
+   * Virtual: do_delete
+   * @newin{2,20}
+   * @return <tt>true</tt> if @a appinfo has been deleted.
    */
   bool do_delete();
 
@@ -449,35 +433,20 @@ public:
    * @param content_type The content type.
    * @return <tt>true</tt> on success, <tt>false</tt> on error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool set_as_default_for_type(const std::string& content_type);
-#else
-  bool set_as_default_for_type(const std::string& content_type, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
   
-  /** Sets the application as the default handler for the given file extention.
+  /** Sets the application as the default handler for the given file extension.
    * @param extension A string containing the file extension (without the dot).
    * @return <tt>true</tt> on success, <tt>false</tt> on error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool set_as_default_for_extension(const std::string& extension);
-#else
-  bool set_as_default_for_extension(const std::string& extension, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
   
   /** Adds a content type to the application information to indicate the 
    * application is capable of opening files with the given content type.
    * @param content_type A string.
    * @return <tt>true</tt> on success, <tt>false</tt> on error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool add_supports_type(const std::string& content_type);
-#else
-  bool add_supports_type(const std::string& content_type, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
   
   /** Checks if a supported content type can be removed from an application.
    * @return <tt>true</tt> if it is possible to remove supported 
@@ -489,13 +458,9 @@ public:
    * @param content_type A string.
    * @return <tt>true</tt> on success, <tt>false</tt> on error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool remove_supports_type(const std::string& content_type);
-#else
-  bool remove_supports_type(const std::string& content_type, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
  
+
   /** Gets a list of all of the applications currently registered 
    * on this system.
    * 
@@ -505,24 +470,25 @@ public:
    * <tt>NotShowIn</tt>. See g_app_info_should_show().
    * The returned list does not include applications which have
    * the <tt>Hidden</tt> key set.
-   * @return A newly allocated List of references to AppInfo&lt;!----&gt;s.
+   * @return A newly allocated List of references to AppInfo<!---->s.
    */
   static Glib::ListHandle<Glib::RefPtr<AppInfo> > get_all();
   
-  /** Gets a list of all AppInfo s for a given content type.
+  /** Gets a list of all AppInfos for a given content type.
    * @param content_type The content type to find a AppInfo for.
-   * @return List of AppInfo s for given @a content_type
-   * or <tt>0</tt> on error.
+   * @return List of AppInfos
+   * for given @a content_type or <tt>0</tt> on error.
    */
   static Glib::ListHandle<Glib::RefPtr<AppInfo> > get_all_for_type(const std::string& content_type);
   
-  /** Gets the AppInfo that correspond to a given content type.
+  /** Gets the AppInfo that corresponds to a given content type.
    * @param content_type The content type to find a AppInfo for.
    * @param must_support_uris If <tt>true</tt>, the AppInfo is expected to
    * support URIs.
-   * @return AppInfo for given @a content_type or <tt>0</tt> on error.
+   * @return AppInfo for given @a content_type or
+   * <tt>0</tt> on error.
    */
-  static Glib::RefPtr<AppInfo> get_default_for_type(const std::string& content_type, bool must_support_uris = true);
+  static Glib::RefPtr<AppInfo> get_default_for_type(const std::string& content_type, bool must_support_uris =  true);
   
   /** Gets the default application for launching applications 
    * using this URI scheme. A URI scheme is the initial part 
@@ -536,14 +502,14 @@ public:
   /** Removes all changes to the type associations done by
    * g_app_info_set_as_default_for_type(), 
    * g_app_info_set_as_default_for_extension(), 
-   * g_app_info_add_supports_type() of g_app_info_remove_supports_type().
+   * g_app_info_add_supports_type() or g_app_info_remove_supports_type().
    * 
    * @newin{2,20}
    * @param content_type A content type.
    */
   static void reset_type_associations(const std::string& content_type);
   
-  /** Utility function that launches the default application 
+  /** Utility function that launches the default application
    * registered to handle the specified uri. Synchronous I/O
    * is done on the uri to detect the type of the file if
    * required.
@@ -551,18 +517,9 @@ public:
    * @param launch_context An optional AppLaunchContext.
    * @return <tt>true</tt> on success, <tt>false</tt> on error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static bool launch_default_for_uri(const std::string& uri, const Glib::RefPtr<AppLaunchContext>& context);
-#else
-  static bool launch_default_for_uri(const std::string& uri, const Glib::RefPtr<AppLaunchContext>& context, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
   // same as above but without optional AppLaunchContext
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static bool launch_default_for_uri(const std::string& uri);
-#else
-  static bool launch_default_for_uri(const std::string& uri, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 protected:
   //_WRAP_VFUNC(Glib::RefPtr<AppInfo> dup(), "dup")
@@ -590,17 +547,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

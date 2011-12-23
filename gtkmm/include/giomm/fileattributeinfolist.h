@@ -62,8 +62,14 @@ class FileAttributeInfoList
 
   static Glib::RefPtr<FileAttributeInfoList> create();
 
-  // For use with Glib::RefPtr<> only.
+  /** Increment the reference count for this object.
+   * You should never need to do this manually - use the object via a RefPtr instead.
+   */
   void reference()   const;
+
+  /** Decrement the reference count for this object.
+   * You should never need to do this manually - use the object via a RefPtr instead.
+   */
   void unreference() const;
 
   ///Provides access to the underlying C instance.
@@ -117,7 +123,7 @@ public:
    * @param type The FileAttributeType for the attribute.
    * @param flags FileAttributeInfoFlags for the attribute.
    */
-  void add(const std::string& name, FileAttributeType type, FileAttributeInfoFlags flags = FILE_ATTRIBUTE_INFO_NONE);
+  void add(const std::string& name, FileAttributeType type, FileAttributeInfoFlags flags =  FILE_ATTRIBUTE_INFO_NONE);
 
 
 };

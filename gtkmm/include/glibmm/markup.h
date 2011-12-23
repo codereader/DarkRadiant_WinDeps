@@ -92,15 +92,11 @@ public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 private:
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static void throw_func(GError* gobject);
-#else
-  //When not using exceptions, we just pass the Exception object around without throwing it:
-  static std::auto_ptr<Glib::Error> throw_func(GError* gobject);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   friend void wrap_init(); // uses throw_func()
-#endif
+
+  #endif //DOXYGEN_SHOULD_SKIP_THIS
 };
 
 
@@ -149,7 +145,7 @@ typedef Glib::MarkupError Error;
 Glib::ustring escape_text(const Glib::ustring& text);
 
 
-/** @addtogroup glibmmEnums Enums and Flags */
+/** @addtogroup glibmmEnums glibmm Enums and Flags */
 
 /** There are no flags right now. Pass <tt>Glib::Markup::ParseFlags(0)</tt> for
  * the flags argument to all functions (this should be the default argument
@@ -417,6 +413,9 @@ private:
 };
 
 } // namespace Markup
+
+// For some reason gmmproc thinks that g_iconv should be wrapped here.
+
 
 } // namespace Glib
 

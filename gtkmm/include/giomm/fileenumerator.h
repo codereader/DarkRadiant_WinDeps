@@ -112,26 +112,24 @@ private:
 
 public:
   
-  /** Return value: A FileInfo or <tt>0</tt> on error or end of enumerator.
+  /** Returns information for the next file in the enumerated object.
+   * Will block until the information is available. The FileInfo 
+   * returned from this function will contain attributes that match the 
+   * attribute string that was passed when the FileEnumerator was created.
+   * 
+   * On error, returns <tt>0</tt> and sets @a error to the error. If the
+   * enumerator is at the end, <tt>0</tt> will be returned and @a error will
+   * be unset.
    * @param cancellable Optional Cancellable object, <tt>0</tt> to ignore.
    * @return A FileInfo or <tt>0</tt> on error or end of enumerator.
    * Free the returned object with Glib::object_unref() when no longer needed.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileInfo> next_file(const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  Glib::RefPtr<FileInfo> next_file(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** 
    * @return A FileInfo or an empty RefPtr on error or end of enumerator.
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<FileInfo> next_file();
-  #else
-  Glib::RefPtr<FileInfo> next_file(std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Releases all resources used by this enumerator, making the
@@ -143,12 +141,7 @@ public:
    * @param cancellable Optional Cancellable object, <tt>0</tt> to ignore.
    * @return #<tt>true</tt> on success or #<tt>false</tt> on error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool close(const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool close(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Releases all resources used by this enumerator, making the
    * enumerator throw a Gio::Error with CLOSED on all calls.
@@ -158,11 +151,7 @@ public:
    * are released as early as possible.
    * @return #<tt>true</tt> on success or an empty RefPtr on error.
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool close();
-  #else
-  bool close(std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
   /** Request information for a number of files from the enumerator asynchronously. 
@@ -203,15 +192,11 @@ public:
 
   /** Finishes the asynchronous operation started with g_file_enumerator_next_files_async().
    * @param result A AsyncResult.
-   * @return A List of FileInfo&lt;!----&gt;s. You must free the list with 
-   * Glib::list_free() and unref the infos with g_object_unref when you're 
+   * @return A List of FileInfo<!---->s. You must free the list with 
+   * Glib::list_free() and unref the infos with Glib::object_unref() when you're 
    * done with them.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::ListHandle< Glib::RefPtr<FileInfo> > next_files_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  Glib::ListHandle< Glib::RefPtr<FileInfo> > next_files_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
   /** Asynchronously closes the file enumerator.
@@ -250,13 +235,9 @@ public:
    * @param result A AsyncResult.
    * @return <tt>true</tt> if the close operation has finished successfully.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool close_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  bool close_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
+  
   /** Checks if the file enumerator has been closed.
    * @return <tt>true</tt> if the @a enumerator is closed.
    */
@@ -270,20 +251,20 @@ public:
   /** Sets the file enumerator as having pending operations.
    * @param pending A boolean value.
    */
-  void set_pending(bool pending = true);
+  void set_pending(bool pending =  true);
 
   
   /** Get the File container which is being enumerated.
-   * @return The File which is being enumerated.
    * 
-   * @newin{2,18}.
+   * @newin{2,18}
+   * @return The File which is being enumerated.
    */
   Glib::RefPtr<File> get_container();
   
   /** Get the File container which is being enumerated.
-   * @return The File which is being enumerated.
    * 
-   * @newin{2,18}.
+   * @newin{2,18}
+   * @return The File which is being enumerated.
    */
   Glib::RefPtr<const File> get_container() const;
 
@@ -292,17 +273,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

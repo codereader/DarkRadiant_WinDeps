@@ -40,7 +40,7 @@ namespace Gio
 namespace Gio
 {
 
-/** @addtogroup giommEnums Enums and Flags */
+/** @addtogroup giommEnums giomm Enums and Flags */
 
 /**
  * @ingroup giommEnums
@@ -53,7 +53,8 @@ enum FileMonitorEvent
   FILE_MONITOR_EVENT_CREATED,
   FILE_MONITOR_EVENT_ATTRIBUTE_CHANGED,
   FILE_MONITOR_EVENT_PRE_UNMOUNT,
-  FILE_MONITOR_EVENT_UNMOUNTED
+  FILE_MONITOR_EVENT_UNMOUNTED,
+  FILE_MONITOR_EVENT_MOVED
 };
 
 
@@ -125,15 +126,15 @@ public:
    */
   bool cancel();
   
-  /** Returns: <tt>true</tt> if monitor is canceled. <tt>false</tt> otherwise.
+  /** Returns whether the monitor is canceled.
    * @return <tt>true</tt> if monitor is canceled. <tt>false</tt> otherwise.
    */
   bool is_cancelled() const;
   
   /** Sets the rate limit to which the @a monitor will report
    * consecutive change events to the same file.
-   * @param limit_msecs A integer with the limit in milliseconds to 
-   * poll for changes.
+   * @param limit_msecs A non-negative integer with the limit in milliseconds
+   * to poll for changes.
    */
   void set_rate_limit(int limit_msecs);
 
@@ -151,7 +152,7 @@ public:
   //_WRAP_VFUNC(bool cancel(), cancel);
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The limit of the monitor to watch for changes
+/** The limit of the monitor to watch for changes, in milliseconds.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -161,7 +162,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The limit of the monitor to watch for changes
+/** The limit of the monitor to watch for changes, in milliseconds.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -185,18 +186,12 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_changed(const Glib::RefPtr<File>& file, const Glib::RefPtr<File>& other_file, FileMonitorEvent event_type);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

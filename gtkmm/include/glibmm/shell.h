@@ -56,15 +56,11 @@ public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 private:
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static void throw_func(GError* gobject);
-#else
-  //When not using exceptions, we just pass the Exception object around without throwing it:
-  static std::auto_ptr<Glib::Error> throw_func(GError* gobject);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   friend void wrap_init(); // uses throw_func()
-#endif
+
+  #endif //DOXYGEN_SHOULD_SKIP_THIS
 };
 
 
@@ -117,6 +113,9 @@ std::string shell_quote(const std::string& unquoted_string);
 std::string shell_unquote(const std::string& quoted_string);
 
 /** @} group ShellUtils */
+
+// For some reason gmmproc thinks that g_iconv should be wrapped here.
+
 
 } // namespace Glib
 

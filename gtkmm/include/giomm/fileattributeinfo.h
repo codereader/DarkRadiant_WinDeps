@@ -35,7 +35,7 @@ namespace Gio
 
 //TODO: Fix the need for NO_GTYPE.
 //It guesses gfile_attribute_type_get_type() instead of g_file_attribute_type_get_type(). murrayc.
-/** @addtogroup giommEnums Enums and Flags */
+/** @addtogroup giommEnums giomm Enums and Flags */
 
 /**
  * @ingroup giommEnums
@@ -50,7 +50,8 @@ enum FileAttributeType
   FILE_ATTRIBUTE_TYPE_INT32,
   FILE_ATTRIBUTE_TYPE_UINT64,
   FILE_ATTRIBUTE_TYPE_INT64,
-  FILE_ATTRIBUTE_TYPE_OBJECT
+  FILE_ATTRIBUTE_TYPE_OBJECT,
+  FILE_ATTRIBUTE_TYPE_STRINGV
 };
 
 
@@ -67,9 +68,9 @@ enum FileAttributeType
  */
 enum FileAttributeInfoFlags
 {
-  FILE_ATTRIBUTE_INFO_NONE = 0,
-  FILE_ATTRIBUTE_INFO_COPY_WITH_FILE = 1 << 0,
-  FILE_ATTRIBUTE_INFO_COPY_WHEN_MOVED = 1 << 1
+  FILE_ATTRIBUTE_INFO_NONE = 0x0,
+  FILE_ATTRIBUTE_INFO_COPY_WITH_FILE = (1 << 0),
+  FILE_ATTRIBUTE_INFO_COPY_WHEN_MOVED = (1 << 1)
 };
 
 /** @ingroup giommEnums */

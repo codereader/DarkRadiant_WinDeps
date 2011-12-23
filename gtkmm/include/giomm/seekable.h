@@ -110,7 +110,7 @@ public:
   ///Provides access to the underlying C GObject.
   GSeekable*       gobj()       { return reinterpret_cast<GSeekable*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const GSeekable* gobj() const { return reinterpret_cast<GSeekable*>(gobject_); }
 
 private:
@@ -141,14 +141,9 @@ public:
    * has occurred, this function will return <tt>false</tt> and set @a error
    * appropriately if present.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool seek(goffset offset, Glib::SeekType type, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool seek(goffset offset, Glib::SeekType type, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
-  //TODO: Document the exception: http://bugzilla.gnome.org/show_bug.cgi?id=509990
+  //TODO: Document the exception in the C API: https://bugzilla.gnome.org/show_bug.cgi?id=509990#c1
   /** Seeks in the stream by the given @a offset, modified by @a type .
    * 
    * @param offset A #goffset.
@@ -156,11 +151,7 @@ public:
    * @return <tt>true</tt> if successful. If an error
    * has occurred, this function will return <tt>false</tt>.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool seek(goffset offset, Glib::SeekType type);
-#else
-  bool seek(goffset offset, Glib::SeekType type, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Tests if the stream can be truncated.
@@ -182,25 +173,16 @@ public:
    * has occurred, this function will return <tt>false</tt> and set @a error
    * appropriately if present.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool truncate(goffset offset, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool truncate(goffset offset, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
-  //TODO: Document the exception: http://bugzilla.gnome.org/show_bug.cgi?id=509990
+  //TODO: Document the exception in the C API: https://bugzilla.gnome.org/show_bug.cgi?id=509990#c1
   /** Truncates a stream with a given #offset. 
    * 
    * @param offset A #goffset.
    * @return <tt>true</tt> if successful. If an error
    * has occured, this function will return <tt>false</tt>.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool truncate(goffset offset);
-#else
-  bool truncate(goffset offset, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   //_WRAP_VFUNC(goffset tell() const, tell)
   //_WRAP_VFUNC(goffset can_seek() const, can_seek)
@@ -217,17 +199,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

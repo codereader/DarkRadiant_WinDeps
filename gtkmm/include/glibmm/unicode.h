@@ -51,7 +51,7 @@
 namespace Glib
 {
 
-/** @addtogroup glibmmEnums Enums and Flags */
+/** @addtogroup glibmmEnums glibmm Enums and Flags */
 
 /**
  * @ingroup glibmmEnums
@@ -196,7 +196,7 @@ inline AsciiType& operator^=(AsciiType& lhs, AsciiType rhs)
 enum NormalizeMode
 {
   NORMALIZE_DEFAULT,
-  NORMALIZE_NFD,
+  NORMALIZE_NFD = NORMALIZE_DEFAULT,
   NORMALIZE_DEFAULT_COMPOSE,
   NORMALIZE_NFC = NORMALIZE_DEFAULT_COMPOSE,
   NORMALIZE_ALL,
@@ -306,6 +306,9 @@ inline int xdigit_value(char c)
 
 
 /** @} group Unicode */
+
+// For some reason gmmproc thinks that g_iconv should be wrapped here.
+
 
 } // namespace Glib
 

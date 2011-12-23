@@ -26,15 +26,18 @@
  */
 
 //#include <giomm/drive.h>
-#include <giomm/file.h>
-#include <giomm/volume.h>
+//#include <giomm/file.h>
+//#include <giomm/volume.h>
 #include <glibmm/interface.h>
+#include <giomm/asyncresult.h>
+#include <giomm/cancellable.h>
+#include <giomm/mountoperation.h>
+#include <giomm/icon.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 typedef struct _GMountIface GMountIface;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 typedef struct _GMount GMount;
@@ -47,8 +50,102 @@ namespace Gio
 namespace Gio
 {
 
+/** @addtogroup giommEnums giomm Enums and Flags */
+
+/**
+ * @ingroup giommEnums
+ * @par Bitwise operators:
+ * <tt>%MountUnmountFlags operator|(MountUnmountFlags, MountUnmountFlags)</tt><br>
+ * <tt>%MountUnmountFlags operator&(MountUnmountFlags, MountUnmountFlags)</tt><br>
+ * <tt>%MountUnmountFlags operator^(MountUnmountFlags, MountUnmountFlags)</tt><br>
+ * <tt>%MountUnmountFlags operator~(MountUnmountFlags)</tt><br>
+ * <tt>%MountUnmountFlags& operator|=(MountUnmountFlags&, MountUnmountFlags)</tt><br>
+ * <tt>%MountUnmountFlags& operator&=(MountUnmountFlags&, MountUnmountFlags)</tt><br>
+ * <tt>%MountUnmountFlags& operator^=(MountUnmountFlags&, MountUnmountFlags)</tt><br>
+ */
+enum MountUnmountFlags
+{
+  MOUNT_UNMOUNT_NONE = 0x0,
+  MOUNT_UNMOUNT_FORCE = (1 << 0)
+};
+
+/** @ingroup giommEnums */
+inline MountUnmountFlags operator|(MountUnmountFlags lhs, MountUnmountFlags rhs)
+  { return static_cast<MountUnmountFlags>(static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs)); }
+
+/** @ingroup giommEnums */
+inline MountUnmountFlags operator&(MountUnmountFlags lhs, MountUnmountFlags rhs)
+  { return static_cast<MountUnmountFlags>(static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs)); }
+
+/** @ingroup giommEnums */
+inline MountUnmountFlags operator^(MountUnmountFlags lhs, MountUnmountFlags rhs)
+  { return static_cast<MountUnmountFlags>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs)); }
+
+/** @ingroup giommEnums */
+inline MountUnmountFlags operator~(MountUnmountFlags flags)
+  { return static_cast<MountUnmountFlags>(~static_cast<unsigned>(flags)); }
+
+/** @ingroup giommEnums */
+inline MountUnmountFlags& operator|=(MountUnmountFlags& lhs, MountUnmountFlags rhs)
+  { return (lhs = static_cast<MountUnmountFlags>(static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs))); }
+
+/** @ingroup giommEnums */
+inline MountUnmountFlags& operator&=(MountUnmountFlags& lhs, MountUnmountFlags rhs)
+  { return (lhs = static_cast<MountUnmountFlags>(static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs))); }
+
+/** @ingroup giommEnums */
+inline MountUnmountFlags& operator^=(MountUnmountFlags& lhs, MountUnmountFlags rhs)
+  { return (lhs = static_cast<MountUnmountFlags>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs))); }
+
+
+/**
+ * @ingroup giommEnums
+ * @par Bitwise operators:
+ * <tt>%MountMountFlags operator|(MountMountFlags, MountMountFlags)</tt><br>
+ * <tt>%MountMountFlags operator&(MountMountFlags, MountMountFlags)</tt><br>
+ * <tt>%MountMountFlags operator^(MountMountFlags, MountMountFlags)</tt><br>
+ * <tt>%MountMountFlags operator~(MountMountFlags)</tt><br>
+ * <tt>%MountMountFlags& operator|=(MountMountFlags&, MountMountFlags)</tt><br>
+ * <tt>%MountMountFlags& operator&=(MountMountFlags&, MountMountFlags)</tt><br>
+ * <tt>%MountMountFlags& operator^=(MountMountFlags&, MountMountFlags)</tt><br>
+ */
+enum MountMountFlags
+{
+  MOUNT_MOUNT_NONE = 0x0
+};
+
+/** @ingroup giommEnums */
+inline MountMountFlags operator|(MountMountFlags lhs, MountMountFlags rhs)
+  { return static_cast<MountMountFlags>(static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs)); }
+
+/** @ingroup giommEnums */
+inline MountMountFlags operator&(MountMountFlags lhs, MountMountFlags rhs)
+  { return static_cast<MountMountFlags>(static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs)); }
+
+/** @ingroup giommEnums */
+inline MountMountFlags operator^(MountMountFlags lhs, MountMountFlags rhs)
+  { return static_cast<MountMountFlags>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs)); }
+
+/** @ingroup giommEnums */
+inline MountMountFlags operator~(MountMountFlags flags)
+  { return static_cast<MountMountFlags>(~static_cast<unsigned>(flags)); }
+
+/** @ingroup giommEnums */
+inline MountMountFlags& operator|=(MountMountFlags& lhs, MountMountFlags rhs)
+  { return (lhs = static_cast<MountMountFlags>(static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs))); }
+
+/** @ingroup giommEnums */
+inline MountMountFlags& operator&=(MountMountFlags& lhs, MountMountFlags rhs)
+  { return (lhs = static_cast<MountMountFlags>(static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs))); }
+
+/** @ingroup giommEnums */
+inline MountMountFlags& operator^=(MountMountFlags& lhs, MountMountFlags rhs)
+  { return (lhs = static_cast<MountMountFlags>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs))); }
+
+
+class File;
 class Drive;
-//class Volume;
+class Volume;
 
 /** The Mount interface represents user-visible mounts.
  * Mount is a "mounted" filesystem that you can access. Mounted is in quotes because it's not the same as a unix mount: 
@@ -115,7 +212,7 @@ public:
   ///Provides access to the underlying C GObject.
   GMount*       gobj()       { return reinterpret_cast<GMount*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const GMount* gobj() const { return reinterpret_cast<GMount*>(gobject_); }
 
 private:
@@ -219,41 +316,23 @@ public:
    */
   bool can_eject() const;
 
-  /** Unmounts a mount. 
-   * This is an asynchronous operation, and is finished by calling unmount_finish() with the AsyncResult data returned in the callback slot.
-   *
-   * @param slot A callback which will be called when the operation is completed or canceled.
-   * @param cancellable A cancellable object which can be used to cancel the operation.
-   * @param flags Flags affecting the unmount.
-   */
   void unmount(const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
-
-  /** Unmounts a mount. 
-   * This is an asynchronous operation, and is finished by calling unmount_finish() with the AsyncResult data returned in the callback slot.
-   *
-   * @param slot A callback which will be called when the operation is completed or canceled.
-   * @param flags Flags affecting the unmount.
-   */
   void unmount(const SlotAsyncReady& slot, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
-
-  /** Unmounts a mount.
-   *
-   * @param cancellable A cancellable object which can be used to cancel the operation.
-   */
   void unmount(MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  void unmount(const Glib::RefPtr<MountOperation>& mount_operation, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  void unmount(const Glib::RefPtr<MountOperation>& mount_operation, const SlotAsyncReady& slot, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  void unmount(const Glib::RefPtr<MountOperation>& mount_operation, const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
   
-
-  /** Finishes unmounting a mount. If any errors occurred during the operation, 
+  
+  /** Finishes unmounting a mount. If any errors occurred during the operation,
    *  @a error will be set to contain the errors and <tt>false</tt> will be returned.
+   * 
+   * @newin{2,22}
    * @param result A AsyncResult.
    * @return <tt>true</tt> if the mount was successfully unmounted. <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool unmount_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  bool unmount_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
+  
 
   /** Remounts a mount.
    * This is an asynchronous operation, and is finished by calling mount_finish() with the AsyncResult data returned in the callback slot.
@@ -304,48 +383,25 @@ public:
    * @param result A AsyncResult.
    * @return <tt>true</tt> if the mount was successfully remounted. <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool remount_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  bool remount_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
-  /** Ejects a mount. 
-   * This is an asynchronous operation, and is finished by calling eject_finish() with the AsyncResult data returned in the callback slot.
-   *
-   * @param slot A callback which will be called when the operation is completed or canceled.
-   * @param cancellable A cancellable object which can be used to cancel the operation.
-   * @param flags Flags affecting the unmount if required for eject.
-   */
   void eject(const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
-
-  /** Ejects a mount. 
-   * This is an asynchronous operation, and is finished by calling eject_finish() with the AsyncResult data returned in the callback slot.
-   *
-   * @param slot A callback which will be called when the operation is completed or canceled.
-   * @param flags Flags affecting the unmount if required for eject.
-   */
   void eject(const SlotAsyncReady& slot, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
-
-  /** Ejects a mount. 
-   *
-   * @param flags Flags affecting the unmount if required for eject.
-   */
   void eject(MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  void eject(const Glib::RefPtr<MountOperation>& mount_operation, const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  void eject(const Glib::RefPtr<MountOperation>& mount_operation, const SlotAsyncReady& slot, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  void eject(const Glib::RefPtr<MountOperation>& mount_operation, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
   
-
-  /** Finishes ejecting a mount. If any errors occurred during the operation, 
+  
+  /** Finishes ejecting a mount. If any errors occurred during the operation,
    *  @a error will be set to contain the errors and <tt>false</tt> will be returned.
+   * 
+   * @newin{2,22}
    * @param result A AsyncResult.
    * @return <tt>true</tt> if the mount was successfully ejected. <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool eject_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  bool eject_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
+  
 
   /** Tries to guess the type of content stored on the mount.
    * Returns one or more textual identifiers of well-known content types (typically
@@ -390,13 +446,8 @@ public:
   void guess_content_type(bool force_rescan = true);
   
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   void guess_content_type_sync(const Glib::RefPtr<Cancellable>& cancellable, bool force_rescan = true);
   void guess_content_type_sync(bool force_rescan = true);
-#else
-  void guess_content_type_sync(const Glib::RefPtr<Cancellable>& cancellable, bool force_rescan, std::auto_ptr<Glib::Error>& error);
-  void guess_content_type_sync(bool force_rescan, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
   //TODO: Correct the documentation:
@@ -406,19 +457,15 @@ public:
    * <tt>false</tt> will be returned. In particular, you may get an 
    * IO_ERROR_NOT_SUPPORTED if the mount does not support content 
    * guessing.
+   * 
+   * @newin{2,18}
    * @param result A AsyncResult.
    * @return A <tt>0</tt>-terminated array of content types or <tt>0</tt> on error. 
    * Caller should free this array with Glib::strfreev() when done with it.
-   * 
-   * @newin{2,18}.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::StringArrayHandle guess_content_type_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  Glib::StringArrayHandle guess_content_type_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
+  
   /** Determines if @a mount is shadowed. Applications or libraries should
    * avoid displaying @a mount in the user interface if it is shadowed.
    * 
@@ -442,9 +489,9 @@ public:
    * The proxy monitor in GVfs 2.26 and later, automatically creates and
    * manage shadow mounts (and shadows the underlying mount) if the
    * activation root on a Volume is set.
-   * @return <tt>true</tt> if @a mount is shadowed.
    * 
-   * @newin{2,20}.
+   * @newin{2,20}
+   * @return <tt>true</tt> if @a mount is shadowed.
    */
   bool is_shadowed() const;
   
@@ -466,6 +513,16 @@ public:
    */
   void unshadow();
 
+  
+  /** Gets the default location of @a mount. The default location of the given
+   *  @a mount is a path that reflects the main entry point for the user (e.g.
+   * the home directory, or the root of the volume).
+   * @return A File.
+   * The returned object should be unreffed with
+   * Glib::object_unref() when no longer needed.
+   */
+  Glib::RefPtr<File> get_default_location() const;
+
 
   /**
    * @par Prototype:
@@ -482,6 +539,14 @@ public:
 
   Glib::SignalProxy0< void > signal_unmounted();
 
+  
+  /**
+   * @par Prototype:
+   * <tt>void on_my_%pre_unmount()</tt>
+   */
+
+  Glib::SignalProxy0< void > signal_pre_unmount();
+
 
   //There are no properties.
 
@@ -490,19 +555,13 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_changed();
   virtual void on_unmounted();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

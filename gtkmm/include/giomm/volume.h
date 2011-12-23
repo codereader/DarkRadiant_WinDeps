@@ -27,6 +27,7 @@
 
 #include <giomm/file.h>
 #include <giomm/mountoperation.h>
+#include <giomm/mount.h>
 //#include <giomm/drive.h>
 //#include <giomm/icon.h>
 
@@ -119,7 +120,7 @@ public:
   ///Provides access to the underlying C GObject.
   GVolume*       gobj()       { return reinterpret_cast<GVolume*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const GVolume* gobj() const { return reinterpret_cast<GVolume*>(gobject_); }
 
 private:
@@ -198,7 +199,7 @@ public:
    */
   bool can_eject() const;
   
-  /** Returns: <tt>true</tt> if the volume should be automatically mounted.
+  /** Returns whether the volume should be automatically mounted.
    * @return <tt>true</tt> if the volume should be automatically mounted.
    */
   bool should_automount() const;
@@ -241,52 +242,28 @@ public:
    * @param result A AsyncResult.
    * @return <tt>true</tt>, <tt>false</tt> if operation failed.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool mount_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  bool mount_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
-  /** Ejects a volume. 
-   * This is an asynchronous operation, and is finished by calling eject_finish() with the AsyncResult data returned in the callback slot.
-   *
-   * @param slot A callback which will be called when the operation is completed or canceled.
-   * @param cancellable A cancellable object which can be used to cancel the operation.
-   * @param flags Flags affecting the unmount if required for eject.
-   */
   void eject(const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
-
-  /** Ejects a volume. 
-   * This is an asynchronous operation, and is finished by calling eject_finish() with the AsyncResult data returned in the callback slot.
-   *
-   * @param slot A callback which will be called when the operation is completed or canceled.
-   * @param flags Flags affecting the unmount if required for eject.
-   */
   void eject(const SlotAsyncReady& slot, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
-
-  /** Ejects a volume. 
-   * This is an asynchronous operation, and is finished by calling eject_finish() with the AsyncResult data returned in the callback slot.
-   *
-   * @param flags Flags affecting the unmount if required for eject.
-   */
   void eject(MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  void eject(const Glib::RefPtr<MountOperation>& mount_operation, const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  void eject(const Glib::RefPtr<MountOperation>& mount_operation, const SlotAsyncReady& slot, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  void eject(const Glib::RefPtr<MountOperation>& mount_operation, MountUnmountFlags flags = MOUNT_UNMOUNT_NONE);
+  
+  
+  /** Finishes ejecting a volume. If any errors occurred during the operation,
+   *  @a error will be set to contain the errors and <tt>false</tt> will be returned.
+   * 
+   * @newin{2,22}
+   * @param result A AsyncResult.
+   * @return <tt>true</tt> if the volume was successfully ejected. <tt>false</tt> otherwise.
+   */
+  bool eject_finish(const Glib::RefPtr<AsyncResult>& result);
   
 
-  /** Finishes ejecting a volume. If any errors occured during the operation,
-   *  @a error will be set to contain the errors and <tt>false</tt> will be returned.
-   * @param result A AsyncResult.
-   * @return <tt>true</tt>, <tt>false</tt> if operation failed.
-   */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
-  bool eject_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  bool eject_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
-
   /** Gets the identifier of the given kind for @a volume. 
-   * See the introduction
+   * See the 
    * for more information about volume identifiers.
    * @param kind The kind of identifier to return.
    * @return A newly allocated string containing the
@@ -295,12 +272,12 @@ public:
    */
   std::string get_identifier(const std::string& kind) const;
 
-  
-  /** Gets the kinds of identifiers
+   
+  /** Gets the kinds of 
    * that @a volume has. Use Glib::volume_get_identifer() to obtain 
    * the identifiers themselves.
-   * @return A <tt>0</tt>-terminated array of strings containing
-   * kinds of identifiers. Use Glib::strfreev() to free.
+   * @return A <tt>0</tt>-terminated array
+   * of strings containing kinds of identifiers. Use Glib::strfreev() to free.
    */
   Glib::StringArrayHandle enumerate_identifiers() const;
 
@@ -317,9 +294,9 @@ public:
    * GFile *mount_root
    * GFile *volume_activation_root;
    * 
-   * mount = g_volume_get_mount (volume); /&ast; mounted, so never <tt>0</tt> &ast;/
+   * mount = g_volume_get_mount (volume); // mounted, so never <tt>0</tt>
    * mount_root = g_mount_get_root (mount);
-   * volume_activation_root = g_volume_get_activation_root(volume); /&ast; assume not <tt>0</tt> &ast;/
+   * volume_activation_root = g_volume_get_activation_root(volume); // assume not <tt>0</tt>
    * 
    * 
    * then the expression
@@ -353,9 +330,9 @@ public:
    * GFile *mount_root
    * GFile *volume_activation_root;
    * 
-   * mount = g_volume_get_mount (volume); /&ast; mounted, so never <tt>0</tt> &ast;/
+   * mount = g_volume_get_mount (volume); // mounted, so never <tt>0</tt>
    * mount_root = g_mount_get_root (mount);
-   * volume_activation_root = g_volume_get_activation_root(volume); /&ast; assume not <tt>0</tt> &ast;/
+   * volume_activation_root = g_volume_get_activation_root(volume); // assume not <tt>0</tt>
    * 
    * 
    * then the expression
@@ -423,19 +400,13 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_changed();
   virtual void on_removed();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

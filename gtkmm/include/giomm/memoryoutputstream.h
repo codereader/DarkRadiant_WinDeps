@@ -43,9 +43,9 @@ namespace Gio
 namespace Gio
 {
 
-//TODO: Proper documentation:
-
 /** Streaming output operations on memory chunks
+ *
+ * This class uses arbitrary memory chunks as output for GIO streaming output operations. 
  *
  * @ingroup Streams
  *
@@ -103,23 +103,45 @@ private:
   
 protected:
   // TODO: more C++-like interface using sigc++
-  explicit MemoryOutputStream(gpointer data, gsize len, GReallocFunc realloc_fn, GDestroyNotify destroy);
+    explicit MemoryOutputStream(void* data, gsize size, GReallocFunc realloc_function, GDestroyNotify destroy_function);
+
 
 public:
   // TODO: more C++-like interface using sigc++
   
-  static Glib::RefPtr<MemoryOutputStream> create(gpointer data, gsize len, GReallocFunc realloc_fn, GDestroyNotify destroy);
+  static Glib::RefPtr<MemoryOutputStream> create(void* data, gsize size, GReallocFunc realloc_function, GDestroyNotify destroy_function);
 
-  
-  /** Gets any loaded data from the @a ostream. 
+
+  /** Gets any loaded data from the @a ostream.
    * 
-   * Note that the returned pointer may become invalid on the next 
+   * Note that the returned pointer may become invalid on the next
    * write or truncate operation on the stream.
    * @return Pointer to the stream's data.
    */
-  gpointer get_data();
+  void* get_data();
   
-  /** Gets the size of the currently allocated data area (availible from
+  /** Gets any loaded data from the @a ostream.
+   * 
+   * Note that the returned pointer may become invalid on the next
+   * write or truncate operation on the stream.
+   * @return Pointer to the stream's data.
+   */
+  const void* get_data() const;
+  
+  /** Gets any loaded data from the @a ostream. Ownership of the data
+   * is transferred to the caller; when no longer needed it must be
+   * freed using the free function set in @a ostream's
+   * MemoryOutputStream:destroy-function property.
+   * 
+   *  @a ostream must be closed before calling this function.
+   * 
+   * @newin{2,26}
+   * @return The stream's data.
+   */
+  void* steal_data();
+
+  
+  /** Gets the size of the currently allocated data area (available from
    * g_memory_output_stream_get_data()). If the stream isn't
    * growable (no realloc was passed to g_memory_output_stream_new()) then
    * this is the maximum size of the stream and further writes
@@ -134,29 +156,59 @@ public:
    */
   gsize get_size() const;
   
-  /** Returns: the number of bytes written to the stream
-   * @return The number of bytes written to the stream
+  /** Returns the number of bytes from the start up
+   * to including the last byte written in the stream
+   * that has not been truncated away.
    * 
-   * @newin{2,18}.
+   * @newin{2,18}
+   * @return The number of bytes written to the stream.
    */
   gsize get_data_size() const;
+  
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Pointer to buffer where data will be written.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<void*> property_data() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Size of data written to the buffer.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<gulong> property_data_size() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+  //Too C-like:   _WRAP_PROPERTY("destroy-function", void*)
+  //Too C-like:   _WRAP_PROPERTY("realloc-function"         gpointer              : Read / Write / Construct Only
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Current size of the data buffer.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<gulong> property_size() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
 
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

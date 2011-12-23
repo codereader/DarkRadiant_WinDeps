@@ -56,15 +56,11 @@ public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 private:
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static void throw_func(GError* gobject);
-#else
-  //When not using exceptions, we just pass the Exception object around without throwing it:
-  static std::auto_ptr<Glib::Error> throw_func(GError* gobject);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   friend void wrap_init(); // uses throw_func()
-#endif
+
+  #endif //DOXYGEN_SHOULD_SKIP_THIS
 };
 
 
@@ -94,29 +90,31 @@ public:
   virtual ~OptionContext();
   
   
-  /** Enables or disables automatic generation of &lt;option&gt;--help&lt;/option&gt; 
+  /** Enables or disables automatic generation of <option>--help</option>
    * output. By default, g_option_context_parse() recognizes
-   * &lt;option&gt;--help&lt;/option&gt;, &lt;option&gt;-?&lt;/option&gt;, &lt;option&gt;--help-all&lt;/option&gt;
-   * and &lt;option&gt;--help-&lt;/option&gt;&lt;replaceable&gt;groupname&lt;/replaceable&gt; and creates
-   * suitable output to stdout. 
+   * <option>--help</option>, <option>-h</option>,
+   * <option>-?</option>, <option>--help-all</option>
+   * and <option>--help-</option><replaceable>groupname</replaceable> and creates
+   * suitable output to stdout.
    * 
    * @newin{2,6}
-   * @param help_enabled <tt>true</tt> to enable &lt;option&gt;--help&lt;/option&gt;, <tt>false</tt> to disable it.
+   * @param help_enabled <tt>true</tt> to enable <option>--help</option>, <tt>false</tt> to disable it.
    */
-  void set_help_enabled(bool help_enabled = true);
+  void set_help_enabled(bool help_enabled =  true);
   
-  /** Returns: <tt>true</tt> if automatic help generation is turned on.
-   * @return <tt>true</tt> if automatic help generation is turned on.
+  /** Returns whether automatic <option>--help</option> generation
+   * is turned on for @a context. See g_option_context_set_help_enabled().
    * 
-   * @newin{2,6}.
+   * @newin{2,6}
+   * @return <tt>true</tt> if automatic help generation is turned on.
    */
   bool get_help_enabled() const;
   
-  /** Sets whether to ignore unknown options or not. If an argument is 
-   * ignored, it is left in the @a argv array after parsing. By default, 
+  /** Sets whether to ignore unknown options or not. If an argument is
+   * ignored, it is left in the @a argv array after parsing. By default,
    * g_option_context_parse() treats unknown options as error.
    * 
-   * This setting does not affect non-option arguments (i.e. arguments 
+   * This setting does not affect non-option arguments (i.e. arguments
    * which don't start with a dash). But note that GOption cannot reliably
    * determine whether a non-option belongs to a preceding unknown option.
    * 
@@ -124,51 +122,47 @@ public:
    * @param ignore_unknown <tt>true</tt> to ignore unknown options, <tt>false</tt> to produce
    * an error when unknown options are met.
    */
-  void set_ignore_unknown_options(bool ignore_unknown = true);
+  void set_ignore_unknown_options(bool ignore_unknown =  true);
   
-  /** Returns: <tt>true</tt> if unknown options are ignored.
-   * @return <tt>true</tt> if unknown options are ignored.
+  /** Returns whether unknown options are ignored or not. See
+   * g_option_context_set_ignore_unknown_options().
    * 
-   * @newin{2,6}.
+   * @newin{2,6}
+   * @return <tt>true</tt> if unknown options are ignored.
    */
   bool get_ignore_unknown_options() const;
 
  
   /** Parses the command line arguments, recognizing options
-   * which have been added to @a context. A side-effect of 
+   * which have been added to @a context. A side-effect of
    * calling this function is that g_set_prgname() will be
    * called.
    * 
    * If the parsing is successful, any parsed arguments are
-   * removed from the array and @a argc and @a argv are updated 
+   * removed from the array and @a argc and @a argv are updated
    * accordingly. A '--' option is stripped from @a argv
-   * unless there are unparsed options before and after it, 
-   * or some of the options after it start with '-'. In case 
-   * of an error, @a argc and @a argv are left unmodified. 
+   * unless there are unparsed options before and after it,
+   * or some of the options after it start with '-'. In case
+   * of an error, @a argc and @a argv are left unmodified.
    * 
-   * If automatic &lt;option&gt;--help&lt;/option&gt; support is enabled
-   * (see g_option_context_set_help_enabled()), and the 
+   * If automatic <option>--help</option> support is enabled
+   * (see g_option_context_set_help_enabled()), and the
    *  @a argv array contains one of the recognized help options,
    * this function will produce help output to stdout and
    * call <tt>exit (0)</tt>.
    * 
-   * Note that function depends on the 
-   * current locale for 
+   * Note that function depends on the
+   *  for
    * automatic character set conversion of string and filename
    * arguments.
+   * 
+   * @newin{2,6}
    * @param argc A pointer to the number of command line arguments.
    * @param argv A pointer to the array of command line arguments.
-   * @return <tt>true</tt> if the parsing was successful, 
-   * <tt>false</tt> if an error occurred
-   * 
-   * @newin{2,6}.
+   * @return <tt>true</tt> if the parsing was successful,
+   * <tt>false</tt> if an error occurred.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool parse(int& argc, char**& argv);
-#else
-  bool parse(int& argc, char**& argv, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   //g_option_context_add_main_entries(), just creates a group internally, adds them to it, and does a set_main_group()
   //- a group without callbacks seems to do some simple default parsing.
@@ -196,16 +190,29 @@ public:
   //const OptionGroup& get_main_group() const;
   
 
-  /** Returns: A newly allocated string containing the help text
+  /** Returns a formatted, translated help text for the given context.
+   * To obtain the text produced by <option>--help</option>, call
+   * <tt>g_option_context_get_help (context, <tt>true</tt>, <tt>0</tt>)</tt>.
+   * To obtain the text produced by <option>--help-all</option>, call
+   * <tt>g_option_context_get_help (context, <tt>false</tt>, <tt>0</tt>)</tt>.
+   * To obtain the help text for an option group, call
+   * <tt>g_option_context_get_help (context, <tt>false</tt>, group)</tt>.
+   * 
+   * @newin{2,14}
    * @param main_help If <tt>true</tt>, only include the main group.
    * @param group The OptionGroup to create help for, or <tt>0</tt>.
-   * @return A newly allocated string containing the help text
-   * 
-   * @newin{2,14}.
+   * @return A newly allocated string containing the help text.
    */
   Glib::ustring get_help(bool main_help, const OptionGroup& group) const;
  
-  //TODO: Documentation.
+  /** Returns a formatted, translated help text for the given context. 
+   * To obtain the text produced by --help, call get_help (true). 
+   * To obtain the text produced by --help-all, call get_help(false).
+   * To obtain the help text for an option group, call get_help(false, group).
+   *
+   * @param main_help If true, only include the main group.
+   * @result string containing the help text.
+   */
   Glib::ustring get_help(bool main_help = true) const;
 
   GOptionContext*       gobj()       { return gobject_; }

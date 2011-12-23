@@ -40,7 +40,7 @@ namespace Gio
 namespace Gio
 {
 
-/** @addtogroup giommEnums Enums and Flags */
+/** @addtogroup giommEnums giomm Enums and Flags */
 
 /**
  * @ingroup giommEnums
@@ -116,38 +116,55 @@ private:
 
   
 protected:
-  //TODO: Documentation:
- explicit Emblem(const Glib::RefPtr<Icon>& icon);
- explicit Emblem(const Glib::RefPtr<Icon>& icon, EmblemOrigin origin);
+  /** Creates a new emblem for @a icon.
+   * @param icon A Gio::Icon containing the icon.
+   */
+   explicit Emblem(const Glib::RefPtr<Icon>& icon);
+
+
+  /** Creates a new emblem for @a icon.
+   * @param icon A Gio::Icon containing the icon.
+   * @param origin An EmblemOrigin value defining the emblem's origin
+   */
+   explicit Emblem(const Glib::RefPtr<Icon>& icon, EmblemOrigin origin);
+
 
 public:
+  /** Creates a new emblem for @a icon.
+   * @param icon A Gio::Icon containing the icon.
+   */
   
   static Glib::RefPtr<Emblem> create(const Glib::RefPtr<Icon>& icon);
 
+
+  /** Creates a new emblem for @a icon.
+   * @param icon A Gio::Icon containing the icon.
+   * @param origin An EmblemOrigin value defining the emblem's origin
+   */
   
   static Glib::RefPtr<Emblem> create(const Glib::RefPtr<Icon>& icon, EmblemOrigin origin);
 
 
   /** Gives back the icon from @a emblem.
-   * @return A Icon. The returned object belongs to the emblem
-   * and should not be modified or freed.
    * 
-   * @newin{2,18}.
+   * @newin{2,18}
+   * @return A Icon. The returned object belongs to
+   * the emblem and should not be modified or freed.
    */
   Glib::RefPtr<Icon> get_icon();
   
   /** Gives back the icon from @a emblem.
-   * @return A Icon. The returned object belongs to the emblem
-   * and should not be modified or freed.
    * 
-   * @newin{2,18}.
+   * @newin{2,18}
+   * @return A Icon. The returned object belongs to
+   * the emblem and should not be modified or freed.
    */
   Glib::RefPtr<const Icon> get_icon() const;
   
   /** Gets the origin of the emblem.
-   * @return The origin of the emblem
    * 
-   * @newin{2,18}.
+   * @newin{2,18}
+   * @return The origin of the emblem.
    */
   EmblemOrigin get_origin() const;
 
@@ -156,17 +173,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

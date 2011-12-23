@@ -106,7 +106,7 @@ public:
   ///Provides access to the underlying C GObject.
   GIcon*       gobj()       { return reinterpret_cast<GIcon*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const GIcon* gobj() const { return reinterpret_cast<GIcon*>(gobject_); }
 
 private:
@@ -115,14 +115,12 @@ private:
 public:
   // We can't just use a _WRAP_CREATE macro here since this is an abstract
   // interface class, so implement it by hand
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static Glib::RefPtr<Icon> create(const std::string& str);
-#else
-  static Glib::RefPtr<Icon> create(const std::string& str, std::auto_ptr<Glib::Error>& error);
-#endif // GLIBMM_EXCEPTIONS_ENABLED
   
   
   /** Gets a hash for an icon.
+   * 
+   * Virtual: hash
    * @param icon #gconstpointer to an icon object.
    * @return A <tt>unsigned int</tt> containing a hash for the @a icon, suitable for 
    * use in a HashTable or similar data structure.
@@ -137,23 +135,24 @@ public:
    * The encoding of the returned string is proprietary to Icon except
    * in the following two cases
    * 
-   * &lt;itemizedlist&gt;
-   * &lt;listitem&gt;
+   * <itemizedlist>
+   * <listitem>
    * If @a icon is a FileIcon, the returned string is a native path
    * (such as <tt>/path/to/my icon.png</tt>) without escaping
    * if the File for @a icon is a native file.  If the file is not
    * native, the returned string is the result of g_file_get_uri()
    * (such as <tt>sftp://path/to/my%%20icon.png</tt>).
-   * &lt;/listitem&gt;
-   * &lt;listitem&gt;
+   * </listitem>
+   * <listitem>
    * If @a icon is a ThemedIcon with exactly one name, the encoding is
    * simply the name (such as <tt>network-server</tt>).
-   * &lt;/listitem&gt;
-   * &lt;/itemizedlist&gt;
+   * </listitem>
+   * </itemizedlist>
+   * 
+   * Virtual: to_tokens
+   * @newin{2,20}
    * @return An allocated NUL-terminated UTF8 string or <tt>0</tt> if @a icon can't
    * be serialized. Use Glib::free() to free.
-   * 
-   * @newin{2,20}.
    */
   std::string to_string() const;
 
@@ -174,17 +173,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

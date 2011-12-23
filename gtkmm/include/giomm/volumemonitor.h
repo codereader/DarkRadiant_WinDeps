@@ -25,6 +25,7 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+ 
 #include <giomm/drive.h>
 #include <giomm/volume.h>
 #include <giomm/mount.h>
@@ -134,21 +135,23 @@ public:
   Glib::ListHandle< Glib::RefPtr<Mount> > get_mounts();
 
   
-  /** Finds a Volume object by it's UUID (see g_volume_get_uuid())
+  /** Finds a Volume object by its UUID (see g_volume_get_uuid())
    * @param uuid The UUID to look for.
    * @return A Volume or <tt>0</tt> if no such volume is available.
    * Free the returned object with Glib::object_unref().
    */
   Glib::RefPtr<Volume> get_volume_for_uuid(const std::string& uuid);
   
-  /** Finds a Mount object by it's UUID (see g_mount_get_uuid())
+  /** Finds a Mount object by its UUID (see g_mount_get_uuid())
    * @param uuid The UUID to look for.
    * @return A Mount or <tt>0</tt> if no such mount is available.
    * Free the returned object with Glib::object_unref().
    */
   Glib::RefPtr<Mount> get_mount_for_uuid(const std::string& uuid);
 
-  
+#ifndef GIOMM_DISABLE_DEPRECATED
+
+
   /** This function should be called by any VolumeMonitor
    * implementation when a new Mount object is created that is not
    * associated with a Volume object. It must be called just before
@@ -156,14 +159,14 @@ public:
    * 
    * If the return value is not <tt>0</tt>, the caller must associate the
    * returned Volume object with the Mount. This involves returning
-   * it in it's g_mount_get_volume() implementation. The caller must
+   * it in its g_mount_get_volume() implementation. The caller must
    * also listen for the "removed" signal on the returned object
-   * and give up it's reference when handling that signal
+   * and give up its reference when handling that signal
    * 
    * Similary, if implementing g_volume_monitor_adopt_orphan_mount(),
    * the implementor must take a reference to @a mount and return it in
-   * it's g_volume_get_mount() implemented. Also, the implementor must
-   * listen for the "unmounted" signal on @a mount and give up it's
+   * its g_volume_get_mount() implemented. Also, the implementor must
+   * listen for the "unmounted" signal on @a mount and give up its
    * reference upon handling that signal.
    * 
    * There are two main use cases for this function.
@@ -171,25 +174,27 @@ public:
    * One is when implementing a user space file system driver that reads
    * blocks of a block device that is already represented by the native
    * volume monitor (for example a CD Audio file system driver). Such
-   * a driver will generate it's own Mount object that needs to be
+   * a driver will generate its own Mount object that needs to be
    * assoicated with the Volume object that represents the volume.
    * 
    * The other is for implementing a VolumeMonitor whose sole purpose
    * is to return Volume objects representing entries in the users
    * "favorite servers" list or similar.
-   * @param mount A Mount object to find a parent for.
-   * @return The Volume object that is the parent for @a mount or <tt>0</tt>
-   * if no wants to adopt the Mount.
    * 
    * Deprecated: 2.20: Instead of using this function, VolumeMonitor
    * implementations should instead create shadow mounts with the URI of
    * the mount they intend to adopt. See the proxy volume monitor in
    * gvfs for an example of this. Also see g_mount_is_shadowed(),
    * g_mount_shadow() and g_mount_unshadow() functions.
+   * @param mount A Mount object to find a parent for.
+   * @return The Volume object that is the parent for @a mount or <tt>0</tt>
+   * if no wants to adopt the Mount.
    */
   static Glib::RefPtr<Volume> adopt_orphan_mount(const Glib::RefPtr<Mount>& mount);
 
- 
+#endif // GIOMM_DISABLE_DEPRECATED
+
+
   /**
    * @par Prototype:
    * <tt>void on_my_%volume_added(const Glib::RefPtr<Volume>& volume)</tt>
@@ -279,8 +284,14 @@ public:
 
   Glib::SignalProxy1< void,const Glib::RefPtr<Drive>& > signal_drive_eject_button();
 
+  
+  /**
+   * @par Prototype:
+   * <tt>void on_my_%drive_stop_button(const Glib::RefPtr<Drive>& drive)</tt>
+   */
 
-  gboolean (*is_supported)          (void);
+  Glib::SignalProxy1< void,const Glib::RefPtr<Drive>& > signal_drive_stop_button();
+
 
   //TODO: Use ListHandle?
   //_WRAP_VFUNC(GList* get_volumes(), get_volumes)
@@ -292,7 +303,6 @@ public:
  
   //_WRAP_VFUNC(Glib::RefPtr<Mount> get_mount_for_uuid(const std::string& uuid), get_mount_for_uuid)
 
-
   //There are no properties.
 
 
@@ -300,16 +310,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_volume_added(const Glib::RefPtr<Volume>& volume);
   virtual void on_volume_removed(const Glib::RefPtr<Volume>& volume);
   virtual void on_volume_changed(const Glib::RefPtr<Volume>& volume);
@@ -320,7 +325,6 @@ protected:
   virtual void on_drive_connected(const Glib::RefPtr<Drive>& drive);
   virtual void on_drive_disconnected(const Glib::RefPtr<Drive>& drive);
   virtual void on_drive_changed(const Glib::RefPtr<Drive>& drive);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

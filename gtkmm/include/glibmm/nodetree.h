@@ -284,7 +284,7 @@ public:
 
   const NodeTree<T>* get_root() const
   {
-    return wrap(g_node_get_root(gobj()));
+    return wrap(g_node_get_root(const_cast<GNode*>(gobj())));
   }
   
 

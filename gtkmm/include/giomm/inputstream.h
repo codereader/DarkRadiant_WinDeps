@@ -121,12 +121,7 @@ public:
    * @param cancellable Cancellable object.
    * @return Number of bytes read, or -1 on error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   gssize read(void* buffer, gsize count, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  gssize read(void* buffer, gsize count, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Tries to read @a count bytes from the stream into the buffer starting at
    *  @a buffer. Will block during this read.
@@ -144,11 +139,7 @@ public:
    * @param count The number of bytes that will be read from the stream.
    * @return Number of bytes read, or -1 on error.
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   gssize read(void* buffer, gsize count);
-  #else
-  gssize read(void* buffer, gsize count, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   //TODO: for glibmm 2.17/18, we should decide whether to provide a read()
   // function as below, which would presumably read until EOL, or one with
@@ -177,12 +168,7 @@ public:
    * @param cancellable Optional Cancellable object, <tt>0</tt> to ignore.
    * @return <tt>true</tt> on success, <tt>false</tt> if there was an error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool read_all(void* buffer, gsize count, gsize& bytes_read, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool read_all(void* buffer, gsize count, gsize& bytes_read, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Tries to read @a count bytes from the stream into the buffer starting at
    *  @a buffer. Will block during this read.
@@ -202,11 +188,7 @@ public:
    * @param bytes_read Location to store the number of bytes that was read from the stream.
    * @return <tt>true</tt> on success, <tt>false</tt> if there was an error.
    */  
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool read_all(void* buffer, gsize count, gsize& bytes_read);
-  #else
-  bool read_all(void* buffer, gsize count, gsize& bytes_read, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   //TODO: bool read_all(std::string& buffer, gsize count, gsize& bytes_read, const Glib::RefPtr<Cancellable>& cancellable);
   //TODO: bool read_all(std::string& buffer, gsize count, gsize& bytes_read)
@@ -230,12 +212,7 @@ public:
    * @param cancellable Cancellable object.
    * @return Number of bytes skipped, or -1 on error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   gssize skip(gsize count, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  gssize skip(gsize count, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Tries to skip @a count bytes from the stream. Will block during the operation.
    * 
@@ -249,11 +226,7 @@ public:
    * @param count The number of bytes that will be skipped from the stream.
    * @return Number of bytes skipped, or -1 on error.
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   gssize skip(gsize count);
-  #else
-  gssize skip(gsize count, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Closes the stream, releasing resources related to it.
@@ -282,12 +255,7 @@ public:
    * @param cancellable Cancellable object.
    * @return <tt>true</tt> on success, <tt>false</tt> on failure.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool close(const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool close(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Closes the stream, releasing resources related to it.
    * 
@@ -309,11 +277,7 @@ public:
    * 
    * @return <tt>true</tt> on success, <tt>false</tt> on failure.
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool close();
-  #else
-  bool close(std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Request an asynchronous read of @a count bytes from the stream into the buffer
    * starting at @a buffer. When the operation is finished @a slot will be called. 
@@ -383,12 +347,7 @@ public:
    * @param result A AsyncResult.
    * @return Number of bytes read in, or -1 on error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   gssize read_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  gssize read_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   //TODO: Use std::size_type instead of gsize?
 
@@ -456,12 +415,7 @@ public:
    * @param result A AsyncResult.
    * @return The size of the bytes skipped, or %-1 on error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   gssize skip_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  gssize skip_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Requests an asynchronous closes of the stream, releasing resources related to it.
    * When the operation is finished @a slot will be called. 
@@ -501,12 +455,7 @@ public:
    * @param result A AsyncResult.
    * @return <tt>true</tt> if the stream was closed successfully.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   gboolean close_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  gboolean close_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   // These are private inside the module (for implementations)
   
@@ -515,17 +464,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

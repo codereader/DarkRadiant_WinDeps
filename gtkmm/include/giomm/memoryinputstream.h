@@ -47,8 +47,8 @@ namespace Gio
  * @newin{2,16}
  */
 
-class MemoryInputStream 
-: public Gio::InputStream, 
+class MemoryInputStream
+: public Gio::InputStream,
   public Seekable
 {
   
@@ -113,27 +113,34 @@ public:
 
   /** Appends to data that can be read from the input stream.
    *
+   * Note that the data will copied internally and freed when no longer needed.
+   *
    * @param data Input data.
    * @param len Length of the data, may be -1 if data is a null-terminated string.
+   *
+   * @deprecated Use version with destroy notification
    */
   void add_data(const void* data, gssize len);
+
+  /** Appends to data that can be read from the input stream.
+   *
+   * @param data Input data.
+   * @param len Length of the data, may be -1 if data is a null-terminated string.
+   * @param destroy A function to be called to free the data when it is no
+   * longer needed
+   */
+  void add_data(const void* data, gssize len, GDestroyNotify destroy);
 
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

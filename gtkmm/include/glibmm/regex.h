@@ -36,7 +36,7 @@ typedef struct _GRegex GRegex;
 namespace Glib
 {
 
-/** @addtogroup glibmmEnums Enums and Flags */
+/** @addtogroup glibmmEnums glibmm Enums and Flags */
 
 /**
  * @ingroup glibmmEnums
@@ -64,7 +64,7 @@ enum RegexCompileFlags
   REGEX_DUPNAMES = 1 << 19,
   REGEX_NEWLINE_CR = 1 << 20,
   REGEX_NEWLINE_LF = 1 << 21,
-  REGEX_NEWLINE_CRLF = 0x100000
+  REGEX_NEWLINE_CRLF = 0x300000
 };
 
 /** @ingroup glibmmEnums */
@@ -116,7 +116,7 @@ enum RegexMatchFlags
   REGEX_MATCH_PARTIAL = 1 << 15,
   REGEX_MATCH_NEWLINE_CR = 1 << 20,
   REGEX_MATCH_NEWLINE_LF = 1 << 21,
-  REGEX_MATCH_NEWLINE_CRLF = 0x100000,
+  REGEX_MATCH_NEWLINE_CRLF = 0x300000,
   REGEX_MATCH_NEWLINE_ANY = 1 << 22
 };
 
@@ -207,17 +207,15 @@ public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 private:
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static void throw_func(GError* gobject);
-#else
-  //When not using exceptions, we just pass the Exception object around without throwing it:
-  static std::auto_ptr<Glib::Error> throw_func(GError* gobject);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   friend void wrap_init(); // uses throw_func()
-#endif
+
+  #endif //DOXYGEN_SHOULD_SKIP_THIS
 };
 
+
+class MatchInfo;
 
 /** Perl-compatible regular expressions - matches strings against regular expressions.
  *
@@ -280,8 +278,14 @@ class Regex
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 
-  // For use with Glib::RefPtr<> only.
+  /** Increment the reference count for this object.
+   * You should never need to do this manually - use the object via a RefPtr instead.
+   */
   void reference()   const;
+
+  /** Decrement the reference count for this object.
+   * You should never need to do this manually - use the object via a RefPtr instead.
+   */
   void unreference() const;
 
   ///Provides access to the underlying C instance.
@@ -306,43 +310,55 @@ private:
 
 public:
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static Glib::RefPtr<Glib::Regex> create(const Glib::ustring& pattern, RegexCompileFlags compile_options = static_cast<RegexCompileFlags>(0), RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0));
-#else
-  static Glib::RefPtr<Glib::Regex> create(const Glib::ustring& pattern, RegexCompileFlags compile_options, RegexMatchFlags match_options, std::auto_ptr<Glib::Error>& error);
-#endif /* !GLIBMM_EXCEPTIONS_ENABLED */
   
   
-  /** Gets the pattern string associated with @a regex, i.e.\ a copy of 
+  /** Gets the pattern string associated with @a regex, i.e.\ a copy of
    * the string passed to g_regex_new().
-   * @return The pattern of @a regex
    * 
-   * @newin{2,14}.
+   * @newin{2,14}
+   * @return The pattern of @a regex.
    */
   Glib::ustring get_pattern() const;
   
-  /** Returns: the number of the highest back reference
-   * @return The number of the highest back reference
+  /** Returns the number of the highest back reference
+   * in the pattern, or 0 if the pattern does not contain
+   * back references.
    * 
-   * @newin{2,14}.
+   * @newin{2,14}
+   * @return The number of the highest back reference.
    */
   int get_max_backref() const;
   
-  /** Returns: the number of capturing subpatterns
-   * @return The number of capturing subpatterns
+  /** Returns the number of capturing subpatterns in the pattern.
    * 
-   * @newin{2,14}.
+   * @newin{2,14}
+   * @return The number of capturing subpatterns.
    */
   int get_capture_count() const;
   
   /** Retrieves the number of the subexpression named @a name.
-   * @param name Name of the subexpression.
-   * @return The number of the subexpression or -1 if @a name 
-   * does not exists
    * 
-   * @newin{2,14}.
+   * @newin{2,14}
+   * @param name Name of the subexpression.
+   * @return The number of the subexpression or -1 if @a name
+   * does not exists.
    */
   int get_string_number(const Glib::ustring& name) const;
+  
+  /** Returns the compile options that @a regex was created with.
+   * 
+   * @newin{2,26}
+   * @return Flags from RegexCompileFlags.
+   */
+  RegexCompileFlags get_compile_flags() const;
+  
+  /** Returns the match options that @a regex was created with.
+   * 
+   * @newin{2,26}
+   * @return Flags from RegexMatchFlags.
+   */
+  RegexMatchFlags get_match_flags() const;
 
   static Glib::ustring escape_string(const Glib::ustring& string);
 
@@ -357,88 +373,303 @@ public:
    * If this function is to be called on the same @a pattern more than
    * once, it's more efficient to compile the pattern once with
    * g_regex_new() and then use g_regex_match().
+   * 
+   * @newin{2,14}
    * @param pattern The regular expression.
    * @param string The string to scan for matches.
    * @param compile_options Compile options for the regular expression, or 0.
    * @param match_options Match options, or 0.
-   * @return <tt>true</tt> if the string matched, <tt>false</tt> otherwise
-   * 
-   * @newin{2,14}.
+   * @return <tt>true</tt> if the string matched, <tt>false</tt> otherwise.
    */
-  static bool match_simple(const Glib::ustring& pattern, const Glib::ustring& string, RegexCompileFlags compile_options = static_cast<RegexCompileFlags>(0), RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0));
+  static bool match_simple(const Glib::ustring& pattern, const Glib::ustring& string, RegexCompileFlags compile_options =  static_cast<RegexCompileFlags>(0), RegexMatchFlags match_options =  static_cast<RegexMatchFlags>(0));
 
-  //TODO: _WRAP_METHOD(bool match(const Glib::ustring& string, RegexMatchFlags match_options = (RegexMatchFlags)0, GMatchInfo **match_info = 0), g_regex_match)
+  
+  /** Scans for a match in string for the pattern in @a regex.
+   * The @a match_options are combined with the match options specified
+   * when the @a regex structure was created, letting you have more
+   * flexibility in reusing Regex structures.
+   * 
+   * A MatchInfo structure, used to get information on the match,
+   * is stored in @a match_info if not <tt>0</tt>. Note that if @a match_info
+   * is not <tt>0</tt> then it is created even if the function returns <tt>false</tt>,
+   * i.e. you must free it regardless if regular expression actually matched.
+   * 
+   * To retrieve all the non-overlapping matches of the pattern in
+   * string you can use g_match_info_next().
+   * 
+   * |[
+   * static void
+   * print_uppercase_words (const gchar *string)
+   * {
+   * / * Print all uppercase-only words. * /
+   * GRegex *regex;
+   * GMatchInfo *match_info;
+   *  
+   * regex = g_regex_new ("[A-Z]+", 0, 0, <tt>0</tt>);
+   * g_regex_match (regex, string, 0, &match_info);
+   * while (g_match_info_matches (match_info))
+   * {
+   * gchar *word = g_match_info_fetch (match_info, 0);
+   * g_print ("Found: %s<tt>\\n</tt>", word);
+   * g_free (word);
+   * g_match_info_next (match_info, <tt>0</tt>);
+   * }
+   * g_match_info_free (match_info);
+   * g_regex_unref (regex);
+   * }
+   * ]|
+   * 
+   *  @a string is not copied and is used in MatchInfo internally. If
+   * you use any MatchInfo method (except g_match_info_free()) after
+   * freeing or modifying @a string then the behaviour is undefined.
+   * 
+   * @newin{2,14}
+   * @param string The string to scan for matches.
+   * @param match_options Match options.
+   * @param match_info Pointer to location where to store
+   * the MatchInfo, or <tt>0</tt> if you do not need it.
+   * @return <tt>true</tt> is the string matched, <tt>false</tt> otherwise.
+   */
+
+  bool match(
+    const Glib::ustring& string,
+    Glib::MatchInfo& match_info,
+    RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0)
+  );
+
+  /// A match() method not requiring a Glib::MatchInfo.
   bool match(const Glib::ustring& string, RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0));
 
-  //TODO: Wrap GMatchInfo as an iterator:
-  //_WRAP_METHOD(bool match_full(const gchar* string, gssize string_len, int start_position, RegexMatchFlags match_options = (RegexMatchFlags)0, GMatchInfo** match_info = 0), g_regex_match_full, errthrow)
+  /// A match() method with a start position and a Glib::MatchInfo.
+  bool match(
+    const Glib::ustring& string,
+    int start_position,
+    Glib::MatchInfo& match_info,
+    RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0)
+  );
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  
+  /** Scans for a match in string for the pattern in @a regex.
+   * The @a match_options are combined with the match options specified
+   * when the @a regex structure was created, letting you have more
+   * flexibility in reusing Regex structures.
+   * 
+   * Setting @a start_position differs from just passing over a shortened
+   * string and setting REGEX_MATCH_NOTBOL in the case of a pattern
+   * that begins with any kind of lookbehind assertion, such as "\b".
+   * 
+   * A MatchInfo structure, used to get information on the match, is
+   * stored in @a match_info if not <tt>0</tt>. Note that if @a match_info is
+   * not <tt>0</tt> then it is created even if the function returns <tt>false</tt>,
+   * i.e. you must free it regardless if regular expression actually
+   * matched.
+   * 
+   *  @a string is not copied and is used in MatchInfo internally. If
+   * you use any MatchInfo method (except g_match_info_free()) after
+   * freeing or modifying @a string then the behaviour is undefined.
+   * 
+   * To retrieve all the non-overlapping matches of the pattern in
+   * string you can use g_match_info_next().
+   * 
+   * |[
+   * static void
+   * print_uppercase_words (const gchar *string)
+   * {
+   * / * Print all uppercase-only words. * /
+   * GRegex *regex;
+   * GMatchInfo *match_info;
+   * GError *error = <tt>0</tt>;
+   *  
+   * regex = g_regex_new ("[A-Z]+", 0, 0, <tt>0</tt>);
+   * g_regex_match_full (regex, string, -1, 0, 0, &match_info, &error);
+   * while (g_match_info_matches (match_info))
+   * {
+   * gchar *word = g_match_info_fetch (match_info, 0);
+   * g_print ("Found: %s<tt>\\n</tt>", word);
+   * g_free (word);
+   * g_match_info_next (match_info, &error);
+   * }
+   * g_match_info_free (match_info);
+   * g_regex_unref (regex);
+   * if (error != <tt>0</tt>)
+   * {
+   * g_printerr ("Error while matching: %s<tt>\\n</tt>", error->message);
+   * g_error_free (error);
+   * }
+   * }
+   * ]|
+   * 
+   * @newin{2,14}
+   * @param string The string to scan for matches.
+   * @param string_len The length of @a string, or -1 if @a string is nul-terminated.
+   * @param start_position Starting index of the string to match.
+   * @param match_options Match options.
+   * @param match_info Pointer to location where to store
+   * the MatchInfo, or <tt>0</tt> if you do not need it.
+   * @return <tt>true</tt> is the string matched, <tt>false</tt> otherwise.
+   */
+
+  bool match(
+    const Glib::ustring& string,
+    gssize string_len,
+    int start_position,
+    Glib::MatchInfo& match_info,
+    RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0)
+  );
+
+  /// A match() method with a start position not requiring a Glib::MatchInfo.
   bool match(const Glib::ustring& string, int start_position, RegexMatchFlags match_options);
-#else
-  bool match(const Glib::ustring& string, int start_position, RegexMatchFlags match_options, std::auto_ptr<Glib::Error>& error);
-#endif /* !GLIBMM_EXCEPTIONS_ENABLED */
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  /** A match() method with a string length and start position not requiring a
+   * Glib::MatchInfo.
+   */
   bool match(const Glib::ustring& string, gssize string_len, int start_position, RegexMatchFlags match_options);
-#else
-  bool match(const Glib::ustring& string, gssize string_len, int start_position, RegexMatchFlags match_options, std::auto_ptr<Glib::Error>& error);
-#endif /* !GLIBMM_EXCEPTIONS_ENABLED */
 
-  //TODO: _WRAP_METHOD(bool match_all(const Glib::ustring& string, RegexMatchFlags match_options = (RegexMatchFlags)0, GMatchInfo ** match_info = 0), g_regex_match_all)
+  
+  /** Using the standard algorithm for regular expression matching only
+   * the longest match in the string is retrieved. This function uses
+   * a different algorithm so it can retrieve all the possible matches.
+   * For more documentation see g_regex_match_all_full().
+   * 
+   * A MatchInfo structure, used to get information on the match, is
+   * stored in @a match_info if not <tt>0</tt>. Note that if @a match_info is
+   * not <tt>0</tt> then it is created even if the function returns <tt>false</tt>,
+   * i.e. you must free it regardless if regular expression actually
+   * matched.
+   * 
+   *  @a string is not copied and is used in MatchInfo internally. If
+   * you use any MatchInfo method (except g_match_info_free()) after
+   * freeing or modifying @a string then the behaviour is undefined.
+   * 
+   * @newin{2,14}
+   * @param string The string to scan for matches.
+   * @param match_options Match options.
+   * @param match_info Pointer to location where to store
+   * the MatchInfo, or <tt>0</tt> if you do not need it.
+   * @return <tt>true</tt> is the string matched, <tt>false</tt> otherwise.
+   */
+
+  bool match_all(
+    const Glib::ustring& string,
+    Glib::MatchInfo& match_info,
+    RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0)
+  );
+
+  /// A match_all() method not requiring a Glib::MatchInfo.
   bool match_all(const Glib::ustring& string, RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0));
 
-  //TODO: _WRAP_METHOD(bool match_all_full(const gchar* string, gssize string_len, int start_position, RegexMatchFlags match_options = (RegexMatchFlags)0, GMatchInfo** match_info = 0), g_regex_match_all_full, errthrow)
+  /// A match_all() method with a start positon and a Glib::MatchInfo.
+  bool match_all(
+    const Glib::ustring& string,
+    int start_position,
+    Glib::MatchInfo& match_info,
+    RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0)
+  );
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  
+  /** Using the standard algorithm for regular expression matching only
+   * the longest match in the string is retrieved, it is not possibile
+   * to obtain all the available matches. For instance matching
+   * "<a> <b> <c>" against the pattern "<.*>"
+   * you get "<a> <b> <c>".
+   * 
+   * This function uses a different algorithm (called DFA, i.e. deterministic
+   * finite automaton), so it can retrieve all the possible matches, all
+   * starting at the same point in the string. For instance matching
+   * "<a> <b> <c>" against the pattern "<.*>"
+   * you would obtain three matches: "<a> <b> <c>",
+   * "<a> <b>" and "<a>".
+   * 
+   * The number of matched strings is retrieved using
+   * g_match_info_get_match_count(). To obtain the matched strings and
+   * their position you can use, respectively, g_match_info_fetch() and
+   * g_match_info_fetch_pos(). Note that the strings are returned in
+   * reverse order of length; that is, the longest matching string is
+   * given first.
+   * 
+   * Note that the DFA algorithm is slower than the standard one and it
+   * is not able to capture substrings, so backreferences do not work.
+   * 
+   * Setting @a start_position differs from just passing over a shortened
+   * string and setting REGEX_MATCH_NOTBOL in the case of a pattern
+   * that begins with any kind of lookbehind assertion, such as "\b".
+   * 
+   * A MatchInfo structure, used to get information on the match, is
+   * stored in @a match_info if not <tt>0</tt>. Note that if @a match_info is
+   * not <tt>0</tt> then it is created even if the function returns <tt>false</tt>,
+   * i.e. you must free it regardless if regular expression actually
+   * matched.
+   * 
+   *  @a string is not copied and is used in MatchInfo internally. If
+   * you use any MatchInfo method (except g_match_info_free()) after
+   * freeing or modifying @a string then the behaviour is undefined.
+   * 
+   * @newin{2,14}
+   * @param string The string to scan for matches.
+   * @param string_len The length of @a string, or -1 if @a string is nul-terminated.
+   * @param start_position Starting index of the string to match.
+   * @param match_options Match options.
+   * @param match_info Pointer to location where to store
+   * the MatchInfo, or <tt>0</tt> if you do not need it.
+   * @return <tt>true</tt> is the string matched, <tt>false</tt> otherwise.
+   */
+
+  /// @throw Glib::Error.
+  bool match_all(
+    const Glib::ustring& string,
+    gssize string_len,
+    int start_position,
+    Glib::MatchInfo& match_info,
+    RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0)
+  );
+
+  /** A match_all() method with a start position not requiring a
+   * Glib::MatchInfo.
+   */
   bool match_all(const Glib::ustring& string, int start_position, RegexMatchFlags match_options);
-#else
-  bool match_all(const Glib::ustring& string, int start_position, RegexMatchFlags match_options, std::auto_ptr<Glib::Error>& error);
-#endif /* !GLIBMM_EXCEPTIONS_ENABLED */
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  /** A match_all() method with a start position and a string length not
+   * requiring a Glib::MatchInfo.
+   */
   bool match_all(const Glib::ustring& string, gssize string_len, int start_position, RegexMatchFlags match_options);
-#else
-  bool match_all(const Glib::ustring& string, gssize string_len, int start_position, RegexMatchFlags match_options, std::auto_ptr<Glib::Error>& error);
-#endif /* !GLIBMM_EXCEPTIONS_ENABLED */
 
  
-  /** Breaks the string on the pattern, and returns an array of 
-   * the tokens. If the pattern contains capturing parentheses, 
-   * then the text for each of the substrings will also be returned. 
-   * If the pattern does not match anywhere in the string, then the 
+  /** Breaks the string on the pattern, and returns an array of
+   * the tokens. If the pattern contains capturing parentheses,
+   * then the text for each of the substrings will also be returned.
+   * If the pattern does not match anywhere in the string, then the
    * whole string is returned as the first token.
    * 
-   * This function is equivalent to g_regex_split() but it does 
-   * not require to compile the pattern with g_regex_new(), avoiding 
-   * some lines of code when you need just to do a split without 
+   * This function is equivalent to g_regex_split() but it does
+   * not require to compile the pattern with g_regex_new(), avoiding
+   * some lines of code when you need just to do a split without
    * extracting substrings, capture counts, and so on.
    * 
    * If this function is to be called on the same @a pattern more than
    * once, it's more efficient to compile the pattern once with
    * g_regex_new() and then use g_regex_split().
    * 
-   * As a special case, the result of splitting the empty string "" 
-   * is an empty vector, not a vector containing a single string. 
-   * The reason for this special case is that being able to represent 
-   * a empty vector is typically more useful than consistent handling 
-   * of empty elements. If you do need to represent empty elements, 
-   * you'll need to check for the empty string before calling this 
+   * As a special case, the result of splitting the empty string ""
+   * is an empty vector, not a vector containing a single string.
+   * The reason for this special case is that being able to represent
+   * a empty vector is typically more useful than consistent handling
+   * of empty elements. If you do need to represent empty elements,
+   * you'll need to check for the empty string before calling this
    * function.
    * 
-   * A pattern that can match empty strings splits @a string into 
-   * separate characters wherever it matches the empty string between 
-   * characters. For example splitting "ab c" using as a separator 
+   * A pattern that can match empty strings splits @a string into
+   * separate characters wherever it matches the empty string between
+   * characters. For example splitting "ab c" using as a separator
    * "\s*", you will get "a", "b" and "c".
+   * 
+   * @newin{2,14}
    * @param pattern The regular expression.
    * @param string The string to scan for matches.
    * @param compile_options Compile options for the regular expression, or 0.
    * @param match_options Match options, or 0.
-   * @return A <tt>0</tt>-terminated array of strings. Free it using g_strfreev()
-   * 
-   * @newin{2,14}.
+   * @return A <tt>0</tt>-terminated array of strings. Free it using g_strfreev().
    */
-  static Glib::StringArrayHandle split_simple(const Glib::ustring& pattern, const Glib::ustring& string, RegexCompileFlags compile_options = static_cast<RegexCompileFlags>(0), RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0));
+  static Glib::StringArrayHandle split_simple(const Glib::ustring& pattern, const Glib::ustring& string, RegexCompileFlags compile_options =  static_cast<RegexCompileFlags>(0), RegexMatchFlags match_options =  static_cast<RegexMatchFlags>(0));
   
   /** Breaks the string on the pattern, and returns an array of the tokens.
    * If the pattern contains capturing parentheses, then the text for each
@@ -457,13 +688,13 @@ public:
    * characters wherever it matches the empty string between characters.
    * For example splitting "ab c" using as a separator "\s*", you will get
    * "a", "b" and "c".
+   * 
+   * @newin{2,14}
    * @param string The string to split with the pattern.
    * @param match_options Match time option flags.
-   * @return A <tt>0</tt>-terminated gchar ** array. Free it using g_strfreev()
-   * 
-   * @newin{2,14}.
+   * @return A <tt>0</tt>-terminated gchar ** array. Free it using g_strfreev().
    */
-  Glib::StringArrayHandle split(const Glib::ustring& string, RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0));
+  Glib::StringArrayHandle split(const Glib::ustring& string, RegexMatchFlags match_options =  static_cast<RegexMatchFlags>(0));
 
   
   /** Breaks the string on the pattern, and returns an array of the tokens.
@@ -484,69 +715,60 @@ public:
    * For example splitting "ab c" using as a separator "\s*", you will get
    * "a", "b" and "c".
    * 
-   * Setting @a start_position differs from just passing over a shortened 
-   * string and setting REGEX_MATCH_NOTBOL in the case of a pattern 
+   * Setting @a start_position differs from just passing over a shortened
+   * string and setting REGEX_MATCH_NOTBOL in the case of a pattern
    * that begins with any kind of lookbehind assertion, such as "\b".
+   * 
+   * @newin{2,14}
    * @param string The string to split with the pattern.
    * @param string_len The length of @a string, or -1 if @a string is nul-terminated.
    * @param start_position Starting index of the string to match.
    * @param match_options Match time option flags.
-   * @param max_tokens The maximum number of tokens to split @a string into. 
+   * @param max_tokens The maximum number of tokens to split @a string into.
    * If this is less than 1, the string is split completely.
-   * @return A <tt>0</tt>-terminated gchar ** array. Free it using g_strfreev()
-   * 
-   * @newin{2,14}.
+   * @return A <tt>0</tt>-terminated gchar ** array. Free it using g_strfreev().
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
-  Glib::StringArrayHandle split(const gchar* string, gssize string_len, int start_position, RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0), int max_tokens = 0) const;
-#else
-  Glib::StringArrayHandle split(const gchar* string, gssize string_len, int start_position, RegexMatchFlags match_options, int max_tokens, std::auto_ptr<Glib::Error>& error) const;
-#endif //GLIBMM_EXCEPTIONS_ENABLED
+  Glib::StringArrayHandle split(const gchar* string, gssize string_len, int start_position, RegexMatchFlags match_options =  static_cast<RegexMatchFlags>(0), int max_tokens =  0) const;
 
-
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::StringArrayHandle split(const Glib::ustring& string, int start_position, RegexMatchFlags match_options, int max_tokens) const;
-#else
-  Glib::StringArrayHandle split(const Glib::ustring& string, int start_position, RegexMatchFlags match_options, int max_tokens, std::auto_ptr<Glib::Error>& error) const;
-#endif /* !GLIBMM_EXCEPTIONS_ENABLED */
 
   
-  /** Replaces all occurances of the pattern in @a regex with the
-   * replacement text. Backreferences of the form '\number' or 
-   * '\g&lt;number&gt;' in the replacement text are interpolated by the 
-   * number-th captured subexpression of the match, '\g&lt;name&gt;' refers 
-   * to the captured subexpression with the given name. '\0' refers to the 
-   * complete match, but '\0' followed by a number is the octal representation 
+  /** Replaces all occurrences of the pattern in @a regex with the
+   * replacement text. Backreferences of the form '\number' or
+   * '\g<number>' in the replacement text are interpolated by the
+   * number-th captured subexpression of the match, '\g<name>' refers
+   * to the captured subexpression with the given name. '\0' refers to the
+   * complete match, but '\0' followed by a number is the octal representation
    * of a character. To include a literal '\' in the replacement, write '\\'.
    * There are also escapes that changes the case of the following text:
    * 
-   * &lt;variablelist&gt;
-   * &lt;varlistentry&gt;&lt;term&gt;\l&lt;/term&gt;
-   * &lt;listitem&gt;
+   * <variablelist>
+   * <varlistentry><term>\l</term>
+   * <listitem>
    * Convert to lower case the next character
-   * &lt;/listitem&gt;
-   * &lt;/varlistentry&gt;
-   * &lt;varlistentry&gt;&lt;term&gt;\u&lt;/term&gt;
-   * &lt;listitem&gt;
+   * </listitem>
+   * </varlistentry>
+   * <varlistentry><term>\u</term>
+   * <listitem>
    * Convert to upper case the next character
-   * &lt;/listitem&gt;
-   * &lt;/varlistentry&gt;
-   * &lt;varlistentry&gt;&lt;term&gt;\L&lt;/term&gt;
-   * &lt;listitem&gt;
+   * </listitem>
+   * </varlistentry>
+   * <varlistentry><term>\L</term>
+   * <listitem>
    * Convert to lower case till \E
-   * &lt;/listitem&gt;
-   * &lt;/varlistentry&gt;
-   * &lt;varlistentry&gt;&lt;term&gt;\U&lt;/term&gt;
-   * &lt;listitem&gt;
+   * </listitem>
+   * </varlistentry>
+   * <varlistentry><term>\U</term>
+   * <listitem>
    * Convert to upper case till \E
-   * &lt;/listitem&gt;
-   * &lt;/varlistentry&gt;
-   * &lt;varlistentry&gt;&lt;term&gt;\E&lt;/term&gt;
-   * &lt;listitem&gt;
+   * </listitem>
+   * </varlistentry>
+   * <varlistentry><term>\E</term>
+   * <listitem>
    * End case modification
-   * &lt;/listitem&gt;
-   * &lt;/varlistentry&gt;
-   * &lt;/variablelist&gt;
+   * </listitem>
+   * </varlistentry>
+   * </variablelist>
    * 
    * If you do not need to use backreferences use g_regex_replace_literal().
    * 
@@ -554,135 +776,416 @@ public:
    * passed to g_regex_new(). If you want to use not UTF-8 encoded stings
    * you can use g_regex_replace_literal().
    * 
-   * Setting @a start_position differs from just passing over a shortened 
-   * string and setting REGEX_MATCH_NOTBOL in the case of a pattern that 
+   * Setting @a start_position differs from just passing over a shortened
+   * string and setting REGEX_MATCH_NOTBOL in the case of a pattern that
    * begins with any kind of lookbehind assertion, such as "\b".
+   * 
+   * @newin{2,14}
    * @param string The string to perform matches against.
    * @param string_len The length of @a string, or -1 if @a string is nul-terminated.
    * @param start_position Starting index of the string to match.
    * @param replacement Text to replace each match with.
    * @param match_options Options for the match.
-   * @return A newly allocated string containing the replacements
-   * 
-   * @newin{2,14}.
+   * @return A newly allocated string containing the replacements.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
-  Glib::ustring replace(const gchar* string, gssize string_len, int start_position, const Glib::ustring& replacement, RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0));
-#else
-  Glib::ustring replace(const gchar* string, gssize string_len, int start_position, const Glib::ustring& replacement, RegexMatchFlags match_options, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  Glib::ustring replace(const gchar* string, gssize string_len, int start_position, const Glib::ustring& replacement, RegexMatchFlags match_options =  static_cast<RegexMatchFlags>(0));
   Glib::ustring replace(const Glib::ustring& string, int start_position, const Glib::ustring& replacement, RegexMatchFlags match_options);
-#else
-  Glib::ustring replace(const Glib::ustring& string, int start_position, const Glib::ustring& replacement, RegexMatchFlags match_options, std::auto_ptr<Glib::Error>& error);
-#endif /* !GLIBMM_EXCEPTIONS_ENABLED */
 
   
-  /** Replaces all occurances of the pattern in @a regex with the
+  /** Replaces all occurrences of the pattern in @a regex with the
    * replacement text. @a replacement is replaced literally, to
    * include backreferences use g_regex_replace().
    * 
-   * Setting @a start_position differs from just passing over a 
-   * shortened string and setting REGEX_MATCH_NOTBOL in the 
-   * case of a pattern that begins with any kind of lookbehind 
+   * Setting @a start_position differs from just passing over a
+   * shortened string and setting REGEX_MATCH_NOTBOL in the
+   * case of a pattern that begins with any kind of lookbehind
    * assertion, such as "\b".
+   * 
+   * @newin{2,14}
    * @param string The string to perform matches against.
    * @param string_len The length of @a string, or -1 if @a string is nul-terminated.
    * @param start_position Starting index of the string to match.
    * @param replacement Text to replace each match with.
    * @param match_options Options for the match.
-   * @return A newly allocated string containing the replacements
-   * 
-   * @newin{2,14}.
+   * @return A newly allocated string containing the replacements.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
-  Glib::ustring replace_literal(const gchar *string, gssize string_len, int start_position, const Glib::ustring& replacement, RegexMatchFlags match_options = static_cast<RegexMatchFlags>(0));
-#else
-  Glib::ustring replace_literal(const gchar * string, gssize string_len, int start_position, const Glib::ustring& replacement, RegexMatchFlags match_options, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
+  Glib::ustring replace_literal(const gchar * string, gssize string_len, int start_position, const Glib::ustring& replacement, RegexMatchFlags match_options =  static_cast<RegexMatchFlags>(0));
   Glib::ustring replace_literal(const Glib::ustring& string, int start_position, const Glib::ustring& replacement, RegexMatchFlags match_options);
-#else
-  Glib::ustring replace_literal(const Glib::ustring& string, int start_position, const Glib::ustring& replacement, RegexMatchFlags match_options, std::auto_ptr<Glib::Error>& error);
-#endif /* !GLIBMM_EXCEPTIONS_ENABLED */
 
   
-  /** Replaces occurances of the pattern in regex with the output of 
-   *  @a eval for that occurance.
+  /** Replaces occurrences of the pattern in regex with the output of
+   *  @a eval for that occurrence.
    * 
-   * Setting @a start_position differs from just passing over a shortened 
-   * string and setting REGEX_MATCH_NOTBOL in the case of a pattern 
+   * Setting @a start_position differs from just passing over a shortened
+   * string and setting REGEX_MATCH_NOTBOL in the case of a pattern
    * that begins with any kind of lookbehind assertion, such as "\b".
+   * 
+   * The following example uses g_regex_replace_eval() to replace multiple
+   * strings at once:
+   * |[
+   * static <tt>bool</tt>
+   * eval_cb (const GMatchInfo *info,
+   * GString          *res,
+   * gpointer          data)
+   * {
+   * gchar *match;
+   * gchar *r;
+   * 
+   * match = g_match_info_fetch (info, 0);
+   * r = g_hash_table_lookup ((GHashTable *)data, match);
+   * g_string_append (res, r);
+   * g_free (match);
+   * 
+   * return <tt>false</tt>;
+   * }
+   * 
+   * / * ... * /
+   * 
+   * GRegex *reg;
+   * GHashTable *h;
+   * gchar *res;
+   * 
+   * h = g_hash_table_new (g_str_hash, g_str_equal);
+   * 
+   * g_hash_table_insert (h, "1", "ONE");
+   * g_hash_table_insert (h, "2", "TWO");
+   * g_hash_table_insert (h, "3", "THREE");
+   * g_hash_table_insert (h, "4", "FOUR");
+   * 
+   * reg = g_regex_new ("1|2|3|4", 0, 0, <tt>0</tt>);
+   * res = g_regex_replace_eval (reg, text, -1, 0, 0, eval_cb, h, <tt>0</tt>);
+   * g_hash_table_destroy (h);
+   * 
+   * / * ... * /
+   * ]|
+   * 
+   * @newin{2,14}
    * @param string String to perform matches against.
    * @param string_len The length of @a string, or -1 if @a string is nul-terminated.
    * @param start_position Starting index of the string to match.
    * @param match_options Options for the match.
    * @param eval A function to call for each match.
    * @param user_data User data to pass to the function.
-   * @return A newly allocated string containing the replacements
-   * 
-   * @newin{2,14}.
+   * @return A newly allocated string containing the replacements.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
-  Glib::ustring replace_eval(const Glib::ustring& string, gssize string_len, int start_position, RegexMatchFlags match_options, GRegexEvalCallback eval,  gpointer user_data);
-#else
-  Glib::ustring replace_eval(const Glib::ustring& string, gssize string_len, int start_position, RegexMatchFlags match_options, GRegexEvalCallback eval, gpointer user_data, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
+  Glib::ustring replace_eval(const Glib::ustring& string, gssize string_len, int start_position, RegexMatchFlags match_options, GRegexEvalCallback eval, gpointer user_data);
   
-  /** Checks whether @a replacement is a valid replacement string 
-   * (see g_regex_replace()), i.e.\ that all escape sequences in 
+  /** Checks whether @a replacement is a valid replacement string
+   * (see g_regex_replace()), i.e.\ that all escape sequences in
    * it are valid.
    * 
-   * If @a has_references is not <tt>0</tt> then @a replacement is checked 
+   * If @a has_references is not <tt>0</tt> then @a replacement is checked
    * for pattern references. For instance, replacement text 'foo<tt>\\n</tt>'
    * does not contain references and may be evaluated without information
-   * about actual match, but '\0\1' (whole match followed by first 
+   * about actual match, but '\0\1' (whole match followed by first
    * subpattern) requires valid MatchInfo object.
+   * 
+   * @newin{2,14}
    * @param replacement The replacement string.
    * @param has_references Location to store information about
    * references in @a replacement or <tt>0</tt>.
-   * @return Whether @a replacement is a valid replacement string
-   * 
-   * @newin{2,14}.
+   * @return Whether @a replacement is a valid replacement string.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static bool check_replacement(const Glib::ustring& replacement, gboolean* has_references);
-#else
-  static bool check_replacement(const Glib::ustring& replacement, gboolean* has_references, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
-/* Match info */
-/*
-GRegex		 *g_match_info_get_regex	(const GMatchInfo    *match_info);
-const gchar      *g_match_info_get_string       (const GMatchInfo    *match_info);
+};
 
-void		  g_match_info_free		(GMatchInfo          *match_info);
-  _WRAP_METHOD(bool g_match_info_next		(GMatchInfo          *match_info,
-						 GError             **error);
-  _WRAP_METHOD(bool g_match_info_matches		(const GMatchInfo    *match_info);
-  _WRAP_METHOD(int g_match_info_get_match_count	(const GMatchInfo    *match_info);
-  _WRAP_METHOD(bool g_match_info_is_partial_match	(const GMatchInfo    *match_info);
-Glib::ustring g_match_info_expand_references(const GMatchInfo    *match_info,
-						 Glib::ustring& string_to_expand,
-						 GError             **error);
-Glib::ustring g_match_info_fetch		(const GMatchInfo    *match_info,
-						 int match_num);
-  _WRAP_METHOD(bool g_match_info_fetch_pos	(const GMatchInfo    *match_info,
-						 int match_num,
-						 int                 *start_pos,
-						 int                 *end_pos);
-Glib::ustring g_match_info_fetch_named	(const GMatchInfo    *match_info,
-						 Glib::ustring& name);
-  _WRAP_METHOD(bool g_match_info_fetch_named_pos	(const GMatchInfo    *match_info,
-						 Glib::ustring& name,
-						 int                 *start_pos,
-						 int                 *end_pos);
-gchar		**g_match_info_fetch_all	(const GMatchInfo    *match_info);
-*/
+//TODO: Add C++ iterator like functionality for this class.
+/** MatchInfo - MatchInfo is used to retrieve information about the regular
+ * expression match which created it.
+ * @newin{2,28}
+ */
+class MatchInfo
+{
+  public:
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  typedef MatchInfo CppObjectType;
+  typedef GMatchInfo BaseObjectType;
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+private:
+
+
+public:
+  /// Default constructor.
+  MatchInfo();
+
+  /** C object constructor.
+   * @param castitem The C object.
+   * @param take_ownership Whether to destroy the C object with the wrapper or
+   * not.
+   */
+  explicit MatchInfo(GMatchInfo* castitem, bool take_ownership = true);
+
+  /// Destructor.
+  virtual ~MatchInfo();
+
+  /// Provides access to the underlying C object.
+  GMatchInfo* gobj()
+    { return reinterpret_cast<GMatchInfo*>(gobject_); }
+
+  /// Provides access to the underlying C object.
+  const GMatchInfo* gobj() const
+    { return reinterpret_cast<GMatchInfo*>(gobject_); }
+
+private:
+// noncopyable
+  MatchInfo(const MatchInfo& other);
+  MatchInfo& operator=(const MatchInfo& other);
+
+  friend class Regex;
+
+public:
+
+  
+  /** Returns Regex object used in @a match_info. It belongs to Glib
+   * and must not be freed. Use g_regex_ref() if you need to keep it
+   * after you free @a match_info object.
+   * 
+   * @newin{2,14}
+   * @return Regex object used in @a match_info.
+   */
+  Glib::RefPtr<Regex> get_regex();
+  
+  /** Returns Regex object used in @a match_info. It belongs to Glib
+   * and must not be freed. Use g_regex_ref() if you need to keep it
+   * after you free @a match_info object.
+   * 
+   * @newin{2,14}
+   * @return Regex object used in @a match_info.
+   */
+  Glib::RefPtr<const Regex> get_regex() const;
+
+  
+  /** Returns the string searched with @a match_info. This is the
+   * string passed to g_regex_match() or g_regex_replace() so
+   * you may not free it before calling this function.
+   * 
+   * @newin{2,14}
+   * @return The string searched with @a match_info.
+   */
+  Glib::ustring get_string() const;
+  
+  /** Returns whether the previous match operation succeeded.
+   * 
+   * @newin{2,14}
+   * @return <tt>true</tt> if the previous match operation succeeded,
+   * <tt>false</tt> otherwise.
+   */
+  bool matches() const;
+
+  
+  /** Scans for the next match using the same parameters of the previous
+   * call to g_regex_match_full() or g_regex_match() that returned
+   *  @a match_info.
+   * 
+   * The match is done on the string passed to the match function, so you
+   * cannot free it before calling this function.
+   * 
+   * @newin{2,14}
+   * @return <tt>true</tt> is the string matched, <tt>false</tt> otherwise.
+   */
+  bool next();
+
+  
+  /** Retrieves the number of matched substrings (including substring 0,
+   * that is the whole matched text), so 1 is returned if the pattern
+   * has no substrings in it and 0 is returned if the match failed.
+   * 
+   * If the last match was obtained using the DFA algorithm, that is
+   * using g_regex_match_all() or g_regex_match_all_full(), the retrieved
+   * count is not that of the number of capturing parentheses but that of
+   * the number of matched substrings.
+   * 
+   * @newin{2,14}
+   * @return Number of matched substrings, or -1 if an error occurred.
+   */
+  int get_match_count() const;
+  
+  /** Usually if the string passed to g_regex_match*() matches as far as
+   * it goes, but is too short to match the entire pattern, <tt>false</tt> is
+   * returned. There are circumstances where it might be helpful to
+   * distinguish this case from other cases in which there is no match.
+   * 
+   * Consider, for example, an application where a human is required to
+   * type in data for a field with specific formatting requirements. An
+   * example might be a date in the form ddmmmyy, defined by the pattern
+   * "^\d?\d(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\d\d$".
+   * If the application sees the user’s keystrokes one by one, and can
+   * check that what has been typed so far is potentially valid, it is
+   * able to raise an error as soon as a mistake is made.
+   * 
+   * GRegex supports the concept of partial matching by means of the
+   * REGEX_MATCH_PARTIAL flag. When this is set the return code for
+   * g_regex_match() or g_regex_match_full() is, as usual, <tt>true</tt>
+   * for a complete match, <tt>false</tt> otherwise. But, when these functions
+   * return <tt>false</tt>, you can check if the match was partial calling
+   * g_match_info_is_partial_match().
+   * 
+   * When using partial matching you cannot use g_match_info_fetch*().
+   * 
+   * Because of the way certain internal optimizations are implemented
+   * the partial matching algorithm cannot be used with all patterns.
+   * So repeated single characters such as "a{2,4}" and repeated single
+   * meta-sequences such as "\d+" are not permitted if the maximum number
+   * of occurrences is greater than one. Optional items such as "\d?"
+   * (where the maximum is one) are permitted. Quantifiers with any values
+   * are permitted after parentheses, so the invalid examples above can be
+   * coded thus "(a){2,4}" and "(\d)+". If REGEX_MATCH_PARTIAL is set
+   * for a pattern that does not conform to the restrictions, matching
+   * functions return an error.
+   * 
+   * @newin{2,14}
+   * @return <tt>true</tt> if the match was partial, <tt>false</tt> otherwise.
+   */
+  bool is_partial_match() const;
+
+  
+  /** Returns a new string containing the text in @a string_to_expand with
+   * references and escape sequences expanded. References refer to the last
+   * match done with @a string against @a regex and have the same syntax used by
+   * g_regex_replace().
+   * 
+   * The @a string_to_expand must be UTF-8 encoded even if REGEX_RAW was
+   * passed to g_regex_new().
+   * 
+   * The backreferences are extracted from the string passed to the match
+   * function, so you cannot call this function after freeing the string.
+   * 
+   *  @a match_info may be <tt>0</tt> in which case @a string_to_expand must not
+   * contain references. For instance "foo<tt>\\n</tt>" does not refer to an actual
+   * pattern and '<tt>\\n</tt>' merely will be replaced with <tt>\\n</tt> character,
+   * while to expand "\0" (whole match) one needs the result of a match.
+   * Use g_regex_check_replacement() to find out whether @a string_to_expand
+   * contains references.
+   * 
+   * @newin{2,14}
+   * @param string_to_expand The string to expand.
+   * @return The expanded string, or <tt>0</tt> if an error occurred.
+   */
+  Glib::ustring expand_references(const Glib::ustring& string_to_expand);
+
+  
+  /** Retrieves the text matching the @a match_num<!-- -->'th capturing
+   * parentheses. 0 is the full text of the match, 1 is the first paren
+   * set, 2 the second, and so on.
+   * 
+   * If @a match_num is a valid sub pattern but it didn't match anything
+   * (e.g. sub pattern 1, matching "b" against "(a)?b") then an empty
+   * string is returned.
+   * 
+   * If the match was obtained using the DFA algorithm, that is using
+   * g_regex_match_all() or g_regex_match_all_full(), the retrieved
+   * string is not that of a set of parentheses but that of a matched
+   * substring. Substrings are matched in reverse order of length, so
+   * 0 is the longest match.
+   * 
+   * The string is fetched from the string passed to the match function,
+   * so you cannot call this function after freeing the string.
+   * 
+   * @newin{2,14}
+   * @param match_num Number of the sub expression.
+   * @return The matched substring, or <tt>0</tt> if an error
+   * occurred. You have to free the string yourself.
+   */
+  Glib::ustring fetch(int match_num);
+
+  
+  /** Retrieves the position in bytes of the @a match_num<!-- -->'th capturing
+   * parentheses. 0 is the full text of the match, 1 is the first
+   * paren set, 2 the second, and so on.
+   * 
+   * If @a match_num is a valid sub pattern but it didn't match anything
+   * (e.g. sub pattern 1, matching "b" against "(a)?b") then @a start_pos
+   * and @a end_pos are set to -1 and <tt>true</tt> is returned.
+   * 
+   * If the match was obtained using the DFA algorithm, that is using
+   * g_regex_match_all() or g_regex_match_all_full(), the retrieved
+   * position is not that of a set of parentheses but that of a matched
+   * substring. Substrings are matched in reverse order of length, so
+   * 0 is the longest match.
+   * 
+   * @newin{2,14}
+   * @param match_num Number of the sub expression.
+   * @param start_pos Pointer to location where to store
+   * the start position, or <tt>0</tt>.
+   * @param end_pos Pointer to location where to store
+   * the end position, or <tt>0</tt>.
+   * @return <tt>true</tt> if the position was fetched, <tt>false</tt> otherwise. If
+   * the position cannot be fetched, @a start_pos and @a end_pos are left
+   * unchanged.
+   */
+  bool fetch_pos(int match_num, int& start_pos, int& end_pos);
+
+  
+  /** Retrieves the text matching the capturing parentheses named @a name.
+   * 
+   * If @a name is a valid sub pattern name but it didn't match anything
+   * (e.g. sub pattern "X", matching "b" against "(?P<X>a)?b")
+   * then an empty string is returned.
+   * 
+   * The string is fetched from the string passed to the match function,
+   * so you cannot call this function after freeing the string.
+   * 
+   * @newin{2,14}
+   * @param name Name of the subexpression.
+   * @return The matched substring, or <tt>0</tt> if an error
+   * occurred. You have to free the string yourself.
+   */
+  Glib::ustring fetch_named(const Glib::ustring& name);
+
+  
+  /** Retrieves the position in bytes of the capturing parentheses named @a name.
+   * 
+   * If @a name is a valid sub pattern name but it didn't match anything
+   * (e.g. sub pattern "X", matching "b" against "(?P<X>a)?b")
+   * then @a start_pos and @a end_pos are set to -1 and <tt>true</tt> is returned.
+   * 
+   * @newin{2,14}
+   * @param name Name of the subexpression.
+   * @param start_pos Pointer to location where to store
+   * the start position, or <tt>0</tt>.
+   * @param end_pos Pointer to location where to store
+   * the end position, or <tt>0</tt>.
+   * @return <tt>true</tt> if the position was fetched, <tt>false</tt> otherwise.
+   * If the position cannot be fetched, @a start_pos and @a end_pos
+   * are left unchanged.
+   */
+  bool fetch_named_pos(const Glib::ustring& name, int& start_pos, int& end_pos);
+
+  
+  /** Bundles up pointers to each of the matching substrings from a match
+   * and stores them in an array of gchar pointers. The first element in
+   * the returned array is the match number 0, i.e. the entire matched
+   * text.
+   * 
+   * If a sub pattern didn't match anything (e.g. sub pattern 1, matching
+   * "b" against "(a)?b") then an empty string is inserted.
+   * 
+   * If the last match was obtained using the DFA algorithm, that is using
+   * g_regex_match_all() or g_regex_match_all_full(), the retrieved
+   * strings are not that matched by sets of parentheses but that of the
+   * matched substring. Substrings are matched in reverse order of length,
+   * so the first one is the longest match.
+   * 
+   * The strings are fetched from the string passed to the match function,
+   * so you cannot call this function after freeing the string.
+   * 
+   * @newin{2,14}
+   * @return A <tt>0</tt>-terminated array of gchar * pointers.
+   * It must be freed using g_strfreev(). If the previous match failed
+   * <tt>0</tt> is returned.
+   */
+  Glib::StringArrayHandle fetch_all();
+
+protected:
+  GMatchInfo* gobject_;      // The C object.
+  bool take_ownership;       // Bool signaling ownership.
+
+protected:
+  // So that Glib::Regex::match() can set the C object.
+  void set_gobject(GMatchInfo* castitem, bool take_ownership = true);
 
 
 };

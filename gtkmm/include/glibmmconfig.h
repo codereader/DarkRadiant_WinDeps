@@ -86,7 +86,7 @@
 #define GLIBMM_MICRO_VERSION 2
 
 /* Minor version number of glibmm. */
-#define GLIBMM_MINOR_VERSION 20
+#define GLIBMM_MINOR_VERSION 28
 
 /* Defined when the --enable-api-properties configure argument was given */
 #define GLIBMM_PROPERTIES_ENABLED 1

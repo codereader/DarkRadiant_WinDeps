@@ -68,7 +68,7 @@ enum { THREAD_PRIORITY_NORMAL = GLIBMM_MACRO_DEFINITION_THREAD_PRIORITY_NORMAL }
 namespace Glib
 {
 
-/** @addtogroup glibmmEnums Enums and Flags */
+/** @addtogroup glibmmEnums glibmm Enums and Flags */
 
 /** Specifies the priority of a thread.
  * @note It is not guaranteed, that threads with different priorities really
@@ -177,15 +177,11 @@ public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 private:
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static void throw_func(GError* gobject);
-#else
-  //When not using exceptions, we just pass the Exception object around without throwing it:
-  static std::auto_ptr<Glib::Error> throw_func(GError* gobject);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   friend void wrap_init(); // uses throw_func()
-#endif
+
+  #endif //DOXYGEN_SHOULD_SKIP_THIS
 };
 
 
@@ -1089,6 +1085,9 @@ void Private<T>::set(T* data)
 }
 
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+// For some reason gmmproc thinks that g_iconv should be wrapped here.
+
 
 } // namespace Glib
 

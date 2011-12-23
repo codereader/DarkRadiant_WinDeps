@@ -25,6 +25,7 @@
 
 
 #include <glibmm/ustring.h>
+#include <sigc++/slot.h>
 #include <map>
 #include <vector>
 #include <glib.h> //TODO: Try to hide this.
@@ -58,6 +59,20 @@ class OptionGroup
 private:
 
 public:
+  /** For example Glib::ustring on_translate(const Glib::ustring& original);.
+   */
+  typedef sigc::slot<Glib::ustring, const Glib::ustring&> SlotTranslate;
+
+  /** For example bool on_option_arg_string(const Glib::ustring& option_name,
+   *  const Glib::ustring& value, bool has_value);.
+   */
+  typedef sigc::slot<bool, const Glib::ustring&, const Glib::ustring&, bool> SlotOptionArgString;
+   
+  /** For example bool on_option_arg_filename(const Glib::ustring& option_name,
+   *  const std::string& value, bool has_value);.
+   */
+  typedef sigc::slot<bool, const Glib::ustring&, const std::string&, bool> SlotOptionArgFilename;
+
   OptionGroup(const Glib::ustring& name, const Glib::ustring& description, const Glib::ustring& help_description = Glib::ustring());
 
   /** This always takes ownership of the underlying GOptionGroup, 
@@ -65,6 +80,7 @@ public:
    */
   explicit OptionGroup(GOptionGroup* castitem);  
   
+
   virtual ~OptionGroup();
   
 
@@ -81,20 +97,30 @@ public:
 
   void add_entry(const OptionEntry& entry, bool& arg);
   void add_entry(const OptionEntry& entry, int& arg);
+  void add_entry(const OptionEntry& entry, double& arg);
   void add_entry(const OptionEntry& entry, Glib::ustring& arg);
   void add_entry_filename(const OptionEntry& entry, std::string& arg);  
   void add_entry(const OptionEntry& entry, vecustrings& arg);
   void add_entry_filename(const OptionEntry& entry, vecstrings& arg);
+  void add_entry(const OptionEntry& entry, const SlotOptionArgString& slot);
+  void add_entry_filename(const OptionEntry& entry, const SlotOptionArgFilename& slot);
 
-/* TODO:
-void          g_option_group_set_translate_func     (GOptionGroup       *group,
-						     GTranslateFunc      func,
-						     gpointer            data,
-						     GDestroyNotify      destroy_notify);
-*/
+  /** Sets the function which is used to translate user-visible strings, for
+   * --help output. Different groups can use a different SlotTranslate. If a
+   * translate function is not set, strings are not translated.
+   *
+   * If you are using gettext(), you only need to set the translation domain,
+   * see set_translation_domain().
+   *
+   * @param slot the slot to be used for translation.
+   *
+   * @newin{2,28}
+   */
+  void set_translate_func(const SlotTranslate& slot);
   
+
   /** A convenience function to use gettext() for translating
-   * user-visible strings. 
+   * user-visible strings.
    * 
    * @newin{2,6}
    * @param domain The domain to use.
@@ -127,6 +153,12 @@ protected:
   };
 
   void add_entry_with_wrapper(const OptionEntry& entry, GOptionArg arg_type, void* cpp_arg);
+
+  static gboolean post_parse_callback(GOptionContext* context,
+    GOptionGroup* group, gpointer data, GError** error);
+
+  static gboolean option_arg_callback(const gchar* option_name, const gchar* value,
+    gpointer data, GError** error);
 
   //Map of entry names to CppOptionEntry:
   typedef std::map<Glib::ustring, CppOptionEntry> type_map_entries;

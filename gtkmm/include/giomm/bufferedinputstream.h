@@ -104,13 +104,30 @@ public:
 private:
 
 protected:
-  explicit BufferedInputStream(const Glib::RefPtr<InputStream>& base_stream);
-  explicit BufferedInputStream(const Glib::RefPtr<InputStream>& base_stream, gsize size);
+    explicit BufferedInputStream(const Glib::RefPtr<InputStream>& base_stream);
+
+  
+  //Note that we rename the size parameter to buffer_size because that is the actual name of the property.
+    explicit BufferedInputStream(const Glib::RefPtr<InputStream>& base_stream, gsize buffer_size);
+
+
 public:
+  /** Creates a new InputStream from the given base_stream, with a buffer set to the default size (4 kilobytes). 
+   *
+   * @param base_stream An InputStream.
+   * @result an InputStream for the given base_stream.
+	 */
   
   static Glib::RefPtr<BufferedInputStream> create(const Glib::RefPtr<InputStream>& base_stream);
 
-  static Glib::RefPtr<BufferedInputStream> create_sized(const Glib::RefPtr<InputStream>& base_stream, gsize size);
+  
+  /** Creates a new InputStream from the given base_stream, with a buffer set to size.
+   *
+   * @param base_stream An InputStream.
+   * @param size A size.
+   * @result an InputStream for the given base_stream.
+	 */
+  static Glib::RefPtr<BufferedInputStream> create_sized(const Glib::RefPtr<InputStream>& base_stream, gsize buffer_size);
 
   
   /** Gets the size of the input buffer.
@@ -118,8 +135,8 @@ public:
    */
   gsize get_buffer_size() const;
   
-  /** Sets the size of the internal buffer of @a stream to @a size, or to the 
-   * size of the contents of the buffer. The buffer can never be resized 
+  /** Sets the size of the internal buffer of @a stream to @a size, or to the
+   * size of the contents of the buffer. The buffer can never be resized
    * smaller than its current contents.
    * @param size A #gsize.
    */
@@ -130,16 +147,18 @@ public:
    */
   gsize get_available() const;
   
-  /** Peeks in the buffer, copying data of size @a count into @a buffer, 
+  /** Peeks in the buffer, copying data of size @a count into @a buffer,
    * offset @a offset bytes.
    * @param buffer A pointer to an allocated chunk of memory.
    * @param offset A #gsize.
    * @param count A #gsize.
-   * @return A #gsize of the number of bytes peeked, or %-1 on error.
+   * @return A #gsize of the number of bytes peeked, or -1 on error.
    */
   gsize peek(void* buffer, gsize offset, gsize count) const;
   
-  /** Returns: read-only buffer
+  /** Returns the buffer with the currently available bytes. The returned
+   * buffer must not be modified and will become invalid when reading from
+   * the stream or filling the buffer.
    * @param count A #gsize to get the number of bytes available in the buffer.
    * @return Read-only buffer.
    */
@@ -171,20 +190,11 @@ public:
    * @return The number of bytes read into @a stream's buffer, up to @a count, 
    * or -1 on error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   gssize fill(gssize count, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  gssize fill(gssize count, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** non-cancellable version of fill()
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   gssize fill(gssize count);
-#else
-  gssize fill(gssize count, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Reads data into the stream's buffer asynchronously, up to @a count size.
@@ -218,13 +228,9 @@ public:
    * @param result A AsyncResult.
    * @return A #gssize of the read stream, or %-1 on an error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   gssize fill_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  gssize fill_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
+  
   /** Tries to read a single byte from the stream or the buffer. Will block
    * during this read.
    * 
@@ -239,20 +245,11 @@ public:
    * @param cancellable Cancellable object.
    * @return The byte read from the @a stream, or -1 on end of stream or error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   int read_byte(const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  int read_byte(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Non-cancellable version of read_byte().
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   int read_byte();
-#else
-  int read_byte(std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The size of the backend buffer.
@@ -285,17 +282,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

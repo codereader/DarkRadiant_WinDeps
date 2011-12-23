@@ -42,7 +42,7 @@ namespace Gio
 namespace Gio
 {
 
-/** @addtogroup giommEnums Enums and Flags */
+/** @addtogroup giommEnums giomm Enums and Flags */
 
 /**
  * @ingroup giommEnums
@@ -57,9 +57,9 @@ namespace Gio
  */
 enum OutputStreamSpliceFlags
 {
-  OUTPUT_STREAM_SPLICE_NONE = 0,
-  OUTPUT_STREAM_SPLICE_CLOSE_SOURCE = 1 << 0,
-  OUTPUT_STREAM_SPLICE_CLOSE_TARGET = 1 << 1
+  OUTPUT_STREAM_SPLICE_NONE = 0x0,
+  OUTPUT_STREAM_SPLICE_CLOSE_SOURCE = (1 << 0),
+  OUTPUT_STREAM_SPLICE_CLOSE_TARGET = (1 << 1)
 };
 
 /** @ingroup giommEnums */
@@ -170,12 +170,7 @@ public:
    * @param cancellable Cancellable object.
    * @return Number of bytes written, or -1 on error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   gssize write(const void* buffer, gsize count, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  gssize write(const void* buffer, gsize count, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Tries to write @a count  bytes from @a buffer  into the stream. Will block
    * during the operation.
@@ -194,11 +189,7 @@ public:
    * @param count The number of bytes to write.
    * @return Number of bytes written, or -1 on error.
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   gssize write(const void* buffer, gsize count);
-  #else
-  gssize write(const void* buffer, gsize count, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Tries to write @a count  bytes from @a buffer  into the stream. Will block
    * during the operation.
@@ -217,11 +208,7 @@ public:
    * @param cancellable Cancellable object.
    * @return Number of bytes written, or -1 on error.
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   gssize write(const std::string& buffer, const Glib::RefPtr<Cancellable>& cancellable);
-  #else
-  gssize write(const std::string& buffer, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Tries to write @a count  bytes from @a buffer  into the stream. Will block
    * during the operation.
@@ -238,11 +225,7 @@ public:
    * @param buffer The buffer containing the data to write.
    * @return Number of bytes written, or -1 on error.
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   gssize write(const std::string& buffer);
-  #else
-  gssize write(const std::string& buffer, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
 
   /** Tries to write @a count bytes from @a buffer into the stream. Will block
@@ -264,12 +247,7 @@ public:
    * @param cancellable Optional Cancellable object, <tt>0</tt> to ignore.
    * @return <tt>true</tt> on success, <tt>false</tt> if there was an error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool write_all(const void* buffer, gsize count, gsize& bytes_written, const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool write_all(const void* buffer, gsize count, gsize& bytes_written, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Tries to write @a count  bytes from @a buffer into the stream. Will block
    * during the operation.
@@ -289,11 +267,7 @@ public:
    * written to the stream.
    * @return <tt>true</tt> on success, <tt>false</tt> if there was an error.
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool write_all(const void* buffer, gsize count, gsize& bytes_written);
-  #else
-  bool write_all(const void* buffer, gsize count, gsize& bytes_written, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Tries to write @a count  bytes from @a buffer into the stream. Will block
    * during the operation.
@@ -313,11 +287,7 @@ public:
    * @param cancellable Cancellable object.
    * @return <tt>true</tt> on success, <tt>false</tt> if there was an error.
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool write_all(const std::string& buffer, gsize& bytes_written, const Glib::RefPtr<Cancellable>& cancellable);
-  #else
-  bool write_all(const std::string& buffer, gsize& bytes_written, const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Tries to write @a count  bytes from @a buffer into the stream. Will block
    * during the operation.
@@ -336,11 +306,7 @@ public:
    * written to the stream.
    * @return <tt>true</tt> on success, <tt>false</tt> if there was an error.
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool write_all(const std::string& buffer, gsize& bytes_written);
-  #else
-  bool write_all(const std::string& buffer, gsize& bytes_written, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
    
   /** Splices an input stream into an output stream.
    *
@@ -350,11 +316,7 @@ public:
    * ignore.
    * @return A #gssize containing the size of the data spliced.
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   gssize splice(const Glib::RefPtr<InputStream>& source, const Glib::RefPtr<Cancellable>& cancellable, OutputStreamSpliceFlags flags = OUTPUT_STREAM_SPLICE_NONE);
-  #else
-  gssize splice(const Glib::RefPtr<InputStream>& source, const Glib::RefPtr<Cancellable>& cancellable, OutputStreamSpliceFlags flags, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Splices an input stream into an output stream.
    *
@@ -363,11 +325,7 @@ public:
    * ignore.
    * @return A #gssize containing the size of the data spliced.
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   gssize splice(const Glib::RefPtr<InputStream>& source, OutputStreamSpliceFlags flags = OUTPUT_STREAM_SPLICE_NONE);
-  #else
-  gssize splice(const Glib::RefPtr<InputStream>& source, OutputStreamSpliceFlags flags, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
   /** Flushed any outstanding buffers in the stream. Will block during 
@@ -381,12 +339,7 @@ public:
    * @param cancellable Cancellable object.
    * @return <tt>true</tt> on success, <tt>false</tt> on error.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool flush(const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool flush(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Flushed any outstanding buffers in the stream. Will block during 
    * the operation. Closing the stream will implicitly cause a flush.
@@ -399,11 +352,7 @@ public:
    * @param cancellable Optional cancellable object.
    * @return <tt>true</tt> on success, <tt>false</tt> on error.
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool flush();
-  #else
-  bool flush(std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Closes the stream, releasing resources related to it.
@@ -439,12 +388,7 @@ public:
    * @param cancellable Cancellable object.
    * @return <tt>true</tt> on success, <tt>false</tt> on failure.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool close(const Glib::RefPtr<Cancellable>& cancellable);
-#else
-  bool close(const Glib::RefPtr<Cancellable>& cancellable, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Closes the stream, releasing resources related to it.
    * 
@@ -478,11 +422,7 @@ public:
    * @param cancellable Optional cancellable object.
    * @return <tt>true</tt> on success, <tt>false</tt> on failure.
    */
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool close();
-  #else
-  bool close(std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   /** Request an asynchronous write of @a count bytes from @a buffer into 
    * the stream. When the operation is finished @a slot will be called. 
@@ -558,12 +498,7 @@ public:
    * @param result A AsyncResult.
    * @return A #gssize containing the number of bytes written to the stream.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   gssize write_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  gssize write_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Splices a stream asynchronously.
    *  When the operation is finished @a slot will be called. 
@@ -599,12 +534,7 @@ public:
    * @param result A AsyncResult.
    * @return A #gssize of the number of bytes spliced.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   gssize splice_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  gssize splice_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Flushes a stream asynchronously.
    * When the operation is finished the @a slot will be called, giving the results.
@@ -632,12 +562,7 @@ public:
    * @param result A GAsyncResult.
    * @return <tt>true</tt> if flush operation suceeded, <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool flush_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  bool flush_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Requests an asynchronous close of the stream, releasing resources related to it. 
    * When the operation is finished the @a slot will be called, giving the results.
@@ -671,12 +596,7 @@ public:
    * @param result A AsyncResult.
    * @return <tt>true</tt> if stream was successfully closed, <tt>false</tt> otherwise.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool close_finish(const Glib::RefPtr<AsyncResult>& result);
-#else
-  bool close_finish(const Glib::RefPtr<AsyncResult>& result, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   // These are private inside the module (for implementations)
   
@@ -685,17 +605,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

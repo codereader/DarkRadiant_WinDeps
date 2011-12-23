@@ -102,19 +102,27 @@ private:
 
 public:
   // TODO: should use _WRAP_CREATE(), but these functions do more than just call
-  // g_object_new() because there's quite a bit of error-handling to do
+  // g_object_new() because there's quite a bit of error-handling to do.
   
-  /** Creates a new DesktopAppInfo.
+  /** Creates a new DesktopAppInfo based on a desktop file id. 
+   * 
+   * A desktop file id is the basename of the desktop file, including the 
+   * .desktop extension. GIO is looking for a desktop file with this name 
+   * in the <filename>applications</filename> subdirectories of the XDG data
+   * directories (i.e. the directories specified in the 
+   * <envar>XDG_DATA_HOME</envar> and <envar>XDG_DATA_DIRS</envar> environment 
+   * variables). GIO also supports the prefix-to-subdirectory mapping that is
+   * described in the ).
    * @param desktop_id The desktop file id.
    * @return A new DesktopAppInfo, or <tt>0</tt> if no desktop file with that id.
    */
   static Glib::RefPtr<DesktopAppInfo> create(const std::string& desktop_id);
   
   /** Creates a new DesktopAppInfo.
+   * 
+   * @newin{2,18}
    * @param key_file An opened KeyFile.
    * @return A new DesktopAppInfo or <tt>0</tt> on error.
-   * 
-   * @newin{2,18}.
    */
   static Glib::RefPtr<DesktopAppInfo> create_from_keyfile(Glib::KeyFile& key_file);
   
@@ -124,6 +132,15 @@ public:
    */
   static Glib::RefPtr<DesktopAppInfo> create_from_filename(const std::string& filename);
 
+  
+  /** When @a info was created from a known filename, return it.  In some
+   * situations such as the DesktopAppInfo returned from
+   * g_desktop_app_info_new_from_keyfile(), this function will return <tt>0</tt>.
+   * 
+   * @newin{2,24}
+   * @return The full path to the file for @a info, or <tt>0</tt> if not known.
+   */
+  std::string get_filename() const;
   
   /** A desktop file is hidden if the Hidden key in it is
    * set to True.
@@ -136,15 +153,7 @@ public:
    * <tt>OnlyShowIn</tt> and <tt>NotShowIn</tt>
    * desktop entry fields.
    * 
-   * The Desktop 
-   * Menu specification recognizes the following:
-   * &lt;simplelist&gt;
-   * &lt;member&gt;GNOME&lt;/member&gt;
-   * &lt;member&gt;KDE&lt;/member&gt;
-   * &lt;member&gt;ROX&lt;/member&gt;
-   * &lt;member&gt;XFCE&lt;/member&gt;
-   * &lt;member&gt;Old&lt;/member&gt; 
-   * &lt;/simplelist&gt;
+   * The 
    * 
    * Should be called only once; subsequent calls are ignored.
    * @param desktop_env A string specifying what desktop this is.
@@ -156,17 +165,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };
