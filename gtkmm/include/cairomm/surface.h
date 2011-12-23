@@ -33,6 +33,7 @@
 #include <sigc++/slot.h>
 #include <cairomm/enums.h>
 #include <cairomm/exception.h>
+#include <cairomm/device.h>
 #include <cairomm/fontoptions.h>
 #include <cairomm/refptr.h>
 
@@ -64,7 +65,7 @@ namespace Cairo
  * different subtypes of cairo surface for different drawing backends.  This
  * class is a base class for all subtypes and should not be used directly
  *
- * Surfaces are reference-counted objects that should be used via Cairo::RefPtr. 
+ * Surfaces are reference-counted objects that should be used via Cairo::RefPtr.
  */
 class Surface
 {
@@ -107,6 +108,46 @@ public:
   explicit Surface(cairo_surface_t* cobject, bool has_reference = false);
 
   virtual ~Surface();
+
+  /** Return mime data previously attached to surface using the specified mime type. If no data has been attached with the given mime type then this returns 0.
+   *
+   * @param mime_type The MIME type of the image data.
+   * @param length This will be set to the length of the image data.
+   * @result The image data attached to the surface.
+   */
+  const unsigned char* get_mime_data(const std::string& mime_type, unsigned long& length);
+
+
+  /** For instance,
+   * void on_destroy();
+   */
+  typedef sigc::slot<void> SlotDestroy;
+
+  /** Attach an image in the format mime_type to surface. To remove the data from
+   * a surface, call unset_mime_data() with same mime type.
+   *
+   * The attached image (or filename) data can later be used by backends which
+   * support it (currently: PDF, PS, SVG and Win32 Printing surfaces) to emit
+   * this data instead of making a snapshot of the surface. This approach tends
+   * to be faster and requires less memory and disk space.
+   *
+   * The recognized MIME types are the following: CAIRO_MIME_TYPE_JPEG,
+   * CAIRO_MIME_TYPE_PNG, CAIRO_MIME_TYPE_JP2, CAIRO_MIME_TYPE_URI.
+   *
+   * See corresponding backend surface docs for details about which MIME types
+   * it can handle. Caution: the associated MIME data will be discarded if you
+   * draw on the surface afterwards. Use this function with care.
+   *
+   * @param mime_type The MIME type of the image data.
+   * @param data The image data to attach to the surface.
+   * @param length The length of the image data.
+   * @param slot_destroy A callback slot that will be called when the Surface no longer needs the data. For instance, when the Surface is destroyed or when new image data is attached using the same MIME tpe.
+   */
+  void set_mime_data(const std::string& mime_type, unsigned char* data, unsigned long length, const SlotDestroy& slot_destroy);
+
+  /** Remove the data from a surface. See set_mime_data().
+   */
+  void unset_mime_data(const std::string& mime_type);
 
   /** Retrieves the default font rendering options for the surface. This allows
    * display surfaces to report the correct subpixel order for rendering on
@@ -266,6 +307,10 @@ public:
 
 #endif // CAIRO_HAS_PNG_FUNCTIONS
 
+  /** This function returns the device for a surface
+   * @return The device for this surface, or an empty RefPtr if the surface has
+   * no associated device */
+  RefPtr<Device> get_device();
 
   /** The underlying C cairo surface type
    */
@@ -298,10 +343,37 @@ public:
    */
   static RefPtr<Surface> create(const RefPtr<Surface> other, Content content, int width, int height);
 
+  /** Create a new surface that is a rectangle within the target surface. All
+   * operations drawn to this surface are then clipped and translated onto the
+   * target surface. Nothing drawn via this sub-surface outside of its bounds is
+   * drawn onto the target surface, making this a useful method for passing
+   * constrained child surfaces to library routines that draw directly onto the
+   * parent surface, i.e. with no further backend allocations, double buffering
+   * or copies.
+   *
+   * @Note The semantics of subsurfaces have not been finalized yet unless the
+   * rectangle is in full device units, is contained within the extents of the
+   * target surface, and the target or subsurface's device transforms are not
+   * changed.
+   *
+   * @param target an existing surface for which the sub-surface will point to
+   * @param x the x-origin of the sub-surface from the top-left of the target surface (in device-space units)
+   * @param y the y-origin of the sub-surface from the top-left of the target surface (in device-space units)
+   * @param width width of the sub-surface (in device-space units)
+   * @param height height of the sub-surface (in device-space units)
+   *
+   * @since 1.10
+   */
+  static RefPtr<Surface> create(const RefPtr<Surface>& target, double x, double y, double width, double height);
+
 protected:
   /** The underlying C cairo surface type that is wrapped by this Surface
    */
   cobject* m_cobject;
+
+private:
+  Surface(const Surface&);
+  Surface& operator=(const Surface&);
 };
 
 /** @example image-surface.cc
@@ -315,12 +387,12 @@ protected:
  * An ImageSurface is the most generic type of Surface and the only one that is
  * available by default.  You can either create an ImageSurface whose data is
  * managed by Cairo, or you can create an ImageSurface with a data buffer that
- * you allocated yourself so that you can have full access to the data.  
+ * you allocated yourself so that you can have full access to the data.
  *
  * When you create an ImageSurface with your own data buffer, you are free to
  * examine the results at any point and do whatever you want with it.  Note that
  * if you modify anything and later want to continue to draw to the surface
- * with cairo, you must let cairo know via Cairo::Surface::mark_dirty() 
+ * with cairo, you must let cairo know via Cairo::Surface::mark_dirty()
  *
  * Note that like all surfaces, an ImageSurface is a reference-counted object that should be used via Cairo::RefPtr.
  */
@@ -471,6 +543,12 @@ public:
  * An example of using Cairo::PdfSurface class to render to PDF
  */
 
+typedef enum
+{
+  PDF_VERSION_1_4 = CAIRO_PDF_VERSION_1_4,
+  PDF_VERSION_1_5 = CAIRO_PDF_VERSION_1_5
+} PdfVersion;
+
 /** A PdfSurface provides a way to render PDF documents from cairo.  This
  * surface is not rendered to the screen but instead renders the drawing to a
  * PDF file on disk.
@@ -528,6 +606,32 @@ public:
  **/
   void set_size(double width_in_points, double height_in_points);
 
+  /**
+   * Restricts the generated PDF file to version. See get_versions() for a list
+   * of available version values that can be used here.
+   *
+   * This function should only be called before any drawing operations have been
+   * performed on the given surface. The simplest way to do this is to call this
+   * function immediately after creating the surface.
+   *
+   * @since 1.10
+   */
+  void restrict_to_version(PdfVersion version);
+
+  /** Retrieves the list of PDF versions supported by cairo. See
+   * restrict_to_version().
+   *
+   * @since 1.10
+   */
+  static const std::vector<PdfVersion> get_versions();
+
+  /** Get the string representation of the given version id. This function will
+   * return an empty string if version isn't valid. See get_versions()
+   * for a way to get the list of valid version ids.
+   *
+   * @since 1.10
+   */
+  static std::string version_to_string(PdfVersion version);
 };
 
 #endif  // CAIRO_HAS_PDF_SURFACE
@@ -749,7 +853,7 @@ public:
   /** @deprecated Use SvgSurface::create_for_stream() instead */
   static RefPtr<SvgSurface> create(cairo_write_func_t write_func, void *closure, double width_in_points, double height_in_points);
 
-  /** 
+  /**
    * Restricts the generated SVG file to the given version. See get_versions()
    * for a list of available version values that can be used here.
    *
@@ -763,7 +867,7 @@ public:
 
   /** Retrieves the list of SVG versions supported by cairo. See
    * restrict_to_version().
-   * 
+   *
    * @since 1.2
    */
   static const std::vector<SvgVersion> get_versions();
