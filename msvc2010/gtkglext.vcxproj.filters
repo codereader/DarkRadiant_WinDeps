@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{0c043e4d-34a5-4f7b-957b-acbc6ea85c5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{a8e3d9a2-70a4-4cf8-8a80-c9b836b5c390}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gtk\gtkgldefs.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gtk\gtkglinit.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gtk\gtkglprivate.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gtk\gtkglversion.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gtk\gtkglwidget.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gtk\gtkgl.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gtk\gtkgldebug.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\gtkglext\gtk\gtkglinit.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkglext\gtk\gtkglversion.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkglext\gtk\gtkglwidget.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\gtkglext\gtk\gtkglext.def" />
+  </ItemGroup>
+</Project>
