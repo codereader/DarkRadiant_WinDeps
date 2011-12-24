@@ -4,7 +4,8 @@
 #define _ATKMM_VALUE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: value.hg,v 1.2 2004/01/02 09:56:43 murrayc Exp $ */
 
@@ -25,6 +26,8 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+
+#include <glibmm/interface.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 extern "C"
@@ -105,7 +108,7 @@ public:
   ///Provides access to the underlying C GObject.
   AtkValue*       gobj()       { return reinterpret_cast<AtkValue*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const AtkValue* gobj() const { return reinterpret_cast<AtkValue*>(gobject_); }
 
 private:
@@ -135,38 +138,24 @@ public:
   bool set_current_value(const Glib::ValueBase& value);
 
 protected:
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void get_current_value_vfunc(Glib::ValueBase& value) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void get_current_value_vfunc(Glib::ValueBase& value) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void get_maximum_value_vfunc(Glib::ValueBase& value) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void get_maximum_value_vfunc(Glib::ValueBase& value) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void get_minimum_value_vfunc(Glib::ValueBase& value) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void get_minimum_value_vfunc(Glib::ValueBase& value) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool set_current_value_vfunc(const Glib::ValueBase& value);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool set_current_value_vfunc(const Glib::ValueBase& value);
 
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

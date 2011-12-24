@@ -4,7 +4,8 @@
 #define _ATKMM_OBJECT_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: object.hg,v 1.5 2004/11/30 21:41:44 murrayc Exp $ */
 
@@ -26,6 +27,7 @@
  */
 
 
+#include <glibmm/object.h>
 #include <atkmm/component.h>
 #include <atkmm/relation.h>
 
@@ -46,7 +48,7 @@ namespace Atk
 {
 
 
-/** @addtogroup atkmmEnums Enums and Flags */
+/** @addtogroup atkmmEnums atkmm Enums and Flags */
 
 /**
  * @ingroup atkmmEnums
@@ -204,6 +206,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -390,7 +394,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Description of an object
+/** Description of an object, formatted for assistive technology access.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -400,7 +404,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Description of an object
+/** Description of an object, formatted for assistive technology access.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -616,23 +620,17 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_children_changed(guint change_index, gpointer changed_child);
   virtual void on_focus_event(bool focus_in);
   virtual void on_property_change(AtkPropertyValues* values);
   virtual void on_state_change(const Glib::ustring& name, bool state_set);
   virtual void on_visible_data_changed();
   virtual void on_active_descendant_changed(void** child);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

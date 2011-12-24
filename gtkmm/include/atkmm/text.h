@@ -4,7 +4,8 @@
 #define _ATKMM_TEXT_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: text.hg,v 1.7 2005/01/05 18:21:30 murrayc Exp $ */
 
@@ -27,6 +28,7 @@
 
 
 #include <atkmm/component.h> /* for Atk::CoordType */
+#include <glibmm/slisthandle.h>
 #include <atk/atktext.h>
 
 
@@ -97,7 +99,7 @@ struct AttributeTraits
 typedef Glib::SListHandle<Attribute, AttributeTraits> AttributeSet;
 
 
-/** @addtogroup atkmmEnums Enums and Flags */
+/** @addtogroup atkmmEnums atkmm Enums and Flags */
 
 /**
  * @ingroup atkmmEnums
@@ -328,7 +330,7 @@ public:
   ///Provides access to the underlying C GObject.
   AtkText*       gobj()       { return reinterpret_cast<AtkText*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const AtkText* gobj() const { return reinterpret_cast<AtkText*>(gobject_); }
 
 private:
@@ -613,6 +615,8 @@ public:
     
   
   /** Get the bounding box for text within the specified range.
+   * 
+   * @newin{1,3}
    * @param start_offset The offset of the first text character for which boundary 
    * information is required.
    * @param end_offset The offset of the text character after the last character 
@@ -620,11 +624,11 @@ public:
    * @param coord_type Specify whether coordinates are relative to the screen or widget window.
    * @param rect A pointer to a AtkTextRectangle which is filled in by this function.
    */
-  void get_range_extents(int start_offset, int end_offset,
-                                      CoordType coord_type,
-                                      Rectangle& rect);
+  void get_range_extents(int start_offset, int end_offset, CoordType coord_type, Rectangle& rect);
   
   /** Get the ranges of text in the specified bounding box.
+   * 
+   * @newin{1,3}
    * @param rect An AtkTextRectagle giving the dimensions of the bounding box.
    * @param coord_type Specify whether coordinates are relative to the screen or widget window.
    * @param x_clip_type Specify the horizontal clip type.
@@ -632,8 +636,7 @@ public:
    * @return Array of AtkTextRange. The last element of the array returned 
    * by this function will be <tt>0</tt>.
    */
-  AtkTextRange** get_bounded_ranges(const Rectangle& rect, CoordType coord_type,
-                                                 TextClipType x_clip_type, TextClipType y_clip_type);
+  AtkTextRange** get_bounded_ranges(const Rectangle& rect, CoordType coord_type, TextClipType x_clip_type, TextClipType y_clip_type);
                                                            
 
   /**
@@ -671,73 +674,39 @@ public:
 protected:
  
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual Glib::ustring get_text_vfunc(int start_offset, int end_offset) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual Glib::ustring get_text_vfunc(int start_offset, int end_offset) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual gunichar get_character_at_offset_vfunc(int offset) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual gunichar get_character_at_offset_vfunc(int offset) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual Glib::ustring get_text_after_offset_vfunc(int offset, TextBoundary boundary_type, int& start_offset, int& end_offset) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual Glib::ustring get_text_after_offset_vfunc(int offset, TextBoundary boundary_type, int& start_offset, int& end_offset) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual Glib::ustring get_text_at_offset_vfunc(int offset, TextBoundary boundary_type, int& start_offset, int& end_offset) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual Glib::ustring get_text_at_offset_vfunc(int offset, TextBoundary boundary_type, int& start_offset, int& end_offset) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual Glib::ustring get_text_before_offset_vfunc(int offset, TextBoundary boundary_type, int& start_offset, int& end_offset) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual Glib::ustring get_text_before_offset_vfunc(int offset, TextBoundary boundary_type, int& start_offset, int& end_offset) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual int get_caret_offset_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual int get_caret_offset_vfunc() const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void get_character_extents_vfunc(int offset, int& x, int& y, int& width, int& height, CoordType coords) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void get_character_extents_vfunc(int offset, int& x, int& y, int& width, int& height, CoordType coords) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual AtkAttributeSet* get_run_attributes_vfunc(int offset, int& start_offset, int& end_offset) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual AtkAttributeSet* get_run_attributes_vfunc(int offset, int& start_offset, int& end_offset) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual AtkAttributeSet* get_default_attributes_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual AtkAttributeSet* get_default_attributes_vfunc() const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual int get_character_count_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual int get_character_count_vfunc() const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual int get_offset_at_point_vfunc(int x, int y, CoordType coords) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual int get_offset_at_point_vfunc(int x, int y, CoordType coords) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual int get_n_selections_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual int get_n_selections_vfunc() const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual Glib::ustring get_selection_vfunc(int selection_num, int& start_offset, int& end_offset) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual Glib::ustring get_selection_vfunc(int selection_num, int& start_offset, int& end_offset) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool add_selection_vfunc(int start_offset, int end_offset);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool add_selection_vfunc(int start_offset, int end_offset);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool remove_selection_vfunc(int selection_num);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool remove_selection_vfunc(int selection_num);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool set_selection_vfunc(int selection_num, int start_offset, int end_offset);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool set_selection_vfunc(int selection_num, int start_offset, int end_offset);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool set_caret_offset_vfunc(int offset);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool set_caret_offset_vfunc(int offset);
 
   
   //TODO: Add get_range_extents(), and get_bounded_ranges() vfuncs when we can break ABI.
@@ -747,21 +716,15 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_text_changed(int position, int length);
   virtual void on_text_caret_moved(int location);
   virtual void on_text_selection_changed();
   virtual void on_text_attributes_changed();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

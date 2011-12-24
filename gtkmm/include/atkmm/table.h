@@ -4,7 +4,8 @@
 #define _ATKMM_TABLE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: table.hg,v 1.4 2006/04/12 11:11:24 murrayc Exp $ */
 
@@ -25,6 +26,9 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+
+#include <glibmm/interface.h>
+#include <glibmm/arrayhandle.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 extern "C"
@@ -114,7 +118,7 @@ public:
   ///Provides access to the underlying C GObject.
   AtkTable*       gobj()       { return reinterpret_cast<AtkTable*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const AtkTable* gobj() const { return reinterpret_cast<AtkTable*>(gobject_); }
 
 private:
@@ -130,25 +134,25 @@ public:
   Glib::RefPtr<Atk::Object> get_at(int row, int column);
   
   /** Gets a <tt>int</tt> representing the index at the specified @a row and @a column.
-   * The value -1 is returned if the object at row,column is not a child
-   * of table or table does not implement this interface.
    * @param row A <tt>int</tt> representing a row in @a table.
    * @param column A <tt>int</tt> representing a column in @a table.
    * @return A <tt>int</tt> representing the index at specified position.
+   * The value -1 is returned if the object at row,column is not a child
+   * of table or table does not implement this interface.
    */
   int get_index_at(int row, int column) const;
   
-  /** Gets a <tt>int</tt> representing the column at the specified @a index, or -1
-   * if the table does not implement this interface
+  /** Gets a <tt>int</tt> representing the column at the specified @a index.
    * @param index A <tt>int</tt> representing an index in @a table.
-   * @return A <tt>int</tt> representing the column at the specified index.
+   * @return A <tt>int</tt> representing the column at the specified index,
+   * or -1 if the table does not implement this interface.
    */
   int get_column_at_index(int index) const;
   
-  /** Gets a <tt>int</tt> representing the row at the specified @a index, or -1
-   * if the table does not implement this interface
+  /** Gets a <tt>int</tt> representing the row at the specified @a index.
    * @param index A <tt>int</tt> representing an index in @a table.
-   * @return A <tt>int</tt> representing the row at the specified index.
+   * @return A <tt>int</tt> representing the row at the specified index,
+   * or -1 if the table does not implement this interface.
    */
   int get_row_at_index(int index) const;
   
@@ -410,137 +414,74 @@ public:
 protected:
  
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual Glib::RefPtr<Atk::Object> get_at_vfunc(int row, int column);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual Glib::RefPtr<Atk::Object> get_at_vfunc(int row, int column);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual int get_index_at_vfunc(int row, int column) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual int get_index_at_vfunc(int row, int column) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual int get_column_at_index_vfunc(int index) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual int get_column_at_index_vfunc(int index) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual int get_row_at_index_vfunc(int index) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual int get_row_at_index_vfunc(int index) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual int get_n_columns_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual int get_n_columns_vfunc() const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual int get_n_rows_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual int get_n_rows_vfunc() const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual int get_column_extent_at_vfunc(int row, int column) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual int get_column_extent_at_vfunc(int row, int column) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual int get_row_extent_at_vfunc(int row, int column) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual int get_row_extent_at_vfunc(int row, int column) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual Glib::RefPtr<Atk::Object> get_caption_vfunc();
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual Glib::RefPtr<Atk::Object> get_caption_vfunc();
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual const char* get_column_description_vfunc(int column) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual const char* get_column_description_vfunc(int column) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual Glib::RefPtr<Atk::Object> get_column_header_vfunc(int column);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual Glib::RefPtr<Atk::Object> get_column_header_vfunc(int column);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual const char* get_row_description_vfunc(int row) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual const char* get_row_description_vfunc(int row) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual Glib::RefPtr<Atk::Object> get_row_header_vfunc(int row);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual Glib::RefPtr<Atk::Object> get_row_header_vfunc(int row);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual Glib::RefPtr<Atk::Object> get_summary_vfunc();
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual Glib::RefPtr<Atk::Object> get_summary_vfunc();
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void set_caption_vfunc(const Glib::RefPtr<Atk::Object>& caption);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void set_caption_vfunc(const Glib::RefPtr<Atk::Object>& caption);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void set_column_description_vfunc(int column, const char* description);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void set_column_description_vfunc(int column, const char* description);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void set_column_header_vfunc(int column, const Glib::RefPtr<Atk::Object>& header);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void set_column_header_vfunc(int column, const Glib::RefPtr<Atk::Object>& header);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void set_row_description_vfunc(int row, const char* description);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void set_row_description_vfunc(int row, const char* description);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void set_row_header_vfunc(int row, const Glib::RefPtr<Atk::Object>& header);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void set_row_header_vfunc(int row, const Glib::RefPtr<Atk::Object>& header);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void set_summary_vfunc(const Glib::RefPtr<Atk::Object>& accessible);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void set_summary_vfunc(const Glib::RefPtr<Atk::Object>& accessible);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool is_column_selected_vfunc(int column) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool is_column_selected_vfunc(int column) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool is_row_selected_vfunc(int row) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool is_row_selected_vfunc(int row) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool is_selected_vfunc(int row, int column) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool is_selected_vfunc(int row, int column) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool add_row_selection_vfunc(int row);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool add_row_selection_vfunc(int row);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool remove_row_selection_vfunc(int row);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool remove_row_selection_vfunc(int row);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool add_column_selection_vfunc(int column);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool add_column_selection_vfunc(int column);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool remove_column_selection_vfunc(int column);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool remove_column_selection_vfunc(int column);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual int get_selected_columns_vfunc(int** selected) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual int get_selected_columns_vfunc(int** selected) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual int get_selected_rows_vfunc(int** selected) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual int get_selected_rows_vfunc(int** selected) const;
 
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_row_inserted(int row, int num_inserted);
   virtual void on_column_inserted(int column, int num_inserted);
   virtual void on_row_deleted(int row, int num_deleted);
@@ -548,7 +489,6 @@ protected:
   virtual void on_row_reordered();
   virtual void on_column_reordered();
   virtual void on_model_changed();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

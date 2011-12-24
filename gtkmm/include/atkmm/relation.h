@@ -4,7 +4,8 @@
 #define _ATKMM_RELATION_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: relation.hg,v 1.3 2005/01/05 18:21:30 murrayc Exp $ */
 
@@ -26,6 +27,9 @@
  */
 
 
+#include <glibmm/object.h>
+#include <glibmm/arrayhandle.h>
+
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 typedef struct _AtkRelation AtkRelation;
 typedef struct _AtkRelationClass AtkRelationClass;
@@ -38,7 +42,7 @@ namespace Atk
 {
 
 
-/** @addtogroup atkmmEnums Enums and Flags */
+/** @addtogroup atkmmEnums atkmm Enums and Flags */
 
 /**
  * @ingroup atkmmEnums
@@ -121,6 +125,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -155,9 +161,10 @@ public:
   
   
   /** Adds the specified AtkObject to the target for the relation, if it is
-   * not already present.
+   * not already present.  See also Atk::Object::add_relationship().
    * 
-   * Since: 1.9
+   * 
+   * @newin{1,9}
    * @param target An Atk::Object.
    */
   void add_target(const Glib::RefPtr<Atk::Object>& target);
@@ -167,17 +174,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

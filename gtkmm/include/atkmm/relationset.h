@@ -4,7 +4,8 @@
 #define _ATKMM_RELATIONSET_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: relationset.hg,v 1.3 2005/01/05 18:21:30 murrayc Exp $ */
 
@@ -74,6 +75,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -143,7 +146,7 @@ public:
    * of that type. If it is does contain a relation of that typea the target
    * is added to the relation.
    * 
-   * Since: 1.9
+   * @newin{1,9}
    * @param relationship An Atk::RelationType.
    * @param target An Atk::Object.
    */
@@ -154,17 +157,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

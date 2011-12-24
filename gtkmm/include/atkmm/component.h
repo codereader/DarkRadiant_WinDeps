@@ -4,7 +4,8 @@
 #define _ATKMM_COMPONENT_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: component.hg,v 1.5 2004/03/12 20:35:53 murrayc Exp $ */
 
@@ -25,6 +26,9 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+
+#include <glibmm/interface.h>
+#include <glibmm/value.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 extern "C"
@@ -48,7 +52,7 @@ namespace Atk
 {
 
 
-/** @addtogroup atkmmEnums Enums and Flags */
+/** @addtogroup atkmmEnums atkmm Enums and Flags */
 
 /**
  * @ingroup atkmmEnums
@@ -182,7 +186,7 @@ public:
   ///Provides access to the underlying C GObject.
   AtkComponent*       gobj()       { return reinterpret_cast<AtkComponent*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const AtkComponent* gobj() const { return reinterpret_cast<AtkComponent*>(gobject_); }
 
 private:
@@ -298,76 +302,44 @@ public:
   bool set_size(int width, int height);
 
 protected:
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual guint add_focus_handler_vfunc(AtkFocusHandler handler);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual guint add_focus_handler_vfunc(AtkFocusHandler handler);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool contains_vfunc(int x, int y, CoordType coord_type) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool contains_vfunc(int x, int y, CoordType coord_type) const;
 
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual Glib::RefPtr<Atk::Object> get_accessible_at_point_vfunc(int x, int y, CoordType coord_type);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual Glib::RefPtr<Atk::Object> get_accessible_at_point_vfunc(int x, int y, CoordType coord_type);
 
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void get_extents_vfunc(int& x, int& y, int& width, int& height, CoordType coord_type) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void get_extents_vfunc(int& x, int& y, int& width, int& height, CoordType coord_type) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void get_position_vfunc(int& x, int& y, CoordType coord_type) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void get_position_vfunc(int& x, int& y, CoordType coord_type) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void get_size_vfunc(int& width, int& height) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void get_size_vfunc(int& width, int& height) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual Layer get_layer_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual Layer get_layer_vfunc() const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual int get_mdi_zorder_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual int get_mdi_zorder_vfunc() const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool grab_focus_vfunc();
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool grab_focus_vfunc();
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void remove_focus_handler_vfunc(guint handler_id);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void remove_focus_handler_vfunc(guint handler_id);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool set_extents_vfunc(int x, int y, int width, int height, CoordType coord_type);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool set_extents_vfunc(int x, int y, int width, int height, CoordType coord_type);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool set_position_vfunc(int x, int y, CoordType coord_type);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool set_position_vfunc(int x, int y, CoordType coord_type);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool set_size_vfunc(int width, int height);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool set_size_vfunc(int width, int height);
 
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

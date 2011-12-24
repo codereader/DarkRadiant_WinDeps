@@ -2,7 +2,7 @@
 #ifndef _ATKMM_INIT_H
 #define _ATKMM_INIT_H
 
-/* $Id: init.h 1082 2009-01-19 17:55:19Z murrayc $ */
+/* $Id$ */
 
 /* Copyright (C) 2003 The atkmm Development Team
  *
