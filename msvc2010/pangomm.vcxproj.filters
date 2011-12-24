@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\gtkmm\pango\pangomm\attributes.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\wrap_init.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\attriter.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\attrlist.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\cairofontmap.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\color.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\context.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\coverage.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\font.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\fontdescription.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\fontface.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\fontfamily.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\fontmap.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\fontmetrics.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\fontset.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\glyph.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\glyphstring.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\init.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\item.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\language.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\layout.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\layoutiter.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\layoutline.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\layoutrun.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\rectangle.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\renderer.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\pango\pangomm\tabarray.cc">
+      <Filter>Sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{fec57fe7-987d-4f6f-b75e-8eea350bbc29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{66c97b77-2284-4006-a043-59e711bcbfed}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\font.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\fontdescription.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\fontface.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\fontfamily.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\fontmap.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\fontmetrics.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\fontset.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\glyph.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\glyphstring.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\init.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\item.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\language.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\layout.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\layoutiter.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\layoutline.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\layoutrun.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\rectangle.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\renderer.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\tabarray.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\types.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\wrap_init.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\attributes.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\attriter.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\attrlist.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\cairofontmap.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\color.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\context.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\pangomm\coverage.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
