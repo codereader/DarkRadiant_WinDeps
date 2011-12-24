@@ -82,6 +82,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -101,77 +103,17 @@ protected:
 
 public:
 
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   static Glib::RefPtr<PixbufAnimation> create_from_file(const Glib::ustring& filename);
-  #else
-  static Glib::RefPtr<PixbufAnimation> create_from_file(const Glib::ustring& filename, std::auto_ptr<Glib::Error>& error);
-  #endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
-  /** Queries the width of the bounding box of a pixbuf animation.
-   * @return Width of the bounding box of the animation.
-   */
   int get_width() const;
   
-  /** Queries the height of the bounding box of a pixbuf animation.
-   * @return Height of the bounding box of the animation.
-   */
   int get_height() const;
   
-  /** If you load a file with new_from_file() and it turns
-   * out to be a plain, unanimated image, then this function will return
-   * <tt>true</tt>. Use get_static_image() to retrieve
-   * the image.
-   * @return <tt>true</tt> if the "animation" was really just an image.
-   */
   bool is_static_image() const;
   
-  /** If an animation is really just a plain image (has only one frame),
-   * this function returns that image. If the animation is an animation,
-   * this function returns a reasonable thing to display as a static
-   * unanimated image, which might be the first frame, or something more
-   * sophisticated. If an animation hasn't loaded any frames yet, this
-   * function will return <tt>0</tt>.
-   * @return Unanimated image representing the animation.
-   */
   Glib::RefPtr<Pixbuf> get_static_image();
   
-  /** Get an iterator for displaying an animation. The iterator provides
-   * the frames that should be displayed at a given time.
-   * It should be freed after use with Glib::object_unref().
-   * 
-   *  @a start_time would normally come from Glib::get_current_time(), and
-   * marks the beginning of animation playback. After creating an
-   * iterator, you should immediately display the pixbuf returned by
-   * Gdk::PixbufAnimationIter::get_pixbuf(). Then, you should install a
-   * timeout (with Glib::timeout_add()) or by some other mechanism ensure
-   * that you'll update the image after
-   * Gdk::PixbufAnimationIter::get_delay_time() milliseconds. Each time
-   * the image is updated, you should reinstall the timeout with the new,
-   * possibly-changed delay time.
-   * 
-   * As a shortcut, if @a start_time is <tt>0</tt>, the result of
-   * Glib::get_current_time() will be used automatically.
-   * 
-   * To update the image (i.e. possibly change the result of
-   * Gdk::PixbufAnimationIter::get_pixbuf() to a new frame of the animation),
-   * call Gdk::PixbufAnimationIter::advance().
-   * 
-   * If you're using Gdk::PixbufLoader, in addition to updating the image
-   * after the delay time, you should also update it whenever you
-   * receive the area_updated signal and
-   * Gdk::PixbufAnimationIter::on_currently_loading_frame() returns
-   * <tt>true</tt>. In this case, the frame currently being fed into the loader
-   * has received new data, so needs to be refreshed. The delay time for
-   * a frame may also be modified after an area_updated signal, for
-   * example if the delay time for a frame is encoded in the data after
-   * the frame itself. So your timeout should be reinstalled after any
-   * area_updated signal.
-   * 
-   * A delay time of -1 is possible, indicating "infinite."
-   * @param start_time Time when the animation starts playing.
-   * @return An iterator to move over the animation.
-   */
   Glib::RefPtr<PixbufAnimationIter> get_iter(const GTimeVal* start_time);
 
 
@@ -179,17 +121,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

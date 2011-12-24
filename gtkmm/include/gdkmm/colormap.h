@@ -89,6 +89,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -144,7 +146,7 @@ public:
    * existing colors if the color cannot be allocated as requested.
    * @return <tt>true</tt> if the allocation succeeded.
    */
-  bool alloc_color(Color& color, bool writeable = false, bool best_match = true);
+  bool alloc_color(Color& color, bool writeable =  false, bool best_match =  true);
   void free_color(Color& color);
 
   
@@ -161,31 +163,31 @@ public:
    * @param pixel Pixel value in hardware display format.
    * @param result Gdk::Color with red, green, blue fields initialized.
    */
-  void query_color (gulong pixel, Color& result);
+  void query_color(gulong pixel, Color& result);
 
   
-  /** Return value: the visual of the colormap.
+  /** Returns the visual for which a given colormap was created.
    * @return The visual of the colormap.
    */
   Glib::RefPtr<Visual> get_visual();
   
-  /** Return value: the visual of the colormap.
+  /** Returns the visual for which a given colormap was created.
    * @return The visual of the colormap.
    */
   Glib::RefPtr<const Visual> get_visual() const;
   
   
   /** Gets the screen for which this colormap was created.
-   * @return The screen for which this colormap was created.
    * 
-   * @newin2p2.
+   * @newin{2,2}
+   * @return The screen for which this colormap was created.
    */
   Glib::RefPtr<Screen> get_screen();
   
   /** Gets the screen for which this colormap was created.
-   * @return The screen for which this colormap was created.
    * 
-   * @newin2p2.
+   * @newin{2,2}
+   * @return The screen for which this colormap was created.
    */
   Glib::RefPtr<const Screen> get_screen() const;
   
@@ -194,17 +196,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

@@ -25,15 +25,14 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <gdk/gdk.h>
 #include <pangomm/font.h>
 #include <pangomm/layout.h>
 #include <pangomm/layoutline.h>
 #include <pangomm/glyphstring.h>
+#include <gdkmm/region.h>
 #include <gdkmm/gc.h>
 #include <gdkmm/image.h>
 #include <gdkmm/color.h>
-#include <gdkmm/region.h>
 #include <gdkmm/rgbcmap.h>
 #include <gdkmm/types.h>
 #include <cairomm/context.h>
@@ -51,7 +50,7 @@ namespace Gdk
 namespace Gdk
 {
 
-/** @addtogroup gdkmmEnums Enums and Flags */
+/** @addtogroup gdkmmEnums gdkmm Enums and Flags */
 
 /**
  * @ingroup gdkmmEnums
@@ -95,7 +94,7 @@ class Pixbuf;
  *
  * To use a drawable, create a concrete Drawable of the type you wish to use
  * and a Gdk::GC (graphics context) for that Drawable.  With the GC you can
- * draw lines, text, arcs and such. 
+ * draw lines, text, arcs and such.
  *
  * An alternative is to create a Cairo::Context with get_cairo_context()
  * while you handle the 'exposed' event of the drawable. For more about
@@ -133,6 +132,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -164,6 +165,9 @@ public:
    * On the X11 platform, if @a drawable is a Gdk::Window, the returned
    * size is the size reported in the most-recently-processed configure
    * event, rather than the current size on the X server.
+   * 
+   * Deprecated: 2.24: Use Gdk::Window::get_width() and Gdk::Window::get_height() for
+   * Gdk::Windows. Use gdk_pixmap_get_size() for Gdk::Pixmaps.
    * @deprecated Use the const version of this method.
    * @param width Location to store drawable's width, or <tt>0</tt>.
    * @param height Location to store drawable's height, or <tt>0</tt>.
@@ -172,17 +176,24 @@ public:
 #endif // GDKMM_DISABLE_DEPRECATED
 
 
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** Fills * @a width and * @a height with the size of @a drawable.
    *  @a width or @a height can be <tt>0</tt> if you only want the other one.
    * 
    * On the X11 platform, if @a drawable is a Gdk::Window, the returned
    * size is the size reported in the most-recently-processed configure
    * event, rather than the current size on the X server.
+   * 
+   * Deprecated: 2.24: Use Gdk::Window::get_width() and Gdk::Window::get_height() for
+   * Gdk::Windows. Use gdk_pixmap_get_size() for Gdk::Pixmaps.
    * @param width Location to store drawable's width, or <tt>0</tt>.
    * @param height Location to store drawable's height, or <tt>0</tt>.
    */
   void get_size(int& width, int& height) const;
-  
+#endif // GDKMM_DISABLE_DEPRECATED
+
+
   /** Obtains the bit depth of the drawable, that is, the number of bits
    * that make up a pixel in the drawable's visual. Examples are 8 bits
    * per pixel, 24 bits per pixel, etc.
@@ -209,24 +220,56 @@ public:
    */
   Glib::RefPtr<Colormap> get_colormap();
   
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** Gets the Gdk::Visual describing the pixel format of @a drawable.
+   * 
+   * Deprecated: 2.24: Use Gdk::Window::get_visual()
    * @return A Gdk::Visual.
    */
   Glib::RefPtr<Visual> get_visual();
+#endif // GDKMM_DISABLE_DEPRECATED
 
-  
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** Draws a point, using the foreground color and other attributes of 
    * the Gdk::GC.
+   * 
+   * Deprecated: 2.22: Use cairo_rectangle() and cairo_fill() or 
+   * cairo_move_to() and cairo_stroke() instead.
    * @param gc A Gdk::GC.
    * @param x The x coordinate of the point.
    * @param y The y coordinate of the point.
    */
   void draw_point(const Glib::RefPtr<const GC>& gc, int x, int y);
-  void draw_points(const Glib::RefPtr<const GC>& gc, const Glib::ArrayHandle<Point>& points);
+#endif // GDKMM_DISABLE_DEPRECATED
 
-  
+
+  #ifndef GDKMM_DISABLE_DEPRECATED
+
+  //TODO: Mention C++ API in the deprecation comment.
+  /** @deprecated Use n_points calls to cairo_rectangle() and cairo_fill() instead.
+   */
+  void draw_points(const Glib::RefPtr<const GC>& gc, const Glib::ArrayHandle<Point>& points);
+  #endif // GDKMM_DISABLE_DEPRECATED
+
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** Draws a line, using the foreground color and other attributes of 
    * the Gdk::GC.
+   * 
+   * Deprecated: 2.22: Use cairo_line_to() and cairo_stroke() instead.
+   * Be aware that the default line width in Cairo is 2 pixels and that your
+   * coordinates need to describe the center of the line. To draw a single
+   * pixel wide pixel-aligned line, you would use:
+   * |[cairo_set_line_width (cr, 1.0);
+   * cairo_set_line_cap (cr, CAIRO_LINE_CAP_SQUARE);
+   * cairo_move_to (cr, 0.5, 0.5);
+   * cairo_line_to (cr, 9.5, 0.5);
+   * cairo_stroke (cr);]|
+   * See also  on this topic.
    * @param gc A Gdk::GC.
    * @param x1 The x coordinate of the start point.
    * @param y1 The y coordinate of the start point.
@@ -234,19 +277,34 @@ public:
    * @param y2 The y coordinate of the end point.
    */
   void draw_line(const Glib::RefPtr<const GC>& gc, int x1, int y1, int x2, int y2);
-  void draw_lines(const Glib::RefPtr<const GC>& gc, const Glib::ArrayHandle<Point>& points);
+#endif // GDKMM_DISABLE_DEPRECATED
 
-  
+
+  #ifndef GDKMM_DISABLE_DEPRECATED
+
+  //TODO: Mention C++ API in the deprecation comment.
+  /** @deprecated Use cairo_line_to() and cairo_stroke() instead. See the documentation of gdk_draw_line() for notes on line drawing with Cairo.
+   */
+  void draw_lines(const Glib::RefPtr<const GC>& gc, const Glib::ArrayHandle<Point>& points);
+  #endif // GDKMM_DISABLE_DEPRECATED
+
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** Draws a rectangular outline or filled rectangle, using the foreground color
    * and other attributes of the Gdk::GC.
    * 
    * A rectangle drawn filled is 1 pixel smaller in both dimensions than a 
    * rectangle outlined. Calling 
-   * <literal>gdk_draw_rectangle (window, gc, <tt>true</tt>, 0, 0, 20, 20)</literal> 
+   * <tt>gdk_draw_rectangle (window, gc, <tt>true</tt>, 0, 0, 20, 20)</tt> 
    * results in a filled rectangle 20 pixels wide and 20 pixels high. Calling
-   * <literal>gdk_draw_rectangle (window, gc, <tt>false</tt>, 0, 0, 20, 20)</literal> 
+   * <tt>gdk_draw_rectangle (window, gc, <tt>false</tt>, 0, 0, 20, 20)</tt> 
    * results in an outlined rectangle with corners at (0, 0), (0, 20), (20, 20),
    * and (20, 0), which makes it 21 pixels wide and 21 pixels high.
+   * 
+   * Deprecated: 2.22: Use cairo_rectangle() and cairo_fill() or cairo_stroke()
+   * instead. For stroking, the same caveats for converting code apply as for
+   * gdk_draw_line().
    * @param gc A Gdk::GC.
    * @param filled <tt>true</tt> if the rectangle should be filled.
    * @param x The x coordinate of the left edge of the rectangle.
@@ -255,10 +313,18 @@ public:
    * @param height The height of the rectangle.
    */
   void draw_rectangle(const Glib::RefPtr<const GC>& gc, bool filled, int x, int y, int width, int height);
-  
+#endif // GDKMM_DISABLE_DEPRECATED
+
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** Draws an arc or a filled 'pie slice'. The arc is defined by the bounding
    * rectangle of the entire ellipse, and the start and end angles of the part 
    * of the ellipse to be drawn.
+   * 
+   * Deprecated: 2.22: Use cairo_arc() and cairo_fill() or cairo_stroke()
+   * instead. Note that arcs just like any drawing operation in Cairo are
+   * antialiased unless you call cairo_set_antialias().
    * @param gc A Gdk::GC.
    * @param filled <tt>true</tt> if the arc should be filled, producing a 'pie slice'.
    * @param x The x coordinate of the left edge of the bounding rectangle.
@@ -271,9 +337,14 @@ public:
    * of a degree.
    */
   void draw_arc(const Glib::RefPtr<const GC>& gc, bool filled, int x, int y, int width, int height, int angle1, int angle2);
+#endif // GDKMM_DISABLE_DEPRECATED
+
+
   void draw_polygon(const Glib::RefPtr<const GC>& gc, bool filled, const Glib::ArrayHandle<Point>& points);
 
   
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** Copies the @a width x @a height region of @a src at coordinates ( @a xsrc,
    *  @a ysrc) to coordinates ( @a xdest, @a ydest) in @a drawable.
    *  @a width and/or @a height may be given as -1, in which case the entire
@@ -289,6 +360,10 @@ public:
    * a color drawable. The way to draw a bitmap is to set the bitmap as 
    * the stipple on the Gdk::GC, set the fill mode to Gdk::STIPPLED, and 
    * then draw the rectangle.
+   * 
+   * Deprecated: 2.22: Use gdk_cairo_set_source_pixmap(), cairo_rectangle()
+   * and cairo_fill() to draw pixmap on top of other drawables. Also keep
+   * in mind that the limitations on allowed sources do not apply to Cairo.
    * @param gc A Gdk::GC sharing the drawable's visual and colormap.
    * @param src The source Gdk::Drawable, which may be the same as @a drawable.
    * @param xsrc X position in @a src of rectangle to draw.
@@ -298,10 +373,17 @@ public:
    * @param width Width of rectangle to draw, or -1 for entire @a src width.
    * @param height Height of rectangle to draw, or -1 for entire @a src height.
    */
-  void draw_drawable(const Glib::RefPtr<const GC>& gc, const Glib::RefPtr<const Drawable>& src, int xsrc, int ysrc, int xdest, int ydest, int width = -1, int height = -1);
-  
+  void draw_drawable(const Glib::RefPtr<const GC>& gc, const Glib::RefPtr<const Drawable>& src, int xsrc, int ysrc, int xdest, int ydest, int width =  -1, int height =  -1);
+#endif // GDKMM_DISABLE_DEPRECATED
+
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** Draws a Gdk::Image onto a drawable.
    * The depth of the Gdk::Image must match the depth of the Gdk::Drawable.
+   * 
+   * Deprecated: 2.22: Do not use Gdk::Image anymore, instead use Cairo image
+   * surfaces.
    * @param gc A Gdk::GC.
    * @param image The Gdk::Image to draw.
    * @param xsrc The left edge of the source rectangle within @a image.
@@ -313,23 +395,36 @@ public:
    * @param height The height of the area to be copied, or -1 to make the area 
    * extend to the bottom edge of @a image.
    */
-  void draw_image(const Glib::RefPtr<const GC>& gc, const Glib::RefPtr<const Image>& image, int xsrc, int ysrc, int xdest, int ydest, int width = -1, int height = -1);
+  void draw_image(const Glib::RefPtr<const GC>& gc, const Glib::RefPtr<const Image>& image, int xsrc, int ysrc, int xdest, int ydest, int width =  -1, int height =  -1);
+#endif // GDKMM_DISABLE_DEPRECATED
+
 
   //segs is an array, and this function will be used so little that it doesn't seem worth wrapping it to use a container of C++ types.
   //Note: The segs parameter was made const in GTK+ 2.16, but we can't change that in our C++ API. TODO: Change it when we can do an ABI break.
  
 
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** Draws a number of unconnected lines.
+   * 
+   * Deprecated: 2.22: Use cairo_move_to(), cairo_line_to() and cairo_stroke()
+   * instead. See the documentation of gdk_draw_line() for notes on line drawing
+   * with Cairo.
    * @param gc A Gdk::GC.
    * @param segs An array of Gdk::Segment structures specifying the start and 
    * end points of the lines to be drawn.
    * @param n_segs The number of line segments to draw, i.e. the size of the 
    *  @a segs array.
    */
-  void draw_segments(const Glib::RefPtr<const GC>& gc, GdkSegment* segs, int nsegs); // TODO
+  void draw_segments(const Glib::RefPtr<const GC>& gc, GdkSegment* segs, int nsegs);
+#endif // GDKMM_DISABLE_DEPRECATED
+
+ // TODO
 
   //glyphs is not an array. I went down to pango_xft_render in pango and saw that PangoGlyphString here is not an array. -Bryan
   
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** This is a low-level function; 99% of text rendering should be done
    * using gdk_draw_layout() instead.
    * 
@@ -338,6 +433,8 @@ public:
    * lot about internationalized text handling, which you don't want to
    * understand; thus, use gdk_draw_layout() instead of this function,
    * gdk_draw_layout() handles the details.
+   * 
+   * Deprecated: 2.22: Use pango_cairo_show_glyphs() instead.
    * @param gc A Gdk::GC.
    * @param font Font to be used.
    * @param x X coordinate of baseline origin.
@@ -345,8 +442,11 @@ public:
    * @param glyphs The glyph string to draw.
    */
   void draw_glyphs(const Glib::RefPtr<const GC>& gc, const Glib::RefPtr<const Pango::Font>& font, int x, int y, const Pango::GlyphString& glyphs);
+#endif // GDKMM_DISABLE_DEPRECATED
 
-  
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** Render a Pango::LayoutLine onto an GDK drawable
    * 
    * If the layout's Pango::Context has a transformation matrix set, then
@@ -359,7 +459,11 @@ public:
    * @param line A Pango::LayoutLine.
    */
   void draw_layout_line(const Glib::RefPtr<const GC>& gc, int x, int y, const Glib::RefPtr<const Pango::LayoutLine>& line);
-  
+#endif // GDKMM_DISABLE_DEPRECATED
+
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** Render a Pango::LayoutLine onto a Gdk::Drawable, overriding the
    * layout's normal colors with @a foreground and/or @a background.
    *  @a foreground and @a background need not be allocated.
@@ -376,8 +480,11 @@ public:
    * @param background Background override color, or <tt>0</tt> for none.
    */
   void draw_layout_line(const Glib::RefPtr<const GC>& gc, int x, int y, const Glib::RefPtr<const Pango::LayoutLine>& line, const Color& foreground, const Color& background);
+#endif // GDKMM_DISABLE_DEPRECATED
 
-  
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** Render a Pango::Layout onto a GDK drawable
    * 
    * If the layout's Pango::Context has a transformation matrix set, then
@@ -392,7 +499,11 @@ public:
    * @param layout A Pango::Layout.
    */
   void draw_layout(const Glib::RefPtr<const GC>& gc, int x, int y, const Glib::RefPtr<const Pango::Layout>& layout);
-  
+#endif // GDKMM_DISABLE_DEPRECATED
+
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** Render a Pango::Layout onto a Gdk::Drawable, overriding the
    * layout's normal colors with @a foreground and/or @a background.
    *  @a foreground and @a background need not be allocated.
@@ -411,9 +522,13 @@ public:
    * @param background Background override color, or <tt>0</tt> for none.
    */
   void draw_layout(const Glib::RefPtr<const GC>& gc, int x, int y, const Glib::RefPtr<const Pango::Layout>& layout, const Color& foreground, const Color& background);
+#endif // GDKMM_DISABLE_DEPRECATED
+
 
 //Note: The pixbuf parameter was made const in GTK+ 2.16, but we can't change that in our C++ API. TODO: Change it when we can do an ABI break.
  
+
+#ifndef GDKMM_DISABLE_DEPRECATED
 
   /** Renders a rectangular portion of a pixbuf to a drawable.  The destination
    * drawable must have a colormap. All windows have a colormap, however, pixmaps
@@ -433,7 +548,7 @@ public:
    * support can be turned off by setting the GDK_DISABLE_MEDIALIB environment
    * variable.
    * 
-   * @newin2p2
+   * @newin{2,2}
    * @param gc A Gdk::GC, used for clipping.
    * @param pixbuf A Gdk::Pixbuf.
    * @param src_x Source X coordinate within pixbuf.
@@ -446,27 +561,29 @@ public:
    * @param x_dither X offset for dither.
    * @param y_dither Y offset for dither.
    */
-  void draw_pixbuf(const Glib::RefPtr<const GC>& gc, const Glib::RefPtr<Pixbuf>& pixbuf,
-    int src_x, int src_y, int dest_x, int dest_y,
-    int width, int height,
-    RgbDither dither, int x_dither, int y_dither);
+  void draw_pixbuf(const Glib::RefPtr<const GC>& gc, const Glib::RefPtr<Pixbuf>& pixbuf, int src_x, int src_y, int dest_x, int dest_y, int width, int height, RgbDither dither, int x_dither, int y_dither);
+#endif // GDKMM_DISABLE_DEPRECATED
 
+
+  #ifndef GDKMM_DISABLE_DEPRECATED
+
+  //TODO: Mention C++ API in the deprecation comment.
   /** Renders a rectangular portion of a pixbuf to a drawable.  The destination
    * drawable must have a colormap. All windows have a colormap, however, pixmaps
-   * only have colormap by default if they were created with a non-<tt>0</tt> window 
-   * argument. Otherwise a colormap must be set on them with 
+   * only have colormap by default if they were created with a non-<tt>0</tt> window
+   * argument. Otherwise a colormap must be set on them with
    * Gdk::Drawable::set_colormap().
-   * 
-   * On older X servers, rendering pixbufs with an alpha channel involves round 
+   *
+   * On older X servers, rendering pixbufs with an alpha channel involves round
    * trips to the X server, and may be somewhat slow.
-   * 
+   *
    * If GDK is built with the Sun mediaLib library, the gdk_draw_pixbuf
    * function is accelerated using mediaLib, which provides hardware
    * acceleration on Intel, AMD, and Sparc chipsets.  If desired, mediaLib
    * support can be turned off by setting the GDK_DISABLE_MEDIALIB environment
    * variable.
-   * 
-   * @newin2p16
+   *
+   * @newin{2,16}
    * @param pixbuf A Gdk::Pixbuf.
    * @param src_x Source X coordinate within pixbuf.
    * @param src_y Source Y coordinates within pixbuf.
@@ -477,11 +594,16 @@ public:
    * @param dither Dithering mode for Gdk::RGB.
    * @param x_dither X offset for dither.
    * @param y_dither Y offset for dither.
+   *
+   * @deprecated Use gdk_cairo_set_source_pixbuf() and cairo_paint() 
+   * or cairo_rectangle() and cairo_fill() instead.
    */
   void draw_pixbuf(const Glib::RefPtr<Pixbuf>& pixbuf,
     int src_x, int src_y, int dest_x, int dest_y,
     int width, int height,
     RgbDither dither, int x_dither, int y_dither);
+  #endif // GDKMM_DISABLE_DEPRECATED
+
 
   // Note: This has no 'refreturn' because get_image() returns a newly created Image object.
   
@@ -526,14 +648,14 @@ public:
   // same as gdk_drawable_get_image().
   void copy_to_image(const Glib::RefPtr<Image>& image, int src_x, int src_y, int dest_x, int dest_y, int width, int height) const;
   
-  
+
   /** Computes the region of a drawable that potentially can be written
    * to by drawing primitives. This region will not take into account
    * the clip region for the GC, and may also not take into account
    * other factors such as if the window is obscured by other windows,
    * but no area outside of this region will be affected by drawing
    * primitives.
-   * @return A Gdk::Region. This must be freed with gdk_region_destroy()
+   * @return A Gdk::Region. This must be freed with Gdk::Region::destroy()
    * when you are done.
    */
   Region get_clip_region() const;
@@ -542,7 +664,7 @@ public:
    * This does not necessarily take into account if the window is
    * obscured by other windows, but no area outside of this region
    * is visible.
-   * @return A Gdk::Region. This must be freed with gdk_region_destroy()
+   * @return A Gdk::Region. This must be freed with Gdk::Region::destroy()
    * when you are done.
    */
   Region get_visible_region() const;
@@ -551,27 +673,30 @@ public:
   // **** RGB stuff ****
 
   
-  void draw_rgb_image(
-                   const Glib::RefPtr<const GC>& gc,
-                   int x, int y, int width, int height,
-                   RgbDither dith, const guchar* rgb_buf, int rowstride);
+#ifndef GDKMM_DISABLE_DEPRECATED
 
-  
-  void draw_rgb_image_dithalign(
-                   const Glib::RefPtr<const GC>& gc,
-                   int x, int y, int width, int height,
-                   RgbDither dith, const guchar* rgb_buf, int rowstride,
-                   int xdith, int ydith);
+  void draw_rgb_image(const Glib::RefPtr<const GC>& gc, int x, int y, int width, int height, RgbDither dith, const guchar* rgb_buf, int rowstride);
+#endif // GDKMM_DISABLE_DEPRECATED
 
-  
-  void draw_rgb_32_image(
-                   const Glib::RefPtr<const GC>& gc,
-                   int x, int y, int width, int height,
-                   RgbDither dith, const guchar* rgb_buf, int rowstride);
 
-  
+#ifndef GDKMM_DISABLE_DEPRECATED
+
+  void draw_rgb_image_dithalign(const Glib::RefPtr<const GC>& gc, int x, int y, int width, int height, RgbDither dith, const guchar* rgb_buf, int rowstride, int xdith, int ydith);
+#endif // GDKMM_DISABLE_DEPRECATED
+
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
+  void draw_rgb_32_image(const Glib::RefPtr<const GC>& gc, int x, int y, int width, int height, RgbDither dith, const guchar* rgb_buf, int rowstride);
+#endif // GDKMM_DISABLE_DEPRECATED
+
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** Like gdk_draw_rgb_32_image(), but allows you to specify the dither
    * offsets. See gdk_draw_rgb_image_dithalign() for more details.
+   * 
+   * Deprecated: 2.22: Cairo handles colors automatically.
    * @param gc A Gdk::GC.
    * @param x X coordinate on @a drawable where image should go.
    * @param y Y coordinate on @a drawable where image should go.
@@ -583,60 +708,78 @@ public:
    * @param xdith X dither offset.
    * @param ydith Y dither offset.
    */
-  void draw_rgb_32_image_dithalign(
-                   const Glib::RefPtr<const GC>& gc,
-                   int x, int y, int width, int height,
-                   RgbDither dith, const guchar* buf, int rowstride,
-                   int xdith, int ydith);
+  void draw_rgb_32_image_dithalign(const Glib::RefPtr<const GC>& gc, int x, int y, int width, int height, RgbDither dith, const guchar* buf, int rowstride, int xdith, int ydith);
+#endif // GDKMM_DISABLE_DEPRECATED
 
-  
-  void draw_gray_image(
-                   const Glib::RefPtr<const GC>& gc,
-                   int x, int y, int width, int height,
-                   RgbDither dith, const guchar* rgb_buf, int rowstride);
 
-  
-  void draw_indexed_image(
-                   const Glib::RefPtr<const GC>& gc,
-                   int x, int y, int width, int height,
-                   RgbDither dith, const guchar* rgb_buf, int rowstride,
-                   const RgbCmap& cmap);
+#ifndef GDKMM_DISABLE_DEPRECATED
 
-  
+  void draw_gray_image(const Glib::RefPtr<const GC>& gc, int x, int y, int width, int height, RgbDither dith, const guchar* rgb_buf, int rowstride);
+#endif // GDKMM_DISABLE_DEPRECATED
+
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
+  void draw_indexed_image(const Glib::RefPtr<const GC>& gc, int x, int y, int width, int height, RgbDither dith, const guchar* rgb_buf, int rowstride, const RgbCmap& cmap);
+#endif // GDKMM_DISABLE_DEPRECATED
+
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** Gets the Gdk::Screen associated with a Gdk::Drawable.
-   * @return The Gdk::Screen associated with @a drawable
    * 
-   * @newin2p2.
+   * @newin{2,2}
+   * 
+   * Deprecated: 2.24: Use Gdk::Window::get_screen() instead
+   * @return The Gdk::Screen associated with @a drawable.
    */
   Glib::RefPtr<Screen> get_screen();
-  
+#endif // GDKMM_DISABLE_DEPRECATED
+
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** Gets the Gdk::Screen associated with a Gdk::Drawable.
-   * @return The Gdk::Screen associated with @a drawable
    * 
-   * @newin2p2.
+   * @newin{2,2}
+   * 
+   * Deprecated: 2.24: Use Gdk::Window::get_screen() instead
+   * @return The Gdk::Screen associated with @a drawable.
    */
   Glib::RefPtr<const Screen> get_screen() const;
+#endif // GDKMM_DISABLE_DEPRECATED
 
-  
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** Gets the Gdk::Display associated with a Gdk::Drawable.
-   * @return The Gdk::Display associated with @a drawable
    * 
-   * @newin2p2.
+   * @newin{2,2}
+   * 
+   * Deprecated: 2.24: Use Gdk::Window::get_display() instead
+   * @return The Gdk::Display associated with @a drawable.
    */
   Glib::RefPtr<Display> get_display();
-  
+#endif // GDKMM_DISABLE_DEPRECATED
+
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** Gets the Gdk::Display associated with a Gdk::Drawable.
-   * @return The Gdk::Display associated with @a drawable
    * 
-   * @newin2p2.
+   * @newin{2,2}
+   * 
+   * Deprecated: 2.24: Use Gdk::Window::get_display() instead
+   * @return The Gdk::Display associated with @a drawable.
    */
   Glib::RefPtr<const Display> get_display() const;
+#endif // GDKMM_DISABLE_DEPRECATED
 
-   
+
   /** Creates a Cairo context for drawing to @a drawable.
    * @return A newly created Cairo context.
    * 
-   * @newin2p10.
+   * @newin{2,10}.
    */
   Cairo::RefPtr<Cairo::Context> create_cairo_context();
 
@@ -645,17 +788,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

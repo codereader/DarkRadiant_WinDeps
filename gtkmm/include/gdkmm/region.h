@@ -27,6 +27,39 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+// We use GdkSpanFunc in the (deprecated) API, so we must temporarily undef GDK_DISABLE_DEPRECATED.
+// We shouldn't have used that C type in the API anyway, but we can't break API.
+// Temporarily undef GDK_DISABLE_DEPRECATED, redefining it later if appropriate.
+// We need this to use _GtkBoxChild, which we use in our (deprecated) API.
+#if defined(GDK_DISABLE_DEPRECATED) && !defined(GTKMM_GDK_DISABLE_DEPRECATED_UNDEFED)
+#undef GDK_DISABLE_DEPRECATED
+#define GTKMM_GDK_DISABLE_DEPRECATED_UNDEFED 1
+#endif
+
+// This is for dragcontext which is often included after color.h, which we can't avoid.
+// We use GdkDragContext members in the (deprecated) API, for which there are no replacements,
+// so we must temporarily undef GSEAL_ENABLE.
+// Temporarily undef GSEAL_ENABLE, redefining it later if appropriate.
+#if defined(GSEAL_ENABLE) && !defined(GTKMM_GSEAL_ENABLE_UNDEFED)
+#undef GSEAL_ENABLE
+#define GTKMM_GSEAL_ENABLE_UNDEFED 1
+#endif
+
+#include <gdk/gdk.h>
+
+// Redefine GDK_DISABLE_DEPRECATED if it was defined before we temporarily undefed it:
+#if defined(GTKMM_GDK_DISABLE_DEPRECATED_UNDEFED)
+#define GDK_DISABLE_DEPRECATED 1
+#undef GTKMM_GDK_DISABLE_DEPRECATED_UNDEFED
+#endif
+
+// Redefine GSEAL_ENABLE if it was defined before we temporarily undefed it:
+#if defined(GTKMM_GSEAL_ENABLE_UNDEFED)
+#define GSEAL_ENABLE 1
+#undef GTKMM_GSEAL_ENABLE_UNDEFED
+#endif
+
+
 extern "C" { typedef struct _GdkRegion GdkRegion; }
 
 #include <glibmm/arrayhandle.h>
@@ -38,7 +71,7 @@ namespace Gdk
 {
 
 
-/** @addtogroup gdkmmEnums Enums and Flags */
+/** @addtogroup gdkmmEnums gdkmm Enums and Flags */
 
 /**
  * @ingroup gdkmmEnums
@@ -177,6 +210,8 @@ public:
   
   /** Resizes a region by the specified amount.
    * Positive values shrink the region. Negative values expand it.
+   * 
+   * Deprecated: 2.22: There is no replacement for this function.
    * @param dx The number of pixels to shrink the region horizontally.
    * @param dy The number of pixels to shrink the region vertically.
    */
@@ -215,12 +250,14 @@ public:
    * @param source2 Another Gdk::Region.
    */
   void xor_(const Region& source2); //xor is a keyword
-  
-  
+
+
 //Note: The spans parameter was made const in GTK+ 2.16, but we can't change that in our C++ API. TODO: Change it when we can do an ABI break.
  
 
   /** Calls a function on each span in the intersection of @a region and @a spans.
+   * 
+   * Deprecated: 2.22: There is no replacement.
    * @param spans An array of Gdk::Spans.
    * @param n_spans The length of @a spans.
    * @param sorted <tt>true</tt> if @a spans is sorted wrt. the y coordinate.
@@ -228,9 +265,10 @@ public:
    * @param data Data to pass to @a function.
    */
   void spans_intersect_foreach(GdkSpan* spans, int n_spans, bool sorted, GdkSpanFunc function, gpointer data);
-  
+
 
 };
+
 
 } //namespace Gdk
 

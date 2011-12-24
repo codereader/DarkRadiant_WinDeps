@@ -27,6 +27,8 @@
 
 #include <gdkmm/window.h>
 #include <gdkmm/event.h>
+
+//#include <gdkmm/display.h>
 #include <gdk/gdk.h>
 
 
@@ -41,7 +43,7 @@ namespace Gdk
 namespace Gdk
 {
 
-/** @addtogroup gdkmmEnums Enums and Flags */
+/** @addtogroup gdkmmEnums gdkmm Enums and Flags */
 
 /**
  * @ingroup gdkmmEnums
@@ -107,6 +109,8 @@ namespace Gdk
 {
 
 
+class Display;
+
 /** A Gdk::Device instance contains a detailed description of an extended input device.
  */
 
@@ -140,6 +144,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -165,10 +171,34 @@ public:
   
   bool set_mode(InputMode mode);
   
+  /** If @a index has a valid keyval, this function will
+   * fill in @a keyval and @a modifiers with the keyval settings.
+   * 
+   * @newin{2,22}
+   * @param index The index of the macro button to get.
+   * @param keyval Return value for the keyval.
+   * @param modifiers Return value for modifiers.
+   */
+  void get_key(guint index_, guint& keyval, ModifierType& modifiers) const;
+  
   void set_key(guint index_, guint keyval, ModifierType modifiers);
+  
+  /** Returns the axis use for @a index.
+   * 
+   * @newin{2,22}
+   * @param index The index of the axis.
+   * @return A Gdk::AxisUse specifying how the axis is used.
+   */
+  AxisUse get_axis_use(guint index_) const;
   
   void set_axis_use(guint index_, AxisUse use);
   
+  /** Gets the current state of a device.
+   * @param window A Gdk::Window.
+   * @param axes An array of doubles to store the values of the axes of @a device in,
+   * or <tt>0</tt>.
+   * @param mask Location to store the modifiers, or <tt>0</tt>.
+   */
   void get_state(const Glib::RefPtr<Window>& window, double& axes, ModifierType& mask);
   
   /** Obtains the motion history for a device; given a starting and
@@ -196,49 +226,53 @@ public:
    */
   bool get_axis(double& axes, AxisUse use, double& value) const;
 
-  /** Gets the name of this device.
-   * @result The name of this device.
+  
+  /** Determines the name of the device.
+   * 
+   * @newin{2,22}
+   * @return A name.
    */
-   Glib::ustring get_name() const;
-   
-  /** Gets the type of this device.
-   * @result The type of this device.
+  Glib::ustring get_name() const;
+  
+  /** Determines the type of the device.
+   * 
+   * @newin{2,22}
+   * @return A Gdk::InputSource.
    */
-   InputSource get_source() const;
- 
-  /** Gets the mode of this device.
-   * @result The mode of this device.
+  InputSource get_source() const;
+  
+  /** Determines the mode of the device.
+   * 
+   * @newin{2,22}
+   * @return A Gdk::InputSource.
    */
-   InputMode get_mode() const;
-     
-  /** Discover whether the pointer follows device motion.
-   * @result true if the pointer follows device motion.
+  InputMode get_mode() const;
+  
+  /** Determines whether the pointer follows device motion.
+   * 
+   * @newin{2,22}
+   * @return <tt>true</tt> if the pointer follows device motion.
    */
-   bool get_has_cursor() const;
- 
-  //TODO: Add suitable accessor for the information in these fields. For now, people must use gobj() and access them directly.
-  //gint num_axes	the length of the axes array.
-  //GdkDeviceAxis *axes	an array of GdkDeviceAxis, describing the axes of this device.
-  //
-  //gint num_keys	the length of the keys array.
-  //GdkDeviceKey *keys	an array of GdkDeviceKey, describing the mapped macro buttons of this device.      
+  bool get_has_cursor() const;
+
+  
+  /** Gets the number of axes of a device.
+   * 
+   * @newin{2,22}
+   * @return The number of axes of @a device.
+   */
+  gint get_n_axes() const;
 
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

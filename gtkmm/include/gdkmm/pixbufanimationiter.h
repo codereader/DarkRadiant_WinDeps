@@ -77,6 +77,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -93,13 +95,16 @@ private:
 
 protected:
 
+  //A constructor (if any) would go here, protected.
+
+public:
   
   /** Gets the number of milliseconds the current pixbuf should be displayed,
    * or -1 if the current pixbuf should be displayed forever. Glib::signal_timeout.connect()
    * conveniently takes a timeout in milliseconds, so you can use a timeout
    * to schedule the next update.
    * 
-   *  @a newin2p14
+   * @newin{2,14}
    * @return Delay time in milliseconds (thousandths of a second).
    */
   int get_delay_time() const;
@@ -114,7 +119,7 @@ protected:
    * advance(). Copy the pixbuf to keep it, with 
    * Gdk::Pixbuf::copy() as it may get recycled as you advance the iterator.
    * 
-   *  @a newin2p14
+   * @newin{2,14}
    * @return The pixbuf to be displayed.
    */
   Glib::RefPtr<Gdk::Pixbuf> get_pixbuf();
@@ -128,7 +133,7 @@ protected:
    * advance(). Copy the pixbuf to keep it, with 
    * Gdk::Pixbuf::copy() as it may get recycled as you advance the iterator.
    * 
-   *  @a newin2p14
+   * @newin{2,14}
    * @return The pixbuf to be displayed.
    */
   Glib::RefPtr<const Gdk::Pixbuf> get_pixbuf() const;
@@ -140,7 +145,7 @@ protected:
    * you're on the currently loading frame, you need to redraw the screen for
    * the updated area.
    * 
-   *  @a newin2p14
+   * @newin{2,14}
    * @return <tt>true</tt> if the frame we're on is partially loaded, or the last frame.
    */
   bool on_currently_loading_frame() const;
@@ -166,7 +171,7 @@ protected:
    * if <tt>true</tt>, you need to call get_pixbuf() and update the
    * display with the new pixbuf.
    * 
-   *  @a newin2p14
+   * @newin{2,14}
    * @param current_time Current time.
    * @return <tt>true</tt> if the image may need updating.
    */
@@ -180,7 +185,7 @@ protected:
    * if true, you need to call get_pixbuf() and update the
    * display with the new pixbuf.
    *
-   * @newin2p14
+   * @newin{2,14}
    *
    * @return true if the image may need updating.
    */
@@ -191,17 +196,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

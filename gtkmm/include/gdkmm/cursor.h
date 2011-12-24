@@ -27,10 +27,10 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <gdkmm/color.h>
 #include <gdkmm/bitmap.h>
 #include <gdkmm/display.h>
 #include <gdkmm/pixbuf.h>
+#include <gdkmm/color.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -40,7 +40,7 @@ extern "C" { typedef struct _GdkCursor GdkCursor; }
 namespace Gdk
 {
 
-/** @addtogroup gdkmmEnums Enums and Flags */
+/** @addtogroup gdkmmEnums gdkmm Enums and Flags */
 
 /**
  * @ingroup gdkmmEnums
@@ -125,6 +125,7 @@ enum CursorType
   WATCH = 150,
   XTERM = 152,
   LAST_CURSOR = 153,
+  BLANK_CURSOR = -2,
   CURSOR_IS_PIXMAP = -1
 };
 
@@ -198,34 +199,50 @@ public:
   explicit Cursor(const Glib::RefPtr<Display>& display, const Glib::ustring& name);
 
   
-  /** Returns: the Gdk::Display associated to @a cursor
-   * @return The Gdk::Display associated to @a cursor
+  /** Returns the display on which the Gdk::Cursor is defined.
    * 
-   * @newin2p2.
+   * @newin{2,2}
+   * @return The Gdk::Display associated to @a cursor.
    */
   Glib::RefPtr<Display> get_display();
   
-  /** Returns: the Gdk::Display associated to @a cursor
-   * @return The Gdk::Display associated to @a cursor
+  /** Returns the display on which the Gdk::Cursor is defined.
    * 
-   * @newin2p2.
+   * @newin{2,2}
+   * @return The Gdk::Display associated to @a cursor.
    */
   Glib::RefPtr<const Display> get_display() const;
 
   
-  /** Returns: a Gdk::Pixbuf representing @a cursor, or <tt>0</tt>
-   * @return A Gdk::Pixbuf representing @a cursor, or <tt>0</tt>
+  /** Returns a Gdk::Pixbuf with the image used to display the cursor.
    * 
-   * @newin2p8.
+   * Note that depending on the capabilities of the windowing system and 
+   * on the cursor, GDK may not be able to obtain the image data. In this 
+   * case, <tt>0</tt> is returned.
+   * 
+   * @newin{2,8}
+   * @return A Gdk::Pixbuf representing @a cursor, or <tt>0</tt>.
    */
   Glib::RefPtr<Gdk::Pixbuf> get_image();
   
-  /** Returns: a Gdk::Pixbuf representing @a cursor, or <tt>0</tt>
-   * @return A Gdk::Pixbuf representing @a cursor, or <tt>0</tt>
+  /** Returns a Gdk::Pixbuf with the image used to display the cursor.
    * 
-   * @newin2p8.
+   * Note that depending on the capabilities of the windowing system and 
+   * on the cursor, GDK may not be able to obtain the image data. In this 
+   * case, <tt>0</tt> is returned.
+   * 
+   * @newin{2,8}
+   * @return A Gdk::Pixbuf representing @a cursor, or <tt>0</tt>.
    */
   Glib::RefPtr<const Gdk::Pixbuf> get_image() const;
+  
+  
+  /** Returns the cursor type for this cursor.
+   * 
+   * @newin{2,22}
+   * @return A Gdk::CursorType.
+   */
+  CursorType get_cursor_type() const;
 
 
 };
