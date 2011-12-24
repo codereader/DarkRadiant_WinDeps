@@ -4,7 +4,8 @@
 #define _PANGOMM_LAYOUTITER_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: layoutiter.hg,v 1.2 2003/12/14 11:54:05 murrayc Exp $ */
 
@@ -13,16 +14,16 @@
  * Copyright 2001-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
+ * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
@@ -31,6 +32,10 @@
 #include <pangomm/layoutrun.h>
 #include <pango/pango-layout.h>
 
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+extern "C" { typedef struct _PangoLayoutIter PangoLayoutIter; }
+#endif
 
 namespace Pango
 {
@@ -43,22 +48,43 @@ class LayoutIter
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   typedef LayoutIter CppObjectType;
   typedef PangoLayoutIter BaseObjectType;
+
+  static GType get_type() G_GNUC_CONST;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+  LayoutIter();
+
+  explicit LayoutIter(PangoLayoutIter* gobject, bool make_a_copy = true);
+
+  LayoutIter(const LayoutIter& other);
+  LayoutIter& operator=(const LayoutIter& other);
+
+  ~LayoutIter();
+
+  void swap(LayoutIter& other);
+
+  ///Provides access to the underlying C instance.
+  PangoLayoutIter*       gobj()       { return gobject_; }
+
+  ///Provides access to the underlying C instance.
+  const PangoLayoutIter* gobj() const { return gobject_; }
+
+  ///Provides access to the underlying C instance. The caller is responsible for freeing it. Use when directly setting fields in structs.
+  PangoLayoutIter* gobj_copy() const;
+
+protected:
+  PangoLayoutIter* gobject_;
 
 private:
 
   
 public:
-  // There's no other ctor, and the default ctor creates an invalid object.
-  // Therefore, Pango::LayoutIter is usable only as output argument.
-  LayoutIter();
-  ~LayoutIter();
 
   
   /** Gets the current byte index. Note that iterating forward by char
    * moves in visual order, not logical order, so indexes may not be
    * sequential. Also, the index may be equal to the length of the text
-   * in the layout, if on the <tt>0</tt> run (see pango_layout_iter_get_run()).
+   * in the layout, if on the <tt>0</tt> run (see get_run()).
    * @return Current byte index.
    */
   int get_index() const;
@@ -68,7 +94,7 @@ public:
    * <tt>0</tt>. The <tt>0</tt> run at the end of each line ensures that all lines have
    * at least one run, even lines consisting of only a newline.
    * 
-   * Use the faster pango_layout_iter_get_run_readonly() if you do not plan
+   * Use the faster get_run_readonly() if you do not plan
    * to modify the contents of the run (glyphs, glyph widths, etc.).
    * @return The current run.
    */
@@ -78,7 +104,7 @@ public:
   
   /** Gets the current line.
    * 
-   * Use the faster pango_layout_iter_get_line_readonly() if you do not plan
+   * Use the faster get_line_readonly() if you do not plan
    * to modify the contents of the line (glyphs, glyph widths, etc.).
    * @return The current line.
    */
@@ -93,16 +119,16 @@ public:
 
   
   /** Gets the layout associated with a Pango::LayoutIter.
-   * @return The layout associated with @a iter.
    * 
-   * Since: 1.20.
+   * @newin{1,20}
+   * @return The layout associated with @a iter.
    */
   Glib::RefPtr<Layout> get_layout();
   
   /** Gets the layout associated with a Pango::LayoutIter.
-   * @return The layout associated with @a iter.
    * 
-   * Since: 1.20.
+   * @newin{1,20}
+   * @return The layout associated with @a iter.
    */
   Glib::RefPtr<const Layout> get_layout() const;
 
@@ -136,8 +162,8 @@ public:
    * @return The logical extents of the current character.
    */
   Rectangle get_char_extents() const;
-
   
+
   /** Gets the extents of the current cluster, in layout coordinates
    * (origin is the top left of the entire layout).
    * @param ink_rect Rectangle to fill with ink extents, or <tt>0</tt>.
@@ -179,7 +205,7 @@ public:
    * coordinates (origin is the top-left corner of the entire
    * Pango::Layout).  Thus the extents returned by this function will be
    * the same width/height but not at the same x/y as the extents
-   * returned from pango_layout_line_get_extents().
+   * returned from Pango::LayoutLine::get_extents().
    * @param ink_rect Rectangle to fill with ink extents, or <tt>0</tt>.
    * @param logical_rect Rectangle to fill with logical extents, or <tt>0</tt>.
    */
@@ -200,7 +226,7 @@ public:
    * between the lines in the layout, and returns the space belonging to
    * the current line.  A line's range includes the line's logical
    * extents, plus half of the spacing above and below the line, if
-   * pango_layout_set_spacing() has been called to set layout spacing.
+   * set_spacing() has been called to set layout spacing.
    * The Y positions are in layout coordinates (origin at top left of the
    * entire layout).
    * @param y0 Start of line.
@@ -234,27 +260,51 @@ public:
    */
   int get_baseline() const;
 
-  /// Provides access to the underlying C GObject.  
-  PangoLayoutIter*       gobj()       { return gobject_; }
-  /// Provides access to the underlying C GObject.
-  const PangoLayoutIter* gobj() const { return gobject_; }
-
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** @deprecated Use the copy constructor instead.
+   * This was only ever for internal use anyway.
+   */
   void assign_gobj(PangoLayoutIter* src);
 #endif
-
-protected:
-  PangoLayoutIter* gobject_;
-
-private:
-  // noncopyable
-  LayoutIter(const LayoutIter&);
-  LayoutIter& operator=(const LayoutIter&);
 
 
 };
 
 } //namespace Pango
+
+
+namespace Pango
+{
+
+/** @relates Pango::LayoutIter
+ * @param lhs The left-hand side
+ * @param rhs The right-hand side
+ */
+inline void swap(LayoutIter& lhs, LayoutIter& rhs)
+  { lhs.swap(rhs); }
+
+} // namespace Pango
+
+namespace Glib
+{
+
+/** A Glib::wrap() method for this object.
+ * 
+ * @param object The C instance.
+ * @param take_copy False if the result should take ownership of the C instance. True if it should take a new copy or ref.
+ * @result A C++ instance that wraps this C instance.
+ *
+ * @relates Pango::LayoutIter
+ */
+Pango::LayoutIter wrap(PangoLayoutIter* object, bool take_copy = false);
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+template <>
+class Value<Pango::LayoutIter> : public Glib::Value_Boxed<Pango::LayoutIter>
+{};
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+} // namespace Glib
 
 
 #endif /* _PANGOMM_LAYOUTITER_H */

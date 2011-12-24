@@ -4,7 +4,8 @@
 #define _PANGOMM_FONTSET_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: fontset.hg,v 1.3 2005/11/30 14:10:50 murrayc Exp $ */
 
@@ -13,16 +14,16 @@
  * Copyright 2001      The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
+ * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
@@ -78,6 +79,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -95,7 +98,8 @@ private:
 
 public:
   
-  /** Return value: a Pango::Font. The caller must call g_object_unref when finished
+  /** Returns the font in the fontset that contains the best glyph for the
+   * Unicode character @a wc.
    * @param wc A Unicode character.
    * @return A Pango::Font. The caller must call g_object_unref when finished
    * with the font.
@@ -103,7 +107,7 @@ public:
   Glib::RefPtr<Font> get_font(guint wc) const;
   
   /** Get overall metric information for the fonts in the fontset.
-   * @return A Pango::FontMetrics object. The caller must call pango_font_metrics_unref()
+   * @return A Pango::FontMetrics object. The caller must call Pango::FontMetrics::unref()
    * when finished using the object.
    */
   FontMetrics get_metrics() const;
@@ -127,17 +131,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

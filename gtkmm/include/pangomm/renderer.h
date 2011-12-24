@@ -4,7 +4,8 @@
 #define _PANGOMM_RENDERER_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: renderer.hg,v 1.4 2006/06/10 15:26:24 murrayc Exp $ */
 
@@ -13,16 +14,16 @@
  * Copyright(C) 2004 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
+ * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or(at your option) any later version.
+ * version 2.1 of the License, or(at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
@@ -48,7 +49,7 @@ namespace Pango
 {
 
 
-/** @addtogroup pangommEnums Enums and Flags */
+/** @addtogroup pangommEnums pangomm Enums and Flags */
 
 /**
  * @ingroup pangommEnums
@@ -118,6 +119,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -140,7 +143,7 @@ public:
   
   /** Draws @a layout with the specified Pango::Renderer.
    * 
-   * Since: 1.8
+   * @newin{1,8}
    * @param layout A Pango::Layout.
    * @param x X position of left edge of baseline, in user space coordinates
    * in Pango units.
@@ -151,7 +154,7 @@ public:
   
   /** Draws @a line with the specified Pango::Renderer.
    * 
-   * Since: 1.8
+   * @newin{1,8}
    * @param line A Pango::LayoutLine.
    * @param x X position of left edge of baseline, in user space coordinates
    * in Pango units.
@@ -162,7 +165,7 @@ public:
   
   /** Draws the glyphs in @a glyphs with the specified Pango::Renderer.
    * 
-   * Since: 1.8
+   * @newin{1,8}
    * @param font A Pango::Font.
    * @param glyphs A Pango::GlyphString.
    * @param x X position of left edge of baseline, in user space coordinates
@@ -171,7 +174,28 @@ public:
    * in Pango units.
    */
   void draw_glyphs(const Glib::RefPtr<Font>& font, const GlyphString& glyphs, int x, int y);
-  //gtkmmproc error: pango_renderer_draw_glyph_item : method defs lookup failed (1)
+  
+  /** Draws the glyphs in @a glyph_item with the specified Pango::Renderer,
+   * embedding the text associated with the glyphs in the output if the
+   * output format supports it (PDF for example).
+   * 
+   * Note that @a text is the start of the text for layout, which is then
+   * indexed by <tt> @a glyph_item->item->offset</tt>.
+   * 
+   * If @a text is <tt>0</tt>, this simply calls draw_glyphs().
+   * 
+   * The default implementation of this method simply falls back to
+   * draw_glyphs().
+   * 
+   * @newin{1,22}
+   * @param text The UTF-8 text that @a glyph_item refers to, or <tt>0</tt>.
+   * @param glyph_item A Pango::GlyphItem.
+   * @param x X position of left edge of baseline, in user space coordinates
+   * in Pango units.
+   * @param y Y position of left edge of baseline, in user space coordinates
+   * in Pango units.
+   */
+  void draw_glyph_item(const Glib::ustring& text, const GlyphItem& glyph_item, int x, int y);
   
   /** Draws an axis-aligned rectangle in user space coordinates with the
    * specified Pango::Renderer.
@@ -179,7 +203,7 @@ public:
    * This should be called while @a renderer is already active.  Use
    * activate() to activate a renderer.
    * 
-   * Since: 1.8
+   * @newin{1,8}
    * @param part Type of object this rectangle is part of.
    * @param x X position at which to draw rectangle, in user space coordinates in Pango units.
    * @param y Y position at which to draw rectangle, in user space coordinates in Pango units.
@@ -197,7 +221,7 @@ public:
    * This should be called while @a renderer is already active.  Use
    * activate() to activate a renderer.
    * 
-   * Since: 1.8
+   * @newin{1,8}
    * @param x X coordinate of underline, in Pango units in user coordinate system.
    * @param y Y coordinate of underline, in Pango units in user coordinate system.
    * @param width Width of underline, in Pango units in user coordinate system.
@@ -208,7 +232,7 @@ public:
   /** Draws a trapezoid with the parallel sides aligned with the X axis
    * using the given Pango::Renderer; coordinates are in device space.
    * 
-   * Since: 1.8
+   * @newin{1,8}
    * @param part Type of object this trapezoid is part of.
    * @param y1 Y coordinate of top of trapezoid.
    * @param x11 X coordinate of left end of top of trapezoid.
@@ -221,7 +245,7 @@ public:
   
   /** Draws a single glyph with coordinates in device space.
    * 
-   * Since: 1.8
+   * @newin{1,8}
    * @param font A Pango::Font.
    * @param glyph The glyph index of a single glyph.
    * @param x X coordinate of left edge of baseline of glyph.
@@ -238,14 +262,14 @@ public:
    * be nested and the renderer will only be initialized and
    * deinitialized once.
    * 
-   * Since: 1.8
+   * @newin{1,8}
    */
   void activate();
   
   /** Cleans up after rendering operations on @a renderer. See
    * docs for activate().
    * 
-   * Since: 1.8
+   * @newin{1,8}
    */
   void deactivate();
 
@@ -256,15 +280,13 @@ public:
    * instance, if a subclass of Pango::Renderer was to add a stipple
    * option for drawing underlines, it needs to call
    * 
-   * @code
-   * pango_renderer_part_changed (render, PANGO_RENDER_PART_UNDERLINE);
-   * @endcode
+   * 
    * 
    * When the stipple changes or underlines with different stipples
    * might be joined together. Pango automatically calls this for
    * changes to colors. (See set_color())
    * 
-   * Since: 1.8
+   * @newin{1,8}
    * @param part The part for which rendering has changed.
    */
   void part_changed(RenderPart part);
@@ -272,7 +294,7 @@ public:
   
   /** Sets the color for part of the rendering.
    * 
-   * Since: 1.8
+   * @newin{1,8}
    * @param part The part to change the color of.
    * @param color The new color or <tt>0</tt> to unset the current color.
    */
@@ -280,19 +302,19 @@ public:
   
  
   /** Gets the current rendering color for the specified part.
+   * 
+   * @newin{1,8}
    * @param part The part to get the color for.
    * @return The color for the specified part, or <tt>0</tt>
    * if it hasn't been set and should be inherited from the
    * environment.
-   * 
-   * Since: 1.8.
    */
   Color get_color(RenderPart part) const;
 
   
   /** Sets the transformation matrix that will be applied when rendering.
    * 
-   * Since: 1.8
+   * @newin{1,8}
    * @param matrix A Pango::Matrix, or <tt>0</tt> to unset any existing matrix.
    * (No matrix set is the same as setting the identity matrix.).
    */
@@ -304,54 +326,54 @@ public:
 
   /** Gets the layout currently being rendered using @a renderer.
    * Calling this function only makes sense from inside a subclass's
-   * methods, like in its draw_shape&lt;!----&gt;() for example.
+   * methods, like in its draw_shape<!---->() for example.
    * 
    * The returned layout should not be modified while still being
    * rendered.
+   * 
+   * @newin{1,20}
    * @return The layout, or <tt>0</tt> if no layout is being
    * rendered using @a renderer at this time.
-   * 
-   * Since: 1.20.
    */
   Glib::RefPtr<Layout> get_layout();
   
   /** Gets the layout currently being rendered using @a renderer.
    * Calling this function only makes sense from inside a subclass's
-   * methods, like in its draw_shape&lt;!----&gt;() for example.
+   * methods, like in its draw_shape<!---->() for example.
    * 
    * The returned layout should not be modified while still being
    * rendered.
+   * 
+   * @newin{1,20}
    * @return The layout, or <tt>0</tt> if no layout is being
    * rendered using @a renderer at this time.
-   * 
-   * Since: 1.20.
    */
   Glib::RefPtr<const Layout> get_layout() const;
 
   
   /** Gets the layout line currently being rendered using @a renderer.
    * Calling this function only makes sense from inside a subclass's
-   * methods, like in its draw_shape&lt;!----&gt;() for example.
+   * methods, like in its draw_shape<!---->() for example.
    * 
    * The returned layout line should not be modified while still being
    * rendered.
+   * 
+   * @newin{1,20}
    * @return The layout line, or <tt>0</tt> if no layout line is being
    * rendered using @a renderer at this time.
-   * 
-   * Since: 1.20.
    */
   Glib::RefPtr<LayoutLine> get_layout_line();
   
   /** Gets the layout line currently being rendered using @a renderer.
    * Calling this function only makes sense from inside a subclass's
-   * methods, like in its draw_shape&lt;!----&gt;() for example.
+   * methods, like in its draw_shape<!---->() for example.
    * 
    * The returned layout line should not be modified while still being
    * rendered.
+   * 
+   * @newin{1,20}
    * @return The layout line, or <tt>0</tt> if no layout line is being
    * rendered using @a renderer at this time.
-   * 
-   * Since: 1.20.
    */
   Glib::RefPtr<const LayoutLine> get_layout_line() const;
 
@@ -360,17 +382,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

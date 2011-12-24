@@ -4,27 +4,29 @@
 #define _PANGOMM_ITEM_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
+ * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
  
 #include <pangomm/attributes.h>
 #include <pangomm/language.h>
+#include <glibmm/listhandle.h>
 #include <pango/pango-item.h>
 
 
@@ -132,11 +134,19 @@ public:
 public:
   
   /** Modifies @a orig to cover only the text after @a split_index, and
-   * Return value: new item representing text before @a split_index, which
+   * returns a new item that covers the text before @a split_index that
+   * used to be in @a orig. You can think of @a split_index as the length of
+   * the returned item. @a split_index may not be 0, and it may not be
+   * greater than or equal to the length of @a orig (that is, there must
+   * be at least one byte assigned to each item, you can't create a
+   * zero-length item). @a split_offset is the length of the first item in
+   * chars, and must be provided because the text used to generate the
+   * item isn't available, so split() can't count the char
+   * length of the split items itself.
    * @param split_index Byte index of position to split item, relative to the start of the item.
    * @param split_offset Number of chars between start of @a orig and @a split_index.
    * @return New item representing text before @a split_index, which
-   * should be freed with pango_item_free().
+   * should be freed with free().
    */
   Item split(int split_index, int split_offset);
 

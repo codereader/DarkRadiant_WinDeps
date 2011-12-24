@@ -4,23 +4,24 @@
 #define _PANGOMM_ATTRIBUTES_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* attributes.h
  *
  * Copyright (C) 2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
+ * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
@@ -30,20 +31,19 @@
 #include <pangomm/color.h>
 #include <pangomm/fontdescription.h>
 #include <pango/pango-attributes.h>
+#include <glibmm/slisthandle.h>
 
 
 namespace Pango
 {
 
 
+/** @addtogroup pangommEnums pangomm Enums and Flags */
+
 /** Pango::AttrType distinguishes between different types of attributes.
  * Along with the predefined values, it is possible to allocate additional values for
  * custom attributes using Pango::Attribute::register_type(). The predefined values
  * are given below.
- */
-/** @addtogroup pangommEnums Enums and Flags */
-
-/**
  * @ingroup pangommEnums
  */
 enum AttrType
@@ -96,8 +96,6 @@ namespace Pango
 
 
 /** A Pango::Underline is used to specify whether text should be underlined, and if so, the type of underlining.
- */
-/**
  * @ingroup pangommEnums
  */
 enum Underline

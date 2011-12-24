@@ -4,7 +4,8 @@
 #define _PANGOMM_ATTRLIST_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: attrlist.hg,v 1.4 2005/11/22 15:00:17 murrayc Exp $ */
 
@@ -13,16 +14,16 @@
  * Copyright (C) 1998-1999 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
+ * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
@@ -135,7 +136,7 @@ public:
    * 
    * This operation is equivalent to stretching every attribute
    * that applies at position @a pos in @a list by an amount @a len,
-   * and then calling pango_attr_list_change() with a copy
+   * and then calling change() with a copy
    * of each attribute in @a other in sequence (offset in position by @a pos).
    * 
    * This operation proves useful for, for instance, inserting
@@ -151,7 +152,7 @@ public:
   /** Create a iterator initialized to the beginning of the list.
    *  @a list must not be modified until this iterator is freed.
    * @return The newly allocated Pango::AttrIterator, which should
-   * be freed with pango_attr_iterator_destroy().
+   * be freed with Pango::AttrIterator::destroy().
    */
   AttrIter get_iter();
 
