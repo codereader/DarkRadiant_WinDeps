@@ -49,7 +49,7 @@ namespace Gtk
  * Note that RecentChooserMenu does not have any methods of its own. Instead,
  * you should use the functions that work on a RecentChooser.
  *
- * @newin2p10
+ * @newin{2,10}
  *
  * @ingroup RecentFiles
  */
@@ -87,6 +87,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -99,17 +101,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -118,25 +114,45 @@ private:
 public:
   RecentChooserMenu();
 
-  explicit RecentChooserMenu(const Glib::RefPtr<RecentManager>& recent_manager);
+    explicit RecentChooserMenu(const Glib::RefPtr<RecentManager>& recent_manager);
 
-  
+
   /** Sets whether a number should be added to the items of @a menu.  The
    * numbers are shown to provide a unique character for a mnemonic to
    * be used inside ten menu item's label.  Only the first the items
    * get a number to avoid clashes.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param show_numbers Whether to show numbers.
    */
-  void set_show_numbers(bool show_numbers = true);
+  void set_show_numbers(bool show_numbers =  true);
   
-  /** Return value: <tt>true</tt> if numbers should be shown.
-   * @return <tt>true</tt> if numbers should be shown.
+  /** Returns the value set by set_show_numbers().
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return <tt>true</tt> if numbers should be shown.
    */
   bool get_show_numbers() const;
+  
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the items should be displayed with a number.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_show_numbers() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the items should be displayed with a number.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_show_numbers() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
 
 
 };

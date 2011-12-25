@@ -83,6 +83,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -95,23 +97,55 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
 
 public:
   SeparatorToolItem();
+  
+  
+  /** Returns whether @a item is drawn as a line, or just blank. 
+   * See set_draw().
+   * 
+   * @newin{2,4}
+   * @return <tt>true</tt> if @a item is drawn as a line, or just blank.
+   */
+  bool get_draw() const;
+  
+  /** Whether @a item is drawn as a vertical line, or just blank.
+   * Setting this to <tt>false</tt> along with Gtk::ToolItem::set_expand() is useful
+   * to create an item that forces following items to the end of the toolbar.
+   * 
+   * @newin{2,4}
+   * @param draw Whether @a item is drawn as a vertical line.
+   */
+  void set_draw(bool draw =  true);
+  
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the separator is drawn, or just blank.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_draw() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the separator is drawn, or just blank.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_draw() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
 
 
 };

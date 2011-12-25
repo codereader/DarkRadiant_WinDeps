@@ -26,8 +26,8 @@
  */
 
 #include <glibmm/interface.h>
-#include <gtkmm/treemodel.h>
 #include <gtkmm/selectiondata.h>
+#include <gtkmm/treemodel.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -106,7 +106,7 @@ public:
   ///Provides access to the underlying C GObject.
   GtkTreeDragDest*       gobj()       { return reinterpret_cast<GtkTreeDragDest*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const GtkTreeDragDest* gobj() const { return reinterpret_cast<GtkTreeDragDest*>(gobject_); }
 
 private:
@@ -125,7 +125,7 @@ public:
    * @param selection_data Data to drop.
    * @return Whether a new row was created before position @a dest.
    */
-  bool drag_data_received(const TreeModel::Path& dest, const SelectionData& selection_data);              
+  bool drag_data_received(const TreeModel::Path& dest, const SelectionData& selection_data);
 
   
   /** Determines whether a drop is possible before the given @a dest_path,
@@ -138,33 +138,23 @@ public:
    * @return <tt>true</tt> if a drop is possible before @a dest_path.
    */
   bool row_drop_possible(const TreeModel::Path& dest_path, const SelectionData& selection_data) const;
-                             
+
 protected:
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool drag_data_received_vfunc(const TreeModel::Path& dest, const SelectionData& selection_data);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool drag_data_received_vfunc(const TreeModel::Path& dest, const SelectionData& selection_data);
 
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool row_drop_possible_vfunc(const TreeModel::Path& dest, const SelectionData& selection_data) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool row_drop_possible_vfunc(const TreeModel::Path& dest, const SelectionData& selection_data) const;
 
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

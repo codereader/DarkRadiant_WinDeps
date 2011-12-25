@@ -79,6 +79,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -91,18 +93,12 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_toggled();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -114,9 +110,10 @@ public:
   explicit CheckMenuItem(const Glib::ustring& label, bool mnemonic = false);
   
 
-  void set_active(bool state = true);
+  void set_active(bool state =  true);
   
-  /** Return value: <tt>true</tt> if the menu item is checked.
+  /** Returns whether the check menu item is active. See
+   * set_active().
    * @return <tt>true</tt> if the menu item is checked.
    */
   bool get_active() const;
@@ -135,7 +132,7 @@ public:
    * visual appearance, it doesn't affect the semantics of the widget.
    * @param setting <tt>true</tt> to display an "inconsistent" third state check.
    */
-  void set_inconsistent(bool setting = true);
+  void set_inconsistent(bool setting =  true);
   
   /** Retrieves the value set by set_inconsistent().
    * @return <tt>true</tt> if inconsistent.
@@ -145,15 +142,15 @@ public:
   
   /** Sets whether @a check_menu_item is drawn like a Gtk::RadioMenuItem
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param draw_as_radio Whether @a check_menu_item is drawn like a Gtk::RadioMenuItem.
    */
-  void set_draw_as_radio(bool draw_as_radio = true);
+  void set_draw_as_radio(bool draw_as_radio =  true);
   
-  /** Return value: Whether @a check_menu_item looks like a Gtk::RadioMenuItem
-   * @return Whether @a check_menu_item looks like a Gtk::RadioMenuItem
+  /** Returns whether @a check_menu_item looks like a Gtk::RadioMenuItem
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return Whether @a check_menu_item looks like a Gtk::RadioMenuItem.
    */
   bool get_draw_as_radio() const;
   
@@ -189,7 +186,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether to display an inconsistent state.
+/** Whether to display an 'inconsistent' state.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -199,7 +196,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether to display an inconsistent state.
+/** Whether to display an 'inconsistent' state.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -236,9 +233,7 @@ protected:
    * The GdkRectangle specifies the area of the widget which will get
    * redrawn.
    */
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void draw_indicator_vfunc(GdkRectangle* area);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void draw_indicator_vfunc(GdkRectangle* area);
 
 
 };

@@ -25,10 +25,8 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <gtk/gtk.h>
 #include <glibmm/interface.h>
 #include <gtkmm/treeiter.h>
-#include <gtkmm/treemodelcolumn.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -47,7 +45,7 @@ class TreePath;
 class TreeRowReference;
 
 
-/** @addtogroup gtkmmEnums Enums and Flags */
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
 
 /**
  * @ingroup gtkmmEnums
@@ -212,7 +210,7 @@ public:
   ///Provides access to the underlying C GObject.
   GtkTreeModel*       gobj()       { return reinterpret_cast<GtkTreeModel*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const GtkTreeModel* gobj() const { return reinterpret_cast<GtkTreeModel*>(gobject_); }
 
 private:
@@ -226,11 +224,11 @@ public:
   typedef Children::reverse_iterator reverse_iterator;
   typedef Children::const_iterator const_iterator;
   typedef Children::const_reverse_iterator const_reverse_iterator;
-  
+
   typedef TreeRow Row;
   typedef TreePath Path;
   typedef TreeRowReference RowReference;
-  
+
 
   //These are part of GtkTreeModelFilter or GtkTreeModelSort, not GtkTreeModel:
   
@@ -303,23 +301,25 @@ public:
   void foreach(const SlotForeachPathAndIter& slot);
 
   
-  /** Return value: The flags supported by this interface.
+  /** Returns a set of flags supported by this interface.  The flags are a bitwise
+   * combination of Gtk::TreeModelFlags.  The flags supported should not change
+   * during the lifecycle of the @a tree_model.
    * @return The flags supported by this interface.
    */
   TreeModelFlags get_flags() const;
   
-  /** Return value: The number of columns.
+  /** Returns the number of columns supported by @a tree_model.
    * @return The number of columns.
    */
   int get_n_columns() const;
   
-  /** Return value: The type of the column.
+  /** Returns the type of the column.
    * @param index The column index.
    * @return The type of the column.
    */
   GType get_column_type(int index) const;
   //TODO: A C++-type version of get_column_type()?
-  
+
   
   /** Returns a Gtk::TreePath referenced by @a iter.
    * @param iter The Gtk::TreeIter.
@@ -356,7 +356,7 @@ public:
   void row_deleted(const Path& path);
 
  /** Emits the "rows_reordered" signal on the tree model.  This should be called by
-  * custom models when their rows have been reordered. 
+  * custom models when their rows have been reordered.
   *
   * @param path A tree path pointing to the tree node whose children have been reordered.
   * @param iter A valid iterator pointing to the node whose children have been reordered. See also, rows_reordered(const Path& path, const Glib::ArrayHandle<int>& new_order), if the path has a depth of 0.
@@ -366,16 +366,16 @@ public:
   void rows_reordered(const Path& path, const iterator& iter, const Glib::ArrayHandle<int>& new_order);
 
  /** Emits the "rows_reordered" signal on the tree model.  This should be called by
-  * custom models when their rows have been reordered. This method overload is for nodes whose 
+  * custom models when their rows have been reordered. This method overload is for nodes whose
   * path has a depth of 0.
-  * @newin2p10
+  * @newin{2,10}
   *
   * @param path A tree path pointing to the tree node whose children have been reordered.
   * @param new_order An array of integers mapping the current position of each child
   * to its old position before the re-ordering, i.e. @a new_order<literal>[newpos] = oldpos.
   */
   void rows_reordered(const Path& path, const Glib::ArrayHandle<int>& new_order);
-  
+
   
   /** Emits the "rows-reordered" signal on @a tree_model.  This should be called by
    * models when their rows have been reordered.
@@ -385,7 +385,7 @@ public:
    * reordered, or <tt>0</tt> if the depth of @a path is 0.
    * @param new_order An array of integers mapping the current position of each child
    * to its old position before the re-ordering,
-   * i.e. @a new_order<literal>[newpos] = oldpos</literal>.
+   * i.e. @a new_order<tt>[newpos] = oldpos</tt>.
    */
   void rows_reordered(const Path& path, const iterator& iter, int* new_order);
 
@@ -394,7 +394,7 @@ public:
    * separated list of numbers. For example, "4:10:0:3" would be an
    * acceptable return value for this string.
    * 
-   *  @a newin2p2
+   * @newin{2,2}
    * @param iter An Gtk::TreeIter.
    * @return The string.
    */
@@ -442,22 +442,15 @@ public:
 
 
 protected:
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual TreeModelFlags get_flags_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual TreeModelFlags get_flags_vfunc() const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual int get_n_columns_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual int get_n_columns_vfunc() const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual GType get_column_type_vfunc(int index) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual GType get_column_type_vfunc(int index) const;
 
 
   //These are only for deriving new TreeModels, which isn't very common or easy:
 
-#ifdef GLIBMM_VFUNCS_ENABLED
   /** Override and implement this in a derived TreeModel class.
    * Sets @a iter_next to refer to the node following @a iter it at the current level.
    * If there is no next iter, false is returned and iter_next is set to be invalid.
@@ -486,7 +479,7 @@ protected:
    * @result true if the operation was possible.
    */
   virtual bool iter_children_vfunc(const iterator& parent, iterator& iter) const;
-  
+
   /** Override and implement this in a derived TreeModel class.
    * Sets @a iter to be the parent of @a child. If @a child is at the toplevel, and
    * doesn't have a parent, then @a iter is set to an invalid iterator and false
@@ -522,24 +515,20 @@ protected:
    * @result true if the operation was possible.
    */
   virtual bool iter_nth_root_child_vfunc(int n, iterator& iter) const;
-#endif //GLIBMM_VFUNCS_ENABLED
 
-  
+
   /** Override and implement this in a derived TreeModel class.
    * Returns true if @a iter has children, false otherwise.
    *
    * @param iter The iterator to test for children.
    * @result true if @a iter has children.
    */
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool iter_has_child_vfunc(const iterator& iter) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool iter_has_child_vfunc(const iterator& iter) const;
 
 
-#ifdef GLIBMM_VFUNCS_ENABLED
   /** Override and implement this in a derived TreeModel class.
    * Returns the number of children that @a iter has.
-   * See also iter_n_root_children_vfunc().  
+   * See also iter_n_root_children_vfunc().
    *
    * @param iter The iterator to test for children.
    * @result The number of children of @a iter.
@@ -553,7 +542,6 @@ protected:
    * @result The number of children at the root level.
    */
   virtual int iter_n_root_children_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
 
   /** Override and implement this in a derived TreeModel class.
    * Lets the tree ref the node.  This is an optional method for models to
@@ -571,9 +559,7 @@ protected:
    *
    * @param iter the iterator.
    */
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void ref_node_vfunc(const iterator& iter) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void ref_node_vfunc(const iterator& iter) const;
 
 
   /** Override and implement this in a derived TreeModel class.
@@ -586,9 +572,7 @@ protected:
    *
    * @param iter the iterator.
    */
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void unref_node_vfunc(const iterator& iter) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void unref_node_vfunc(const iterator& iter) const;
 
 
   /** Override and implement this in a derived TreeModel class.
@@ -599,9 +583,7 @@ protected:
    */
  
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual TreeModel::Path get_path_vfunc(const iterator& iter) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual TreeModel::Path get_path_vfunc(const iterator& iter) const;
 
 
   /** Override and implement this in a derived TreeModel class.
@@ -611,11 +593,10 @@ protected:
    * @param column The column to lookup the value at.
    * @param value An empty Glib:Value to set.
    */
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void get_value_vfunc(const iterator& iter, int column, Glib::ValueBase& value) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void get_value_vfunc(const iterator& iter, int column, Glib::ValueBase& value) const;
 
 
+  //We don't put an deprecation ifdef around this because it would break ABI.
   /** Override and implement this in a derived TreeModel class.
    * @note This virtual method is not recommended.  To check
    * whether an iterator is valid, call TreeStore::iter_is_valid(),
@@ -632,7 +613,7 @@ protected:
 
   //Called by TreeRow, which is a friend class:
   //The comment about set_row_changed() in the documentation is based on my reading of the source of
-  //gtk_list_store_set_value() and gtk_tree_store_set_value().  
+  //gtk_list_store_set_value() and gtk_tree_store_set_value().
   /** Override and implement this in a derived TreeModel class, so that Row::operator() and
    * Row::set_value() work.
    * You can probably just implement this by calling set_value_vfunc().
@@ -652,22 +633,16 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_row_changed(const TreeModel::Path& path, const TreeModel::iterator& iter);
   virtual void on_row_inserted(const TreeModel::Path& path, const TreeModel::iterator& iter);
   virtual void on_row_has_child_toggled(const TreeModel::Path& path, const TreeModel::iterator& iter);
   virtual void on_row_deleted(const TreeModel::Path& path);
   virtual void on_rows_reordered(const TreeModel::Path& path, const TreeModel::iterator& iter, int* new_order);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

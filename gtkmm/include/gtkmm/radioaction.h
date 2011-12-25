@@ -77,6 +77,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -172,10 +174,26 @@ public:
   static Glib::RefPtr<RadioAction> create_with_icon_name(Group& group, const Glib::ustring& name, const Glib::ustring& icon_name, const Glib::ustring& label, const Glib::ustring& tooltip);
 
   
-  /** Returns: the list representing the radio group for this object
-   * @return The list representing the radio group for this object
+  /** Returns the list representing the radio group for this object.
+   * Note that the returned list is only valid until the next change
+   * to the group. 
    * 
-   * @newin2p4.
+   * A common way to set up a group of radio group is the following:
+   * |[
+   * GSList *group = <tt>0</tt>;
+   * GtkRadioAction *action;
+   * 
+   * while (/ * more actions to add * /)
+   * {
+   * action = gtk_radio_action_new (...);
+   * 
+   * gtk_radio_action_set_group (action, group);
+   * group = gtk_radio_action_get_group (action);
+   * }
+   * ]|
+   * 
+   * @newin{2,4}
+   * @return The list representing the radio group for this object.
    */
   Group get_group();
    void set_group(Group& group);
@@ -183,16 +201,16 @@ public:
   
   /** Obtains the value property of the currently active member of 
    * the group to which @a action belongs.
-   * @return The value of the currently active group member
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return The value of the currently active group member.
    */
   int get_current_value() const;
   
   /** Sets the currently active group member to the member with value
    * property @a current_value.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param current_value The new value.
    */
   void set_current_value(int current_value);
@@ -231,6 +249,7 @@ public:
   Glib::PropertyProxy_ReadOnly<int> property_value() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
+  //Probably wouldn't work: _WRAP_PROPERTY("group", Group)
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The value property of the currently active member of the group to which this action belongs.
    *
@@ -256,18 +275,12 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_changed(const Glib::RefPtr<RadioAction>& current);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

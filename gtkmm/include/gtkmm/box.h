@@ -26,10 +26,37 @@
  */
 
 
-#include <gtkmm/container.h>
-#include <glibmm/helperlist.h>
+// Temporarily undef GTK_DISABLE_DEPRECATED, redefining it later if appropriate.
+// We need this to use _GtkBoxChild, which we use in our (deprecated) API.
+#if defined(GTK_DISABLE_DEPRECATED) && !defined(GTKMM_GTK_DISABLE_DEPRECATED_UNDEFED)
+#undef GTK_DISABLE_DEPRECATED
+#define GTKMM_GTK_DISABLE_DEPRECATED_UNDEFED 1
+#endif
+
+// This is needed for gdkregion.h, for GdkSpanFunc, which we indirectly include.
+// Otherwise application code must be very careful of the include order.
+#if defined(GDK_DISABLE_DEPRECATED) && !defined(GTKMM_GDK_DISABLE_DEPRECATED_UNDEFED)
+#undef GDK_DISABLE_DEPRECATED
+#define GTKMM_GDK_DISABLE_DEPRECATED_UNDEFED 1
+#endif
+
 #include <gtk/gtk.h>  /* For _GtkBoxChild */
 
+// Redefine GTK_DISABLE_DEPRECATED if it was defined before we temporarily undefed it:
+#if defined(GTKMM_GTK_DISABLE_DEPRECATED_UNDEFED)
+#define GTK_DISABLE_DEPRECATED 1
+#undef GTKMM_GTK_DISABLE_DEPRECATED_UNDEFED
+#endif
+
+// Redefine GDK_DISABLE_DEPRECATED if it was defined before we temporarily undefed it:
+#if defined(GTKMM_GDK_DISABLE_DEPRECATED_UNDEFED)
+#define GDK_DISABLE_DEPRECATED 1
+#undef GTKMM_GDK_DISABLE_DEPRECATED_UNDEFED
+#endif
+
+
+#include <gtkmm/container.h>
+#include <glibmm/helperlist.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 typedef struct _GtkBox GtkBox;
@@ -58,7 +85,7 @@ namespace Gtk
 namespace Gtk
 {
 
-/** Packing options for adding child widgets to a Box with pack_start() and pack_end(). 
+/** Packing options for adding child widgets to a Box with pack_start() and pack_end().
  * @ingroup gtkmmEnums
  */
 enum PackOptions
@@ -100,7 +127,7 @@ public:
 
 protected:
   inline GtkBox* parent()
-    { return (GtkBox*) (gobj()->widget->parent); }
+    { return (GtkBox*) (gtk_widget_get_parent(gobj()->widget)); }
 
   void redraw();
 
@@ -180,7 +207,7 @@ public:
 
   //The standard iterator, instead of List_Cpp_Iterator,
   //only works because Child is derived from _GtkBoxChild.
-  
+
   
   iterator find(const_reference c);
   iterator find(Widget&);
@@ -260,6 +287,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -272,17 +301,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -329,7 +352,7 @@ public:
    * reference ends of @a box, then @a padding pixels are also put between 
    *  @a child and the reference edge of @a box.
    */
-  void pack_start(Widget& child, bool expand, bool fill, guint padding = 0);
+  void pack_start(Widget& child, bool expand, bool fill, guint padding =  0);
 
   /** Left side insert a widget to a box.
    * @param child A Widget to be added to box.
@@ -357,7 +380,7 @@ public:
    * reference ends of @a box, then @a padding pixels are also put between 
    *  @a child and the reference edge of @a box.
    */
-  void pack_end(Widget& child, bool expand, bool fill, guint padding = 0);
+  void pack_end(Widget& child, bool expand, bool fill, guint padding =  0);
 
   /** Right side insert a widget to a box.
    * @param child A Widget to be added to box.
@@ -373,9 +396,10 @@ public:
    * @param homogeneous A boolean value, <tt>true</tt> to create equal allotments,
    * <tt>false</tt> for variable allotments.
    */
-  void set_homogeneous(bool homogeneous = true);
+  void set_homogeneous(bool homogeneous =  true);
   
-  /** Return value: <tt>true</tt> if the box is homogeneous.
+  /** Returns whether the box is homogeneous (all children are the
+   * same size). See set_homogeneous().
    * @return <tt>true</tt> if the box is homogeneous.
    */
   bool get_homogeneous() const;
@@ -512,6 +536,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -524,17 +550,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -547,8 +567,8 @@ public:
    * ignored.
    * @param spacing Determines the space in pixels between child widgets.
    */
-  explicit VBox(bool homogeneous = false, int spacing = 0);
-  
+    explicit VBox(bool homogeneous =  false, int spacing =  0);
+
 
 };
 
@@ -599,6 +619,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -611,17 +633,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -634,7 +650,7 @@ public:
    * ignored.
    * @param spacing Determines the space in pixels between child widgets.
    */
-  explicit HBox(bool homogeneous = false, int spacing = 0);
+    explicit HBox(bool homogeneous =  false, int spacing =  0);
 
 
 };

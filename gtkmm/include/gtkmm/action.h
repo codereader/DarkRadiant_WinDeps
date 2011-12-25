@@ -3,10 +3,10 @@
 #ifndef _GTKMM_ACTION_H
 #define _GTKMM_ACTION_H
 
+#include <gtkmmconfig.h>
+
 
 #include <glibmm.h>
-
-/* $Id: action.hg,v 1.19 2006/05/10 20:59:27 murrayc Exp $ */
 
 /* Copyright (C) 2003 The gtkmm Development Team
  *
@@ -25,6 +25,7 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+ 
 #include <gtkmm/widget.h>
 #include <gtkmm/accelgroup.h>
 #include <gtkmm/stockid.h>
@@ -50,12 +51,12 @@ class Image;
 
 /** An action which can be triggered by a menu or toolbar item.
  *
- * Actions represent operations that the user can perform, along with 
- * some information about how it should be presented in the user interface. 
- * Each action provides methods to create icons, menu items and toolbar 
+ * Actions represent operations that the user can perform, along with
+ * some information about how it should be presented in the user interface.
+ * Each action provides methods to create icons, menu items and toolbar
  * items representing itself.
  *
- * As well as the callback that is called when the action is activated, 
+ * As well as the callback that is called when the action is activated,
  * the following is also associated with the action:
  *
  *  - a name (not translated, for path lookup)
@@ -70,12 +71,12 @@ class Image;
  *  - visible (shown/hidden)
  *  - sensitive (enabled/disabled)
  *
- * Apart from regular actions, there are toggle actions, 
- * which can be toggled between two states and radio actions, 
- * of which only one in a group can be in the "active" state. 
+ * Apart from regular actions, there are toggle actions,
+ * which can be toggled between two states and radio actions,
+ * of which only one in a group can be in the "active" state.
  * Other actions can be implemented as Gtk::Action subclasses.
- * 
- * Each action can have one or more proxy menu item, toolbar button or other proxy widgets. 
+ *
+ * Each action can have one or more proxy menu item, toolbar button or other proxy widgets.
  * Proxies mirror the state of the action (text label, tooltip, icon, visible, sensitive, etc), and should change when the action's state changes. When the proxy is activated, it should activate its action.
  */
 
@@ -109,6 +110,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -123,7 +126,7 @@ public:
 
 private:
 
- 
+
 protected:
   /** Creates an empty action. */
   Action();
@@ -198,27 +201,29 @@ public:
   static Glib::RefPtr<Action> create_with_icon_name(const Glib::ustring& name, const Glib::ustring& icon_name, const Glib::ustring& label, const Glib::ustring& tooltip);
 
   
-  /** Return value: the name of the action. The string belongs to GTK+ and should not
+  /** Returns the name of the action.
+   * 
+   * @newin{2,4}
    * @return The name of the action. The string belongs to GTK+ and should not
    * be freed.
-   * 
-   * @newin2p4.
    */
   Glib::ustring get_name() const;
 
   
-  /** Return value: <tt>true</tt> if the action and its associated action group
+  /** Returns whether the action is effectively sensitive.
+   * 
+   * @newin{2,4}
    * @return <tt>true</tt> if the action and its associated action group 
    * are both sensitive.
-   * 
-   * @newin2p4.
    */
   bool is_sensitive() const;
   
-  /** Return value: <tt>true</tt> if the action itself is sensitive.
-   * @return <tt>true</tt> if the action itself is sensitive.
+  /** Returns whether the action itself is sensitive. Note that this doesn't 
+   * necessarily mean effective sensitivity. See is_sensitive() 
+   * for that.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return <tt>true</tt> if the action itself is sensitive.
    */
   bool get_sensitive() const;
 
@@ -228,24 +233,26 @@ public:
    * is_sensitive() 
    * for that.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param sensitive <tt>true</tt> to make the action sensitive.
    */
-  void set_sensitive(bool sensitive = true);
+  void set_sensitive(bool sensitive =  true);
 
   
-  /** Return value: <tt>true</tt> if the action and its associated action group
+  /** Returns whether the action is effectively visible.
+   * 
+   * @newin{2,4}
    * @return <tt>true</tt> if the action and its associated action group 
    * are both visible.
-   * 
-   * @newin2p4.
    */
   bool is_visible() const;
   
-  /** Return value: <tt>true</tt> if the action itself is visible.
-   * @return <tt>true</tt> if the action itself is visible.
+  /** Returns whether the action itself is visible. Note that this doesn't 
+   * necessarily mean effective visibility. See is_sensitive() 
+   * for that.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return <tt>true</tt> if the action itself is visible.
    */
   bool get_visible() const;
   
@@ -254,10 +261,10 @@ public:
    * is_visible() 
    * for that.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param visible <tt>true</tt> to make the action visible.
    */
-  void set_visible(bool visible = true);
+  void set_visible(bool visible =  true);
 
   
   /** Emits the "activate" signal on the specified action, if it isn't 
@@ -266,41 +273,44 @@ public:
    * 
    * It can also be used to manually activate an action.
    * 
-   * @newin2p4
+   * @newin{2,4}
    */
   void activate();
   
   /** This function is intended for use by action implementations to
    * create icons displayed in the proxy widgets.
+   * 
+   * @newin{2,4}
    * @param icon_size The size of the icon that should be created.
    * @return A widget that displays the icon for this action.
-   * 
-   * @newin2p4.
    */
   Image* create_icon(IconSize icon_size);
   
   /** Creates a menu item widget that proxies for the given action.
-   * @return A menu item connected to the action.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return A menu item connected to the action.
    */
   MenuItem* create_menu_item();
   
   /** Creates a toolbar item widget that proxies for the given action.
-   * @return A toolbar item connected to the action.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return A toolbar item connected to the action.
    */
   ToolItem* create_tool_item();
   
   /** If @a action provides a Gtk::Menu widget as a submenu for the menu
    * item or the toolbar item it creates, this function returns an
    * instance of that menu.
-   * @return The menu item provided by the action, or <tt>0</tt>.
    * 
-   * @newin2p12.
+   * @newin{2,12}
+   * @return The menu item provided by the
+   * action, or <tt>0</tt>.
    */
   Menu* create_menu();
+
+  //TODO: Deprecate these when we can derive the appropriate widgets from Activatable, when we can break ABI.
   
   /** Connects a widget to an action object as a proxy.  Synchronises 
    * various properties of the action with the widget (such as label 
@@ -310,7 +320,7 @@ public:
    * If the widget is already connected to an action, it is disconnected
    * first.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * 
    * Deprecated: 2.16: Use Gtk::Activatable::set_related_action() instead.
    * @param proxy The proxy widget.
@@ -318,9 +328,9 @@ public:
   void connect_proxy(Widget& proxy);
   
   /** Disconnects a proxy widget from an action.  
-   * Does <emphasis>not</emphasis> destroy the widget, however.
+   * Does <em>not</em> destroy the widget, however.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * 
    * Deprecated: 2.16: Use Gtk::Activatable::set_related_action() instead.
    * @param proxy The proxy widget.
@@ -328,19 +338,21 @@ public:
   void disconnect_proxy(Widget& proxy);
 
   
-  /** Return value: a SList of proxy widgets. The list is owned by GTK+
+  /** Returns the proxy widgets for an action.
+   * See also Gtk::Widget::get_action().
+   * 
+   * @newin{2,4}
    * @return A SList of proxy widgets. The list is owned by GTK+
    * and must not be modified.
-   * 
-   * @newin2p4.
    */
   Glib::SListHandle<Widget*> get_proxies();
   
-  /** Return value: a SList of proxy widgets. The list is owned by GTK+
+  /** Returns the proxy widgets for an action.
+   * See also Gtk::Widget::get_action().
+   * 
+   * @newin{2,4}
    * @return A SList of proxy widgets. The list is owned by GTK+
    * and must not be modified.
-   * 
-   * @newin2p4.
    */
   Glib::SListHandle<const Widget*> get_proxies() const;
 
@@ -354,18 +366,20 @@ public:
    * function has been called and doesn't remove the accelerator until
    * disconnect_accelerator() has been called as many times.
    * 
-   * @newin2p4
+   * @newin{2,4}
    */
   void connect_accelerator();
   
   /** Undoes the effect of one call to connect_accelerator().
    * 
-   * @newin2p4
+   * @newin{2,4}
    */
   void disconnect_accelerator();
+
   
-  
-  /** Returns: the accel path for this action, or <tt>0</tt>
+  /** Returns the accel path for this action.  
+   * 
+   * @newin{2,6}
    * @return The accel path for this action, or <tt>0</tt>
    * if none is set. The returned string is owned by GTK+ 
    * and must not be freed or modified.
@@ -374,7 +388,7 @@ public:
 
   /// For instance, void on_activate();
   typedef sigc::slot<void> SlotActivate;
-  
+
   /** The "activate" signal is emitted when the action is activated.
    *
    * @par Prototype:
@@ -394,7 +408,7 @@ public:
    * pass a static string, you can save some memory by interning it first with 
    * Glib::intern_static_string().
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param accel_path The accelerator path.
    */
   void set_accel_path(const Glib::ustring& accel_path);
@@ -402,7 +416,7 @@ public:
   /** Sets the Gtk::AccelGroup in which the accelerator for this action
    * will be installed.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param accel_group A Gtk::AccelGroup or <tt>0</tt>.
    */
   void set_accel_group(const Glib::RefPtr<AccelGroup>& accel_group);
@@ -410,121 +424,120 @@ public:
   
   /** Sets the label of @a action.
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param label The label text to set.
    */
   void set_label(const Glib::ustring& label);
   
   /** Gets the label text of @a action.
-   * @return The label text
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @return The label text.
    */
   Glib::ustring get_label() const;
   
   /** Sets a shorter label text on @a action.
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param short_label The label text to set.
    */
   void set_short_label(const Glib::ustring& short_label);
   
   /** Gets the short label text of @a action.
-   * @param label The label text to set.
-   * @return The short label text.
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @return The short label text.
    */
   Glib::ustring get_short_label() const;
   
   /** Sets the tooltip text on @a action
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param tooltip The tooltip text.
    */
   void set_tooltip(const Glib::ustring& tooltip);
   
   /** Gets the tooltip text of @a action.
-   * @return The tooltip text
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @return The tooltip text.
    */
   Glib::ustring get_tooltip() const;
   
   /** Sets the stock id on @a action
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param stock_id The stock id.
    */
   void set_stock_id(const StockID& stock_id);
   
   /** Gets the stock id of @a action.
-   * @return The stock id
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @return The stock id.
    */
   StockID get_stock_id() const;
   
   /** Sets the icon of @a action.
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param icon The Icon to set.
    */
   void set_gicon(const Glib::RefPtr<Gio::Icon>& icon);
   
   /** Gets the gicon of @a action.
-   * @return The action's Icon if one is set.
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @return The action's Icon if one is set.
    */
   Glib::RefPtr<Gio::Icon> get_gicon();
   
   /** Gets the gicon of @a action.
-   * @return The action's Icon if one is set.
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @return The action's Icon if one is set.
    */
   Glib::RefPtr<const Gio::Icon> get_gicon() const;
   
   /** Sets the icon name on @a action
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param icon_name The icon name to set.
    */
   void set_icon_name(const Glib::ustring& icon_name);
   
   /** Gets the icon name of @a action.
-   * @return The icon name
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @return The icon name.
    */
   Glib::ustring get_icon_name() const;
   
   /** Sets whether @a action is visible when horizontal
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param visible_horizontal Whether the action is visible horizontally.
    */
-  void set_visible_horizontal(bool visible_horizontal = true);
+  void set_visible_horizontal(bool visible_horizontal =  true);
   
   /** Checks whether @a action is visible when horizontal
-   * @return Whether @a action is visible when horizontal
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @return Whether @a action is visible when horizontal.
    */
   bool get_visible_horizontal() const;
   
   /** Sets whether @a action is visible when vertical 
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param visible_vertical Whether the action is visible vertically.
    */
-  void set_visible_vertical(bool visible_vertical = true);
+  void set_visible_vertical(bool visible_vertical =  true);
   
   /** Checks whether @a action is visible when horizontal
-   * @return Whether @a action is visible when horizontal
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @return Whether @a action is visible when horizontal.
    */
   bool get_visible_vertical() const;
   
@@ -532,17 +545,38 @@ public:
    * primarily by toolbar items to decide whether to show a label
    * or not.
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param is_important <tt>true</tt> to make the action important.
    */
-  void set_is_important(bool is_important = true);
+  void set_is_important(bool is_important =  true);
   
   /** Checks whether @a action is important or not
-   * @return Whether @a action is important
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @return Whether @a action is important.
    */
   bool get_is_important() const;
+
+  
+  /** Sets whether @a action<!-- -->'s menu item proxies will ignore the
+   * Gtk::Settings:gtk-menu-images setting and always show their image, if available.
+   * 
+   * Use this if the menu item would be useless or hard to use
+   * without their image.
+   * 
+   * @newin{2,20}
+   * @param always_show <tt>true</tt> if menuitem proxies should always show their image.
+   */
+  void set_always_show_image(bool always_show =  true);
+  
+  /** Returns whether @a action<!-- -->'s menu item proxies will ignore the
+   * Gtk::Settings:gtk-menu-images setting and always show their image,
+   * if available.
+   * 
+   * @newin{2,20}
+   * @return <tt>true</tt> if the menu item proxies will always show their image.
+   */
+  bool get_always_show_image() const;
 
   
   /** Disable activation signals from the action 
@@ -552,13 +586,13 @@ public:
    * this is a convenience function to avoid recursing in those
    * cases (updating toggle state for instance).
    * 
-   * @newin2p16
+   * @newin{2,16}
    */
   void block_activate();
   
   /** Reenable activation signals from the action 
    * 
-   * @newin2p16
+   * @newin{2,16}
    */
   void unblock_activate();
 
@@ -737,7 +771,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** When TRUE
+/** When TRUE, toolitem proxies for this action are represented in the toolbar overflow menu.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -747,7 +781,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** When TRUE
+/** When TRUE, toolitem proxies for this action are represented in the toolbar overflow menu.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -757,7 +791,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether the action is considered important. When TRUE
+/** Whether the action is considered important. When TRUE, toolitem proxies for this action show text in GTK_TOOLBAR_BOTH_HORIZ mode.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -767,7 +801,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether the action is considered important. When TRUE
+/** Whether the action is considered important. When TRUE, toolitem proxies for this action show text in GTK_TOOLBAR_BOTH_HORIZ mode.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -777,7 +811,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** When TRUE
+/** When TRUE, empty menu proxies for this action are hidden.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -787,7 +821,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** When TRUE
+/** When TRUE, empty menu proxies for this action are hidden.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -837,7 +871,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The GtkActionGroup this GtkAction is associated with
+/** The GtkActionGroup this GtkAction is associated with, or NULL (for internal use).
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -847,7 +881,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The GtkActionGroup this GtkAction is associated with
+/** The GtkActionGroup this GtkAction is associated with, or NULL (for internal use).
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -856,83 +890,80 @@ public:
   Glib::PropertyProxy_ReadOnly< Glib::RefPtr<ActionGroup> > property_action_group() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the image will always be shown.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_always_show_image() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the image will always be shown.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_always_show_image() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
 
 protected:
-  //For use by child actions:  
+  //For use by child actions:
+  //TODO: Deprecate these when we can derive the appropriate widgets from Activatable, when we can break ABI.
   
-#ifndef GTKMM_DISABLE_DEPRECATED
-
   /** Disables calls to the activate()
    * function by signals on the given proxy widget.  This is used to
    * break notification loops for things like check or radio actions.
    * 
    * This function is intended for use by action implementations.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * 
    * Deprecated: 2.16: activatables are now responsible for activating the
    * action directly so this doesnt apply anymore.
-   * @deprecated Activatables are now responsible for activating the action directly so this doesnt apply anymore
    * @param proxy A proxy widget.
    */
   void block_activate_from(Widget& proxy);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
+  
   /** Re-enables calls to the activate()
    * function by signals on the given proxy widget.  This undoes the
    * blocking done by block_activate_from().
    * 
    * This function is intended for use by action implementations.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * 
    * Deprecated: 2.16: activatables are now responsible for activating the
    * action directly so this doesnt apply anymore.
-   * @deprecated Activatables are now responsible for activating the action directly so this doesnt apply anymore
    * @param proxy A proxy widget.
    */
   void unblock_activate_from(Widget& proxy);
-#endif // GTKMM_DISABLE_DEPRECATED
 
-
-protected: 
+protected:
   //Widget-creation routines:
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual Widget* create_menu_item_vfunc();
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual Widget* create_menu_item_vfunc();
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual Widget* create_tool_item_vfunc();
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual Widget* create_tool_item_vfunc();
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void connect_proxy_vfunc(Widget* proxy);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void connect_proxy_vfunc(Widget* proxy);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void disconnect_proxy_vfunc(Widget* proxy);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void disconnect_proxy_vfunc(Widget* proxy);
 
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_activate();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

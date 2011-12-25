@@ -49,7 +49,7 @@ namespace Gtk
  * Use send() to send the finished job to the printer.If you don't use cairo then 
  * PrintJob also supports printing of manually generated postscript, via set_source_file().
  * 
- * @newin2p10
+ * @newin{2,10}
  *
  * @ingroup Printing
  */
@@ -84,6 +84,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -104,7 +106,8 @@ private:
 
 
 protected:
-  explicit PrintJob(const Glib::ustring& title, const Glib::RefPtr<Printer>& printer, const Glib::RefPtr<PrintSettings>& settings, const Glib::RefPtr<PageSetup>& page_setup);
+    explicit PrintJob(const Glib::ustring& title, const Glib::RefPtr<Printer>& printer, const Glib::RefPtr<PrintSettings>& settings, const Glib::RefPtr<PageSetup>& page_setup);
+
 
 public:
   
@@ -112,46 +115,46 @@ public:
 
 
   /** Gets the Gtk::PrintSettings of the print job.
-   * @return The settings of @a job
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The settings of @a job.
    */
   Glib::RefPtr<PrintSettings> get_settings();
   
   /** Gets the Gtk::PrintSettings of the print job.
-   * @return The settings of @a job
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The settings of @a job.
    */
   Glib::RefPtr<const PrintSettings> get_settings() const;
 
   
   /** Gets the Gtk::Printer of the print job.
-   * @return The printer of @a job
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The printer of @a job.
    */
   Glib::RefPtr<Printer> get_printer();
   
   /** Gets the Gtk::Printer of the print job.
-   * @return The printer of @a job
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The printer of @a job.
    */
   Glib::RefPtr<const Printer> get_printer() const;
 
   
   /** Gets the job title.
-   * @return The title of @a job
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The title of @a job.
    */
   Glib::ustring get_title() const;
   
   /** Gets the status of the print job.
-   * @return The status of @a job
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The status of @a job.
    */
   PrintStatus get_status() const;
    // this appears in gtkprinter-private.h
@@ -161,44 +164,31 @@ public:
    * by the platforms printing system (typically PostScript,
    * but on many platforms PDF may work too). See 
    * Gtk::Printer::accepts_pdf() and Gtk::Printer::accepts_ps().
-   * @param filename The file to be printed.
-   * @return <tt>false</tt> if an error occurred
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @param filename The file to be printed.
+   * @return <tt>false</tt> if an error occurred.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   void set_source_file(const std::string& filename);
-#else
-  void set_source_file(const std::string& filename, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
+   
   /** Gets a cairo surface onto which the pages of
    * the print job should be rendered.
-   * @return The cairo surface of @a job
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The cairo surface of @a job.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Cairo::RefPtr<Cairo::Surface> get_surface();
-#else
-  Cairo::RefPtr<Cairo::Surface> get_surface(std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
   
   /** Gets a cairo surface onto which the pages of
    * the print job should be rendered.
-   * @return The cairo surface of @a job
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The cairo surface of @a job.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Cairo::RefPtr<const Cairo::Surface> get_surface() const;
-#else
-  Cairo::RefPtr<const Cairo::Surface> get_surface(std::auto_ptr<Glib::Error>& error) const;
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
+  
   /** If track_status is <tt>true</tt>, the print job will try to continue report
    * on the status of the print job in the printer queues and printer. This
    * can allow your application to show things like "out of paper" issues,
@@ -207,32 +197,26 @@ public:
    * This function is often implemented using some form of polling, so it should
    * not be enabled unless needed.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param track_status <tt>true</tt> to track status after printing.
    */
-  void set_track_print_status(bool track_status = true);
+  void set_track_print_status(bool track_status =  true);
   
-  /** Return value: <tt>true</tt> if print job status will be reported after printing
-   * @return <tt>true</tt> if print job status will be reported after printing
+  /** Returns wheter jobs will be tracked after printing.
+   * For details, see set_track_print_status().
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return <tt>true</tt> if print job status will be reported after printing.
    */
   bool get_track_print_status() const;
 
   
-  #ifdef GLIBMM_EXCEPTIONS_ENABLED
   /** For example, 
    * void on_print_job_complete(const Glib::RefPtr<PrintJob>& job);
    *
    * @throws exception
    */
   typedef sigc::slot< void, const Glib::RefPtr<PrintJob>& > SlotPrintJobComplete;
-  #else
-  /** For example, 
-   * void on_print_job_complete(const Glib::RefPtr<PrintJob>& job, std::auto_ptr<Glib::Error>& error);
-   */
-  typedef sigc::slot< void, const Glib::RefPtr<PrintJob>&, std::auto_ptr<Glib::Error>& > SlotPrintJobComplete;
-  #endif
 
   /** Sends the print job off to the printer.
    * @param slot A function to call when the job completes or an error occurs.
@@ -292,22 +276,37 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** TRUE if the print job will continue to emit status-changed signals after the print data has been sent to the printer or print server.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_track_print_status() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** TRUE if the print job will continue to emit status-changed signals after the print data has been sent to the printer or print server.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_track_print_status() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_status_changed();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

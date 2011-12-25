@@ -3,13 +3,12 @@
 #ifndef _GTKMM_SCALEBUTTON_H
 #define _GTKMM_SCALEBUTTON_H
 
+#include <gtkmmconfig.h>
+
 
 #include <glibmm.h>
 
-/* $Id: scalebutton.hg,v 1.5 2005/11/30 14:10:49 murrayc Exp $ */
-
-/* scalebutton.h
- *
+/*
  * Copyright (C) 2007 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -27,6 +26,7 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+ 
 #include <gtkmm/button.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/enums.h>
@@ -47,12 +47,12 @@ namespace Gtk
 
 /** A button which pops up a scale widget.
  *
- * This kind of widget is commonly used for volume controls in multimedia 
- * applications, and there is a Gtk::VolumeButton subclass that is tailored 
+ * This kind of widget is commonly used for volume controls in multimedia
+ * applications, and there is a Gtk::VolumeButton subclass that is tailored
  * for this use case.
- * 
+ *
  * @ingroup Widgets
- * @newin2p12
+ * @newin{2,12}
  */
 
 class ScaleButton : public Button
@@ -86,6 +86,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -98,39 +100,33 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_value_changed(double value);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
 
-public:
-  
-  explicit ScaleButton(IconSize size, double min, double max, double step, const Glib::StringArrayHandle& icons);
 
-  
+public:
+    explicit ScaleButton(IconSize size, double min, double max, double step, const Glib::StringArrayHandle& icons);
+
+
   /** Sets the icons to be used by the scale button.
    * For details, see the Gtk::ScaleButton:icons property.
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param icons A <tt>0</tt>-terminated array of icon names.
    */
   void set_icons(const Glib::StringArrayHandle& icons);
   
   /** Gets the current value of the scale button.
-   * @return Current value of the scale button
    * 
-   * @newin2p12.
+   * @newin{2,12}
+   * @return Current value of the scale button.
    */
   double get_value() const;
   
@@ -139,93 +135,107 @@ public:
    * inside them. The scale button emits the Gtk::ScaleButton::value-changed
    * signal if the value changes.
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param value New value of the scale button.
    */
   void set_value(double value);
+
   
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   /** Gets the Gtk::Adjustment associated with the Gtk::ScaleButton's scale.
    * See Gtk::Range::get_adjustment() for details.
-   * @return The adjustment associated with the scale
    * 
-   * @newin2p12.
+   * @newin{2,12}
+   * @return The adjustment associated with the scale.
    */
-  Gtk::Adjustment*	get_adjustment();
+  Gtk::Adjustment* get_adjustment();
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+  //The return type should bge const. This has been fixed in the gtkmm-3maybe branch.
   
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   /** Gets the Gtk::Adjustment associated with the Gtk::ScaleButton's scale.
    * See Gtk::Range::get_adjustment() for details.
-   * @return The adjustment associated with the scale
    * 
-   * @newin2p12.
+   * @newin{2,12}
+   * @return The adjustment associated with the scale.
    */
-  Gtk::Adjustment*	get_adjustment() const;
-  
+  Gtk::Adjustment* get_adjustment() const;
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
   /** Sets the Gtk::Adjustment to be used as a model
    * for the Gtk::ScaleButton's scale.
    * See Gtk::Range::set_adjustment() for details.
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param adjustment A Gtk::Adjustment.
    */
   void set_adjustment(Gtk::Adjustment& adjustment);
+
+  // TODO: Should be deprecated, but we have no replacement yet, until we break ABI.
   
   /** Gets the orientation of the Gtk::ScaleButton's popup window.
-   * @return The Gtk::ScaleButton's orientation.
    * 
-   * @newin2p14
+   * @newin{2,14}
    * 
    * Deprecated: 2.16: Use Gtk::Orientable::get_orientation() instead.
+   * @return The Gtk::ScaleButton's orientation.
    */
   Orientation get_orientation();
   
   /** Sets the orientation of the Gtk::ScaleButton's popup window.
    * 
-   * @newin2p14
+   * @newin{2,14}
    * 
    * Deprecated: 2.16: Use Gtk::Orientable::set_orientation() instead.
    * @param orientation The new orientation.
    */
   void set_orientation(Orientation orientation);
+
   
   /** Retrieves the plus button of the Gtk::ScaleButton.
-   * @return The plus button of the Gtk::ScaleButton.
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The plus button of the Gtk::ScaleButton.
    */
   Widget* get_plus_button();
   
   /** Retrieves the plus button of the Gtk::ScaleButton.
-   * @return The plus button of the Gtk::ScaleButton.
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The plus button of the Gtk::ScaleButton.
    */
   const Widget* get_plus_button() const;
   
   /** Retrieves the minus button of the Gtk::ScaleButton.
-   * @return The minus button of the Gtk::ScaleButton.
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The minus button of the Gtk::ScaleButton.
    */
   Widget* get_minus_button();
   
   /** Retrieves the minus button of the Gtk::ScaleButton.
-   * @return The minus button of the Gtk::ScaleButton.
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The minus button of the Gtk::ScaleButton.
    */
   const Widget* get_minus_button() const;
   
   /** Retrieves the popup of the Gtk::ScaleButton.
-   * @return The popup of the Gtk::ScaleButton
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The popup of the Gtk::ScaleButton.
    */
   Gtk::Widget* get_popup();
   
   /** Retrieves the popup of the Gtk::ScaleButton.
-   * @return The popup of the Gtk::ScaleButton
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The popup of the Gtk::ScaleButton.
    */
   const Gtk::Widget* get_popup() const;
 
@@ -302,6 +312,26 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
+/** List of icon names.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<Glib::StringArrayHandle> property_icons() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** List of icon names.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<Glib::StringArrayHandle> property_icons() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The orientation of the orientable.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
@@ -323,7 +353,6 @@ public:
 
 
 };
-
 
 } // namespace Gtk
 

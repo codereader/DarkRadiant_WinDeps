@@ -85,6 +85,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -97,17 +99,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -116,10 +112,11 @@ public:
   EventBox();
 
   
-  /** Return value: <tt>true</tt> if the event box window is visible
-   * @return <tt>true</tt> if the event box window is visible
+  /** Returns whether the event box has a visible window.
+   * See set_visible_window() for details.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return <tt>true</tt> if the event box window is visible.
    */
   bool get_visible_window() const;
   
@@ -144,7 +141,7 @@ public:
    * you want to set the background to a different color or
    * draw on it.
    * 
-   * <note><para>
+   * <note>
    * There is one unexpected issue for an invisible event box that has its
    * window below the child. (See set_above_child().)
    * Since the input-only window is not an ancestor window of any windows
@@ -153,22 +150,24 @@ public:
    * The practical effect of this is if an event isn't in the event
    * mask for the descendant window (see Gtk::Widget::add_events()),  
    * it won't be received by the event box. 
-   * </para><para>
+   * 
    * This problem doesn't occur for visible event boxes, because in
    * that case, the event box window is actually the ancestor of the
    * descendant windows, not just at the same place on the screen.
-   * </para></note>
+   * </note>
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param visible_window Boolean value.
    */
-  void set_visible_window(bool visible_window = true);
+  void set_visible_window(bool visible_window =  true);
   
-  /** Return value: <tt>true</tt> if the event box window is above the window
+  /** Returns whether the event box window is above or below the
+   * windows of its child. See set_above_child() for
+   * details.
+   * 
+   * @newin{2,4}
    * @return <tt>true</tt> if the event box window is above the window
    * of its child.
-   * 
-   * @newin2p4.
    */
   bool get_above_child() const;
   
@@ -180,13 +179,13 @@ public:
    * 
    * The default is to keep the window below the child.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param above_child <tt>true</tt> if the event box window is above the windows of its child.
    */
-  void set_above_child(bool above_child = true);
+  void set_above_child(bool above_child =  true);
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether the event box is visible
+/** Whether the event box is visible, as opposed to invisible and only used to trap events.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -196,7 +195,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether the event box is visible
+/** Whether the event box is visible, as opposed to invisible and only used to trap events.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when

@@ -42,7 +42,7 @@ namespace Gtk
 /** Renders numbers as progress bars.
  *
  * @ingroup TreeView
- * @newin2p6
+ * @newin{2,6}
  */
 
 class CellRendererProgress : public CellRenderer
@@ -76,6 +76,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -88,17 +90,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -147,7 +143,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Set this to positive values to indicate that some progress is made
+/** Set this to positive values to indicate that some progress is made, but you don't know how much.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -157,7 +153,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Set this to positive values to indicate that some progress is made
+/** Set this to positive values to indicate that some progress is made, but you don't know how much.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -167,7 +163,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The horizontal text alignment
+/** The horizontal text alignment, from 0 (left) to 1 (right). Reversed for RTL layouts.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -177,7 +173,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The horizontal text alignment
+/** The horizontal text alignment, from 0 (left) to 1 (right). Reversed for RTL layouts.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -187,7 +183,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The vertical text alignment
+/** The vertical text alignment, from 0 (top) to 1 (bottom).
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -197,7 +193,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The vertical text alignment
+/** The vertical text alignment, from 0 (top) to 1 (bottom).
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -206,12 +202,28 @@ public:
   Glib::PropertyProxy_ReadOnly<float> property_text_yalign() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Orientation and growth direction of the progress bar.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<ProgressBarOrientation> property_orientation() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Orientation and growth direction of the progress bar.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<ProgressBarOrientation> property_orientation() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  
   virtual Glib::PropertyProxy_Base _property_renderable();
-#else
-  virtual Glib::ustring _property_renderable();
-#endif
 
 
 };

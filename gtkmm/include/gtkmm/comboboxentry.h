@@ -4,6 +4,9 @@
 #define _GTKMM_COMBOBOXENTRY_H
 
 
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+
 #include <glibmm.h>
 
 /* $Id: comboboxentry.hg,v 1.10 2005/05/26 21:07:42 murrayc Exp $ */
@@ -65,6 +68,8 @@ namespace Gtk
  * @image html comboboxentry1.png
  *
  * @ingroup Widgets
+ *
+ * @deprecated Instead use ComboBox with has_entry = true.
  */
 
 class ComboBoxEntry : public ComboBox
@@ -98,6 +103,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -110,21 +117,16 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
 
+  
 public:
   ComboBoxEntry();
    //See ComboBoxEntryText for an equivalent of gtk_combo_box_entry_new_text().
@@ -136,7 +138,8 @@ public:
    * @param model A TreeModel.
    * @param text_column A column in @a model to get the strings from.
    */
-  explicit ComboBoxEntry(const Glib::RefPtr<TreeModel>& model, const TreeModelColumnBase& text_column);
+    explicit ComboBoxEntry(const Glib::RefPtr<TreeModel>& model, const TreeModelColumnBase& text_column);
+
   
   /** Creates a new ComboBoxEntry which has an Entry as child and a list of strings as popup. You can get the 
    * Entry from a ComboBoxEntry using get_entry(). To add and remove strings from the list, just modify @a model 
@@ -145,13 +148,15 @@ public:
    * @param model A TreeModel.
    * @param text_column A column in @a model to get the strings from.
    */
-  explicit ComboBoxEntry(const Glib::RefPtr<TreeModel>& model, int text_column = 0);
+    explicit ComboBoxEntry(const Glib::RefPtr<TreeModel>& model, int text_column =  0);
 
-  
+
   /** Sets the model column which @a entry_box should use to get strings from
    * to be @a text_column.
    * 
-   * @newin2p4
+   * @newin{2,4}
+   * 
+   * Deprecated: 2.24: Use set_entry_text_column() instead
    * @param text_column A column in @a model to get the strings from.
    */
   void set_text_column(const TreeModelColumnBase& text_column) const;   
@@ -159,22 +164,26 @@ public:
   /** Sets the model column which @a entry_box should use to get strings from
    * to be @a text_column.
    * 
-   * @newin2p4
+   * @newin{2,4}
+   * 
+   * Deprecated: 2.24: Use set_entry_text_column() instead
    * @param text_column A column in @a model to get the strings from.
    */
   void set_text_column(int text_column) const; 
   
-  /** Return value: A column in the data source model of @a entry_box.
-   * @return A column in the data source model of @a entry_box.
+  /** Returns the column which @a entry_box is using to get the strings from.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * 
+   * Deprecated: 2.24: Use get_entry_text_column() instead
+   * @return A column in the data source model of @a entry_box.
    */
   int get_text_column() const; 
 
   /** Returns the currently active string.
    * @result The currently active text.
    *
-   * @newin2p14
+   * @newin{2,14}
    */
   Glib::ustring get_active_text() const;
 
@@ -186,8 +195,28 @@ public:
 
   /** @see Bin::get_child().
    */
-  const Entry* get_entry() const;                                      
+  const Entry* get_entry() const;   
+  
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** A column in the data source model to get the strings from.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<int> property_text_column() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
 
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** A column in the data source model to get the strings from.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<int> property_text_column() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+                                   
 
 };
 
@@ -207,6 +236,9 @@ namespace Glib
    */
   Gtk::ComboBoxEntry* wrap(GtkComboBoxEntry* object, bool take_copy = false);
 } //namespace Glib
+
+
+#endif // GTKMM_DISABLE_DEPRECATED
 
 
 #endif /* _GTKMM_COMBOBOXENTRY_H */

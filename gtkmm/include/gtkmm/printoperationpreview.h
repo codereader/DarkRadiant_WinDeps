@@ -23,12 +23,18 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <gtk/gtk.h>
-
 #include <glibmm/interface.h>
 
 #include <gtkmm/pagesetup.h>
 #include <gtkmm/printcontext.h>
+
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+extern "C"
+{
+typedef struct _GtkPrintOperationPreviewIface GtkPrintOperationPreviewIface;
+}
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -45,7 +51,7 @@ namespace Gtk
 //TODO: There is no GtkPrintOperationPreview documentation either.
 // See http://bugzilla.gnome.org/show_bug.cgi?id=575538
 /** 
- * @newin2p10
+ * @newin{2,10}
  *
  * @ingroup Printing
  */
@@ -102,7 +108,7 @@ public:
   ///Provides access to the underlying C GObject.
   GtkPrintOperationPreview*       gobj()       { return reinterpret_cast<GtkPrintOperationPreview*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const GtkPrintOperationPreview* gobj() const { return reinterpret_cast<GtkPrintOperationPreview*>(gobject_); }
 
 private:
@@ -120,7 +126,7 @@ public:
    * Note that this function requires a suitable cairo context to 
    * be associated with the print context. 
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param page_nr The page to render.
    */
   void render_page(int page_nr);
@@ -129,29 +135,24 @@ public:
    * 
    * This function must be called to finish a custom print preview.
    * 
-   * @newin2p10
+   * @newin{2,10}
    */
   void end_preview();
   
-  /** Returns: <tt>true</tt> if the page has been selected for printing
-   * @param page_nr A page number.
-   * @return <tt>true</tt> if the page has been selected for printing
+  /** Returns whether the given page is included in the set of pages that
+   * have been selected for printing.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @param page_nr A page number.
+   * @return <tt>true</tt> if the page has been selected for printing.
    */
   bool is_selected(int page_nr) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void render_page_vfunc(int page_nr);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void render_page_vfunc(int page_nr);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void end_preview_vfunc();
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void end_preview_vfunc();
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool is_selected_vfunc(int page_nr) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool is_selected_vfunc(int page_nr) const;
 
 
   /**
@@ -174,19 +175,13 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_ready(const Glib::RefPtr<PrintContext>& context);
   virtual void on_got_page_size(const Glib::RefPtr<PrintContext>& context, const Glib::RefPtr<PageSetup>& page_setup);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

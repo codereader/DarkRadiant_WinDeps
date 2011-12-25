@@ -41,8 +41,6 @@
 #include <gtkmmconfig.h>
 #include <utility>
 
-GLIBMM_USING_STD(pair)
-
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 typedef struct _GtkTextBuffer GtkTextBuffer;
@@ -118,6 +116,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -197,7 +197,7 @@ public:
   /** @deprecated Use set_text()
    */
   void assign(const Glib::ustring& text);
-  
+
   /** @deprecated Use set_text()
    */
   void assign(const char* text_begin, const char* text_end);
@@ -205,7 +205,7 @@ public:
 
 
   //TODO: Make all insert() methods have the same return type:
-  
+
   /** Inserts @a text at position @a pos.
    * Emits the "insert_text" signal; insertion actually occurs in the default handler for the signal.
    * The @a pos iterator is invalidated when insertion occurs (because the buffer contents change).
@@ -310,7 +310,7 @@ public:
    */
   iterator insert(const iterator& pos, const iterator& range_begin, const iterator& range_end);
   
- 
+
   /** Same as insert_range(), but does nothing if the insertion point isn't editable.
    *
    * The @a default_editable parameter indicates whether the text is editable at @a pos if no tags enclosing @a pos affect editability.
@@ -350,7 +350,7 @@ public:
    * @param text_end The end of the UTF8 character array.
    * @param tags A standard C++ container of @link Gtk::TextTag Gtk::TextBuffer::Tags@endlink.
    * @result Whether text was actually inserted
-   */                          
+   */
   iterator insert_with_tags(const iterator& pos, const char* text_begin, const char* text_end,
                             const Glib::ArrayHandle< Glib::RefPtr<Tag> >& tags);
 
@@ -373,7 +373,7 @@ public:
    * @param text_end The end of the UTF8 character array.
    * @param tag_names A standard C++ container of tag names.
    * @result Whether text was actually inserted
-   */                                   
+   */
   iterator insert_with_tags_by_name(const iterator& pos, const char* text_begin, const char* text_end,
                                     const Glib::StringArrayHandle& tag_names);
 
@@ -408,9 +408,9 @@ public:
    * combining accents are involved, more than one character can
    * be deleted, and when precomposed character and accent combinations
    * are involved, less than one character will be deleted.
-   * 
-   * Because the buffer is modified, all outstanding iterators become 
-   * invalid after calling this method; however, this method returns 
+   *
+   * Because the buffer is modified, all outstanding iterators become
+   * invalid after calling this method; however, this method returns
    * a valid iterator that points to the location where text was deleted.
    *
    * @param iter A position in the buffer.
@@ -418,34 +418,51 @@ public:
    * @param default_editable Whether the buffer is editable by default.
    * @result An iterator to the location where text was deleted, if the buffer was modified.
    *
-   * @newin2p6
+   * @newin{2,6}
    */
   iterator backspace(const iterator& iter, bool interactive = true, bool default_editable = true);
   
 
-  /** @deprecated Use get_text(const iterator& start, const iterator& end, bool include_hidden_chars) const
-   */
-  
-  /** Return value: an allocated UTF-8 string
-   * @param start Start of a range.
-   * @param end End of a range.
-   * @param include_hidden_chars Whether to include invisible text.
-   * @return An allocated UTF-8 string.
-   */
-  Glib::ustring get_text(const iterator& start, const iterator& end, bool include_hidden_chars = true);
+#ifndef GTKMM_DISABLE_DEPRECATED
 
-  
-  /** Return value: an allocated UTF-8 string
+  /** Returns the text in the range [ @a start, @a end). Excludes undisplayed
+   * text (text marked with tags that set the invisibility attribute) if
+   *  @a include_hidden_chars is <tt>false</tt>. Does not include characters
+   * representing embedded images, so byte and character indexes into
+   * the returned string do <em>not</em> correspond to byte
+   * and character indexes into the buffer. Contrast with
+   * get_slice().
+   * @deprecated Use get_text(const iterator& start, const iterator& end, bool include_hidden_chars) const
    * @param start Start of a range.
    * @param end End of a range.
    * @param include_hidden_chars Whether to include invisible text.
    * @return An allocated UTF-8 string.
    */
-  Glib::ustring get_text(const iterator& start, const iterator& end, bool include_hidden_chars = true) const;
+  Glib::ustring get_text(const iterator& start, const iterator& end, bool include_hidden_chars =  true);
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+  /** Returns the text in the range [ @a start, @a end). Excludes undisplayed
+   * text (text marked with tags that set the invisibility attribute) if
+   *  @a include_hidden_chars is <tt>false</tt>. Does not include characters
+   * representing embedded images, so byte and character indexes into
+   * the returned string do <em>not</em> correspond to byte
+   * and character indexes into the buffer. Contrast with
+   * get_slice().
+   * @param start Start of a range.
+   * @param end End of a range.
+   * @param include_hidden_chars Whether to include invisible text.
+   * @return An allocated UTF-8 string.
+   */
+  Glib::ustring get_text(const iterator& start, const iterator& end, bool include_hidden_chars =  true) const;
+
+#ifndef GTKMM_DISABLE_DEPRECATED
 
   /** @deprecated Use get_text(bool include_hidden_chars) const.
    */
   Glib::ustring get_text(bool include_hidden_chars = true);
+#endif // GTKMM_DISABLE_DEPRECATED
+
 
   /** Returns all the text in the buffer. Excludes undisplayed
    * text (text marked with tags that set the invisibility attribute) if
@@ -460,25 +477,31 @@ public:
    */
   Glib::ustring get_text(bool include_hidden_chars = true) const;
 
+  
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   /** @deprecated Use get_slice(const iterator& start, const iterator& end, bool include_hidden_chars) const.
    */
-  
-  /** Return value: an allocated UTF-8 string
-   * @param start Start of a range.
-   * @param end End of a range.
-   * @param include_hidden_chars Whether to include invisible text.
-   * @return An allocated UTF-8 string.
-   */
-  Glib::ustring get_slice(const iterator& start, const iterator& end, bool include_hidden_chars = true);
+  Glib::ustring get_slice(const iterator& start, const iterator& end, bool include_hidden_chars =  true);
+#endif // GTKMM_DISABLE_DEPRECATED
 
-  
-  /** Return value: an allocated UTF-8 string
+
+  /** Returns the text in the range [ @a start, @a end). Excludes undisplayed
+   * text (text marked with tags that set the invisibility attribute) if
+   *  @a include_hidden_chars is <tt>false</tt>. The returned string includes a
+   * 0xFFFC character whenever the buffer contains
+   * embedded images, so byte and character indexes into
+   * the returned string <em>do</em> correspond to byte
+   * and character indexes into the buffer. Contrast with
+   * get_text(). Note that 0xFFFC can occur in normal
+   * text as well, so it is not a reliable indicator that a pixbuf or
+   * widget is in the buffer.
    * @param start Start of a range.
    * @param end End of a range.
    * @param include_hidden_chars Whether to include invisible text.
    * @return An allocated UTF-8 string.
    */
-  Glib::ustring get_slice(const iterator& start, const iterator& end, bool include_hidden_chars = true) const;
+  Glib::ustring get_slice(const iterator& start, const iterator& end, bool include_hidden_chars =  true) const;
 
   iterator insert_pixbuf(const iterator& pos, const Glib::RefPtr<Gdk::Pixbuf>& pixbuf);
   
@@ -496,7 +519,7 @@ public:
    * Emits the "mark-set" signal as notification of the mark's initial
    * placement.
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param mark The mark to add.
    * @param where Location to place mark.
    */
@@ -519,7 +542,7 @@ public:
    * @param left_gravity Whether the mark has left gravity.
    * @return The new Gtk::TextMark object.
    */
-  Glib::RefPtr<TextBuffer::Mark> create_mark(const Glib::ustring& mark_name, const iterator& where, bool left_gravity = true);
+  Glib::RefPtr<TextBuffer::Mark> create_mark(const Glib::ustring& mark_name, const iterator& where, bool left_gravity =  true);
 
   /** Create an anonymous mark. */
   /** Creates an anonymous mark at position @a where.
@@ -537,7 +560,7 @@ public:
    * @param where Location to place mark.
    * @param left_gravity Whether the mark has left gravity.
    * @return The new Gtk::TextMark object.
-   */ 
+   */
   Glib::RefPtr<Mark> create_mark(const iterator& where, bool left_gravity = true);
 
   
@@ -562,13 +585,15 @@ public:
   void delete_mark(const Glib::RefPtr<Mark>& mark);
 
   
-  /** Return value: a Gtk::TextMark, or <tt>0</tt>
+  /** Returns the mark named @a name in buffer @a buffer, or <tt>0</tt> if no such
+   * mark exists in the buffer.
    * @param name A mark name.
    * @return A Gtk::TextMark, or <tt>0</tt>.
    */
   Glib::RefPtr<TextBuffer::Mark> get_mark(const Glib::ustring& name);
   
-  /** Return value: a Gtk::TextMark, or <tt>0</tt>
+  /** Returns the mark named @a name in buffer @a buffer, or <tt>0</tt> if no such
+   * mark exists in the buffer.
    * @param name A mark name.
    * @return A Gtk::TextMark, or <tt>0</tt>.
    */
@@ -589,12 +614,25 @@ public:
   void delete_mark_by_name(const Glib::ustring& name);
 
   
-  /** Return value: insertion point mark
+  /** Returns the mark that represents the cursor (insertion point).
+   * Equivalent to calling get_mark() to get the mark
+   * named "insert", but very slightly more efficient, and involves less
+   * typing.
    * @return Insertion point mark.
    */
   Glib::RefPtr<TextBuffer::Mark> get_insert();
   
-  /** Return value: selection bound mark
+  /** Returns the mark that represents the selection bound.  Equivalent
+   * to calling get_mark() to get the mark named
+   * "selection_bound", but very slightly more efficient, and involves
+   * less typing.
+   * 
+   * The currently-selected text in @a buffer is the region between the
+   * "selection_bound" and "insert" marks. If "selection_bound" and
+   * "insert" are in the same place, then there is no current selection.
+   * get_selection_bounds() is another convenient function
+   * for handling the selection, if you just want to know whether there's a
+   * selection and what its bounds are.
    * @return Selection bound mark.
    */
   Glib::RefPtr<TextBuffer::Mark> get_selection_bound();
@@ -708,13 +746,13 @@ public:
    * bit flips, the buffer emits a "modified-changed" signal.
    * @param setting Modification flag setting.
    */
-  void set_modified(bool setting = true);
+  void set_modified(bool setting =  true);
 
   
   /** Indicates whether the buffer has some text currently selected.
-   * @return <tt>true</tt> if the there is text selected
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return <tt>true</tt> if the there is text selected.
    */
   bool get_has_selection() const;
 
@@ -738,7 +776,7 @@ public:
    * @param clipboard The Gtk::Clipboard object to cut to.
    * @param default_editable Default editability of the buffer.
    */
-  void cut_clipboard(const Glib::RefPtr<Clipboard>& clipboard, bool default_editable = true);
+  void cut_clipboard(const Glib::RefPtr<Clipboard>& clipboard, bool default_editable =  true);
   
   /** Copies the currently-selected text to a clipboard.
    * @param clipboard The Gtk::Clipboard object to copy to.
@@ -748,7 +786,12 @@ public:
   void paste_clipboard(const Glib::RefPtr<Clipboard>& clipboard, bool default_editable = true);
   
 
-  /** Return value: whether the selection has nonzero length
+  /** Returns <tt>true</tt> if some text is selected; places the bounds
+   * of the selection in @a start and @a end (if the selection has length 0,
+   * then @a start and @a end are filled in with the same value).
+   *  @a start and @a end will be in ascending order. If @a start and @a end are
+   * <tt>0</tt>, then they are not filled in, but the return value still indicates
+   * whether text is selected.
    * @param start Iterator to initialize with selection start.
    * @param end Iterator to initialize with selection end.
    * @return Whether the selection has nonzero length.
@@ -763,7 +806,7 @@ public:
    * @param default_editable Whether the buffer is editable by default.
    * @return Whether there was a non-empty selection to delete.
    */
-  bool erase_selection(bool interactive = true, bool default_editable = true);
+  bool erase_selection(bool interactive =  true, bool default_editable =  true);
 
   
   /** This function moves the "insert" and "selection_bound" marks
@@ -774,12 +817,12 @@ public:
    * to be recalculated. This function moves them as a unit, which can
    * be optimized.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param ins Where to put the "insert" mark.
    * @param bound Where to put the "selection_bound" mark.
    */
   void select_range(const iterator& ins, const iterator& bound);
-  
+
 /* Called to specify atomic user actions, used to implement undo */
   
   /** Called to indicate that the buffer operations between here and a
@@ -807,9 +850,28 @@ public:
    */
   void end_user_action();
 
-//TODO:
-  //_WRAP_METHOD(GtkTargetList * gtk_text_buffer_get_copy_target_list() const, gtk_text_buffer_get_copy_target_list)
-  //_WRAP_METHOD(GtkTargetList * gtk_text_buffer_get_paste_target_list() const, gtk_text_buffer_get_paste_target_list)
+  
+  /** This function returns the list of targets this text buffer can
+   * provide for copying and as DND source. The targets in the list are
+   * added with %info values from the Gtk::TextBufferTargetInfo enum,
+   * using Gtk::TargetList::add_rich_text_targets() and
+   * Gtk::TargetList::add_text_targets().
+   * 
+   * @newin{2,10}
+   * @return The Gtk::TargetList.
+   */
+  Glib::RefPtr<TargetList> get_copy_target_list() const;
+  
+  /** This function returns the list of targets this text buffer supports
+   * for pasting and as DND destination. The targets in the list are
+   * added with %info values from the Gtk::TextBufferTargetInfo enum,
+   * using Gtk::TargetList::add_rich_text_targets() and
+   * Gtk::TargetList::add_text_targets().
+   * 
+   * @newin{2,10}
+   * @return The Gtk::TargetList.
+   */
+  Glib::RefPtr<TargetList> get_paste_target_list() const;
 
 //TODO: I have commented these out for now because I don't understand what the register_buffer and content_buffer are. murrayc.
  //TODO: Documentation.
@@ -842,11 +904,11 @@ public:
    * tags from being pasted. It is probably the common case to pass an
    * identifier != <tt>0</tt> here, since the <tt>0</tt> tagset requires the
    * receiving buffer to deal with with pasting of arbitrary tags.
-   * @param tagset_name An optional tagset name, on <tt>0</tt>.
-   * @return The Gdk::Atom that corresponds to the newly registered
-   * format's mime-type.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @param tagset_name An optional tagset name, on <tt>0</tt>.
+   * @return The Gdk::Atom that corresponds to the
+   * newly registered format's mime-type.
    */
   Glib::ustring register_serialize_tagset(const Glib::ustring& tagset_name);
 
@@ -858,11 +920,11 @@ public:
   /** This function registers GTK+'s internal rich text serialization
    * format with the passed @a buffer. See
    * register_serialize_tagset() for details.
-   * @param tagset_name An optional tagset name, on <tt>0</tt>.
-   * @return The Gdk::Atom that corresponds to the newly registered
-   * format's mime-type.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @param tagset_name An optional tagset name, on <tt>0</tt>.
+   * @return The Gdk::Atom that corresponds to the
+   * newly registered format's mime-type.
    */
   Glib::ustring register_deserialize_tagset(const Glib::ustring& tagset_name);
 
@@ -871,7 +933,7 @@ public:
    * registered using register_serialize_format() or
    * register_serialize_tagset()
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param format A Gdk::Atom representing a registered rich text format.
    */
   void unregister_serialize_format(const Glib::ustring& format);
@@ -880,7 +942,7 @@ public:
    * registered using register_deserialize_format() or
    * register_deserialize_tagset().
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param format A Gdk::Atom representing a registered rich text format.
    */
   void unregister_deserialize_format(const Glib::ustring& format);
@@ -904,18 +966,18 @@ public:
    * tags from these buffers, because you know that your application can
    * handle the newly created tags.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param format A Gdk::Atom representing a registered rich text format.
    * @param can_create_tags Whether deserializing this format may create tags.
    */
-  void set_can_create_tags(const Glib::ustring& format, bool can_create_tags = true);
+  void set_can_create_tags(const Glib::ustring& format, bool can_create_tags =  true);
   
   /** This functions returns the value set with
    * deserialize_set_can_create_tags()
-   * @param format A Gdk::Atom representing a registered rich text format.
-   * @return Whether deserializing this format may create tags
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @param format A Gdk::Atom representing a registered rich text format.
+   * @return Whether deserializing this format may create tags.
    */
   bool get_can_create_tags(const Glib::ustring& format) const;
 
@@ -968,10 +1030,10 @@ public:
 
   Glib::SignalProxy2< void,const TextBuffer::iterator&,const Glib::RefPtr<ChildAnchor>& > signal_insert_child_anchor();
 
-  
-  /** The delete_range signal is emitted to delete a range from 
+
+  /** The delete_range signal is emitted to delete a range from
    * a TextBuffer. Note that your handler must not invalidate the
-   * @a start and @a end iters (or has to revalidate them), if it runs before the 
+   * @a start and @a end iters (or has to revalidate them), if it runs before the
    * default handler. There is no need to keep the iters valid in handlers
    * which run after the default handler but
    * those don't have access to the deleted text.
@@ -985,7 +1047,7 @@ public:
 
   Glib::SignalProxy2< void,const TextBuffer::iterator&,const TextBuffer::iterator& > signal_erase();
 
-  
+
   /**
    * @par Prototype:
    * <tt>void on_my_%changed()</tt>
@@ -1062,6 +1124,17 @@ public:
 
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Text Tag Table.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< Glib::RefPtr<TextBuffer::TagTable> > property_tag_table() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
 /** Current text of the buffer.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
@@ -1111,16 +1184,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_insert(const TextBuffer::iterator& pos, const Glib::ustring& text, int bytes);
   virtual void on_insert_pixbuf(const TextBuffer::iterator& pos, const Glib::RefPtr<Gdk::Pixbuf>& pixbuf);
   virtual void on_insert_child_anchor(const TextBuffer::iterator& pos, const Glib::RefPtr<ChildAnchor>& anchor);
@@ -1133,7 +1201,6 @@ protected:
   virtual void on_remove_tag(const Glib::RefPtr<TextBuffer::Tag>& tag, const TextBuffer::iterator& range_begin, const TextBuffer::iterator& range_end);
   virtual void on_begin_user_action();
   virtual void on_end_user_action();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

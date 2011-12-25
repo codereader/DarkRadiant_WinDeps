@@ -42,7 +42,7 @@ namespace Gtk
 {
 
 
-/** @addtogroup gtkmmEnums Enums and Flags */
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
 
 /**
  * @ingroup gtkmmEnums
@@ -62,38 +62,6 @@ namespace Glib
 
 template <>
 class Value<Gtk::ProgressBarStyle> : public Glib::Value_Enum<Gtk::ProgressBarStyle>
-{
-public:
-  static GType value_type() G_GNUC_CONST;
-};
-
-} // namespace Glib
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-
-namespace Gtk
-{
-
-/**
- * @ingroup gtkmmEnums
- */
-enum ProgressBarOrientation
-{
-  PROGRESS_LEFT_TO_RIGHT,
-  PROGRESS_RIGHT_TO_LEFT,
-  PROGRESS_BOTTOM_TO_TOP,
-  PROGRESS_TOP_TO_BOTTOM
-};
-
-} // namespace Gtk
-
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-namespace Glib
-{
-
-template <>
-class Value<Gtk::ProgressBarOrientation> : public Glib::Value_Enum<Gtk::ProgressBarOrientation>
 {
 public:
   static GType value_type() G_GNUC_CONST;
@@ -169,6 +137,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -181,17 +151,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -222,7 +186,7 @@ public:
   void set_text(const Glib::ustring& text);
 
   
-  /** Return value: a fraction from 0.0 to 1.0
+  /** Returns the current fraction of the task that's been completed.
    * @return A fraction from 0.0 to 1.0.
    */
   double get_fraction() const;
@@ -251,7 +215,7 @@ public:
    * (left-to-right, right-to-left, top-to-bottom, or bottom-to-top).
    * @param orientation Orientation of the progress bar.
    */
-  void set_orientation(ProgressBarOrientation orientation = PROGRESS_LEFT_TO_RIGHT);
+  void set_orientation(ProgressBarOrientation orientation =  PROGRESS_LEFT_TO_RIGHT);
   
   /** Retrieves the current progress bar orientation.
    * @return Orientation of the progress bar.
@@ -262,17 +226,38 @@ public:
   /** Sets the mode used to ellipsize (add an ellipsis: "...") the text 
    * if there is not enough space to render the entire string.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param mode A Pango::EllipsizeMode.
    */
   void set_ellipsize(Pango::EllipsizeMode mode);
   
-  /** Return value: Pango::EllipsizeMode
-   * @return Pango::EllipsizeMode
+  /** Returns the ellipsizing position of the progressbar. 
+   * See set_ellipsize().
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return Pango::EllipsizeMode.
    */
   Pango::EllipsizeMode get_ellipsize() const;
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The GtkAdjustment connected to the progress bar (Deprecated).
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<Adjustment*> property_adjustment() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The GtkAdjustment connected to the progress bar (Deprecated).
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<Adjustment*> property_adjustment() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The fraction of total work that has been completed.
@@ -335,6 +320,86 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Specifies the visual style of the bar in percentage mode (Deprecated).
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<ProgressBarStyle> property_bar_style() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Specifies the visual style of the bar in percentage mode (Deprecated).
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<ProgressBarStyle> property_bar_style() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The increment used for each iteration in activity mode (Deprecated).
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<guint> property_activity_step() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The increment used for each iteration in activity mode (Deprecated).
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<guint> property_activity_step() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The number of blocks which can fit in the progress bar area in activity mode (Deprecated).
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<guint> property_activity_blocks() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The number of blocks which can fit in the progress bar area in activity mode (Deprecated).
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<guint> property_activity_blocks() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The number of discrete blocks in a progress bar (when shown in the discrete style).
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<guint> property_discrete_blocks() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The number of discrete blocks in a progress bar (when shown in the discrete style).
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<guint> property_discrete_blocks() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
 /** Text to be displayed in the progress bar.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
@@ -355,7 +420,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The preferred place to ellipsize the string
+/** The preferred place to ellipsize the string, if the progress bar does not have enough room to display the entire string, if at all.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -365,7 +430,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The preferred place to ellipsize the string
+/** The preferred place to ellipsize the string, if the progress bar does not have enough room to display the entire string, if at all.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when

@@ -26,10 +26,10 @@
  */
 
 
+#include <gtkmm/treepath.h>
 #include <gtkmm/enums.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treeiter.h>
-#include <gtkmm/treepath.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -102,6 +102,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -118,7 +120,7 @@ private:
 
    
 protected:
-  
+
 
 public:
   
@@ -155,12 +157,12 @@ public:
    // This would be our SignalProxy_Select* data.
 
   
-  /** Return value: A Gtk::TreeView
+  /** Returns the tree view associated with @a selection.
    * @return A Gtk::TreeView.
    */
   TreeView* get_tree_view();
   
-  /** Return value: A Gtk::TreeView
+  /** Returns the tree view associated with @a selection.
    * @return A Gtk::TreeView.
    */
   const TreeView* get_tree_view() const;
@@ -172,7 +174,7 @@ public:
   Glib::RefPtr<const TreeModel> get_model() const; // convenience function, not in GTK+
 
   //TODO: Add TreeModel::const_iterator get_selected() const, when we have a real const_iterator.
-  
+
   /** Get the currently selected row.
    * @return The currently selected row.
    * @note
@@ -210,10 +212,10 @@ public:
   ListHandle_Path get_selected_rows(Glib::RefPtr<TreeModel>& model);
 
   
-  /** Return value: The number of rows selected.
-   * @return The number of rows selected.
+  /** Returns the number of rows that have been selected in @a tree.
    * 
-   * @newin2p2.
+   * @newin{2,2}
+   * @return The number of rows selected.
    */
   int count_selected_rows() const;
 
@@ -301,7 +303,7 @@ public:
   /** Unselects a range of nodes, determined by @a start_path and @a end_path
    * inclusive.
    * 
-   * @newin2p2
+   * @newin{2,2}
    * @param start_path The initial node of the range.
    * @param end_path The initial node of the range.
    */
@@ -313,18 +315,19 @@ public:
   void unselect(const TreeModel::iterator& iter);
 
   
-  /** Return value: <tt>true</tt> if @a path is selected.
+  /** Returns <tt>true</tt> if the row pointed to by @a path is currently selected.  If @a path
+   * does not point to a valid location, <tt>false</tt> is returned
    * @param path A Gtk::TreePath to check selection on.
    * @return <tt>true</tt> if @a path is selected.
    */
   bool is_selected(const TreeModel::Path& path) const;
   
-  /** Return value: <tt>true</tt>, if @a iter is selected
+  /** Returns <tt>true</tt> if the row at @a iter is currently selected.
    * @param iter A valid Gtk::TreeIter.
    * @return <tt>true</tt>, if @a iter is selected.
    */
   bool is_selected(const TreeModel::iterator& iter) const;
-  
+
   
   /** Selects all the nodes. @a selection must be set to Gtk::SELECTION_MULTIPLE
    * mode.
@@ -334,7 +337,7 @@ public:
   /** Unselects all the nodes.
    */
   void unselect_all();
-  
+
   
   /**
    * @par Prototype:
@@ -348,18 +351,12 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_changed();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

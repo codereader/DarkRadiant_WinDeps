@@ -26,7 +26,14 @@
  */
 
 #include <glibmm/interface.h>
-#include <gtk/gtk.h>
+
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+extern "C"
+{
+typedef struct _GtkEditableClass GtkEditableClass;
+}
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -103,7 +110,7 @@ public:
   ///Provides access to the underlying C GObject.
   GtkEditable*       gobj()       { return reinterpret_cast<GtkEditable*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const GtkEditable* gobj() const { return reinterpret_cast<GtkEditable*>(gobject_); }
 
 private:
@@ -136,7 +143,7 @@ public:
    * @param is_editable <tt>true</tt> if the user is allowed to edit the text
    * in the widget.
    */
-  void set_editable(bool is_editable = true);
+  void set_editable(bool is_editable =  true);
   
   /** Retrieves whether @a editable is editable. See
    * set_editable().
@@ -145,8 +152,8 @@ public:
   bool get_editable() const;
 
   
-  /** Inserts @a new_text_length bytes of @a new_text into the contents of the 
-   * widget, at position @a position. 
+  /** Inserts @a new_text_length bytes of @a new_text into the contents of the
+   * widget, at position @a position.
    * 
    * Note that the position is in characters, not in bytes. 
    * The function updates @a position to point after the newly inserted text.
@@ -196,8 +203,8 @@ public:
   void select_region(int start_pos, int end_pos);
   
   /** Retrieves the selection bound of the editable. start_pos will be filled
-   * with the start of the selection and @a end_pos with end. If no text was 
-   * selected both will be identical and <tt>false</tt> will be returned. 
+   * with the start of the selection and @a end_pos with end. If no text was
+   * selected both will be identical and <tt>false</tt> will be returned.
    * 
    * Note that positions are specified in characters, not bytes.
    * @param start_pos Location to store the starting position, or <tt>0</tt>.
@@ -249,53 +256,35 @@ public:
 protected:
 
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void delete_text_vfunc(int start_pos, int end_pos);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void delete_text_vfunc(int start_pos, int end_pos);
 
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual Glib::ustring get_chars_vfunc(int start_pos, int end_pos) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual Glib::ustring get_chars_vfunc(int start_pos, int end_pos) const;
 
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void select_region_vfunc(int start_pos, int end_pos);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void select_region_vfunc(int start_pos, int end_pos);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool get_selection_bounds_vfunc(int& start_pos, int& end_pos) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool get_selection_bounds_vfunc(int& start_pos, int& end_pos) const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void set_position_vfunc(int position);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void set_position_vfunc(int position);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual int get_position_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual int get_position_vfunc() const;
 
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
 virtual void insert_text_vfunc(const Glib::ustring& text, int& position);
 
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_insert_text(const Glib::ustring& text, int* position);
   virtual void on_delete_text(int start_pos, int end_pos);
   virtual void on_changed();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

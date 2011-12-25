@@ -42,6 +42,39 @@ namespace Gtk
 namespace Gtk
 {
 
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
+
+/**
+ * @ingroup gtkmmEnums
+ */
+enum CellRendererAccelMode
+{
+  CELL_RENDERER_ACCEL_MODE_GTK,
+  CELL_RENDERER_ACCEL_MODE_OTHER
+};
+
+} // namespace Gtk
+
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+namespace Glib
+{
+
+template <>
+class Value<Gtk::CellRendererAccelMode> : public Glib::Value_Enum<Gtk::CellRendererAccelMode>
+{
+public:
+  static GType value_type() G_GNUC_CONST;
+};
+
+} // namespace Glib
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+
+namespace Gtk
+{
+
+
 /**  .
  * Renders a keyboard accelerator in a cell
  *
@@ -51,7 +84,7 @@ namespace Gtk
  * simply typing the new combination.
  *
  * @ingroup TreeView
- * @newin2p10
+ * @newin{2,10}
  */
 
 class CellRendererAccel : public CellRendererText
@@ -85,6 +118,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -97,19 +132,13 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_accel_edited(const Glib::ustring& path_string, guint accel_key, Gdk::ModifierType accel_mods, guint hardware_keycode);
   virtual void on_accel_cleared(const Glib::ustring& path_string);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -197,10 +226,28 @@ public:
   Glib::PropertyProxy_ReadOnly<guint> property_keycode() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The type of accelerators.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<CellRendererAccelMode> property_accel_mode() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The type of accelerators.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<CellRendererAccelMode> property_accel_mode() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
   virtual Glib::PropertyProxy_Base _property_renderable(); //override
-#endif //GLIBMM_PROPERTIES_ENABLED
 
 
 };

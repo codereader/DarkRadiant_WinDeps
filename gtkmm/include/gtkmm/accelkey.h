@@ -1,4 +1,4 @@
-/* $Id: accelkey.h 1082 2009-01-19 17:55:19Z murrayc $ */
+/* $Id$ */
 #ifndef _GTKMM_ACCELKEY_H
 #define _GTKMM_ACCELKEY_H
 

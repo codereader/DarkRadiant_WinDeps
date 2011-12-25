@@ -46,7 +46,7 @@ class Settings;
 class Style;
 
 
-/** @addtogroup gtkmmEnums Enums and Flags */
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
 
 /**
  * @ingroup gtkmmEnums
@@ -147,6 +147,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -214,17 +216,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };
@@ -296,7 +292,7 @@ public:
    *
    * @param settings a Gtk::Settings
    *
-   * @newin2p4
+   * @newin{2,4}
    */
   static void reset_styles(const Glib::RefPtr<Settings>& settings);
 

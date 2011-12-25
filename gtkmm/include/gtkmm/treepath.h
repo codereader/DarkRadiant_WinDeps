@@ -31,13 +31,8 @@
 // the #ifndef GTKMM_DISABLE_DEPRECATED in deprecated classes) is generated:
 
 
-#include <gtkmm/treemodel.h>
 #include <gtkmm/selectiondata.h>
-#include <gtkmmconfig.h>
-
-GLIBMM_USING_STD(random_access_iterator_tag)
-GLIBMM_USING_STD(reverse_iterator)
-
+#include <gtkmm/treemodel.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 extern "C" { typedef struct _GtkTreePath GtkTreePath; }
@@ -132,7 +127,7 @@ public:
   TreePath& operator=(const TreeModel::iterator& iter);
 
   /** Checks that the path is not empty, by calling empty().
-   * @newin2p16
+   * @newin{2,16}
    */
   operator bool() const;
 
@@ -196,13 +191,13 @@ public:
   void down();
 
   
-  /** Return value: <tt>true</tt> if @a descendant is contained inside @a path
+  /** Returns <tt>true</tt> if @a descendant is a descendant of @a path.
    * @param descendant Another Gtk::TreePath.
    * @return <tt>true</tt> if @a descendant is contained inside @a path.
    */
   bool is_ancestor(const TreePath& descendant) const;
   
-  /** Return value: <tt>true</tt> if @a ancestor contains @a path somewhere below it
+  /** Returns <tt>true</tt> if @a path is a descendant of @a ancestor.
    * @param ancestor Another Gtk::TreePath.
    * @return <tt>true</tt> if @a ancestor contains @a path somewhere below it.
    */
@@ -240,7 +235,7 @@ public:
 
 #ifndef GTKMM_DISABLE_DEPRECATED
 
-  /** Return value: The depth of @a path
+  /** Returns the current depth of @a path.
    * @deprecated replaced by size().
    * @return The depth of @a path.
    */
@@ -263,7 +258,7 @@ public:
    * is being passed around. If you aren't in the same process, then you'll
    * get memory corruption. In the Gtk::TreeDragDest drag_data_received signal handler,
    * you can assume that selection data of type "GTK_TREE_MODEL_ROW" is
-   * from the current process. 
+   * from the current process.
    *
    * @param selection_data a #SelectionData
    * @param model a Gtk::TreeModel
@@ -274,7 +269,7 @@ public:
    **/
   static bool get_from_selection_data(const SelectionData& selection_data, Glib::RefPtr<TreeModel>& model, TreePath& path);
   //TODO: Add an override that takes a const TreeModel (and deprecate the current version).
-  
+
   /// See description in the other overload.
   static bool get_from_selection_data(const SelectionData& selection_data, TreePath& path);
 
@@ -331,10 +326,10 @@ struct TreePath_Traits
     { return item; }
 
   static CppType to_cpp_type(CType item)
-    { return CppType(const_cast<CTypeNonConst>(item)); } 
+    { return CppType(const_cast<CTypeNonConst>(item)); }
 
   static void release_c_type(CType item)
-    { gtk_tree_path_free(const_cast<CTypeNonConst>(item)); }  
+    { gtk_tree_path_free(const_cast<CTypeNonConst>(item)); }
 };
 
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */

@@ -76,6 +76,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -171,36 +173,36 @@ public:
   
   /** Emits the "toggled" signal on the toggle action.
    * 
-   * @newin2p4
+   * @newin{2,4}
    */
   void toggled();
   
   /** Sets the checked state on the toggle action.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param is_active Whether the action should be checked or not.
    */
-  void set_active(bool is_active = true);
+  void set_active(bool is_active =  true);
   
-  /** Returns: the checked state of the toggle action
-   * @return The checked state of the toggle action
+  /** Returns the checked state of the toggle action.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return The checked state of the toggle action.
    */
   bool get_active() const;
   
   /** Sets whether the action should have proxies like a radio action.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param draw_as_radio Whether the action should have proxies like a radio 
    * action.
    */
-  void set_draw_as_radio(bool draw_as_radio = true);
+  void set_draw_as_radio(bool draw_as_radio =  true);
   
-  /** Returns: whether the action should have proxies like a radio action.
-   * @return Whether the action should have proxies like a radio action.
+  /** Returns whether the action should have proxies like a radio action.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return Whether the action should have proxies like a radio action.
    */
   bool get_draw_as_radio() const;
 
@@ -233,23 +235,37 @@ public:
   Glib::PropertyProxy_ReadOnly<bool> property_draw_as_radio() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
           
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** If the toggle action should be active in or not.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_active() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** If the toggle action should be active in or not.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_active() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
 
 public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_toggled();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

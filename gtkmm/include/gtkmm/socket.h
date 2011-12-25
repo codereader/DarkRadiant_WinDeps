@@ -118,6 +118,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -130,19 +132,13 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_plug_added();
   virtual bool on_plug_removed();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -160,7 +156,7 @@ public:
    * client may be in the same process or in a different process. 
    * 
    * To embed a Gtk::Plug in a Gtk::Socket, you can either create the
-   * Gtk::Plug with <literal>gtk_plug_new (0)</literal>, call 
+   * Gtk::Plug with <tt>gtk_plug_new (0)</tt>, call 
    * Gtk::Plug::get_id() to get the window ID of the plug, and then pass that to the
    * add_id(), or you can call get_id() to get the
    * window ID for the socket, and call Gtk::Plug::new() passing in that
@@ -185,17 +181,17 @@ public:
   
   /** Retrieves the window of the plug. Use this to check if the plug has
    * been created inside of the socket.
-   * @return The window of the plug if available, or <tt>0</tt>
    * 
-   * Since:  2.14.
+   * @newin{2,14}
+   * @return The window of the plug if available, or <tt>0</tt>.
    */
   Glib::RefPtr<Gdk::Window> get_plug_window();
   
   /** Retrieves the window of the plug. Use this to check if the plug has
    * been created inside of the socket.
-   * @return The window of the plug if available, or <tt>0</tt>
    * 
-   * Since:  2.14.
+   * @newin{2,14}
+   * @return The window of the plug if available, or <tt>0</tt>.
    */
   Glib::RefPtr<const Gdk::Window> get_plug_window() const;
 

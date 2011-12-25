@@ -2,7 +2,7 @@
 #ifndef _GTKMM_BASE_H
 #define _GTKMM_BASE_H
 
-/* $Id: base.h 1082 2009-01-19 17:55:19Z murrayc $ */
+/* $Id$ */
 
 /* base.h
  *

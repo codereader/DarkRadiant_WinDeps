@@ -45,7 +45,7 @@ namespace Gtk
  * the portability offered by the high-level printing API exposed
  * through PrintOperation.
  *
- * @newin2p10
+ * @newin{2,10}
  *
  * @ingroup Printing
  */
@@ -81,6 +81,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -93,21 +95,16 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
 
+  
   //This is not available in on Win32.
 //This source file will not be compiled,
 //and the class will not be registered in wrap_init.h or wrap_init.cc
@@ -121,22 +118,22 @@ public:
   /** Sets the Gtk::PageSetup from which the page setup
    * dialog takes its values.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param page_setup A Gtk::PageSetup.
    */
   void set_page_setup(const Glib::RefPtr<PageSetup>& page_setup);
   
-  /** Gets the currently selected page setup from the dialog.
-   * @return The current page setup 
+  /** Gets the currently selected page setup from the dialog. 
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The current page setup.
    */
   Glib::RefPtr<PageSetup> get_page_setup();
   
-  /** Gets the currently selected page setup from the dialog.
-   * @return The current page setup 
+  /** Gets the currently selected page setup from the dialog. 
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The current page setup.
    */
   Glib::RefPtr<const PageSetup> get_page_setup() const;
 
@@ -144,22 +141,22 @@ public:
   /** Sets the Gtk::PrintSettings from which the page setup dialog
    * takes its values.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param print_settings A Gtk::PrintSettings.
    */
   void set_print_settings(const Glib::RefPtr<PrintSettings>& print_settings);
   
   /** Gets the current print settings from the dialog.
-   * @return The current print settings
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The current print settings.
    */
   Glib::RefPtr<PrintSettings> get_print_settings();
   
   /** Gets the current print settings from the dialog.
-   * @return The current print settings
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The current print settings.
    */
   Glib::RefPtr<const PrintSettings> get_print_settings() const;
 

@@ -88,6 +88,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -100,17 +102,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -124,9 +120,9 @@ public:
    * @param shadow_type A Gtk::ShadowType enum describing the shadow type of
    * the arrow.
    */
-  explicit Arrow(ArrowType arrow_type, ShadowType shadow_type);
-  
+    explicit Arrow(ArrowType arrow_type, ShadowType shadow_type);
 
+  
   // Changes the direction and shadow of an arrow.
   
   /** Sets the direction and shadow of this Arrow.

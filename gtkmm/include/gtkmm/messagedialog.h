@@ -28,6 +28,7 @@
  */
 
 #include <gtkmm/dialog.h>
+#include <gtkmm/enums.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -42,40 +43,7 @@ namespace Gtk
 {
 
 
-/** @addtogroup gtkmmEnums Enums and Flags */
-
-/**
- * @ingroup gtkmmEnums
- */
-enum MessageType
-{
-  MESSAGE_INFO,
-  MESSAGE_WARNING,
-  MESSAGE_QUESTION,
-  MESSAGE_ERROR,
-  MESSAGE_OTHER
-};
-
-} // namespace Gtk
-
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-namespace Glib
-{
-
-template <>
-class Value<Gtk::MessageType> : public Glib::Value_Enum<Gtk::MessageType>
-{
-public:
-  static GType value_type() G_GNUC_CONST;
-};
-
-} // namespace Glib
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-
-namespace Gtk
-{
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
 
 /**
  * @ingroup gtkmmEnums
@@ -118,7 +86,7 @@ namespace Gtk
  * of message (Error, Question, etc.) alongside some message text. It's
  * simply a convenience widget; you could construct the equivalent of
  * Gtk::MessageDialog from Gtk::Dialog without too much effort, but
- * Gtk::MessageDialog saves typing. 
+ * Gtk::MessageDialog saves typing.
  *
  * A MessageDialog looks like this:
  * @image html messagedialog1.png
@@ -157,6 +125,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -169,17 +139,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -192,22 +156,22 @@ public:
 
   /** Sets the dialog's image to @a image.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param image The image.
    */
   void set_image(Widget& image);
   
   /** Gets the dialog's image.
-   * @return The dialog's image
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The dialog's image.
    */
   Widget* get_image();
   
   /** Gets the dialog's image.
-   * @return The dialog's image
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The dialog's image.
    */
   const Widget* get_image() const;
 
@@ -215,12 +179,11 @@ public:
 #ifndef GTKMM_DISABLE_DEPRECATED
 
   /** Sets the text of the message dialog to be @a str, which is marked
-   * up with the <link linkend="PangoMarkupFormat">Pango text markup
-   * language</link>.
+   * up with the .
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @deprecated Use set_message(string, true).
-   * @param str Markup string (see <link linkend="PangoMarkupFormat">Pango markup format</link>).
+   * @param str Markup string (see ).
    */
   void set_markup(const Glib::ustring& str);
 #endif // GTKMM_DISABLE_DEPRECATED
@@ -233,17 +196,43 @@ public:
    */
   void set_message(const Glib::ustring& message, bool use_markup = false);
   
-  
+
   /** Sets the secondary text of the message dialog.
    * Note that setting a secondary text makes the primary text become bold, unless you have provided explicit markup.
    *
-   * @newin2p6.
+   * @newin{2,6}.
    *
    * @param text The message.
    * @param use_markup Whether @a message contains pango markup.
    */
   void set_secondary_text(const Glib::ustring& text, bool use_markup = false);
   
+
+  /** Returns the message area of the dialog. This is the box where the
+   * dialog's primary and secondary labels are packed. You can add your
+   * own extra content to that box and it will appear below those labels,
+   * on the right side of the dialog's image (or on the left for right-to-left
+   * languages).  See Gtk::Dialog::get_content_area() for the corresponding
+   * function in the parent Gtk::Dialog.
+   * 
+   * @newin{2,22}
+   * @return A Gtk::VBox corresponding to the
+   * "message area" in the @a message_dialog.
+   */
+  VBox* get_message_area();
+  
+  /** Returns the message area of the dialog. This is the box where the
+   * dialog's primary and secondary labels are packed. You can add your
+   * own extra content to that box and it will appear below those labels,
+   * on the right side of the dialog's image (or on the left for right-to-left
+   * languages).  See Gtk::Dialog::get_content_area() for the corresponding
+   * function in the parent Gtk::Dialog.
+   * 
+   * @newin{2,22}
+   * @return A Gtk::VBox corresponding to the
+   * "message area" in the @a message_dialog.
+   */
+  const VBox* get_message_area() const;
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The type of message.
@@ -364,6 +353,16 @@ public:
    * the value of the property changes.
    */
   Glib::PropertyProxy_ReadOnly<Widget*> property_image() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** GtkVBox that holds the dialog's primary and secondary labels.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<VBox*> property_message_area() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

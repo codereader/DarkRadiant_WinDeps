@@ -25,10 +25,10 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <gtkmm/treedragdest.h>
 #include <gtkmm/treeiter.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treesortable.h>
-#include <gtkmm/treedragdest.h>
 #include <gtkmm/treedragsource.h>
 // We couldn't include it in treemodel.h, but doing it here makes it easier for people.
 #include <gtkmm/treepath.h>
@@ -87,6 +87,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -110,7 +112,7 @@ protected:
    * constructor should only be used by derived classes.
    */
   ListStore();
-  
+
   explicit ListStore(const TreeModelColumnRecord& columns);
 
 public:
@@ -125,7 +127,7 @@ public:
 
   void set_column_types(const TreeModelColumnRecord& columns);
   
-  
+
   /** Removes the given row from the list store.
    * @param iter The iterator to the row to be removed.
    * @result An iterator to the next row, or end() if there is none.
@@ -140,7 +142,7 @@ public:
    * See also prepend() and append().
    *
    * @param iter An iterator to the row before which the new row will be inserted.
-   * @result An iterator to the new row. 
+   * @result An iterator to the new row.
    */
   iterator insert(const iterator& iter);
   
@@ -156,7 +158,7 @@ public:
    */
   iterator insert_after(const iterator& iter);
   
-  
+
   /** Creates a new row at the start.
    * The row will be empty - to fill in values, you need to dereference the returned iterator and use Row::operator[] or Row::set_value().
    * See also insert() and append().
@@ -177,7 +179,7 @@ public:
   /** Swaps @a a and @a b in @a store. Note that this function only works with
    * unsorted stores.
    * 
-   * @newin2p2
+   * @newin{2,2}
    * @param a A Gtk::TreeIter.
    * @param b Another Gtk::TreeIter.
    */
@@ -205,10 +207,10 @@ public:
    * purposes.</warning>
    * 
    * Checks if the given iter is a valid iter for this Gtk::ListStore.
+   * 
+   * @newin{2,2}
    * @param iter A Gtk::TreeIter.
    * @return <tt>true</tt> if the iter is valid, <tt>false</tt> if the iter is invalid.
-   * 
-   * @newin2p2.
    */
   bool iter_is_valid(const iterator& iter) const;
 
@@ -220,17 +222,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

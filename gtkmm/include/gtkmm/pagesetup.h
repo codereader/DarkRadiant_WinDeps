@@ -50,7 +50,7 @@ namespace Gtk
  * To obtain a PageSetup use PageSetup::create() to get the defaults, or use run_page_setup_dialog() to show the page 
  * setup dialog and receive the resulting page setup. 
  *
- * @newin2p10
+ * @newin{2,10}
  *
  * @ingroup Printing
  */
@@ -85,6 +85,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -116,13 +118,9 @@ public:
   * 
   * @throws KeyFileError
   *
-  * @newin2p14
+  * @newin{2,14}
   */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static Glib::RefPtr<PageSetup> create_from_key_file(const Glib::KeyFile& key_file);
-#else
-  static Glib::RefPtr<PageSetup> create_from_key_file(const Glib::KeyFile& key_file, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
  /** Reads the page setup from the group @a group_name in the key file @a key_file.
   * Returns a new PageSetup object with the restored
@@ -134,13 +132,9 @@ public:
   * 
   * @throws KeyFileError
   *
-  * @newin2p14
+  * @newin{2,14}
   */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static Glib::RefPtr<PageSetup> create_from_key_file(const Glib::KeyFile& key_file, const Glib::ustring& group_name);
-#else
-  static Glib::RefPtr<PageSetup> create_from_key_file(const Glib::KeyFile& key_file, const Glib::ustring& group_name, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
  /** Reads the page setup from the file @file_name. Returns a 
@@ -150,53 +144,40 @@ public:
   * @param file_name The filename to read the page setup from.
   * @result The restored PageSetup
   * 
-  * @newin2p14
+  * @newin{2,14}
   */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static Glib::RefPtr<PageSetup> create_from_file(const std::string& file_name);
-#else
-  static Glib::RefPtr<PageSetup> create_from_file(const std::string& file_name, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
   
 
   /** Copies a Gtk::PageSetup.
-   * @return A copy of @a other
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return A copy of @a other.
    */
   Glib::RefPtr<PageSetup> copy() const;
 
   //The from_ infix was added to these functions to make them clearer. GTK+ didn't want to change them.
   
   /** Reads the page setup from the file @a file_name.
-   * See gtk_page_setup_to_file().
-   * @param file_name The filename to read the page setup from.
-   * @return <tt>true</tt> on success
+   * See to_file().
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @param file_name The filename to read the page setup from.
+   * @return <tt>true</tt> on success.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool load_from_file(const std::string& file_name);
-#else
-  bool load_from_file(const std::string& file_name, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
+   
   /** Reads the page setup from the group @a group_name in the key file
    *  @a key_file.
+   * 
+   * @newin{2,14}
    * @param key_file The KeyFile to retrieve the page_setup from.
    * @param group_name The name of the group in the key_file to read, or <tt>0</tt>
    * to use the default name "Page Setup".
-   * @return <tt>true</tt> on success
-   * 
-   * @newin2p14.
+   * @return <tt>true</tt> on success.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool load_from_key_file(const Glib::KeyFile& key_file, const Glib::ustring& group_name);
-#else
-  bool load_from_key_file(const Glib::KeyFile& key_file, const Glib::ustring& group_name, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
  /** Reads the page setup from the "Page Setup" group in the key file @a key_file.
   *
@@ -205,65 +186,61 @@ public:
   * 
   * @throws KeyFileError
   *
-  * @newin2p14
+  * @newin{2,14}
   */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool load_from_key_file(const Glib::KeyFile& key_file);
-#else
-  bool load_from_key_file(const Glib::KeyFile& key_file, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   
   /** Gets the page orientation of the Gtk::PageSetup.
-   * @return The page orientation
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The page orientation.
    */
   PageOrientation get_orientation() const;
   
   /** Sets the page orientation of the Gtk::PageSetup.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param orientation A Gtk::PageOrientation value.
    */
   void set_orientation(PageOrientation orientation);
 
   
   /** Gets the paper size of the Gtk::PageSetup.
-   * @return The paper size
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The paper size.
    */
   PaperSize get_paper_size();
   
   /** Gets the paper size of the Gtk::PageSetup.
-   * @return The paper size
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The paper size.
    */
   const PaperSize get_paper_size() const;
   
   /** Sets the paper size of the Gtk::PageSetup without
    * changing the margins. See 
-   * gtk_page_setup_set_paper_size_and_default_margins().
+   * set_paper_size_and_default_margins().
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param size A Gtk::PaperSize.
    */
   void set_paper_size(const PaperSize& paper_size);
 
   
   /** Gets the top margin in units of @a unit.
-   * @param unit The unit for the return value.
-   * @return The top margin
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @param unit The unit for the return value.
+   * @return The top margin.
    */
   double get_top_margin(Unit unit) const;
   
   /** Sets the top margin of the Gtk::PageSetup.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param margin The new top margin in units of @a unit.
    * @param unit The units for @a margin.
    */
@@ -271,16 +248,16 @@ public:
 
   
   /** Gets the bottom margin in units of @a unit.
-   * @param unit The unit for the return value.
-   * @return The bottom margin
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @param unit The unit for the return value.
+   * @return The bottom margin.
    */
   double get_bottom_margin(Unit unit) const;
   
   /** Sets the bottom margin of the Gtk::PageSetup.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param margin The new bottom margin in units of @a unit.
    * @param unit The units for @a margin.
    */
@@ -288,16 +265,16 @@ public:
 
   
   /** Gets the left margin in units of @a unit.
-   * @param unit The unit for the return value.
-   * @return The left margin
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @param unit The unit for the return value.
+   * @return The left margin.
    */
   double get_left_margin(Unit unit) const;
   
   /** Sets the left margin of the Gtk::PageSetup.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param margin The new left margin in units of @a unit.
    * @param unit The units for @a margin.
    */
@@ -305,16 +282,16 @@ public:
 
   
   /** Gets the right margin in units of @a unit.
-   * @param unit The unit for the return value.
-   * @return The right margin
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @param unit The unit for the return value.
+   * @return The right margin.
    */
   double get_right_margin(Unit unit) const;
   
   /** Sets the right margin of the Gtk::PageSetup.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param margin The new right margin in units of @a unit.
    * @param unit The units for @a margin.
    */
@@ -324,42 +301,58 @@ public:
   /** Sets the paper size of the Gtk::PageSetup and modifies
    * the margins according to the new paper size.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param size A Gtk::PaperSize.
    */
   void set_paper_size_and_default_margins(const PaperSize& paper_size);
 
   
-  /** Return value: the paper width.
+  /** Returns the paper width in units of @a unit.
+   * 
+   * Note that this function takes orientation, but 
+   * not margins into consideration. 
+   * See get_page_width().
+   * 
+   * @newin{2,10}
    * @param unit The unit for the return value.
    * @return The paper width.
-   * 
-   * @newin2p10.
    */
   double get_paper_width(Unit unit) const;
   
-  /** Return value: the paper height.
+  /** Returns the paper height in units of @a unit.
+   * 
+   * Note that this function takes orientation, but 
+   * not margins into consideration.
+   * See get_page_height().
+   * 
+   * @newin{2,10}
    * @param unit The unit for the return value.
    * @return The paper height.
-   * 
-   * @newin2p10.
    */
   double get_paper_height(Unit unit) const;
 
   
-  /** Return value: the page width.
+  /** Returns the page width in units of @a unit.
+   * 
+   * Note that this function takes orientation and
+   * margins into consideration. 
+   * See get_paper_width().
+   * 
+   * @newin{2,10}
    * @param unit The unit for the return value.
    * @return The page width.
-   * 
-   * @newin2p10.
    */
   double get_page_width(Unit unit) const;
   
-  /** Return value: the page height.
+  /** Returns the page height in units of @a unit.
+   * 
+   * Note that this function takes orientation and
+   * margins into consideration. 
+   * See get_paper_height().
+   * 
+   * @newin{2,10}
    * @param unit The unit for the return value.
    * @return The page height.
-   * 
-   * @newin2p10.
    */
   double get_page_height(Unit unit) const;
 
@@ -370,20 +363,16 @@ public:
    * @param file_name The file to save to.
    * @return <tt>true</tt> on success
    * 
-   * @newin2p12.
+   * @newin{2,12}.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool save_to_file(const std::string& file_name) const;
-#else
-  bool save_to_file(const std::string& file_name, std::auto_ptr<Glib::Error>& error) const;
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
-
+   
 #ifndef GTKMM_DISABLE_DEPRECATED
 
   /** This function adds the page setup from @a setup to @a key_file.
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @deprecated Use the const version.
    * @param key_file The Glib::KeyFile to save the page setup to.
    * @param group_name The group to add the settings to in @a key_file.
@@ -394,7 +383,7 @@ public:
 
   /** This function adds the page setup from @a setup to @a key_file.
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param key_file The Glib::KeyFile to save the page setup to.
    * @param group_name The group to add the settings to in @a key_file.
    */
@@ -404,7 +393,7 @@ public:
   /** This function adds the page setup from @a setup to @a key_file,
    * in the group "Page Setup"
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param key_file The G::KeyFile to save the page setup to.
    * 
    * @deprecated Use the const version.
@@ -415,7 +404,7 @@ public:
   /** This function adds the page setup from @a setup to @a key_file,
    * in the group "Page Setup"
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param key_file The G::KeyFile to save the page setup to.
    */
   void save_to_key_file(Glib::KeyFile& key_file) const;
@@ -425,17 +414,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

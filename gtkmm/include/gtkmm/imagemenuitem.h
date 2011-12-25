@@ -83,6 +83,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -95,17 +97,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -125,16 +121,16 @@ public:
    * Use this property if the menuitem would be useless or hard to use
    * without the image. 
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param always_show <tt>true</tt> if the menuitem should always show the image.
    */
-  void set_always_show_image(bool always_show = true);
+  void set_always_show_image(bool always_show =  true);
   
-  /** Returns: <tt>true</tt> if the menu item will always show the image
-   * @param always_show <tt>true</tt> if the menuitem should always show the image.
-   * @return <tt>true</tt> if the menu item will always show the image
+  /** Returns whether the menu item will ignore the Gtk::Settings:gtk-menu-images
+   * setting and always show the image, if available.
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @return <tt>true</tt> if the menu item will always show the image.
    */
   bool get_always_show_image() const;
 
@@ -162,17 +158,17 @@ public:
   /** If <tt>true</tt>, the label set in the menuitem is used as a
    * stock id to select the stock item for the item.
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param use_stock <tt>true</tt> if the menuitem should use a stock item.
    */
-  void set_use_stock(bool use_stock = true);
+  void set_use_stock(bool use_stock =  true);
   
   /** Checks whether the label set in the menuitem is used as a
    * stock id to select the stock item for the item.
-   * @return <tt>true</tt> if the label set in the menuitem is used as a
-   * stock id to select the stock item for the item
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @return <tt>true</tt> if the label set in the menuitem is used as a
+   * stock id to select the stock item for the item.
    */
   bool get_use_stock() const;
   
@@ -184,7 +180,7 @@ public:
    * If you want this menu item to have changeable accelerators then
    * you shouldnt need this (see new_from_stock()).
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param accel_group The Gtk::AccelGroup.
    */
   void set_accel_group(const Glib::RefPtr<AccelGroup>& accel_group);

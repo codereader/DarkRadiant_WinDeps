@@ -45,7 +45,7 @@ namespace Gtk
 {
 
 
-/** @addtogroup gtkmmEnums Enums and Flags */
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
 
 /**
  * @ingroup gtkmmEnums
@@ -136,6 +136,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -148,17 +150,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -176,12 +172,14 @@ public:
    * @param pixmap A Gdk::Pixmap
    * @param mask A Gdk::Bitmap
    */
-  explicit Image(const Glib::RefPtr<Gdk::Pixmap>& pixmap, const Glib::RefPtr<Gdk::Bitmap>& mask);
+    explicit Image(const Glib::RefPtr<Gdk::Pixmap>& pixmap, const Glib::RefPtr<Gdk::Bitmap>& mask);
+
 
   /** Creates an Image widget displaying an @a image with a mask.
    * A Gdk::Image is a client-side image buffer in the pixel format of the current display.
    */
-  explicit Image(const Glib::RefPtr<Gdk::Image>& image, const Glib::RefPtr<Gdk::Bitmap>& mask);
+    explicit Image(const Glib::RefPtr<Gdk::Image>& image, const Glib::RefPtr<Gdk::Bitmap>& mask);
+
 
   /** Creates an Image widget displaying the file @a filename.
    * If the file isn't found or can't be loaded, the resulting Gtk::Image will display a "broken image" icon. 
@@ -193,15 +191,37 @@ public:
    *
    * The storage type (get_storage_type()) of the returned image is not defined. It will be whatever is appropriate for displaying the file.
    */
-  explicit Image(const std::string& file);
+    explicit Image(const std::string& file);
 
-  //TODO: Change this documentation when we have wrapped new_from_icon_set().
+
   /** Creates a new Image widget displaying @a pixbuf.
    * Note that this just creates an GtkImage from the pixbuf. The Gtk::Image created will not react to state changes. 
-   * Should you want that, you should use new_from_icon_set().
+   * Should you want that, you should use the constructor that takes an IconSet.
    */
-  explicit Image(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf);
-  //TODO: Wrap gtk_image_new_from_icon_set()
+    explicit Image(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf);
+
+
+  /** Creates a new Image displaying an icon set. Sample stock sizes are ICON_SIZE_MENU, ICON_SIZE_SMALL_TOOLBAR. 
+   * Instead of using this function, usually it's better to create an IconFactory, put your icon sets in the icon factory, 
+   * add the icon factory to the list of default factories with IconFactory::add_default(), and then use the
+   * constructor that takes a StockID. This will allow themes to override the icon you ship with your application.
+   *
+   * @param icon_set An IconSet
+   * @param size A stock icon size.
+   *
+   * @newin{2,24}
+   */
+    explicit Image(const IconSet& icon_set, IconSize icon_size);
+
+
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+  /** @deprecated Use the constructor that takes a const IconSet& icon_set instead.
+   */
+    explicit Image(IconSet& icon_set, IconSize icon_size);
+
+#endif // GTKMM_DISABLE_DEPRECATED
+
 
   //We don't wrap gtk_image_new_from_icon_name() to avoid a clash with the from-filename constructor.
   //But we do wrap gtk_image_set_from_icon_name()
@@ -215,8 +235,7 @@ public:
    * @param size A stock icon size.
    */
   Image(const Gtk::StockID& stock_id, IconSize size);
-
-  Image(IconSet& icon_set, IconSize size);
+  
   Image(const Glib::RefPtr<Gdk::PixbufAnimation>& animation);
 
   
@@ -248,11 +267,24 @@ public:
    */
   void set(const Gtk::StockID& stock_id, IconSize size);
   
+  
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   /** See new_from_icon_set() for details.
+   * @deprecated Use the method that takes a const IconSet& instead.
    * @param icon_set A Gtk::IconSet.
    * @param size A stock icon size.
    */
   void set(IconSet& icon_set, IconSize size);
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+  /** See new_from_icon_set() for details.
+   * @param icon_set A Gtk::IconSet.
+   * @param size A stock icon size.
+   */
+  void set(const IconSet& icon_set, IconSize size);
+
   
   /** Causes the Gtk::Image to display the given animation (or display
    * nothing, if you set the animation to <tt>0</tt>).
@@ -262,7 +294,7 @@ public:
   
   /** See new_from_gicon() for details.
    * 
-   * @newin2p14
+   * @newin{2,14}
    * @param icon An icon.
    * @param size An icon size.
    */
@@ -274,7 +306,7 @@ public:
    * displayed instead.  If the current icon theme is changed, the icon
    * will be updated appropriately.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param icon_name An icon name.
    * @param size A stock icon size.
    */
@@ -283,7 +315,7 @@ public:
 
   /** Resets the image to be empty.
    * 
-   * @newin2p8
+   * @newin{2,8}
    */
   void clear();
 
@@ -303,7 +335,8 @@ public:
    * Gtk::IMAGE_PIXBUF (see get_storage_type()).
    * The caller of this function does not own a reference to the
    * returned pixbuf.
-   * @return The displayed pixbuf, or <tt>0</tt> if the image is empty.
+   * @return The displayed pixbuf, or <tt>0</tt> if
+   * the image is empty.
    */
   Glib::RefPtr<Gdk::Pixbuf> get_pixbuf();
   
@@ -312,7 +345,8 @@ public:
    * Gtk::IMAGE_PIXBUF (see get_storage_type()).
    * The caller of this function does not own a reference to the
    * returned pixbuf.
-   * @return The displayed pixbuf, or <tt>0</tt> if the image is empty.
+   * @return The displayed pixbuf, or <tt>0</tt> if
+   * the image is empty.
    */
   Glib::RefPtr<const Gdk::Pixbuf> get_pixbuf() const;
   void get_stock(Gtk::StockID& stock_id, IconSize& size) const;
@@ -323,7 +357,8 @@ public:
    * Gtk::IMAGE_ANIMATION (see get_storage_type()).
    * The caller of this function does not own a reference to the
    * returned animation.
-   * @return The displayed animation, or <tt>0</tt> if the image is empty.
+   * @return The displayed animation, or <tt>0</tt> if
+   * the image is empty.
    */
   Glib::RefPtr<Gdk::PixbufAnimation> get_animation();
   
@@ -332,7 +367,8 @@ public:
    * Gtk::IMAGE_ANIMATION (see get_storage_type()).
    * The caller of this function does not own a reference to the
    * returned animation.
-   * @return The displayed animation, or <tt>0</tt> if the image is empty.
+   * @return The displayed animation, or <tt>0</tt> if
+   * the image is empty.
    */
   Glib::RefPtr<const Gdk::PixbufAnimation> get_animation() const;
 
@@ -342,7 +378,7 @@ public:
   *
   * @param icon_size A place to store an icon size.
   * 
-  * @newin2p14
+  * @newin{2,14}
   */
   Glib::RefPtr<Gio::Icon> get_gicon(Gtk::IconSize& icon_size);
 
@@ -352,7 +388,7 @@ public:
   *
   * @param icon_size A place to store an icon size.
   * 
-  * @newin2p14
+  * @newin{2,14}
   */
   Glib::RefPtr<const Gio::Icon> get_gicon(Gtk::IconSize& icon_size) const;
   
@@ -362,9 +398,9 @@ public:
   
 
   /** Gets the pixel size used for named icons.
-   * @return The pixel size used for named icons.
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return The pixel size used for named icons.
    */
   int get_pixel_size() const;
  
@@ -372,7 +408,7 @@ public:
    * to a value != -1, it is used instead of the icon size set by
    * set_from_icon_name().
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param pixel_size The new pixel size.
    */
   void set_pixel_size(int pixel_size);
@@ -518,7 +554,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Symbolic size to use for stock icon
+/** Symbolic size to use for stock icon, icon set or named icon.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -528,13 +564,33 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Symbolic size to use for stock icon
+/** Symbolic size to use for stock icon, icon set or named icon.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
   Glib::PropertyProxy_ReadOnly<int> property_icon_size() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Pixel size to use for named icon.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<int> property_pixel_size() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Pixel size to use for named icon.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<int> property_pixel_size() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -555,6 +611,26 @@ public:
    * the value of the property changes.
    */
   Glib::PropertyProxy_ReadOnly< Glib::RefPtr<Gdk::PixbufAnimation> > property_pixbuf_animation() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The name of the icon from the icon theme.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<Glib::ustring> property_icon_name() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The name of the icon from the icon theme.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_icon_name() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED

@@ -10,7 +10,7 @@
 
 
 /* paned.h
- * 
+ *
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -119,6 +119,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -131,17 +133,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -177,34 +173,55 @@ public:
 
   
   /** Obtains the first child of the paned widget.
-   * @return First child, or <tt>0</tt> if it is not set.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return First child, or <tt>0</tt> if it is not set.
    */
   Widget* get_child1();
   
   /** Obtains the first child of the paned widget.
-   * @return First child, or <tt>0</tt> if it is not set.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return First child, or <tt>0</tt> if it is not set.
    */
   const Widget* get_child1() const;
 
   
   /** Obtains the second child of the paned widget.
-   * @return Second child, or <tt>0</tt> if it is not set.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return Second child, or <tt>0</tt> if it is not set.
    */
   Widget* get_child2();
   
   /** Obtains the second child of the paned widget.
-   * @return Second child, or <tt>0</tt> if it is not set.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return Second child, or <tt>0</tt> if it is not set.
    */
   const Widget* get_child2() const;
- 
+
+  
+  /** Returns the Gdk::Window of the handle. This function is
+   * useful when handling button or motion events because it
+   * enables the callback to distinguish between the window
+   * of the paned, a child and the handle.
+   * 
+   * @newin{2,20}
+   * @return The paned's handle window.
+   */
+  Glib::RefPtr<Gdk::Window> get_handle_window();
+  
+  /** Returns the Gdk::Window of the handle. This function is
+   * useful when handling button or motion events because it
+   * enables the callback to distinguish between the window
+   * of the paned, a child and the handle.
+   * 
+   * @newin{2,20}
+   * @return The paned's handle window.
+   */
+  Glib::RefPtr<const Gdk::Window> get_handle_window() const;
+
   //Keybinding signals:
   
   
@@ -249,7 +266,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Smallest possible value for the position property.
+/** Smallest possible value for the 'position' property.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -260,7 +277,7 @@ public:
 
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Largest possible value for the position property.
+/** Largest possible value for the 'position' property.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -275,7 +292,7 @@ public:
 /**
  * The Gtk::HPaned widget is a container widget with two children arranged
  * horizontally. The division between the two panes is adjustable by the
- * user by dragging a handle. See Gtk::Paned for details. 
+ * user by dragging a handle. See Gtk::Paned for details.
  *
  * @ingroup Widgets
  */
@@ -311,6 +328,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -323,17 +342,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -346,8 +359,8 @@ public:
 
 /**
  * The Gtk::VPaned widget is a container widget with two children arranged
- * horizontally. The division between the two panes is adjustable by the
- * user by dragging a handle. See Gtk::Paned for details. 
+ * vertically. The division between the two panes is adjustable by the
+ * user by dragging a handle. See Gtk::Paned for details.
  *
  * @ingroup Widgets
  */
@@ -383,6 +396,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -395,17 +410,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:

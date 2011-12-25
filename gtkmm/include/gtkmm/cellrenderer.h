@@ -3,10 +3,10 @@
 #ifndef _GTKMM_CELLRENDERER_H
 #define _GTKMM_CELLRENDERER_H
 
+#include <gtkmmconfig.h>
+
 
 #include <glibmm.h>
-
-/* $Id: cellrenderer.hg,v 1.22 2006/05/10 20:59:27 murrayc Exp $ */
 
 /* Copyright (C) 1998-2002 The gtkmm Development Team
  *
@@ -25,6 +25,7 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+ 
 #include <gtkmm/object.h>
 #include <gtkmm/widget.h>
 #include <gtkmm/celleditable.h>
@@ -41,7 +42,7 @@ namespace Gtk
 namespace Gtk
 {
 
-/** @addtogroup gtkmmEnums Enums and Flags */
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
 
 /**
  * @ingroup gtkmmEnums
@@ -183,6 +184,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -195,18 +198,12 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_editing_canceled();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -227,11 +224,7 @@ public:
    * @param width Location to return width needed to render a cell.
    * @param height Location to return height needed to render a cell.
    */
-  void get_size(
-                  Widget& widget,
-                  const Gdk::Rectangle& cell_area,
-                  int& x_offset, int& y_offset,
-                  int& width,    int& height) const;
+  void get_size(Widget& widget, const Gdk::Rectangle& cell_area, int& x_offset, int& y_offset, int& width, int& height) const;
 
   /** Obtains the width and height needed to render the cell. Used by view widgets
    * to determine the appropriate size for the cell_area passed to
@@ -263,13 +256,7 @@ public:
    * @param expose_area Area that actually needs updating.
    * @param flags Flags that affect rendering.
    */
-  void render(
-                  const Glib::RefPtr<Gdk::Window>& window,
-                  Widget& widget,
-                  const Gdk::Rectangle& background_area,
-                  const Gdk::Rectangle& cell_area,
-                  const Gdk::Rectangle& expose_area,
-                  CellRendererState flags);
+  void render(const Glib::RefPtr<Gdk::Window>& window, Widget& widget, const Gdk::Rectangle& background_area, const Gdk::Rectangle& cell_area, const Gdk::Rectangle& expose_area, CellRendererState flags);
 
   
   /** Passes an activate event to the cell renderer for possible processing.  
@@ -284,31 +271,20 @@ public:
    * @param flags Render flags.
    * @return <tt>true</tt> if the event was consumed/handled.
    */
-  bool activate(
-                  GdkEvent* event,
-                  Widget& widget,
-                  const Glib::ustring& path,
-                  const Gdk::Rectangle& background_area,
-                  const Gdk::Rectangle& cell_area,
-                  CellRendererState flags);
+  bool activate(GdkEvent* event, Widget& widget, const Glib::ustring& path, const Gdk::Rectangle& background_area, const Gdk::Rectangle& cell_area, CellRendererState flags);
 
   
   /** Passes an activate event to the cell renderer for possible processing.
    * @param event A Gdk::Event.
    * @param widget Widget that received the event.
-   * @param path Widget-dependent string representation of the event location; 
+   * @param path Widget-dependent string representation of the event location;
    * e.g. for Gtk::TreeView, a string representation of Gtk::TreePath.
    * @param background_area Background area as passed to render().
    * @param cell_area Cell area as passed to render().
    * @param flags Render flags.
    * @return A new Gtk::CellEditable, or <tt>0</tt>.
    */
-  CellEditable* start_editing(
-                  GdkEvent* event, Widget& widget,
-                  const Glib::ustring& path,
-                  const Gdk::Rectangle& background_area,
-                  const Gdk::Rectangle& cell_area,
-                  CellRendererState flags = CellRendererState(0));
+  CellEditable* start_editing(GdkEvent* event, Widget& widget, const Glib::ustring& path, const Gdk::Rectangle& background_area, const Gdk::Rectangle& cell_area, CellRendererState flags =  CellRendererState(0));
 
   
   /** Sets the renderer size to be explicit, independent of the properties set.
@@ -324,6 +300,69 @@ public:
   void get_fixed_size(int& width, int& height) const;
 
   
+  /** Sets the renderer's alignment within its available space.
+   * 
+   * @newin{2,18}
+   * @param xalign The x alignment of the cell renderer.
+   * @param yalign The y alignment of the cell renderer.
+   */
+  void set_alignment(float align, float yalign);
+  
+  /** Fills in @a xalign and @a yalign with the appropriate values of @a cell.
+   * 
+   * @newin{2,18}
+   * @param xalign Location to fill in with the x alignment of the cell, or <tt>0</tt>.
+   * @param yalign Location to fill in with the y alignment of the cell, or <tt>0</tt>.
+   */
+  void get_alignment(float& xalign, float& yalign) const;
+
+  
+  /** Sets the renderer's padding.
+   * 
+   * @newin{2,18}
+   * @param xpad The x padding of the cell renderer.
+   * @param ypad The y padding of the cell renderer.
+   */
+  void set_padding(int xpad, int ypad);
+  
+  /** Fills in @a xpad and @a ypad with the appropriate values of @a cell.
+   * 
+   * @newin{2,18}
+   * @param xpad Location to fill in with the x padding of the cell, or <tt>0</tt>.
+   * @param ypad Location to fill in with the y padding of the cell, or <tt>0</tt>.
+   */
+  void get_padding(int& xpad, int& ypad) const;
+
+  
+  /** Sets the cell renderer's visibility.
+   * 
+   * @newin{2,18}
+   * @param visible The visibility of the cell.
+   */
+  void set_visible(bool visible =  true);
+  
+  /** Returns the cell renderer's visibility.
+   * 
+   * @newin{2,18}
+   * @return <tt>true</tt> if the cell renderer is visible.
+   */
+  bool get_visible() const;
+  
+  /** Sets the cell renderer's sensitivity.
+   * 
+   * @newin{2,18}
+   * @param sensitive The sensitivity of the cell.
+   */
+  void set_sensitive(bool sensitive =  true);
+  
+  /** Returns the cell renderer's sensitivity.
+   * 
+   * @newin{2,18}
+   * @return <tt>true</tt> if the cell renderer is sensitive.
+   */
+  bool get_sensitive() const;
+
+  
 #ifndef GTKMM_DISABLE_DEPRECATED
 
   /** Causes the cell renderer to emit the Gtk::CellRenderer::editing-canceled 
@@ -333,7 +372,7 @@ public:
    * need to notify the client program that an editing process was canceled 
    * and the changes were not committed.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * Deprecated: 2.6: Use stop_editing() instead
    * @deprecated Use stop_editing().
    */
@@ -349,26 +388,22 @@ public:
    * in response to the Gtk::CellEditable::editing-done signal of 
    * Gtk::CellEditable.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param canceled <tt>true</tt> if the editing has been canceled.
    */
-  void stop_editing(bool canceled = false);
+  void stop_editing(bool canceled =  false);
 
   /** Returns the property that this CellRenderer renders.
    * For instance, property_text for CellRendererText, and property_active for CellRendererToggle
    * Needs to be overridden in derived classes.
    */
-#ifdef GLIBMM_PROPERTIES_ENABLED
   virtual Glib::PropertyProxy_Base _property_renderable();
-#else
-  virtual Glib::ustring _property_renderable();
-#endif
 
   /** This signal is emitted when the user cancels the process of editing a
    * cell.  For example, an editable cell renderer could be written to cancel
-   * editing when the user presses Escape. 
+   * editing when the user presses Escape.
    *
-   * @see editing_canceled() 
+   * @see editing_canceled()
    *
    * @par Prototype:
    * <tt>void on_my_%editing_canceled()</tt>
@@ -376,7 +411,7 @@ public:
 
   Glib::SignalProxy0< void > signal_editing_canceled();
 
-  
+
   //We use no_default_handler for this, because we can not add a new vfunc to 2.5 without breaking ABI.
   //TODO: Remove no_default_handler when we do an ABI-break-with-parallel-install.
   //TODO: Remove the warning in the documentation when we have fixed the inheritance of CellRendererCombo.
@@ -393,7 +428,7 @@ public:
    * Note that this signal does not work yet in gtkmm.
    * See http://bugzilla.gnome.org/show_bug.cgi?id=301597
    *
-   * @newin2p6
+   * @newin{2,6}
    *
    * @param editable the CellEditable.
    * @param path the path identifying the edited cell.
@@ -606,7 +641,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Row is an expander row
+/** Row is an expander row, and is expanded.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -616,7 +651,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Row is an expander row
+/** Row is an expander row, and is expanded.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -655,7 +690,7 @@ public:
    */
   Glib::PropertyProxy_ReadOnly<Gdk::Color> property_cell_background_gdk() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
- 
+
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** Whether this tag affects the cell background color.
    *
@@ -674,6 +709,16 @@ public:
    * the value of the property changes.
    */
   Glib::PropertyProxy_ReadOnly<bool> property_cell_background_set() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the cell renderer is currently in editing mode.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_editing() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -696,24 +741,16 @@ protected:
    * @param width Width needed to render a cell.
    * @param height Height needed to render a cell.
    **/
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void get_size_vfunc(Widget& widget, const Gdk::Rectangle* cell_area, int* x_offset, int* y_offset, int* width, int* height) const;
-#endif //GLIBMM_VFUNCS_ENABLED
-
-                  
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void render_vfunc(const Glib::RefPtr<Gdk::Drawable>& window, Widget& widget, const Gdk::Rectangle& background_area, const Gdk::Rectangle& cell_area, const Gdk::Rectangle& expose_area, CellRendererState flags);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void get_size_vfunc(Widget& widget, const Gdk::Rectangle* cell_area, int* x_offset, int* y_offset, int* width, int* height) const;
 
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual bool activate_vfunc(GdkEvent* event, Widget& widget, const Glib::ustring& path, const Gdk::Rectangle& background_area, const Gdk::Rectangle& cell_area, CellRendererState flags);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void render_vfunc(const Glib::RefPtr<Gdk::Drawable>& window, Widget& widget, const Gdk::Rectangle& background_area, const Gdk::Rectangle& cell_area, const Gdk::Rectangle& expose_area, CellRendererState flags);
 
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual CellEditable* start_editing_vfunc(GdkEvent* event, Widget& widget, const Glib::ustring& path, const Gdk::Rectangle& background_area, const Gdk::Rectangle& cell_area, CellRendererState flags);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual bool activate_vfunc(GdkEvent* event, Widget& widget, const Glib::ustring& path, const Gdk::Rectangle& background_area, const Gdk::Rectangle& cell_area, CellRendererState flags);
+
+
+    virtual CellEditable* start_editing_vfunc(GdkEvent* event, Widget& widget, const Glib::ustring& path, const Gdk::Rectangle& background_area, const Gdk::Rectangle& cell_area, CellRendererState flags);
 
 
 };

@@ -83,6 +83,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -138,7 +140,7 @@ public:
   void foreach(const SlotForEach& slot);
   
 
-  /** Return value: number of tags in @a table
+  /** Returns the size of the table (number of tags)
    * @return Number of tags in @a table.
    */
   int get_size() const;
@@ -172,20 +174,14 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_tag_changed(const Glib::RefPtr<TextTag>& tag, bool size_changed);
   virtual void on_tag_added(const Glib::RefPtr<TextTag>& tag);
   virtual void on_tag_removed(const Glib::RefPtr<TextTag>& tag);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

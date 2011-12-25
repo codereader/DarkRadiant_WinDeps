@@ -23,12 +23,12 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <gdkmm/rectangle.h>
 #include <gdkmm/pixbuf.h>
+#include <gdkmm/rectangle.h>
 #include <gdkmm/types.h>
 
 //#include <gtk/gtkicontheme.h>
- 
+
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 extern "C" { typedef struct _GtkIconInfo GtkIconInfo; }
@@ -99,10 +99,10 @@ public:
    * to a larger icon. These icons will be given
    * the same base size as the larger icons to which
    * they are attached.
+   * 
+   * @newin{2,4}
    * @return The base size, or 0, if no base
    * size is known for the icon.
-   * 
-   * @newin2p4.
    */
   int get_base_size() const;
   
@@ -110,9 +110,11 @@ public:
    * Gtk::ICON_LOOKUP_USE_BUILTIN flag was passed
    * to Gtk::IconTheme::lookup_icon(), there may be
    * no filename if a builtin icon is returned; in this
-   * case, you should use gtk_icon_info_get_builtin_pixbuf().
+   * case, you should use get_builtin_pixbuf().
+   * 
+   * @newin{2,4}
    * @return The filename for the icon, or <tt>0</tt>
-   * if gtk_icon_info_get_builtin_pixbuf() should
+   * if get_builtin_pixbuf() should
    * be used instead.
    */
   Glib::ustring get_filename() const;
@@ -121,6 +123,8 @@ public:
    * GTK+ to use built in icon images, you must pass the
    * Gtk::ICON_LOOKUP_USE_BUILTIN to
    * Gtk::IconTheme::lookup_icon().
+   * 
+   * @newin{2,4}
    * @return The built-in image pixbuf, or <tt>0</tt>.
    * The returned image must not be modified.
    */
@@ -130,6 +134,8 @@ public:
    * GTK+ to use built in icon images, you must pass the
    * Gtk::ICON_LOOKUP_USE_BUILTIN to
    * Gtk::IconTheme::lookup_icon().
+   * 
+   * @newin{2,4}
    * @return The built-in image pixbuf, or <tt>0</tt>.
    * The returned image must not be modified.
    */
@@ -146,53 +152,48 @@ public:
    * by passing the Gtk::ICON_LOOKUP_FORCE_SIZE flag when obtaining
    * the Gtk::IconInfo. If this flag has been specified, the pixbuf
    * returned by this function will be scaled to the exact size.
-   * @return The rendered icon; this may be a newly created icon
-   * or a new reference to an internal icon, so you must not modify
-   * the icon. Use Glib::object_unref() to release your reference to the
-   * icon.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return The rendered icon; this may be a newly
+   * created icon or a new reference to an internal icon, so you must
+   * not modify the icon. Use Glib::object_unref() to release your reference
+   * to the icon.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<Gdk::Pixbuf> load_icon() const;
-#else
-  Glib::RefPtr<Gdk::Pixbuf> load_icon(std::auto_ptr<Glib::Error>& error) const;
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
   
-  /** Sets whether the coordinates returned by gtk_icon_info_get_embedded_rect()
-   * and gtk_icon_info_get_attach_points() should be returned in their
+  /** Sets whether the coordinates returned by get_embedded_rect()
+   * and get_attach_points() should be returned in their
    * original form as specified in the icon theme, instead of scaled
-   * appropriately for the pixbuf returned by gtk_icon_info_load_icon().
+   * appropriately for the pixbuf returned by load_icon().
    * 
    * Raw coordinates are somewhat strange; they are specified to be with
    * respect to the unscaled pixmap for PNG and XPM icons, but for SVG
    * icons, they are in a 1000x1000 coordinate space that is scaled
    * to the final size of the icon.  You can determine if the icon is an SVG
-   * icon by using gtk_icon_info_get_filename(), and seeing if it is non-<tt>0</tt>
+   * icon by using get_filename(), and seeing if it is non-<tt>0</tt>
    * and ends in '.svg'.
    * 
    * This function is provided primarily to allow compatibility wrappers
    * for older API's, and is not expected to be useful for applications.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param raw_coordinates Whether the coordinates of embedded rectangles
    * and attached points should be returned in their original
    * (unscaled) form.
    */
-  void set_raw_coordinates(bool raw_coordinates = true);
+  void set_raw_coordinates(bool raw_coordinates =  true);
   
   /** Gets the coordinates of a rectangle within the icon
    * that can be used for display of information such
    * as a preview of the contents of a text file.
-   * See gtk_icon_info_set_raw_coordinates() for further
+   * See set_raw_coordinates() for further
    * information about the coordinate system.
+   * 
+   * @newin{2,4}
    * @param rectangle Gdk::Rectangle in which to store embedded
    * rectangle coordinates; coordinates are only stored
    * when this function returns <tt>true</tt>.
-   * @return <tt>true</tt> if the icon has an embedded rectangle
-   * 
-   * @newin2p4.
+   * @return <tt>true</tt> if the icon has an embedded rectangle.
    */
   bool get_embedded_rect(Gdk::Rectangle& rectangle) const;
   bool get_attach_points(Glib::ArrayHandle<Gdk::Point>& points) const;
@@ -200,11 +201,11 @@ public:
   /** Gets the display name for an icon. A display name is a
    * string to be used in place of the icon name in a user
    * visible context like a list of icons.
+   * 
+   * @newin{2,4}
    * @return The display name for the icon or <tt>0</tt>, if
    * the icon doesn't have a specified display name. This value
    * is owned @a icon_info and must not be modified or free.
-   * 
-   * @newin2p4.
    */
   Glib::ustring get_display_name() const;
 

@@ -9,7 +9,7 @@
 /* $Id: scrolledwindow.hg,v 1.7 2006/08/17 18:03:34 murrayc Exp $ */
 
 /* scrolledwindow.h
- * 
+ *
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -94,6 +94,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -106,17 +108,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -124,18 +120,18 @@ private:
 
 public:
   ScrolledWindow();
-  explicit ScrolledWindow(Adjustment& hadjustment, Adjustment& vadjustment);
-  
+    explicit ScrolledWindow(Adjustment& hadjustment, Adjustment& vadjustment);
+
 
   /** Sets the Gtk::Adjustment for the horizontal scrollbar.
    * @param hadjustment Horizontal scroll adjustment.
    */
-  void set_hadjustment(Gtk::Adjustment* hadjustment = 0);
+  void set_hadjustment(Gtk::Adjustment* hadjustment =  0);
   
   /** Sets the Gtk::Adjustment for the vertical scrollbar.
    * @param vadjustment Vertical scroll adjustment.
    */
-  void set_vadjustment(Gtk::Adjustment* vadjustment = 0);
+  void set_vadjustment(Gtk::Adjustment* vadjustment =  0);
   
   /** Sets the Gtk::Adjustment for the horizontal scrollbar.
    * @param hadjustment Horizontal scroll adjustment.
@@ -148,22 +144,28 @@ public:
   void set_vadjustment(Gtk::Adjustment& vadjustment);
 
   
-  /** Returns: the horizontal Gtk::Adjustment
+  /** Returns the horizontal scrollbar's adjustment, used to connect the
+   * horizontal scrollbar to the child widget's horizontal scroll
+   * functionality.
    * @return The horizontal Gtk::Adjustment.
    */
   Gtk::Adjustment* get_hadjustment();
   
-  /** Returns: the horizontal Gtk::Adjustment
+  /** Returns the horizontal scrollbar's adjustment, used to connect the
+   * horizontal scrollbar to the child widget's horizontal scroll
+   * functionality.
    * @return The horizontal Gtk::Adjustment.
    */
   const Gtk::Adjustment* get_hadjustment() const;
   
-  /** Returns: the vertical Gtk::Adjustment
+  /** Returns the vertical scrollbar's adjustment, used to connect the
+   * vertical scrollbar to the child widget's vertical scroll functionality.
    * @return The vertical Gtk::Adjustment.
    */
   Gtk::Adjustment* get_vadjustment();
   
-  /** Returns: the vertical Gtk::Adjustment
+  /** Returns the vertical scrollbar's adjustment, used to connect the
+   * vertical scrollbar to the child widget's vertical scroll functionality.
    * @return The vertical Gtk::Adjustment.
    */
   const Gtk::Adjustment* get_vadjustment() const;
@@ -213,7 +215,7 @@ public:
    * See also set_placement() and
    * get_placement().
    * 
-   * @newin2p10
+   * @newin{2,10}
    */
   void unset_placement();
   
@@ -243,42 +245,51 @@ public:
   virtual void add(Gtk::Widget& widget);
   
 
-  /** Returns: the vertical scrollbar of the scrolled window, or
-   * @return The vertical scrollbar of the scrolled window, or
-   * <tt>0</tt> if it does not have one.
+  /** Returns the vertical scrollbar of @a scrolled_window.
    * 
-   * @newin2p8.
+   * @newin{2,8}
+   * @return The vertical scrollbar of the scrolled window,
+   * or <tt>0</tt> if it does not have one.
    */
   VScrollbar* get_vscrollbar();
   
-  /** Returns: the vertical scrollbar of the scrolled window, or
-   * @return The vertical scrollbar of the scrolled window, or
-   * <tt>0</tt> if it does not have one.
+  /** Returns the vertical scrollbar of @a scrolled_window.
    * 
-   * @newin2p8.
+   * @newin{2,8}
+   * @return The vertical scrollbar of the scrolled window,
+   * or <tt>0</tt> if it does not have one.
    */
   const VScrollbar* get_vscrollbar() const;
 
   
-  /** Returns: the horizontal scrollbar of the scrolled window, or
-   * @return The horizontal scrollbar of the scrolled window, or 
-   * <tt>0</tt> if it does not have one.
+  /** Returns the horizontal scrollbar of @a scrolled_window.
    * 
-   * @newin2p8.
+   * @newin{2,8}
+   * @return The horizontal scrollbar of the scrolled window,
+   * or <tt>0</tt> if it does not have one.
    */
   HScrollbar* get_hscrollbar();
   
-  /** Returns: the horizontal scrollbar of the scrolled window, or
-   * @return The horizontal scrollbar of the scrolled window, or 
-   * <tt>0</tt> if it does not have one.
+  /** Returns the horizontal scrollbar of @a scrolled_window.
    * 
-   * @newin2p8.
+   * @newin{2,8}
+   * @return The horizontal scrollbar of the scrolled window,
+   * or <tt>0</tt> if it does not have one.
    */
   const HScrollbar* get_hscrollbar() const;
 
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+  /** @deprecated You should not need to call this method.
+   */
    bool get_vscrollbar_visible() const;
-    bool get_hscrollbar_visible() const;
  
+  /** @deprecated You should not need to call this method.
+   */
+   bool get_hscrollbar_visible() const;
+ #endif // GTKMM_DISABLE_DEPRECATED
+
+
   //Keybinding signals:
   
   
@@ -363,7 +374,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Where the contents are located with respect to the scrollbars. This property only takes effect if window-placement-set is TRUE.
+/** Where the contents are located with respect to the scrollbars. This property only takes effect if 'window-placement-set' is TRUE.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -373,13 +384,33 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Where the contents are located with respect to the scrollbars. This property only takes effect if window-placement-set is TRUE.
+/** Where the contents are located with respect to the scrollbars. This property only takes effect if 'window-placement-set' is TRUE.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
   Glib::PropertyProxy_ReadOnly<CornerType> property_window_placement() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether 'window-placement' should be used to determine the location of the contents with respect to the scrollbars.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_window_placement_set() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether 'window-placement' should be used to determine the location of the contents with respect to the scrollbars.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_window_placement_set() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED

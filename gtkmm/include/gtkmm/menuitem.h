@@ -3,14 +3,12 @@
 #ifndef _GTKMM_MENUITEM_H
 #define _GTKMM_MENUITEM_H
 
+#include <gtkmmconfig.h>
+
 
 #include <glibmm.h>
 
-/* $Id: menuitem.hg,v 1.6 2006/04/12 11:11:25 murrayc Exp $ */
-
-
-/* menuitem.h
- * 
+/*
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -27,6 +25,7 @@
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+
  
 #include <gtkmm/item.h>
 #include <gtkmm/accelkey.h>
@@ -87,6 +86,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -99,27 +100,20 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_activate();
   virtual void on_activate_item();
   virtual void on_toggle_size_request(int* requisition);
   virtual void on_toggle_size_allocate(int allocation);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
 
 public:
-
   /// Create an empty menu item
   MenuItem();
 
@@ -135,21 +129,29 @@ public:
    * @param submenu The submenu, or <tt>0</tt>.
    */
   void set_submenu(Menu& submenu);
+
+  /** Remove the menu item's sub-menu.
+   * @newin{2,22}
+   */
+  void unset_submenu();
+
   
-  /** Gets the submenu underneath this menu item, if any. See
-   * set_submenu().
+  /** Gets the submenu underneath this menu item, if any.
+   * See set_submenu().
    * @return Submenu for this menu item, or <tt>0</tt> if none.
    */
   Menu* get_submenu();
   
-  /** Gets the submenu underneath this menu item, if any. See
-   * set_submenu().
+  /** Gets the submenu underneath this menu item, if any.
+   * See set_submenu().
    * @return Submenu for this menu item, or <tt>0</tt> if none.
    */
   const Menu* get_submenu() const;
   bool has_submenu() const;
 
   
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   /** Removes the widget's submenu.
    * 
    * Deprecated: 2.12: remove_submenu() is deprecated and
@@ -157,7 +159,9 @@ public:
    * set_submenu() instead.
    */
   void remove_submenu();
-  
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
   void select();
   
   void deselect();
@@ -176,7 +180,7 @@ public:
    * @param right_justified If <tt>true</tt> the menu item will appear at the 
    * far right if added to a menu bar.
    */
-  void set_right_justified(bool right_justified = true);
+  void set_right_justified(bool right_justified =  true);
   
   /** Gets whether the menu item appears justified at the right
    * side of the menu bar.
@@ -187,10 +191,10 @@ public:
   
   /** Set the accelerator path on @a menu_item, through which runtime changes of the
    * menu item's accelerator caused by the user can be identified and saved to
-   * persistant storage (see gtk_accel_map_save() on this).
+   * persistant storage (see Gtk::AccelMap::save() on this).
    * To setup a default accelerator for this menu item, call
-   * gtk_accel_map_add_entry() with the same @a accel_path.
-   * See also gtk_accel_map_add_entry() on the specifics of accelerator paths,
+   * Gtk::AccelMap::add_entry() with the same @a accel_path.
+   * See also Gtk::AccelMap::add_entry() on the specifics of accelerator paths,
    * and set_accel_path() for a more convenient variant of this function.
    * 
    * This function is basically a convenience wrapper that handles calling
@@ -208,42 +212,42 @@ public:
   /** Retrieve the accelerator path that was previously set on @a menu_item.
    * 
    * See set_accel_path() for details.
-   * @return The accelerator path corresponding to this menu item's
-   * functionality, or <tt>0</tt> if not set
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The accelerator path corresponding to this menu item's
+   * functionality, or <tt>0</tt> if not set.
    */
   Glib::ustring get_accel_path() const;
   
   /** Sets @a text on the @a menu_item label
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param label The text you want to set.
    */
   void set_label(const Glib::ustring& label);
   
   /** Sets @a text on the @a menu_item label
+   * 
+   * @newin{2,16}
    * @return The text in the @a menu_item label. This is the internal
    * string used by the label, and must not be modified.
-   * 
-   * @newin2p16.
    */
   Glib::ustring get_label() const;
   
   /** If true, an underline in the text indicates the next character should be
    * used for the mnemonic accelerator key.
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param setting <tt>true</tt> if underlines in the text indicate mnemonics.
    */
-  void set_use_underline(bool setting = true);
+  void set_use_underline(bool setting =  true);
   
   /** Checks if an underline in the text indicates the next character should be
    * used for the mnemonic accelerator key.
+   * 
+   * @newin{2,16}
    * @return <tt>true</tt> if an embedded underline in the label indicates
    * the mnemonic accelerator key.
-   * 
-   * @newin2p16.
    */
   bool get_use_underline() const;
 
@@ -303,7 +307,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The submenu attached to the menu item
+/** The submenu attached to the menu item, or NULL if it has none.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -313,7 +317,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The submenu attached to the menu item
+/** The submenu attached to the menu item, or NULL if it has none.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -363,7 +367,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If set
+/** If set, an underline in the text indicates the next character should be used for the mnemonic accelerator key.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -373,7 +377,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If set
+/** If set, an underline in the text indicates the next character should be used for the mnemonic accelerator key.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -384,13 +388,10 @@ public:
 
 
 protected:
-
   void add_accel_label(const Glib::ustring& label, bool mnemonic = true);
-
   void set_accel_key(const AccelKey& accel_key);
 
 private:
-
   friend class Menu_Helpers::Element;
 
   //This data is set by MenuElem, and will be used in on_realize(), in the call to add_accelerator().
@@ -399,7 +400,7 @@ private:
 
 };
 
-} /* namespace Gtk */
+} // namespace Gtk
 
 
 namespace Glib

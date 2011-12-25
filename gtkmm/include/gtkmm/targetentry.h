@@ -2,7 +2,7 @@
 #ifndef _GTKMM_TARGETENTRY_H
 #define _GTKMM_TARGETENTRY_H
 
-/* $Id: targetentry.h 1082 2009-01-19 17:55:19Z murrayc $ */
+/* $Id$ */
 
 /* targetentry.h
  *

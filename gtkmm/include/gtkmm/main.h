@@ -9,7 +9,7 @@
 /* $Id: main.hg,v 1.9 2005/02/13 20:48:35 murrayc Exp $ */
 
 /* main.h
- * 
+ *
  * Copyright (C) 1998-2003 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -28,11 +28,16 @@
  */
 
 
-#include <gtk/gtk.h>
-
 #include <sigc++/sigc++.h>
-#include <gdkmm/types.h>
+#include <gdkmm/types.h> //For GdkEventKey
 
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+extern "C"
+{
+typedef struct _GtkWidget GtkWidget;
+}
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 namespace Gtk
 {
@@ -45,7 +50,11 @@ class Window;
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 //Actually, I'd like to just keep these out of the alphabetical list. murrayc.
 
-/// Run Signal Class (internal)
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+/* Run Signal Class (internal)
+ * @deprecated This was removed in gtkmm-3.0 because it is not useful.
+ */
 class RunSig
 {
 public:
@@ -57,8 +66,9 @@ protected:
   static gboolean gtk_callback(gpointer data);
 };
 
-
-/// Quit Signal Class (internal)
+/** Quit Signal Class (internal)
+ * @deprecated This was removed in gtkmm-3.0 because it is not useful.
+ */
 class QuitSig
 {
 public:
@@ -69,6 +79,7 @@ public:
 protected:
   static gboolean gtk_callback(gpointer data); //gtk+ calls this, which then calls our slot.
 };
+#endif // GTKMM_DISABLE_DEPRECATED
 
 
 /// KeySnooper Signal Class (internal)
@@ -117,22 +128,22 @@ public:
 
   //This offers the same functionality as gtk_init_with_args():
   /** Scans the argument vector, and strips off all parameters parsed by GTK+ or your @a option_context.
-   * Add a Glib::OptionGroup to the Glib::OptionContext to parse your own command-line arguments.  
+   * Add a Glib::OptionGroup to the Glib::OptionContext to parse your own command-line arguments.
    *
    * Note:  The argument strings themself won't be modified, although the
    * pointers to them might change.  This makes it possible to create your
    * own argv of string literals, which have the type 'const char[]' in
    * standard C++.  (You might need to use const_cast<>, though.)
    *
-   * This function automatically generates nicely formatted 
+   * This function automatically generates nicely formatted
    * <option>--help</option> output. Note that your program will
    * be terminated after writing out the help output.
    *
    * @param argc a reference to the number of command line arguments.
    * @param argv a reference to the array of command line arguments.
-   * @parameter_string a string which is displayed in the first line of <option>--help</option> output, 
+   * @parameter_string a string which is displayed in the first line of <option>--help</option> output,
    * after <literal><replaceable>programname</replaceable> [OPTION...]</literal>
-   * @param option_context A Glib::OptionContext containing Glib::OptionGroups which described the command-line arguments taken by your program. 
+   * @param option_context A Glib::OptionContext containing Glib::OptionGroups which described the command-line arguments taken by your program.
    *
    * @throw Glib::OptionError
    */
@@ -151,7 +162,7 @@ public:
   /// See Main(int* argc, char*** argv, bool set_locale).
   Main(int& argc, char**& argv, bool set_locale = true);
 
- 
+
   virtual ~Main();
 
   /// Access to the one global instance of Gtk::Main.
@@ -180,10 +191,10 @@ public:
 
   //This attempts to provide the same functionality as gtk_get_option_group():
   /** Add a Glib::OptionGroup, for the commandline arguments recognized
-   * by GTK+ and GDK, to a Glib::OptionContext, so that these commandline arguments will 
+   * by GTK+ and GDK, to a Glib::OptionContext, so that these commandline arguments will
    * be processed in addition to the existing commandline arguments specified by the Glib::OptionContext.
    *
-   * You do not need to use this method if you pass your Glib::OptionContext to the Main constructor, because 
+   * You do not need to use this method if you pass your Glib::OptionContext to the Main constructor, because
    * it adds the gtk option group automatically.
    *
    * @param option_context Option Context to which the group will be added.
@@ -216,6 +227,8 @@ public:
    */
   static bool events_pending();
 
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   /** Run signal
    * @return void
    */
@@ -234,8 +247,12 @@ public:
    * @endcode
    * @return bool - @c false means callback is removed, @c true means
    * it'll be called again the next the main loop quits.
+   *
+   * @deprecated This was removed in gtkmm-3.0 because it is not useful.
    */
   static QuitSig& signal_quit();
+#endif // GTKMM_DISABLE_DEPRECATED
+
 
   /** KeySnooper signal
    * Allows you to channel keypresses to a signal handler
@@ -270,8 +287,13 @@ protected:
   virtual void on_window_hide();
 
   // Signal proxies:
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   static RunSig         signal_run_;
   static QuitSig        signal_quit_;
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
   static KeySnooperSig  signal_key_snooper_;
 
 private:

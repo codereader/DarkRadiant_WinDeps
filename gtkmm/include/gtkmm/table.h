@@ -28,6 +28,10 @@
 #include <glibmm/helperlist.h>
 #include <gtkmm/container.h>
 #include <gtkmm/enums.h>
+
+//TODO: Careful of including this before box.h,
+//because we need to undef some things first.
+//TODO: Maybe do all includes of gtk.h in a single file.
 #include <gtk/gtk.h> /* for GtkTableChild */
 
 
@@ -44,9 +48,13 @@ namespace Gtk
 
 class Table;
 
+/** @deprecated Use Container::get_children() instead.
+ */
 namespace Table_Helpers
 {
 
+/** @deprecated Use Container::get_children() instead.
+ */
 class Child : protected _GtkTableChild
 {
 private:
@@ -56,6 +64,8 @@ private:
 public:
   inline _GtkTableChild* gobj() {return (this);}
   inline const _GtkTableChild* gobj() const {return (this);}
+
+#ifndef GTKMM_DISABLE_DEPRECATED
 
   Widget* get_widget() const;
 
@@ -76,10 +86,12 @@ public:
   bool get_yshrink() const;
   bool get_xfill() const;
   bool get_yfill() const;
+#endif // GTKMM_DISABLE_DEPRECATED
+
 
 protected:
   inline GtkTable* parent()
-    { return (GtkTable*) (gobj()->widget->parent); }
+    { return GTK_TABLE(gtk_widget_get_parent(gobj()->widget)); }
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   friend class Dummy_; // silence the compiler (Child has only private ctors)
@@ -201,6 +213,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -213,31 +227,21 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
 
   
 public:
-  explicit Table(guint n_rows = 1, guint n_columns = 1, bool homogeneous = false);
+    explicit Table(guint n_rows =  1, guint n_columns =  1, bool homogeneous =  false);
 
-  
-        void attach(Widget& child,
-                    guint left_attach, guint right_attach,
-                    guint top_attach, guint bottom_attach,
-                    AttachOptions xoptions = FILL | EXPAND, AttachOptions yoptions = FILL | EXPAND,
-                    guint xpadding = 0, guint ypadding = 0);
+
+  void attach(Widget& child, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, AttachOptions xoptions =  FILL | EXPAND, AttachOptions yoptions =  FILL | EXPAND, guint xpadding =  0, guint ypadding =  0);
 
 
   void resize(guint rows, guint columns);
@@ -286,7 +290,7 @@ public:
   guint get_default_col_spacing();
 
   
-  void set_homogeneous(bool homogeneous = true);
+  void set_homogeneous(bool homogeneous =  true);
   
   /** Returns whether the table cells are all constrained to the same
    * width and height. (See set_homogenous())
@@ -294,11 +298,32 @@ public:
    */
   bool get_homogeneous() const;
 
+  
+  /** Returns the number of rows and columns in the table.
+   * 
+   * @newin{2,22}
+   * @param rows Return location for the number of
+   * rows, or <tt>0</tt>.
+   * @param columns Return location for the number
+   * of columns, or <tt>0</tt>.
+   */
+  void get_size(guint& rows, guint& columns) const;
+
+  /** @deprecated Use Container::get_children() instead.
+   */
   typedef Table_Helpers::TableList TableList;
 
+#ifndef GTKMM_DISABLE_DEPRECATED
 
+  /** @deprecated Use Container::get_children() instead.
+   */
   TableList& children();
+
+  /** @deprecated Use Container::get_children() instead.
+   */
   const TableList& children() const;
+#endif // GTKMM_DISABLE_DEPRECATED
+
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The number of rows in the table.
@@ -378,6 +403,26 @@ public:
    * the value of the property changes.
    */
   Glib::PropertyProxy_ReadOnly<guint> property_row_spacing() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** If TRUE, the table cells are all the same width/height.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_homogeneous() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** If TRUE, the table cells are all the same width/height.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_homogeneous() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

@@ -21,6 +21,8 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifndef GTKMM_DISABLE_DEPRECATED
+
 #include <gtkmm/comboboxentry.h>
 
 namespace Gtk
@@ -29,13 +31,18 @@ namespace Gtk
 //This is a C++ convenience class that is equivalent to the gtk_combo_box_entry_new_text() C convenience function.
 //This is copy/paste/search/replaced from ComboBoxText, but the only alternative I see is to use multiple inheritance.
 //murrayc.
+//In gtkmm-3.0 we simply wrap GtkComboBoxText, which is also in GTK+ 2.24.
+//But this C++ class was created before GtkComboBoxText existed and we want to avoid changing the ABI. 
 
 /** This is a specialisation of the ComboBoxEntry which has one column of text (a simple list),
  * and appropriate methods for setting and getting the text.
  *
+ * You should not call set_model() or attempt to pack more cells into this combo box via its CellLayout base class.
+ *
+ * @deprecated Instead use ComboBoxText with has_entry = true.
+ *
  * @ingroup Widgets
  */
-
 class ComboBoxEntryText
 : public ComboBoxEntry
 {
@@ -57,14 +64,35 @@ public:
   /** Add an item to the end of the drop-down list.
    * @param text The text for the item.
    */
-  void append_text(const Glib::ustring& text);
+  void append(const Glib::ustring& text);
 
-  void insert_text(int position, const Glib::ustring& text);
+  void insert(int position, const Glib::ustring& text);
 
   /** Add an item to the beginning of the drop-down list.
    * @param text The text for the item.
    */
+  void prepend(const Glib::ustring& text);
+
+#ifndef GTKMM_DISABLE_DEPRECATED
+  /** Add an item to the end of the drop-down list.
+   * @param text The text for the item.
+   *
+   * @deprecated Use append().
+   */
+  void append_text(const Glib::ustring& text);
+
+  /**
+   * @deprecated Use insert().
+   */
+  void insert_text(int position, const Glib::ustring& text);
+
+  /** Add an item to the beginning of the drop-down list.
+   * @param text The text for the item.
+   *
+   * @deprecated Use prepend().
+   */
   void prepend_text(const Glib::ustring& text);
+#endif //GTKMM_DISABLE_DEPRECATED
 
   //@deprecated Use get_entry()->get_text() to get the actual entered text.
   Glib::ustring get_active_text() const;
@@ -105,6 +133,7 @@ protected:
 
 } // namespace Gtk
 
+#endif //GTKMM_DISABLE_DEPRECATED
 
 #endif /* _GTKMM_COMBOBOXENTRYTEXT_H */
 

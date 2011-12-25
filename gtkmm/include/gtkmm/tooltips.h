@@ -10,8 +10,6 @@
 
 #include <glibmm.h>
 
-/* $Id: tooltips.hg,v 1.1 2003/01/21 13:40:46 murrayc Exp $ */
-
 /* Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -29,7 +27,7 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// This is for including the config header before any code (such as
+ // This is for including the config header before any code (such as
 // the #ifndef GTKMM_DISABLE_DEPRECATED in deprecated classes) is generated:
 
 
@@ -37,7 +35,9 @@
 #include <gtkmm/object.h>
 
 
-typedef struct _GtkTooltipsData GtkTooltipsData;
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+extern "C" { typedef struct _GtkTooltipsData GtkTooltipsData; }
+#endif
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 typedef struct _GtkTooltips GtkTooltips;
@@ -55,11 +55,11 @@ class Widget;
 /** Tooltips are the messages that appear next to a widget when the mouse
  * pointer is held over it for a short amount of time. They are especially
  * helpful for adding more verbose descriptions of things such as buttons
- * in a toolbar. 
+ * in a toolbar.
  *
  * This widget holds tooltips for other widgets.  You should only need one
  * Tooltip widget for all widgets you wish to add tips to.
- * 
+ *
  * @deprecated Use the Gtk::Tooltip API instead.
  */
 
@@ -94,6 +94,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -106,17 +108,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -131,6 +127,12 @@ public:
   void disable();
 
   
+  /** Adds a tooltip containing the message @a tip_text to the specified Gtk::Widget.
+   * Deprecated: 2.12:
+   * @param widget The Gtk::Widget you wish to associate the tip with.
+   * @param tip_text A string containing the tip itself.
+   * @param tip_private A string of any further information that may be useful if the user gets stuck.
+   */
   void set_tip(Widget& widget, const Glib::ustring& tip_text, const Glib::ustring& tip_private);
   void set_tip(Widget& widget, const Glib::ustring& tip_text);
   void unset_tip(Widget& widget);

@@ -5,6 +5,8 @@
 
 #include <gtkmmconfig.h>
 
+#ifndef GTKMM_DISABLE_DEPRECATED
+
 
 #include <glibmm.h>
 
@@ -58,8 +60,8 @@ class OptionMenu;
 
 class ScrolledWindow;
 
-// Don't list this in the documentation's Dialogs group because it isn't really useful
-// - see the GTK+ docs.
+/** @deprecated As of gtkmm 2.20, this widget has been deprecated since it is too specialized. 
+ */
 
 class InputDialog : public Dialog
 {
@@ -92,6 +94,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -104,19 +108,13 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_enable_device(const Glib::RefPtr<Gdk::Device>& device);
   virtual void on_disable_device(const Glib::RefPtr<Gdk::Device>& device);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -185,6 +183,9 @@ namespace Glib
    */
   Gtk::InputDialog* wrap(GtkInputDialog* object, bool take_copy = false);
 } //namespace Glib
+
+
+#endif // GTKMM_DISABLE_DEPRECATED
 
 
 #endif /* _GTKMM_INPUTDIALOG_H */

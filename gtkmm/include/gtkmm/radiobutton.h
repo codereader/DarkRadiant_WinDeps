@@ -84,6 +84,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -96,18 +98,12 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_group_changed();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -140,7 +136,6 @@ public:
    *
    * @result The group to which the radio button belongs.
    */
-  
   Group get_group();
 
  /** Set the radio button's group.
@@ -161,6 +156,9 @@ public:
    */
 
   Glib::SignalProxy0< void > signal_group_changed();
+
+  
+  //Probably wouldn't work: _WRAP_PROPERTY("group", Group)
 
 
 };

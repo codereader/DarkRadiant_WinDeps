@@ -10,11 +10,7 @@
 
 #include <glibmm.h>
 
-/* $Id: fileselection.hg,v 1.4 2005/11/29 16:38:10 murrayc Exp $ */
-
-
-/* fileselection.h
- * 
+/*
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -32,15 +28,15 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// This is for including the config header before any code (such as
+ // This is for including the config header before any code (such as
 // the #ifndef GTKMM_DISABLE_DEPRECATED in deprecated classes) is generated:
 
 
+#include <gtkmm/box.h>
 #include <gtkmm/dialog.h>
 #include <gtkmm/button.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/label.h>
-#include <gtkmm/box.h>
 #include <gtkmm/treeview.h>
 #include <gtkmm/buttonbox.h>
 #include <gtkmm/optionmenu.h>
@@ -100,6 +96,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -112,17 +110,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -131,9 +123,9 @@ private:
 public:
 
   FileSelection();
-  explicit FileSelection(const Glib::ustring& title);
+    explicit FileSelection(const Glib::ustring& title);
 
-  
+
   /** Sets a default path for the file requestor. If @a filename includes a
    * directory path, then the requestor will open with that path as its
    * current working directory.
@@ -184,7 +176,7 @@ public:
    * @param select_multiple Whether or not the user is allowed to select multiple
    * files in the file list.
    */
-  void set_select_multiple(bool select_multiple = true);
+  void set_select_multiple(bool select_multiple =  true);
   
   /** Determines whether or not the user is allowed to select multiple files in
    * the file list. See set_select_multiple().

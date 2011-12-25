@@ -27,6 +27,7 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+ 
 #include <gtkmm/container.h>
 
 
@@ -87,6 +88,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -99,17 +102,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -122,6 +119,8 @@ public:
   
   void move(Widget& widget, int x, int y);
   
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   /** Sets whether a Gtk::Fixed widget is created with a separate
    * Gdk::Window for @a widget->window or not. (By default, it will be
    * created with no separate Gdk::Window). This function must be called
@@ -130,15 +129,24 @@ public:
    * 
    * This function was added to provide an easy migration path for
    * older applications which may expect Gtk::Fixed to have a separate window.
+   * 
+   * Deprecated: 2.20: Use Gtk::Widget::set_has_window() instead.
    * @param has_window <tt>true</tt> if a separate window should be created.
    */
-  void set_has_window(bool has_window = true);
-  
+  void set_has_window(bool has_window =  true);
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   /** Gets whether the Gtk::Fixed has its own Gdk::Window.
    * See set_has_window().
+   * 
+   * Deprecated: 2.20: Use Gtk::Widget::get_has_window() instead.
    * @return <tt>true</tt> if @a fixed has its own window.
    */
   bool get_has_window() const;
+#endif // GTKMM_DISABLE_DEPRECATED
 
 
 };

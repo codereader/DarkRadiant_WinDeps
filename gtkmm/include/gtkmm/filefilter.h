@@ -45,7 +45,7 @@ namespace Gtk
 namespace Gtk
 {
 
-/** @addtogroup gtkmmEnums Enums and Flags */
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
 
 /**
  * @ingroup gtkmmEnums
@@ -163,6 +163,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -175,17 +177,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -198,32 +194,32 @@ public:
    * that will be displayed in the file selector user interface if
    * there is a selectable list of filters.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param name The human-readable-name for the filter, or <tt>0</tt>
    * to remove any existing name.
    */
   void set_name(const Glib::ustring& name);
   
-  /** Gets the human-readable name for the filter. See gtk_file_filter_set_name().
+  /** Gets the human-readable name for the filter. See set_name().
+   * 
+   * @newin{2,4}
    * @return The human-readable name of the filter,
    * or <tt>0</tt>. This value is owned by GTK+ and must not
    * be modified or freed.
-   * 
-   * @newin2p4.
    */
   Glib::ustring get_name() const;
 
   
   /** Adds a rule allowing a given mime type to @a filter.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param mime_type Name of a MIME type.
    */
   void add_mime_type(const Glib::ustring& mime_type);
   
   /** Adds a rule allowing a shell style glob to a filter.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param pattern A shell style glob.
    */
   void add_pattern(const Glib::ustring& pattern);
@@ -231,7 +227,7 @@ public:
   /** Adds a rule allowing image files in the formats supported
    * by GdkPixbuf.
    * 
-   * @newin2p6
+   * @newin{2,6}
    */
   void add_pixbuf_formats();
 
@@ -252,19 +248,19 @@ public:
   
 
   /** Gets the fields that need to be filled in for the structure
-   * passed to gtk_file_filter_filter()
+   * passed to filter()
    * 
    * This function will not typically be used by applications; it
    * is intended principally for use in the implementation of
    * Gtk::FileChooser.
-   * @return Bitfield of flags indicating needed fields when
-   * calling gtk_file_filter_filter()
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return Bitfield of flags indicating needed fields when
+   * calling filter().
    */
   FileFilterFlags get_needed() const;
 
-  //TODO: This method is used by FileChooser implementors, so we don't need to wrap it.
+  //TODO: This method is onlyused by FileChooser implementors, so we don't need to wrap it.
   
   //_WRAP_METHOD(bool filter(const GtkFileFilterInfo* filter_info), gtk_file_filter_filter)
 

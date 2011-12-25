@@ -1,6 +1,6 @@
 #ifndef _GTKMM_RADIOBUTTONGROUP_H
 #define _GTKMM_RADIOBUTTONGROUP_H
-/* $Id: radiobuttongroup.h 1082 2009-01-19 17:55:19Z murrayc $ */
+/* $Id$ */
 
 /* radiobuttongroup.h
  *

@@ -43,6 +43,41 @@ namespace Gtk
 namespace Gtk
 {
 
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
+
+/**
+ * @ingroup gtkmmEnums
+ */
+enum PackDirection
+{
+  PACK_DIRECTION_LTR,
+  PACK_DIRECTION_RTL,
+  PACK_DIRECTION_TTB,
+  PACK_DIRECTION_BTT
+};
+
+} // namespace Gtk
+
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+namespace Glib
+{
+
+template <>
+class Value<Gtk::PackDirection> : public Glib::Value_Enum<Gtk::PackDirection>
+{
+public:
+  static GType value_type() G_GNUC_CONST;
+};
+
+} // namespace Glib
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+
+namespace Gtk
+{
+
+
 /** A standard menu bar which usually holds Gtk::Menu submenu items.
  * The useful methods are in the base class - Gtk::MenuShell.
  *
@@ -84,6 +119,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -96,17 +133,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -115,7 +146,79 @@ private:
 public:
   MenuBar();
 
+  
+  /** Retrieves the current pack direction of the menubar. 
+   * See set_pack_direction().
+   * 
+   * @newin{2,8}
+   * @return The pack direction.
+   */
+  PackDirection get_pack_direction() const;
+  
+  /** Sets how items should be packed inside a menubar.
+   * 
+   * @newin{2,8}
+   * @param pack_dir A new Gtk::PackDirection.
+   */
+  void set_pack_direction(PackDirection pack_dir);
+  
+  /** Retrieves the current child pack direction of the menubar.
+   * See set_child_pack_direction().
+   * 
+   * @newin{2,8}
+   * @return The child pack direction.
+   */
+  PackDirection get_child_pack_direction() const;
+  
+  /** Sets how widgets should be packed inside the children of a menubar.
+   * 
+   * @newin{2,8}
+   * @param child_pack_dir A new Gtk::PackDirection.
+   */
+  void set_child_pack_direction(PackDirection child_pack_dir);
+							
   // append, prepend and insert are defined in menushell
+  
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The pack direction of the menubar.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<PackDirection> property_pack_direction() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The pack direction of the menubar.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<PackDirection> property_pack_direction() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The child pack direction of the menubar.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<PackDirection> property_child_pack_direction() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The child pack direction of the menubar.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<PackDirection> property_child_pack_direction() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
 
 private:
   void init_accels_handler_(void);

@@ -9,7 +9,7 @@
  /* $Id: handlebox.hg,v 1.1 2003/01/21 13:40:26 murrayc Exp $ */
 
 /* handlebox.h
- * 
+ *
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -84,6 +84,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -96,26 +98,20 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_child_attached(Widget* child);
   virtual void on_child_detached(Widget* child);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
 
 public:
   HandleBox();
-  
+
 
   void set_shadow_type(ShadowType type);
   
@@ -143,6 +139,14 @@ public:
   PositionType get_snap_edge() const;
 
   
+  /** Whether the handlebox's child is currently detached.
+   * 
+   * @newin{2,14}
+   * @return <tt>true</tt> if the child is currently detached, otherwise <tt>false</tt>.
+   */
+  bool is_child_detached() const;
+
+  
   /**
    * @par Prototype:
    * <tt>void on_my_%child_attached(Widget* child)</tt>
@@ -159,22 +163,31 @@ public:
   Glib::SignalProxy1< void,Widget* > signal_child_detached();
 
 
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+  /** @deprecated You should not need to call this method.
+   */
    Glib::RefPtr<Gdk::Window> get_bin_window();
   Glib::RefPtr<const Gdk::Window> get_bin_window() const;
-    Glib::RefPtr<Gdk::Window> get_float_window();
+ 
+  /** @deprecated You should not need to call this method.
+   */
+   Glib::RefPtr<Gdk::Window> get_float_window();
   Glib::RefPtr<const Gdk::Window> get_float_window() const;
  
-  
-  /** Whether the handlebox's child is currently detached.
-   * @return <tt>true</tt> if the child is currently detached, otherwise <tt>false</tt>
-   * 
-   * @newin2p14.
+  /** @deprecated This method does not seem to be useful and will be removed from a future version of gtkmm, due to changes in GTK+.
    */
-  bool is_child_detached() const;
-
   bool is_float_window_mapped() const;
+
+  /** @deprecated This method does not seem to be useful and will be removed from a future version of gtkmm, due to changes in GTK+.
+   */
   bool is_in_drag() const;
+
+  /** @deprecated This method does not seem to be useful and will be removed from a future version of gtkmm, due to changes in GTK+.
+   */
   bool shrinks_on_detach() const;
+#endif // GTKMM_DISABLE_DEPRECATED
+
 
   //_WRAP_PROPERTY("shadow", ShadowType); //deprecated.
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -235,6 +248,36 @@ public:
    * the value of the property changes.
    */
   Glib::PropertyProxy_ReadOnly<PositionType> property_snap_edge() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether to use the value from the snap_edge property or a value derived from handle_position.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_snap_edge_set() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether to use the value from the snap_edge property or a value derived from handle_position.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_snap_edge_set() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** A boolean value indicating whether the handlebox's child is attached or detached.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_child_detached() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

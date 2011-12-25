@@ -107,6 +107,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -124,19 +126,41 @@ private:
 public:
 
   
-  /** Return value: the appropriate clipboard object. If no
-   * @param selection A Gdk::Atom which identifies the clipboard
-   * to use.
-   * @return The appropriate clipboard object. If no
-   * clipboard already exists, a new one will
-   * be created. Once a clipboard object has
-   * been created, it is persistent and, since
-   * it is owned by GTK+, must not be freed or
-   * unrefd.
+  /** Returns the clipboard object for the given selection.
+   * See get_for_display() for complete details.
+   * @param selection A Gdk::Atom which identifies the clipboard to use.
+   * @return The appropriate clipboard object. If no clipboard
+   * already exists, a new one will be created. Once a clipboard
+   * object has been created, it is persistent and, since it is
+   * owned by GTK+, must not be freed or unreffed.
    */
-  static Glib::RefPtr<Clipboard> get(GdkAtom selection = GDK_SELECTION_CLIPBOARD);
+  static Glib::RefPtr<Clipboard> get(GdkAtom selection =  GDK_SELECTION_CLIPBOARD);
   
-  /** Return value: the appropriate clipboard object. If no
+  /** Returns the clipboard object for the given selection.
+   * Cut/copy/paste menu items and keyboard shortcuts should use
+   * the default clipboard, returned by passing Gdk::SELECTION_CLIPBOARD for @a selection.
+   * (Gdk::NONE is supported as a synonym for GDK_SELECTION_CLIPBOARD
+   * for backwards compatibility reasons.)
+   * The currently-selected object or text should be provided on the clipboard
+   * identified by Gdk::SELECTION_PRIMARY. Cut/copy/paste menu items
+   * conceptually copy the contents of the Gdk::SELECTION_PRIMARY clipboard
+   * to the default clipboard, i.e. they copy the selection to what the
+   * user sees as the clipboard.
+   * 
+   * (Passing Gdk::NONE is the same as using <tt>gdk_atom_intern
+   * ("CLIPBOARD", <tt>false</tt>)</tt>. See 
+   * for a detailed discussion of the "CLIPBOARD" vs. "PRIMARY"
+   * selections under the X window system. On Win32 the
+   * Gdk::SELECTION_PRIMARY clipboard is essentially ignored.)
+   * 
+   * It's possible to have arbitrary named clipboards; if you do invent
+   * new clipboards, you should prefix the selection name with an
+   * underscore (because the ICCCM requires that nonstandard atoms are
+   * underscore-prefixed), and namespace it as well. For example,
+   * if your application called "Foo" has a special-purpose
+   * clipboard, you might call it "_FOO_SPECIAL_CLIPBOARD".
+   * 
+   * @newin{2,2}
    * @param display The display for which the clipboard is to be retrieved or created.
    * @param selection A Gdk::Atom which identifies the clipboard
    * to use.
@@ -146,23 +170,21 @@ public:
    * been created, it is persistent and, since
    * it is owned by GTK+, must not be freed or
    * unrefd.
-   * 
-   * @newin2p2.
    */
-  static Glib::RefPtr<Clipboard> get_for_display(const Glib::RefPtr<Gdk::Display>& display, GdkAtom selection = GDK_SELECTION_CLIPBOARD);
+  static Glib::RefPtr<Clipboard> get_for_display(const Glib::RefPtr<Gdk::Display>& display, GdkAtom selection =  GDK_SELECTION_CLIPBOARD);
 
   
   /** Gets the Gdk::Display associated with @a clipboard
-   * @return The Gdk::Display associated with @a clipboard
    * 
-   * @newin2p2.
+   * @newin{2,2}
+   * @return The Gdk::Display associated with @a clipboard.
    */
   Glib::RefPtr<Gdk::Display> get_display();
   
   /** Gets the Gdk::Display associated with @a clipboard
-   * @return The Gdk::Display associated with @a clipboard
    * 
-   * @newin2p2.
+   * @newin{2,2}
+   * @return The Gdk::Display associated with @a clipboard.
    */
   Glib::RefPtr<const Gdk::Display> get_display() const;
 
@@ -189,32 +211,26 @@ public:
   
   
   /** If the clipboard contents callbacks were set with 
-   * gtk_clipboard_set_with_owner(), and the gtk_clipboard_set_with_data() or 
-   * gtk_clipboard_clear() has not subsequently called, returns the owner set 
-   * by gtk_clipboard_set_with_owner().
+   * set_with_owner(), and the set_with_data() or 
+   * clear() has not subsequently called, returns the owner set 
+   * by set_with_owner().
    * @return The owner of the clipboard, if any; otherwise <tt>0</tt>.
    */
   Glib::RefPtr<Glib::Object> get_owner();
   
   /** If the clipboard contents callbacks were set with 
-   * gtk_clipboard_set_with_owner(), and the gtk_clipboard_set_with_data() or 
-   * gtk_clipboard_clear() has not subsequently called, returns the owner set 
-   * by gtk_clipboard_set_with_owner().
+   * set_with_owner(), and the set_with_data() or 
+   * clear() has not subsequently called, returns the owner set 
+   * by set_with_owner().
    * @return The owner of the clipboard, if any; otherwise <tt>0</tt>.
    */
   Glib::RefPtr<const Glib::Object> get_owner() const;
 
+  
   /**
    * Clears the contents of the clipboard. Generally this should only
    * be called between the time you call set()
    * and when the slot_clear you supplied is called. Otherwise, the
-   * clipboard may be owned by someone else.
-   */
-  
-  /** Clears the contents of the clipboard. Generally this should only
-   * be called between the time you call gtk_clipboard_set_with_owner()
-   * or gtk_clipboard_set_with_data(),
-   * and when the @a clear_func you supplied is called. Otherwise, the
    * clipboard may be owned by someone else.
    */
   void clear();
@@ -236,7 +252,7 @@ public:
    * for the image, and for converting the image into the 
    * requested format.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param pixbuf A Gdk::Pixbuf.
    */
   void set_image(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf);
@@ -308,7 +324,7 @@ public:
   *
   * @param slot A slot to call when the URIs are received, or the retrieval fails. (It will always be called one way or the other.)
   *
-  * @newin2p14
+  * @newin{2,14}
   */
   void request_uris(const SlotUrisReceived& slot);
   
@@ -349,7 +365,7 @@ public:
    *             is an intermediate type, so you should convert it to a
    *             standard C++ container.
    *
-   * @newin2p4
+   * @newin{2,4}
    */
   void request_targets(const SlotTargetsReceived& slot);
   
@@ -387,14 +403,14 @@ public:
    * the result to a Gdk::Pixbuf. This function waits for
    * the data to be received using the main loop, so events,
    * timeouts, etc, may be dispatched during the wait.
+   * 
+   * @newin{2,6}
    * @return A newly-allocated Gdk::Pixbuf object which must
    * be disposed with Glib::object_unref(), or <tt>0</tt> if 
    * retrieving the selection data failed. (This 
    * could happen for various reasons, in particular 
    * if the clipboard was empty or if the contents of 
-   * the clipboard could not be converted into an image.)
-   * 
-   * @newin2p6.
+   * the clipboard could not be converted into an image.).
    */
   Glib::RefPtr<Gdk::Pixbuf> wait_for_image() const;
   
@@ -406,7 +422,7 @@ public:
    * timeouts, etc, may be dispatched during the wait.
    * 
    * This function is a little faster than calling
-   * gtk_clipboard_wait_for_text() since it doesn't need to retrieve
+   * wait_for_text() since it doesn't need to retrieve
    * the actual text.
    * @return <tt>true</tt> is there is text available, <tt>false</tt> otherwise.
    */
@@ -419,12 +435,12 @@ public:
    * timeouts, etc, may be dispatched during the wait.
    * 
    * This function is a little faster than calling
-   * gtk_clipboard_wait_for_rich_text() since it doesn't need to retrieve
+   * wait_for_rich_text() since it doesn't need to retrieve
    * the actual text.
+   * 
+   * @newin{2,10}
    * @param buffer A Gtk::TextBuffer.
    * @return <tt>true</tt> is there is rich text available, <tt>false</tt> otherwise.
-   * 
-   * @newin2p10.
    */
   bool wait_is_rich_text_available(const Glib::RefPtr<TextBuffer>& buffer) const;
   
@@ -435,11 +451,11 @@ public:
    * timeouts, etc, may be dispatched during the wait.
    * 
    * This function is a little faster than calling
-   * gtk_clipboard_wait_for_image() since it doesn't need to retrieve
+   * wait_for_image() since it doesn't need to retrieve
    * the actual image data.
-   * @return <tt>true</tt> is there is an image available, <tt>false</tt> otherwise.
    * 
-   * @newin2p6.
+   * @newin{2,6}
+   * @return <tt>true</tt> is there is an image available, <tt>false</tt> otherwise.
    */
   bool wait_is_image_available() const;
   
@@ -450,11 +466,11 @@ public:
    * timeouts, etc, may be dispatched during the wait.
    * 
    * This function is a little faster than calling
-   * gtk_clipboard_wait_for_uris() since it doesn't need to retrieve
+   * wait_for_uris() since it doesn't need to retrieve
    * the actual URI data.
-   * @return <tt>true</tt> is there is an URI list available, <tt>false</tt> otherwise.
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return <tt>true</tt> is there is an URI list available, <tt>false</tt> otherwise.
    */
   bool wait_is_uris_available() const;
   
@@ -463,11 +479,11 @@ public:
    * insensitive or not.
    * 
    * If you want to see if there's text available on the clipboard, use
-   * gtk_clipboard_wait_is_text_available() instead.
+   * wait_is_text_available() instead.
+   * 
+   * @newin{2,6}
    * @param target A Gdk::Atom indicating which target to look for.
    * @return <tt>true</tt> if the target is available, <tt>false</tt> otherwise.
-   * 
-   * @newin2p6.
    */
   bool wait_is_target_available(const Glib::ustring& target);
 
@@ -477,7 +493,7 @@ public:
    *
    * @result targets: The targets.
    *
-   * @newin2p4
+   * @newin{2,4}
    */
   Glib::StringArrayHandle wait_for_targets() const;
   
@@ -485,14 +501,15 @@ public:
   /** Requests the contents of the clipboard as URIs. This function waits
    * for the data to be received using the main loop, so events,
    * timeouts, etc, may be dispatched during the wait.
-   * @return A newly-allocated <tt>0</tt>-terminated array of strings which must
-   * be freed with Glib::strfreev(), or <tt>0</tt> if
-   * retrieving the selection data failed. (This 
-   * could happen for various reasons, in particular 
-   * if the clipboard was empty or if the contents of 
-   * the clipboard could not be converted into URI form.)
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return A newly-allocated
+   * <tt>0</tt>-terminated array of strings which must
+   * be freed with Glib::strfreev(), or <tt>0</tt> if
+   * retrieving the selection data failed. (This
+   * could happen for various reasons, in particular
+   * if the clipboard was empty or if the contents of
+   * the clipboard could not be converted into URI form.).
    */
   Glib::StringArrayHandle wait_for_uris() const;
 
@@ -518,7 +535,7 @@ public:
   /** Stores the current clipboard data somewhere so that it will stay
    * around after the application has quit.
    * 
-   * @newin2p6
+   * @newin{2,6}
    */
   void store();
 
@@ -536,17 +553,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

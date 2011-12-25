@@ -9,7 +9,7 @@
 /* $Id: entry.hg,v 1.12 2006/06/13 17:16:26 murrayc Exp $ */
 
 /* entry.h
- * 
+ *
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -34,6 +34,8 @@
 #include <gtkmm/entrycompletion.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/image.h> //For ImageType.
+#include <gtkmm/border.h>
+#include <gtkmm/entrybuffer.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -47,7 +49,7 @@ namespace Gtk
 namespace Gtk
 {
 
-/** @addtogroup gtkmmEnums Enums and Flags */
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
 
 /**
  * @ingroup gtkmmEnums
@@ -80,15 +82,12 @@ namespace Gtk
 {
 
 
-//TODO: This is used in Range too, so put it somewhere more appropriate:
-typedef GtkBorder Border;
-
 /** A single line text entry field.
  *
  * The Gtk::Entry widget is a single line text entry widget. A fairly large
  * set of key bindings are supported by default. If the entered text is
  * longer than the allocation of the widget, the widget will scroll so that
- * the cursor position is visible. 
+ * the cursor position is visible.
  *
  * The Entry widget looks like this:
  * @image html entry1.png
@@ -130,6 +129,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -142,20 +143,14 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_populate_popup(Menu* menu);
   virtual void on_insert_at_cursor(const Glib::ustring& str);
   virtual void on_activate();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -164,8 +159,59 @@ private:
 public:
 
   Entry();
-  
+    explicit Entry(const Glib::RefPtr<EntryBuffer>& buffer);
 
+
+  /** Get the Gtk::EntryBuffer object which holds the text for
+   * this widget.
+   * 
+   * @newin{2,18}
+   * @return A Gtk::EntryBuffer object.
+   */
+  Glib::RefPtr<EntryBuffer> get_buffer();
+  
+  /** Get the Gtk::EntryBuffer object which holds the text for
+   * this widget.
+   * 
+   * @newin{2,18}
+   * @return A Gtk::EntryBuffer object.
+   */
+  Glib::RefPtr<const EntryBuffer> get_buffer() const;
+
+  
+  /** Set the Gtk::EntryBuffer object which holds the text for
+   * this widget.
+   * 
+   * @newin{2,18}
+   * @param buffer A Gtk::EntryBuffer.
+   */
+  void set_buffer(const Glib::RefPtr<EntryBuffer>& buffer);
+
+  
+  /** Returns the Gdk::Window which contains the text. This function is
+   * useful when drawing something to the entry in an expose-event
+   * callback because it enables the callback to distinguish between
+   * the text window and entry's icon windows.
+   * 
+   * See also get_icon_window().
+   * 
+   * @newin{2,20}
+   * @return The entry's text window.
+   */
+  Glib::RefPtr<Gdk::Window> get_text_window();
+  
+  /** Returns the Gdk::Window which contains the text. This function is
+   * useful when drawing something to the entry in an expose-event
+   * callback because it enables the callback to distinguish between
+   * the text window and entry's icon windows.
+   * 
+   * See also get_icon_window().
+   * 
+   * @newin{2,20}
+   * @return The entry's text window.
+   */
+  Glib::RefPtr<const Gdk::Window> get_text_window() const;
+  
   /** Sets whether the contents of the entry are visible or not. 
    * When visibility is set to <tt>false</tt>, characters are displayed 
    * as the invisible char, and will also appear that way when 
@@ -177,7 +223,7 @@ public:
    * @param visible <tt>true</tt> if the contents of the entry are displayed
    * as plaintext.
    */
-  void set_visibility(bool visible = true);
+  void set_visibility(bool visible =  true);
   
   /** Retrieves whether the text in @a entry is visible. See
    * set_visibility().
@@ -200,7 +246,7 @@ public:
    * set_invisible_char(). So that the
    * default invisible char is used again.
    * 
-   * @newin2p16
+   * @newin{2,16}
    */
   void unset_invisible_char();
   
@@ -214,7 +260,7 @@ public:
   /** Sets whether the entry has a beveled frame around it.
    * @param setting New value.
    */
-  void set_has_frame(bool setting = true);
+  void set_has_frame(bool setting =  true);
   
   /** Gets the value set by set_has_frame().
    * @return Whether the entry has a beveled frame.
@@ -231,37 +277,43 @@ public:
    * in-place editing of some text in a canvas or list widget, where
    * pixel-exact positioning of the entry is important.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param border A Gtk::Border, or <tt>0</tt>.
    */
   void set_inner_border(const Border& border);
   
   /** This function returns the entry's Gtk::Entry:inner-border property. See
    * set_inner_border() for more information.
-   * @return The entry's Gtk::Border, or <tt>0</tt> if none was set.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The entry's Gtk::Border, or <tt>0</tt> if none was set.
    */
   Border get_inner_border() const;
 
   
   /** Sets whether the text is overwritten when typing in the Gtk::Entry.
    * 
-   * @newin2p14
+   * @newin{2,14}
    * @param overwrite New value.
    */
-  void set_overwrite_mode(bool overwrite = true);
+  void set_overwrite_mode(bool overwrite =  true);
   
   /** Gets the value set by set_overwrite_mode().
-   * @return Whether the text is overwritten when typing.
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return Whether the text is overwritten when typing.
    */
   bool get_overwrite_mode() const;
   
   /** Sets the maximum allowed length of the contents of the widget. If
    * the current contents are longer than the given length, then they
    * will be truncated to fit.
+   * 
+   * This is equivalent to:
+   * 
+   * @code
+   * gtk_entry_buffer_set_max_length (gtk_entry_get_buffer (entry), max);
+   * @endcode
    * @param max The maximum length of the entry, or 0 for no maximum.
    * (other than the maximum length of entries.) The value passed in will
    * be clamped to the range 0-65536.
@@ -270,17 +322,29 @@ public:
   
   /** Retrieves the maximum allowed length of the text in
    *  @a entry. See set_max_length().
+   * 
+   * This is equivalent to:
+   * 
+   * @code
+   * gtk_entry_buffer_get_max_length (gtk_entry_get_buffer (entry));
+   * @endcode
    * @return The maximum allowed number of characters
    * in Gtk::Entry, or 0 if there is no maximum.
    */
   int get_max_length() const;
   
   /** Retrieves the current length of the text in
-   *  @a entry.
+   *  @a entry. 
+   * 
+   * This is equivalent to:
+   * 
+   * @code
+   * gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
+   * @endcode
+   * 
+   * @newin{2,14}
    * @return The current number of characters
    * in Gtk::Entry, or 0 if there are none.
-   * 
-   * @newin2p14.
    */
   guint16 get_text_length() const;
   
@@ -294,7 +358,7 @@ public:
    * the default handler for the Gtk::Widget::activate signal.)
    * @param setting <tt>true</tt> to activate window's default widget on Enter keypress.
    */
-  void set_activates_default(bool setting = true);
+  void set_activates_default(bool setting =  true);
   
   /** Retrieves the value set by set_activates_default().
    * @return <tt>true</tt> if the entry will activate the default widget.
@@ -303,7 +367,7 @@ public:
   
   /** Changes the size request of the entry to be about the right size
    * for @a n_chars characters. Note that it changes the size
-   * <emphasis>request</emphasis>, the size can still be affected by
+   * <em>request</em>, the size can still be affected by
    * how you pack the widget into containers. If @a n_chars is -1, the
    * size reverts to the default entry size.
    * @param n_chars Width in chars.
@@ -317,9 +381,11 @@ public:
   
   /** Sets the text in the widget to the given
    * value, replacing the current contents.
+   * 
+   * See Gtk::EntryBuffer::set_text().
    * @param text The new text.
    */
-  void set_text(const Glib::ustring &text);
+  void set_text(const Glib::ustring & text);
   
   /** Retrieves the contents of the entry widget.
    * See also Gtk::Editable::get_chars().
@@ -406,27 +472,27 @@ public:
    * The adjustment has to be in pixel units and in the same coordinate system 
    * as the entry. 
    * 
-   * @newin2p12
+   * @newin{2,12}
    * @param adjustment An adjustment which should be adjusted when the cursor 
    * is moved, or <tt>0</tt>.
    */
-  void set_cursor_hadjustment (Adjustment& adjustment);
+  void set_cursor_hadjustment(Adjustment& adjustment);
   
   /** Retrieves the horizontal cursor adjustment for the entry. 
    * See set_cursor_hadjustment().
-   * @return The horizontal cursor adjustment, or <tt>0</tt> 
-   * if none has been set.
    * 
-   * @newin2p12.
+   * @newin{2,12}
+   * @return The horizontal cursor adjustment, or <tt>0</tt>
+   * if none has been set.
    */
   Adjustment* get_cursor_hadjustment();
   
   /** Retrieves the horizontal cursor adjustment for the entry. 
    * See set_cursor_hadjustment().
-   * @return The horizontal cursor adjustment, or <tt>0</tt> 
-   * if none has been set.
    * 
-   * @newin2p12.
+   * @newin{2,12}
+   * @return The horizontal cursor adjustment, or <tt>0</tt>
+   * if none has been set.
    */
   const Adjustment* get_cursor_hadjustment() const;
 
@@ -435,7 +501,7 @@ public:
    * the horizontal positioning of the contents when the displayed
    * text is shorter than the width of the entry.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param xalign The horizontal alignment, from 0 (left) to 1 (right).
    * Reversed for RTL layouts.
    */
@@ -445,16 +511,16 @@ public:
    * the horizontal positioning of the contents when the displayed
    * text is shorter than the width of the entry.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param xalign The horizontal alignment, from 0 (left) to 1 (right).
    * Reversed for RTL layouts.
    */
-  void set_alignment(AlignmentEnum xalign); 
+  void set_alignment(AlignmentEnum xalign);
   
   /** Gets the value set by set_alignment().
-   * @return The alignment
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return The alignment.
    */
   float get_alignment() const;
 
@@ -464,22 +530,24 @@ public:
    *  @a completion using the Gtk::EntryCompletion API. Completion is disabled if
    *  @a completion is set to <tt>0</tt>.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param completion The Gtk::EntryCompletion or <tt>0</tt>.
    */
   void set_completion(const Glib::RefPtr<EntryCompletion>& completion);
   
-  /** Return value: The auxiliary completion object currently in use by @a entry.
-   * @return The auxiliary completion object currently in use by @a entry.
+  /** Returns the auxiliary completion object currently in use by @a entry.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return The auxiliary completion object currently
+   * in use by @a entry.
    */
   Glib::RefPtr<EntryCompletion> get_completion();
   
-  /** Return value: The auxiliary completion object currently in use by @a entry.
-   * @return The auxiliary completion object currently in use by @a entry.
+  /** Returns the auxiliary completion object currently in use by @a entry.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return The auxiliary completion object currently
+   * in use by @a entry.
    */
   Glib::RefPtr<const EntryCompletion> get_completion() const;
 
@@ -488,30 +556,31 @@ public:
    * fraction of the bar. The fraction should be between 0.0 and 1.0,
    * inclusive.
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param fraction Fraction of the task that's been completed.
    */
   void set_progress_fraction(double fraction);
   
-  /** Return value: a fraction from 0.0 to 1.0
-   * @return A fraction from 0.0 to 1.0
+  /** Returns the current fraction of the task that's been completed.
+   * See set_progress_fraction().
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @return A fraction from 0.0 to 1.0.
    */
   double get_progress_fraction() const;
   
   /** Sets the fraction of total entry width to move the progress
    * bouncing block for each call to progress_pulse().
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param fraction Fraction between 0.0 and 1.0.
    */
   void set_progress_pulse_step(double fraction);
   
   /** Retrieves the pulse step set with set_progress_pulse_step().
-   * @return A fraction from 0.0 to 1.0
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @return A fraction from 0.0 to 1.0.
    */
   double get_progress_pulse_step();
   
@@ -522,7 +591,7 @@ public:
    * (the amount of movement per pulse is determined by
    * set_progress_pulse_step()).
    * 
-   * @newin2p16
+   * @newin{2,16}
    */
   void progress_pulse();
 
@@ -531,27 +600,27 @@ public:
    * 
    * If @a pixbuf is <tt>0</tt>, no icon will be shown in the specified position.
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param icon_pos Icon position.
    * @param pixbuf A Gdk::Pixbuf, or <tt>0</tt>.
    */
 
   void set_icon_from_pixbuf(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf, EntryIconPosition icon_pos = ENTRY_ICON_PRIMARY);
   
-  
+
   /** Sets the icon shown in the entry at the specified position from
    * a stock image.
    * 
    * If @a stock_id is <tt>0</tt>, no icon will be shown in the specified position.
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param icon_pos Icon position.
    * @param stock_id The name of the stock item, or <tt>0</tt>.
    */
 
   void set_icon_from_stock(const StockID& stock_id, EntryIconPosition icon_pos = ENTRY_ICON_PRIMARY);
   
-  
+
   /** Sets the icon shown in the entry at the specified position
    * from the current icon theme.
    * 
@@ -560,7 +629,7 @@ public:
    * 
    * If @a icon_name is <tt>0</tt>, no icon will be shown in the specified position.
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param icon_pos The position at which to set the icon.
    * @param icon_name An icon name, or <tt>0</tt>.
    */
@@ -575,96 +644,98 @@ public:
    * 
    * If @a icon is <tt>0</tt>, no icon will be shown in the specified position.
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param icon_pos The position at which to set the icon.
    * @param icon The icon to set, or <tt>0</tt>.
    */
 
   void set_icon_from_gicon(const Glib::RefPtr<Gio::Icon>& icon, EntryIconPosition icon_pos = ENTRY_ICON_PRIMARY);
   
-    
+
   /** Gets the type of representation being used by the icon
    * to store image data. If the icon has no image data,
    * the return value will be Gtk::IMAGE_EMPTY.
-   * @param icon_pos Icon position.
-   * @return Image representation being used
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @param icon_pos Icon position.
+   * @return Image representation being used.
    */
-  ImageType get_icon_storage_type(EntryIconPosition icon_pos = ENTRY_ICON_PRIMARY) const;
+  ImageType get_icon_storage_type(EntryIconPosition icon_pos =  ENTRY_ICON_PRIMARY) const;
   
   /** Retrieves the image used for the icon.
    * 
    * Unlike the other methods of setting and getting icon data, this
    * method will work regardless of whether the icon was set using a
    * Gdk::Pixbuf, a Icon, a stock item, or an icon name.
-   * @param icon_pos Icon position.
-   * @return A Gdk::Pixbuf, or <tt>0</tt> if no icon is set for this position.
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @param icon_pos Icon position.
+   * @return A Gdk::Pixbuf, or <tt>0</tt> if no icon is
+   * set for this position.
    */
-  Glib::RefPtr<Gdk::Pixbuf> get_icon_pixbuf(EntryIconPosition icon_pos = ENTRY_ICON_PRIMARY);
+  Glib::RefPtr<Gdk::Pixbuf> get_icon_pixbuf(EntryIconPosition icon_pos =  ENTRY_ICON_PRIMARY);
   
   /** Retrieves the image used for the icon.
    * 
    * Unlike the other methods of setting and getting icon data, this
    * method will work regardless of whether the icon was set using a
    * Gdk::Pixbuf, a Icon, a stock item, or an icon name.
-   * @param icon_pos Icon position.
-   * @return A Gdk::Pixbuf, or <tt>0</tt> if no icon is set for this position.
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @param icon_pos Icon position.
+   * @return A Gdk::Pixbuf, or <tt>0</tt> if no icon is
+   * set for this position.
    */
-  Glib::RefPtr<const Gdk::Pixbuf> get_icon_pixbuf(EntryIconPosition icon_pos = ENTRY_ICON_PRIMARY) const;
+  Glib::RefPtr<const Gdk::Pixbuf> get_icon_pixbuf(EntryIconPosition icon_pos =  ENTRY_ICON_PRIMARY) const;
   
   /** Retrieves the stock id used for the icon, or <tt>0</tt> if there is
    * no icon or if the icon was set by some other method (e.g., by
    * pixbuf, icon name or gicon).
+   * 
+   * @newin{2,16}
    * @param icon_pos Icon position.
    * @return A stock id, or <tt>0</tt> if no icon is set or if the icon
-   * wasn't set from a stock id
-   * 
-   * @newin2p16.
+   * wasn't set from a stock id.
    */
-  StockID get_icon_stock(EntryIconPosition icon_pos = ENTRY_ICON_PRIMARY) const;
+  StockID get_icon_stock(EntryIconPosition icon_pos =  ENTRY_ICON_PRIMARY) const;
   
   /** Retrieves the icon name used for the icon, or <tt>0</tt> if there is
    * no icon or if the icon was set by some other method (e.g., by
    * pixbuf, stock or gicon).
+   * 
+   * @newin{2,16}
    * @param icon_pos Icon position.
    * @return An icon name, or <tt>0</tt> if no icon is set or if the icon
-   * wasn't set from an icon name
-   * 
-   * @newin2p16.
+   * wasn't set from an icon name.
    */
-  Glib::ustring get_icon_name(EntryIconPosition icon_pos = ENTRY_ICON_PRIMARY) const;
+  Glib::ustring get_icon_name(EntryIconPosition icon_pos =  ENTRY_ICON_PRIMARY) const;
   
   /** Retrieves the Icon used for the icon, or <tt>0</tt> if there is
    * no icon or if the icon was set by some other method (e.g., by
    * stock, pixbuf, or icon name).
-   * @param icon_pos Icon position.
-   * @return A Icon, or <tt>0</tt> if no icon is set or if the icon
-   * is not a Icon
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @param icon_pos Icon position.
+   * @return A Icon, or <tt>0</tt> if no icon is set
+   * or if the icon is not a Icon.
    */
-  Glib::RefPtr<Gio::Icon> get_icon_gicon(EntryIconPosition icon_pos = ENTRY_ICON_PRIMARY);
+  Glib::RefPtr<Gio::Icon> get_icon_gicon(EntryIconPosition icon_pos =  ENTRY_ICON_PRIMARY);
   
   /** Retrieves the Icon used for the icon, or <tt>0</tt> if there is
    * no icon or if the icon was set by some other method (e.g., by
    * stock, pixbuf, or icon name).
-   * @param icon_pos Icon position.
-   * @return A Icon, or <tt>0</tt> if no icon is set or if the icon
-   * is not a Icon
    * 
-   * @newin2p16.
+   * @newin{2,16}
+   * @param icon_pos Icon position.
+   * @return A Icon, or <tt>0</tt> if no icon is set
+   * or if the icon is not a Icon.
    */
-  Glib::RefPtr<const Gio::Icon> get_icon_gicon(EntryIconPosition icon_pos = ENTRY_ICON_PRIMARY) const;
+  Glib::RefPtr<const Gio::Icon> get_icon_gicon(EntryIconPosition icon_pos =  ENTRY_ICON_PRIMARY) const;
 
   
   /** Sets whether the icon is activatable.
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param icon_pos Icon position.
    * @param activatable <tt>true</tt> if the icon should be activatable.
    */
@@ -672,43 +743,43 @@ public:
   void set_icon_activatable(bool activatable = true, EntryIconPosition icon_pos = ENTRY_ICON_PRIMARY);
   
 
-  /** Returns: <tt>true</tt> if the icon is activatable.
+  /** Returns whether the icon is activatable.
+   * 
+   * @newin{2,16}
    * @param icon_pos Icon position.
    * @return <tt>true</tt> if the icon is activatable.
-   * 
-   * @newin2p16.
    */
-  bool get_icon_activatable(EntryIconPosition icon_pos = ENTRY_ICON_PRIMARY) const;
+  bool get_icon_activatable(EntryIconPosition icon_pos =  ENTRY_ICON_PRIMARY) const;
   
   /** Sets the sensitivity for the specified icon.
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param icon_pos Icon position.
    * @param sensitive Specifies whether the icon should appear
    * sensitive or insensitive.
    */
-  void set_icon_sensitive(EntryIconPosition icon_pos = ENTRY_ICON_PRIMARY, bool sensitive = true);
+  void set_icon_sensitive(EntryIconPosition icon_pos =  ENTRY_ICON_PRIMARY, bool sensitive =  true);
   
-  /** Returns: <tt>true</tt> if the icon is sensitive.
+  /** Returns whether the icon appears sensitive or insensitive.
+   * 
+   * @newin{2,16}
    * @param icon_pos Icon position.
    * @return <tt>true</tt> if the icon is sensitive.
-   * 
-   * @newin2p16.
    */
-  bool get_icon_sensitive(EntryIconPosition icon_pos = ENTRY_ICON_PRIMARY);
+  bool get_icon_sensitive(EntryIconPosition icon_pos =  ENTRY_ICON_PRIMARY);
   
   /** Finds the icon at the given position and return its index.
    * If @a x, @a y doesn't lie inside an icon, -1 is returned.
    * This function is intended for use in a Gtk::Widget::query-tooltip
    * signal handler.
+   * 
+   * @newin{2,16}
    * @param x The x coordinate of the position to find.
    * @param y The y coordinate of the position to find.
-   * @return The index of the icon at the given position, or -1
-   * 
-   * @newin2p16.
+   * @return The index of the icon at the given position, or -1.
    */
   int get_icon_at_pos(int x, int y) const;
-  
+
   
   /** Sets @a tooltip as the contents of the tooltip for the icon
    * at the specified position.
@@ -718,52 +789,52 @@ public:
    * See also Gtk::Widget::set_tooltip_text() and 
    * set_icon_tooltip_markup().
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param icon_pos The icon position.
    * @param tooltip The contents of the tooltip for the icon, or <tt>0</tt>.
    */
 
   void set_icon_tooltip_text(const Glib::ustring& tooltip, EntryIconPosition icon_pos = ENTRY_ICON_PRIMARY);
-    
   
+
   /** Gets the contents of the tooltip on the icon at the specified 
    * position in @a entry.
+   * 
+   * @newin{2,16}
    * @param icon_pos The icon position.
    * @return The tooltip text, or <tt>0</tt>. Free the returned string
    * with Glib::free() when done.
-   * 
-   * @newin2p16.
    */
-  Glib::ustring get_icon_tooltip_text(EntryIconPosition icon_pos = ENTRY_ICON_PRIMARY) const;
-  
+  Glib::ustring get_icon_tooltip_text(EntryIconPosition icon_pos =  ENTRY_ICON_PRIMARY) const;
+
   
   /** Sets @a tooltip as the contents of the tooltip for the icon at
    * the specified position. @a tooltip is assumed to be marked up with
-   * the <link linkend="PangoMarkupFormat">Pango text markup language</link>.
+   * the .
    * 
    * Use <tt>0</tt> for @a tooltip to remove an existing tooltip.
    * 
    * See also Gtk::Widget::set_tooltip_markup() and 
    * gtk_enty_set_icon_tooltip_text().
    * 
-   * @newin2p16
+   * @newin{2,16}
    * @param icon_pos The icon position.
    * @param tooltip The contents of the tooltip for the icon, or <tt>0</tt>.
    */
 
   void set_icon_tooltip_markup(const Glib::ustring& tooltip, EntryIconPosition icon_pos = ENTRY_ICON_PRIMARY);
-   
   
+
   /** Gets the contents of the tooltip on the icon at the specified 
    * position in @a entry.
+   * 
+   * @newin{2,16}
    * @param icon_pos The icon position.
    * @return The tooltip text, or <tt>0</tt>. Free the returned string
    * with Glib::free() when done.
-   * 
-   * @newin2p16.
    */
-  Glib::ustring get_icon_tooltip_markup(EntryIconPosition icon_pos = ENTRY_ICON_PRIMARY) const;
-  
+  Glib::ustring get_icon_tooltip_markup(EntryIconPosition icon_pos =  ENTRY_ICON_PRIMARY) const;
+
   
   /** Sets up the icon at the given position so that GTK+ will start a drag
    * operation when the user clicks and drags the icon.
@@ -778,6 +849,8 @@ public:
    * Gtk::Widget::drag-begin signal to set a different icon. Note that you 
    * have to use Glib::signal_connect_after() to ensure that your signal handler
    * gets executed after the default handler.
+   * 
+   * @newin{2,16}
    * @param icon_pos Icon position.
    * @param target_list The targets (data formats) in which the data can be provided.
    * @param actions A bitmask of the allowed drag actions.
@@ -785,12 +858,72 @@ public:
 
   void set_icon_drag_source(const Glib::RefPtr<TargetList>& target_list, Gdk::DragAction actions = Gdk::ACTION_COPY, EntryIconPosition icon_pos = ENTRY_ICON_PRIMARY);
   
-    
-  /** Returns: index of the icon which is the source of the current
+
+  /** Returns the index of the icon which is the source of the current
+   * DND operation, or -1.
+   * 
+   * This function is meant to be used in a Gtk::Widget::drag-data-get
+   * callback.
+   * 
+   * @newin{2,16}
    * @return Index of the icon which is the source of the current
    * DND operation, or -1.
    */
   int get_current_icon_drag_source();
+
+  
+  /** Returns the Gdk::Window which contains the entry's icon at
+   *  @a icon_pos. This function is useful when drawing something to the
+   * entry in an expose-event callback because it enables the callback
+   * to distinguish between the text window and entry's icon windows.
+   * 
+   * See also get_text_window().
+   * 
+   * @newin{2,20}
+   * @param icon_pos Icon position.
+   * @return The entry's icon window at @a icon_pos.
+   */
+  Glib::RefPtr<Gdk::Window> get_icon_window(EntryIconPosition icon_pos =  ENTRY_ICON_PRIMARY);
+  
+  /** Returns the Gdk::Window which contains the entry's icon at
+   *  @a icon_pos. This function is useful when drawing something to the
+   * entry in an expose-event callback because it enables the callback
+   * to distinguish between the text window and entry's icon windows.
+   * 
+   * See also get_text_window().
+   * 
+   * @newin{2,20}
+   * @param icon_pos Icon position.
+   * @return The entry's icon window at @a icon_pos.
+   */
+  Glib::RefPtr<const Gdk::Window> get_icon_window(EntryIconPosition icon_pos =  ENTRY_ICON_PRIMARY) const;
+
+  
+  /** Allow the Gtk::Entry input method to internally handle key press
+   * and release events. If this function returns <tt>true</tt>, then no further
+   * processing should be done for this key event. See
+   * gtk_im_context_filter_keypress().
+   * 
+   * Note that you are expected to call this function from your handler
+   * when overriding key event handling. This is needed in the case when
+   * you need to insert your own key handling between the input method
+   * and the default key event handling of the Gtk::Entry.
+   * See Gtk::TextView::reset_im_context() for an example of use.
+   * 
+   * @newin{2,22}
+   * @param event The key event.
+   * @return <tt>true</tt> if the input method handled the key event.
+   */
+  bool im_context_filter_keypress(GdkEventKey* event);
+  
+  /** Reset the input method context of the entry if needed.
+   * 
+   * This can be necessary in the case where modifying the buffer
+   * would confuse on-going input method behavior.
+   * 
+   * @newin{2,22}
+   */
+  void reset_im_context();
 
   
   /**
@@ -822,7 +955,7 @@ public:
 
   Glib::SignalProxy0< void > signal_activate();
 
-  
+
   /**
    * @par Prototype:
    * <tt>void on_my_%icon_release(EntryIconPosition icon_position, const GdkEventButton* event)</tt>
@@ -838,6 +971,26 @@ public:
 
   Glib::SignalProxy2< void,EntryIconPosition,const GdkEventButton* > signal_icon_press();
 
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Text buffer object which actually stores entry text.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< Glib::RefPtr<EntryBuffer> > property_buffer() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Text buffer object which actually stores entry text.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< Glib::RefPtr<EntryBuffer> > property_buffer() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The current position of the insertion cursor in chars.
@@ -902,7 +1055,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** FALSE displays the invisible char instead of the actual text (password mode).
+/** FALSE displays the 'invisible char' instead of the actual text (password mode).
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -912,7 +1065,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** FALSE displays the invisible char instead of the actual text (password mode).
+/** FALSE displays the 'invisible char' instead of the actual text (password mode).
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -942,7 +1095,27 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The character to use when masking entry contents (in password mode).
+/** Border between text and frame. Overrides the inner-border style property.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<Border> property_inner_border() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Border between text and frame. Overrides the inner-border style property.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<Border> property_inner_border() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The character to use when masking entry contents (in 'password mode').
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -952,7 +1125,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The character to use when masking entry contents (in password mode).
+/** The character to use when masking entry contents (in 'password mode').
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -1073,7 +1246,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The horizontal alignment
+/** The horizontal alignment, from 0 (left) to 1 (right). Reversed for RTL layouts.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -1083,7 +1256,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The horizontal alignment
+/** The horizontal alignment, from 0 (left) to 1 (right). Reversed for RTL layouts.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -1463,6 +1636,86 @@ public:
    * the value of the property changes.
    */
   Glib::PropertyProxy_ReadOnly<bool> property_secondary_icon_sensitive() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The contents of the tooltip on the primary icon.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_primary_icon_tooltip_text() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The contents of the tooltip on the primary icon.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_primary_icon_tooltip_text() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The contents of the tooltip on the secondary icon.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_secondary_icon_tooltip_text() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The contents of the tooltip on the secondary icon.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_secondary_icon_tooltip_text() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The contents of the tooltip on the primary icon.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_primary_icon_tooltip_markup() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The contents of the tooltip on the primary icon.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_primary_icon_tooltip_markup() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The contents of the tooltip on the secondary icon.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_secondary_icon_tooltip_markup() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The contents of the tooltip on the secondary icon.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_secondary_icon_tooltip_markup() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED

@@ -2,7 +2,7 @@
 #ifndef _GTKMM_ACCELMAP_H
 #define _GTKMM_ACCELMAP_H
 
-/* $Id: accelmap.h 1091 2009-02-05 17:56:53Z murrayc $ */
+/* $Id$ */
 
 /* accelmap.h
  *
@@ -108,7 +108,7 @@ void save(const std::string& filename);
  *
  * @param accel_path a valid accelerator path
  *
- * @newin2p4
+ * @newin{2,4}
  */
 void lock_path(const std::string& accel_path);
 
@@ -117,7 +117,7 @@ void lock_path(const std::string& accel_path);
  *
  * @param accel_path a valid accelerator path
  *
- * @newin2p4
+ * @newin{2,4}
  */
 void unlock_path(const std::string& accel_path);
 
@@ -125,7 +125,7 @@ void unlock_path(const std::string& accel_path);
  * @param accel_path A valid accelerator path.
  * @result true if accel_path is known, false otherwise
  *
- * @newin2p10
+ * @newin{2,10}
  */
 bool lookup_entry (const Glib::ustring& accel_path);
 
@@ -134,7 +134,7 @@ bool lookup_entry (const Glib::ustring& accel_path);
  * @param key The accelerator key to be filled in.
  * @result true if accel_path is known, false otherwise
  *
- * @newin2p10
+ * @newin{2,10}
  */
 bool lookup_entry (const Glib::ustring& accel_path, Gtk::AccelKey& key);
 

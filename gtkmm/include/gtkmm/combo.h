@@ -10,10 +10,7 @@
 
 #include <glibmm.h>
 
-/* $Id: combo.hg,v 1.7 2005/11/29 16:38:10 murrayc Exp $ */
-
-/* combo.h
- * 
+/*
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -31,13 +28,13 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// This is for including the config header before any code (such as
+ // This is for including the config header before any code (such as
 // the #ifndef GTKMM_DISABLE_DEPRECATED in deprecated classes) is generated:
 
 
+#include <gtkmm/box.h>
 #include <glibmm/listhandle.h>
 #include <glibmm/helperlist.h>
-#include <gtkmm/box.h>
 #include <gtkmm/button.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/item.h>
@@ -70,12 +67,11 @@ namespace Gtk
 namespace Gtk
 {
 
-
 /** An item in a ComboDropDownList.
- * 
+ *
  * Items in a ComboDropDownList inherit Item. Two signals are added.
  *
- * @deprecated Use the ComboBox widget instead. 
+ * @deprecated Use the ComboBox widget instead.
  */
 
 class ComboDropDownItem : public Gtk::Item
@@ -109,6 +105,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -121,19 +119,13 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_scroll_horizontal(ScrollType scroll_type, float position);
   virtual void on_scroll_vertical(ScrollType scroll_type, float position);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -160,7 +152,6 @@ public:
 
 
 };
-
 
 namespace ComboDropDown_Helpers
 {
@@ -216,11 +207,10 @@ public:
 
 } /* namespace ComboDropDown_Helpers */
 
-
 class Combo;
 
 /** The dropdown list of a Combo.
- * 
+ *
  * A combo is a compound widget which crosses a text entry area and a pull
  * down list. The dropdown list is implemented with the deprecated GtkList
  * widget on the gtk+ side. ComboDropDown is a thin wrapper around GtkList
@@ -262,6 +252,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -274,20 +266,14 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_select_child(Widget& item);
   virtual void on_selection_changed();
   virtual void on_unselect_child(Widget& item);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -347,7 +333,7 @@ class ScrolledWindow;
 class Window;
 
 /** A text entry field with a dropdown list.
- * 
+ *
  * A combo is a compound widget which crosses a text entry area and a pull
  * down list.  It may allow text entry or it may just allow list
  * values depending on the settings.
@@ -388,6 +374,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -400,17 +388,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -419,6 +401,7 @@ private:
 public:
 
   Combo();
+
   
   /** Allow direct text entry
    * Whether the text in the entry must be or not be in the list.
@@ -426,9 +409,9 @@ public:
    * @param value Set to true if the value must be in list.
    * @param empty Set to true if the text area is allowed to be empty.
    */
-  
-  void set_value_in_list(bool value = true, bool empty = false);
+  void set_value_in_list(bool value =  true, bool empty =  false);
 
+  
   /** Set arrows keys to change value
    * Up and down will scroll through the list items.
    * Useful when there is a small list of value that the
@@ -436,9 +419,9 @@ public:
    *
    * @param arrows_on true indicates the arrow keys scroll.
    */
-  
-  void set_use_arrows(bool arrows_on = true);
+  void set_use_arrows(bool arrows_on =  true);
 
+  
   /** Set arrows keys to change if value not in list
    * Up and down will scroll through the list items but only
    * change the current value if the text does not match a list item..
@@ -447,26 +430,26 @@ public:
    *
    * @param arrows_always true indicates the value will change.
    */
-  
-  void set_use_arrows_always(bool arrows_always = true);
+  void set_use_arrows_always(bool arrows_always =  true);
 
+  
   /** Sets list case sensitive
    * Determines if the list items and text comparisons for
    * set_use_arrows_always() should be case sensitive.
    */
-  
-  void set_case_sensitive(bool val = true);
+  void set_case_sensitive(bool val =  true);
 
+  
   /** Set the current entry Glib::ustring
    * Call this function on an item if it isn't a label or you
    * want it to have a different value to be displayed in the entry
    */
-  
   void set_item_string(Gtk::Item& item, const Glib::ustring& item_value);
    void remove_item_string(Gtk::Item& item);
 
-  /// Insert a list of items.
-  
+
+  /** Insert a list of items.
+   */
   void set_popdown_strings(const Glib::ListHandle<Glib::ustring>& strings);
 
   Glib::ListHandle<Glib::ustring> get_popdown_strings() const;
@@ -500,7 +483,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Obsolete property
+/** Obsolete property, ignored.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -510,7 +493,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Obsolete property
+/** Obsolete property, ignored.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -582,8 +565,7 @@ public:
 
 };
 
-
-} /* namespace Gtk */
+} // namespace Gtk
 
 
 namespace Glib

@@ -50,7 +50,7 @@ namespace Gtk
 {
 
 
-/** @addtogroup gtkmmEnums Enums and Flags */
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
 
 /**
  * @ingroup gtkmmEnums
@@ -133,6 +133,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -145,21 +147,15 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_set_scroll_adjustments(Adjustment* hadjustment, Adjustment* vadjustment);
   virtual void on_populate_popup(Menu* menu);
   virtual void on_set_anchor();
   virtual void on_insert_at_cursor(const Glib::ustring& str);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -178,12 +174,16 @@ public:
    */
   void set_buffer(const Glib::RefPtr<TextBuffer>& buffer);
   
-  /** Return value: a Gtk::TextBuffer
+  /** Returns the Gtk::TextBuffer being displayed by this text view.
+   * The reference count on the buffer is not incremented; the caller
+   * of this function won't own a new reference.
    * @return A Gtk::TextBuffer.
    */
   Glib::RefPtr<TextBuffer> get_buffer();
   
-  /** Return value: a Gtk::TextBuffer
+  /** Returns the Gtk::TextBuffer being displayed by this text view.
+   * The reference count on the buffer is not incremented; the caller
+   * of this function won't own a new reference.
    * @return A Gtk::TextBuffer.
    */
   Glib::RefPtr<const TextBuffer> get_buffer() const;
@@ -191,7 +191,7 @@ public:
   #ifndef GTKMM_DISABLE_DEPRECATED
 
   /** @deprecated Use scroll_to().
-   */                            
+   */
   bool scroll_to_iter(TextBuffer::iterator& iter, double within_margin);
 
   /** @deprecated Use scroll_to().
@@ -229,7 +229,7 @@ public:
    * @param xalign horizontal alignment of mark within visible area. An alignment of 0.0 indicates left, 1.0 indicates right, 0.5 means center.
    * @param yalign vertical alignment of mark within visible area. An alignment of 0.0 indicates top, 1.0 indicates bottom, 0.5 means center.
    * @result true if scrolling occurred.
-   */ 
+   */
   bool scroll_to(TextBuffer::iterator& iter, double within_margin, double xalign, double yalign);
   
 
@@ -253,7 +253,7 @@ public:
    */
   void scroll_to(const Glib::RefPtr<TextBuffer::Mark>& mark, double within_margin, double xalign, double yalign);
   
- 
+
    //It does not do anything more than the default scroll_to(mark).
 
   
@@ -283,7 +283,7 @@ public:
    * the cursor off.
    * @param setting Whether to show the insertion cursor.
    */
-  void set_cursor_visible(bool setting = true);
+  void set_cursor_visible(bool setting =  true);
   
   /** Find out whether the cursor is being displayed.
    * @return Whether the insertion mark is visible.
@@ -298,7 +298,7 @@ public:
    * @param iter A Gtk::TextIter.
    * @param location Bounds of the character at @a iter.
    */
-  void get_iter_location(const TextBuffer::iterator&  iter, Gdk::Rectangle& location) const;
+  void get_iter_location(const TextBuffer::iterator& iter, Gdk::Rectangle& location) const;
   
   /** Retrieves the iterator at buffer coordinates @a x and @a y. Buffer
    * coordinates are coordinates for the entire buffer, not just the
@@ -319,10 +319,10 @@ public:
    * window_to_buffer_coords().
    * 
    * Note that this is different from get_iter_at_location(),
-   * which returns cursor locations, i.e. positions <emphasis>between</emphasis>
+   * which returns cursor locations, i.e. positions <em>between</em>
    * characters.
    * 
-   * @newin2p6
+   * @newin{2,6}
    * @param iter A Gtk::TextIter.
    * @param trailing If non-<tt>0</tt>, location to store an integer indicating where
    * in the grapheme the user clicked. It will either be
@@ -363,12 +363,10 @@ public:
    * @param win A Gtk::TextWindowType except Gtk::TEXT_WINDOW_PRIVATE.
    * @param buffer_x Buffer x coordinate.
    * @param buffer_y Buffer y coordinate.
-   * @param window_x Window x coordinate return location.
-   * @param window_y Window y coordinate return location.
+   * @param window_x Window x coordinate return location or <tt>0</tt>.
+   * @param window_y Window y coordinate return location or <tt>0</tt>.
    */
-  void buffer_to_window_coords(TextWindowType  win,
-                                            int buffer_x, int buffer_y,
-                                            int& window_x, int& window_y) const;
+  void buffer_to_window_coords(TextWindowType win, int buffer_x, int buffer_y, int& window_x, int& window_y) const;
   
   /** Converts coordinates on the window identified by @a win to buffer
    * coordinates, storing the result in ( @a buffer_x, @a buffer_y).
@@ -378,12 +376,39 @@ public:
    * @param win A Gtk::TextWindowType except Gtk::TEXT_WINDOW_PRIVATE.
    * @param window_x Window x coordinate.
    * @param window_y Window y coordinate.
-   * @param buffer_x Buffer x coordinate return location.
-   * @param buffer_y Buffer y coordinate return location.
+   * @param buffer_x Buffer x coordinate return location or <tt>0</tt>.
+   * @param buffer_y Buffer y coordinate return location or <tt>0</tt>.
    */
-  void window_to_buffer_coords(TextWindowType  win,
-                                            int window_x, int window_y,
-                                            int& buffer_x, int& buffer_y) const;
+  void window_to_buffer_coords(TextWindowType win, int window_x, int window_y, int& buffer_x, int& buffer_y) const;
+
+  
+  /** Gets the horizontal-scrolling Gtk::Adjustment.
+   * 
+   * @newin{2,22}
+   * @return Pointer to the horizontal Gtk::Adjustment.
+   */
+  Gtk::Adjustment* get_hadjustment();
+  
+  /** Gets the horizontal-scrolling Gtk::Adjustment.
+   * 
+   * @newin{2,22}
+   * @return Pointer to the horizontal Gtk::Adjustment.
+   */
+  const Gtk::Adjustment* get_hadjustment() const;
+  
+  /** Gets the vertical-scrolling Gtk::Adjustment.
+   * 
+   * @newin{2,22}
+   * @return Pointer to the vertical Gtk::Adjustment.
+   */
+  Gtk::Adjustment* get_vadjustment();
+  
+  /** Gets the vertical-scrolling Gtk::Adjustment.
+   * 
+   * @newin{2,22}
+   * @return Pointer to the vertical Gtk::Adjustment.
+   */
+  const Gtk::Adjustment* get_vadjustment() const;
 
   
   /** Retrieves the Gdk::Window corresponding to an area of the text view;
@@ -410,7 +435,7 @@ public:
   
   /** Usually used to find out which window an event corresponds to.
    * If you connect to an event signal on @a text_view, this function
-   * should be called on <literal>event->window</literal> to
+   * should be called on <tt>event->window</tt> to
    * see which window it was.
    * @param window A window type.
    * @return The window type.
@@ -496,7 +521,7 @@ public:
    * @param iter A Gtk::TextIter.
    * @return <tt>true</tt> if @a iter begins a wrapped line.
    */
-  bool starts_display_line(const TextBuffer::iterator&  iter);
+  bool starts_display_line(const TextBuffer::iterator& iter);
   
   /** Move the iterator a given number of characters visually, treating
    * it as the strong cursor position. If @a count is positive, then the
@@ -515,6 +540,49 @@ public:
    * @return <tt>true</tt> if @a iter moved and is not on the end iterator.
    */
   bool move_visually(TextBuffer::iterator& iter, int count);
+
+  
+  /** Allow the Gtk::TextView input method to internally handle key press
+   * and release events. If this function returns <tt>true</tt>, then no further
+   * processing should be done for this key event. See
+   * gtk_im_context_filter_keypress().
+   * 
+   * Note that you are expected to call this function from your handler
+   * when overriding key event handling. This is needed in the case when
+   * you need to insert your own key handling between the input method
+   * and the default key event handling of the Gtk::TextView.
+   * 
+   * |[
+   * static <tt>bool</tt>
+   * gtk_foo_bar_key_press_event (GtkWidget   *widget,
+   * GdkEventKey *event)
+   * {
+   * if ((key->keyval == GDK_Return || key->keyval == GDK_KP_Enter))
+   * {
+   * if (gtk_text_view_im_context_filter_keypress (GTK_TEXT_VIEW (view), event))
+   * return <tt>true</tt>;
+   * }
+   * 
+   * / * Do some stuff * /
+   * 
+   * return GTK_WIDGET_CLASS (gtk_foo_bar_parent_class)->key_press_event (widget, event);
+   * }
+   * ]|
+   * 
+   * @newin{2,22}
+   * @param event The key event.
+   * @return <tt>true</tt> if the input method handled the key event.
+   */
+  bool im_context_filter_keypress(GdkEventKey* event);
+  
+  /** Reset the input method context of the text view if needed.
+   * 
+   * This can be necessary in the case where modifying the buffer
+   * would confuse on-going input method behavior.
+   * 
+   * @newin{2,22}
+   */
+  void reset_im_context();
 
   
   /** Adds a child widget in the text buffer, at the given @a anchor.
@@ -545,8 +613,7 @@ public:
    * @param xpos X position of child in window coordinates.
    * @param ypos Y position of child in window coordinates.
    */
-  void add_child_in_window(Widget& child, TextWindowType which_window,
-                                        int xpos, int ypos);
+  void add_child_in_window(Widget& child, TextWindowType which_window, int xpos, int ypos);
 
   
   /** Updates the position of a child, as for add_child_in_window().
@@ -554,7 +621,7 @@ public:
    * @param xpos New X position in window coordinates.
    * @param ypos New Y position in window coordinates.
    */
-  void move_child(Widget& child, int xpos,int ypos);
+  void move_child(Widget& child, int xpos, int ypos);
 
   
   /** Sets the line wrapping for the view.
@@ -572,9 +639,10 @@ public:
    * attribute of tags.
    * @param setting Whether it's editable.
    */
-  void set_editable(bool setting = true);
+  void set_editable(bool setting =  true);
   
-  /** Return value: whether text is editable by default
+  /** Returns the default editability of the Gtk::TextView. Tags in the
+   * buffer may override this setting for some ranges of text.
    * @return Whether text is editable by default.
    */
   bool get_editable() const;
@@ -688,39 +756,40 @@ public:
   
   /** Changes the Gtk::TextView overwrite mode.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param overwrite <tt>true</tt> to turn on overwrite mode, <tt>false</tt> to turn it off.
    */
-  void set_overwrite(bool overwrite = true);
+  void set_overwrite(bool overwrite =  true);
   
-  /** Return value: whether @a text_view is in overwrite mode or not.
-   * @return Whether @a text_view is in overwrite mode or not.
+  /** Returns whether the Gtk::TextView is in overwrite mode or not.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return Whether @a text_view is in overwrite mode or not.
    */
   bool get_overwrite() const;
-  
+
   
   /** Sets the behavior of the text widget when the Tab key is pressed. 
    * If @a accepts_tab is <tt>true</tt>, a tab character is inserted. If @a accepts_tab 
    * is <tt>false</tt> the keyboard focus is moved to the next widget in the focus 
    * chain.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param accepts_tab <tt>true</tt> if pressing the Tab key should insert a tab 
    * character, <tt>false</tt>, if pressing the Tab key should move the 
    * keyboard focus.
    */
-  void set_accepts_tab(bool accepts_tab = true);
+  void set_accepts_tab(bool accepts_tab =  true);
   
-  /** Return value: <tt>true</tt> if pressing the Tab key inserts a tab character,
+  /** Returns whether pressing the Tab key inserts a tab characters.
+   * set_accepts_tab().
+   * 
+   * @newin{2,4}
    * @return <tt>true</tt> if pressing the Tab key inserts a tab character, 
    * <tt>false</tt> if pressing the Tab key moves the keyboard focus.
-   * 
-   * @newin2p4.
    */
   bool get_accepts_tab() const;
-    
+
   
   /**
    * @par Prototype:
@@ -753,7 +822,7 @@ public:
 
   Glib::SignalProxy1< void,const Glib::ustring& > signal_insert_at_cursor();
 
-  
+
   //Keybinding signals:
   
   
@@ -838,7 +907,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether to wrap lines never
+/** Whether to wrap lines never, at word boundaries, or at character boundaries.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -848,7 +917,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether to wrap lines never
+/** Whether to wrap lines never, at word boundaries, or at character boundaries.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -858,7 +927,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Left
+/** Left, right, or center justification.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -868,7 +937,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Left
+/** Left, right, or center justification.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -918,7 +987,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Amount to indent the paragraph
+/** Amount to indent the paragraph, in pixels.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -928,7 +997,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Amount to indent the paragraph
+/** Amount to indent the paragraph, in pixels.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when

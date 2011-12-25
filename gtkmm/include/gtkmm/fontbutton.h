@@ -84,6 +84,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -96,68 +98,62 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_font_set();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
 
 public:
   FontButton();
-  explicit FontButton(const Glib::ustring& font_name);
-  
+    explicit FontButton(const Glib::ustring& font_name);
+
   
   /** Retrieves the title of the font selection dialog.
-   * @return An internal copy of the title string which must not be freed.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return An internal copy of the title string which must not be freed.
    */
   Glib::ustring get_title() const;
   
   /** Sets the title for the font selection dialog.  
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param title A string containing the font selection dialog title.
    */
   void set_title(const Glib::ustring& title);
   
-  /** Returns: whether the selected font is used in the label.
-   * @return Whether the selected font is used in the label.
+  /** Returns whether the selected font is used in the label.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return Whether the selected font is used in the label.
    */
   bool get_use_font() const;
   
   /** If @a use_font is <tt>true</tt>, the font name will be written using the selected font.  
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param use_font If <tt>true</tt>, font name will be written using font chosen.
    */
-  void set_use_font(bool use_font = true);
+  void set_use_font(bool use_font =  true);
   
-  /** Returns: whether the selected size is used in the label.
-   * @return Whether the selected size is used in the label.
+  /** Returns whether the selected size is used in the label.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return Whether the selected size is used in the label.
    */
   bool get_use_size() const;
   
   /** If @a use_size is <tt>true</tt>, the font name will be written using the selected size.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param use_size If <tt>true</tt>, font name will be written using the selected size.
    */
-  void set_use_size(bool use_size = true);
+  void set_use_size(bool use_size =  true);
   
   /** Retrieves the name of the currently selected font. This name includes
    * style and size information as well. If you want to render something
@@ -165,48 +161,48 @@ public:
    * If you're interested in peeking certain values (family name,
    * style, size, weight) just query these properties from the
    * Pango::FontDescription object.
-   * @return An internal copy of the font name which must not be freed.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return An internal copy of the font name which must not be freed.
    */
   Glib::ustring get_font_name() const;
   
   /** Sets or updates the currently-displayed font in font picker dialog.
+   * 
+   * @newin{2,4}
    * @param fontname Name of font to display in font selection dialog.
    * @return Return value of Gtk::FontSelectionDialog::set_font_name() if the
    * font selection dialog exists, otherwise <tt>false</tt>.
-   * 
-   * @newin2p4.
    */
   bool set_font_name(const Glib::ustring& fontname);
   
-  /** Return value: whether the font style will be shown in the label.
-   * @return Whether the font style will be shown in the label.
+  /** Returns whether the name of the font style will be shown in the label.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return Whether the font style will be shown in the label.
    */
   bool get_show_style() const;
   
   /** If @a show_style is <tt>true</tt>, the font style will be displayed along with name of the selected font.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param show_style <tt>true</tt> if font style should be displayed in label.
    */
-  void set_show_style(bool show_style = true);
+  void set_show_style(bool show_style =  true);
   
-  /** Return value: whether the font size will be shown in the label.
-   * @return Whether the font size will be shown in the label.
+  /** Returns whether the font size will be shown in the label.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return Whether the font size will be shown in the label.
    */
   bool get_show_size() const;
   
   /** If @a show_size is <tt>true</tt>, the font size will be displayed along with the name of the selected font.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param show_size <tt>true</tt> if font size should be displayed in dialog.
    */
-  void set_show_size(bool show_size = true);
+  void set_show_size(bool show_size =  true);
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The title of the font selection dialog.

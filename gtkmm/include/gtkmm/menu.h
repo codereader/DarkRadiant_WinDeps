@@ -85,6 +85,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -97,17 +99,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -158,18 +154,44 @@ public:
   void popdown();
 
   
+  /** Returns the selected menu item from the menu.  This is used by the
+   * Gtk::OptionMenu.
+   * @return The Gtk::MenuItem that was last selected
+   * in the menu.  If a selection has not yet been made, the
+   * first menu item is selected.
+   */
   MenuItem* get_active();
   
+  /** Returns the selected menu item from the menu.  This is used by the
+   * Gtk::OptionMenu.
+   * @return The Gtk::MenuItem that was last selected
+   * in the menu.  If a selection has not yet been made, the
+   * first menu item is selected.
+   */
   const MenuItem* get_active() const;
   
   void set_active(guint index);
 
   
+  /** 
+   */
   void set_accel_group(const Glib::RefPtr<AccelGroup>& accel_group);
   void unset_accel_group();
   
+  /**  @a menu a Gtk::Menu
+   * 
+   * Gets the Gtk::AccelGroup which holds global accelerators for the
+   * menu.  See set_accel_group().
+   * @return The Gtk::AccelGroup associated with the menu.
+   */
   Glib::RefPtr<AccelGroup> get_accel_group();
   
+  /**  @a menu a Gtk::Menu
+   * 
+   * Gets the Gtk::AccelGroup which holds global accelerators for the
+   * menu.  See set_accel_group().
+   * @return The Gtk::AccelGroup associated with the menu.
+   */
   Glib::RefPtr<const AccelGroup> get_accel_group() const;
   
   
@@ -182,12 +204,12 @@ public:
    * each menu item of this menu, that contains a label describing its purpose,
    * automatically gets an accel path assigned. For example, a menu containing
    * menu items "New" and "Exit", will, after 
-   * <literal>gtk_menu_set_accel_path (menu, "<Gnumeric-Sheet>/File");</literal>
+   * <tt>gtk_menu_set_accel_path (menu, "<Gnumeric-Sheet>/File");</tt>
    * has been called, assign its items the accel paths:
-   * <literal>"<Gnumeric-Sheet>/File/New"</literal> and <literal>"<Gnumeric-Sheet>/File/Exit"</literal>.
+   * <tt>"<Gnumeric-Sheet>/File/New"</tt> and <tt>"<Gnumeric-Sheet>/File/Exit"</tt>.
    * Assigning accel paths to menu items then enables the user to change
    * their accelerators at runtime. More details about accelerator paths
-   * and their default setups can be found at gtk_accel_map_add_entry().
+   * and their default setups can be found at Gtk::AccelMap::add_entry().
    * 
    * Note that @a accel_path string will be stored in a Quark. Therefore, if you
    * pass a static string, you can save some memory by interning it first with 
@@ -197,23 +219,30 @@ public:
   void set_accel_path(const Glib::ustring& accel_path);
   
   /** Retrieves the accelerator path set on the menu.
-   * @return The accelerator path set on the menu.
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The accelerator path set on the menu.
    */
   Glib::ustring get_accel_path() const;
 
   
   void detach();
   
+  /** Returns the Gtk::Widget that the menu is attached to.
+   * @return The Gtk::Widget that the menu is attached to.
+   */
   Widget* get_attach_widget();
   
+  /** Returns the Gtk::Widget that the menu is attached to.
+   * @return The Gtk::Widget that the menu is attached to.
+   */
   const Widget* get_attach_widget() const;
 
   
-  void set_tearoff_state(bool torn_off = true);
+  void set_tearoff_state(bool torn_off =  true);
   
-  /** Return value: <tt>true</tt> if the menu is currently torn off.
+  /** Returns whether the menu is torn off. See
+   * set_tearoff_state().
    * @return <tt>true</tt> if the menu is currently torn off.
    */
   bool get_tearoff_state() const;
@@ -228,7 +257,7 @@ public:
   void set_title(const Glib::ustring& title);
   void unset_title();
   
-  /** Return value: the title of the menu, or <tt>0</tt> if the menu has no
+  /** Returns the title of the menu. See set_title().
    * @return The title of the menu, or <tt>0</tt> if the menu has no
    * title set on it. This string is owned by the widget and should
    * not be modified or freed.
@@ -237,7 +266,7 @@ public:
   
   /** Sets the Gdk::Screen on which the menu will be displayed.
    * 
-   * @newin2p2
+   * @newin{2,2}
    * @param screen A Gdk::Screen, or <tt>0</tt> if the screen should be
    * determined by the widget the menu is attached to.
    */
@@ -252,7 +281,7 @@ public:
    * 
    * Note that this function is not related to detach().
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param child A Gtk::MenuItem.
    * @param left_attach The column number to attach the left side of the item to.
    * @param right_attach The column number to attach the right side of the item to.
@@ -271,23 +300,40 @@ public:
    * by a Gtk::MenuPositionFunc, since, for very long menus, these coordinates 
    * may extend beyond the monitor boundaries or even the screen boundaries. 
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param monitor_num The number of the monitor on which the menu should
    * be popped up.
    */
   void set_monitor(int monitor_num);
   
   /** Retrieves the number of the monitor on which to show the menu.
-   * @return The number of the monitor on which the menu should
-   * be popped up or -1, if no monitor has been set
    * 
-   * @newin2p14.
+   * @newin{2,14}
+   * @return The number of the monitor on which the menu should
+   * be popped up or -1, if no monitor has been set.
    */
   int get_monitor() const;
   
   void reorder_child(const MenuItem& child, int position);
   
 
+  /** Sets whether the menu should reserve space for drawing toggles 
+   * or icons, regardless of their actual presence.
+   * 
+   * @newin{2,18}
+   * @param reserve_toggle_size Whether to reserve size for toggles.
+   */
+  void set_reserve_toggle_size(bool reserve_toggle_size =  true);
+  
+  /** Returns whether the menu reserves space for toggles and
+   * icons, regardless of their actual presence.
+   * 
+   * @newin{2,18}
+   * @return Whether the menu reserves toggle space.
+   */
+  bool get_reserve_toggle_size() const;
+
+  
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The currently selected menu item.
    *
@@ -428,6 +474,26 @@ public:
   Glib::PropertyProxy_ReadOnly<int> property_monitor() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** A boolean that indicates whether the menu reserves space for toggles and icons.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_reserve_toggle_size() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** A boolean that indicates whether the menu reserves space for toggles and icons.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_reserve_toggle_size() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
 
 protected:
 
@@ -441,7 +507,7 @@ protected:
    * 
    * param @attach_widget: the Widget that the menu will be attached to.
    *
-   * @newin2p10
+   * @newin{2,10}
    */
   void attach_to_widget(Widget& attach_widget);
 

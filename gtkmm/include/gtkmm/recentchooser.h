@@ -23,11 +23,18 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <gtk/gtk.h>
 #include <glibmm/interface.h>
 #include <gtkmm/recentinfo.h>
 #include <gtkmm/recentfilter.h>
 #include <gtkmm/recentmanager.h>
+
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+extern "C"
+{
+typedef struct _GtkRecentChooserIface GtkRecentChooserIface;
+}
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -41,7 +48,7 @@ namespace Gtk
 namespace Gtk
 {
 
-/** @addtogroup gtkmmEnums Enums and Flags */
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
 
 /**
  * @ingroup gtkmmEnums
@@ -94,15 +101,11 @@ public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 private:
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static void throw_func(GError* gobject);
-#else
-  //When not using exceptions, we just pass the Exception object around without throwing it:
-  static std::auto_ptr<Glib::Error> throw_func(GError* gobject);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   friend void wrap_init(); // uses throw_func()
-#endif
+
+  #endif //DOXYGEN_SHOULD_SKIP_THIS
 };
 
 } // namespace Gtk
@@ -131,7 +134,7 @@ namespace Gtk
  * that implement this interface are RecentChooserWidget, RecentChooserDialog
  * and RecentChooserMenu.
  *
- * @newin2p10
+ * @newin{2,10}
  *
  * @ingroup RecentFiles
  */
@@ -188,7 +191,7 @@ public:
   ///Provides access to the underlying C GObject.
   GtkRecentChooser*       gobj()       { return reinterpret_cast<GtkRecentChooser*>(gobject_); }
 
-  ///Provides access to the underlying C GObject.  
+  ///Provides access to the underlying C GObject.
   const GtkRecentChooser* gobj() const { return reinterpret_cast<GtkRecentChooser*>(gobject_); }
 
 private:
@@ -198,54 +201,55 @@ public:
   
   /** Whether to show recently used resources marked registered as private.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param show_private <tt>true</tt> to show private items, <tt>false</tt> otherwise.
    */
-  void set_show_private(bool show_private = true);
+  void set_show_private(bool show_private =  true);
   
-  /** Return value: <tt>true</tt> if the recent chooser should show private items,
+  /** Returns whether @a chooser should display recently used resources
+   * registered as private.
+   * 
+   * @newin{2,10}
    * @return <tt>true</tt> if the recent chooser should show private items,
    * <tt>false</tt> otherwise.
-   * 
-   * @newin2p10.
    */
   bool get_show_private() const;
   
   /** Sets whether @a chooser should display the recently used resources that
    * it didn't find.  This only applies to local resources.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param show_not_found Whether to show the local items we didn't find.
    */
-  void set_show_not_found(bool show_not_found = true);
+  void set_show_not_found(bool show_not_found =  true);
   
   /** Retrieves whether @a chooser should show the recently used resources that
    * were not found.
+   * 
+   * @newin{2,10}
    * @return <tt>true</tt> if the resources not found should be displayed, and
    * <tt>false</tt> otheriwse.
-   * 
-   * @newin2p10.
    */
   bool get_show_not_found() const;
   
   /** Sets whether @a chooser can select multiple items.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param select_multiple <tt>true</tt> if @a chooser can select more than one item.
    */
-  void set_select_multiple(bool select_multiple = true);
+  void set_select_multiple(bool select_multiple =  true);
   
   /** Gets whether @a chooser can select multiple items.
-   * @return <tt>true</tt> if @a chooser can select more than one item.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return <tt>true</tt> if @a chooser can select more than one item.
    */
   bool get_select_multiple() const;
   
   /** Sets the number of items that should be returned by
    * get_items() and get_uris().
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param limit A positive integer, or -1 for all items.
    */
   void set_limit(int limit);
@@ -253,10 +257,10 @@ public:
   
   /** Gets the number of items returned by get_items()
    * and get_uris().
+   * 
+   * @newin{2,10}
    * @return A positive integer, or -1 meaning that all items are
    * returned.
-   * 
-   * @newin2p10.
    */
   int get_limit() const;
   
@@ -265,33 +269,33 @@ public:
    *  @a local_only is <tt>true</tt> (the default) then the shown resources are guaranteed
    * to be accessible through the operating system native file system.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param local_only <tt>true</tt> if only local files can be shown.
    */
-  void set_local_only(bool local_only = true);
+  void set_local_only(bool local_only =  true);
   
   /** Gets whether only local resources should be shown in the recently used
    * resources selector.  See set_local_only()
-   * @return <tt>true</tt> if only local resources should be shown.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return <tt>true</tt> if only local resources should be shown.
    */
   bool get_local_only() const;
   
   /** Sets whether to show a tooltips containing the full path of each
    * recently used resource in a Gtk::RecentChooser widget.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param show_tips <tt>true</tt> if tooltips should be shown.
    */
-  void set_show_tips(bool show_tips = true);
+  void set_show_tips(bool show_tips =  true);
   
   /** Gets whether @a chooser should display tooltips containing the full path
    * of a recently user resource.
+   * 
+   * @newin{2,10}
    * @return <tt>true</tt> if the recent chooser should show tooltips,
    * <tt>false</tt> otherwise.
-   * 
-   * @newin2p10.
    */
   bool get_show_tips() const;
 
@@ -301,30 +305,30 @@ public:
   /** Sets whether @a chooser should show an icon near the resource when
    * displaying it.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param show_icons Whether to show an icon near the resource.
    */
-  void set_show_icons(bool show_icons = true);
+  void set_show_icons(bool show_icons =  true);
   
   /** Retrieves whether @a chooser should show an icon near the resource.
-   * @return <tt>true</tt> if the icons should be displayed, <tt>false</tt> otherwise.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return <tt>true</tt> if the icons should be displayed, <tt>false</tt> otherwise.
    */
   bool get_show_icons() const;
   
   /** Changes the sorting order of the recently used resources list displayed by
    *  @a chooser.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param sort_type Sort order that the chooser should use.
    */
   void set_sort_type(RecentSortType sort_type);
   
   /** Gets the value set by set_sort_type().
-   * @return The sorting order of the @a chooser.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return The sorting order of the @a chooser.
    */
   RecentSortType get_sort_type() const;
 
@@ -345,58 +349,48 @@ public:
   // throwing RecentChooserError instead
   
   /** Sets @a uri as the current URI for @a chooser.
+   * 
+   * @newin{2,10}
    * @param uri A URI.
    * @return <tt>true</tt> if the URI was found.
-   * 
-   * @newin2p10.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool set_current_uri(const Glib::ustring& uri);
-#else
-  bool set_current_uri(const Glib::ustring& uri, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
   
   /** Gets the URI currently selected by @a chooser.
-   * @return A newly allocated string holding a URI.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return A newly allocated string holding a URI.
    */
   Glib::ustring get_current_uri() const;
   
   /** Gets the Gtk::RecentInfo currently selected by @a chooser.
-   * @return A Gtk::RecentInfo.  Use gtk_recent_info_unref() when
-   * when you have finished using it.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return A Gtk::RecentInfo.  Use Gtk::RecentInfo::unref() when
+   * when you have finished using it.
    */
   Glib::RefPtr<RecentInfo> get_current_item();
   
   /** Gets the Gtk::RecentInfo currently selected by @a chooser.
-   * @return A Gtk::RecentInfo.  Use gtk_recent_info_unref() when
-   * when you have finished using it.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return A Gtk::RecentInfo.  Use Gtk::RecentInfo::unref() when
+   * when you have finished using it.
    */
   Glib::RefPtr<const RecentInfo> get_current_item() const;
   // TODO: Same here
   
   /** Selects @a uri inside @a chooser.
+   * 
+   * @newin{2,10}
    * @param uri A URI.
    * @return <tt>true</tt> if @a uri was found.
-   * 
-   * @newin2p10.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool select_uri(const Glib::ustring& uri);
-#else
-  bool select_uri(const Glib::ustring& uri, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
   
   /** Unselects @a uri inside @a chooser.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param uri A URI.
    */
   void unselect_uri(const Glib::ustring& uri);
@@ -404,13 +398,13 @@ public:
   /** Selects all the items inside @a chooser, if the @a chooser supports
    * multiple selection.
    * 
-   * @newin2p10
+   * @newin{2,10}
    */
   void select_all();
   
   /** Unselects all the items inside @a chooser.
    * 
-   * @newin2p10
+   * @newin{2,10}
    */
   void unselect_all();
 
@@ -421,11 +415,12 @@ public:
    * 
    * The return value of this function is affected by the "sort-type" and
    * "limit" properties of @a chooser.
-   * @return A newly allocated list of Gtk::RecentInfo objects.  You should
-   * use gtk_recent_info_unref() on every item of the list, and then free
-   * the list itself using Glib::list_free().
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return A newly allocated
+   * list of Gtk::RecentInfo objects.  You should
+   * use Gtk::RecentInfo::unref() on every item of the list, and then free
+   * the list itself using Glib::list_free().
    */
   ListHandle_RecentInfos get_items() const;
 
@@ -442,55 +437,57 @@ public:
    * If no previous filter objects were defined, this function will call
    * set_filter().
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param filter A Gtk::RecentFilter.
    */
   void add_filter(const RecentFilter& filter);
   
   /** Removes @a filter from the list of Gtk::RecentFilter objects held by @a chooser.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param filter A Gtk::RecentFilter.
    */
   void remove_filter(const RecentFilter& filter);
   
   /** Gets the Gtk::RecentFilter objects held by @a chooser.
-   * @return A singly linked list of Gtk::RecentFilter objects.  You
-   * should just free the returned list using Glib::slist_free().
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return A singly linked list
+   * of Gtk::RecentFilter objects.  You
+   * should just free the returned list using Glib::slist_free().
    */
   Glib::SListHandle<RecentFilter*> list_filters();
   
   /** Gets the Gtk::RecentFilter objects held by @a chooser.
-   * @return A singly linked list of Gtk::RecentFilter objects.  You
-   * should just free the returned list using Glib::slist_free().
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return A singly linked list
+   * of Gtk::RecentFilter objects.  You
+   * should just free the returned list using Glib::slist_free().
    */
   Glib::SListHandle<const RecentFilter*> list_filters() const;
   
   /** Sets @a filter as the current Gtk::RecentFilter object used by @a chooser
    * to affect the displayed recently used resources.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * @param filter A Gtk::RecentFilter.
    */
   void set_filter(const RecentFilter& filter);
   
   /** Gets the Gtk::RecentFilter object currently used by @a chooser to affect
    * the display of the recently used resources.
-   * @return A Gtk::RecentFilter object.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return A Gtk::RecentFilter object.
    */
   RecentFilter* get_filter();
   
   /** Gets the Gtk::RecentFilter object currently used by @a chooser to affect
    * the display of the recently used resources.
-   * @return A Gtk::RecentFilter object.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return A Gtk::RecentFilter object.
    */
   const RecentFilter* get_filter() const;
 
@@ -520,7 +517,7 @@ public:
 
   //Not wrapped because it's write-only and construct-only: _WRAP_PROPERTY("recent-manager", Glib::RefPtr<RecentManager>)
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** 
+/** Whether the private items should be displayed.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -530,7 +527,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** 
+/** Whether the private items should be displayed.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -540,7 +537,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** 
+/** Whether there should be a tooltip on the item.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -550,7 +547,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** 
+/** Whether there should be a tooltip on the item.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -560,7 +557,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** 
+/** Whether there should be an icon near the item.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -570,7 +567,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** 
+/** Whether there should be an icon near the item.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -580,7 +577,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** 
+/** Whether the items pointing to unavailable resources should be displayed.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -590,7 +587,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** 
+/** Whether the items pointing to unavailable resources should be displayed.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -600,7 +597,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** 
+/** Whether to allow multiple items to be selected.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -610,7 +607,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** 
+/** Whether to allow multiple items to be selected.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -620,7 +617,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** 
+/** Whether the selected resource(s) should be limited to local file: URIs.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -630,7 +627,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** 
+/** Whether the selected resource(s) should be limited to local file: URIs.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -640,7 +637,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** 
+/** The maximum number of items to be displayed.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -650,7 +647,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** 
+/** The maximum number of items to be displayed.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -660,7 +657,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** 
+/** The sorting order of the items displayed.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -670,7 +667,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** 
+/** The sorting order of the items displayed.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -680,7 +677,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** 
+/** The current filter for selecting which resources are displayed.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -690,7 +687,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** 
+/** The current filter for selecting which resources are displayed.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -709,36 +706,22 @@ protected:
   //__CONVERSION(`Glib::SListHandle<RecentFilter*>', `GSList*', `($3).data()')
 
   //_WRAP_VFUNC(bool set_current_uri(const Glib::ustring& uri), "set_current_uri", errthrow)
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual Glib::ustring get_current_uri_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual Glib::ustring get_current_uri_vfunc() const;
 
 
   //_WRAP_VFUNC(bool select_uri(const Glib::ustring& uri), "select_uri", errthrow)
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void unselect_uri_vfunc(const Glib::ustring& uri);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void unselect_uri_vfunc(const Glib::ustring& uri);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void select_all_vfunc();
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void select_all_vfunc();
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void unselect_all_vfunc();
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void unselect_all_vfunc();
 
   //_WRAP_VFUNC(ArrayHandle_RecentInfos get_items() const, "get_items")
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual Glib::RefPtr<RecentManager> get_recent_manager_vfunc();
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual Glib::RefPtr<RecentManager> get_recent_manager_vfunc();
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void add_filter_vfunc(const RecentFilter& filter);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void add_filter_vfunc(const RecentFilter& filter);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void remove_filter_vfunc(const RecentFilter& filter);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void remove_filter_vfunc(const RecentFilter& filter);
 
   //_WRAP_VFUNC(Glib::SListHandle<RecentFilter*> list_filters(), "list_filters")
   //_WRAP_VFUNC(void set_sort_func(const SlotCompare& slot), "set_sort_func")
@@ -748,17 +731,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

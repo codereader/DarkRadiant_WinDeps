@@ -3,6 +3,8 @@
 #ifndef _GTKMM_RECENTMANAGER_H
 #define _GTKMM_RECENTMANAGER_H
 
+#include <gtkmmconfig.h>
+
 
 #include <glibmm.h>
 
@@ -23,6 +25,7 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+ 
 #include <gdkmm/screen.h>
 #include <gdkmm/pixbuf.h>
 
@@ -66,15 +69,11 @@ public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 private:
 
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   static void throw_func(GError* gobject);
-#else
-  //When not using exceptions, we just pass the Exception object around without throwing it:
-  static std::auto_ptr<Glib::Error> throw_func(GError* gobject);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
 
   friend void wrap_init(); // uses throw_func()
-#endif
+
+  #endif //DOXYGEN_SHOULD_SKIP_THIS
 };
 
 } // namespace Gtk
@@ -119,7 +118,7 @@ namespace Gtk
  * get_for_screen() and it will contain information about current
  * recent manager for that screen.
  *
- * @newin2p10
+ * @newin{2,10}
  *
  * @ingroup RecentFiles
  */
@@ -154,6 +153,8 @@ public:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -180,12 +181,14 @@ public:
   /** Gets a unique instance of Gtk::RecentManager, that you can share
    * in your application without caring about memory management. The
    * returned instance will be freed when you application terminates.
-   * @return A unique Gtk::RecentManager. Do not ref or unref it.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return A unique Gtk::RecentManager. Do not ref or unref it.
    */
   static Glib::RefPtr<RecentManager> get_default();
   
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   /** Gets the recent manager object associated with @a screen; if this
    * function has not previously been called for the given screen,
    * a new recent manager object will be created and associated with
@@ -194,19 +197,21 @@ public:
    * new() and setting the screen yourself; by using
    * this function a single recent manager object will be shared between
    * users.
-   * @param screen A Gdk::Screen.
-   * @return A unique Gtk::RecentManager associated with the given
-   * screen. This recent manager is associated to the with the screen
-   * and can be used as long as the screen is open. Do not ref or
-   * unref it.
    * 
    * Deprecated: 2.12: This function has been deprecated and should
    * not be used in newly written code. Calling this function is
    * equivalent to calling get_default().
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @param screen A Gdk::Screen.
+   * @return A unique Gtk::RecentManager associated with the given
+   * screen. This recent manager is associated to the with the screen
+   * and can be used as long as the screen is open. Do not ref or
+   * unref it.
    */
   static Glib::RefPtr<RecentManager> get_for_screen(const Glib::RefPtr<Gdk::Screen>& screen);
+#endif // GTKMM_DISABLE_DEPRECATED
+
 
   /** Meta-data passed to add_item().  You should
    * use RecentManager::Data if you want to control the meta-data associated
@@ -222,27 +227,29 @@ public:
    * - is_private: whether the file should be displayed only by the applications that have registered it
   */
   class Data
-  { 
+  {
   public:
     Glib::ustring display_name;
     Glib::ustring description;
-    
+
     Glib::ustring mime_type;
-    
+
     Glib::ustring app_name;
     Glib::ustring app_exec;
 
     std::vector<Glib::ustring> groups;
-  
+
     bool is_private;
   };
 
   
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   /** Sets the screen for a recent manager; the screen is used to
    * track the user's currently configured recently used documents
    * storage.
    * 
-   * @newin2p10
+   * @newin{2,10}
    * 
    * Deprecated: 2.12: This function has been deprecated and should
    * not be used in newly written code. Calling this function has
@@ -250,34 +257,15 @@ public:
    * @param screen A Gdk::Screen.
    */
   void set_screen(const Glib::RefPtr<Gdk::Screen>& screen);
+#endif // GTKMM_DISABLE_DEPRECATED
+
 
   /** Adds a new resource into the recently used resources list. This function
    * will try and guess some of the meta-data associated to a URI. If you
    * know some of meta-data about the document yourself, set the desired
    * fields of a RecentManager::Data structure and pass it to add_item().
    */
-  
-  /** Adds a new resource, pointed by @a uri, into the recently used
-   * resources list.
-   * 
-   * This function automatically retrieves some of the needed
-   * metadata and setting other metadata to common default values; it
-   * then feeds the data to add_full().
-   * 
-   * See add_full() if you want to explicitly
-   * define the metadata for the resource pointed by @a uri.
-   * @param uri A valid URI.
-   * @return <tt>true</tt> if the new item was successfully added
-   * to the recently used resources list
-   * 
-   * @newin2p10.
-   */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool add_item(const Glib::ustring& uri);
-#else
-  bool add_item(const Glib::ustring& uri, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /** Adds a new resource into the recently used resources list, taking
    * meta data from the given Data instead of guessing it from the URI.
@@ -287,59 +275,46 @@ public:
   
   /** Removes a resource pointed by @a uri from the recently used resources
    * list handled by a recent manager.
+   * 
+   * @newin{2,10}
    * @param uri The URI of the item you wish to remove.
    * @return <tt>true</tt> if the item pointed by @a uri has been successfully
    * removed by the recently used resources list, and <tt>false</tt> otherwise.
-   * 
-   * @newin2p10.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool remove_item(const Glib::ustring& uri);
-#else
-  bool remove_item(const Glib::ustring& uri, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
   
   /** Searches for a URI inside the recently used resources list, and
-   * Return value: a Gtk::RecentInfo structure containing information
+   * returns a structure containing informations about the resource
+   * like its MIME type, or its display name.
+   * 
+   * @newin{2,10}
    * @param uri A URI.
    * @return A Gtk::RecentInfo structure containing information
    * about the resource pointed by @a uri, or <tt>0</tt> if the URI was
    * not registered in the recently used resources list.  Free with
-   * gtk_recent_info_unref().
-   * 
-   * @newin2p10.
+   * Gtk::RecentInfo::unref().
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<RecentInfo> lookup_item(const Glib::ustring& uri);
-#else
-  Glib::RefPtr<RecentInfo> lookup_item(const Glib::ustring& uri, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
   
   /** Searches for a URI inside the recently used resources list, and
-   * Return value: a Gtk::RecentInfo structure containing information
+   * returns a structure containing informations about the resource
+   * like its MIME type, or its display name.
+   * 
+   * @newin{2,10}
    * @param uri A URI.
    * @return A Gtk::RecentInfo structure containing information
    * about the resource pointed by @a uri, or <tt>0</tt> if the URI was
    * not registered in the recently used resources list.  Free with
-   * gtk_recent_info_unref().
-   * 
-   * @newin2p10.
+   * Gtk::RecentInfo::unref().
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   Glib::RefPtr<const RecentInfo> lookup_item(const Glib::ustring& uri) const;
-#else
-  Glib::RefPtr<const RecentInfo> lookup_item(const Glib::ustring& uri, std::auto_ptr<Glib::Error>& error) const;
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
   
   /** Checks whether there is a recently used resource registered
    * with @a uri inside the recent manager.
+   * 
+   * @newin{2,10}
    * @param uri A URI.
    * @return <tt>true</tt> if the resource was found, <tt>false</tt> otherwise.
-   * 
-   * @newin2p10.
    */
   bool has_item(const Glib::ustring& uri) const;
   
@@ -347,34 +322,37 @@ public:
    * 
    * Please note that this function will not affect the resource pointed
    * by the URIs, but only the URI used in the recently used resources list.
+   * 
+   * @newin{2,10}
    * @param uri The URI of a recently used resource.
    * @param new_uri The new URI of the recently used resource, or <tt>0</tt> to
    * remove the item pointed by @a uri in the list.
    * @return <tt>true</tt> on success.
-   * 
-   * @newin2p10.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   bool move_item(const Glib::ustring& uri, const Glib::ustring& new_uri);
-#else
-  bool move_item(const Glib::ustring& uri, const Glib::ustring& new_uri, std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
   
   /** Sets the maximum number of item that the get_items()
    * function should return.  If @a limit is set to -1, then return all the
    * items.
    * 
-   * @newin2p10
+   * @newin{2,10}
+   * 
+   * Deprecated: 2.22: The length of the list should be managed by the
+   * view (implementing Gtk::RecentChooser), and not by the model (the
+   * Gtk::RecentManager). See Gtk::RecentChooser:limit.
    * @param limit The maximum number of items to return, or -1.
    */
   void set_limit(int limit);
   
   /** Gets the maximum number of items that the get_items()
    * function should return.
-   * @return The number of items to return, or -1 for every item.
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * 
+   * Deprecated: 2.22: The length of the list should be managed by the
+   * view (implementing Gtk::RecentChooser), and not by the model (the
+   * Gtk::RecentManager). See Gtk::RecentChooser:limit.
+   * @return The number of items to return, or -1 for every item.
    */
   int get_limit() const;
 
@@ -382,27 +360,23 @@ public:
   
 
   /** Gets the list of recently used resources.
-   * @return A list of newly allocated Gtk::RecentInfo objects. Use
-   * gtk_recent_info_unref() on each item inside the list, and then
-   * free the list itself using Glib::list_free().
    * 
-   * @newin2p10.
+   * @newin{2,10}
+   * @return A list of
+   * newly allocated Gtk::RecentInfo objects. Use
+   * Gtk::RecentInfo::unref() on each item inside the list, and then
+   * free the list itself using Glib::list_free().
    */
   ListHandle_RecentInfos get_items() const;
 
   
   /** Purges every item from the recently used resources list.
+   * 
+   * @newin{2,10}
    * @return The number of items that have been removed from the
    * recently used resources list.
-   * 
-   * @newin2p10.
    */
-#ifdef GLIBMM_EXCEPTIONS_ENABLED
   int purge_items();
-#else
-  int purge_items(std::auto_ptr<Glib::Error>& error);
-#endif //GLIBMM_EXCEPTIONS_ENABLED
-
 
   /// For instance, void on_changed();
   typedef sigc::slot<void> SlotChanged;
@@ -462,18 +436,12 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_changed();
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 };

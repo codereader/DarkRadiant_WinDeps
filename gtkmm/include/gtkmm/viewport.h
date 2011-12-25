@@ -9,7 +9,7 @@
 /* $Id: viewport.hg,v 1.3 2006/04/12 11:11:25 murrayc Exp $ */
 
 /* viewport.h
- * 
+ *
  * Copyright (C) 2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -42,7 +42,7 @@ namespace Gtk {
 class Adjustment;
 
 /** An adapter which makes widgets scrollable.
- * 
+ *
  * @ingroup Widgets
  * @ingroup Containers
  */
@@ -78,6 +78,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -90,44 +92,38 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_set_scroll_adjustments(Gtk::Adjustment* hadjustment, Gtk::Adjustment* vadjustment);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
 
 public:
 
-  explicit Viewport(Adjustment& hadjustment, Adjustment& vadjustment);
+    explicit Viewport(Adjustment& hadjustment, Adjustment& vadjustment);
 
 
-  /** Return value: the horizontal adjustment of @a viewport.
+  /** Returns the horizontal adjustment of the viewport.
    * @return The horizontal adjustment of @a viewport.
    */
   Gtk::Adjustment* get_hadjustment();
   
-  /** Return value: the horizontal adjustment of @a viewport.
+  /** Returns the horizontal adjustment of the viewport.
    * @return The horizontal adjustment of @a viewport.
    */
   const Gtk::Adjustment* get_hadjustment() const;
 
   
-  /** Return value: the vertical adjustment of @a viewport.
+  /** Returns the vertical adjustment of the viewport.
    * @return The vertical adjustment of @a viewport.
    */
   Gtk::Adjustment* get_vadjustment();
   
-  /** Return value: the vertical adjustment of @a viewport.
+  /** Returns the vertical adjustment of the viewport.
    * @return The vertical adjustment of @a viewport.
    */
   const Gtk::Adjustment* get_vadjustment() const;
@@ -136,7 +132,7 @@ public:
   /** Sets the horizontal adjustment of the viewport.
    * @param adjustment A Gtk::Adjustment.
    */
-  void set_hadjustment(Gtk::Adjustment* adjustment=0);
+  void set_hadjustment(Gtk::Adjustment* adjustment = 0);
   
   /** Sets the horizontal adjustment of the viewport.
    * @param adjustment A Gtk::Adjustment.
@@ -147,7 +143,7 @@ public:
   /** Sets the vertical adjustment of the viewport.
    * @param adjustment A Gtk::Adjustment.
    */
-  void set_vadjustment(Gtk::Adjustment* adjustment=0);
+  void set_vadjustment(Gtk::Adjustment* adjustment = 0);
   
   /** Sets the vertical adjustment of the viewport.
    * @param adjustment A Gtk::Adjustment.
@@ -166,6 +162,36 @@ public:
    * @return The shadow type.
    */
   ShadowType get_shadow_type() const;
+
+  
+  /** Gets the bin window of the Gtk::Viewport.
+   * 
+   * @newin{2,20}
+   * @return A Gdk::Window.
+   */
+  Glib::RefPtr<Gdk::Window> get_bin_window();
+  
+  /** Gets the bin window of the Gtk::Viewport.
+   * 
+   * @newin{2,20}
+   * @return A Gdk::Window.
+   */
+  Glib::RefPtr<const Gdk::Window> get_bin_window() const;
+
+  
+  /** Gets the view window of the Gtk::Viewport.
+   * 
+   * @newin{2,22}
+   * @return A Gdk::Window.
+   */
+  Glib::RefPtr<Gdk::Window> get_view_window();
+  
+  /** Gets the view window of the Gtk::Viewport.
+   * 
+   * @newin{2,22}
+   * @return A Gdk::Window.
+   */
+  Glib::RefPtr<const Gdk::Window> get_view_window() const;
 
   
   /**

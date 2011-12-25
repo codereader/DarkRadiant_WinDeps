@@ -9,7 +9,7 @@
 /* $Id: expander.hg,v 1.9 2006/04/12 11:11:25 murrayc Exp $ */
 
 /* expander.h
- * 
+ *
  * Copyright (C) 2003 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -47,8 +47,8 @@ namespace Gtk
  * expander triangle similar to the triangles used in a Gtk::TreeView.
  *
  * Normally you use an expander as you would use any other descendant
- * of Gtk::Bin; you create the child widget and use add() to add it to 
- * the expander.  When the expander is toggled, it will take care of 
+ * of Gtk::Bin; you create the child widget and use add() to add it to
+ * the expander.  When the expander is toggled, it will take care of
  * showing and hiding the child automatically.
  *
  * Special Usage: There are situations in which you may prefer to show and
@@ -99,6 +99,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -111,17 +113,11 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -131,8 +127,8 @@ public:
   /** Creates a new Expander.
    *
    * The Expander has an empty label.
-   * 
-   * @newin2p4
+   *
+   * @newin{2,4}
    */
   Expander();
 
@@ -143,11 +139,11 @@ public:
    * underlined. If you need a literal underscore character in a label, use '__' (two underscores).
    * The first underlined character represents a keyboard accelerator called a mnemonic.
    * Pressing Alt and that key activates the button.
-   * 
+   *
    * @param label The string for the label describing the Expander.
    * @param mnemonic Wether the label may contain underscores to set up accelerators.
-   
-   * @newin2p4
+
+   * @newin{2,4}
    */
   explicit Expander(const Glib::ustring& label, bool mnemonic = false);
   
@@ -156,18 +152,18 @@ public:
    * the child widget to be revealed, and <tt>false</tt> if you want the
    * child widget to be hidden.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param expanded Whether the child widget is revealed.
    */
-  void set_expanded(bool expanded = true);
+  void set_expanded(bool expanded =  true);
   
   /** Queries a Gtk::Expander and returns its current state. Returns <tt>true</tt>
    * if the child widget is revealed.
    * 
    * See set_expanded().
-   * @return The current state of the expander.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return The current state of the expander.
    */
   bool get_expanded() const;
 
@@ -175,15 +171,15 @@ public:
   /** Sets the spacing field of @a expander, which is the number of pixels to
    * place between expander and the child.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param spacing Distance between the expander and child in pixels.
    */
   void set_spacing(int spacing);
   
   /** Gets the value set by set_spacing().
-   * @return Spacing between the expander and child.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return Spacing between the expander and child.
    */
   int get_spacing() const;
 
@@ -192,7 +188,7 @@ public:
    * 
    * This will also clear any previously set labels.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param label A string.
    */
   void set_label(const Glib::ustring& label);
@@ -202,10 +198,16 @@ public:
    * set_label(). If the label text has not been set the
    * return value will be <tt>0</tt>. This will be the case if you create an
    * empty button with Gtk::Button::new() to use as a container.
+   * 
+   * Note that this function behaved differently in versions prior to
+   * 2.14 and used to return the label text stripped of embedded
+   * underlines indicating mnemonics and Pango markup. This problem can
+   * be avoided by fetching the label text directly from the label
+   * widget.
+   * 
+   * @newin{2,4}
    * @return The text of the label widget. This string is owned
    * by the widget and must not be modified or freed.
-   * 
-   * @newin2p4.
    */
   Glib::ustring get_label() const;
 
@@ -213,33 +215,33 @@ public:
   /** If true, an underline in the text of the expander label indicates
    * the next character should be used for the mnemonic accelerator key.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param use_underline <tt>true</tt> if underlines in the text indicate mnemonics.
    */
-  void set_use_underline(bool use_underline = true);
+  void set_use_underline(bool use_underline =  true);
   
-  /** Return value: <tt>true</tt> if an embedded underline in the expander label
+  /** Returns whether an embedded underline in the expander label indicates a
+   * mnemonic. See set_use_underline().
+   * 
+   * @newin{2,4}
    * @return <tt>true</tt> if an embedded underline in the expander label
    * indicates the mnemonic accelerator keys.
-   * 
-   * @newin2p4.
    */
   bool get_use_underline() const;
 
   
-  /** Sets whether the text of the label contains markup in <link
-   * linkend="PangoMarkupFormat">Pango's text markup
-   * language</link>. See Gtk::Label::set_markup().
+  /** Sets whether the text of the label contains markup in . See Gtk::Label::set_markup().
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param use_markup <tt>true</tt> if the label's text should be parsed for markup.
    */
-  void set_use_markup(bool use_markup = true);
+  void set_use_markup(bool use_markup =  true);
   
-  /** Return value: <tt>true</tt> if the label's text will be parsed for markup
-   * @return <tt>true</tt> if the label's text will be parsed for markup
+  /** Returns whether the label's text is interpreted as marked up with
+   * the . See set_use_markup().
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return <tt>true</tt> if the label's text will be parsed for markup.
    */
   bool get_use_markup() const;
 
@@ -247,26 +249,47 @@ public:
   /** Set the label widget for the expander. This is the widget
    * that will appear embedded alongside the expander arrow.
    * 
-   * @newin2p4
+   * @newin{2,4}
    * @param label_widget The new label widget.
    */
   void set_label_widget(Widget& label_widget);
   
   /** Retrieves the label widget for the frame. See
    * set_label_widget().
-   * @return The label widget, or <tt>0</tt> if there is none.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return The label widget,
+   * or <tt>0</tt> if there is none.
    */
   Widget* get_label_widget();
   
   /** Retrieves the label widget for the frame. See
    * set_label_widget().
-   * @return The label widget, or <tt>0</tt> if there is none.
    * 
-   * @newin2p4.
+   * @newin{2,4}
+   * @return The label widget,
+   * or <tt>0</tt> if there is none.
    */
   const Widget* get_label_widget() const;
+
+  
+  /** Sets whether the label widget should fill all available horizontal space
+   * allocated to @a expander.
+   * 
+   * @newin{2,22}
+   * @param label_fill <tt>true</tt> if the label should should fill all available horizontal
+   * space.
+   */
+  void set_label_fill(bool label_fill =  true);
+  
+  /** Returns whether the label widget will fill all available horizontal
+   * space allocated to @a expander.
+   * 
+   * @newin{2,22}
+   * @return <tt>true</tt> if the label widget will fill all available horizontal
+   * space.
+   */
+  bool get_label_fill() const;
 
    //keybinding
 
@@ -311,7 +334,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If set
+/** If set, an underline in the text indicates the next character should be used for the mnemonic accelerator key.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -321,7 +344,7 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If set
+/** If set, an underline in the text indicates the next character should be used for the mnemonic accelerator key.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
@@ -389,7 +412,27 @@ public:
    */
   Glib::PropertyProxy_ReadOnly<Widget*> property_label_widget() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
-            
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the label widget should fill all available horizontal space.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy<bool> property_label_fill() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the label widget should fill all available horizontal space.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly<bool> property_label_fill() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
 
 };
 

@@ -98,6 +98,8 @@ protected:
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_type()      G_GNUC_CONST;
+
+
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -110,21 +112,15 @@ public:
 
 public:
   //C++ methods used to invoke GTK+ virtual functions:
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
 protected:
   //GTK+ Virtual Functions (override these to change behaviour):
-#ifdef GLIBMM_VFUNCS_ENABLED
-#endif //GLIBMM_VFUNCS_ENABLED
 
   //Default Signal Handlers::
-#ifdef GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
   virtual void on_add(Widget* widget);
   virtual void on_remove(Widget* widget);
   virtual void on_check_resize();
   virtual void on_set_focus_child(Widget* widget);
-#endif //GLIBMM_DEFAULT_SIGNAL_HANDLERS_ENABLED
 
 
 private:
@@ -145,7 +141,7 @@ public:
    * create a Gtk::Alignment widget, call Gtk::Widget::set_size_request()
    * to give it a size, and place it on the side of the container as
    * a spacer.
-   * @param border_width Amount of blank space to leave <emphasis>outside</emphasis> 
+   * @param border_width Amount of blank space to leave <em>outside</em> 
    * the container. Valid values are in the range 0-65535 pixels.
    */
   void set_border_width(guint border_width);
@@ -181,13 +177,15 @@ public:
   void set_resize_mode(ResizeMode resize_mode);
 
   
-  /** Return value: the current resize mode
+  /** Returns the resize mode for the container. See
+   * set_resize_mode().
    * @return The current resize mode.
    */
   ResizeMode get_resize_mode() const;
 
-  /// Request that contained widgets check their size
-  
+
+  /** Request that contained widgets check their size
+   */
   void check_resize();
 
   /** For instance, 
@@ -213,12 +211,14 @@ public:
   //_WRAP_METHOD(void foreach_full_(GtkCallback callback,GtkCallbackMarshal marshal, gpointer data,GDestroyNotify notify),gtk_container_foreach_full)
 
   
-  /** Return value: a newly-allocated list of the container's non-internal children.
+  /** Returns the container's non-internal children. See
+   * forall() for details on what constitutes an "internal" child.
    * @return A newly-allocated list of the container's non-internal children.
    */
   Glib::ListHandle<Widget*> get_children();
   
-  /** Return value: a newly-allocated list of the container's non-internal children.
+  /** Returns the container's non-internal children. See
+   * forall() for details on what constitutes an "internal" child.
    * @return A newly-allocated list of the container's non-internal children.
    */
   Glib::ListHandle<const Widget*> get_children() const;
@@ -275,16 +275,10 @@ public:
    * redrawn if any of their children changed allocation.
    * @param needs_redraws The new value for the container's @a reallocate_redraws flag.
    */
-  void set_reallocate_redraws(bool needs_redraws = true);
+  void set_reallocate_redraws(bool needs_redraws =  true);
 
-  /// Sets the focus on a child
-  
-  /** Sets, or unsets if @a child is <tt>0</tt>, the focused child of @a container.
-   * 
-   * This function emits the GtkContainer::set_focus_child signal of
-   *  @a container. Implementations of Gtk::Container can override the
-   * default behaviour by overriding the class closure of this signal.
-   * @param child A Gtk::Widget, or <tt>0</tt>.
+
+  /** Sets the focus on a child
    */
   void set_focus_child(Widget& widget);
 
@@ -352,7 +346,11 @@ public:
   void resize_children();
   
   
-  /** Return value: a Type.
+  /** Returns the type of the children supported by the container.
+   * 
+   * Note that this may return TYPE_NONE to indicate that no more
+   * children can be added, e.g. for a Gtk::Paned which already has two 
+   * children.
    * @return A Type.
    */
   GType child_type() const;
@@ -400,26 +398,16 @@ public:
 protected:
   Container();
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual GType child_type_vfunc() const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual GType child_type_vfunc() const;
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void forall_vfunc(gboolean include_internals, GtkCallback callback, gpointer callback_data);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void forall_vfunc(gboolean include_internals, GtkCallback callback, gpointer callback_data);
 
   //TODO: What is this?
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual char* composite_name_vfunc(GtkWidget* child);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual char* composite_name_vfunc(GtkWidget* child);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void set_child_property_vfunc(GtkWidget* child, guint property_id, const GValue* value, GParamSpec* pspec);
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void set_child_property_vfunc(GtkWidget* child, guint property_id, const GValue* value, GParamSpec* pspec);
 
-  #ifdef GLIBMM_VFUNCS_ENABLED
-  virtual void get_child_property_vfunc(GtkWidget* child, guint property_id, GValue* value, GParamSpec* pspec) const;
-#endif //GLIBMM_VFUNCS_ENABLED
+    virtual void get_child_property_vfunc(GtkWidget* child, guint property_id, GValue* value, GParamSpec* pspec) const;
 
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
