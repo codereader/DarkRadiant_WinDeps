@@ -27,6 +27,8 @@
       <FileType>Document</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ml /Fo$(IntDir)%(filename).obj /c /Cx /coff %(fullpath)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">ml /Fo$(IntDir)%(filename).obj /c /Cx /coff %(fullpath)</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
