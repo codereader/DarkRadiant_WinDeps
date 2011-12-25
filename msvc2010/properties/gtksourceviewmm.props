@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <DefGen>$(SolutionDir)gendef.exe $(IntDir)$(ProjectName).def $(TargetName) $(IntDir)*.obj</DefGen>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OutDir>$(OutputBase)/gtksourceviewmm/bin/</OutDir>
+    <TargetName>$(ProjectName)$(LibSuffix)-vc$(PlatformToolsetVersion)</TargetName>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <Link>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <ImportLibrary>$(OutputBase)/gtksourceviewmm/lib/$(ProjectName)$(LibSuffix)-vc$(PlatformToolsetVersion).lib</ImportLibrary>
+      <ModuleDefinitionFile>$(IntDir)$(ProjectName).def</ModuleDefinitionFile>
+      <AdditionalDependencies>gtk$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gtksourceview$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gtkmm$(LibSuffix)-vc$(PlatformToolsetVersion).lib;atkmm$(LibSuffix)-vc$(PlatformToolsetVersion).lib;libsigc++$(LibSuffix)-vc$(PlatformToolsetVersion).lib;glibmm$(LibSuffix)-vc$(PlatformToolsetVersion).lib;glib$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gobject$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdkmm$(LibSuffix)-vc$(PlatformToolsetVersion).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutputBase)gtk2\lib;$(OutputBase)gtksourceview-2.0\lib;$(OutputBase)gtkmm\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PreLinkEvent>
+      <Command>$(DefGen)</Command>
+    </PreLinkEvent>
+    <PreLinkEvent>
+      <Message>Build $(ProjectName) .def file</Message>
+    </PreLinkEvent>
+    <ClCompile>
+      <PreprocessorDefinitions>_USRDLL;GLIBMM_BUILD;PANGO_DISABLE_DEPRECATED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
+      <DisableSpecificWarnings>4250;4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(W32DepsDir)gtksourceviewmm\include\gtksourceviewmm;$(W32DepsDir)gtksourceviewmm\include;$(W32DepsDir)gtk2\include\glib-2.0\glib;$(W32DepsDir)gtk2\include\glib-2.0;$(W32DepsDir)gtkmm\include;$(W32DepsDir)gtksourceview-2.0\include;$(SolutionDir)..\gtksourceviewmm\gtksourceview;$(SolutionDir)..\gtkmm\gtk;$(SolutionDir)..\gtkmm\glib;$(W32DepsDir)gtk2\include\pango-1.0;$(W32DepsDir)gtk2\include\cairo;$(W32DepsDir)gtk2\include\gtk-2.0;$(W32DepsDir)gtk2\include\gtk-2.0\gdk;$(W32DepsDir)freetype\include;$(W32DepsDir)fontconfig\include;$(SolutionDir)..\fontconfig;$(W32DepsDir)gtk2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <BuildMacro Include="DefGen">
+      <Value>$(DefGen)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>
