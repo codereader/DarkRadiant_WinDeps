@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{c05357b7-f4b2-45f5-bbfb-beaa288b1ee8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{001f732a-a4b3-4c79-8e94-339c3df56200}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\gtkmm">
+      <UniqueIdentifier>{d2f30e71-621a-4bb3-98c9-bff7a10f828f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\gtkmm\gl">
+      <UniqueIdentifier>{384359d4-743e-4f09-a4ef-695aad46dd10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\gtkmm">
+      <UniqueIdentifier>{12255ef1-d2cb-4269-bc7a-2cbf32733994}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\gtkmm\gl">
+      <UniqueIdentifier>{b158c1be-96c0-4385-bad0-d2a381a5454c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\gtkglextmm\gtkglext\gtkmm\gl\init.cc">
+      <Filter>Sources\gtkmm\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkglextmm\gtkglext\gtkmm\gl\version.cc">
+      <Filter>Sources\gtkmm\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkglextmm\gtkglext\gtkmm\gl\widget.cc">
+      <Filter>Sources\gtkmm\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkglextmm\gtkglext\gtkmm\gl\drawingarea.cc">
+      <Filter>Sources\gtkmm\gl</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\w32deps\gtkglextmm\include\gtkmm\gl\drawingarea.h">
+      <Filter>Headers\gtkmm\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkglextmm\include\gtkmm\gl\init.h">
+      <Filter>Headers\gtkmm\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkglextmm\include\gtkmm\gl\version.h">
+      <Filter>Headers\gtkmm\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkglextmm\include\gtkmm\gl\widget.h">
+      <Filter>Headers\gtkmm\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkglextmm\include\gtkmm\gl\defs.h">
+      <Filter>Headers\gtkmm\gl</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

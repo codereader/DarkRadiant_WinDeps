@@ -6,6 +6,9 @@
 #undef  G_GNUC_CONST
 #define G_GNUC_CONST /* empty */
 
+#include <Windows.h>
+#undef max 
+
 #include <gdkmm/gl/wrap_init.h>
 #include <glibmm/error.h>
 #include <glibmm/object.h>
