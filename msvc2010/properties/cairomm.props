@@ -15,7 +15,7 @@
       <Command>$(DefGen)</Command>
     </PreLinkEvent>
     <PreLinkEvent>
-      <Message>Generate cairomm def file</Message>
+      <Message>Build $(ProjectName) .def File</Message>
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemGroup />

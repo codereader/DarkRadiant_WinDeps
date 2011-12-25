@@ -1,0 +1,564 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>gtkmm</ProjectName>
+    <ProjectGuid>{907B8D15-7E12-4136-A7E6-B6ED5E055D39}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Release.props" />
+    <Import Project="properties\Common x86 Settings.props" />
+    <Import Project="properties\gtkmmbase.props" />
+    <Import Project="properties\gtkmm.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Debug.props" />
+    <Import Project="properties\Common x86 Settings.props" />
+    <Import Project="properties\gtkmmbase.props" />
+    <Import Project="properties\gtkmm.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Release.props" />
+    <Import Project="properties\Common x64 Settings.props" />
+    <Import Project="properties\gtkmmbase.props" />
+    <Import Project="properties\gtkmm.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Debug.props" />
+    <Import Project="properties\Common x64 Settings.props" />
+    <Import Project="properties\gtkmmbase.props" />
+    <Import Project="properties\gtkmm.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>
+      </AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+    </ClCompile>
+    <PreLinkEvent />
+    <Link>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+    <PreLinkEvent />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>
+      </AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+    </ClCompile>
+    <PreLinkEvent />
+    <Link>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>
+      </AdditionalOptions>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+    </ClCompile>
+    <PreLinkEvent />
+    <Link>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>
+      </AdditionalOptions>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+    </ClCompile>
+    <PreLinkEvent />
+    <Link>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\aboutdialog.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\accelgroup.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\accelkey.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\accellabel.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\accelmap.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\action.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\actiongroup.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\activatable.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\adjustment.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\alignment.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\arrow.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\aspectframe.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\assistant.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\base.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\bin.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\border.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\box.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\builder.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\button.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\buttonbox.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\calendar.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\celleditable.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\celllayout.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\cellrenderer.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\cellrendereraccel.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\cellrenderercombo.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\cellrendererpixbuf.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\cellrendererprogress.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\cellrendererspin.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\cellrendererspinner.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\cellrenderertext.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\cellrenderertoggle.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\cellrenderer_generation.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\cellview.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\checkbutton.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\checkmenuitem.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\clipboard.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\colorbutton.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\colorselection.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\combo.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\combobox.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\comboboxentry.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\comboboxentrytext.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\comboboxtext.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\container.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\curve.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\dialog.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\drawingarea.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\editable.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\entry.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\entrybuffer.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\entrycompletion.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\enums.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\eventbox.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\expander.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\filechooser.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\filechooserbutton.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\filechooserdialog.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\filechooserwidget.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\filefilter.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\fileselection.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\fixed.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\fontbutton.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\fontselection.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\frame.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\handlebox.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\iconfactory.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\iconinfo.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\iconset.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\iconsource.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\icontheme.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\iconview.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\image.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\imagemenuitem.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\infobar.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\inputdialog.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\invisible.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\item.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\label.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\layout.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\linkbutton.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\liststore.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\listviewtext.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\main.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\menu.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\menubar.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\menuitem.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\menushell.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\menutoolbutton.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\menu_elems.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\messagedialog.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\misc.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\notebook.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\object.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\offscreenwindow.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\optionmenu.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\orientable.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\pagesetup.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\pagesetupunixdialog.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\paned.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\papersize.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\plug.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\printcontext.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\printer.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\printjob.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\printoperation.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\printoperationpreview.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\printsettings.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\printunixdialog.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\progressbar.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\radioaction.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\radiobutton.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\radiobuttongroup.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\radiomenuitem.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\radiotoolbutton.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\range.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\rc.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\recentaction.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\recentchooser.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\recentchooserdialog.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\recentchoosermenu.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\recentchooserwidget.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\recentfilter.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\recentinfo.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\recentmanager.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\ruler.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\scale.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\scalebutton.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\scrollbar.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\scrolledwindow.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\selectiondata.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\selectiondata_private.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\separator.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\separatormenuitem.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\separatortoolitem.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\settings.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\sizegroup.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\socket.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\spinbutton.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\spinner.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\statusbar.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\statusicon.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\stock.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\stockid.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\stockitem.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\style.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\table.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\targetentry.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\targetlist.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\tearoffmenuitem.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\textattributes.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\textbuffer.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\textchildanchor.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\textiter.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\textmark.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\texttag.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\texttagtable.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\textview.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\toggleaction.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\togglebutton.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\toggletoolbutton.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\toolbar.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\toolbutton.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\toolitem.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\toolitemgroup.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\toolpalette.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\toolshell.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\tooltip.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\tooltips.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\treedragdest.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\treedragsource.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\treeiter.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\treemodel.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\treemodelcolumn.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\treemodelfilter.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\treemodelsort.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\treepath.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\treerowreference.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\treeselection.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\treesortable.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\treestore.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\treeview.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\treeviewcolumn.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\treeview_private.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\uimanager.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\viewport.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\volumebutton.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\widget.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\window.h" />
+    <ClInclude Include="..\gtkmm\gtk\gtkmm\wrap_init.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\aboutdialog.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\accelgroup.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\accelkey.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\accellabel.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\accelmap.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\action.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\actiongroup.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\activatable.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\adjustment.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\alignment.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\arrow.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\aspectframe.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\assistant.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\bin.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\box.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\builder.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\button.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\buttonbox.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\calendar.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\celleditable.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\celllayout.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrenderer.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrendereraccel.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrenderercombo.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrendererpixbuf.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrendererprogress.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrendererspin.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrendererspinner.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrenderertext.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrenderertoggle.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrenderer_generation.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellview.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\checkbutton.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\checkmenuitem.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\clipboard.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\colorbutton.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\colorselection.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\combo.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\combobox.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\comboboxentry.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\comboboxentrytext.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\comboboxtext.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\container.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\curve.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\dialog.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\drawingarea.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\editable.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\entry.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\entrybuffer.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\entrycompletion.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\enums.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\eventbox.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\expander.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\filechooser.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\filechooserbutton.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\filechooserdialog.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\filechooserwidget.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\filefilter.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\fileselection.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\fixed.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\fontbutton.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\fontselection.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\frame.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\handlebox.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\iconfactory.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\iconinfo.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\iconset.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\iconsource.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\icontheme.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\iconview.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\image.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\imagemenuitem.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\infobar.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\inputdialog.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\invisible.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\item.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\label.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\layout.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\linkbutton.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\liststore.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\listviewtext.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\main.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\menu.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\menubar.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\menuitem.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\menushell.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\menutoolbutton.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\menu_elems.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\messagedialog.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\misc.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\notebook.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\object.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\offscreenwindow.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\optionmenu.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\orientable.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\pagesetup.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\pagesetupunixdialog.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\paned.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\papersize.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\plug.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\printcontext.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\printer.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\printjob.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\printoperation.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\printoperationpreview.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\printsettings.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\printunixdialog.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\progressbar.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\radioaction.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\radiobutton.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\radiobuttongroup.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\radiomenuitem.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\radiotoolbutton.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\range.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\rc.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\recentaction.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\recentchooser.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\recentchooserdialog.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\recentchoosermenu.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\recentchooserwidget.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\recentfilter.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\recentinfo.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\recentmanager.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\ruler.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\scale.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\scalebutton.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\scrollbar.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\scrolledwindow.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\selectiondata.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\selectiondata_private.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\separator.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\separatormenuitem.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\separatortoolitem.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\settings.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\sizegroup.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\socket.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\spinbutton.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\spinner.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\statusbar.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\statusicon.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\stock.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\stockid.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\stockitem.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\style.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\table.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\targetentry.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\targetlist.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\tearoffmenuitem.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\textattributes.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\textbuffer.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\textchildanchor.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\textiter.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\textmark.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\texttag.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\texttagtable.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\textview.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\toggleaction.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\togglebutton.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\toggletoolbutton.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\toolbar.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\toolbutton.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\toolitem.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\toolitemgroup.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\toolpalette.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\toolshell.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\tooltip.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\tooltips.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treedragdest.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treedragsource.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treeiter.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treemodel.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treemodelcolumn.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treemodelfilter.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treemodelsort.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treepath.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treerowreference.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treeselection.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treesortable.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treestore.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treeview.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treeviewcolumn.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treeview_private.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\uimanager.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\viewport.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\volumebutton.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\widget.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\window.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\wrap_init.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\gtkmm\gtk\gtkmm.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
