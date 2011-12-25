@@ -184,7 +184,7 @@
     <ClCompile Include="..\fontconfig\src\ftglue.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\fontconfig\config.h" />
+    <ClInclude Include="..\..\w32deps\fontconfig\include\config.h" />
     <ClInclude Include="..\fontconfig\dirent.h" />
     <ClInclude Include="..\fontconfig\unistd.h" />
   </ItemGroup>

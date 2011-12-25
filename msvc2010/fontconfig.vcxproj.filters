@@ -95,7 +95,7 @@
     <ClInclude Include="..\fontconfig\unistd.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\fontconfig\config.h">
+    <ClInclude Include="..\..\w32deps\fontconfig\include\config.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

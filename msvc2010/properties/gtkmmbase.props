@@ -20,6 +20,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <AdditionalIncludeDirectories>$(W32DepsDir)gtkmm\include;$(W32DepsDir)gtk2\include\glib-2.0\glib;$(W32DepsDir)gtk2\include\glib-2.0;$(SolutionDir)..\gtkmm\glib;$(SolutionDir)..\gtkmm\gio;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
+      <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

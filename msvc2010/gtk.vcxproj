@@ -122,7 +122,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CustomBuild Include="..\..\..\gdk\gtk.symbols">
+    <CustomBuild Include="..\gtk2\gtk\gtk.symbols">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generating gtk.def</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GtkGenerateGtkDef)</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)gtk.def;%(Outputs)</Outputs>

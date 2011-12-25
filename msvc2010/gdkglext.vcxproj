@@ -151,8 +151,6 @@
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkglwglext.h" />
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkglwin32.h" />
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkglwindow-win32.h" />
-    <ClInclude Include="..\gtkglext\gdk\gdkgldefs.h" />
-    <ClInclude Include="..\gtkglext\gdk\gdkgltypes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\gtkglext\gdk\gdkglconfig.c" />
