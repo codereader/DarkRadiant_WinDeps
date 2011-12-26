@@ -9,7 +9,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions>_USRDLL;CAIRO_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;DISABLE_SOME_FLOATING_POINT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(W32DepsDir)gtk2\include\cairo;$(W32DepsDir)gtk2\include;$(W32DepsDir)pixman\include;$(W32DepsDir)freetype\include;$(W32DepsDir)fontconfig\include;$(SolutionDir)..\fontconfig;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(W32DepsDir)gtk2\include\cairo;$(W32DepsDir)gtk2\include;$(W32DepsDir)pixman\include;$(W32DepsDir)freetype\include;$(W32DepsDir)fontconfig\include;$(W32DepsDir)libzlib\include;$(W32DepsDir)libpng\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
