@@ -20,10 +20,10 @@
       </Message>
     </PreBuildEvent>
     <PreLinkEvent>
-      <Command>$(DefGen)</Command>
+      <Command>$(SolutionDir)gendef.exe $(IntDir)$(ProjectName).def $(TargetName) $(IntDir)*.obj</Command>
     </PreLinkEvent>
     <PreLinkEvent>
-      <Message>Build $(ProjectName) .def File</Message>
+      <Message>Build $(ProjectName) .def File: $(TargetName)</Message>
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemGroup />

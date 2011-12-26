@@ -570,7 +570,7 @@ copy $(Configuration)\$(Platform)\bin\*-$(GtkApiVersion).lib $(CopyDir)\lib
   <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions>HAVE_CONFIG_H;G_DISABLE_SINGLE_INCLUDES;ATK_DISABLE_SINGLE_INCLUDES;GDK_PIXBUF_DISABLE_SINGLE_INCLUDES;GTK_DISABLE_SINGLE_INCLUDES;PANGO_DISABLE_DEPRECATED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\gtk2\gdk;$(W32DepsDir)gtk2\include\gtk-2.0;$(W32DepsDir)gtk2\include\gtk-2.0\gdk;$(W32DepsDir)gtk2\include\gtk-2.0\gtk;$(W32DepsDir)gtk2\include\glib-2.0\glib;$(W32DepsDir)gtk2\include\glib-2.0;$(W32DepsDir)gtk2\include\cairo;$(W32DepsDir)gtk2\include\pango-1.0;$(W32DepsDir)gtk2\include\gdk-pixbuf;$(W32DepsDir)gtk2\include;$(SolutionDir)..\gtk2\glib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\gtk2\gdk;$(W32DepsDir)gtk2\include\gtk-2.0;$(W32DepsDir)gtk2\include\gtk-2.0\gdk;$(W32DepsDir)gtk2\include\gtk-2.0\gtk;$(W32DepsDir)gtk2\include\glib-2.0\glib;$(W32DepsDir)gtk2\include\glib-2.0;$(W32DepsDir)gtk2\include\cairo;$(W32DepsDir)gtk2\include\pango-1.0;$(W32DepsDir)gtk2\include\gdk-pixbuf;$(W32DepsDir)gtk2\include;$(SolutionDir)..\gtk2\glib;$(W32DepsDir)gettext\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>

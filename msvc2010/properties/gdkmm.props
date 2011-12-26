@@ -12,7 +12,7 @@
       <AdditionalDependencies>gdk$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gtk$(LibSuffix)-vc$(PlatformToolsetVersion).lib;glib$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gobject$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdk-win32$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdk-pixbuf$(LibSuffix)-vc$(PlatformToolsetVersion).lib;glibmm$(LibSuffix)-vc$(PlatformToolsetVersion).lib;libsigc++$(LibSuffix)-vc$(PlatformToolsetVersion).lib;cairomm$(LibSuffix)-vc$(PlatformToolsetVersion).lib;pangomm$(LibSuffix)-vc$(PlatformToolsetVersion).lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreLinkEvent>
-      <Command>$(DefGen)</Command>
+      <Command>$(SolutionDir)gendef.exe $(IntDir)$(ProjectName).def $(TargetName) $(IntDir)*.obj</Command>
       <Message>Build $(ProjectName) .def File</Message>
     </PreLinkEvent>
   </ItemDefinitionGroup>

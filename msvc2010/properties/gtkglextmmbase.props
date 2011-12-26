@@ -17,7 +17,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup>
     <Link>
-      <ImportLibrary>$(OutputBase)\gtkmm\lib\$(ProjectName)$(LibSuffix)-vc$(PlatformToolsetVersion).lib</ImportLibrary>
+      <ImportLibrary>$(OutputBase)\gtkglextmm\lib\$(ProjectName)$(LibSuffix)-vc$(PlatformToolsetVersion).lib</ImportLibrary>
       <ModuleDefinitionFile>$(IntDir)\$(ProjectName).def</ModuleDefinitionFile>
       <AdditionalDependencies>glib$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdk-win32$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gobject$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdk-pixbuf$(LibSuffix)-vc$(PlatformToolsetVersion).lib;glibmm$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdkmm$(LibSuffix)-vc$(PlatformToolsetVersion).lib;pangomm$(LibSuffix)-vc$(PlatformToolsetVersion).lib;libsigc++$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdkglext$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gtkglext$(LibSuffix)-vc$(PlatformToolsetVersion).lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutputBase)gtk2\lib;$(OutputBase)gtkmm\lib;$(OutputBase)gtkglext\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -29,7 +29,7 @@
       <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <PreLinkEvent>
-      <Command>$(DefGen)</Command>
+      <Command>$(SolutionDir)gendef.exe $(IntDir)$(ProjectName).def $(TargetName) $(IntDir)*.obj</Command>
     </PreLinkEvent>
     <PreLinkEvent>
       <Message>Build $(ProjectName) .def File</Message>

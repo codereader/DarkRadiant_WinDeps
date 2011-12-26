@@ -10,7 +10,7 @@
       <AdditionalIncludeDirectories>$(W32DepsDir)gtkmm\include\gtkmm;$(W32DepsDir)gtkmm\include\gdkmm;$(W32DepsDir)gtk2\include\gtk-2.0;$(W32DepsDir)gtk2\include\gtk-2.0\gdk;$(W32DepsDir)gtk2\include\pango-1.0;$(W32DepsDir)gtk2\include\cairo;$(SolutionDir)..\gtkmm\gtk;$(W32DepsDir)freetype\include;$(W32DepsDir)fontconfig\include;$(SolutionDir)..\fontconfig;$(W32DepsDir)gtk2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <PreLinkEvent>
-      <Command>$(DefGen)</Command>
+      <Command>$(SolutionDir)gendef.exe $(IntDir)$(ProjectName).def $(TargetName) $(IntDir)*.obj</Command>
       <Message>Build $(ProjectName) .def File</Message>
     </PreLinkEvent>
     <Link>
