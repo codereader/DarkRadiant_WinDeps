@@ -85,6 +85,7 @@
     <Link>
       <ModuleDefinitionFile>$(SolutionDir)\..\gtkglext\gdk\gdkglext.def</ModuleDefinitionFile>
     </Link>
+    <ClCompile />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <BuildLog />
@@ -95,6 +96,7 @@
     <Link>
       <ModuleDefinitionFile>$(SolutionDir)\..\gtkglext\gdk\gdkglext.def</ModuleDefinitionFile>
     </Link>
+    <ClCompile />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <BuildLog />

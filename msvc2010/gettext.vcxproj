@@ -157,6 +157,7 @@
     <Link>
       <ImportLibrary>$(OutputBase)/gettext/lib/$(TargetName).lib</ImportLibrary>
     </Link>
+    <ClCompile />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <BuildLog />
@@ -165,6 +166,7 @@
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
     </Link>
+    <ClCompile />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <BuildLog />
@@ -175,6 +177,7 @@
     <Link>
       <ImportLibrary>$(OutputBase)/gettext/lib/$(TargetName).lib</ImportLibrary>
     </Link>
+    <ClCompile />
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

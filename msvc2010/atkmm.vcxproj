@@ -93,6 +93,7 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PrecompiledHeader>
       </PrecompiledHeader>
+      <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <PreLinkEvent />
     <Link>
@@ -109,6 +110,7 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PrecompiledHeader>
       </PrecompiledHeader>
+      <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <PreLinkEvent />
     <Link>
@@ -121,6 +123,7 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
+      <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <PreLinkEvent />
     <Link>
@@ -135,6 +138,7 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
+      <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <PreLinkEvent />
     <Link>
