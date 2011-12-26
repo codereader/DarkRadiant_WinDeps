@@ -4,14 +4,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup />
   <ItemDefinitionGroup>
-    <Link>
-      <AdditionalDependencies>libffi$(LibSuffix)-vc$(PlatformToolsetVersion).lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
+    <Link />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup>
     <Link>
       <ModuleDefinitionFile>$(IntDir)gobject.def</ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(OutputBase)/libffi/lib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libffi$(LibSuffix)-vc$(PlatformToolsetVersion).lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ClCompile>
       <AdditionalIncludeDirectories>$(W32DepsDir)gtk2\include\glib-2.0\gobject;$(W32DepsDir)libffi\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

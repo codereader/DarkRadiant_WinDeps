@@ -14,7 +14,12 @@
     </CustomBuild>
     <ClCompile>
       <AdditionalIncludeDirectories>$(W32DepsDir)libffi/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>FFI_NO_RAW_API;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <Link>
+      <ImportLibrary>$(OutputBase)/libffi/bin/$(TargetName).lib</ImportLibrary>
+      <ModuleDefinitionFile>$(SolutionDir)..\libffi\libffi.def</ModuleDefinitionFile>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup />
 </Project>
