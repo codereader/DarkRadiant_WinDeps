@@ -95,9 +95,9 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PrecompiledHeader>
       </PrecompiledHeader>
+      <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <PreLinkEvent />
     <Link>
@@ -111,9 +111,9 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PrecompiledHeader>
       </PrecompiledHeader>
+      <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <PreLinkEvent />
     <Link>
@@ -125,6 +125,7 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
+      <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <PreLinkEvent />
     <Link>
@@ -139,6 +140,7 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
+      <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <PreLinkEvent />
     <Link>

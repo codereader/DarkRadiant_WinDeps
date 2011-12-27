@@ -90,7 +90,6 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
@@ -107,7 +106,6 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>

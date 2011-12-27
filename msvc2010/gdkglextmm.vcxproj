@@ -88,9 +88,8 @@
       <Path>$(SolutionDir)\$(Platform)\$(Configuration)\$(ProjectName)\BuildLog.htm</Path>
     </BuildLog>
     <ClCompile>
-      <AdditionalOptions>
-      </AdditionalOptions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <PreLinkEvent />
     <Link>
@@ -105,9 +104,8 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalOptions>
-      </AdditionalOptions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <PreLinkEvent />
     <Link>
@@ -118,14 +116,14 @@
     <BuildLog>
       <Path>$(SolutionDir)\$(Platform)\$(Configuration)\$(ProjectName)\BuildLog.htm</Path>
     </BuildLog>
-    <ClCompile>
-      <AdditionalOptions>
-      </AdditionalOptions>
-    </ClCompile>
+    <ClCompile />
     <PreLinkEvent />
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <ClCompile>
+      <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <BuildLog>
@@ -134,14 +132,14 @@
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
-    <ClCompile>
-      <AdditionalOptions>
-      </AdditionalOptions>
-    </ClCompile>
+    <ClCompile />
     <PreLinkEvent />
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <ClCompile>
+      <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\gtkglextmm\gdkglext\gdkmm\gl\config.cc" />
