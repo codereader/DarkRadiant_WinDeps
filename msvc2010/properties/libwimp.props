@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <OutDir>$(OutputBase)gtk2\bin\lib\gtk-2.0\engines</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(W32DepsDir)gtk2\include\gtk-2.0;$(W32DepsDir)gtk2\include\gtk-2.0\gdk;$(W32DepsDir)gtk2\include\glib-2.0;$(W32DepsDir)gtk2\include\pango-1.0;$(W32DepsDir)gtk2\include\glib-2.0\glib;$(W32DepsDir)gtk2\include\cairo;$(W32DepsDir)gtk2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MinimalRebuild>false</MinimalRebuild>
+      <PreprocessorDefinitions>PANGO_DISABLE_DEPRECATED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>glib$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gobject$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gtk$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdk$(LibSuffix)-vc$(PlatformToolsetVersion).lib;pango$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gmodule$(LibSuffix)-vc$(PlatformToolsetVersion).lib;cairo$(LibSuffix)-vc$(PlatformToolsetVersion).lib;pangowin32$(LibSuffix)-vc$(PlatformToolsetVersion).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutputBase)gtk2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup />
+</Project>
