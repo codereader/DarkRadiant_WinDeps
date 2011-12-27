@@ -26,6 +26,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PreprocessorDefinitions>GTK_GL_COMPILATION;PANGO_DISABLE_DEPRECATED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <PreLinkEvent>
       <Command>$(SolutionDir)gendef.exe $(IntDir)$(ProjectName).def $(TargetName) $(IntDir)*.obj</Command>
