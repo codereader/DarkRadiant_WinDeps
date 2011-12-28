@@ -29,6 +29,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libffi", "libffi.vcxproj", "{8B7F7E4C-CEFE-4440-8F46-FAEE748BB811}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glib", "glib.vcxproj", "{12BCA020-EABF-429E-876A-A476BC9C10C0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{56ED427B-0428-48B0-BD86-58AD1EEFEEEF} = {56ED427B-0428-48B0-BD86-58AD1EEFEEEF}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gio", "gio.vcxproj", "{F3D1583C-5613-4809-BD98-7CC1C1276F92}"
 	ProjectSection(ProjectDependencies) = postProject
