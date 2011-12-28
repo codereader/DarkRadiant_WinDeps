@@ -26,7 +26,7 @@
 #    define F_OK 0x00
 #endif
 #ifndef X_OK
-#    define X_OK 0x01
+#    define X_OK 0 // greebo: This was 1, but checking for that bit fires assertions in MSVC2010
 #endif
 #ifndef W_OK
 #    define W_OK 0x02
