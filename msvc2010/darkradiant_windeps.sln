@@ -267,6 +267,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libwimp", "libwimp.vcxproj"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ftgl", "ftgl.vcxproj", "{406177D1-4C07-3581-8BDC-4AD503ED964F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libxml2", "libxml2.vcxproj", "{338182DC-4F9A-4F5C-92B4-6015874B07BA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1} = {C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -611,6 +616,14 @@ Global
 		{406177D1-4C07-3581-8BDC-4AD503ED964F}.Release|Win32.Build.0 = Release|Win32
 		{406177D1-4C07-3581-8BDC-4AD503ED964F}.Release|x64.ActiveCfg = Release|x64
 		{406177D1-4C07-3581-8BDC-4AD503ED964F}.Release|x64.Build.0 = Release|x64
+		{338182DC-4F9A-4F5C-92B4-6015874B07BA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{338182DC-4F9A-4F5C-92B4-6015874B07BA}.Debug|Win32.Build.0 = Debug|Win32
+		{338182DC-4F9A-4F5C-92B4-6015874B07BA}.Debug|x64.ActiveCfg = Debug|x64
+		{338182DC-4F9A-4F5C-92B4-6015874B07BA}.Debug|x64.Build.0 = Debug|x64
+		{338182DC-4F9A-4F5C-92B4-6015874B07BA}.Release|Win32.ActiveCfg = Release|Win32
+		{338182DC-4F9A-4F5C-92B4-6015874B07BA}.Release|Win32.Build.0 = Release|Win32
+		{338182DC-4F9A-4F5C-92B4-6015874B07BA}.Release|x64.ActiveCfg = Release|x64
+		{338182DC-4F9A-4F5C-92B4-6015874B07BA}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
