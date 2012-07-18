@@ -1,0 +1,201 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>atkmm</ProjectName>
+    <ProjectGuid>{9FE0D5A6-458C-45C7-B954-2C3C1E6196C2}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <VCTargetsPath Condition="'$(VCTargetsPath11)' != '' and '$(VSVersion)' == '' and $(VisualStudioVersion) == ''">$(VCTargetsPath11)</VCTargetsPath>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Release.props" />
+    <Import Project="properties\Common x86 Settings.props" />
+    <Import Project="properties\gtkmmbase.props" />
+    <Import Project="properties\atkmm.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Debug.props" />
+    <Import Project="properties\Common x86 Settings.props" />
+    <Import Project="properties\gtkmmbase.props" />
+    <Import Project="properties\atkmm.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Release.props" />
+    <Import Project="properties\Common x64 Settings.props" />
+    <Import Project="properties\gtkmmbase.props" />
+    <Import Project="properties\atkmm.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Debug.props" />
+    <Import Project="properties\Common x64 Settings.props" />
+    <Import Project="properties\gtkmmbase.props" />
+    <Import Project="properties\atkmm.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+    </ClCompile>
+    <PreLinkEvent />
+    <Link>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+    </ClCompile>
+    <PreLinkEvent />
+    <Link>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+    </ClCompile>
+    <PreLinkEvent />
+    <Link>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+    </ClCompile>
+    <PreLinkEvent />
+    <Link>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\gtkmm\atk\atkmm\action.cc" />
+    <ClCompile Include="..\gtkmm\atk\atkmm\component.cc" />
+    <ClCompile Include="..\gtkmm\atk\atkmm\document.cc" />
+    <ClCompile Include="..\gtkmm\atk\atkmm\editabletext.cc" />
+    <ClCompile Include="..\gtkmm\atk\atkmm\hyperlink.cc" />
+    <ClCompile Include="..\gtkmm\atk\atkmm\hypertext.cc" />
+    <ClCompile Include="..\gtkmm\atk\atkmm\image.cc" />
+    <ClCompile Include="..\gtkmm\atk\atkmm\implementor.cc" />
+    <ClCompile Include="..\gtkmm\atk\atkmm\init.cc" />
+    <ClCompile Include="..\gtkmm\atk\atkmm\noopobject.cc" />
+    <ClCompile Include="..\gtkmm\atk\atkmm\object.cc" />
+    <ClCompile Include="..\gtkmm\atk\atkmm\objectaccessible.cc" />
+    <ClCompile Include="..\gtkmm\atk\atkmm\relation.cc" />
+    <ClCompile Include="..\gtkmm\atk\atkmm\relationset.cc" />
+    <ClCompile Include="..\gtkmm\atk\atkmm\selection.cc" />
+    <ClCompile Include="..\gtkmm\atk\atkmm\stateset.cc" />
+    <ClCompile Include="..\gtkmm\atk\atkmm\streamablecontent.cc" />
+    <ClCompile Include="..\gtkmm\atk\atkmm\table.cc" />
+    <ClCompile Include="..\gtkmm\atk\atkmm\text.cc" />
+    <ClCompile Include="..\gtkmm\atk\atkmm\value.cc" />
+    <ClCompile Include="..\gtkmm\atk\atkmm\wrap_init.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\atkmm\action.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\atkmm\component.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\atkmm\document.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\atkmm\editabletext.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\atkmm\hyperlink.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\atkmm\hypertext.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\atkmm\image.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\atkmm\implementor.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\atkmm\init.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\atkmm\noopobject.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\atkmm\object.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\atkmm\objectaccessible.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\atkmm\relation.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\atkmm\relationset.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\atkmm\selection.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\atkmm\stateset.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\atkmm\streamablecontent.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\atkmm\table.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\atkmm\text.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\atkmm\value.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\atkmm\wrap_init.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\gtkmm\atk\atkmm.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

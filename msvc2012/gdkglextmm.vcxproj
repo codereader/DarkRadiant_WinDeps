@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>gdkglextmm</ProjectName>
+    <ProjectGuid>{4E702226-8B59-422E-BC79-070A699CB2FC}</ProjectGuid>
+    <RootNamespace>libzlib</RootNamespace>
+    <VCTargetsPath Condition="'$(VCTargetsPath11)' != '' and '$(VSVersion)' == '' and $(VisualStudioVersion) == ''">$(VCTargetsPath11)</VCTargetsPath>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Release.props" />
+    <Import Project="properties\Common x86 Settings.props" />
+    <Import Project="properties\gtkglextmmbase.props" />
+    <Import Project="properties\gdkglextmm.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Debug.props" />
+    <Import Project="properties\Common x86 Settings.props" />
+    <Import Project="properties\gtkglextmmbase.props" />
+    <Import Project="properties\gdkglextmm.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Release.props" />
+    <Import Project="properties\Common x64 Settings.props" />
+    <Import Project="properties\gtkglextmmbase.props" />
+    <Import Project="properties\gdkglextmm.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Debug.props" />
+    <Import Project="properties\Common x64 Settings.props" />
+    <Import Project="properties\gtkglextmmbase.props" />
+    <Import Project="properties\gdkglextmm.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <BuildLog>
+      <Path>$(SolutionDir)\$(Platform)\$(Configuration)\$(ProjectName)\BuildLog.htm</Path>
+    </BuildLog>
+    <ClCompile>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <PreLinkEvent />
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <BuildLog>
+      <Path>$(SolutionDir)\$(Platform)\$(Configuration)\$(ProjectName)\BuildLog.htm</Path>
+    </BuildLog>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <PreLinkEvent />
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <BuildLog>
+      <Path>$(SolutionDir)\$(Platform)\$(Configuration)\$(ProjectName)\BuildLog.htm</Path>
+    </BuildLog>
+    <ClCompile />
+    <PreLinkEvent />
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <ClCompile />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <BuildLog>
+      <Path>$(SolutionDir)\$(Platform)\$(Configuration)\$(ProjectName)\BuildLog.htm</Path>
+    </BuildLog>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile />
+    <PreLinkEvent />
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <ClCompile />
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\gtkglextmm\gdkglext\gdkmm\gl\config.cc" />
+    <ClCompile Include="..\gtkglextmm\gdkglext\gdkmm\gl\context.cc" />
+    <ClCompile Include="..\gtkglextmm\gdkglext\gdkmm\gl\drawable.cc" />
+    <ClCompile Include="..\gtkglextmm\gdkglext\gdkmm\gl\font.cc" />
+    <ClCompile Include="..\gtkglextmm\gdkglext\gdkmm\gl\init.cc" />
+    <ClCompile Include="..\gtkglextmm\gdkglext\gdkmm\gl\pixmap.cc" />
+    <ClCompile Include="..\gtkglextmm\gdkglext\gdkmm\gl\pixmapext.cc" />
+    <ClCompile Include="..\gtkglextmm\gdkglext\gdkmm\gl\query.cc" />
+    <ClCompile Include="..\gtkglextmm\gdkglext\gdkmm\gl\tokens.cc" />
+    <ClCompile Include="..\gtkglextmm\gdkglext\gdkmm\gl\version.cc" />
+    <ClCompile Include="..\gtkglextmm\gdkglext\gdkmm\gl\window.cc" />
+    <ClCompile Include="..\gtkglextmm\gdkglext\gdkmm\gl\windowext.cc" />
+    <ClCompile Include="..\gtkglextmm\gdkglext\gdkmm\gl\wrap_init.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\w32deps\gtkglextmm\include\gdkglextmm-config.h" />
+    <ClInclude Include="..\..\w32deps\gtkglextmm\include\gdkglmm.h" />
+    <ClInclude Include="..\..\w32deps\gtkglextmm\include\gdkmm\gl\config.h" />
+    <ClInclude Include="..\..\w32deps\gtkglextmm\include\gdkmm\gl\context.h" />
+    <ClInclude Include="..\..\w32deps\gtkglextmm\include\gdkmm\gl\defs.h" />
+    <ClInclude Include="..\..\w32deps\gtkglextmm\include\gdkmm\gl\drawable.h" />
+    <ClInclude Include="..\..\w32deps\gtkglextmm\include\gdkmm\gl\font.h" />
+    <ClInclude Include="..\..\w32deps\gtkglextmm\include\gdkmm\gl\init.h" />
+    <ClInclude Include="..\..\w32deps\gtkglextmm\include\gdkmm\gl\pixmap.h" />
+    <ClInclude Include="..\..\w32deps\gtkglextmm\include\gdkmm\gl\pixmapext.h" />
+    <ClInclude Include="..\..\w32deps\gtkglextmm\include\gdkmm\gl\query.h" />
+    <ClInclude Include="..\..\w32deps\gtkglextmm\include\gdkmm\gl\tokens.h" />
+    <ClInclude Include="..\..\w32deps\gtkglextmm\include\gdkmm\gl\version.h" />
+    <ClInclude Include="..\..\w32deps\gtkglextmm\include\gdkmm\gl\window.h" />
+    <ClInclude Include="..\..\w32deps\gtkglextmm\include\gdkmm\gl\windowext.h" />
+    <ClInclude Include="..\..\w32deps\gtkglextmm\include\gdkmm\gl\wrap_init.h" />
+    <ClInclude Include="..\gtkglextmm\gdkglext\gdkmm\gl\private\config_p.h" />
+    <ClInclude Include="..\gtkglextmm\gdkglext\gdkmm\gl\private\context_p.h" />
+    <ClInclude Include="..\gtkglextmm\gdkglext\gdkmm\gl\private\drawable_p.h" />
+    <ClInclude Include="..\gtkglextmm\gdkglext\gdkmm\gl\private\pixmap_p.h" />
+    <ClInclude Include="..\gtkglextmm\gdkglext\gdkmm\gl\private\tokens_p.h" />
+    <ClInclude Include="..\gtkglextmm\gdkglext\gdkmm\gl\private\window_p.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <OutDir>$(OutputBase)/gtk2/bin/</OutDir>
+    <TargetName>$(ProjectName)$(LibSuffix)-vc$(PlatformToolsetVersion)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>_USRDLL;CAIRO_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;DISABLE_SOME_FLOATING_POINT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(W32DepsDir)gtk2\include\cairo;$(W32DepsDir)gtk2\include;$(W32DepsDir)pixman\include;$(W32DepsDir)freetype\include;$(W32DepsDir)fontconfig\include;$(W32DepsDir)libzlib\include;$(W32DepsDir)libpng\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Link>
+      <ImportLibrary>$(OutputBase)/gtk2/lib/$(ProjectName)$(LibSuffix)-vc$(PlatformToolsetVersion).lib</ImportLibrary>
+      <AdditionalDependencies>libzlib$(LibSuffix)-vc$(PlatformToolsetVersion).lib;libpng$(LibSuffix)-vc$(PlatformToolsetVersion).lib;pixman$(LibSuffix)-vc$(PlatformToolsetVersion).lib;freetype$(LibSuffix)-vc$(PlatformToolsetVersion).lib;fontconfig$(LibSuffix)-vc$(PlatformToolsetVersion).lib;msimg32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutputBase)gtk2\lib;$(OutputBase)libpng\lib;$(OutputBase)pixman\lib;$(OutputBase)freetype\lib;$(OutputBase)fontconfig\lib;$(OutputBase)libzlib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup />
+</Project>

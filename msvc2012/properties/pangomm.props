@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>_USRDLL;PANGOMM_BUILD;PANGO_DISABLE_DEPRECATED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(W32DepsDir)gtkmm\include\pangomm;$(W32DepsDir)gtk2\include\pango-1.0;$(W32DepsDir)gtk2\include\cairo;$(W32DepsDir)freetype\include;$(W32DepsDir)fontconfig\include;$(SolutionDir)..\gtkmm\pango;$(SolutionDir)..\fontconfig;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>glib$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gobject$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gmodule$(LibSuffix)-vc$(PlatformToolsetVersion).lib;pango$(LibSuffix)-vc$(PlatformToolsetVersion).lib;pangocairo$(LibSuffix)-vc$(PlatformToolsetVersion).lib;libsigc++$(LibSuffix)-vc$(PlatformToolsetVersion).lib;glibmm$(LibSuffix)-vc$(PlatformToolsetVersion).lib;cairomm$(LibSuffix)-vc$(PlatformToolsetVersion).lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PreLinkEvent>
+      <Command>$(SolutionDir)gendef.exe $(IntDir)$(ProjectName).def $(TargetName) $(IntDir)*.obj</Command>
+      <Message>Build $(ProjectName) .def File</Message>
+    </PreLinkEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup />
+</Project>

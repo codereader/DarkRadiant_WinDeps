@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <OutDir>$(OutputBase)/gtkglext/bin/</OutDir>
+    <TargetName>$(ProjectName)$(LibSuffix)-vc$(PlatformToolsetVersion)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(W32DepsDir)gtkglext\include;$(W32DepsDir)gtkglext\include\gtk;$(W32DepsDir)gtkglext\include\gdk;$(W32DepsDir)gtkglext\include\gdk\win32;$(W32DepsDir)gtk2\include\gtk-2.0;$(W32DepsDir)gtk2\include\gtk-2.0\gdk;$(W32DepsDir)gtk2\include\glib-2.0\glib;$(W32DepsDir)gtk2\include\glib-2.0;$(W32DepsDir)gtk2\include\pango-1.0;$(W32DepsDir)gtk2\include\cairo;$(W32DepsDir)gtk2\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GTK_GL_COMPILATION;PANGO_DISABLE_DEPRECATED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>false</ExceptionHandling>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(OutputBase)gtk2\lib;$(OutputBase)gtkglext\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>gtk$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdk$(LibSuffix)-vc$(PlatformToolsetVersion).lib;glib$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdk-win32$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gobject$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdk-pixbuf$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdkglext$(LibSuffix)-vc$(PlatformToolsetVersion).lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImportLibrary>$(OutputBase)/gtkglext/lib/$(ProjectName)$(LibSuffix)-vc$(PlatformToolsetVersion).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup />
+</Project>

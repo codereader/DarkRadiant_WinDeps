@@ -1,0 +1,289 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>glibmm</ProjectName>
+    <ProjectGuid>{58B2B53C-C4FF-47FD-817B-095E45B7F7D4}</ProjectGuid>
+    <RootNamespace>glibmm</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <VCTargetsPath Condition="'$(VCTargetsPath11)' != '' and '$(VSVersion)' == '' and $(VisualStudioVersion) == ''">$(VCTargetsPath11)</VCTargetsPath>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Release.props" />
+    <Import Project="properties\Common x86 Settings.props" />
+    <Import Project="properties\gtkmmbase.props" />
+    <Import Project="properties\glibmm.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Debug.props" />
+    <Import Project="properties\Common x86 Settings.props" />
+    <Import Project="properties\gtkmmbase.props" />
+    <Import Project="properties\glibmm.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Release.props" />
+    <Import Project="properties\Common x64 Settings.props" />
+    <Import Project="properties\gtkmmbase.props" />
+    <Import Project="properties\glibmm.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Debug.props" />
+    <Import Project="properties\Common x64 Settings.props" />
+    <Import Project="properties\gtkmmbase.props" />
+    <Import Project="properties\glibmm.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</GenerateManifest>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</GenerateManifest>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+    </ClCompile>
+    <PreLinkEvent />
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+    </ClCompile>
+    <PreLinkEvent />
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+    </ClCompile>
+    <PreLinkEvent />
+    <Link>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+    </ClCompile>
+    <PreLinkEvent />
+    <Link>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\gtkmm\glib\glibmm\arrayhandle.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\balancedtree.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\checksum.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\class.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\containers.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\convert.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\date.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\debug.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\dispatcher.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\error.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\exception.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\exceptionhandler.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\fileutils.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\init.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\interface.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\iochannel.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\keyfile.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\main.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\markup.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\miscutils.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\module.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\nodetree.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\object.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\objectbase.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\optioncontext.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\optionentry.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\optiongroup.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\pattern.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\property.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\propertyproxy.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\propertyproxy_base.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\quark.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\random.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\regex.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\sarray.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\shell.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\signalproxy.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\signalproxy_connectionnode.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\spawn.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\streamiochannel.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\stringutils.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\thread.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\threadpool.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\timer.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\timeval.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\unicode.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\uriutils.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\ustring.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\utility.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\value.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\valuearray.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\value_basictypes.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\value_custom.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\variant.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\variantiter.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\varianttype.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\variant_basictypes.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\vectorutils.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\wrap.cc" />
+    <ClCompile Include="..\gtkmm\glib\glibmm\wrap_init.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\arrayhandle.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\balancedtree.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\checksum.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\class.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\containerhandle_shared.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\containers.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\convert.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\date.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\debug.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\dispatcher.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\error.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\exception.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\exceptionhandler.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\fileutils.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\helperlist.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\i18n-lib.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\i18n.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\init.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\interface.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\iochannel.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\keyfile.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\listhandle.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\main.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\markup.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\miscutils.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\module.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\nodetree.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\object.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\objectbase.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\optioncontext.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\optionentry.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\optiongroup.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\pattern.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\priorities.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\property.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\propertyproxy.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\propertyproxy_base.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\quark.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\random.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\refptr.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\regex.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\sarray.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\shell.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\signalproxy.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\signalproxy_connectionnode.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\slisthandle.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\spawn.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\streamiochannel.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\stringutils.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\thread.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\threadpool.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\timer.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\timeval.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\unicode.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\uriutils.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\ustring.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\utility.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\value.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\valuearray.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\value_basictypes.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\value_custom.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\variant.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\variantiter.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\varianttype.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\variant_basictypes.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\vectorutils.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\wrap.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\wrap_init.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

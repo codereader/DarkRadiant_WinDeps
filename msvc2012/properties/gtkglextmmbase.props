@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <DefGen>$(SolutionDir)gendef.exe $(IntDir)$(ProjectName).def $(TargetName) $(IntDir)*.obj</DefGen>
+  </PropertyGroup>
+  <PropertyGroup>
+    <_PropertySheetDisplayName>gtkglextmm Base</_PropertySheetDisplayName>
+    <OutDir>$(OutputBase)/gtkglextmm/bin/</OutDir>
+    <TargetName>$(ProjectName)$(LibSuffix)-vc$(PlatformToolsetVersion)</TargetName>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <Link>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup>
+    <Link>
+      <ImportLibrary>$(OutputBase)\gtkglextmm\lib\$(ProjectName)$(LibSuffix)-vc$(PlatformToolsetVersion).lib</ImportLibrary>
+      <ModuleDefinitionFile>$(IntDir)\$(ProjectName).def</ModuleDefinitionFile>
+      <AdditionalDependencies>glib$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdk-win32$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gobject$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdk-pixbuf$(LibSuffix)-vc$(PlatformToolsetVersion).lib;glibmm$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdkmm$(LibSuffix)-vc$(PlatformToolsetVersion).lib;pangomm$(LibSuffix)-vc$(PlatformToolsetVersion).lib;libsigc++$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdkglext$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gtkglext$(LibSuffix)-vc$(PlatformToolsetVersion).lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutputBase)gtk2\lib;$(OutputBase)gtkmm\lib;$(OutputBase)gtkglext\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <ClCompile>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PreprocessorDefinitions>GTK_GL_COMPILATION;PANGO_DISABLE_DEPRECATED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <AdditionalOptions>/vd2 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <PreLinkEvent>
+      <Command>$(SolutionDir)gendef.exe $(IntDir)$(ProjectName).def $(TargetName) $(IntDir)*.obj</Command>
+    </PreLinkEvent>
+    <PreLinkEvent>
+      <Message>Build $(ProjectName) .def File</Message>
+    </PreLinkEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <BuildMacro Include="DefGen">
+      <Value>$(DefGen)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>

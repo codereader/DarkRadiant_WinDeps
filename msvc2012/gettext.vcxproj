@@ -1,0 +1,190 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\gettext\bindtextdom.c" />
+    <ClCompile Include="..\gettext\dcgettext.c" />
+    <ClCompile Include="..\gettext\dcigettext.c" />
+    <ClCompile Include="..\gettext\dcngettext.c" />
+    <ClCompile Include="..\gettext\dgettext.c" />
+    <ClCompile Include="..\gettext\dngettext.c" />
+    <ClCompile Include="..\gettext\explodename.c" />
+    <ClCompile Include="..\gettext\finddomain.c" />
+    <ClCompile Include="..\gettext\gettext.c" />
+    <ClCompile Include="..\gettext\hash-string.c" />
+    <ClCompile Include="..\gettext\intl-compat.c" />
+    <ClCompile Include="..\gettext\l10nflist.c" />
+    <ClCompile Include="..\gettext\langprefs.c" />
+    <ClCompile Include="..\gettext\loadmsgcat.c" />
+    <ClCompile Include="..\gettext\localcharset.c" />
+    <ClCompile Include="..\gettext\localealias.c" />
+    <ClCompile Include="..\gettext\localename.c" />
+    <ClCompile Include="..\gettext\lock.c" />
+    <ClCompile Include="..\gettext\log.c" />
+    <ClCompile Include="..\gettext\ngettext.c" />
+    <ClCompile Include="..\gettext\osdep.c" />
+    <ClCompile Include="..\gettext\plural-exp.c" />
+    <ClCompile Include="..\gettext\plural.c" />
+    <ClCompile Include="..\gettext\printf-args.c" />
+    <ClCompile Include="..\gettext\printf-parse.c" />
+    <ClCompile Include="..\gettext\printf.c" />
+    <ClCompile Include="..\gettext\relocatable.c" />
+    <ClCompile Include="..\gettext\setlocale.c" />
+    <ClCompile Include="..\gettext\textdomain.c" />
+    <ClCompile Include="..\gettext\threadlib.c" />
+    <ClCompile Include="..\gettext\tsearch.c" />
+    <ClCompile Include="..\gettext\vasnprintf.c" />
+    <ClCompile Include="..\gettext\version.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\gettext\eval-plural.h" />
+    <ClInclude Include="..\gettext\export.h" />
+    <ClInclude Include="..\gettext\gettextP.h" />
+    <ClInclude Include="..\gettext\gmo.h" />
+    <ClInclude Include="..\gettext\hash-string.h" />
+    <ClInclude Include="..\gettext\libgnuintl.h" />
+    <ClInclude Include="..\gettext\loadinfo.h" />
+    <ClInclude Include="..\gettext\localcharset.h" />
+    <ClInclude Include="..\gettext\lock.h" />
+    <ClInclude Include="..\gettext\os2compat.h" />
+    <ClInclude Include="..\gettext\plural-exp.h" />
+    <ClInclude Include="..\gettext\printf-args.h" />
+    <ClInclude Include="..\gettext\printf-parse.h" />
+    <ClInclude Include="..\gettext\relocatable.h" />
+    <ClInclude Include="..\gettext\tsearch.h" />
+    <ClInclude Include="..\gettext\vasnprintf.h" />
+    <ClInclude Include="..\gettext\vasnwprintf.h" />
+    <ClInclude Include="..\gettext\wprintf-parse.h" />
+    <ClInclude Include="..\gettext\xsize.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\gettext\intl.def" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{56ED427B-0428-48B0-BD86-58AD1EEFEEEF}</ProjectGuid>
+    <VCTargetsPath Condition="'$(VCTargetsPath11)' != '' and '$(VSVersion)' == '' and $(VisualStudioVersion) == ''">$(VCTargetsPath11)</VCTargetsPath>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Release.props" />
+    <Import Project="properties\Common x86 Settings.props" />
+    <Import Project="properties\gettext.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Debug.props" />
+    <Import Project="properties\Common x86 Settings.props" />
+    <Import Project="properties\gettext.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Release.props" />
+    <Import Project="properties\Common x64 Settings.props" />
+    <Import Project="properties\gettext.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Debug.props" />
+    <Import Project="properties\Common x64 Settings.props" />
+    <Import Project="properties\gettext.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <BuildLog />
+    <ClCompile />
+    <Link>
+      <ImportLibrary>$(OutputBase)/gettext/lib/$(TargetName).lib</ImportLibrary>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+    </Link>
+    <ClCompile>
+      <ShowIncludes>false</ShowIncludes>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <BuildLog />
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile />
+    <Link>
+      <ImportLibrary>$(OutputBase)/gettext/lib/$(TargetName).lib</ImportLibrary>
+    </Link>
+    <ClCompile />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <BuildLog />
+    <ClCompile />
+    <Link>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+    </Link>
+    <ClCompile />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <BuildLog />
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile />
+    <Link>
+      <ImportLibrary>$(OutputBase)/gettext/lib/$(TargetName).lib</ImportLibrary>
+    </Link>
+    <ClCompile />
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

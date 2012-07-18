@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>_USRDLL;GDKMM_BUILD;PANGO_DISABLE_DEPRECATED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(W32DepsDir)gtkmm\include\gdkmm;$(W32DepsDir)gtk2\include\gtk-2.0;$(W32DepsDir)gtk2\include\gtk-2.0\gdk;$(W32DepsDir)gtk2\include\pango-1.0;$(W32DepsDir)gtk2\include\cairo;$(SolutionDir)..\gtkmm\gdk;$(W32DepsDir)freetype\include;$(W32DepsDir)fontconfig\include;$(SolutionDir)..\fontconfig;$(W32DepsDir)gtk2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>gdk$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gtk$(LibSuffix)-vc$(PlatformToolsetVersion).lib;glib$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gobject$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdk-win32$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdk-pixbuf$(LibSuffix)-vc$(PlatformToolsetVersion).lib;glibmm$(LibSuffix)-vc$(PlatformToolsetVersion).lib;libsigc++$(LibSuffix)-vc$(PlatformToolsetVersion).lib;cairomm$(LibSuffix)-vc$(PlatformToolsetVersion).lib;pangomm$(LibSuffix)-vc$(PlatformToolsetVersion).lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PreLinkEvent>
+      <Command>$(SolutionDir)gendef.exe $(IntDir)$(ProjectName).def $(TargetName) $(IntDir)*.obj</Command>
+      <Message>Build $(ProjectName) .def File</Message>
+    </PreLinkEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup />
+</Project>

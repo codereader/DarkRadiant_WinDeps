@@ -1,0 +1,368 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>giomm</ProjectName>
+    <ProjectGuid>{EE6C0430-C2C9-425C-8EBA-963FAC3E9832}</ProjectGuid>
+    <RootNamespace>giomm-2.4</RootNamespace>
+    <VCTargetsPath Condition="'$(VCTargetsPath11)' != '' and '$(VSVersion)' == '' and $(VisualStudioVersion) == ''">$(VCTargetsPath11)</VCTargetsPath>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Release.props" />
+    <Import Project="properties\Common x86 Settings.props" />
+    <Import Project="properties\gtkmmbase.props" />
+    <Import Project="properties\giomm.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Debug.props" />
+    <Import Project="properties\Common x86 Settings.props" />
+    <Import Project="properties\gtkmmbase.props" />
+    <Import Project="properties\giomm.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Release.props" />
+    <Import Project="properties\Common x64 Settings.props" />
+    <Import Project="properties\gtkmmbase.props" />
+    <Import Project="properties\giomm.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Debug.props" />
+    <Import Project="properties\Common x64 Settings.props" />
+    <Import Project="properties\gtkmmbase.props" />
+    <Import Project="properties\giomm.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <PreLinkEvent />
+    <Link>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <PreLinkEvent />
+    <Link>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile />
+    <PreLinkEvent />
+    <Link>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+    <ClCompile />
+    <ClCompile />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile />
+    <PreLinkEvent />
+    <Link>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <ClCompile />
+    <ClCompile />
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\gtkmm\gio\giomm\appinfo.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\asyncinitable.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\asyncresult.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\bufferedinputstream.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\bufferedoutputstream.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\cancellable.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\contenttype.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\credentials.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\datainputstream.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\dataoutputstream.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusaddress.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusauthobserver.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusconnection.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\dbuserror.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\dbuserrorutils.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusinterfacevtable.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusintrospection.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusmessage.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusmethodinvocation.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusownname.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusproxy.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusserver.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\dbussubtreevtable.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusutils.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\dbuswatchname.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\desktopappinfo.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\drive.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\emblem.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\emblemedicon.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\enums.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\error.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\file.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\fileattributeinfo.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\fileattributeinfolist.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\fileenumerator.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\fileicon.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\fileinfo.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\fileinputstream.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\fileiostream.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\filemonitor.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\filenamecompleter.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\fileoutputstream.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\filterinputstream.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\filteroutputstream.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\icon.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\inetaddress.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\inetsocketaddress.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\init.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\initable.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\inputstream.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\iostream.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\loadableicon.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\memoryinputstream.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\memoryoutputstream.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\mount.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\mountoperation.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\networkaddress.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\networkservice.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\outputstream.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\proxy.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\proxyaddress.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\proxyresolver.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\resolver.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\seekable.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\settings.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\slot_async.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\socket.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\socketaddress.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\socketaddressenumerator.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\socketclient.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\socketconnectable.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\socketconnection.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\socketcontrolmessage.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\socketlistener.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\socketservice.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\srvtarget.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\tcpconnection.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\themedicon.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\threadedsocketservice.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\unixconnection.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\unixcredentialsmessage.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\unixfdlist.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\unixfdmessage.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\unixinputstream.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\unixoutputstream.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\unixsocketaddress.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\volume.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\volumemonitor.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\wrap_init.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\appinfo.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\asyncinitable.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\asyncresult.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\bufferedinputstream.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\bufferedoutputstream.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\cancellable.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\contenttype.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\credentials.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\datainputstream.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dataoutputstream.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusaddress.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusauthobserver.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusconnection.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbuserror.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbuserrorutils.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusinterfacevtable.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusintrospection.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusmessage.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusmethodinvocation.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusownname.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusproxy.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusserver.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbussubtreevtable.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusutils.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbuswatchname.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\desktopappinfo.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\drive.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\emblem.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\emblemedicon.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\enums.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\error.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\file.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\fileattributeinfo.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\fileattributeinfolist.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\fileenumerator.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\fileicon.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\fileinfo.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\fileinputstream.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\fileiostream.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\filemonitor.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\filenamecompleter.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\fileoutputstream.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\filterinputstream.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\filteroutputstream.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\icon.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\inetaddress.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\inetsocketaddress.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\init.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\initable.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\inputstream.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\iostream.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\loadableicon.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\memoryinputstream.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\memoryoutputstream.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\mount.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\mountoperation.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\networkaddress.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\networkservice.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\outputstream.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\proxy.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\proxyaddress.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\proxyresolver.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\resolver.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\seekable.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\settings.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\slot_async.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socket.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketaddress.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketaddressenumerator.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketclient.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketconnectable.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketconnection.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketcontrolmessage.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketlistener.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketservice.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\srvtarget.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\tcpconnection.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\themedicon.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\threadedsocketservice.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\unixconnection.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\unixcredentialsmessage.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\unixfdlist.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\unixfdmessage.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\unixinputstream.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\unixoutputstream.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\unixsocketaddress.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\volume.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\volumemonitor.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\wrap_init.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
