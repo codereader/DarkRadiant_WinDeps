@@ -36,6 +36,22 @@
 #include "gvdb/gvdb-builder.h"
 #include "strinfo.c"
 
+static void
+strip_string (GString *string)
+{
+  gint i;
+
+  for (i = 0; g_ascii_isspace (string->str[i]); i++);
+  g_string_erase (string, 0, i);
+
+  if (string->len > 0)
+    {
+      /* len > 0, so there must be at least one non-whitespace character */
+      for (i = string->len - 1; g_ascii_isspace (string->str[i]); i--);
+      g_string_truncate (string, i + 1);
+    }
+}
+
 /* Handling of <enum> {{{1 */
 typedef struct
 {
@@ -53,7 +69,7 @@ enum_state_free (gpointer data)
   g_slice_free (EnumState, state);
 }
 
-EnumState *
+static EnumState *
 enum_state_new (gboolean is_flags)
 {
   EnumState *state;
@@ -463,7 +479,7 @@ key_state_start_choices (KeyState  *state,
     {
       g_set_error_literal (error, G_MARKUP_ERROR,
                            G_MARKUP_ERROR_INVALID_CONTENT,
-                           "<choices> can not be specified for keys "
+                           "<choices> cannot be specified for keys "
                            "tagged as having an enumerated type");
       return;
     }
@@ -629,6 +645,23 @@ key_state_serialise (KeyState *state)
           /* translation */
           if (state->l10n)
             {
+              /* We are going to store the untranslated default for
+               * runtime translation according to the current locale.
+               * We need to strip leading and trailing whitespace from
+               * the string so that it's exactly the same as the one
+               * that ended up in the .po file for translation.
+               *
+               * We want to do this so that
+               *
+               *   <default l10n='messages'>
+               *     ['a', 'b', 'c']
+               *   </default>
+               *
+               * ends up in the .po file like "['a', 'b', 'c']",
+               * omitting the extra whitespace at the start and end.
+               */
+              strip_string (state->unparsed_default_value);
+
               if (state->l10n_context)
                 {
                   gint len;
@@ -881,7 +914,7 @@ schema_state_add_key (SchemaState  *state,
     {
       g_set_error_literal (error, G_MARKUP_ERROR,
                            G_MARKUP_ERROR_INVALID_CONTENT,
-                           _("can not add keys to a 'list-of' schema"));
+                           _("cannot add keys to a 'list-of' schema"));
       return NULL;
     }
 
@@ -1170,6 +1203,12 @@ parse_state_start_schema (ParseState  *state,
                    _("the path of a list must end with ':/'"));
       return;
     }
+
+  if (path && (g_str_has_prefix (path, "/apps/") ||
+               g_str_has_prefix (path, "/desktop/") ||
+               g_str_has_prefix (path, "/system/")))
+    g_printerr ("warning: Schema '%s' has path '%s'.  Paths starting with "
+                "'/apps/', '/desktop/' or '/system/' are deprecated.\n", id, path);
 
   state->schema_state = schema_state_new (path, gettext_domain,
                                           extends, extends_name, list_of);
@@ -1498,21 +1537,38 @@ text (GMarkupParseContext  *context,
       GError              **error)
 {
   ParseState *state = user_data;
-  gsize i;
 
-  for (i = 0; i < text_len; i++)
-    if (!g_ascii_isspace (text[i]))
-      {
-        if (state->string)
-          g_string_append_len (state->string, text, text_len);
+  if (state->string)
+    {
+      /* we are expecting a string, so store the text data.
+       *
+       * we store the data verbatim here and deal with whitespace
+       * later on.  there are two reasons for that:
+       *
+       *  1) whitespace is handled differently depending on the tag
+       *     type.
+       *
+       *  2) we could do leading whitespace removal by refusing to
+       *     insert it into state->string if it's at the start, but for
+       *     trailing whitespace, we have no idea if there is another
+       *     text() call coming or not.
+       */
+      g_string_append_len (state->string, text, text_len);
+    }
+  else
+    {
+      /* string is not expected: accept (and ignore) pure whitespace */
+      gsize i;
 
-        else
-          g_set_error (error, G_MARKUP_ERROR, G_MARKUP_ERROR_INVALID_CONTENT,
-                       _("text may not appear inside <%s>"),
-                       g_markup_parse_context_get_element (context));
-
-        break;
-      }
+      for (i = 0; i < text_len; i++)
+        if (!g_ascii_isspace (text[i]))
+          {
+            g_set_error (error, G_MARKUP_ERROR, G_MARKUP_ERROR_INVALID_CONTENT,
+                         _("text may not appear inside <%s>"),
+                         g_markup_parse_context_get_element (context));
+            break;
+          }
+    }
 }
 
 /* Write to GVDB {{{1 */
@@ -1604,7 +1660,7 @@ output_schema (gpointer key,
 
   if (state->list_of)
     gvdb_hash_table_insert_string (data.pair.table, ".list-of",
-                                   state->extends_name);
+                                   state->list_of);
 
   if (data.l10n)
     gvdb_hash_table_insert_string (data.pair.table,
@@ -1930,7 +1986,6 @@ main (int argc, char **argv)
   gchar *srcdir;
   gchar *targetdir = NULL;
   gchar *target;
-  gboolean uninstall = FALSE;
   gboolean dry_run = FALSE;
   gboolean strict = FALSE;
   gchar **schema_files = NULL;
@@ -1940,7 +1995,6 @@ main (int argc, char **argv)
     { "targetdir", 0, 0, G_OPTION_ARG_FILENAME, &targetdir, N_("where to store the gschemas.compiled file"), N_("DIRECTORY") },
     { "strict", 0, 0, G_OPTION_ARG_NONE, &strict, N_("Abort on any errors in schemas"), NULL },
     { "dry-run", 0, 0, G_OPTION_ARG_NONE, &dry_run, N_("Do not write the gschema.compiled file"), NULL },
-    { "uninstall", 0, 0, G_OPTION_ARG_NONE, &uninstall, N_("This option will be removed soon.") },
     { "allow-any-name", 0, 0, G_OPTION_ARG_NONE, &allow_any_name, N_("Do not enforce key name restrictions") },
 
     /* These options are only for use in the gschema-compile tests */

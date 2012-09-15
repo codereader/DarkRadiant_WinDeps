@@ -132,7 +132,8 @@ _lookup_namespace (const char *namespace)
       ns_info->id = ++namespace_id_counter;
       g_hash_table_insert (ns_hash, g_strdup (namespace), ns_info);
       attributes = g_realloc (attributes, (ns_info->id + 1) * sizeof (char **));
-      attributes[ns_info->id] = NULL;
+      attributes[ns_info->id] = g_new (char *, 1);
+      attributes[ns_info->id][0] = g_strconcat (namespace, "::*", NULL);
     }
   return ns_info;
 }
@@ -363,7 +364,8 @@ g_file_info_new (void)
  * @src_info: source to copy attributes from.
  * @dest_info: destination to copy attributes to.
  *
- * Copies all of the #GFileAttribute<!-- -->s from @src_info to @dest_info.
+ * Copies all of the <link linkend="gio-GFileAttribute">GFileAttribute</link>s
+ * from @src_info to @dest_info.
  **/
 void
 g_file_info_copy_into (GFileInfo *src_info,
@@ -1107,7 +1109,8 @@ _g_file_info_set_attribute_by_id (GFileInfo                 *info,
  * @type: a #GFileAttributeType
  * @value_p: pointer to the value
  *
- * Sets the @attribute to contain the given value, if possible.
+ * Sets the @attribute to contain the given value, if possible. To unset the
+ * attribute, use %G_ATTRIBUTE_TYPE_INVALID for @type.
  **/
 void
 g_file_info_set_attribute (GFileInfo                 *info,
@@ -1172,7 +1175,7 @@ _g_file_info_set_attribute_stringv_by_id (GFileInfo *info,
  * g_file_info_set_attribute_stringv:
  * @info: a #GFileInfo.
  * @attribute: a file attribute key
- * @attr_value: a %NULL terminated array of UTF-8 strings.
+ * @attr_value: (array) (element-type utf8): a %NULL terminated array of UTF-8 strings.
  *
  * Sets the @attribute to contain the given @attr_value,
  * if possible.
@@ -2003,7 +2006,7 @@ g_file_info_set_size (GFileInfo *info,
 }
 
 /**
- * g_file_info_set_modification_time
+ * g_file_info_set_modification_time:
  * @info: a #GFileInfo.
  * @mtime: a #GTimeVal.
  *
@@ -2086,8 +2089,6 @@ g_file_info_set_sort_order (GFileInfo *info,
 }
 
 
-#define ON_STACK_MATCHERS 5
-
 typedef struct {
   guint32 id;
   guint32 mask;
@@ -2095,62 +2096,96 @@ typedef struct {
 
 struct _GFileAttributeMatcher {
   gboolean all;
-  SubMatcher sub_matchers[ON_STACK_MATCHERS];
   gint ref;
 
-  GArray *more_sub_matchers;
+  GArray *sub_matchers;
 
   /* Interator */
   guint32 iterator_ns;
   gint iterator_pos;
 };
 
-static void
-matcher_add (GFileAttributeMatcher *matcher,
-	     guint                  id,
-             guint                  mask)
-{
-  SubMatcher *sub_matchers;
-  int i;
-  SubMatcher s;
-
-  for (i = 0; i < ON_STACK_MATCHERS; i++)
-    {
-      /* First empty spot, not found, use this */
-      if (matcher->sub_matchers[i].id == 0)
-	{
-	  matcher->sub_matchers[i].id = id;
-	  matcher->sub_matchers[i].mask = mask;
-	  return;
-	}
-
-      /* Already added */
-      if (matcher->sub_matchers[i].id == id &&
-	  matcher->sub_matchers[i].mask == mask)
-	return;
-    }
-
-  if (matcher->more_sub_matchers == NULL)
-    matcher->more_sub_matchers = g_array_new (FALSE, FALSE, sizeof (SubMatcher));
-
-  sub_matchers = (SubMatcher *)matcher->more_sub_matchers->data;
-  for (i = 0; i < matcher->more_sub_matchers->len; i++)
-    {
-      /* Already added */
-      if (sub_matchers[i].id == id &&
-	  sub_matchers[i].mask == mask)
-	return;
-    }
-
-  s.id = id;
-  s.mask = mask;
-
-  g_array_append_val (matcher->more_sub_matchers, s);
-}
-
 G_DEFINE_BOXED_TYPE (GFileAttributeMatcher, g_file_attribute_matcher,
                      g_file_attribute_matcher_ref,
                      g_file_attribute_matcher_unref)
+
+static gint
+compare_sub_matchers (gconstpointer a,
+                      gconstpointer b)
+{
+  const SubMatcher *suba = a;
+  const SubMatcher *subb = b;
+  int diff;
+
+  diff = suba->id - subb->id;
+
+  if (diff)
+    return diff;
+
+  return suba->mask - subb->mask;
+}
+
+static gboolean
+sub_matcher_matches (SubMatcher *matcher,
+                     SubMatcher *submatcher)
+{
+  if ((matcher->mask & submatcher->mask) != matcher->mask)
+    return FALSE;
+  
+  return matcher->id == (submatcher->id & matcher->mask);
+}
+
+/* Call this function after modifying a matcher.
+ * It will ensure all the invariants other functions rely on.
+ */
+static GFileAttributeMatcher *
+matcher_optimize (GFileAttributeMatcher *matcher)
+{
+  SubMatcher *submatcher, *compare;
+  guint i, j;
+
+  /* remove sub_matchers if we match everything anyway */
+  if (matcher->all)
+    {
+      if (matcher->sub_matchers)
+        {
+          g_array_free (matcher->sub_matchers, TRUE);
+          matcher->sub_matchers = NULL;
+        }
+      return matcher;
+    }
+
+  if (matcher->sub_matchers->len == 0)
+    {
+      g_file_attribute_matcher_unref (matcher);
+      return NULL;
+    }
+
+  /* sort sub_matchers by id (and then mask), so we can bsearch
+   * and compare matchers in O(N) instead of O(N²) */
+  g_array_sort (matcher->sub_matchers, compare_sub_matchers);
+
+  /* remove duplicates and specific matches when we match the whole namespace */
+  j = 0;
+  compare = &g_array_index (matcher->sub_matchers, SubMatcher, j);
+
+  for (i = 1; i < matcher->sub_matchers->len; i++)
+    {
+      submatcher = &g_array_index (matcher->sub_matchers, SubMatcher, i);
+      if (sub_matcher_matches (compare, submatcher))
+        continue;
+
+      j++;
+      compare++;
+
+      if (j < i)
+        *compare = *submatcher;
+    }
+
+  g_array_set_size (matcher->sub_matchers, j + 1);
+
+  return matcher;
+}
 
 /**
  * g_file_attribute_matcher_new:
@@ -2196,6 +2231,7 @@ g_file_attribute_matcher_new (const char *attributes)
 
   matcher = g_malloc0 (sizeof (GFileAttributeMatcher));
   matcher->ref = 1;
+  matcher->sub_matchers = g_array_new (FALSE, FALSE, sizeof (SubMatcher));
 
   split = g_strsplit (attributes, ",", -1);
 
@@ -2205,7 +2241,7 @@ g_file_attribute_matcher_new (const char *attributes)
 	matcher->all = TRUE;
       else
 	{
-	  guint32 id, mask;
+          SubMatcher s;
 
 	  colon = strstr (split[i], "::");
 	  if (colon != NULL &&
@@ -2213,25 +2249,98 @@ g_file_attribute_matcher_new (const char *attributes)
 		(colon[2] == '*' &&
 		 colon[3] == 0)))
 	    {
-	      id = lookup_attribute (split[i]);
-	      mask = 0xffffffff;
+	      s.id = lookup_attribute (split[i]);
+	      s.mask = 0xffffffff;
 	    }
 	  else
 	    {
 	      if (colon)
 		*colon = 0;
 
-	      id = lookup_namespace (split[i]) << NS_POS;
-	      mask = NS_MASK << NS_POS;
+	      s.id = lookup_namespace (split[i]) << NS_POS;
+	      s.mask = NS_MASK << NS_POS;
 	    }
 
-	  matcher_add (matcher, id, mask);
+          g_array_append_val (matcher->sub_matchers, s);
 	}
     }
 
   g_strfreev (split);
 
+  matcher = matcher_optimize (matcher);
+
   return matcher;
+}
+
+/**
+ * g_file_attribute_matcher_subtract:
+ * @matcher: Matcher to subtract from 
+ * @subtract: The matcher to subtract
+ *
+ * Subtracts all attributes of @subtract from @matcher and returns
+ * a matcher that supports those attributes.
+ *
+ * Note that currently it is not possible to remove a single
+ * attribute when the @matcher matches the whole namespace - or remove
+ * a namespace or attribute when the matcher matches everything. This
+ * is a limitation of the current implementation, but may be fixed
+ * in the future.
+ *
+ * Returns: A file attribute matcher matching all attributes of
+ *     @matcher that are not matched by @subtract
+ **/
+GFileAttributeMatcher *
+g_file_attribute_matcher_subtract (GFileAttributeMatcher *matcher,
+                                   GFileAttributeMatcher *subtract)
+{
+  GFileAttributeMatcher *result;
+  guint mi, si;
+  SubMatcher *msub, *ssub;
+
+  if (matcher == NULL)
+    return NULL;
+  if (subtract == NULL)
+    return g_file_attribute_matcher_ref (matcher);
+  if (subtract->all)
+    return NULL;
+  if (matcher->all)
+    return g_file_attribute_matcher_ref (matcher);
+
+  result = g_malloc0 (sizeof (GFileAttributeMatcher));
+  result->ref = 1;
+  result->sub_matchers = g_array_new (FALSE, FALSE, sizeof (SubMatcher));
+
+  si = 0;
+  g_assert (subtract->sub_matchers->len > 0);
+  ssub = &g_array_index (subtract->sub_matchers, SubMatcher, si);
+
+  for (mi = 0; mi < matcher->sub_matchers->len; mi++)
+    {
+      msub = &g_array_index (matcher->sub_matchers, SubMatcher, mi);
+
+retry:
+      if (sub_matcher_matches (ssub, msub))
+        continue;
+
+      si++;
+      if (si >= subtract->sub_matchers->len)
+        break;
+
+      ssub = &g_array_index (subtract->sub_matchers, SubMatcher, si);
+      if (ssub->id <= msub->id)
+        goto retry;
+
+      g_array_append_val (result->sub_matchers, *msub);
+    }
+
+  if (mi < matcher->sub_matchers->len)
+    g_array_append_vals (result->sub_matchers,
+                         &g_array_index (matcher->sub_matchers, SubMatcher, mi),
+                         matcher->sub_matchers->len - mi);
+
+  result = matcher_optimize (result);
+
+  return result;
 }
 
 /**
@@ -2270,8 +2379,8 @@ g_file_attribute_matcher_unref (GFileAttributeMatcher *matcher)
 
       if (g_atomic_int_dec_and_test (&matcher->ref))
 	{
-	  if (matcher->more_sub_matchers)
-	    g_array_free (matcher->more_sub_matchers, TRUE);
+	  if (matcher->sub_matchers)
+	    g_array_free (matcher->sub_matchers, TRUE);
 
 	  g_free (matcher);
 	}
@@ -2292,6 +2401,7 @@ gboolean
 g_file_attribute_matcher_matches_only (GFileAttributeMatcher *matcher,
 				       const char            *attribute)
 {
+  SubMatcher *sub_matcher;
   guint32 id;
 
   g_return_val_if_fail (attribute != NULL && *attribute != '\0', FALSE);
@@ -2300,15 +2410,15 @@ g_file_attribute_matcher_matches_only (GFileAttributeMatcher *matcher,
       matcher->all)
     return FALSE;
 
+  if (matcher->sub_matchers->len != 1)
+    return FALSE;
+  
   id = lookup_attribute (attribute);
-
-  if (matcher->sub_matchers[0].id != 0 &&
-      matcher->sub_matchers[1].id == 0 &&
-      matcher->sub_matchers[0].mask == 0xffffffff &&
-      matcher->sub_matchers[0].id == id)
-    return TRUE;
-
-  return FALSE;
+  
+  sub_matcher = &g_array_index (matcher->sub_matchers, SubMatcher, 0);
+  
+  return sub_matcher->id == id &&
+         sub_matcher->mask == 0xffffffff;
 }
 
 static gboolean
@@ -2318,19 +2428,10 @@ matcher_matches_id (GFileAttributeMatcher *matcher,
   SubMatcher *sub_matchers;
   int i;
 
-  for (i = 0; i < ON_STACK_MATCHERS; i++)
+  if (matcher->sub_matchers)
     {
-      if (matcher->sub_matchers[i].id == 0)
-	return FALSE;
-
-      if (matcher->sub_matchers[i].id == (id & matcher->sub_matchers[i].mask))
-	return TRUE;
-    }
-
-  if (matcher->more_sub_matchers)
-    {
-      sub_matchers = (SubMatcher *)matcher->more_sub_matchers->data;
-      for (i = 0; i < matcher->more_sub_matchers->len; i++)
+      sub_matchers = (SubMatcher *)matcher->sub_matchers->data;
+      for (i = 0; i < matcher->sub_matchers->len; i++)
 	{
 	  if (sub_matchers[i].id == (id & sub_matchers[i].mask))
 	    return TRUE;
@@ -2416,16 +2517,10 @@ g_file_attribute_matcher_enumerate_namespace (GFileAttributeMatcher *matcher,
 
   ns_id = lookup_namespace (ns) << NS_POS;
 
-  for (i = 0; i < ON_STACK_MATCHERS; i++)
+  if (matcher->sub_matchers)
     {
-      if (matcher->sub_matchers[i].id == ns_id)
-	return TRUE;
-    }
-
-  if (matcher->more_sub_matchers)
-    {
-      sub_matchers = (SubMatcher *)matcher->more_sub_matchers->data;
-      for (i = 0; i < matcher->more_sub_matchers->len; i++)
+      sub_matchers = (SubMatcher *)matcher->sub_matchers->data;
+      for (i = 0; i < matcher->sub_matchers->len; i++)
 	{
 	  if (sub_matchers[i].id == ns_id)
 	    return TRUE;
@@ -2461,27 +2556,56 @@ g_file_attribute_matcher_enumerate_next (GFileAttributeMatcher *matcher)
     {
       i = matcher->iterator_pos++;
 
-      if (i < ON_STACK_MATCHERS)
-	{
-	  if (matcher->sub_matchers[i].id == 0)
-	    return NULL;
+      if (matcher->sub_matchers == NULL)
+        return NULL;
 
-	  sub_matcher = &matcher->sub_matchers[i];
-	}
+      if (i < matcher->sub_matchers->len)
+        sub_matcher = &g_array_index (matcher->sub_matchers, SubMatcher, i);
       else
-	{
-	  if (matcher->more_sub_matchers == NULL)
-	    return NULL;
-
-	  i -= ON_STACK_MATCHERS;
-	  if (i < matcher->more_sub_matchers->len)
-	    sub_matcher = &g_array_index (matcher->more_sub_matchers, SubMatcher, i);
-	  else
-	    return NULL;
-	}
+        return NULL;
 
       if (sub_matcher->mask == 0xffffffff &&
 	  (sub_matcher->id & (NS_MASK << NS_POS)) == matcher->iterator_ns)
 	return get_attribute_for_id (sub_matcher->id);
     }
+}
+
+/**
+ * g_file_attribute_matcher_to_string:
+ * @matcher: (allow-none): a #GFileAttributeMatcher.
+ *
+ * Prints what the matcher is matching against. The format will be 
+ * equal to the format passed to g_file_attribute_matcher_new().
+ * The output however, might not be identical, as the matcher may
+ * decide to use a different order or omit needless parts.
+ *
+ * Returns: a string describing the attributes the matcher matches
+ *   against or %NULL if @matcher was %NULL.
+ *
+ * Since: 2.32
+ **/
+char *
+g_file_attribute_matcher_to_string (GFileAttributeMatcher *matcher)
+{
+  GString *string;
+  guint i;
+
+  if (matcher == NULL)
+    return NULL;
+
+  if (matcher->all)
+    return g_strdup ("*");
+
+  string = g_string_new ("");
+  for (i = 0; i < matcher->sub_matchers->len; i++)
+    {
+      SubMatcher *submatcher = &g_array_index (matcher->sub_matchers, SubMatcher, i);
+
+      if (i > 0)
+        g_string_append_c (string, ',');
+
+      g_string_append (string, get_attribute_for_id (submatcher->id));
+    }
+
+  return g_string_free (string, FALSE);
 }

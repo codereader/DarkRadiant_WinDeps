@@ -88,7 +88,7 @@ _g_enum_types_init (void)
     "p",			    /* lcopy_format */
     value_flags_enum_lcopy_value,   /* lcopy_value */
   };
-  static GTypeInfo info = {
+  GTypeInfo info = {
     0,                          /* class_size */
     NULL,                       /* base_init */
     NULL,                       /* base_destroy */
@@ -260,7 +260,7 @@ g_flags_register_static (const gchar	   *name,
  *  enumeration values. The array is terminated by a struct with all
  *  members being 0.
  *
- * This function is meant to be called from the complete_type_info()
+ * This function is meant to be called from the <literal>complete_type_info</literal>
  * function of a #GTypePlugin implementation, as in the following
  * example:
  *

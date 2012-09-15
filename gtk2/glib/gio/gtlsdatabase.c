@@ -635,9 +635,10 @@ g_tls_database_create_certificate_handle (GTlsDatabase            *self,
  *
  * Lookup a certificate by its handle.
  *
- * The handle should have been created by calling g_tls_database_create_handle()
- * on a #GTlsDatabase object of the same TLS backend. The handle is designed
- * to remain valid across instantiations of the database.
+ * The handle should have been created by calling
+ * g_tls_database_create_certificate_handle() on a #GTlsDatabase object of
+ * the same TLS backend. The handle is designed to remain valid across
+ * instantiations of the database.
  *
  * If the handle is no longer valid, or does not point to a certificate in
  * this database, then %NULL will be returned.
@@ -684,7 +685,7 @@ g_tls_database_lookup_certificate_for_handle (GTlsDatabase            *self,
  * @user_data: the data to pass to the callback function
  *
  * Asynchronously lookup a certificate by its handle in the database. See
- * g_tls_database_lookup_handle() for more information.
+ * g_tls_database_lookup_certificate_for_handle() for more information.
  *
  * Since: 2.30
  */
@@ -718,7 +719,7 @@ g_tls_database_lookup_certificate_for_handle_async (GTlsDatabase            *sel
  * @error: a #GError pointer, or %NULL
  *
  * Finish an asynchronous lookup of a certificate by its handle. See
- * g_tls_database_lookup_handle() for more information.
+ * g_tls_database_lookup_certificate_handle() for more information.
  *
  * If the handle is no longer valid, or does not point to a certificate in
  * this database, then %NULL will be returned.
@@ -868,8 +869,8 @@ g_tls_database_lookup_certificate_issuer_finish (GTlsDatabase          *self,
  * This function can block, use g_tls_database_lookup_certificates_issued_by_async() to perform
  * the lookup operation asynchronously.
  *
- * Return value: (transfer full): a newly allocated list of #GTlsCertificate objects.
- * Use g_object_unref() on each certificate, and g_list_free() on the release the list.
+ * Return value: (transfer full) (element-type GTlsCertificate): a newly allocated list of #GTlsCertificate
+ * objects. Use g_object_unref() on each certificate, and g_list_free() on the release the list.
  *
  * Since: 2.30
  */

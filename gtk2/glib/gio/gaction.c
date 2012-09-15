@@ -28,7 +28,7 @@ G_DEFINE_INTERFACE (GAction, g_action, G_TYPE_OBJECT)
 /**
  * SECTION:gaction
  * @title: GAction
- * @short_description: An action
+ * @short_description: An action interface
  *
  * #GAction represents a single named action.
  *
@@ -60,6 +60,23 @@ G_DEFINE_INTERFACE (GAction, g_action, G_TYPE_OBJECT)
  * Probably the only useful thing to do with a #GAction is to put it
  * inside of a #GSimpleActionGroup.
  **/
+
+/**
+ * GActionInterface:
+ * @get_name: the virtual function pointer for g_action_get_name()
+ * @get_parameter_type: the virtual function pointer for g_action_get_parameter_type()
+ * @get_state_type: the virtual function pointer for g_action_get_state_type()
+ * @get_state_hint: the virtual function pointer for g_action_get_state_hint()
+ * @get_enabled: the virtual function pointer for g_action_get_enabled()
+ * @get_state: the virtual function pointer for g_action_get_state()
+ * @change_state: the virtual function pointer for g_action_change_state()
+ * @activate: the virtual function pointer for g_action_activate().  Note that #GAction does not have an
+ *            'activate' signal but that implementations of it may have one.
+ *
+ * The virtual function table for #GAction.
+ *
+ * Since: 2.28
+ */
 
 void
 g_action_default_init (GActionInterface *iface)

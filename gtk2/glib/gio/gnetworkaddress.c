@@ -251,7 +251,7 @@ g_network_address_set_addresses (GNetworkAddress *addr,
  * Creates a new #GSocketConnectable for connecting to the given
  * @hostname and @port.
  *
- * Return value: (transfer full): the new #GNetworkAddress
+ * Return value: (transfer full) (type GNetworkAddress): the new #GNetworkAddress
  *
  * Since: 2.22
  */
@@ -475,15 +475,15 @@ _g_uri_parse_authority (const char  *uri,
     return FALSE;
 
   start += 2;
-  p = strchr (start, '@');
 
-  if (p != NULL)
+  if (strchr (start, '@') != NULL)
     {
       /* Decode userinfo:
        * userinfo      = *( unreserved / pct-encoded / sub-delims / ":" )
        * unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"
        * pct-encoded   = "%" HEXDIG HEXDIG
        */
+      p = start;
       while (1)
 	{
 	  c = *p++;
@@ -504,7 +504,7 @@ _g_uri_parse_authority (const char  *uri,
 	    }
 
 	  /* unreserved /  sub-delims / : */
-	  if (!(g_ascii_isalnum(c) ||
+	  if (!(g_ascii_isalnum (c) ||
 		strchr (G_URI_OTHER_UNRESERVED, c) ||
 		strchr (G_URI_RESERVED_CHARS_SUBCOMPONENT_DELIMITERS, c) ||
 		c == ':'))
@@ -540,7 +540,7 @@ _g_uri_parse_authority (const char  *uri,
 	    break;
 
 	  /* unreserved /  sub-delims */
-	  if (!(g_ascii_isalnum(c) ||
+	  if (!(g_ascii_isalnum (c) ||
 		strchr (G_URI_OTHER_UNRESERVED, c) ||
 		strchr (G_URI_RESERVED_CHARS_SUBCOMPONENT_DELIMITERS, c) ||
 		c == ':' ||
@@ -574,7 +574,7 @@ _g_uri_parse_authority (const char  *uri,
 	    }
 
 	  /* unreserved /  sub-delims */
-	  if (!(g_ascii_isalnum(c) ||
+	  if (!(g_ascii_isalnum (c) ||
 		strchr (G_URI_OTHER_UNRESERVED, c) ||
 		strchr (G_URI_RESERVED_CHARS_SUBCOMPONENT_DELIMITERS, c)))
 	    goto error;
@@ -681,7 +681,7 @@ _g_uri_from_authority (const gchar *protocol,
  * @uri. May fail and return %NULL in case parsing @uri fails.
  *
  * Using this rather than g_network_address_new() or
- * g_network_address_parse_host() allows #GSocketClient to determine
+ * g_network_address_parse() allows #GSocketClient to determine
  * when to use application-specific proxy protocols.
  *
  * Return value: (transfer full): the new #GNetworkAddress, or %NULL on error
@@ -794,6 +794,7 @@ typedef struct {
 
 } GNetworkAddressAddressEnumeratorClass;
 
+static GType _g_network_address_address_enumerator_get_type (void);
 G_DEFINE_TYPE (GNetworkAddressAddressEnumerator, _g_network_address_address_enumerator, G_TYPE_SOCKET_ADDRESS_ENUMERATOR)
 
 static void

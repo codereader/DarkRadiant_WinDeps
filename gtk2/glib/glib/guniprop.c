@@ -603,7 +603,7 @@ g_unichar_toupper (gunichar c)
       for (i = 0; i < G_N_ELEMENTS (title_table); ++i)
 	{
 	  if (title_table[i][0] == c)
-	    return title_table[i][1];
+	    return title_table[i][1] ? title_table[i][1] : c;
 	}
     }
   return c;
@@ -855,9 +855,9 @@ real_toupper (const gchar *str,
 		   * which could simplify this considerably.
 		   */
 		  gsize decomp_len, i;
-		  gunichar decomp[18];
+		  gunichar decomp[G_UNICHAR_MAX_DECOMPOSITION_LENGTH];
 
-		  decomp_len = g_unichar_fully_decompose (c, FALSE, decomp, 4);
+		  decomp_len = g_unichar_fully_decompose (c, FALSE, decomp, G_N_ELEMENTS (decomp));
 		  for (i=0; i < decomp_len; i++)
 		    {
 		      if (decomp[i] != 0x307 /* COMBINING DOT ABOVE */)
@@ -1431,6 +1431,15 @@ static const guint32 iso15924_tags[] =
     PACK ('B','a','t','k'), /* G_UNICODE_SCRIPT_BATAK */
     PACK ('B','r','a','h'), /* G_UNICODE_SCRIPT_BRAHMI */
     PACK ('M','a','n','d'), /* G_UNICODE_SCRIPT_MANDAIC */
+
+  /* Unicode-6.1 additions */
+    PACK ('C','a','k','m'), /* G_UNICODE_SCRIPT_CHAKMA */
+    PACK ('M','e','r','c'), /* G_UNICODE_SCRIPT_MEROITIC_CURSIVE */
+    PACK ('M','e','r','o'), /* G_UNICODE_SCRIPT_MEROITIC_HIEROGLYPHS */
+    PACK ('P','l','r','d'), /* G_UNICODE_SCRIPT_MIAO */
+    PACK ('S','h','r','d'), /* G_UNICODE_SCRIPT_SHARADA */
+    PACK ('S','o','r','a'), /* G_UNICODE_SCRIPT_SORA_SOMPENG */
+    PACK ('T','a','k','r'), /* G_UNICODE_SCRIPT_TAKRI */
 
 #undef PACK
 };

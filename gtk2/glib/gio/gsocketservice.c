@@ -48,9 +48,11 @@
  * If you are interested in writing connection handlers that contain
  * blocking code then see #GThreadedSocketService.
  *
- * The socket service runs on the main loop in the main thread, and is
- * not threadsafe in general. However, the calls to start and stop
- * the service are threadsafe so these can be used from threads that
+ * The socket service runs on the main loop of the <link
+ * linkend="g-main-context-push-thread-default-context">thread-default
+ * context</link> of the thread it is created in, and is not
+ * threadsafe in general. However, the calls to start and stop the
+ * service are thread-safe so these can be used from threads that
  * handle incoming clients.
  *
  * Since: 2.22
@@ -172,7 +174,7 @@ g_socket_service_is_active (GSocketService *service)
  * Starts the service, i.e. start accepting connections
  * from the added sockets when the mainloop runs.
  *
- * This call is threadsafe, so it may be called from a thread
+ * This call is thread-safe, so it may be called from a thread
  * handling an incoming client request.
  *
  * Since: 2.22
@@ -202,7 +204,7 @@ g_socket_service_start (GSocketService *service)
  * Stops the service, i.e. stops accepting connections
  * from the added sockets when the mainloop runs.
  *
- * This call is threadsafe, so it may be called from a thread
+ * This call is thread-safe, so it may be called from a thread
  * handling an incoming client request.
  *
  * Since: 2.22
@@ -252,7 +254,8 @@ g_socket_service_class_init (GSocketServiceClass *class)
    * GSocketService::incoming:
    * @service: the #GSocketService
    * @connection: a new #GSocketConnection object
-   * @source_object: the source_object passed to g_socket_listener_add_address()
+   * @source_object: (allow-none): the source_object passed to
+   *     g_socket_listener_add_address()
    *
    * The ::incoming signal is emitted when a new incoming connection
    * to @service needs to be handled. The handler must initiate the

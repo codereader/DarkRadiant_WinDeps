@@ -34,6 +34,7 @@
 
 #include "gatomic.h"
 #include "gtestutils.h"
+#include "gslice.h"
 
 /**
  * SECTION:trees-binary
@@ -94,7 +95,7 @@ struct _GTreeNode
   gpointer   value;       /* value stored at this node */
   GTreeNode *left;        /* left subtree */
   GTreeNode *right;       /* right subtree */
-  gint8      balance;     /* height (left) - height (right) */
+  gint8      balance;     /* height (right) - height (left) */
   guint8     left_child;
   guint8     right_child;
 };
@@ -1253,7 +1254,6 @@ g_tree_node_rotate_left (GTreeNode *node)
   else
     {
       node->right_child = FALSE;
-      node->right = right;
       right->left_child = TRUE;
     }
   right->left = node;
@@ -1295,7 +1295,6 @@ g_tree_node_rotate_right (GTreeNode *node)
   else
     {
       node->left_child = FALSE;
-      node->left = left;
       left->right_child = TRUE;
     }
   left->right = node;

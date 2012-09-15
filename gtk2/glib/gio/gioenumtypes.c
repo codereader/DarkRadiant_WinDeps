@@ -230,12 +230,12 @@ g_mount_mount_flags_get_type (void)
 
   if (g_once_init_enter (&g_define_type_id__volatile))
     {
-      static const GEnumValue values[] = {
+      static const GFlagsValue values[] = {
         { G_MOUNT_MOUNT_NONE, "G_MOUNT_MOUNT_NONE", "none" },
         { 0, NULL, NULL }
       };
       GType g_define_type_id =
-        g_enum_register_static (g_intern_static_string ("GMountMountFlags"), values);
+        g_flags_register_static (g_intern_static_string ("GMountMountFlags"), values);
       g_once_init_leave (&g_define_type_id__volatile, g_define_type_id);
     }
 
@@ -269,12 +269,12 @@ g_drive_start_flags_get_type (void)
 
   if (g_once_init_enter (&g_define_type_id__volatile))
     {
-      static const GEnumValue values[] = {
+      static const GFlagsValue values[] = {
         { G_DRIVE_START_NONE, "G_DRIVE_START_NONE", "none" },
         { 0, NULL, NULL }
       };
       GType g_define_type_id =
-        g_enum_register_static (g_intern_static_string ("GDriveStartFlags"), values);
+        g_flags_register_static (g_intern_static_string ("GDriveStartFlags"), values);
       g_once_init_leave (&g_define_type_id__volatile, g_define_type_id);
     }
 
@@ -636,6 +636,65 @@ g_resolver_error_get_type (void)
 }
 
 GType
+g_resource_error_get_type (void)
+{
+  static volatile gsize g_define_type_id__volatile = 0;
+
+  if (g_once_init_enter (&g_define_type_id__volatile))
+    {
+      static const GEnumValue values[] = {
+        { G_RESOURCE_ERROR_NOT_FOUND, "G_RESOURCE_ERROR_NOT_FOUND", "not-found" },
+        { G_RESOURCE_ERROR_INTERNAL, "G_RESOURCE_ERROR_INTERNAL", "internal" },
+        { 0, NULL, NULL }
+      };
+      GType g_define_type_id =
+        g_enum_register_static (g_intern_static_string ("GResourceError"), values);
+      g_once_init_leave (&g_define_type_id__volatile, g_define_type_id);
+    }
+
+  return g_define_type_id__volatile;
+}
+
+GType
+g_resource_flags_get_type (void)
+{
+  static volatile gsize g_define_type_id__volatile = 0;
+
+  if (g_once_init_enter (&g_define_type_id__volatile))
+    {
+      static const GFlagsValue values[] = {
+        { G_RESOURCE_FLAGS_NONE, "G_RESOURCE_FLAGS_NONE", "none" },
+        { G_RESOURCE_FLAGS_COMPRESSED, "G_RESOURCE_FLAGS_COMPRESSED", "compressed" },
+        { 0, NULL, NULL }
+      };
+      GType g_define_type_id =
+        g_flags_register_static (g_intern_static_string ("GResourceFlags"), values);
+      g_once_init_leave (&g_define_type_id__volatile, g_define_type_id);
+    }
+
+  return g_define_type_id__volatile;
+}
+
+GType
+g_resource_lookup_flags_get_type (void)
+{
+  static volatile gsize g_define_type_id__volatile = 0;
+
+  if (g_once_init_enter (&g_define_type_id__volatile))
+    {
+      static const GFlagsValue values[] = {
+        { G_RESOURCE_LOOKUP_FLAGS_NONE, "G_RESOURCE_LOOKUP_FLAGS_NONE", "none" },
+        { 0, NULL, NULL }
+      };
+      GType g_define_type_id =
+        g_flags_register_static (g_intern_static_string ("GResourceLookupFlags"), values);
+      g_once_init_leave (&g_define_type_id__volatile, g_define_type_id);
+    }
+
+  return g_define_type_id__volatile;
+}
+
+GType
 g_socket_family_get_type (void)
 {
   static volatile gsize g_define_type_id__volatile = 0;
@@ -686,7 +745,7 @@ g_socket_msg_flags_get_type (void)
 
   if (g_once_init_enter (&g_define_type_id__volatile))
     {
-      static const GEnumValue values[] = {
+      static const GFlagsValue values[] = {
         { G_SOCKET_MSG_NONE, "G_SOCKET_MSG_NONE", "none" },
         { G_SOCKET_MSG_OOB, "G_SOCKET_MSG_OOB", "oob" },
         { G_SOCKET_MSG_PEEK, "G_SOCKET_MSG_PEEK", "peek" },
@@ -694,7 +753,7 @@ g_socket_msg_flags_get_type (void)
         { 0, NULL, NULL }
       };
       GType g_define_type_id =
-        g_enum_register_static (g_intern_static_string ("GSocketMsgFlags"), values);
+        g_flags_register_static (g_intern_static_string ("GSocketMsgFlags"), values);
       g_once_init_leave (&g_define_type_id__volatile, g_define_type_id);
     }
 
@@ -843,6 +902,7 @@ g_dbus_proxy_flags_get_type (void)
         { G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES, "G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES", "do-not-load-properties" },
         { G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS, "G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS", "do-not-connect-signals" },
         { G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START, "G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START", "do-not-auto-start" },
+        { G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES, "G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES", "get-invalidated-properties" },
         { 0, NULL, NULL }
       };
       GType g_define_type_id =
@@ -1400,12 +1460,12 @@ g_tls_database_verify_flags_get_type (void)
 
   if (g_once_init_enter (&g_define_type_id__volatile))
     {
-      static const GEnumValue values[] = {
+      static const GFlagsValue values[] = {
         { G_TLS_DATABASE_VERIFY_NONE, "G_TLS_DATABASE_VERIFY_NONE", "none" },
         { 0, NULL, NULL }
       };
       GType g_define_type_id =
-        g_enum_register_static (g_intern_static_string ("GTlsDatabaseVerifyFlags"), values);
+        g_flags_register_static (g_intern_static_string ("GTlsDatabaseVerifyFlags"), values);
       g_once_init_leave (&g_define_type_id__volatile, g_define_type_id);
     }
 
@@ -1446,6 +1506,33 @@ g_io_module_scope_flags_get_type (void)
       };
       GType g_define_type_id =
         g_enum_register_static (g_intern_static_string ("GIOModuleScopeFlags"), values);
+      g_once_init_leave (&g_define_type_id__volatile, g_define_type_id);
+    }
+
+  return g_define_type_id__volatile;
+}
+
+GType
+g_socket_client_event_get_type (void)
+{
+  static volatile gsize g_define_type_id__volatile = 0;
+
+  if (g_once_init_enter (&g_define_type_id__volatile))
+    {
+      static const GEnumValue values[] = {
+        { G_SOCKET_CLIENT_RESOLVING, "G_SOCKET_CLIENT_RESOLVING", "resolving" },
+        { G_SOCKET_CLIENT_RESOLVED, "G_SOCKET_CLIENT_RESOLVED", "resolved" },
+        { G_SOCKET_CLIENT_CONNECTING, "G_SOCKET_CLIENT_CONNECTING", "connecting" },
+        { G_SOCKET_CLIENT_CONNECTED, "G_SOCKET_CLIENT_CONNECTED", "connected" },
+        { G_SOCKET_CLIENT_PROXY_NEGOTIATING, "G_SOCKET_CLIENT_PROXY_NEGOTIATING", "proxy-negotiating" },
+        { G_SOCKET_CLIENT_PROXY_NEGOTIATED, "G_SOCKET_CLIENT_PROXY_NEGOTIATED", "proxy-negotiated" },
+        { G_SOCKET_CLIENT_TLS_HANDSHAKING, "G_SOCKET_CLIENT_TLS_HANDSHAKING", "tls-handshaking" },
+        { G_SOCKET_CLIENT_TLS_HANDSHAKED, "G_SOCKET_CLIENT_TLS_HANDSHAKED", "tls-handshaked" },
+        { G_SOCKET_CLIENT_COMPLETE, "G_SOCKET_CLIENT_COMPLETE", "complete" },
+        { 0, NULL, NULL }
+      };
+      GType g_define_type_id =
+        g_enum_register_static (g_intern_static_string ("GSocketClientEvent"), values);
       g_once_init_leave (&g_define_type_id__volatile, g_define_type_id);
     }
 

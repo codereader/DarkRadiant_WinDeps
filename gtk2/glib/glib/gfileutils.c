@@ -58,6 +58,141 @@
 #include <sys/vfs.h>
 #endif
 
+
+/**
+ * SECTION:fileutils
+ * @title: File Utilities
+ * @short_description: various file-related functions
+ *
+ * There is a group of functions which wrap the common POSIX functions
+ * dealing with filenames (g_open(), g_rename(), g_mkdir(), g_stat(),
+ * g_unlink(), g_remove(), g_fopen(), g_freopen()). The point of these
+ * wrappers is to make it possible to handle file names with any Unicode
+ * characters in them on Windows without having to use ifdefs and the
+ * wide character API in the application code.
+ *
+ * The pathname argument should be in the GLib file name encoding.
+ * On POSIX this is the actual on-disk encoding which might correspond
+ * to the locale settings of the process (or the
+ * <envar>G_FILENAME_ENCODING</envar> environment variable), or not.
+ *
+ * On Windows the GLib file name encoding is UTF-8. Note that the
+ * Microsoft C library does not use UTF-8, but has separate APIs for
+ * current system code page and wide characters (UTF-16). The GLib
+ * wrappers call the wide character API if present (on modern Windows
+ * systems), otherwise convert to/from the system code page.
+ *
+ * Another group of functions allows to open and read directories
+ * in the GLib file name encoding. These are g_dir_open(),
+ * g_dir_read_name(), g_dir_rewind(), g_dir_close().
+ */
+
+/**
+ * GFileError:
+ * @G_FILE_ERROR_EXIST: Operation not permitted; only the owner of
+ *     the file (or other resource) or processes with special privileges
+ *     can perform the operation.
+ * @G_FILE_ERROR_ISDIR: File is a directory; you cannot open a directory
+ *     for writing, or create or remove hard links to it.
+ * @G_FILE_ERROR_ACCES: Permission denied; the file permissions do not
+ *     allow the attempted operation.
+ * @G_FILE_ERROR_NAMETOOLONG: Filename too long.
+ * @G_FILE_ERROR_NOENT: No such file or directory. This is a "file
+ *     doesn't exist" error for ordinary files that are referenced in
+ *     contexts where they are expected to already exist.
+ * @G_FILE_ERROR_NOTDIR: A file that isn't a directory was specified when
+ *     a directory is required.
+ * @G_FILE_ERROR_NXIO: No such device or address. The system tried to
+ *     use the device represented by a file you specified, and it
+ *     couldn't find the device. This can mean that the device file was
+ *     installed incorrectly, or that the physical device is missing or
+ *     not correctly attached to the computer.
+ * @G_FILE_ERROR_NODEV: The underlying file system of the specified file
+ *     does not support memory mapping.
+ * @G_FILE_ERROR_ROFS: The directory containing the new link can't be
+ *     modified because it's on a read-only file system.
+ * @G_FILE_ERROR_TXTBSY: Text file busy.
+ * @G_FILE_ERROR_FAULT: You passed in a pointer to bad memory.
+ *     (GLib won't reliably return this, don't pass in pointers to bad
+ *     memory.)
+ * @G_FILE_ERROR_LOOP: Too many levels of symbolic links were encountered
+ *     in looking up a file name. This often indicates a cycle of symbolic
+ *     links.
+ * @G_FILE_ERROR_NOSPC: No space left on device; write operation on a
+ *     file failed because the disk is full.
+ * @G_FILE_ERROR_NOMEM: No memory available. The system cannot allocate
+ *     more virtual memory because its capacity is full.
+ * @G_FILE_ERROR_MFILE: The current process has too many files open and
+ *     can't open any more. Duplicate descriptors do count toward this
+ *     limit.
+ * @G_FILE_ERROR_NFILE: There are too many distinct file openings in the
+ *     entire system.
+ * @G_FILE_ERROR_BADF: Bad file descriptor; for example, I/O on a
+ *     descriptor that has been closed or reading from a descriptor open
+ *     only for writing (or vice versa).
+ * @G_FILE_ERROR_INVAL: Invalid argument. This is used to indicate
+ *     various kinds of problems with passing the wrong argument to a
+ *     library function.
+ * @G_FILE_ERROR_PIPE: Broken pipe; there is no process reading from the
+ *     other end of a pipe. Every library function that returns this
+ *     error code also generates a `SIGPIPE' signal; this signal
+ *     terminates the program if not handled or blocked. Thus, your
+ *     program will never actually see this code unless it has handled
+ *     or blocked `SIGPIPE'.
+ * @G_FILE_ERROR_AGAIN: Resource temporarily unavailable; the call might
+ *     work if you try again later.
+ * @G_FILE_ERROR_INTR: Interrupted function call; an asynchronous signal
+ *     occurred and prevented completion of the call. When this
+ *     happens, you should try the call again.
+ * @G_FILE_ERROR_IO: Input/output error; usually used for physical read
+ *    or write errors. i.e. the disk or other physical device hardware
+ *    is returning errors.
+ * @G_FILE_ERROR_PERM: Operation not permitted; only the owner of the
+ *    file (or other resource) or processes with special privileges can
+ *    perform the operation.
+ * @G_FILE_ERROR_NOSYS: Function not implemented; this indicates that
+ *    the system is missing some functionality.
+ * @G_FILE_ERROR_FAILED: Does not correspond to a UNIX error code; this
+ *    is the standard "failed for unspecified reason" error code present
+ *    in all #GError error code enumerations. Returned if no specific
+ *    code applies.
+ *
+ * Values corresponding to @errno codes returned from file operations
+ * on UNIX. Unlike @errno codes, GFileError values are available on
+ * all systems, even Windows. The exact meaning of each code depends
+ * on what sort of file operation you were performing; the UNIX
+ * documentation gives more details. The following error code descriptions
+ * come from the GNU C Library manual, and are under the copyright
+ * of that manual.
+ *
+ * It's not very portable to make detailed assumptions about exactly
+ * which errors will be returned from a given operation. Some errors
+ * don't occur on some systems, etc., sometimes there are subtle
+ * differences in when a system will report a given error, etc.
+ */
+
+/**
+ * G_FILE_ERROR:
+ *
+ * Error domain for file operations. Errors in this domain will
+ * be from the #GFileError enumeration. See #GError for information
+ * on error domains.
+ */
+
+/**
+ * GFileTest:
+ * @G_FILE_TEST_IS_REGULAR: %TRUE if the file is a regular file
+ *     (not a directory). Note that this test will also return %TRUE
+ *     if the tested file is a symlink to a regular file.
+ * @G_FILE_TEST_IS_SYMLINK: %TRUE if the file is a symlink.
+ * @G_FILE_TEST_IS_DIR: %TRUE if the file is a directory.
+ * @G_FILE_TEST_IS_EXECUTABLE: %TRUE if the file is executable.
+ * @G_FILE_TEST_EXISTS: %TRUE if the file exists. It may or may not
+ *     be a regular file.
+ *
+ * A test to perform on a file using g_file_test().
+ */
+
 /**
  * g_mkdir_with_parents:
  * @pathname: a pathname in the GLib file name encoding
@@ -175,7 +310,7 @@ g_mkdir_with_parents (const gchar *pathname,
  * %G_FILE_TEST_IS_SYMLINK will always return %FALSE. Testing for
  * %G_FILE_TEST_IS_EXECUTABLE will just check that the file exists and
  * its name indicates that it is executable, checking for well-known
- * extensions and those listed in the %PATHEXT environment variable.
+ * extensions and those listed in the <envar>PATHEXT</envar> environment variable.
  *
  * Return value: whether a test was %TRUE
  **/
@@ -334,9 +469,9 @@ g_file_error_quark (void)
  * g_file_error_from_errno:
  * @err_no: an "errno" value
  * 
- * Gets a #GFileError constant based on the passed-in @errno.
- * For example, if you pass in %EEXIST this function returns
- * #G_FILE_ERROR_EXIST. Unlike @errno values, you can portably
+ * Gets a #GFileError constant based on the passed-in @err_no.
+ * For example, if you pass in <literal>EEXIST</literal> this function returns
+ * #G_FILE_ERROR_EXIST. Unlike <literal>errno</literal> values, you can portably
  * assume that all #GFileError values will exist.
  *
  * Normally a #GFileError value goes into a #GError returned
@@ -1031,7 +1166,6 @@ write_to_temp_file (const gchar  *contents,
 		   display_name, 
 		   g_strerror (save_errno));
 
-      fclose (file);
       g_unlink (tmp_name);
       
       goto out;
@@ -1245,7 +1379,7 @@ get_tmp_file (gchar            *tmpl,
   return -1;
 }
 
-gint
+static gint
 wrap_mkdir (gchar *tmpl,
             int    flags G_GNUC_UNUSED,
             int    mode)
@@ -1275,7 +1409,7 @@ wrap_mkdir (gchar *tmpl,
  *     to hold the directory name. In case of errors, %NULL is
  *     returned, and %errno will be set.
  *
- * Since: 2.26
+ * Since: 2.30
  */
 gchar *
 g_mkdtemp_full (gchar *tmpl,
@@ -1307,7 +1441,7 @@ g_mkdtemp_full (gchar *tmpl,
  *     to hold the directory name.  In case of errors, %NULL is
  *     returned and %errno will be set.
  *
- * Since: 2.26
+ * Since: 2.30
  */
 gchar *
 g_mkdtemp (gchar *tmpl)
@@ -1913,263 +2047,6 @@ g_build_filename (const gchar *first_element,
   return str;
 }
 
-#define KILOBYTE_FACTOR (G_GOFFSET_CONSTANT (1000))
-#define MEGABYTE_FACTOR (KILOBYTE_FACTOR * KILOBYTE_FACTOR)
-#define GIGABYTE_FACTOR (MEGABYTE_FACTOR * KILOBYTE_FACTOR)
-#define TERABYTE_FACTOR (GIGABYTE_FACTOR * KILOBYTE_FACTOR)
-#define PETABYTE_FACTOR (TERABYTE_FACTOR * KILOBYTE_FACTOR)
-#define EXABYTE_FACTOR  (PETABYTE_FACTOR * KILOBYTE_FACTOR)
-
-#define KIBIBYTE_FACTOR (G_GOFFSET_CONSTANT (1024))
-#define MEBIBYTE_FACTOR (KIBIBYTE_FACTOR * KIBIBYTE_FACTOR)
-#define GIBIBYTE_FACTOR (MEBIBYTE_FACTOR * KIBIBYTE_FACTOR)
-#define TEBIBYTE_FACTOR (GIBIBYTE_FACTOR * KIBIBYTE_FACTOR)
-#define PEBIBYTE_FACTOR (TEBIBYTE_FACTOR * KIBIBYTE_FACTOR)
-#define EXBIBYTE_FACTOR (PEBIBYTE_FACTOR * KIBIBYTE_FACTOR)
-
-/**
- * g_format_size:
- * @size: a size in bytes
- *
- * Formats a size (for example the size of a file) into a human readable
- * string.  Sizes are rounded to the nearest size prefix (kB, MB, GB)
- * and are displayed rounded to the nearest tenth. E.g. the file size
- * 3292528 bytes will be converted into the string "3.2 MB".
- *
- * The prefix units base is 1000 (i.e. 1 kB is 1000 bytes).
- *
- * This string should be freed with g_free() when not needed any longer.
- *
- * See g_format_size_full() for more options about how the size might be
- * formatted.
- *
- * Returns: a newly-allocated formatted string containing a human readable
- *          file size.
- *
- * Since: 2.30
- **/
-gchar *
-g_format_size (guint64 size)
-{
-  return g_format_size_full (size, G_FORMAT_SIZE_DEFAULT);
-}
-
-/**
- * g_format_size_full:
- * @size: a size in bytes
- * @flags: #GFormatSizeFlags to modify the output
- *
- * Formats a size.
- *
- * This function is similar to g_format_size() but allows for flags that
- * modify the output.  See #GFormatSizeFlags.
- *
- * Returns: a newly-allocated formatted string containing a human
- *          readable file size.
- *
- * Since: 2.30
- **/
-/**
- * GFormatSizeFlags:
- * @G_FORMAT_SIZE_DEFAULT: behave the same as g_format_size()
- * @G_FORMAT_SIZE_LONG_FORMAT: include the exact number of bytes as part
- *                             of the returned string.  For example,
- *                             "45.6 kB (45,612 bytes)".
- * @G_FORMAT_SIZE_IEC_UNITS: use IEC (base 1024) units with "KiB"-style
- *                           suffixes.  IEC units should only be used
- *                           for reporting things with a strong "power
- *                           of 2" basis, like RAM sizes or RAID stripe
- *                           sizes.  Network and storage sizes should
- *                           be reported in the normal SI units.
- *
- * Flags to modify the format of the string returned by
- * g_format_size_full().
- **/
-gchar *
-g_format_size_full (guint64          size,
-                    GFormatSizeFlags flags)
-{
-  GString *string;
-
-  string = g_string_new (NULL);
-
-  if (flags & G_FORMAT_SIZE_IEC_UNITS)
-    {
-      if (size < KIBIBYTE_FACTOR)
-        {
-          g_string_printf (string,
-                           g_dngettext(GETTEXT_PACKAGE, "%u byte", "%u bytes", (guint) size),
-                           (guint) size);
-          flags &= ~G_FORMAT_SIZE_LONG_FORMAT;
-        }
-
-      else if (size < MEBIBYTE_FACTOR)
-        g_string_printf (string, _("%.1f KiB"), (gdouble) size / (gdouble) KIBIBYTE_FACTOR);
-
-      else if (size < GIBIBYTE_FACTOR)
-        g_string_printf (string, _("%.1f MiB"), (gdouble) size / (gdouble) MEBIBYTE_FACTOR);
-
-      else if (size < TEBIBYTE_FACTOR)
-        g_string_printf (string, _("%.1f GiB"), (gdouble) size / (gdouble) GIBIBYTE_FACTOR);
-
-      else if (size < PEBIBYTE_FACTOR)
-        g_string_printf (string, _("%.1f TiB"), (gdouble) size / (gdouble) TEBIBYTE_FACTOR);
-
-      else if (size < EXBIBYTE_FACTOR)
-        g_string_printf (string, _("%.1f PiB"), (gdouble) size / (gdouble) PEBIBYTE_FACTOR);
-
-      else
-        g_string_printf (string, _("%.1f EiB"), (gdouble) size / (gdouble) EXBIBYTE_FACTOR);
-    }
-  else
-    {
-      if (size < KILOBYTE_FACTOR)
-        {
-          g_string_printf (string,
-                           g_dngettext(GETTEXT_PACKAGE, "%u byte", "%u bytes", (guint) size),
-                           (guint) size);
-          flags &= ~G_FORMAT_SIZE_LONG_FORMAT;
-        }
-
-      else if (size < MEGABYTE_FACTOR)
-        g_string_printf (string, _("%.1f kB"), (gdouble) size / (gdouble) KILOBYTE_FACTOR);
-
-      else if (size < GIGABYTE_FACTOR)
-        g_string_printf (string, _("%.1f MB"), (gdouble) size / (gdouble) MEGABYTE_FACTOR);
-
-      else if (size < TERABYTE_FACTOR)
-        g_string_printf (string, _("%.1f GB"), (gdouble) size / (gdouble) GIGABYTE_FACTOR);
-
-      else if (size < PETABYTE_FACTOR)
-        g_string_printf (string, _("%.1f TB"), (gdouble) size / (gdouble) TERABYTE_FACTOR);
-
-      else if (size < EXABYTE_FACTOR)
-        g_string_printf (string, _("%.1f PB"), (gdouble) size / (gdouble) PETABYTE_FACTOR);
-
-      else
-        g_string_printf (string, _("%.1f EB"), (gdouble) size / (gdouble) EXABYTE_FACTOR);
-    }
-
-  if (flags & G_FORMAT_SIZE_LONG_FORMAT)
-    {
-      /* First problem: we need to use the number of bytes to decide on
-       * the plural form that is used for display, but the number of
-       * bytes potentially exceeds the size of a guint (which is what
-       * ngettext() takes).
-       *
-       * From a pragmatic standpoint, it seems that all known languages
-       * base plural forms on one or both of the following:
-       *
-       *   - the lowest digits of the number
-       *
-       *   - if the number if greater than some small value
-       *
-       * Here's how we fake it:  Draw an arbitrary line at one thousand.
-       * If the number is below that, then fine.  If it is above it,
-       * then we take the modulus of the number by one thousand (in
-       * order to keep the lowest digits) and add one thousand to that
-       * (in order to ensure that 1001 is not treated the same as 1).
-       */
-      guint plural_form = size < 1000 ? size : size % 1000 + 1000;
-
-      /* Second problem: we need to translate the string "%u byte" and
-       * "%u bytes" for pluralisation, but the correct number format to
-       * use for a gsize is different depending on which architecture
-       * we're on.
-       *
-       * Solution: format the number separately and use "%s bytes" on
-       * all platforms.
-       */
-      const gchar *translated_format;
-      gchar *formatted_number;
-
-      /* Translators: the %s in "%s bytes" will always be replaced by a number. */
-      translated_format = g_dngettext(GETTEXT_PACKAGE, "%s byte", "%s bytes", plural_form);
-
-      /* XXX: Windows doesn't support the "'" format modifier, so we
-       * must not use it there.  Instead, just display the number
-       * without separation.  Bug #655336 is open until a solution is
-       * found.
-       */
-#ifndef G_OS_WIN32
-      formatted_number = g_strdup_printf ("%'"G_GUINT64_FORMAT, size);
-#else
-      formatted_number = g_strdup_printf ("%"G_GUINT64_FORMAT, size);
-#endif
-
-      g_string_append (string, " (");
-      g_string_append_printf (string, translated_format, formatted_number);
-      g_free (formatted_number);
-      g_string_append (string, ")");
-    }
-
-  return g_string_free (string, FALSE);
-}
-
-/**
- * g_format_size_for_display:
- * @size: a size in bytes.
- * 
- * Formats a size (for example the size of a file) into a human readable string.
- * Sizes are rounded to the nearest size prefix (KB, MB, GB) and are displayed 
- * rounded to the nearest  tenth. E.g. the file size 3292528 bytes will be
- * converted into the string "3.1 MB".
- *
- * The prefix units base is 1024 (i.e. 1 KB is 1024 bytes).
- *
- * This string should be freed with g_free() when not needed any longer.
- *
- * Returns: a newly-allocated formatted string containing a human readable
- *          file size.
- *
- * Deprecated:2.30: This function is broken due to its use of SI
- *                  suffixes to denote IEC units.  Use g_format_size()
- *                  instead.
- * Since: 2.16
- **/
-char *
-g_format_size_for_display (goffset size)
-{
-  if (size < (goffset) KIBIBYTE_FACTOR)
-    return g_strdup_printf (g_dngettext(GETTEXT_PACKAGE, "%u byte", "%u bytes",(guint) size), (guint) size);
-  else
-    {
-      gdouble displayed_size;
-      
-      if (size < (goffset) MEBIBYTE_FACTOR)
-	{
-	  displayed_size = (gdouble) size / (gdouble) KIBIBYTE_FACTOR;
-	  return g_strdup_printf (_("%.1f KB"), displayed_size);
-	}
-      else if (size < (goffset) GIBIBYTE_FACTOR)
-	{
-	  displayed_size = (gdouble) size / (gdouble) MEBIBYTE_FACTOR;
-	  return g_strdup_printf (_("%.1f MB"), displayed_size);
-	}
-      else if (size < (goffset) TEBIBYTE_FACTOR)
-	{
-	  displayed_size = (gdouble) size / (gdouble) GIBIBYTE_FACTOR;
-	  return g_strdup_printf (_("%.1f GB"), displayed_size);
-	}
-      else if (size < (goffset) PEBIBYTE_FACTOR)
-	{
-	  displayed_size = (gdouble) size / (gdouble) TEBIBYTE_FACTOR;
-	  return g_strdup_printf (_("%.1f TB"), displayed_size);
-	}
-      else if (size < (goffset) EXBIBYTE_FACTOR)
-	{
-	  displayed_size = (gdouble) size / (gdouble) PEBIBYTE_FACTOR;
-	  return g_strdup_printf (_("%.1f PB"), displayed_size);
-	}
-      else
-        {
-	  displayed_size = (gdouble) size / (gdouble) EXBIBYTE_FACTOR;
-	  return g_strdup_printf (_("%.1f EB"), displayed_size);
-        }
-    }
-}
-
-
 /**
  * g_file_read_link:
  * @filename: the symbolic link
@@ -2234,7 +2111,445 @@ g_file_read_link (const gchar  *filename,
 #endif
 }
 
-/* NOTE : Keep this part last to ensure nothing in this file uses the
+/**
+ * g_path_is_absolute:
+ * @file_name: a file name
+ *
+ * Returns %TRUE if the given @file_name is an absolute file name.
+ * Note that this is a somewhat vague concept on Windows.
+ *
+ * On POSIX systems, an absolute file name is well-defined. It always
+ * starts from the single root directory. For example "/usr/local".
+ *
+ * On Windows, the concepts of current drive and drive-specific
+ * current directory introduce vagueness. This function interprets as
+ * an absolute file name one that either begins with a directory
+ * separator such as "\Users\tml" or begins with the root on a drive,
+ * for example "C:\Windows". The first case also includes UNC paths
+ * such as "\\myserver\docs\foo". In all cases, either slashes or
+ * backslashes are accepted.
+ *
+ * Note that a file name relative to the current drive root does not
+ * truly specify a file uniquely over time and across processes, as
+ * the current drive is a per-process value and can be changed.
+ *
+ * File names relative the current directory on some specific drive,
+ * such as "D:foo/bar", are not interpreted as absolute by this
+ * function, but they obviously are not relative to the normal current
+ * directory as returned by getcwd() or g_get_current_dir()
+ * either. Such paths should be avoided, or need to be handled using
+ * Windows-specific code.
+ *
+ * Returns: %TRUE if @file_name is absolute
+ */
+gboolean
+g_path_is_absolute (const gchar *file_name)
+{
+  g_return_val_if_fail (file_name != NULL, FALSE);
+
+  if (G_IS_DIR_SEPARATOR (file_name[0]))
+    return TRUE;
+
+#ifdef G_OS_WIN32
+  /* Recognize drive letter on native Windows */
+  if (g_ascii_isalpha (file_name[0]) &&
+      file_name[1] == ':' && G_IS_DIR_SEPARATOR (file_name[2]))
+    return TRUE;
+#endif
+
+  return FALSE;
+}
+
+/**
+ * g_path_skip_root:
+ * @file_name: a file name
+ *
+ * Returns a pointer into @file_name after the root component,
+ * i.e. after the "/" in UNIX or "C:\" under Windows. If @file_name
+ * is not an absolute path it returns %NULL.
+ *
+ * Returns: a pointer into @file_name after the root component
+ */
+const gchar *
+g_path_skip_root (const gchar *file_name)
+{
+  g_return_val_if_fail (file_name != NULL, NULL);
+
+#ifdef G_PLATFORM_WIN32
+  /* Skip \\server\share or //server/share */
+  if (G_IS_DIR_SEPARATOR (file_name[0]) &&
+      G_IS_DIR_SEPARATOR (file_name[1]) &&
+      file_name[2] &&
+      !G_IS_DIR_SEPARATOR (file_name[2]))
+    {
+      gchar *p;
+      p = strchr (file_name + 2, G_DIR_SEPARATOR);
+
+#ifdef G_OS_WIN32
+      {
+        gchar *q;
+
+        q = strchr (file_name + 2, '/');
+        if (p == NULL || (q != NULL && q < p))
+        p = q;
+      }
+#endif
+
+      if (p && p > file_name + 2 && p[1])
+        {
+          file_name = p + 1;
+
+          while (file_name[0] && !G_IS_DIR_SEPARATOR (file_name[0]))
+            file_name++;
+
+          /* Possibly skip a backslash after the share name */
+          if (G_IS_DIR_SEPARATOR (file_name[0]))
+            file_name++;
+
+          return (gchar *)file_name;
+        }
+    }
+#endif
+
+  /* Skip initial slashes */
+  if (G_IS_DIR_SEPARATOR (file_name[0]))
+    {
+      while (G_IS_DIR_SEPARATOR (file_name[0]))
+        file_name++;
+      return (gchar *)file_name;
+    }
+
+#ifdef G_OS_WIN32
+  /* Skip X:\ */
+  if (g_ascii_isalpha (file_name[0]) &&
+      file_name[1] == ':' &&
+      G_IS_DIR_SEPARATOR (file_name[2]))
+    return (gchar *)file_name + 3;
+#endif
+
+  return NULL;
+}
+
+/**
+ * g_basename:
+ * @file_name: the name of the file
+ *
+ * Gets the name of the file without any leading directory
+ * components. It returns a pointer into the given file name
+ * string.
+ *
+ * Return value: the name of the file without any leading
+ *     directory components
+ *
+ * Deprecated:2.2: Use g_path_get_basename() instead, but notice
+ *     that g_path_get_basename() allocates new memory for the
+ *     returned string, unlike this function which returns a pointer
+ *     into the argument.
+ */
+const gchar *
+g_basename (const gchar *file_name)
+{
+  gchar *base;
+
+  g_return_val_if_fail (file_name != NULL, NULL);
+
+  base = strrchr (file_name, G_DIR_SEPARATOR);
+
+#ifdef G_OS_WIN32
+  {
+    gchar *q;
+    q = strrchr (file_name, '/');
+    if (base == NULL || (q != NULL && q > base))
+      base = q;
+  }
+#endif
+
+  if (base)
+    return base + 1;
+
+#ifdef G_OS_WIN32
+  if (g_ascii_isalpha (file_name[0]) && file_name[1] == ':')
+    return (gchar*) file_name + 2;
+#endif
+
+  return (gchar*) file_name;
+}
+
+/**
+ * g_path_get_basename:
+ * @file_name: the name of the file
+ *
+ * Gets the last component of the filename.
+ *
+ * If @file_name ends with a directory separator it gets the component
+ * before the last slash. If @file_name consists only of directory
+ * separators (and on Windows, possibly a drive letter), a single
+ * separator is returned. If @file_name is empty, it gets ".".
+ *
+ * Return value: a newly allocated string containing the last
+ *    component of the filename
+ */
+gchar *
+g_path_get_basename (const gchar *file_name)
+{
+  gssize base;
+  gssize last_nonslash;
+  gsize len;
+  gchar *retval;
+
+  g_return_val_if_fail (file_name != NULL, NULL);
+
+  if (file_name[0] == '\0')
+    return g_strdup (".");
+
+  last_nonslash = strlen (file_name) - 1;
+
+  while (last_nonslash >= 0 && G_IS_DIR_SEPARATOR (file_name [last_nonslash]))
+    last_nonslash--;
+
+  if (last_nonslash == -1)
+    /* string only containing slashes */
+    return g_strdup (G_DIR_SEPARATOR_S);
+
+#ifdef G_OS_WIN32
+  if (last_nonslash == 1 &&
+      g_ascii_isalpha (file_name[0]) &&
+      file_name[1] == ':')
+    /* string only containing slashes and a drive */
+    return g_strdup (G_DIR_SEPARATOR_S);
+#endif
+  base = last_nonslash;
+
+  while (base >=0 && !G_IS_DIR_SEPARATOR (file_name [base]))
+    base--;
+
+#ifdef G_OS_WIN32
+  if (base == -1 &&
+      g_ascii_isalpha (file_name[0]) &&
+      file_name[1] == ':')
+    base = 1;
+#endif /* G_OS_WIN32 */
+
+  len = last_nonslash - base;
+  retval = g_malloc (len + 1);
+  memcpy (retval, file_name + base + 1, len);
+  retval [len] = '\0';
+
+  return retval;
+}
+
+/**
+ * g_dirname:
+ * @file_name: the name of the file
+ *
+ * Gets the directory components of a file name.
+ *
+ * If the file name has no directory components "." is returned.
+ * The returned string should be freed when no longer needed.
+ *
+ * Returns: the directory components of the file
+ *
+ * Deprecated: use g_path_get_dirname() instead
+ */
+
+/**
+ * g_path_get_dirname:
+ * @file_name: the name of the file
+ *
+ * Gets the directory components of a file name.
+ *
+ * If the file name has no directory components "." is returned.
+ * The returned string should be freed when no longer needed.
+ *
+ * Returns: the directory components of the file
+ */
+gchar *
+g_path_get_dirname (const gchar *file_name)
+{
+  gchar *base;
+  gsize len;
+
+  g_return_val_if_fail (file_name != NULL, NULL);
+
+  base = strrchr (file_name, G_DIR_SEPARATOR);
+
+#ifdef G_OS_WIN32
+  {
+    gchar *q;
+    q = strrchr (file_name, '/');
+    if (base == NULL || (q != NULL && q > base))
+      base = q;
+  }
+#endif
+
+  if (!base)
+    {
+#ifdef G_OS_WIN32
+      if (g_ascii_isalpha (file_name[0]) && file_name[1] == ':')
+        {
+          gchar drive_colon_dot[4];
+
+          drive_colon_dot[0] = file_name[0];
+          drive_colon_dot[1] = ':';
+          drive_colon_dot[2] = '.';
+          drive_colon_dot[3] = '\0';
+
+          return g_strdup (drive_colon_dot);
+        }
+#endif
+    return g_strdup (".");
+    }
+
+  while (base > file_name && G_IS_DIR_SEPARATOR (*base))
+    base--;
+
+#ifdef G_OS_WIN32
+  /* base points to the char before the last slash.
+   *
+   * In case file_name is the root of a drive (X:\) or a child of the
+   * root of a drive (X:\foo), include the slash.
+   *
+   * In case file_name is the root share of an UNC path
+   * (\\server\share), add a slash, returning \\server\share\ .
+   *
+   * In case file_name is a direct child of a share in an UNC path
+   * (\\server\share\foo), include the slash after the share name,
+   * returning \\server\share\ .
+   */
+  if (base == file_name + 1 &&
+      g_ascii_isalpha (file_name[0]) &&
+      file_name[1] == ':')
+    base++;
+  else if (G_IS_DIR_SEPARATOR (file_name[0]) &&
+           G_IS_DIR_SEPARATOR (file_name[1]) &&
+           file_name[2] &&
+           !G_IS_DIR_SEPARATOR (file_name[2]) &&
+           base >= file_name + 2)
+    {
+      const gchar *p = file_name + 2;
+      while (*p && !G_IS_DIR_SEPARATOR (*p))
+        p++;
+      if (p == base + 1)
+        {
+          len = (guint) strlen (file_name) + 1;
+          base = g_new (gchar, len + 1);
+          strcpy (base, file_name);
+          base[len-1] = G_DIR_SEPARATOR;
+          base[len] = 0;
+          return base;
+        }
+      if (G_IS_DIR_SEPARATOR (*p))
+        {
+          p++;
+          while (*p && !G_IS_DIR_SEPARATOR (*p))
+            p++;
+          if (p == base + 1)
+            base++;
+        }
+    }
+#endif
+
+  len = (guint) 1 + base - file_name;
+  base = g_new (gchar, len + 1);
+  g_memmove (base, file_name, len);
+  base[len] = 0;
+
+  return base;
+}
+
+#if defined(MAXPATHLEN)
+#define G_PATH_LENGTH MAXPATHLEN
+#elif defined(PATH_MAX)
+#define G_PATH_LENGTH PATH_MAX
+#elif defined(_PC_PATH_MAX)
+#define G_PATH_LENGTH sysconf(_PC_PATH_MAX)
+#else
+#define G_PATH_LENGTH 2048
+#endif
+
+/**
+ * g_get_current_dir:
+ *
+ * Gets the current directory.
+ *
+ * The returned string should be freed when no longer needed.
+ * The encoding of the returned string is system defined.
+ * On Windows, it is always UTF-8.
+ *
+ * Returns: the current directory
+ */
+gchar *
+g_get_current_dir (void)
+{
+#ifdef G_OS_WIN32
+
+  gchar *dir = NULL;
+  wchar_t dummy[2], *wdir;
+  int len;
+
+  len = GetCurrentDirectoryW (2, dummy);
+  wdir = g_new (wchar_t, len);
+
+  if (GetCurrentDirectoryW (len, wdir) == len - 1)
+    dir = g_utf16_to_utf8 (wdir, -1, NULL, NULL, NULL);
+
+  g_free (wdir);
+
+  if (dir == NULL)
+    dir = g_strdup ("\\");
+
+  return dir;
+
+#else
+
+  gchar *buffer = NULL;
+  gchar *dir = NULL;
+  static gulong max_len = 0;
+
+  if (max_len == 0)
+    max_len = (G_PATH_LENGTH == -1) ? 2048 : G_PATH_LENGTH;
+
+  /* We don't use getcwd(3) on SUNOS, because, it does a popen("pwd")
+   * and, if that wasn't bad enough, hangs in doing so.
+   */
+#if (defined (sun) && !defined (__SVR4)) || !defined(HAVE_GETCWD)
+  buffer = g_new (gchar, max_len + 1);
+  *buffer = 0;
+  dir = getwd (buffer);
+#else
+  while (max_len < G_MAXULONG / 2)
+    {
+      g_free (buffer);
+      buffer = g_new (gchar, max_len + 1);
+      *buffer = 0;
+      dir = getcwd (buffer, max_len);
+
+      if (dir || errno != ERANGE)
+        break;
+
+      max_len *= 2;
+    }
+#endif  /* !sun || !HAVE_GETCWD */
+
+  if (!dir || !*buffer)
+    {
+      /* hm, should we g_error() out here?
+       * this can happen if e.g. "./" has mode \0000
+       */
+      buffer[0] = G_DIR_SEPARATOR;
+      buffer[1] = 0;
+    }
+
+  dir = g_strdup (buffer);
+  g_free (buffer);
+
+  return dir;
+
+#endif /* !G_OS_WIN32 */
+}
+
+
+/* NOTE : Keep this part last to ensure nothing in this file uses thn
  * below binary compatibility versions.
  */
 #if defined (G_OS_WIN32) && !defined (_WIN64)
@@ -2323,4 +2638,16 @@ g_file_open_tmp (const gchar  *tmpl,
   return retval;
 }
 
+#undef g_get_current_dir
+
+gchar *
+g_get_current_dir (void)
+{
+  gchar *utf8_dir = g_get_current_dir_utf8 ();
+  gchar *dir = g_locale_from_utf8 (utf8_dir, -1, NULL, NULL, NULL);
+  g_free (utf8_dir);
+  return dir;
+}
+
 #endif
+

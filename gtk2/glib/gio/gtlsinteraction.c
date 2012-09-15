@@ -106,7 +106,7 @@ struct _GTlsInteractionPrivate {
 G_DEFINE_TYPE (GTlsInteraction, g_tls_interaction, G_TYPE_OBJECT);
 
 typedef struct {
-  GMutex *mutex;
+  GMutex mutex;
 
   /* Input arguments */
   GTlsInteraction *interaction;
@@ -121,7 +121,7 @@ typedef struct {
   GTlsInteractionResult result;
   GError *error;
   gboolean complete;
-  GCond *cond;
+  GCond cond;
 } InvokeClosure;
 
 static void
@@ -132,8 +132,8 @@ invoke_closure_free (gpointer data)
   g_object_unref (closure->interaction);
   g_clear_object (&closure->argument);
   g_clear_object (&closure->cancellable);
-  g_cond_free (closure->cond);
-  g_mutex_free (closure->mutex);
+  g_cond_clear (&closure->cond);
+  g_mutex_clear (&closure->mutex);
   g_clear_error (&closure->error);
 
   /* Insurance that we've actually used these before freeing */
@@ -152,8 +152,8 @@ invoke_closure_new (GTlsInteraction *interaction,
   closure->interaction = g_object_ref (interaction);
   closure->argument = argument ? g_object_ref (argument) : NULL;
   closure->cancellable = cancellable ? g_object_ref (cancellable) : NULL;
-  closure->mutex = g_mutex_new ();
-  closure->cond = g_cond_new ();
+  g_mutex_init (&closure->mutex);
+  g_cond_init (&closure->cond);
   closure->result = G_TLS_INTERACTION_UNHANDLED;
   return closure;
 }
@@ -164,12 +164,12 @@ invoke_closure_wait_and_free (InvokeClosure *closure,
 {
   GTlsInteractionResult result;
 
-  g_mutex_lock (closure->mutex);
+  g_mutex_lock (&closure->mutex);
 
   while (!closure->complete)
-      g_cond_wait (closure->cond, closure->mutex);
+    g_cond_wait (&closure->cond, &closure->mutex);
 
-  g_mutex_unlock (closure->mutex);
+  g_mutex_unlock (&closure->mutex);
 
   if (closure->error)
     {
@@ -187,9 +187,7 @@ g_tls_interaction_init (GTlsInteraction *interaction)
 {
   interaction->priv = G_TYPE_INSTANCE_GET_PRIVATE (interaction, G_TYPE_TLS_INTERACTION,
                                                    GTlsInteractionPrivate);
-  interaction->priv->context = g_main_context_get_thread_default ();
-  if (interaction->priv->context)
-    g_main_context_ref (interaction->priv->context);
+  interaction->priv->context = g_main_context_ref_thread_default ();
 }
 
 static void
@@ -197,8 +195,7 @@ g_tls_interaction_finalize (GObject *object)
 {
   GTlsInteraction *interaction = G_TLS_INTERACTION (object);
 
-  if (interaction->priv->context)
-    g_main_context_unref (interaction->priv->context);
+  g_main_context_unref (interaction->priv->context);
 
   G_OBJECT_CLASS (g_tls_interaction_parent_class)->finalize (object);
 }
@@ -219,7 +216,7 @@ on_invoke_ask_password_sync (gpointer user_data)
   InvokeClosure *closure = user_data;
   GTlsInteractionClass *klass;
 
-  g_mutex_lock (closure->mutex);
+  g_mutex_lock (&closure->mutex);
 
   klass = G_TLS_INTERACTION_GET_CLASS (closure->interaction);
   g_assert (klass->ask_password);
@@ -230,8 +227,8 @@ on_invoke_ask_password_sync (gpointer user_data)
                                          &closure->error);
 
   closure->complete = TRUE;
-  g_cond_signal (closure->cond);
-  g_mutex_unlock (closure->mutex);
+  g_cond_signal (&closure->cond);
+  g_mutex_unlock (&closure->mutex);
 
   return FALSE; /* don't call again */
 }
@@ -244,7 +241,7 @@ on_async_as_sync_complete (GObject      *source,
   InvokeClosure *closure = user_data;
   GTlsInteractionClass *klass;
 
-  g_mutex_lock (closure->mutex);
+  g_mutex_lock (&closure->mutex);
 
   klass = G_TLS_INTERACTION_GET_CLASS (closure->interaction);
   g_assert (klass->ask_password_finish);
@@ -254,8 +251,8 @@ on_async_as_sync_complete (GObject      *source,
                                                 &closure->error);
 
   closure->complete = TRUE;
-  g_cond_signal (closure->cond);
-  g_mutex_unlock (closure->mutex);
+  g_cond_signal (&closure->cond);
+  g_mutex_unlock (&closure->mutex);
 }
 
 static gboolean
@@ -264,7 +261,7 @@ on_invoke_ask_password_async_as_sync (gpointer user_data)
   InvokeClosure *closure = user_data;
   GTlsInteractionClass *klass;
 
-  g_mutex_lock (closure->mutex);
+  g_mutex_lock (&closure->mutex);
 
   klass = G_TLS_INTERACTION_GET_CLASS (closure->interaction);
   g_assert (klass->ask_password_async);
@@ -279,7 +276,7 @@ on_invoke_ask_password_async_as_sync (gpointer user_data)
   closure->callback = NULL;
   closure->user_data = NULL;
 
-  g_mutex_unlock (closure->mutex);
+  g_mutex_unlock (&closure->mutex);
 
   return FALSE; /* don't call again */
 }
@@ -324,6 +321,7 @@ g_tls_interaction_invoke_ask_password (GTlsInteraction    *interaction,
   GTlsInteractionResult result;
   InvokeClosure *closure;
   GTlsInteractionClass *klass;
+  gboolean complete;
 
   g_return_val_if_fail (G_IS_TLS_INTERACTION (interaction), G_TLS_INTERACTION_UNHANDLED);
   g_return_val_if_fail (G_IS_TLS_PASSWORD (password), G_TLS_INTERACTION_UNHANDLED);
@@ -351,12 +349,16 @@ g_tls_interaction_invoke_ask_password (GTlsInteraction    *interaction,
        */
       if (g_main_context_acquire (interaction->priv->context))
         {
-          while (!closure->complete)
+          for (;;)
             {
-              g_mutex_unlock (closure->mutex);
+              g_mutex_lock (&closure->mutex);
+              complete = closure->complete;
+              g_mutex_unlock (&closure->mutex);
+              if (complete)
+                break;
               g_main_context_iteration (interaction->priv->context, TRUE);
-              g_mutex_lock (closure->mutex);
             }
+
           g_main_context_release (interaction->priv->context);
 
           if (closure->error)

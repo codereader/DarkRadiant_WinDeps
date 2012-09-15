@@ -39,7 +39,7 @@
  * SECTION:gmount
  * @short_description: Mount management
  * @include: gio/gio.h
- * @see_also: GVolume, GUnixMount
+ * @see_also: GVolume, GUnixMountEntry, GUnixMountPoint
  *
  * The #GMount interface represents user-visible mounts. Note, when 
  * porting from GnomeVFS, #GMount is the moral equivalent of #GnomeVFSVolume.
@@ -50,8 +50,8 @@
  * might not be related to a volume object.
  * 
  * Unmounting a #GMount instance is an asynchronous operation. For
- * more information about asynchronous operations, see #GAsyncReady
- * and #GSimpleAsyncReady. To unmount a #GMount instance, first call
+ * more information about asynchronous operations, see #GAsyncResult
+ * and #GSimpleAsyncResult. To unmount a #GMount instance, first call
  * g_mount_unmount_with_operation() with (at least) the #GMount instance and a
  * #GAsyncReadyCallback.  The callback will be fired when the
  * operation has resolved (either with success or failure), and a
@@ -1011,4 +1011,29 @@ g_mount_unshadow (GMount *mount)
   if (priv->shadow_ref_count < 0)
     g_warning ("Shadow ref count on GMount is negative");
   G_UNLOCK (priv_lock);
+}
+
+/**
+ * g_mount_get_sort_key:
+ * @mount: A #GMount.
+ *
+ * Gets the sort key for @mount, if any.
+ *
+ * Returns: Sorting key for @mount or %NULL if no such key is available.
+ *
+ * Since: 2.32
+ */
+const gchar *
+g_mount_get_sort_key (GMount  *mount)
+{
+  const gchar *ret = NULL;
+  GMountIface *iface;
+
+  g_return_val_if_fail (G_IS_MOUNT (mount), NULL);
+
+  iface = G_MOUNT_GET_IFACE (mount);
+  if (iface->get_sort_key != NULL)
+    ret = iface->get_sort_key (mount);
+
+  return ret;
 }

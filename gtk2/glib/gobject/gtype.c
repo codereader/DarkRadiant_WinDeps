@@ -110,15 +110,15 @@
  */
 
 #ifdef LOCK_DEBUG
-#define G_READ_LOCK(rw_lock)    do { g_printerr (G_STRLOC ": readL++\n"); g_static_rw_lock_reader_lock (rw_lock); } while (0)
-#define G_READ_UNLOCK(rw_lock)  do { g_printerr (G_STRLOC ": readL--\n"); g_static_rw_lock_reader_unlock (rw_lock); } while (0)
-#define G_WRITE_LOCK(rw_lock)   do { g_printerr (G_STRLOC ": writeL++\n"); g_static_rw_lock_writer_lock (rw_lock); } while (0)
-#define G_WRITE_UNLOCK(rw_lock) do { g_printerr (G_STRLOC ": writeL--\n"); g_static_rw_lock_writer_unlock (rw_lock); } while (0)
+#define G_READ_LOCK(rw_lock)    do { g_printerr (G_STRLOC ": readL++\n"); g_rw_lock_reader_lock (rw_lock); } while (0)
+#define G_READ_UNLOCK(rw_lock)  do { g_printerr (G_STRLOC ": readL--\n"); g_rw_lock_reader_unlock (rw_lock); } while (0)
+#define G_WRITE_LOCK(rw_lock)   do { g_printerr (G_STRLOC ": writeL++\n"); g_rw_lock_writer_lock (rw_lock); } while (0)
+#define G_WRITE_UNLOCK(rw_lock) do { g_printerr (G_STRLOC ": writeL--\n"); g_rw_lock_writer_unlock (rw_lock); } while (0)
 #else
-#define G_READ_LOCK(rw_lock)    g_static_rw_lock_reader_lock (rw_lock)
-#define G_READ_UNLOCK(rw_lock)  g_static_rw_lock_reader_unlock (rw_lock)
-#define G_WRITE_LOCK(rw_lock)   g_static_rw_lock_writer_lock (rw_lock)
-#define G_WRITE_UNLOCK(rw_lock) g_static_rw_lock_writer_unlock (rw_lock)
+#define G_READ_LOCK(rw_lock)    g_rw_lock_reader_lock (rw_lock)
+#define G_READ_UNLOCK(rw_lock)  g_rw_lock_reader_unlock (rw_lock)
+#define G_WRITE_LOCK(rw_lock)   g_rw_lock_writer_lock (rw_lock)
+#define G_WRITE_UNLOCK(rw_lock) g_rw_lock_writer_unlock (rw_lock)
 #endif
 #define	INVALID_RECURSION(func, arg, type_name) G_STMT_START{ \
     static const gchar _action[] = " invalidly modified type ";  \
@@ -375,8 +375,8 @@ typedef struct {
 
 
 /* --- variables --- */
-static GStaticRWLock   type_rw_lock = G_STATIC_RW_LOCK_INIT;
-static GStaticRecMutex class_init_rec_mutex = G_STATIC_REC_MUTEX_INIT;
+static GRWLock         type_rw_lock;
+static GRecMutex       class_init_rec_mutex;
 static guint           static_n_class_cache_funcs = 0;
 static ClassCacheFunc *static_class_cache_funcs = NULL;
 static guint           static_n_iface_check_funcs = 0;
@@ -2423,11 +2423,11 @@ type_data_unref_U (TypeNode *node,
 
       g_assert (current > 0);
 
-      g_static_rec_mutex_lock (&class_init_rec_mutex); /* required locking order: 1) class_init_rec_mutex, 2) type_rw_lock */
+      g_rec_mutex_lock (&class_init_rec_mutex); /* required locking order: 1) class_init_rec_mutex, 2) type_rw_lock */
       G_WRITE_LOCK (&type_rw_lock);
       type_data_last_unref_Wm (node, uncached);
       G_WRITE_UNLOCK (&type_rw_lock);
-      g_static_rec_mutex_unlock (&class_init_rec_mutex);
+      g_rec_mutex_unlock (&class_init_rec_mutex);
       return;
     }
   } while (!g_atomic_int_compare_and_exchange ((int *) &node->ref_count, current, current - 1));
@@ -2584,10 +2584,11 @@ g_type_remove_interface_check (gpointer                check_data,
  * @flags: Bitwise combination of #GTypeFlags values.
  *
  * Registers @type_id as the predefined identifier and @type_name as the
- * name of a fundamental type.  The type system uses the information
- * contained in the #GTypeInfo structure pointed to by @info and the
- * #GTypeFundamentalInfo structure pointed to by @finfo to manage the
- * type and its instances.  The value of @flags determines additional
+ * name of a fundamental type. If @type_id is already registered, or a type
+ * named @type_name is already registered, the behaviour is undefined. The type
+ * system uses the information contained in the #GTypeInfo structure pointed to
+ * by @info and the #GTypeFundamentalInfo structure pointed to by @finfo to
+ * manage the type and its instances. The value of @flags determines additional
  * characteristics of the fundamental type.
  *
  * Returns: The predefined type identifier.
@@ -2673,6 +2674,12 @@ g_type_register_static_simple (GType             parent_type,
 			       GTypeFlags	 flags)
 {
   GTypeInfo info;
+
+  /* Instances are not allowed to be larger than this. If you have a big
+   * fixed-length array or something, point to it instead.
+   */
+  g_return_val_if_fail (class_size <= G_MAXUINT16, G_TYPE_INVALID);
+  g_return_val_if_fail (instance_size <= G_MAXUINT16, G_TYPE_INVALID);
 
   info.class_size = class_size;
   info.base_init = NULL;
@@ -2811,7 +2818,7 @@ g_type_add_interface_static (GType                 instance_type,
    * class initialized, however this function is rarely enough called to take
    * the simple route and always acquire class_init_rec_mutex.
    */
-  g_static_rec_mutex_lock (&class_init_rec_mutex); /* required locking order: 1) class_init_rec_mutex, 2) type_rw_lock */
+  g_rec_mutex_lock (&class_init_rec_mutex); /* required locking order: 1) class_init_rec_mutex, 2) type_rw_lock */
   G_WRITE_LOCK (&type_rw_lock);
   if (check_add_interface_L (instance_type, interface_type))
     {
@@ -2821,7 +2828,7 @@ g_type_add_interface_static (GType                 instance_type,
         type_add_interface_Wm (node, iface, info, NULL);
     }
   G_WRITE_UNLOCK (&type_rw_lock);
-  g_static_rec_mutex_unlock (&class_init_rec_mutex);
+  g_rec_mutex_unlock (&class_init_rec_mutex);
 }
 
 /**
@@ -2849,7 +2856,7 @@ g_type_add_interface_dynamic (GType        instance_type,
     return;
 
   /* see comment in g_type_add_interface_static() about class_init_rec_mutex */
-  g_static_rec_mutex_lock (&class_init_rec_mutex); /* required locking order: 1) class_init_rec_mutex, 2) type_rw_lock */
+  g_rec_mutex_lock (&class_init_rec_mutex); /* required locking order: 1) class_init_rec_mutex, 2) type_rw_lock */
   G_WRITE_LOCK (&type_rw_lock);
   if (check_add_interface_L (instance_type, interface_type))
     {
@@ -2857,7 +2864,7 @@ g_type_add_interface_dynamic (GType        instance_type,
       type_add_interface_Wm (node, iface, NULL, plugin);
     }
   G_WRITE_UNLOCK (&type_rw_lock);
-  g_static_rec_mutex_unlock (&class_init_rec_mutex);
+  g_rec_mutex_unlock (&class_init_rec_mutex);
 }
 
 
@@ -2904,7 +2911,7 @@ g_type_class_ref (GType type)
    * node->data->class.init_state == INITIALIZED, because any
    * concurrently running initialization was guarded by class_init_rec_mutex.
    */
-  g_static_rec_mutex_lock (&class_init_rec_mutex); /* required locking order: 1) class_init_rec_mutex, 2) type_rw_lock */
+  g_rec_mutex_lock (&class_init_rec_mutex); /* required locking order: 1) class_init_rec_mutex, 2) type_rw_lock */
 
   /* we need an initialized parent class for initializing derived classes */
   ptype = NODE_PARENT_TYPE (node);
@@ -2923,7 +2930,7 @@ g_type_class_ref (GType type)
   if (pclass)
     g_type_class_unref (pclass);
 
-  g_static_rec_mutex_unlock (&class_init_rec_mutex);
+  g_rec_mutex_unlock (&class_init_rec_mutex);
 
   return node->data->class.class;
 }
@@ -3195,12 +3202,12 @@ g_type_default_interface_ref (GType g_type)
   if (!node->data || !node->data->iface.dflt_vtable)
     {
       G_WRITE_UNLOCK (&type_rw_lock);
-      g_static_rec_mutex_lock (&class_init_rec_mutex); /* required locking order: 1) class_init_rec_mutex, 2) type_rw_lock */
+      g_rec_mutex_lock (&class_init_rec_mutex); /* required locking order: 1) class_init_rec_mutex, 2) type_rw_lock */
       G_WRITE_LOCK (&type_rw_lock);
       node = lookup_type_node_I (g_type);
       type_data_ref_Wm (node);
       type_iface_ensure_dflt_vtable_Wm (node);
-      g_static_rec_mutex_unlock (&class_init_rec_mutex);
+      g_rec_mutex_unlock (&class_init_rec_mutex);
     }
   else
     type_data_ref_Wm (node); /* ref_count >= 1 already */
@@ -4051,7 +4058,7 @@ g_type_check_class_cast (GTypeClass *type_class,
  * Private helper function to aid implementation of the G_TYPE_CHECK_INSTANCE()
  * macro.
  *
- * @Returns:  #TRUE if @instance is valid, #FALSE otherwise.
+ * Returns: %TRUE if @instance is valid, %FALSE otherwise.
  */
 gboolean
 g_type_check_instance (GTypeInstance *type_instance)
@@ -4258,6 +4265,8 @@ _g_type_boxed_init (GType          type,
  *               debugging purposes.
  *
  * Similar to g_type_init(), but additionally sets debug flags.
+ *
+ * This function is idempotent.
  */
 void
 g_type_init_with_debug_flags (GTypeDebugFlags debug_flags)
@@ -4267,11 +4276,6 @@ g_type_init_with_debug_flags (GTypeDebugFlags debug_flags)
   GTypeInfo info;
   TypeNode *node;
   volatile GType votype;
-
-#ifdef G_THREADS_ENABLED
-  if (!g_thread_get_initialized())
-    g_thread_init (NULL);
-#endif
 
   G_LOCK (type_init_lock);
   
@@ -4289,15 +4293,12 @@ g_type_init_with_debug_flags (GTypeDebugFlags debug_flags)
   env_string = g_getenv ("GOBJECT_DEBUG");
   if (env_string != NULL)
     {
-      static GDebugKey debug_keys[] = {
-	{ "objects", G_TYPE_DEBUG_OBJECTS },
-	{ "signals", G_TYPE_DEBUG_SIGNALS },
+      GDebugKey debug_keys[] = {
+        { "objects", G_TYPE_DEBUG_OBJECTS },
+        { "signals", G_TYPE_DEBUG_SIGNALS },
       };
-      
-      _g_type_debug_flags |= g_parse_debug_string (env_string,
-						   debug_keys,
-						   sizeof (debug_keys) / sizeof (debug_keys[0]));
-      env_string = NULL;
+
+      _g_type_debug_flags |= g_parse_debug_string (env_string, debug_keys, G_N_ELEMENTS (debug_keys));
     }
   
   /* quarks */
@@ -4377,6 +4378,8 @@ g_type_init_with_debug_flags (GTypeDebugFlags debug_flags)
  * (such as the various fundamental type implementations or the signal
  * system).
  *
+ * This function is idempotent.
+ *
  * Since version 2.24 this also initializes the thread system
  */
 void
@@ -4409,6 +4412,8 @@ g_type_init (void)
  * <structname>MyObject</structname> defined in the standard GObject
  * fashion.
  * type's class_init() function.
+ * Note the use of a structure member "priv" to avoid the overhead
+ * of repeatedly calling MY_OBJECT_GET_PRIVATE().
  *
  * |[
  * typedef struct _MyObject        MyObject;
@@ -4441,7 +4446,11 @@ g_type_init (void)
  * static int
  * my_object_get_some_field (MyObject *my_object)
  * {
- *   MyObjectPrivate *priv = my_object->priv;
+ *   MyObjectPrivate *priv;
+ *
+ *   g_return_val_if_fail (MY_IS_OBJECT (my_object), 0);
+ *
+ *   priv = my_object->priv;
  *
  *   return priv->some_field;
  * }

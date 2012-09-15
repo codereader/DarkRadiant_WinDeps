@@ -42,8 +42,6 @@
 #endif
 #include <glib/gstdio.h>
 
-#undef G_DISABLE_DEPRECATED
-
 #ifdef G_OS_UNIX
 #include "gdesktopappinfo.h"
 #endif
@@ -141,7 +139,7 @@ struct _GIOModuleScope {
  * Create a new scope for loading of IO modules. A scope can be used for
  * blocking duplicate modules, or blocking a module you don't want to load.
  *
- * Specify the %G_IO_MODULES_SCOPE_BLOCK_DUPLICATES flag to block modules
+ * Specify the %G_IO_MODULE_SCOPE_BLOCK_DUPLICATES flag to block modules
  * which have the same base name as a module that has already been seen
  * in this scope.
  *
@@ -630,6 +628,133 @@ g_io_modules_load_all_in_directory (const char *dirname)
   return g_io_modules_load_all_in_directory_with_scope (dirname, NULL);
 }
 
+GRecMutex default_modules_lock;
+GHashTable *default_modules;
+
+static gpointer
+try_implementation (GIOExtension         *extension,
+		    GIOModuleVerifyFunc   verify_func)
+{
+  GType type = g_io_extension_get_type (extension);
+  gpointer impl;
+
+  if (g_type_is_a (type, G_TYPE_INITABLE))
+    return g_initable_new (type, NULL, NULL, NULL);
+  else
+    {
+      impl = g_object_new (type, NULL);
+      if (!verify_func || verify_func (impl))
+	return impl;
+
+      g_object_unref (impl);
+      return NULL;
+    }
+}
+
+/**
+ * _g_io_module_get_default:
+ * @extension_point: the name of an extension point
+ * @envvar: (allow-none): the name of an environment variable to
+ *     override the default implementation.
+ * @verify_func: (allow-none): a function to call to verify that
+ *     a given implementation is usable in the current environment.
+ *
+ * Retrieves the default object implementing @extension_point.
+ *
+ * If @envvar is not %NULL, and the environment variable with that
+ * name is set, then the implementation it specifies will be tried
+ * first. After that, or if @envvar is not set, all other
+ * implementations will be tried in order of decreasing priority.
+ *
+ * If an extension point implementation implements #GInitable, then
+ * that implementation will only be used if it initializes
+ * successfully. Otherwise, if @verify_func is not %NULL, then it will
+ * be called on each candidate implementation after construction, to
+ * check if it is actually usable or not.
+ *
+ * The result is cached after it is generated the first time, and
+ * the function is thread-safe.
+ *
+ * Return value: (transfer none): an object implementing
+ *     @extension_point, or %NULL if there are no usable
+ *     implementations.
+ */
+gpointer
+_g_io_module_get_default (const gchar         *extension_point,
+			  const gchar         *envvar,
+			  GIOModuleVerifyFunc  verify_func)
+{
+  const char *use_this;
+  GList *l;
+  GIOExtensionPoint *ep;
+  GIOExtension *extension, *preferred;
+  gpointer impl;
+
+  g_rec_mutex_lock (&default_modules_lock);
+  if (default_modules)
+    {
+      gpointer key;
+
+      if (g_hash_table_lookup_extended (default_modules, extension_point,
+					&key, &impl))
+	{
+	  g_rec_mutex_unlock (&default_modules_lock);
+	  return impl;
+	}
+    }
+  else
+    {
+      default_modules = g_hash_table_new (g_str_hash, g_str_equal);
+    }
+
+  _g_io_modules_ensure_loaded ();
+  ep = g_io_extension_point_lookup (extension_point);
+
+  if (!ep)
+    {
+      g_warn_if_reached ();
+      g_rec_mutex_unlock (&default_modules_lock);
+      return NULL;
+    }
+
+  use_this = envvar ? g_getenv (envvar) : NULL;
+  if (use_this)
+    {
+      preferred = g_io_extension_point_get_extension_by_name (ep, use_this);
+      if (preferred)
+	{
+	  impl = try_implementation (preferred, verify_func);
+	  if (impl)
+	    goto done;
+	}
+      else
+	g_warning ("Can't find module '%s' specified in %s", use_this, envvar);
+    }
+  else
+    preferred = NULL;
+
+  for (l = g_io_extension_point_get_extensions (ep); l != NULL; l = l->next)
+    {
+      extension = l->data;
+      if (extension == preferred)
+	continue;
+
+      impl = try_implementation (extension, verify_func);
+      if (impl)
+	goto done;
+    }
+
+  impl = NULL;
+
+ done:
+  g_hash_table_insert (default_modules,
+		       g_strdup (extension_point),
+		       impl ? g_object_ref (impl) : NULL);
+  g_rec_mutex_unlock (&default_modules_lock);
+
+  return impl;
+}
+
 G_LOCK_DEFINE_STATIC (registered_extensions);
 G_LOCK_DEFINE_STATIC (loaded_dirs);
 
@@ -646,6 +771,10 @@ extern GType _g_winhttp_vfs_get_type (void);
 
 extern GType _g_dummy_proxy_resolver_get_type (void);
 extern GType _g_dummy_tls_backend_get_type (void);
+extern GType g_network_monitor_base_get_type (void);
+#ifdef HAVE_NETLINK
+extern GType _g_network_monitor_netlink_get_type (void);
+#endif
 
 #ifdef G_PLATFORM_WIN32
 
@@ -664,6 +793,12 @@ DllMain (HINSTANCE hinstDLL,
       gio_dll = hinstDLL;
 
   return TRUE;
+}
+
+void *
+_g_io_win32_get_module (void)
+{
+  return gio_dll;
 }
 
 #endif
@@ -695,7 +830,9 @@ _g_io_modules_ensure_extension_points_registered (void)
 #ifdef G_OS_UNIX
 #if !GLIB_CHECK_VERSION (3, 0, 0)
       ep = g_io_extension_point_register (G_DESKTOP_APP_INFO_LOOKUP_EXTENSION_POINT_NAME);
+      G_GNUC_BEGIN_IGNORE_DEPRECATIONS
       g_io_extension_point_set_required_type (ep, G_TYPE_DESKTOP_APP_INFO_LOOKUP);
+      G_GNUC_END_IGNORE_DEPRECATIONS
 #endif
 #endif
       
@@ -725,10 +862,13 @@ _g_io_modules_ensure_extension_points_registered (void)
 
       ep = g_io_extension_point_register (G_TLS_BACKEND_EXTENSION_POINT_NAME);
       g_io_extension_point_set_required_type (ep, G_TYPE_TLS_BACKEND);
+
+      ep = g_io_extension_point_register (G_NETWORK_MONITOR_EXTENSION_POINT_NAME);
+      g_io_extension_point_set_required_type (ep, G_TYPE_NETWORK_MONITOR);
     }
   
   G_UNLOCK (registered_extensions);
- }
+}
 
 void
 _g_io_modules_ensure_loaded (void)
@@ -784,6 +924,9 @@ _g_io_modules_ensure_loaded (void)
       g_win32_directory_monitor_get_type ();
       g_registry_backend_get_type ();
 #endif
+#ifdef HAVE_CARBON
+      g_nextstep_settings_backend_get_type ();
+#endif
 #ifdef G_OS_UNIX
       _g_unix_volume_monitor_get_type ();
 #endif
@@ -796,6 +939,10 @@ _g_io_modules_ensure_loaded (void)
       _g_socks4_proxy_get_type ();
       _g_socks5_proxy_get_type ();
       _g_dummy_tls_backend_get_type ();
+      g_network_monitor_base_get_type ();
+#ifdef HAVE_NETLINK
+      _g_network_monitor_netlink_get_type ();
+#endif
     }
 
   G_UNLOCK (loaded_dirs);
@@ -901,7 +1048,7 @@ g_io_extension_point_get_required_type (GIOExtensionPoint *extension_point)
   return extension_point->required_type;
 }
 
-void
+static void
 lazy_load_modules (GIOExtensionPoint *extension_point)
 {
   GIOModule *module;

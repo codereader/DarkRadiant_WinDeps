@@ -37,6 +37,7 @@
 #include "gdataset.h"
 #include "gbitlock.h"
 
+#include "gslice.h"
 #include "gdatasetprivate.h"
 #include "ghash.h"
 #include "gquark.h"
@@ -202,7 +203,7 @@ static inline GQuark	g_quark_new			(gchar  	*string);
 G_LOCK_DEFINE_STATIC (g_dataset_global);
 static GHashTable   *g_dataset_location_ht = NULL;
 static GDataset     *g_dataset_cached = NULL; /* should this be
-						 threadspecific? */
+						 thread specific? */
 G_LOCK_DEFINE_STATIC (g_quark_global);
 static GHashTable   *g_quark_ht = NULL;
 static gchar       **g_quarks = NULL;
@@ -386,6 +387,10 @@ g_data_set_internal (GData	  **datalist,
 		    {
 		      G_DATALIST_SET_POINTER (datalist, NULL);
 		      g_free (d);
+		      /* datalist may be situated in dataset, so must not be
+		       * unlocked after we free it
+		       */
+		      g_datalist_unlock (datalist);
 
 		      /* the dataset destruction *must* be done
 		       * prior to invocation of the data destroy function
@@ -393,8 +398,10 @@ g_data_set_internal (GData	  **datalist,
 		      if (dataset)
 			g_dataset_destroy_internal (dataset);
 		    }
-
-		  g_datalist_unlock (datalist);
+		  else
+		    {
+		      g_datalist_unlock (datalist);
+		    }
 
 		  /* We found and removed an old value
 		   * the GData struct *must* already be unlinked
@@ -591,7 +598,7 @@ g_dataset_id_set_data_full (gconstpointer  dataset_location,
  * g_datalist_id_set_data_full:
  * @datalist: a datalist.
  * @key_id: the #GQuark to identify the data element.
- * @data: the data element or %NULL to remove any previous element
+ * @data: (allow-none): the data element or %NULL to remove any previous element
  *        corresponding to @key_id.
  * @destroy_func: the function to call when the data element is
  *                removed. This function will be called with the data
@@ -608,7 +615,7 @@ g_dataset_id_set_data_full (gconstpointer  dataset_location,
  * g_datalist_set_data_full:
  * @dl: a datalist.
  * @k: the string to identify the data element.
- * @d: the data element, or %NULL to remove any previous element
+ * @d: (allow-none): the data element, or %NULL to remove any previous element
  *     corresponding to @k.
  * @f: the function to call when the data element is removed. This
  *     function will be called with the data element and can be used to
@@ -622,7 +629,7 @@ g_dataset_id_set_data_full (gconstpointer  dataset_location,
  * g_datalist_id_set_data:
  * @dl: a datalist.
  * @q: the #GQuark to identify the data element.
- * @d: the data element, or %NULL to remove any previous element
+ * @d: (allow-none): the data element, or %NULL to remove any previous element
  *     corresponding to @q.
  *
  * Sets the data corresponding to the given #GQuark id. Any previous
@@ -633,7 +640,7 @@ g_dataset_id_set_data_full (gconstpointer  dataset_location,
  * g_datalist_set_data:
  * @dl: a datalist.
  * @k: the string to identify the data element.
- * @d: the data element, or %NULL to remove any previous element
+ * @d: (allow-none): the data element, or %NULL to remove any previous element
  *     corresponding to @k.
  *
  * Sets the data element corresponding to the given string identifier.
@@ -831,7 +838,7 @@ g_datalist_id_get_data (GData	 **datalist,
  * @key: the string identifying a data element.
  * @Returns: the data element, or %NULL if it is not found.
  *
- * Gets a data element, using its string identifer. This is slower than
+ * Gets a data element, using its string identifier. This is slower than
  * g_datalist_id_get_data() because it compares strings.
  **/
 gpointer

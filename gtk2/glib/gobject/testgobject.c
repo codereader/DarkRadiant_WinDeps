@@ -47,7 +47,7 @@ test_iface_get_type (void)
 
   if (!test_iface_type)
     {
-      static const GTypeInfo test_iface_info =
+      const GTypeInfo test_iface_info =
       {
 	sizeof (TestIfaceClass),
 	(GBaseInitFunc)	iface_base_init,		/* base_init */
@@ -163,7 +163,7 @@ test_object_get_type (void)
 
   if (!test_object_type)
     {
-      static const GTypeInfo test_object_info =
+      const GTypeInfo test_object_info =
       {
 	sizeof (TestObjectClass),
 	NULL,           /* base_init */
@@ -320,14 +320,14 @@ struct _DerivedObjectPrivate
 };
 static void derived_object_class_init (DerivedObjectClass *class);
 static void derived_object_init       (DerivedObject      *dobject);
-GType
+static GType
 derived_object_get_type (void)
 {
   static GType derived_object_type = 0;
 
   if (!derived_object_type)
     {
-      static const GTypeInfo derived_object_info =
+      const GTypeInfo derived_object_info =
       {
 	sizeof (DerivedObjectClass),
 	NULL,           /* base_init */

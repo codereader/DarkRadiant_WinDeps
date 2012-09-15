@@ -67,8 +67,9 @@
 /**
  * GTlsBackend:
  *
- * Type implemented by TLS #GIOModules to provide access to additional
- * TLS-related types.
+ * TLS (Transport Layer Security, aka SSL) backend. This is an
+ * internal type used to coordinate the different classes implemented
+ * by a TLS backend.
  *
  * Since: 2.28
  */
@@ -78,36 +79,6 @@ G_DEFINE_INTERFACE (GTlsBackend, g_tls_backend, G_TYPE_OBJECT);
 static void
 g_tls_backend_default_init (GTlsBackendInterface *iface)
 {
-}
-
-static gpointer
-get_default_tls_backend (gpointer arg)
-{
-  const char *use_this;
-  GList *extensions;
-  GIOExtensionPoint *ep;
-  GIOExtension *extension;
-
-  _g_io_modules_ensure_loaded ();
-
-  ep = g_io_extension_point_lookup (G_TLS_BACKEND_EXTENSION_POINT_NAME);
-
-  use_this = g_getenv ("GIO_USE_TLS");
-  if (use_this)
-    {
-      extension = g_io_extension_point_get_extension_by_name (ep, use_this);
-      if (extension)
-	return g_object_new (g_io_extension_get_type (extension), NULL);
-    }
-
-  extensions = g_io_extension_point_get_extensions (ep);
-  if (extensions)
-    {
-      extension = extensions->data;
-      return g_object_new (g_io_extension_get_type (extension), NULL);
-    }
-
-  return NULL;
 }
 
 /**
@@ -122,9 +93,8 @@ get_default_tls_backend (gpointer arg)
 GTlsBackend *
 g_tls_backend_get_default (void)
 {
-  static GOnce once_init = G_ONCE_INIT;
-
-  return g_once (&once_init, get_default_tls_backend, NULL);
+  return _g_io_module_get_default (G_TLS_BACKEND_EXTENSION_POINT_NAME,
+				   "GIO_USE_TLS", NULL);
 }
 
 /**
@@ -227,7 +197,7 @@ g_tls_backend_get_server_connection_type (GTlsBackend *backend)
  * g_tls_backend_get_file_database_type:
  * @backend: the #GTlsBackend
  *
- * Gets the #GTyep of @backend's #GTlsFileDatabase implementation.
+ * Gets the #GType of @backend's #GTlsFileDatabase implementation.
  *
  * Return value: the #GType of backend's #GTlsFileDatabase implementation.
  *

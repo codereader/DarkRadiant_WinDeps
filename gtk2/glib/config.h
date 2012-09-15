@@ -5,9 +5,6 @@
 /* Define if building universal (internal helper macro) */
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
 
-/* define if asm blocks can use numeric local labels */
-/* #undef ASM_NUMERIC_LABELS */
-
 /* poll doesn't work on devices */
 #define BROKEN_POLL 1
 
@@ -28,20 +25,14 @@
 /* always defined to indicate that i18n is enabled */
 #define ENABLE_NLS 1
 
-/* include GRegex */
-#define ENABLE_REGEX /**/
-
 /* Define the gettext package to be used */
 #define GETTEXT_PACKAGE "glib20"
 
 /* Define to the GLIB binary age */
-#define GLIB_BINARY_AGE 3002
-
-/* Byte contents of gmutex */
-/* #undef GLIB_BYTE_CONTENTS_GMUTEX */
+#define GLIB_BINARY_AGE 3204
 
 /* Define to the GLIB interface age */
-#define GLIB_INTERFACE_AGE 2
+#define GLIB_INTERFACE_AGE 4
 
 /* Define the location where the catalogs will be installed */
 #define GLIB_LOCALE_DIR "NONE/share/locale"
@@ -50,51 +41,10 @@
 #define GLIB_MAJOR_VERSION 2
 
 /* Define to the GLIB micro version */
-#define GLIB_MICRO_VERSION 2
+#define GLIB_MICRO_VERSION 4
 
 /* Define to the GLIB minor version */
-#define GLIB_MINOR_VERSION 30
-
-/* The size of gmutex, as computed by sizeof. */
-/* #undef GLIB_SIZEOF_GMUTEX */
-
-/* The size of system_thread, as computed by sizeof. */
-#define GLIB_SIZEOF_SYSTEM_THREAD 4
-
-/* alpha atomic implementation */
-/* #undef G_ATOMIC_ALPHA */
-
-/* arm atomic implementation */
-/* #undef G_ATOMIC_ARM */
-
-/* cris atomic implementation */
-/* #undef G_ATOMIC_CRIS */
-
-/* crisv32 atomic implementation */
-/* #undef G_ATOMIC_CRISV32 */
-
-/* i486 atomic implementation */
-#ifndef _MSC_VER
-#define G_ATOMIC_I486 1
-#endif /* _MSC_VER */
-
-/* ia64 atomic implementation */
-/* #undef G_ATOMIC_IA64 */
-
-/* powerpc atomic implementation */
-/* #undef G_ATOMIC_POWERPC */
-
-/* s390 atomic implementation */
-/* #undef G_ATOMIC_S390 */
-
-/* sparcv9 atomic implementation */
-/* #undef G_ATOMIC_SPARCV9 */
-
-/* x86_64 atomic implementation */
-/* #undef G_ATOMIC_X86_64 */
-
-/* whether GCC supports built-in atomic intrinsics */
-/* #undef HAVE_GCC_BUILTINS_FOR_ATOMIC_OPERATIONS */
+#define GLIB_MINOR_VERSION 32
 
 /* Have inline keyword */
 #ifndef _MSC_VER
@@ -112,9 +62,6 @@
 #else /* _MSC_VER or __DMC__ */
 /* #undef G_HAVE___INLINE__ */
 #endif /* _MSC_VER or __DMC__ */
-
-/* Source file containing theread implementation */
-#define G_THREAD_SOURCE "gthread-win32.c"
 
 /* A 'va_copy' style function */
 #ifndef _MSC_VER
@@ -232,23 +179,20 @@
 /* we have the futex(2) system call */
 /* #undef HAVE_FUTEX */
 
-/* Whether you have gcov */
-/* #undef HAVE_GCOV */
-
 /* Define to 1 if you have the `getcwd' function. */
 #define HAVE_GETCWD 1
 
 /* Define to 1 if you have the `getc_unlocked' function. */
 /* #undef HAVE_GETC_UNLOCKED */
 
+/* Define to 1 if you have the `getfsstat' function. */
+/* #undef HAVE_GETFSSTAT */
+
 /* Define to 1 if you have the `getgrgid' function. */
 /* #undef HAVE_GETGRGID */
 
 /* Define to 1 if you have the `getmntent_r' function. */
 /* #undef HAVE_GETMNTENT_R */
-
-/* Define to 1 if you have the `getmntinfo' function. */
-/* #undef HAVE_GETMNTINFO */
 
 /* Define to 1 if you have the `getprotobyname_r' function. */
 /* #undef HAVE_GETPROTOBYNAME_R */
@@ -258,6 +202,9 @@
 
 /* Define if the GNU gettext() function is already present or preinstalled. */
 #define HAVE_GETTEXT 1
+
+/* Define to 1 if you have the `getvfsstat' function. */
+/* #undef HAVE_GETVFSSTAT */
 
 /* Define to 1 if you have the `gmtime_r' function. */
 /* #undef HAVE_GMTIME_R */
@@ -270,6 +217,13 @@
 
 /* Define to 1 if you have the `hasmntopt' function. */
 /* #undef HAVE_HASMNTOPT */
+
+/* Define to 1 if you have the `if_nametoindex' function. */
+/* This is available on Windows, but the catch is that this will require */
+/* Windows Vista/Server 2008, so disabled for now-please see */
+/* http://msdn.microsoft.com/en-us/library/windows/desktop/bb408409%28v=vs.85%29.aspx */
+/* A workaround for Windows XP is under review in Bug 668071 */
+/* #undef HAVE_IF_NAMETOINDEX */
 
 /* Define to 1 if you have the `inotify_init1' function. */
 /* #undef HAVE_INOTIFY_INIT1 */
@@ -302,8 +256,14 @@
 /* #undef HAVE_INTTYPES_H_WITH_UINTMAX */
 #endif /* _MSC_VER */
 
+/* Define if we have struct ip_mreqn */
+/* #undef HAVE_IP_MREQN */
+
 /* Define if you have <langinfo.h> and nl_langinfo(CODESET). */
 /* #undef HAVE_LANGINFO_CODESET */
+
+/* Have nl_langinfo (_NL_CTYPE_OUTDIGITn_WC) */
+/* #undef HAVE_LANGINFO_OUTDIGIT */
 
 /* Have nl_langinfo (PM_STR) */
 /* #undef HAVE_LANGINFO_TIME */
@@ -316,6 +276,9 @@
 
 /* Define if your <locale.h> file defines LC_MESSAGES. */
 /* #undef HAVE_LC_MESSAGES */
+
+/* Define if libelf is available */
+/* #undef HAVE_LIBELF */
 
 /* Define to 1 if you have the <limits.h> header file. */
 #define HAVE_LIMITS_H 1
@@ -369,11 +332,17 @@
 /* Define to 1 if you have the <mntent.h> header file. */
 /* #undef HAVE_MNTENT_H */
 
-/* Have a monotonic clock */
-/* #undef HAVE_MONOTONIC_CLOCK */
+/* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
+/* #undef HAVE_NDIR_H */
 
 /* Define to 1 if you have the <netdb.h> header file. */
 /* #undef HAVE_NETDB_H */
+
+/* We have AF_NETLINK sockets */
+/* #undef HAVE_NETLINK */
+
+/* Define to 1 if you have the `newlocale' function. */
+/* #undef HAVE_NEWLOCALE */
 
 /* Have non-POSIX function getgrgid_r */
 /* #undef HAVE_NONPOSIX_GETGRGID_R */
@@ -399,17 +368,20 @@
 /* Define to 1 if you have the `posix_memalign' function. */
 /* #undef HAVE_POSIX_MEMALIGN */
 
+/* Define to 1 if you have the `prlimit' function. */
+/* #undef HAVE_PRLIMIT */
+
 /* Have function pthread_attr_setstacksize */
 /* #undef HAVE_PTHREAD_ATTR_SETSTACKSIZE */
+
+/* Have function pthread_condattr_setclock */
+/* #undef HAVE_PTHREAD_CONDATTR_SETCLOCK */
 
 /* Define to 1 if the system has the type `ptrdiff_t'. */
 #define HAVE_PTRDIFF_T 1
 
 /* Define to 1 if you have the <pwd.h> header file. */
 /* #undef HAVE_PWD_H */
-
-/* Define to 1 if you have the 'qsort_r' function */
-/* #undef HAVE_QSORT_R */
 
 /* Define to 1 if you have the `readlink' function. */
 /* #undef HAVE_READLINK */
@@ -432,11 +404,8 @@
 /* Define to 1 if you have the `setmntent' function. */
 /* #undef HAVE_SETMNTENT */
 
-/* Define to 1 if you have the `setresuid' function. */
-/* #undef HAVE_SETRESUID */
-
-/* Define to 1 if you have the `setreuid' function. */
-/* #undef HAVE_SETREUID */
+/* Define if you have the 'sig_atomic_t' type. */
+#define HAVE_SIG_ATOMIC_T 1
 
 /* Define to 1 if you have the `snprintf' function. */
 #ifndef _MSC_VER
@@ -490,11 +459,13 @@
 /* #undef HAVE_STPCPY */
 
 /* Define to 1 if you have the `strcasecmp' function. */
-#if !defined(_MSC_VER) && !defined(__DMC__)
+#if defined(_MSC_VER)
+#define strcasecmp _stricmp
+#endif /* _MSC_VER uses _stricmp, which is identical to strcasecmp */
+
+#if !defined(__DMC__)
 #define HAVE_STRCASECMP 1
-#else /* _MSC_VER or __DMC__ */
-/* #undef HAVE_STRCASECMP */
-#endif /* _MSC_VER or __DMC__ */
+#endif /* _MSC_VER or __gcc__ */
 
 /* Define to 1 if you have the `strerror' function. */
 #define HAVE_STRERROR 1
@@ -519,11 +490,20 @@
 /* #undef HAVE_STRNCASECMP */
 #endif /* _MSC_VER or __DMC__ */
 
-/* Define to 1 if you have the `strndup' function. */
-/* #undef HAVE_STRNDUP */
-
 /* Define to 1 if you have the `strsignal' function. */
 /* #undef HAVE_STRSIGNAL */
+
+/* Define to 1 if you have the `strtod_l' function. */
+/* #undef HAVE_STRTOD_L */
+
+/* Define to 1 if you have the `strtoll_l' function. */
+/* #undef HAVE_STRTOLL_L */
+
+/* Define to 1 if you have the `strtoull_l' function. */
+/* #undef HAVE_STRTOULL_L */
+
+/* Define to 1 if `d_type' is a member of `struct dirent'. */
+/* #undef HAVE_STRUCT_DIRENT_D_TYPE */
 
 /* Define to 1 if `f_bavail' is a member of `struct statfs'. */
 /* #undef HAVE_STRUCT_STATFS_F_BAVAIL */
@@ -533,6 +513,9 @@
 
 /* Define to 1 if `f_basetype' is a member of `struct statvfs'. */
 /* #undef HAVE_STRUCT_STATVFS_F_BASETYPE */
+
+/* Define to 1 if `f_fstypename' is a member of `struct statvfs'. */
+/* #undef HAVE_STRUCT_STATVFS_F_FSTYPENAME */
 
 /* Define to 1 if `st_atimensec' is a member of `struct stat'. */
 /* #undef HAVE_STRUCT_STAT_ST_ATIMENSEC */
@@ -567,6 +550,10 @@
 /* Define to 1 if you have the `symlink' function. */
 /* #undef HAVE_SYMLINK */
 
+/* Define to 1 if you have the <sys/dir.h> header file, and it defines `DIR'.
+   */
+/* #undef HAVE_SYS_DIR_H */
+
 /* Define to 1 if you have the <sys/inotify.h> header file. */
 /* #undef HAVE_SYS_INOTIFY_H */
 
@@ -581,6 +568,10 @@
 
 /* Define to 1 if you have the <sys/mount.h> header file. */
 /* #undef HAVE_SYS_MOUNT_H */
+
+/* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'.
+   */
+/* #undef HAVE_SYS_NDIR_H */
 
 /* Define to 1 if you have the <sys/param.h> header file. */
 #if !defined(_MSC_VER) && !defined(__DMC__)
@@ -661,6 +652,9 @@
 /* Define to 1 if you have the `unsetenv' function. */
 /* #undef HAVE_UNSETENV */
 
+/* Define to 1 if you have the `uselocale' function. */
+/* #undef HAVE_USELOCALE */
+
 /* Define to 1 if you have the `utimes' function. */
 /* #undef HAVE_UTIMES */
 
@@ -699,11 +693,6 @@
 /* Define to 1 if you have the `wcslen' function. */
 #define HAVE_WCSLEN 1
 
-/* Have Win32 atomic intrinsics */
-#ifdef _MSC_VER
-#define HAVE_WIN32_BUILTINS_FOR_ATOMIC_OPERATIONS 1
-#endif
-
 /* Define if you have the 'wint_t' type. */
 #define HAVE_WINT_T 1
 
@@ -723,6 +712,9 @@
 /* Define to 1 if xattr API uses XATTR_NOFOLLOW */
 /* #undef HAVE_XATTR_NOFOLLOW */
 
+/* Define to 1 if you have the <xlocale.h> header file. */
+/* #undef HAVE_XLOCALE_H */
+
 /* Define to 1 if you have the `_NSGetEnviron' function. */
 /* #undef HAVE__NSGETENVIRON */
 
@@ -739,15 +731,6 @@
 /* Define to 1 if your C compiler doesn't accept -c and -o together. */
 /* #undef NO_MINUS_C_MINUS_O */
 
-/* global 'sys_errlist' not found */
-#define NO_SYS_ERRLIST 1
-
-/* global 'sys_siglist' not found */
-#define NO_SYS_SIGLIST 1
-
-/* global 'sys_siglist' not declared */
-#define NO_SYS_SIGLIST_DECL 1
-
 /* Define to the address where bug reports for this package should be sent. */
 #define PACKAGE_BUGREPORT "http://bugzilla.gnome.org/enter_bug.cgi?product=glib"
 
@@ -755,7 +738,7 @@
 #define PACKAGE_NAME "glib"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "glib 2.30.2"
+#define PACKAGE_STRING "glib 2.32.4"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "glib"
@@ -764,19 +747,10 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "2.30.2"
-
-/* Maximum POSIX RT priority */
-/* #undef POSIX_MAX_PRIORITY */
+#define PACKAGE_VERSION "2.32.4"
 
 /* define if posix_memalign() can allocate any size */
 /* #undef POSIX_MEMALIGN_WITH_COMPLIANT_ALLOCS */
-
-/* Minimum POSIX RT priority */
-/* #undef POSIX_MIN_PRIORITY */
-
-/* The POSIX RT yield function */
-/* #undef POSIX_YIELD_FUNC */
 
 /* whether realloc (NULL,) works */
 #define REALLOC_0_WORKS 1
@@ -811,7 +785,15 @@
 #define SIZEOF_SIZE_T 4
 
 /* The size of `void *', as computed by sizeof. */
+#ifdef _MSC_VER
+#if (defined(_M_X64) || defined(_M_AMD64))
+#define SIZEOF_VOID_P 8
+#elif (defined(_M_IX86))
 #define SIZEOF_VOID_P 4
+#endif
+#else
+#define SIZEOF_VOID_P 4
+#endif
 
 /* The size of `__int64', as computed by sizeof. */
 #define SIZEOF___INT64 8

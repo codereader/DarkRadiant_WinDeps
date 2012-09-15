@@ -32,6 +32,7 @@
 #include "gtestutils.h"
 #include "gvariant.h"
 #include "gvarianttype.h"
+#include "gslice.h"
 
 /*
  * two-pass algorithm
@@ -380,7 +381,7 @@ token_stream_end_ref (TokenStream *stream,
   ref->end = stream->stream - stream->start;
 }
 
-void
+static void
 pattern_copy (gchar       **out,
               const gchar **in)
 {
@@ -2305,11 +2306,11 @@ parse (TokenStream  *stream,
 
 /**
  * g_variant_parse:
- * @type: a #GVariantType, or %NULL
+ * @type: (allow-none): a #GVariantType, or %NULL
  * @text: a string containing a GVariant in text form
- * @limit: a pointer to the end of @text, or %NULL
- * @endptr: a location to store the end pointer, or %NULL
- * @error: a pointer to a %NULL #GError pointer, or %NULL
+ * @limit: (allow-none): a pointer to the end of @text, or %NULL
+ * @endptr: (allow-none): a location to store the end pointer, or %NULL
+ * @error: (allow-none): a pointer to a %NULL #GError pointer, or %NULL
  * @Returns: a reference to a #GVariant, or %NULL
  *
  * Parses a #GVariant from a text representation.
@@ -2405,7 +2406,6 @@ g_variant_parse (const GVariantType  *type,
  * g_variant_new_parsed_va:
  * @format: a text format #GVariant
  * @app: a pointer to a #va_list
- * @returns: a new, usually floating, #GVariant
  *
  * Parses @format and returns the result.
  *
@@ -2424,6 +2424,8 @@ g_variant_parse (const GVariantType  *type,
  * At this point, the caller will have their own full reference to the
  * result.  This can also be done by adding the result to a container,
  * or by passing it to another g_variant_new() call.
+ *
+ * Returns: a new, usually floating, #GVariant
  **/
 GVariant *
 g_variant_new_parsed_va (const gchar *format,
@@ -2460,7 +2462,6 @@ g_variant_new_parsed_va (const gchar *format,
  * g_variant_new_parsed:
  * @format: a text format #GVariant
  * @...: arguments as per @format
- * @returns: a new floating #GVariant instance
  *
  * Parses @format and returns the result.
  *
@@ -2488,6 +2489,8 @@ g_variant_new_parsed_va (const gchar *format,
  * #GVariant pointer from the argument list.  ie: @format may not solely
  * be anything along the lines of "%*", "%?", "\%r", or anything starting
  * with "%@".
+ *
+ * Returns: a new floating #GVariant instance
  **/
 GVariant *
 g_variant_new_parsed (const gchar *format,

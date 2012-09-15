@@ -200,7 +200,7 @@ reply_non_handled_in_idle (gpointer data)
   GMountOperation *op = data;
 
   g_mount_operation_reply (op, G_MOUNT_OPERATION_UNHANDLED);
-  return FALSE;
+  return G_SOURCE_REMOVE;
 }
 
 static void
@@ -343,7 +343,8 @@ g_mount_operation_class_init (GMountOperationClass *klass)
    * GMountOperation::show-processes:
    * @op: a #GMountOperation.
    * @message: string containing a message to display to the user.
-   * @processes: an array of #GPid for processes blocking the operation.
+   * @processes: (element-type GPid): an array of #GPid for processes
+   *   blocking the operation.
    * @choices: an array of strings for each possible choice.
    *
    * Emitted when one or more processes are blocking an operation
@@ -482,7 +483,7 @@ g_mount_operation_new (void)
 }
 
 /**
- * g_mount_operation_get_username
+ * g_mount_operation_get_username:
  * @op: a #GMountOperation.
  * 
  * Get the user name from the mount operation.

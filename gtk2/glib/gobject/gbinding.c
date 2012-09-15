@@ -350,8 +350,8 @@ on_source_notify (GObject    *gobject,
                   GBinding   *binding)
 {
   const gchar *p_name;
-  GValue source_value = { 0, };
-  GValue target_value = { 0, };
+  GValue source_value = G_VALUE_INIT;
+  GValue target_value = G_VALUE_INIT;
   gboolean res;
 
   if (binding->is_frozen)
@@ -391,8 +391,8 @@ on_target_notify (GObject    *gobject,
                   GBinding   *binding)
 {
   const gchar *p_name;
-  GValue source_value = { 0, };
-  GValue target_value = { 0, };
+  GValue source_value = G_VALUE_INIT;
+  GValue target_value = G_VALUE_INIT;
   gboolean res;
 
   if (binding->is_frozen)
@@ -575,9 +575,11 @@ g_binding_constructed (GObject *gobject)
                                                G_CALLBACK (on_target_notify),
                                                binding);
 
-  g_object_weak_ref (binding->target, weak_unbind, binding);
-  add_binding_qdata (binding->target, binding);
-
+  if (binding->target != binding->source)
+    {
+      g_object_weak_ref (binding->target, weak_unbind, binding);
+      add_binding_qdata (binding->target, binding);
+    }
 }
 
 static void
@@ -1026,8 +1028,8 @@ bind_with_closures_transform_to (GBinding     *binding,
                                  gpointer      data)
 {
   TransformData *t_data = data;
-  GValue params[3] = { { 0, }, { 0, }, { 0, } };
-  GValue retval = { 0, };
+  GValue params[3] = { G_VALUE_INIT, G_VALUE_INIT, G_VALUE_INIT };
+  GValue retval = G_VALUE_INIT;
   gboolean res;
 
   g_value_init (&params[0], G_TYPE_BINDING);
@@ -1069,8 +1071,8 @@ bind_with_closures_transform_from (GBinding     *binding,
                                    gpointer      data)
 {
   TransformData *t_data = data;
-  GValue params[3] = { { 0, }, { 0, }, { 0, } };
-  GValue retval = { 0, };
+  GValue params[3] = { G_VALUE_INIT, G_VALUE_INIT, G_VALUE_INIT };
+  GValue retval = G_VALUE_INIT;
   gboolean res;
 
   g_value_init (&params[0], G_TYPE_BINDING);

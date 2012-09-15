@@ -21,11 +21,14 @@
 
 #include <string.h>
 
+/* for GValueArray */
+#define GLIB_DISABLE_DEPRECATION_WARNINGS
+
 #include "gboxed.h"
+#include "gclosure.h"
 #include "gtype-private.h"
 #include "gvalue.h"
 #include "gvaluearray.h"
-#include "gclosure.h"
 #include "gvaluecollector.h"
 
 
@@ -77,7 +80,7 @@ value_free (GValue *value)
 void
 _g_boxed_type_init (void)
 {
-  static const GTypeInfo info = {
+  const GTypeInfo info = {
     0,                          /* class_size */
     NULL,                       /* base_init */
     NULL,                       /* base_destroy */
@@ -127,14 +130,10 @@ G_DEFINE_BOXED_TYPE (GHashTable, g_hash_table, g_hash_table_ref, g_hash_table_un
 G_DEFINE_BOXED_TYPE (GArray, g_array, g_array_ref, g_array_unref)
 G_DEFINE_BOXED_TYPE (GPtrArray, g_ptr_array,g_ptr_array_ref, g_ptr_array_unref)
 G_DEFINE_BOXED_TYPE (GByteArray, g_byte_array, g_byte_array_ref, g_byte_array_unref)
+G_DEFINE_BOXED_TYPE (GBytes, g_bytes, g_bytes_ref, g_bytes_unref);
 
-#ifdef ENABLE_REGEX
 G_DEFINE_BOXED_TYPE (GRegex, g_regex, g_regex_ref, g_regex_unref)
 G_DEFINE_BOXED_TYPE (GMatchInfo, g_match_info, g_match_info_ref, g_match_info_unref)
-#else
-GType g_regex_get_type (void) { return G_TYPE_INVALID; }
-GType g_match_info_get_type (void) { return G_TYPE_INVALID; }
-#endif /* ENABLE_REGEX */
 
 #define g_variant_type_get_type g_variant_type_get_gtype
 G_DEFINE_BOXED_TYPE (GVariantType, g_variant_type, g_variant_type_copy, g_variant_type_free)
@@ -145,6 +144,8 @@ G_DEFINE_BOXED_TYPE (GVariantBuilder, g_variant_builder, g_variant_builder_ref, 
 G_DEFINE_BOXED_TYPE (GError, g_error, g_error_copy, g_error_free)
 
 G_DEFINE_BOXED_TYPE (GDateTime, g_date_time, g_date_time_ref, g_date_time_unref);
+G_DEFINE_BOXED_TYPE (GKeyFile, g_key_file, g_key_file_ref, g_key_file_unref)
+
 G_DEFINE_BOXED_TYPE (GMainLoop, g_main_loop, g_main_loop_ref, g_main_loop_unref)
 G_DEFINE_BOXED_TYPE (GMainContext, g_main_context, g_main_context_ref, g_main_context_unref)
 G_DEFINE_BOXED_TYPE (GSource, g_source, g_source_ref, g_source_unref)

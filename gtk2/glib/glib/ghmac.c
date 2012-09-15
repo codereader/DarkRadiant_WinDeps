@@ -28,6 +28,7 @@
 
 #include "glib/galloca.h"
 #include "gatomic.h"
+#include "gslice.h"
 #include "gmem.h"
 #include "gstrfuncs.h"
 #include "gtestutils.h"
@@ -38,7 +39,7 @@
 /**
  * SECTION:hmac
  * @title: Secure HMAC Digests
- * @short_description: Computes the HMAC for data
+ * @short_description: computes the HMAC for data
  *
  * HMACs should be used when producing a cookie or hash based on data
  * and a key. Simple mechanisms for using SHA1 and other algorithms to
@@ -173,6 +174,7 @@ g_hmac_copy (const GHmac *hmac)
   g_return_val_if_fail (hmac != NULL, NULL);
 
   copy = g_slice_new (GHmac);
+  copy->ref_count = 1;
   copy->digest_type = hmac->digest_type;
   copy->digesti = g_checksum_copy (hmac->digesti);
   copy->digesto = g_checksum_copy (hmac->digesto);
@@ -278,9 +280,13 @@ g_hmac_get_string (GHmac *hmac)
   g_return_val_if_fail (hmac != NULL, NULL);
 
   digest_len = g_checksum_type_get_length (hmac->digest_type);
-  buffer = g_malloc (digest_len);
+  buffer = g_alloca (digest_len);
 
+  /* This is only called for its side-effect of updating hmac->digesto... */
   g_hmac_get_digest (hmac, buffer, &digest_len);
+  /* ... because we get the string from the checksum rather than
+   * stringifying buffer ourselves
+   */
   return g_checksum_get_string (hmac->digesto);
 }
 

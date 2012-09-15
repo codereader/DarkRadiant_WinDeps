@@ -44,14 +44,14 @@
  * using wildcards, e.g. "standard::*" will return all of the keys in the
  * "standard" namespace.
  *
- * Values are stored within the list in #GFileAttributeValue structures.
- * Values can store different types, listed in the enum #GFileAttributeType.
- * Upon creation of a #GFileAttributeValue, the type will be set to
- * %G_FILE_ATTRIBUTE_TYPE_INVALID.
- *
  * The list of possible attributes for a filesystem (pointed to by a #GFile) is
  * available as a #GFileAttributeInfoList. This list is queryable by key names
  * as indicated earlier.
+ *
+ * Information is stored within the list in #GFileAttributeInfo structures.
+ * The info structure can store different types, listed in the enum
+ * #GFileAttributeType. Upon creation of a #GFileAttributeInfo, the type will
+ * be set to %G_FILE_ATTRIBUTE_TYPE_INVALID.
  *
  * Classes that implement #GFileIface will create a #GFileAttributeInfoList and
  * install default keys and values for their given file system, architecture,
@@ -194,6 +194,7 @@
  * <row><entry>%G_FILE_ATTRIBUTE_PREVIEW_ICON</entry><entry>preview::icon</entry><entry>object (#GIcon)</entry></row>
  * <row><entry>%G_FILE_ATTRIBUTE_FILESYSTEM_SIZE</entry><entry>filesystem::size</entry><entry>uint64</entry></row>
  * <row><entry>%G_FILE_ATTRIBUTE_FILESYSTEM_FREE</entry><entry>filesystem::free</entry><entry>uint64</entry></row>
+ * <row><entry>%G_FILE_ATTRIBUTE_FILESYSTEM_USED</entry><entry>filesystem::used</entry><entry>uint64</entry></row>
  * <row><entry>%G_FILE_ATTRIBUTE_FILESYSTEM_TYPE</entry><entry>filesystem::type</entry><entry>string</entry></row>
  * <row><entry>%G_FILE_ATTRIBUTE_FILESYSTEM_READONLY</entry><entry>filesystem::readonly</entry><entry>boolean</entry></row>
  * <row><entry>%G_FILE_ATTRIBUTE_GVFS_BACKEND</entry><entry>gvfs::backend</entry><entry>string</entry></row>

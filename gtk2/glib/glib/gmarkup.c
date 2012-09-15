@@ -29,6 +29,7 @@
 
 #include "gmarkup.h"
 
+#include "gslice.h"
 #include "galloca.h"
 #include "gstrfuncs.h"
 #include "gstring.h"
@@ -1039,9 +1040,6 @@ g_markup_parse_context_parse (GMarkupParseContext  *context,
   context->current_text_end = context->current_text + text_len;
   context->iter = context->current_text;
   context->start = context->iter;
-
-  if (context->current_text_len == 0)
-    goto finished;
 
   while (context->iter != context->current_text_end)
     {

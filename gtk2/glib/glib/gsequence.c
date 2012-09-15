@@ -24,6 +24,7 @@
 
 #include "gmem.h"
 #include "gtestutils.h"
+#include "gslice.h"
 /**
  * SECTION:sequence
  * @title: Sequences
@@ -238,7 +239,7 @@ iter_compare (GSequenceIter *node1,
 
 /**
  * g_sequence_new:
- * @data_destroy: a #GDestroyNotify function, or %NULL
+ * @data_destroy: (allow-none): a #GDestroyNotify function, or %NULL
  *
  * Creates a new GSequence. The @data_destroy function, if non-%NULL will
  * be called on all items when the sequence is destroyed and on items that
@@ -520,7 +521,7 @@ g_sequence_insert_before (GSequenceIter *iter,
  * Removes the item pointed to by @iter. It is an error to pass the
  * end iterator to this function.
  *
- * If the sequnce has a data destroy function associated with it, this
+ * If the sequence has a data destroy function associated with it, this
  * function is called on the data for the removed item.
  *
  * Since: 2.14
@@ -769,6 +770,14 @@ g_sequence_sort_changed (GSequenceIter    *iter,
  * If you are simply searching for an existing element of the sequence,
  * consider using g_sequence_lookup().
  *
+ * <note><para>
+ * This function will fail if the data contained in the sequence is
+ * unsorted.  Use g_sequence_insert_sorted() or
+ * g_sequence_insert_sorted_iter() to add data to your sequence or, if
+ * you want to add a large amount of data, call g_sequence_sort() after
+ * doing unsorted insertions.
+ * </para></note>
+ *
  * Return value: an #GSequenceIter pointing to the position where @data
  * would have been inserted according to @cmp_func and @cmp_data.
  *
@@ -809,6 +818,14 @@ g_sequence_search (GSequence        *seq,
  * It should return 0 if the items are equal, a negative value if
  * the first item comes before the second, and a positive value if
  * the second item comes before the first.
+ *
+ * <note><para>
+ * This function will fail if the data contained in the sequence is
+ * unsorted.  Use g_sequence_insert_sorted() or
+ * g_sequence_insert_sorted_iter() to add data to your sequence or, if
+ * you want to add a large amount of data, call g_sequence_sort() after
+ * doing unsorted insertions.
+ * </para></note>
  *
  * Return value: an #GSequenceIter pointing to the position of the
  *     first item found equal to @data according to @cmp_func and @cmp_data.
@@ -1035,6 +1052,14 @@ g_sequence_insert_sorted_iter (GSequence                *seq,
  * If you are simply searching for an existing element of the sequence,
  * consider using g_sequence_lookup_iter().
  *
+ * <note><para>
+ * This function will fail if the data contained in the sequence is
+ * unsorted.  Use g_sequence_insert_sorted() or
+ * g_sequence_insert_sorted_iter() to add data to your sequence or, if
+ * you want to add a large amount of data, call g_sequence_sort() after
+ * doing unsorted insertions.
+ * </para></note>
+ *
  * Return value: a #GSequenceIter pointing to the position in @seq
  *     where @data would have been inserted according to @iter_cmp
  *     and @cmp_data.
@@ -1086,6 +1111,14 @@ g_sequence_search_iter (GSequence                *seq,
  * It should return 0 if the iterators are equal, a negative value
  * if the first iterator comes before the second, and a positive
  * value if the second iterator comes before the first.
+ *
+ * <note><para>
+ * This function will fail if the data contained in the sequence is
+ * unsorted.  Use g_sequence_insert_sorted() or
+ * g_sequence_insert_sorted_iter() to add data to your sequence or, if
+ * you want to add a large amount of data, call g_sequence_sort() after
+ * doing unsorted insertions.
+ * </para></note>
  *
  * Return value: an #GSequenceIter pointing to the position of
  *     the first item found equal to @data according to @cmp_func

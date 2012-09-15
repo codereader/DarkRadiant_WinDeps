@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
@@ -13,172 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\gtk2\glib\gio\gaction.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gactiongroup.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gappinfo.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gapplication.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gapplicationcommandline.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gapplicationimpl-dbus.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gasynchelper.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gasyncinitable.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gasyncresult.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gbufferedinputstream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gbufferedoutputstream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gcancellable.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gcharsetconverter.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gcontenttype.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gconverter.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gconverterinputstream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gconverteroutputstream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gcredentials.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdatainputstream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdataoutputstream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusaddress.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusauth.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusauthmechanismanon.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusauthmechanism.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusauthmechanismexternal.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusauthmechanismsha1.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusauthobserver.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusconnection.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbuserror.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusinterface.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusinterfaceskeleton.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusintrospection.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusmessage.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusmethodinvocation.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusnameowning.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusnamewatching.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusobject.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusobjectmanager.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusobjectmanagerclient.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusobjectmanagerserver.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusobjectproxy.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusobjectskeleton.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusprivate.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusproxy.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusserver.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdbusutils.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdelayedsettingsbackend.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdrive.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdummyfile.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdummyproxyresolver.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gdummytlsbackend.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gemblem.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gemblemedicon.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gfileattribute.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gfile.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gfiledescriptorbased.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gfileenumerator.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gfileicon.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gfileinfo.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gfileinputstream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gfileiostream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gfilemonitor.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gfilenamecompleter.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gfileoutputstream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gfilterinputstream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gfilteroutputstream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gicon.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\ginetaddress.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\ginetsocketaddress.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\ginitable.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\ginputstream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gioenumtypes.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gioerror.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\giomodule.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gioscheduler.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\giostream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gkeyfilesettingsbackend.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\..\glib\gwakeup.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gloadableicon.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\glocaldirectorymonitor.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\glocalfile.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\glocalfileenumerator.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\glocalfileinfo.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\glocalfileinputstream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\glocalfileiostream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\glocalfilemonitor.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\glocalfileoutputstream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\glocalvfs.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gmemoryinputstream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gmemoryoutputstream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gmemorysettingsbackend.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gmount.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gmountoperation.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gnativevolumemonitor.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gnetworkaddress.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gnetworkservice.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gnullsettingsbackend.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\goutputstream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gpermission.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gpollableinputstream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gpollableoutputstream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gpollfilemonitor.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gproxyaddress.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gproxyaddressenumerator.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gproxy.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gproxyresolver.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gregistrysettingsbackend.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gresolver.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gseekable.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gsettingsbackend.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gsettings.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gsettings-mapping.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gsettingsschema.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gsimpleaction.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gsimpleactiongroup.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gsimpleasyncresult.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gsimplepermission.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gsocketaddress.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gsocketaddressenumerator.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gsocket.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gsocketclient.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gsocketconnectable.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gsocketconnection.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gsocketcontrolmessage.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gsocketinputstream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gsocketlistener.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gsocketoutputstream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gsocketservice.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gsocks4aproxy.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gsocks4proxy.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gsocks5proxy.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gsrvtarget.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gtcpconnection.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gtcpwrapperconnection.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gthemedicon.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gthreadedresolver.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gthreadedsocketservice.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gtlsbackend.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gtlscertificate.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gtlsclientconnection.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gtlsconnection.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gtlsdatabase.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gtlsfiledatabase.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gtlsinteraction.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gtlspassword.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gtlsserverconnection.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gunionvolumemonitor.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gvdb\gvdb-reader.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gvfs.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gvolume.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gvolumemonitor.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gwin32appinfo.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gwin32inputstream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gwin32mount.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gwin32outputstream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gwin32resolver.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gwin32volumemonitor.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gzlibcompressor.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\gzlibdecompressor.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\win32\gwin32directorymonitor.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\win32\gwinhttpfile.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\win32\gwinhttpfileinputstream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\win32\gwinhttpfileoutputstream.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\glib\gio\win32\gwinhttpvfs.c"><Filter>Source Files</Filter></ClCompile>
+    <Filter Include="Source Files\gvdb">
+      <UniqueIdentifier>{53461ddb-9716-47cc-97c9-7d8798b3f4be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\win32">
+      <UniqueIdentifier>{9d05b1ca-ae36-4542-a21b-37130fe855f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\gtk2\glib\gio\gio.rc">
@@ -189,5 +29,544 @@
     <CustomBuild Include="..\gtk2\glib\gio\gio.symbols">
       <Filter>Resource Files</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\gtk2\glib\gio\gaction.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gactiongroup.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gactiongroupexporter.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gactionmap.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gappinfo.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gapplication.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gapplicationcommandline.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gapplicationimpl-dbus.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gasynchelper.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gasyncinitable.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gasyncresult.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gbufferedinputstream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gbufferedoutputstream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gcancellable.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gcharsetconverter.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gcontenttype.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gconverter.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gconverterinputstream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gconverteroutputstream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gcredentials.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdatainputstream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdataoutputstream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusactiongroup.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusaddress.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusauth.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusauthmechanism.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusauthmechanismanon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusauthmechanismexternal.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusauthmechanismsha1.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusauthobserver.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusconnection.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusdaemon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbus-daemon-generated.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbuserror.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusinterface.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusinterfaceskeleton.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusintrospection.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusmenumodel.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusmessage.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusmethodinvocation.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusnameowning.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusnamewatching.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusobject.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusobjectmanager.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusobjectmanagerclient.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusobjectmanagerserver.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusobjectproxy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusobjectskeleton.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusprivate.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusproxy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusserver.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdbusutils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdelayedsettingsbackend.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdrive.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdummyfile.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdummyproxyresolver.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gdummytlsbackend.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gemblem.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gemblemedicon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gfile.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gfileattribute.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gfiledescriptorbased.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gfileenumerator.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gfileicon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gfileinfo.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gfileinputstream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gfileiostream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gfilemonitor.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gfilenamecompleter.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gfileoutputstream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gfilterinputstream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gfilteroutputstream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gicon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\ginetaddress.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\ginetaddressmask.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\ginetsocketaddress.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\ginitable.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\ginputstream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gioenumtypes.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gioerror.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\giomodule.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gioscheduler.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\giostream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gkeyfilesettingsbackend.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gloadableicon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\glocaldirectorymonitor.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\glocalfile.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\glocalfileenumerator.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\glocalfileinfo.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\glocalfileinputstream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\glocalfileiostream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\glocalfilemonitor.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\glocalfileoutputstream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\glocalvfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gmemoryinputstream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gmemoryoutputstream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gmemorysettingsbackend.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gmenu.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gmenuexporter.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gmenumodel.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gmount.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gmountoperation.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gnativevolumemonitor.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gnetworkaddress.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gnetworkmonitor.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gnetworkmonitorbase.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gnetworkservice.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gnullsettingsbackend.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\goutputstream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gpermission.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gpollableinputstream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gpollableoutputstream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gpollfilemonitor.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gproxy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gproxyaddress.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gproxyaddressenumerator.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gproxyresolver.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gregistrysettingsbackend.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gremoteactiongroup.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gresolver.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gresource.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gresourcefile.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gseekable.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gsettings.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gsettingsbackend.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gsettings-mapping.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gsettingsschema.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gsettings-tool.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gsimpleaction.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gsimpleactiongroup.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gsimpleasyncresult.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gsimplepermission.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gsocket.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gsocketaddress.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gsocketaddressenumerator.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gsocketclient.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gsocketconnectable.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gsocketconnection.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gsocketcontrolmessage.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gsocketinputstream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gsocketlistener.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gsocketoutputstream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gsocketservice.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gsocks4aproxy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gsocks4proxy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gsocks5proxy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gsrvtarget.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gtcpconnection.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gtcpwrapperconnection.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gthemedicon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gthreadedresolver.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gthreadedsocketservice.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gtlsbackend.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gtlscertificate.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gtlsclientconnection.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gtlsconnection.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gtlsdatabase.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gtlsfiledatabase.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gtlsinteraction.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gtlspassword.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gtlsserverconnection.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gunionvolumemonitor.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gvfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gvolume.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gvolumemonitor.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gwin32appinfo.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gwin32inputstream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gwin32mount.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gwin32outputstream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gwin32volumemonitor.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gzlibcompressor.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gzlibdecompressor.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gvdb\gvdb-builder.c">
+      <Filter>Source Files\gvdb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\gvdb\gvdb-reader.c">
+      <Filter>Source Files\gvdb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\win32\gwin32directorymonitor.c">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\win32\gwinhttpfile.c">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\win32\gwinhttpfileinputstream.c">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\win32\gwinhttpfileoutputstream.c">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\gio\win32\gwinhttpvfs.c">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

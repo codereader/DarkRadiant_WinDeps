@@ -652,13 +652,13 @@ g_unichar_decompose (gunichar  ch,
  * Performs a single composition step of the
  * Unicode canonical composition algorithm.
  *
- * This function does not perform algorithmic composition
- * for Hangul characters, and does not include compatibility
- * compositions. It does, however, include 'singleton'
- * compositions which replace a character by a single
- * other character. To obtain these, pass zero for @b.
- *
- * This function includes algorithmic Hangul Jamo composition.
+ * This function includes algorithmic Hangul Jamo composition,
+ * but it is not exactly the inverse of g_unichar_decompose().
+ * No composition can have either of @a or @b equal to zero.
+ * To be precise, this function composes if and only if
+ * there exists a Primary Composite P which is canonically
+ * equivalent to the sequence <@a,@b>.  See the Unicode
+ * Standard for the definition of Primary Composite.
  *
  * If @a and @b do not compose a new character, @ch is set to zero.
  *
@@ -685,7 +685,7 @@ g_unichar_compose (gunichar  a,
  * g_unichar_fully_decompose:
  * @ch: a Unicode character.
  * @compat: whether perform canonical or compatibility decomposition
- * @result: location to store decomposed result, or %NULL
+ * @result: (allow-none): location to store decomposed result, or %NULL
  * @result_len: length of @result
  *
  * Computes the canonical or compatibility decomposition of a
@@ -701,7 +701,8 @@ g_unichar_compose (gunichar  a,
  * this may change in the future (very unlikely though).
  * At any rate, Unicode does guarantee that a buffer of length
  * 18 is always enough for both compatibility and canonical
- * decompositions.
+ * decompositions, so that is the size recommended. This is provided
+ * as %G_UNICHAR_MAX_DECOMPOSITION_LENGTH.
  *
  * See <ulink url="http://unicode.org/reports/tr15/">UAX#15</ulink>
  * for details.

@@ -218,9 +218,9 @@ g_dbus_message_new (void)
 
 /**
  * g_dbus_message_new_method_call:
- * @name: A valid D-Bus name or %NULL.
+ * @name: (allow-none): A valid D-Bus name or %NULL.
  * @path: A valid object path.
- * @interface_: A valid D-Bus interface name or %NULL.
+ * @interface_: (allow-none): A valid D-Bus interface name or %NULL.
  * @method: A valid method name.
  *
  * Creates a new #GDBusMessage for a method call.
@@ -636,7 +636,7 @@ g_dbus_message_get_header (GDBusMessage             *message,
  * g_dbus_message_set_header:
  * @message: A #GDBusMessage.
  * @header_field: A 8-bit unsigned integer (typically a value from the #GDBusMessageHeaderField enumeration)
- * @value: A #GVariant to set the header field or %NULL to clear the header field.
+ * @value: (allow-none): A #GVariant to set the header field or %NULL to clear the header field.
  *
  * Sets a header field on @message.
  *
@@ -674,9 +674,9 @@ g_dbus_message_set_header (GDBusMessage             *message,
  *
  * Gets an array of all header fields on @message that are set.
  *
- * Returns: An array of header fields terminated by
- * %G_DBUS_MESSAGE_HEADER_FIELD_INVALID.  Each element is a
- * #guchar. Free with g_free().
+ * Returns: (array zero-terminated=1): An array of header fields
+ * terminated by %G_DBUS_MESSAGE_HEADER_FIELD_INVALID.  Each element
+ * is a #guchar. Free with g_free().
  *
  * Since: 2.26
  */
@@ -1066,12 +1066,12 @@ parse_value_from_blob (GMemoryInputStream    *mis,
   type_string = g_variant_type_peek_string (type);
 
 #ifdef DEBUG_SERIALIZER
-  if (!just_align)
     {
       gchar *s;
       s = g_variant_type_dup_string (type);
-      g_print ("%*sReading type %s from offset 0x%04x",
+      g_print ("%*s%s type %s from offset 0x%04x",
                indent, "",
+               just_align ? "Aligning" : "Reading",
                s,
                (gint) g_seekable_tell (G_SEEKABLE (mis)));
       g_free (s);
@@ -1289,94 +1289,87 @@ parse_value_from_blob (GMemoryInputStream    *mis,
       break;
 
     case 'a': /* G_VARIANT_TYPE_ARRAY */
-      {
-        guint32 array_len;
-        goffset offset;
-        goffset target;
-        const GVariantType *element_type;
-        GVariantBuilder builder;
+      if (!ensure_input_padding (mis, 4, &local_error))
+        goto fail;
 
-        if (!ensure_input_padding (mis, 4, &local_error))
-          goto fail;
+      /* If we are only aligning for this array type, it is the child type of
+       * another array, which is empty. So, we do not need to add padding for
+       * this nonexistent array's elements: we only need to align for this
+       * array itself (4 bytes). See
+       * <https://bugzilla.gnome.org/show_bug.cgi?id=673612>.
+       */
+      if (!just_align)
+        {
+          guint32 array_len;
+          goffset offset;
+          goffset target;
+          const GVariantType *element_type;
+          GVariantBuilder builder;
 
-        if (just_align)
-          {
-            array_len = 0;
-          }
-        else
-          {
-            array_len = g_data_input_stream_read_uint32 (dis, NULL, &local_error);
-            if (local_error != NULL)
-              goto fail;
+          array_len = g_data_input_stream_read_uint32 (dis, NULL, &local_error);
+          if (local_error != NULL)
+            goto fail;
 
-            is_leaf = FALSE;
+          is_leaf = FALSE;
 #ifdef DEBUG_SERIALIZER
-            g_print (": array spans 0x%04x bytes\n", array_len);
+          g_print (": array spans 0x%04x bytes\n", array_len);
 #endif /* DEBUG_SERIALIZER */
 
-            if (array_len > (2<<26))
-              {
-                /* G_GUINT32_FORMAT doesn't work with gettext, so use u */
-                g_set_error (&local_error,
-                             G_IO_ERROR,
-                             G_IO_ERROR_INVALID_ARGUMENT,
-                             g_dngettext (GETTEXT_PACKAGE,
-                                          "Encountered array of length %u byte. Maximum length is 2<<26 bytes (64 MiB).",
-                                          "Encountered array of length %u bytes. Maximum length is 2<<26 bytes (64 MiB).",
-                                          array_len),
-                             array_len);
-                goto fail;
-              }
-          }
+          if (array_len > (2<<26))
+            {
+              /* G_GUINT32_FORMAT doesn't work with gettext, so use u */
+              g_set_error (&local_error,
+                           G_IO_ERROR,
+                           G_IO_ERROR_INVALID_ARGUMENT,
+                           g_dngettext (GETTEXT_PACKAGE,
+                                        "Encountered array of length %u byte. Maximum length is 2<<26 bytes (64 MiB).",
+                                        "Encountered array of length %u bytes. Maximum length is 2<<26 bytes (64 MiB).",
+                                        array_len),
+                           array_len);
+              goto fail;
+            }
 
-        g_variant_builder_init (&builder, type);
-        element_type = g_variant_type_element (type);
+          g_variant_builder_init (&builder, type);
+          element_type = g_variant_type_element (type);
 
-        if (array_len == 0)
-          {
-            GVariant *item;
-            item = parse_value_from_blob (mis,
-                                          dis,
-                                          element_type,
-                                          TRUE,
-                                          indent + 2,
-                                          NULL);
-            g_assert (item == NULL);
-          }
-        else
-          {
-            /* TODO: optimize array of primitive types */
-            offset = g_seekable_tell (G_SEEKABLE (mis));
-            target = offset + array_len;
-            while (offset < target)
-              {
-                GVariant *item;
-                item = parse_value_from_blob (mis,
-                                              dis,
-                                              element_type,
-                                              FALSE,
-                                              indent + 2,
-                                              &local_error);
-                if (item == NULL)
-                  {
-                    g_variant_builder_clear (&builder);
-                    goto fail;
-                  }
-                g_variant_builder_add_value (&builder, item);
-                g_variant_unref (item);
-                offset = g_seekable_tell (G_SEEKABLE (mis));
-              }
-          }
+          if (array_len == 0)
+            {
+              GVariant *item;
+              item = parse_value_from_blob (mis,
+                                            dis,
+                                            element_type,
+                                            TRUE,
+                                            indent + 2,
+                                            NULL);
+              g_assert (item == NULL);
+            }
+          else
+            {
+              /* TODO: optimize array of primitive types */
+              offset = g_seekable_tell (G_SEEKABLE (mis));
+              target = offset + array_len;
+              while (offset < target)
+                {
+                  GVariant *item;
+                  item = parse_value_from_blob (mis,
+                                                dis,
+                                                element_type,
+                                                FALSE,
+                                                indent + 2,
+                                                &local_error);
+                  if (item == NULL)
+                    {
+                      g_variant_builder_clear (&builder);
+                      goto fail;
+                    }
+                  g_variant_builder_add_value (&builder, item);
+                  g_variant_unref (item);
+                  offset = g_seekable_tell (G_SEEKABLE (mis));
+                }
+            }
 
-        if (!just_align)
-          {
-            ret = g_variant_builder_end (&builder);
-          }
-        else
-          {
-            g_variant_builder_clear (&builder);
-          }
-      }
+          ret = g_variant_builder_end (&builder);
+        }
       break;
 
     default:
@@ -1573,7 +1566,7 @@ parse_value_from_blob (GMemoryInputStream    *mis,
 
 /**
  * g_dbus_message_bytes_needed:
- * @blob: A blob represent a binary D-Bus message.
+ * @blob: (array length=blob_len) (element-type guint8): A blob represent a binary D-Bus message.
  * @blob_len: The length of @blob (must be at least 16).
  * @error: Return location for error or %NULL.
  *
@@ -1641,7 +1634,7 @@ g_dbus_message_bytes_needed (guchar                *blob,
 
 /**
  * g_dbus_message_new_from_blob:
- * @blob: A blob represent a binary D-Bus message.
+ * @blob: (array length=blob_len) (element-type guint8): A blob represent a binary D-Bus message.
  * @blob_len: The length of @blob.
  * @capabilities: A #GDBusCapabilityFlags describing what protocol features are supported.
  * @error: Return location for error or %NULL.
@@ -2227,8 +2220,9 @@ append_body_to_blob (GVariant             *value,
  * Serializes @message to a blob. The byte order returned by
  * g_dbus_message_get_byte_order() will be used.
  *
- * Returns: A pointer to a valid binary D-Bus message of @out_size bytes
- * generated by @message or %NULL if @error is set. Free with g_free().
+ * Returns: (array length=out_size) (transfer full): A pointer to a
+ * valid binary D-Bus message of @out_size bytes generated by @message
+ * or %NULL if @error is set. Free with g_free().
  *
  * Since: 2.26
  */
@@ -3019,32 +3013,32 @@ _sort_keys_func (gconstpointer a,
  * and formatting is subject to change at any time. Typical output
  * looks something like this:
  * <programlisting>
- * Type:    method-call
- * Flags:   none
- * Version: 0
- * Serial:  4
- * Headers:
+ * Type&colon;    method-call
+ * Flags&colon;   none
+ * Version&colon; 0
+ * Serial&colon;  4
+ * Headers&colon;
  *   path -> objectpath '/org/gtk/GDBus/TestObject'
  *   interface -> 'org.gtk.GDBus.TestInterface'
  *   member -> 'GimmeStdout'
  *   destination -> ':1.146'
- * Body: ()
+ * Body&colon; ()
  * UNIX File Descriptors:
  *   (none)
  * </programlisting>
  * or
  * <programlisting>
- * Type:    method-return
- * Flags:   no-reply-expected
- * Version: 0
- * Serial:  477
- * Headers:
+ * Type&colon;    method-return
+ * Flags&colon;   no-reply-expected
+ * Version&colon; 0
+ * Serial&colon;  477
+ * Headers&colon;
  *   reply-serial -> uint32 4
  *   destination -> ':1.159'
  *   sender -> ':1.146'
  *   num-unix-fds -> uint32 1
- * Body: ()
- * UNIX File Descriptors:
+ * Body&colon; ()
+ * UNIX File Descriptors&colon;
  *   fd 12: dev=0:10,mode=020620,ino=5,uid=500,gid=5,rdev=136:2,size=0,atime=1273085037,mtime=1273085851,ctime=1272982635
  * </programlisting>
  *

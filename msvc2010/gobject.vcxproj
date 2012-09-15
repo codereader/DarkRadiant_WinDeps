@@ -141,26 +141,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\gtk2\glib\gobject\gatomicarray.c" />
-    <ClCompile Include="..\gtk2\glib\gobject\gbinding.c" />
-    <ClCompile Include="..\gtk2\glib\gobject\gboxed.c" />
-    <ClCompile Include="..\gtk2\glib\gobject\gclosure.c" />
-    <ClCompile Include="..\gtk2\glib\gobject\genums.c" />
-    <ClCompile Include="..\gtk2\glib\gobject\gmarshal.c" />
-    <ClCompile Include="..\gtk2\glib\gobject\gobject.c" />
-    <ClCompile Include="..\gtk2\glib\gobject\gparam.c" />
-    <ClCompile Include="..\gtk2\glib\gobject\gparamspecs.c" />
-    <ClCompile Include="..\gtk2\glib\gobject\gsignal.c" />
-    <ClCompile Include="..\gtk2\glib\gobject\gsourceclosure.c" />
-    <ClCompile Include="..\gtk2\glib\gobject\gtype.c" />
-    <ClCompile Include="..\gtk2\glib\gobject\gtypemodule.c" />
-    <ClCompile Include="..\gtk2\glib\gobject\gtypeplugin.c" />
-    <ClCompile Include="..\gtk2\glib\gobject\gvalue.c" />
-    <ClCompile Include="..\gtk2\glib\gobject\gvaluearray.c" />
-    <ClCompile Include="..\gtk2\glib\gobject\gvaluetransform.c" />
-    <ClCompile Include="..\gtk2\glib\gobject\gvaluetypes.c" />
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="..\gtk2\glib\gobject\gobject.rc" />
   </ItemGroup>
   <ItemGroup>
@@ -188,6 +168,27 @@
       <Project>{c8afb8c3-fffd-460f-bc13-9ac25d7b117c}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\gtk2\glib\gobject\gatomicarray.c" />
+    <ClCompile Include="..\gtk2\glib\gobject\gbinding.c" />
+    <ClCompile Include="..\gtk2\glib\gobject\gboxed.c" />
+    <ClCompile Include="..\gtk2\glib\gobject\gclosure.c" />
+    <ClCompile Include="..\gtk2\glib\gobject\genums.c" />
+    <ClCompile Include="..\gtk2\glib\gobject\gmarshal.c" />
+    <ClCompile Include="..\gtk2\glib\gobject\gobject.c" />
+    <ClCompile Include="..\gtk2\glib\gobject\gobjectnotifyqueue.c" />
+    <ClCompile Include="..\gtk2\glib\gobject\gparam.c" />
+    <ClCompile Include="..\gtk2\glib\gobject\gparamspecs.c" />
+    <ClCompile Include="..\gtk2\glib\gobject\gsignal.c" />
+    <ClCompile Include="..\gtk2\glib\gobject\gsourceclosure.c" />
+    <ClCompile Include="..\gtk2\glib\gobject\gtype.c" />
+    <ClCompile Include="..\gtk2\glib\gobject\gtypemodule.c" />
+    <ClCompile Include="..\gtk2\glib\gobject\gtypeplugin.c" />
+    <ClCompile Include="..\gtk2\glib\gobject\gvalue.c" />
+    <ClCompile Include="..\gtk2\glib\gobject\gvaluearray.c" />
+    <ClCompile Include="..\gtk2\glib\gobject\gvaluetransform.c" />
+    <ClCompile Include="..\gtk2\glib\gobject\gvaluetypes.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

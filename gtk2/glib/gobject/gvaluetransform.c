@@ -140,7 +140,7 @@ value_transform_##func_name (const GValue *src_value,                       \
 DEFINE_BOOL_CHECK (int_bool,    v_int);
 DEFINE_BOOL_CHECK (uint_bool,   v_uint);
 DEFINE_BOOL_CHECK (long_bool,   v_long);
-DEFINE_BOOL_CHECK (ulong_bool,  v_uint);
+DEFINE_BOOL_CHECK (ulong_bool,  v_ulong);
 DEFINE_BOOL_CHECK (int64_bool,  v_int64);
 DEFINE_BOOL_CHECK (uint64_bool, v_uint64);
 
@@ -216,7 +216,7 @@ value_transform_flags_string (const GValue *src_value,
           g_string_append (gstring, flags_value->value_name);
           flags_value = g_flags_get_first_value (class, v_flags);
         }
-      while (flags_value);
+      while (flags_value && v_flags);
       
       if (v_flags)
         dest_value->data[0].v_pointer = g_strdup_printf ("%s | %u",

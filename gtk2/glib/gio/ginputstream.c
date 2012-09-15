@@ -37,7 +37,7 @@
  * @short_description: Base class for implementing streaming input
  * @include: gio/gio.h
  *
- * GInputStream has functions to read from a stream (g_input_stream_read()),
+ * #GInputStream has functions to read from a stream (g_input_stream_read()),
  * to close a stream (g_input_stream_close()) and to skip some content
  * (g_input_stream_skip()). 
  *
@@ -153,15 +153,15 @@ g_input_stream_init (GInputStream *stream)
  * can happen e.g. near the end of a file. Zero is returned on end of file
  * (or if @count is zero),  but never otherwise.
  *
- * If @cancellable is not NULL, then the operation can be cancelled by
+ * If @cancellable is not %NULL, then the operation can be cancelled by
  * triggering the cancellable object from another thread. If the operation
- * was cancelled, the error G_IO_ERROR_CANCELLED will be returned. If an
+ * was cancelled, the error %G_IO_ERROR_CANCELLED will be returned. If an
  * operation was partially finished when the operation was cancelled the
  * partial result will be returned, without an error.
  *
  * On error -1 is returned and @error is set accordingly.
  * 
- * Return value: Number of bytes read, or -1 on error
+ * Return value: Number of bytes read, or -1 on error, or 0 on end of file.
  **/
 gssize
 g_input_stream_read  (GInputStream  *stream,
@@ -414,7 +414,7 @@ g_input_stream_real_skip (GInputStream  *stream,
  * close will still return %G_IO_ERROR_CLOSED for all operations. Still, it
  * is important to check and report the error to the user.
  *
- * If @cancellable is not NULL, then the operation can be cancelled by
+ * If @cancellable is not %NULL, then the operation can be cancelled by
  * triggering the cancellable object from another thread. If the operation
  * was cancelled, the error %G_IO_ERROR_CANCELLED will be returned.
  * Cancelling a close will still leave the stream closed, but some streams
@@ -583,7 +583,7 @@ g_input_stream_read_async (GInputStream        *stream,
  * 
  * Finishes an asynchronous stream read operation. 
  * 
- * Returns: number of bytes read in, or -1 on error.
+ * Returns: number of bytes read in, or -1 on error, or 0 on end of file.
  **/
 gssize
 g_input_stream_read_finish (GInputStream  *stream,

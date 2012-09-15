@@ -23,7 +23,7 @@
 #include "config.h"
 #include "glib.h"
 #include <gioerror.h>
-#include "gwakeup.h"
+#include "glib-private.h"
 #include "gcancellable.h"
 #include "glibintl.h"
 
@@ -57,9 +57,9 @@ static guint signals[LAST_SIGNAL] = { 0 };
 
 G_DEFINE_TYPE (GCancellable, g_cancellable, G_TYPE_OBJECT);
 
-static GStaticPrivate current_cancellable = G_STATIC_PRIVATE_INIT;
-G_LOCK_DEFINE_STATIC(cancellable);
-static GCond *cancellable_cond = NULL;
+static GPrivate current_cancellable;
+static GMutex cancellable_mutex;
+static GCond cancellable_cond;
 
 static void
 g_cancellable_finalize (GObject *object)
@@ -67,7 +67,7 @@ g_cancellable_finalize (GObject *object)
   GCancellable *cancellable = G_CANCELLABLE (object);
 
   if (cancellable->priv->wakeup)
-    g_wakeup_free (cancellable->priv->wakeup);
+    GLIB_PRIVATE_CALL (g_wakeup_free) (cancellable->priv->wakeup);
 
   G_OBJECT_CLASS (g_cancellable_parent_class)->finalize (object);
 }
@@ -79,9 +79,6 @@ g_cancellable_class_init (GCancellableClass *klass)
 
   g_type_class_add_private (klass, sizeof (GCancellablePrivate));
 
-  if (cancellable_cond == NULL && g_thread_supported ())
-    cancellable_cond = g_cond_new ();
-  
   gobject_class->finalize = g_cancellable_finalize;
 
   /**
@@ -201,9 +198,9 @@ g_cancellable_push_current (GCancellable *cancellable)
 
   g_return_if_fail (cancellable != NULL);
 
-  l = g_static_private_get (&current_cancellable);
+  l = g_private_get (&current_cancellable);
   l = g_slist_prepend (l, cancellable);
-  g_static_private_set (&current_cancellable, l, NULL);
+  g_private_set (&current_cancellable, l);
 }
 
 /**
@@ -218,13 +215,13 @@ g_cancellable_pop_current (GCancellable *cancellable)
 {
   GSList *l;
 
-  l = g_static_private_get (&current_cancellable);
+  l = g_private_get (&current_cancellable);
 
   g_return_if_fail (l != NULL);
   g_return_if_fail (l->data == cancellable);
 
   l = g_slist_delete_link (l, l);
-  g_static_private_set (&current_cancellable, l, NULL);
+  g_private_set (&current_cancellable, l);
 }
 
 /**
@@ -240,7 +237,7 @@ g_cancellable_get_current  (void)
 {
   GSList *l;
 
-  l = g_static_private_get (&current_cancellable);
+  l = g_private_get (&current_cancellable);
   if (l == NULL)
     return NULL;
 
@@ -263,25 +260,25 @@ g_cancellable_reset (GCancellable *cancellable)
 
   g_return_if_fail (G_IS_CANCELLABLE (cancellable));
 
-  G_LOCK(cancellable);
+  g_mutex_lock (&cancellable_mutex);
 
   priv = cancellable->priv;
-  
+
   while (priv->cancelled_running)
     {
       priv->cancelled_running_waiting = TRUE;
-      g_cond_wait (cancellable_cond,
-                   g_static_mutex_get_mutex (& G_LOCK_NAME (cancellable)));
+      g_cond_wait (&cancellable_cond, &cancellable_mutex);
     }
 
   if (priv->cancelled)
     {
       if (priv->wakeup)
-        g_wakeup_acknowledge (priv->wakeup);
+        GLIB_PRIVATE_CALL (g_wakeup_acknowledge) (priv->wakeup);
 
       priv->cancelled = FALSE;
     }
-  G_UNLOCK(cancellable);
+
+  g_mutex_unlock (&cancellable_mutex);
 }
 
 /**
@@ -365,7 +362,7 @@ g_cancellable_get_fd (GCancellable *cancellable)
 
 /**
  * g_cancellable_make_pollfd:
- * @cancellable: a #GCancellable or %NULL
+ * @cancellable: (allow-none): a #GCancellable or %NULL
  * @pollfd: a pointer to a #GPollFD
  * 
  * Creates a #GPollFD corresponding to @cancellable; this can be passed
@@ -400,21 +397,21 @@ g_cancellable_make_pollfd (GCancellable *cancellable, GPollFD *pollfd)
     return FALSE;
   g_return_val_if_fail (G_IS_CANCELLABLE (cancellable), FALSE);
 
-  G_LOCK(cancellable);
+  g_mutex_lock (&cancellable_mutex);
 
   cancellable->priv->fd_refcount++;
 
   if (cancellable->priv->wakeup == NULL)
     {
-      cancellable->priv->wakeup = g_wakeup_new ();
+      cancellable->priv->wakeup = GLIB_PRIVATE_CALL (g_wakeup_new) ();
 
       if (cancellable->priv->cancelled)
-        g_wakeup_signal (cancellable->priv->wakeup);
+        GLIB_PRIVATE_CALL (g_wakeup_signal) (cancellable->priv->wakeup);
     }
 
-  g_wakeup_get_pollfd (cancellable->priv->wakeup, pollfd);
+  GLIB_PRIVATE_CALL (g_wakeup_get_pollfd) (cancellable->priv->wakeup, pollfd);
 
-  G_UNLOCK(cancellable);
+  g_mutex_unlock (&cancellable_mutex);
 
   return TRUE;
 }
@@ -448,14 +445,16 @@ g_cancellable_release_fd (GCancellable *cancellable)
 
   priv = cancellable->priv;
 
-  G_LOCK (cancellable);
+  g_mutex_lock (&cancellable_mutex);
+
   priv->fd_refcount--;
   if (priv->fd_refcount == 0)
     {
-      g_wakeup_free (priv->wakeup);
+      GLIB_PRIVATE_CALL (g_wakeup_free) (priv->wakeup);
       priv->wakeup = NULL;
     }
-  G_UNLOCK (cancellable);
+
+  g_mutex_unlock (&cancellable_mutex);
 }
 
 /**
@@ -488,10 +487,11 @@ g_cancellable_cancel (GCancellable *cancellable)
 
   priv = cancellable->priv;
 
-  G_LOCK(cancellable);
+  g_mutex_lock (&cancellable_mutex);
+
   if (priv->cancelled)
     {
-      G_UNLOCK (cancellable);
+      g_mutex_unlock (&cancellable_mutex);
       return;
     }
 
@@ -499,21 +499,21 @@ g_cancellable_cancel (GCancellable *cancellable)
   priv->cancelled_running = TRUE;
 
   if (priv->wakeup)
-    g_wakeup_signal (priv->wakeup);
+    GLIB_PRIVATE_CALL (g_wakeup_signal) (priv->wakeup);
 
-  G_UNLOCK(cancellable);
+  g_mutex_unlock (&cancellable_mutex);
 
   g_object_ref (cancellable);
   g_signal_emit (cancellable, signals[CANCELLED], 0);
 
-  G_LOCK(cancellable);
+  g_mutex_lock (&cancellable_mutex);
 
   priv->cancelled_running = FALSE;
   if (priv->cancelled_running_waiting)
-    g_cond_broadcast (cancellable_cond);
+    g_cond_broadcast (&cancellable_cond);
   priv->cancelled_running_waiting = FALSE;
 
-  G_UNLOCK(cancellable);
+  g_mutex_unlock (&cancellable_mutex);
 
   g_object_unref (cancellable);
 }
@@ -523,7 +523,7 @@ g_cancellable_cancel (GCancellable *cancellable)
  * @cancellable: A #GCancellable.
  * @callback: The #GCallback to connect.
  * @data: Data to pass to @callback.
- * @data_destroy_func: Free function for @data or %NULL.
+ * @data_destroy_func: (allow-none): Free function for @data or %NULL.
  *
  * Convenience function to connect to the #GCancellable::cancelled
  * signal. Also handles the race condition that may happen
@@ -554,7 +554,7 @@ g_cancellable_connect (GCancellable   *cancellable,
 
   g_return_val_if_fail (G_IS_CANCELLABLE (cancellable), 0);
 
-  G_LOCK (cancellable);
+  g_mutex_lock (&cancellable_mutex);
 
   if (cancellable->priv->cancelled)
     {
@@ -576,14 +576,15 @@ g_cancellable_connect (GCancellable   *cancellable,
                                   (GClosureNotify) data_destroy_func,
                                   0);
     }
-  G_UNLOCK (cancellable);
+
+  g_mutex_unlock (&cancellable_mutex);
 
   return id;
 }
 
 /**
  * g_cancellable_disconnect:
- * @cancellable: A #GCancellable or %NULL.
+ * @cancellable: (allow-none): A #GCancellable or %NULL.
  * @handler_id: Handler id of the handler to be disconnected, or %0.
  *
  * Disconnects a handler from a cancellable instance similar to
@@ -612,19 +613,19 @@ g_cancellable_disconnect (GCancellable  *cancellable,
   if (handler_id == 0 ||  cancellable == NULL)
     return;
 
-  G_LOCK (cancellable);
+  g_mutex_lock (&cancellable_mutex);
 
   priv = cancellable->priv;
 
   while (priv->cancelled_running)
     {
       priv->cancelled_running_waiting = TRUE;
-      g_cond_wait (cancellable_cond,
-                   g_static_mutex_get_mutex (& G_LOCK_NAME (cancellable)));
+      g_cond_wait (&cancellable_cond, &cancellable_mutex);
     }
 
   g_signal_handler_disconnect (cancellable, handler_id);
-  G_UNLOCK (cancellable);
+
+  g_mutex_unlock (&cancellable_mutex);
 }
 
 typedef struct {
@@ -678,8 +679,8 @@ cancellable_source_closure_callback (GCancellable *cancellable,
 {
   GClosure *closure = data;
 
-  GValue params = { 0, };
-  GValue result_value = { 0, };
+  GValue params = G_VALUE_INIT;
+  GValue result_value = G_VALUE_INIT;
   gboolean result;
 
   g_value_init (&result_value, G_TYPE_BOOLEAN);
@@ -708,7 +709,7 @@ static GSourceFuncs cancellable_source_funcs =
 
 /**
  * g_cancellable_source_new: (skip)
- * @cancellable: a #GCancellable, or %NULL
+ * @cancellable: (allow-none): a #GCancellable, or %NULL
  *
  * Creates a source that triggers if @cancellable is cancelled and
  * calls its callback of type #GCancellableSourceFunc. This is

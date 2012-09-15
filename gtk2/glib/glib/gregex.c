@@ -36,6 +36,7 @@
 #include "gmessages.h"
 #include "gstrfuncs.h"
 #include "gatomic.h"
+#include "gthread.h"
 
 /**
  * SECTION:gregex
@@ -778,7 +779,7 @@ g_match_info_is_partial_match (const GMatchInfo *match_info)
 
 /**
  * g_match_info_expand_references:
- * @match_info: a #GMatchInfo or %NULL
+ * @match_info: (allow-none): a #GMatchInfo or %NULL
  * @string_to_expand: the string to expand
  * @error: location to store the error occurring, or %NULL to ignore errors
  *
@@ -834,8 +835,7 @@ g_match_info_expand_references (const GMatchInfo  *match_info,
   result = g_string_sized_new (strlen (string_to_expand));
   interpolate_replacement (match_info, result, list);
 
-  g_list_foreach (list, (GFunc)free_interpolation_data, NULL);
-  g_list_free (list);
+  g_list_free_full (list, (GDestroyNotify) free_interpolation_data);
 
   return g_string_free (result, FALSE);
 }
@@ -1187,7 +1187,7 @@ g_regex_new (const gchar         *pattern,
   gint erroffset;
   gint errcode;
   gboolean optimize = FALSE;
-  static gboolean initialized = FALSE;
+  static gsize initialised;
   unsigned long int pcre_compile_options;
 
   g_return_val_if_fail (pattern != NULL, NULL);
@@ -1195,7 +1195,7 @@ g_regex_new (const gchar         *pattern,
   g_return_val_if_fail ((compile_options & ~G_REGEX_COMPILE_MASK) == 0, NULL);
   g_return_val_if_fail ((match_options & ~G_REGEX_MATCH_MASK) == 0, NULL);
 
-  if (!initialized)
+  if (g_once_init_enter (&initialised))
     {
       gint support;
       const gchar *msg;
@@ -1218,7 +1218,7 @@ g_regex_new (const gchar         *pattern,
           return NULL;
         }
 
-      initialized = TRUE;
+      g_once_init_leave (&initialised, TRUE);
     }
 
   /* G_REGEX_OPTIMIZE has the same numeric value of PCRE_NO_UTF8_CHECK,
@@ -2061,8 +2061,7 @@ g_regex_split_full (const GRegex      *regex,
   if (tmp_error != NULL)
     {
       g_propagate_error (error, tmp_error);
-      g_list_foreach (list, (GFunc)g_free, NULL);
-      g_list_free (list);
+      g_list_free_full (list, g_free);
       match_info->pos = -1;
       return NULL;
     }
@@ -2384,8 +2383,7 @@ split_replacement (const gchar  *replacement,
           start = p = expand_escape (replacement, p, data, error);
           if (p == NULL)
             {
-              g_list_foreach (list, (GFunc)free_interpolation_data, NULL);
-              g_list_free (list);
+              g_list_free_full (list, (GDestroyNotify) free_interpolation_data);
               free_interpolation_data (data);
 
               return NULL;
@@ -2616,8 +2614,7 @@ g_regex_replace (const GRegex      *regex,
   if (tmp_error != NULL)
     g_propagate_error (error, tmp_error);
 
-  g_list_foreach (list, (GFunc)free_interpolation_data, NULL);
-  g_list_free (list);
+  g_list_free_full (list, (GDestroyNotify) free_interpolation_data);
 
   return result;
 }
@@ -2826,8 +2823,7 @@ g_regex_check_replacement (const gchar  *replacement,
   if (has_references)
     *has_references = interpolation_list_needs_match (list);
 
-  g_list_foreach (list, (GFunc) free_interpolation_data, NULL);
-  g_list_free (list);
+  g_list_free_full (list, (GDestroyNotify) free_interpolation_data);
 
   return TRUE;
 }

@@ -26,26 +26,19 @@
 #include <glib/gatomic.h>
 #include <glib/gslist.h>
 #include <glib/gthread.h>
+#include <glib/gslice.h>
 
 #include "gthreadprivate.h"
 #include "config.h"
 
-
-#ifdef G_BIT_LOCK_FORCE_FUTEX_EMULATION
 #undef HAVE_FUTEX
+#ifdef G_BIT_LOCK_FORCE_FUTEX_EMULATION
 #endif
 
 #ifndef HAVE_FUTEX
+static GMutex g_futex_mutex;
 static GSList *g_futex_address_list = NULL;
-static GMutex *g_futex_mutex = NULL;
 #endif
-
-void
-_g_futex_thread_init (void) {
-#ifndef HAVE_FUTEX
-  g_futex_mutex = g_mutex_new ();
-#endif
-}
 
 #ifdef HAVE_FUTEX
 /*
@@ -108,7 +101,7 @@ typedef struct
 {
   const volatile gint *address;
   gint                 ref_count;
-  GCond               *wait_queue;
+  GCond                wait_queue;
 } WaitAddress;
 
 static WaitAddress *
@@ -131,7 +124,7 @@ static void
 g_futex_wait (const volatile gint *address,
               gint                 value)
 {
-  g_mutex_lock (g_futex_mutex);
+  g_mutex_lock (&g_futex_mutex);
   if G_LIKELY (g_atomic_int_get (address) == value)
     {
       WaitAddress *waiter;
@@ -140,24 +133,24 @@ g_futex_wait (const volatile gint *address,
         {
           waiter = g_slice_new (WaitAddress);
           waiter->address = address;
-          waiter->wait_queue = g_cond_new ();
+          g_cond_init (&waiter->wait_queue);
           waiter->ref_count = 0;
           g_futex_address_list =
             g_slist_prepend (g_futex_address_list, waiter);
         }
 
       waiter->ref_count++;
-      g_cond_wait (waiter->wait_queue, g_futex_mutex);
+      g_cond_wait (&waiter->wait_queue, &g_futex_mutex);
 
       if (!--waiter->ref_count)
         {
           g_futex_address_list =
             g_slist_remove (g_futex_address_list, waiter);
-          g_cond_free (waiter->wait_queue);
+          g_cond_clear (&waiter->wait_queue);
           g_slice_free (WaitAddress, waiter);
         }
     }
-  g_mutex_unlock (g_futex_mutex);
+  g_mutex_unlock (&g_futex_mutex);
 }
 
 static void
@@ -171,10 +164,10 @@ g_futex_wake (const volatile gint *address)
    *   2) need to -stay- locked until the end to ensure a wake()
    *      in another thread doesn't cause 'waiter' to stop existing
    */
-  g_mutex_lock (g_futex_mutex);
+  g_mutex_lock (&g_futex_mutex);
   if ((waiter = g_futex_find_address (address)))
-    g_cond_signal (waiter->wait_queue);
-  g_mutex_unlock (g_futex_mutex);
+    g_cond_signal (&waiter->wait_queue);
+  g_mutex_unlock (&g_futex_mutex);
 }
 #endif
 
@@ -262,7 +255,6 @@ g_bit_lock (volatile gint *address,
  * g_bit_trylock:
  * @address: a pointer to an integer
  * @lock_bit: a bit value between 0 and 31
- * @returns: %TRUE if the lock was acquired
  *
  * Sets the indicated @lock_bit in @address, returning %TRUE if
  * successful.  If the bit is already set, returns %FALSE immediately.
@@ -276,6 +268,8 @@ g_bit_lock (volatile gint *address,
  * This function accesses @address atomically.  All other accesses to
  * @address must be atomic in order for this function to work
  * reliably.
+ *
+ * Returns: %TRUE if the lock was acquired
  *
  * Since: 2.24
  **/
@@ -372,6 +366,12 @@ g_futex_int_address (const volatile void *address)
 {
   const volatile gint *int_address = address;
 
+  /* this implementation makes these (reasonable) assumptions: */
+  G_STATIC_ASSERT (G_BYTE_ORDER == G_LITTLE_ENDIAN ||
+      (G_BYTE_ORDER == G_BIG_ENDIAN &&
+       sizeof (int) == 4 &&
+       (sizeof (gpointer) == 4 || sizeof (gpointer) == 8)));
+
 #if G_BYTE_ORDER == G_BIG_ENDIAN && GLIB_SIZEOF_VOID_P == 8
   int_address++;
 #endif
@@ -452,13 +452,14 @@ void
  * g_pointer_bit_trylock:
  * @address: a pointer to a #gpointer-sized value
  * @lock_bit: a bit value between 0 and 31
- * @returns: %TRUE if the lock was acquired
  *
  * This is equivalent to g_bit_trylock, but working on pointers (or
  * other pointer-sized values).
  *
  * For portability reasons, you may only lock on the bottom 32 bits of
  * the pointer.
+ *
+ * Returns: %TRUE if the lock was acquired
  *
  * Since: 2.30
  **/

@@ -22,11 +22,44 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
-    <Filter Include="Source Files\dirent">
-      <UniqueIdentifier>{70d09625-2e13-480d-b084-bf974a0cb5ab}</UniqueIdentifier>
+    <Filter Include="Source Files\deprecated">
+      <UniqueIdentifier>{79ad7e7e-27bc-4e82-be95-72b4d9468de6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\gtk2\glib\glib\gnulib\asnprintf.c">
+      <Filter>Source Files\gnulib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\glib\gnulib\printf-args.c">
+      <Filter>Source Files\gnulib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\glib\gnulib\printf-parse.c">
+      <Filter>Source Files\gnulib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\glib\gnulib\printf.c">
+      <Filter>Source Files\gnulib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\glib\gnulib\vasnprintf.c">
+      <Filter>Source Files\gnulib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\glib\gvarianttype.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\glib\gvarianttypeinfo.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\glib\gversion.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\glib\gwakeup.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\glib\gwin32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\glib\docs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\gtk2\glib\glib\garray.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -48,16 +81,13 @@
     <ClCompile Include="..\gtk2\glib\glib\gbookmarkfile.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\gbuffer.c">
+    <ClCompile Include="..\gtk2\glib\glib\gbytes.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\gcache.c">
+    <ClCompile Include="..\gtk2\glib\glib\gcharset.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtk2\glib\glib\gchecksum.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\gcompletion.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtk2\glib\glib\gconvert.c">
@@ -75,10 +105,16 @@
     <ClCompile Include="..\gtk2\glib\glib\gdir.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\gtk2\glib\glib\genviron.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\gtk2\glib\glib\gerror.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtk2\glib\glib\gfileutils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\glib\ggettext.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtk2\glib\glib\ghash.c">
@@ -96,7 +132,16 @@
     <ClCompile Include="..\gtk2\glib\glib\giochannel.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\gtk2\glib\glib\giowin32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\gtk2\glib\glib\gkeyfile.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\glib\glib-init.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\glib\glib-private.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtk2\glib\glib\glist.c">
@@ -132,13 +177,13 @@
     <ClCompile Include="..\gtk2\glib\glib\gprimes.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\gtk2\glib\glib\gprintf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\gtk2\glib\glib\gqsort.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtk2\glib\glib\gqueue.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\grel.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtk2\glib\glib\grand.c">
@@ -162,6 +207,9 @@
     <ClCompile Include="..\gtk2\glib\glib\gslist.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\gtk2\glib\glib\gspawn-win32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\gtk2\glib\glib\gstdio.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -169,6 +217,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtk2\glib\glib\gstring.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\glib\gstringchunk.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtk2\glib\glib\gtestutils.c">
@@ -180,19 +231,19 @@
     <ClCompile Include="..\gtk2\glib\glib\gthreadpool.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\gtk2\glib\glib\gthread-win32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\gtk2\glib\glib\gtimer.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtk2\glib\glib\gtimezone.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\gtk2\glib\glib\gtrashstack.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\gtk2\glib\glib\gtree.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\guniprop.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\gutf8.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtk2\glib\glib\gunibreak.c">
@@ -204,7 +255,13 @@
     <ClCompile Include="..\gtk2\glib\glib\gunidecomp.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\gtk2\glib\glib\guniprop.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\gtk2\glib\glib\gurifuncs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\glib\glib\gutf8.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtk2\glib\glib\gutils.c">
@@ -222,44 +279,44 @@
     <ClCompile Include="..\gtk2\glib\glib\gvariant-serialiser.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\gvarianttypeinfo.c">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_exec.c">
+      <Filter>Source Files\pcre</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\gvarianttype.c">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_fullinfo.c">
+      <Filter>Source Files\pcre</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\gwakeup.c">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_get.c">
+      <Filter>Source Files\pcre</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\gprintf.c">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_globals.c">
+      <Filter>Source Files\pcre</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\giowin32.c">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_jit_compile.c">
+      <Filter>Source Files\pcre</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\gspawn-win32.c">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_newline.c">
+      <Filter>Source Files\pcre</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\gwin32.c">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_ord2utf8.c">
+      <Filter>Source Files\pcre</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\libcharset\localcharset.c">
-      <Filter>Source Files\libcharset</Filter>
+    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_string_utils.c">
+      <Filter>Source Files\pcre</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\gnulib\asnprintf.c">
-      <Filter>Source Files\gnulib</Filter>
+    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_study.c">
+      <Filter>Source Files\pcre</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\gnulib\printf-args.c">
-      <Filter>Source Files\gnulib</Filter>
+    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_tables.c">
+      <Filter>Source Files\pcre</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\gnulib\printf-parse.c">
-      <Filter>Source Files\gnulib</Filter>
+    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_valid_utf8.c">
+      <Filter>Source Files\pcre</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\gnulib\printf.c">
-      <Filter>Source Files\gnulib</Filter>
+    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_xclass.c">
+      <Filter>Source Files\pcre</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\gnulib\vasnprintf.c">
-      <Filter>Source Files\gnulib</Filter>
+    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_byte_order.c">
+      <Filter>Source Files\pcre</Filter>
     </ClCompile>
     <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_chartables.c">
       <Filter>Source Files\pcre</Filter>
@@ -273,41 +330,23 @@
     <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_dfa_exec.c">
       <Filter>Source Files\pcre</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_exec.c">
-      <Filter>Source Files\pcre</Filter>
+    <ClCompile Include="..\gtk2\glib\glib\libcharset\localcharset.c">
+      <Filter>Source Files\libcharset</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_fullinfo.c">
-      <Filter>Source Files\pcre</Filter>
+    <ClCompile Include="..\gtk2\glib\glib\deprecated\gallocator.c">
+      <Filter>Source Files\deprecated</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_get.c">
-      <Filter>Source Files\pcre</Filter>
+    <ClCompile Include="..\gtk2\glib\glib\deprecated\gcache.c">
+      <Filter>Source Files\deprecated</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_globals.c">
-      <Filter>Source Files\pcre</Filter>
+    <ClCompile Include="..\gtk2\glib\glib\deprecated\gcompletion.c">
+      <Filter>Source Files\deprecated</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_newline.c">
-      <Filter>Source Files\pcre</Filter>
+    <ClCompile Include="..\gtk2\glib\glib\deprecated\grel.c">
+      <Filter>Source Files\deprecated</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_ord2utf8.c">
-      <Filter>Source Files\pcre</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_study.c">
-      <Filter>Source Files\pcre</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_tables.c">
-      <Filter>Source Files\pcre</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_try_flipped.c">
-      <Filter>Source Files\pcre</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_ucp_searchfuncs.c">
-      <Filter>Source Files\pcre</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_xclass.c">
-      <Filter>Source Files\pcre</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\glib\glib\dirent\dirent.c">
-      <Filter>Source Files\dirent</Filter>
+    <ClCompile Include="..\gtk2\glib\glib\deprecated\gthread-deprecated.c">
+      <Filter>Source Files\deprecated</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -319,10 +358,5 @@
     <CustomBuild Include="..\gtk2\glib\glib\glib.symbols">
       <Filter>Resource Files</Filter>
     </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\gtk2\glib\glib\dirent\dirent.h">
-      <Filter>Source Files\dirent</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

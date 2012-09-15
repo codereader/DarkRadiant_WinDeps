@@ -89,7 +89,7 @@
       <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>$(IntDir)glib.def</ModuleDefinitionFile>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
@@ -108,7 +108,7 @@
       <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>$(IntDir)glib.def</ModuleDefinitionFile>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
@@ -125,7 +125,7 @@
       <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>$(IntDir)glib.def</ModuleDefinitionFile>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
@@ -142,14 +142,19 @@
       <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>$(IntDir)glib.def</ModuleDefinitionFile>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\gtk2\glib\glib\dirent\dirent.c" />
+    <ClCompile Include="..\gtk2\glib\glib\deprecated\gallocator.c" />
+    <ClCompile Include="..\gtk2\glib\glib\deprecated\gcache.c" />
+    <ClCompile Include="..\gtk2\glib\glib\deprecated\gcompletion.c" />
+    <ClCompile Include="..\gtk2\glib\glib\deprecated\grel.c" />
+    <ClCompile Include="..\gtk2\glib\glib\deprecated\gthread-deprecated.c" />
+    <ClCompile Include="..\gtk2\glib\glib\docs.c" />
     <ClCompile Include="..\gtk2\glib\glib\garray.c" />
     <ClCompile Include="..\gtk2\glib\glib\gasyncqueue.c" />
     <ClCompile Include="..\gtk2\glib\glib\gatomic.c" />
@@ -157,23 +162,27 @@
     <ClCompile Include="..\gtk2\glib\glib\gbase64.c" />
     <ClCompile Include="..\gtk2\glib\glib\gbitlock.c" />
     <ClCompile Include="..\gtk2\glib\glib\gbookmarkfile.c" />
-    <ClCompile Include="..\gtk2\glib\glib\gbuffer.c" />
-    <ClCompile Include="..\gtk2\glib\glib\gcache.c" />
+    <ClCompile Include="..\gtk2\glib\glib\gbytes.c" />
+    <ClCompile Include="..\gtk2\glib\glib\gcharset.c" />
     <ClCompile Include="..\gtk2\glib\glib\gchecksum.c" />
-    <ClCompile Include="..\gtk2\glib\glib\gcompletion.c" />
     <ClCompile Include="..\gtk2\glib\glib\gconvert.c" />
     <ClCompile Include="..\gtk2\glib\glib\gdataset.c" />
     <ClCompile Include="..\gtk2\glib\glib\gdate.c" />
     <ClCompile Include="..\gtk2\glib\glib\gdatetime.c" />
     <ClCompile Include="..\gtk2\glib\glib\gdir.c" />
+    <ClCompile Include="..\gtk2\glib\glib\genviron.c" />
     <ClCompile Include="..\gtk2\glib\glib\gerror.c" />
     <ClCompile Include="..\gtk2\glib\glib\gfileutils.c" />
+    <ClCompile Include="..\gtk2\glib\glib\ggettext.c" />
     <ClCompile Include="..\gtk2\glib\glib\ghash.c" />
     <ClCompile Include="..\gtk2\glib\glib\ghmac.c" />
     <ClCompile Include="..\gtk2\glib\glib\ghook.c" />
     <ClCompile Include="..\gtk2\glib\glib\ghostutils.c" />
     <ClCompile Include="..\gtk2\glib\glib\giochannel.c" />
+    <ClCompile Include="..\gtk2\glib\glib\giowin32.c" />
     <ClCompile Include="..\gtk2\glib\glib\gkeyfile.c" />
+    <ClCompile Include="..\gtk2\glib\glib\glib-init.c" />
+    <ClCompile Include="..\gtk2\glib\glib\glib-private.c" />
     <ClCompile Include="..\gtk2\glib\glib\glist.c" />
     <ClCompile Include="..\gtk2\glib\glib\gmain.c" />
     <ClCompile Include="..\gtk2\glib\glib\gmappedfile.c" />
@@ -185,9 +194,9 @@
     <ClCompile Include="..\gtk2\glib\glib\gpattern.c" />
     <ClCompile Include="..\gtk2\glib\glib\gpoll.c" />
     <ClCompile Include="..\gtk2\glib\glib\gprimes.c" />
+    <ClCompile Include="..\gtk2\glib\glib\gprintf.c" />
     <ClCompile Include="..\gtk2\glib\glib\gqsort.c" />
     <ClCompile Include="..\gtk2\glib\glib\gqueue.c" />
-    <ClCompile Include="..\gtk2\glib\glib\grel.c" />
     <ClCompile Include="..\gtk2\glib\glib\grand.c" />
     <ClCompile Include="..\gtk2\glib\glib\gregex.c" />
     <ClCompile Include="..\gtk2\glib\glib\gscanner.c" />
@@ -195,44 +204,42 @@
     <ClCompile Include="..\gtk2\glib\glib\gshell.c" />
     <ClCompile Include="..\gtk2\glib\glib\gslice.c" />
     <ClCompile Include="..\gtk2\glib\glib\gslist.c" />
+    <ClCompile Include="..\gtk2\glib\glib\gspawn-win32.c" />
     <ClCompile Include="..\gtk2\glib\glib\gstdio.c" />
     <ClCompile Include="..\gtk2\glib\glib\gstrfuncs.c" />
     <ClCompile Include="..\gtk2\glib\glib\gstring.c" />
+    <ClCompile Include="..\gtk2\glib\glib\gstringchunk.c" />
     <ClCompile Include="..\gtk2\glib\glib\gtestutils.c" />
+    <ClCompile Include="..\gtk2\glib\glib\gthread-win32.c" />
     <ClCompile Include="..\gtk2\glib\glib\gthread.c" />
     <ClCompile Include="..\gtk2\glib\glib\gthreadpool.c" />
     <ClCompile Include="..\gtk2\glib\glib\gtimer.c" />
     <ClCompile Include="..\gtk2\glib\glib\gtimezone.c" />
+    <ClCompile Include="..\gtk2\glib\glib\gtrashstack.c" />
     <ClCompile Include="..\gtk2\glib\glib\gtree.c" />
-    <ClCompile Include="..\gtk2\glib\glib\guniprop.c" />
-    <ClCompile Include="..\gtk2\glib\glib\gutf8.c" />
     <ClCompile Include="..\gtk2\glib\glib\gunibreak.c" />
     <ClCompile Include="..\gtk2\glib\glib\gunicollate.c" />
     <ClCompile Include="..\gtk2\glib\glib\gunidecomp.c" />
+    <ClCompile Include="..\gtk2\glib\glib\guniprop.c" />
     <ClCompile Include="..\gtk2\glib\glib\gurifuncs.c" />
+    <ClCompile Include="..\gtk2\glib\glib\gutf8.c" />
     <ClCompile Include="..\gtk2\glib\glib\gutils.c" />
-    <ClCompile Include="..\gtk2\glib\glib\gvariant.c" />
     <ClCompile Include="..\gtk2\glib\glib\gvariant-core.c" />
     <ClCompile Include="..\gtk2\glib\glib\gvariant-parser.c" />
     <ClCompile Include="..\gtk2\glib\glib\gvariant-serialiser.c" />
-    <ClCompile Include="..\gtk2\glib\glib\gvarianttypeinfo.c" />
+    <ClCompile Include="..\gtk2\glib\glib\gvariant.c" />
     <ClCompile Include="..\gtk2\glib\glib\gvarianttype.c" />
+    <ClCompile Include="..\gtk2\glib\glib\gvarianttypeinfo.c" />
+    <ClCompile Include="..\gtk2\glib\glib\gversion.c" />
     <ClCompile Include="..\gtk2\glib\glib\gwakeup.c" />
-    <ClCompile Include="..\gtk2\glib\glib\gprintf.c" />
-    <ClCompile Include="..\gtk2\glib\glib\giowin32.c" />
-    <ClCompile Include="..\gtk2\glib\glib\gspawn-win32.c" />
     <ClCompile Include="..\gtk2\glib\glib\gwin32.c" />
-    <ClCompile Include="..\gtk2\glib\glib\libcharset\localcharset.c">
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">LIBDIR=/irrelevant/lib;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">LIBDIR=/irrelevant/lib;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">LIBDIR=/irrelevant/lib;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">LIBDIR=/irrelevant/lib;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
     <ClCompile Include="..\gtk2\glib\glib\gnulib\asnprintf.c" />
     <ClCompile Include="..\gtk2\glib\glib\gnulib\printf-args.c" />
     <ClCompile Include="..\gtk2\glib\glib\gnulib\printf-parse.c" />
     <ClCompile Include="..\gtk2\glib\glib\gnulib\printf.c" />
     <ClCompile Include="..\gtk2\glib\glib\gnulib\vasnprintf.c" />
+    <ClCompile Include="..\gtk2\glib\glib\libcharset\localcharset.c" />
+    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_byte_order.c" />
     <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_chartables.c" />
     <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_compile.c" />
     <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_config.c" />
@@ -241,12 +248,13 @@
     <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_fullinfo.c" />
     <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_get.c" />
     <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_globals.c" />
+    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_jit_compile.c" />
     <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_newline.c" />
     <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_ord2utf8.c" />
+    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_string_utils.c" />
     <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_study.c" />
     <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_tables.c" />
-    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_try_flipped.c" />
-    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_ucp_searchfuncs.c" />
+    <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_valid_utf8.c" />
     <ClCompile Include="..\gtk2\glib\glib\pcre\pcre_xclass.c" />
   </ItemGroup>
   <ItemGroup>
@@ -267,9 +275,6 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(GlibGenerateGlibDefW64)</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)glib.def;%(Outputs)</Outputs>
     </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\gtk2\glib\glib\dirent\dirent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

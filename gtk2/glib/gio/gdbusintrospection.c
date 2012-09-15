@@ -40,7 +40,7 @@
  * used when registering objects with g_dbus_connection_register_object().
  *
  * The format of D-Bus introspection XML is specified in the
- * <link linkend="http://dbus.freedesktop.org/doc/dbus-specification.html&num;introspection-format">D-Bus specification</link>.
+ * <ulink url="http://dbus.freedesktop.org/doc/dbus-specification.html#introspection-format">D-Bus specification</ulink>.
  */
 
 /* ---------------------------------------------------------------------------------------------------- */
@@ -1755,6 +1755,13 @@ parser_error (GMarkupParseContext *context,
  *
  * Parses @xml_data and returns a #GDBusNodeInfo representing the data.
  *
+ * The introspection XML must contain exactly one top-level
+ * <tag class="starttag">node</tag> element.
+ *
+ * Note that this routine is using a
+ * <link linkend="glib-Simple-XML-Subset-Parser.description">GMarkup</link>-based
+ * parser that only accepts a subset of valid XML documents.
+ *
  * Returns: A #GDBusNodeInfo structure or %NULL if @error is set. Free
  * with g_dbus_node_info_unref().
  *
@@ -1810,11 +1817,8 @@ g_dbus_node_info_new_for_xml (const gchar  *xml_data,
       /* clean up */
       for (n = 0; n < num_nodes; n++)
         {
-          for (n = 0; n < num_nodes; n++)
-            {
-              g_dbus_node_info_unref (ughret[n]);
-              ughret[n] = NULL;
-            }
+          g_dbus_node_info_unref (ughret[n]);
+          ughret[n] = NULL;
         }
     }
 
@@ -1834,7 +1838,7 @@ g_dbus_node_info_new_for_xml (const gchar  *xml_data,
 
 /**
  * g_dbus_annotation_info_lookup:
- * @annotations: A %NULL-terminated array of annotations or %NULL.
+ * @annotations: (array zero-terminated=1) (allow-none): A %NULL-terminated array of annotations or %NULL.
  * @name: The name of the annotation to look up.
  *
  * Looks up the value of an annotation.

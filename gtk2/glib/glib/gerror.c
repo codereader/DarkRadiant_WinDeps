@@ -265,7 +265,7 @@
  * <listitem><para>
  *   The quark function for the error domain is called
  *   <literal>&lt;namespace&gt;_&lt;module&gt;_error_quark</literal>,
- *   for example g_spawn_error_quark() or %g_thread_error_quark().
+ *   for example g_spawn_error_quark() or g_thread_error_quark().
  * </para></listitem>
  * <listitem><para>
  *   The error codes are in an enumeration called
@@ -281,7 +281,7 @@
  *   If there's a "generic" or "unknown" error code for unrecoverable
  *   errors it doesn't make sense to distinguish with specific codes,
  *   it should be called <literal>&lt;NAMESPACE&gt;_&lt;MODULE&gt;_ERROR_FAILED</literal>,
- *   for example %G_SPAWN_ERROR_FAILED or %G_THREAD_ERROR_FAILED.
+ *   for example %G_SPAWN_ERROR_FAILED.
  * </para></listitem>
  * </itemizedlist>
  *
@@ -313,6 +313,10 @@
  *   then you handled it and you should not report it. If it was fatal,
  *   then you must report it and discontinue whatever you were doing
  *   immediately.
+ * </para></listitem>
+ * <listitem><para>
+ *   If a #GError is reported, out parameters are not guaranteed to
+ *   be set to any defined value.
  * </para></listitem>
  * <listitem><para>
  *   A #GError* must be initialized to %NULL before passing its address
@@ -352,6 +356,7 @@
 
 #include "gerror.h"
 
+#include "gslice.h"
 #include "gstrfuncs.h"
 #include "gtestutils.h"
 
@@ -376,6 +381,14 @@ g_error_new_valist (GQuark       domain,
                     va_list      args)
 {
   GError *error;
+
+  /* Historically, GError allowed this (although it was never meant to work),
+   * and it has significant use in the wild, which g_return_val_if_fail
+   * would break. It should maybe g_return_val_if_fail in GLib 4.
+   * (GNOME#660371, GNOME#560482)
+   */
+  g_warn_if_fail (domain != 0);
+  g_warn_if_fail (format != NULL);
 
   error = g_slice_new (GError);
 
@@ -479,6 +492,9 @@ g_error_copy (const GError *error)
   GError *copy;
  
   g_return_val_if_fail (error != NULL, NULL);
+  /* See g_error_new_valist for why these don't return */
+  g_warn_if_fail (error->domain != 0);
+  g_warn_if_fail (error->message != NULL);
 
   copy = g_slice_new (GError);
 
@@ -491,7 +507,7 @@ g_error_copy (const GError *error)
 
 /**
  * g_error_matches:
- * @error: a #GError or %NULL
+ * @error: (allow-none): a #GError or %NULL
  * @domain: an error domain
  * @code: an error code
  *
@@ -517,7 +533,7 @@ g_error_matches (const GError *error,
 
 /**
  * g_set_error:
- * @err: a return location for a #GError, or %NULL
+ * @err: (allow-none): a return location for a #GError, or %NULL
  * @domain: error domain
  * @code: error code
  * @format: printf()-style format
@@ -552,7 +568,7 @@ g_set_error (GError      **err,
 
 /**
  * g_set_error_literal:
- * @err: a return location for a #GError, or %NULL
+ * @err: (allow-none): a return location for a #GError, or %NULL
  * @domain: error domain
  * @code: error code
  * @message: error message
@@ -646,7 +662,7 @@ g_error_add_prefix (gchar       **string,
 
 /**
  * g_prefix_error:
- * @err: a return location for a #GError, or %NULL
+ * @err: (allow-none): a return location for a #GError, or %NULL
  * @format: printf()-style format string
  * @...: arguments to @format
  *

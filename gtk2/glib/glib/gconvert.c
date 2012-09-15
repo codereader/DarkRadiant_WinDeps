@@ -43,13 +43,13 @@
 
 #include "gconvert.h"
 
-#include "gprintfint.h"
+#include "gcharset.h"
 #include "gslist.h"
 #include "gstrfuncs.h"
 #include "gtestutils.h"
 #include "gthread.h"
-#include "gthreadprivate.h"
 #include "gunicode.h"
+#include "gfileutils.h"
 
 #ifdef NEED_ICONV_CACHE
 #include "glist.h"
@@ -61,7 +61,8 @@
 #if defined(USE_LIBICONV_GNU) && !defined (_LIBICONV_H)
 #error GNU libiconv in use but included iconv.h not from libiconv
 #endif
-#if !defined(USE_LIBICONV_GNU) && defined (_LIBICONV_H)
+#if !defined(USE_LIBICONV_GNU) && defined (_LIBICONV_H) \
+     && !defined (__APPLE_CC__) && !defined (__LP_64__)
 #error GNU libiconv not in use but included iconv.h is from libiconv
 #endif
 
@@ -69,7 +70,7 @@
 /**
  * SECTION:conversions
  * @title: Character Set Conversion
- * @short_description: Convert strings between different character sets
+ * @short_description: convert strings between different character sets
  *
  * The g_convert() family of function wraps the functionality of iconv(). In
  * addition to pure character set conversions, GLib has functions to deal
@@ -1317,14 +1318,14 @@ filename_charset_cache_free (gpointer data)
 gboolean
 g_get_filename_charsets (const gchar ***filename_charsets)
 {
-  static GStaticPrivate cache_private = G_STATIC_PRIVATE_INIT;
-  GFilenameCharsetCache *cache = g_static_private_get (&cache_private);
+  static GPrivate cache_private = G_PRIVATE_INIT (filename_charset_cache_free);
+  GFilenameCharsetCache *cache = g_private_get (&cache_private);
   const gchar *charset;
 
   if (!cache)
     {
       cache = g_new0 (GFilenameCharsetCache, 1);
-      g_static_private_set (&cache_private, cache, filename_charset_cache_free);
+      g_private_set (&cache_private, cache);
     }
 
   g_get_charset (&charset);
@@ -1420,16 +1421,6 @@ get_filename_charset (const gchar **filename_charset)
     *filename_charset = charsets[0];
   
   return is_utf8;
-}
-
-/* This is called from g_thread_init(). It's used to
- * initialize some static data in a threadsafe way.
- */
-void 
-_g_convert_thread_init (void)
-{
-  const gchar **dummy;
-  (void) g_get_filename_charsets (&dummy);
 }
 
 /**
@@ -1847,7 +1838,7 @@ hostname_validate (const char *hostname)
 /**
  * g_filename_from_uri:
  * @uri: a uri describing a filename (escaped, encoded in ASCII).
- * @hostname: Location to store hostname for the URI, or %NULL.
+ * @hostname: (allow-none): Location to store hostname for the URI, or %NULL.
  *            If there is no hostname in the URI, %NULL will be
  *            stored in this location.
  * @error: location to store the error occurring, or %NULL to ignore

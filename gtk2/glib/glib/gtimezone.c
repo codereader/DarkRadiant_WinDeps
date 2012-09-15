@@ -33,12 +33,13 @@
 #include "gstrfuncs.h"
 #include "ghash.h"
 #include "gthread.h"
-#include "gbufferprivate.h"
+#include "gbytes.h"
+#include "gslice.h"
 
 /**
  * SECTION:timezone
  * @title: GTimeZone
- * @short_description: A structure representing a time zone
+ * @short_description: a structure representing a time zone
  * @see_also: #GDateTime
  *
  * #GTimeZone is a structure that represents a time zone, at no
@@ -117,7 +118,7 @@ struct _GTimeZone
 {
   gchar   *name;
 
-  GBuffer *zoneinfo;
+  GBytes *zoneinfo;
 
   const struct tzhead *header;
   const struct ttinfo *infos;
@@ -168,7 +169,7 @@ again:
         }
 
       if (tz->zoneinfo)
-        g_buffer_unref (tz->zoneinfo);
+        g_bytes_unref (tz->zoneinfo);
 
       g_free (tz->name);
 
@@ -268,7 +269,7 @@ parse_constant_offset (const gchar *name,
     }
 }
 
-static GBuffer *
+static GBytes *
 zone_for_constant_offset (const gchar *name)
 {
   const gchar fake_zoneinfo_headers[] =
@@ -295,7 +296,7 @@ zone_for_constant_offset (const gchar *name)
   fake->info.tt_abbrind = 0;
   strcpy (fake->abbr, name);
 
-  return g_buffer_new_take_data (fake, sizeof *fake);
+  return g_bytes_new_take (fake, sizeof *fake);
 }
 
 /* Construction {{{1 */
@@ -344,6 +345,7 @@ GTimeZone *
 g_time_zone_new (const gchar *identifier)
 {
   GTimeZone *tz;
+  GMappedFile *file;
 
   G_LOCK (time_zones);
   if (time_zones == NULL)
@@ -366,6 +368,10 @@ g_time_zone_new (const gchar *identifier)
         {
           gchar *filename;
 
+	  /* identifier can be a relative or absolute path name;
+	     if relative, it is interpreted starting from /usr/share/timezone
+	     while the POSIX standard says it should start with :,
+	     glibc allows both syntaxes, so we should too */
           if (identifier != NULL)
             {
               const gchar *tzdir;
@@ -374,24 +380,38 @@ g_time_zone_new (const gchar *identifier)
               if (tzdir == NULL)
                 tzdir = "/usr/share/zoneinfo";
 
-              filename = g_build_filename (tzdir, identifier, NULL);
+	      if (*identifier == ':')
+		identifier ++;
+
+	      if (g_path_is_absolute (identifier))
+		filename = g_strdup (identifier);
+	      else
+		filename = g_build_filename (tzdir, identifier, NULL);
             }
           else
             filename = g_strdup ("/etc/localtime");
 
-          tz->zoneinfo = (GBuffer *) g_mapped_file_new (filename, FALSE, NULL);
+          file = g_mapped_file_new (filename, FALSE, NULL);
+          if (file != NULL)
+            {
+              tz->zoneinfo = g_bytes_new_with_free_func (g_mapped_file_get_contents (file),
+                                                         g_mapped_file_get_length (file),
+                                                         (GDestroyNotify)g_mapped_file_unref,
+                                                         g_mapped_file_ref (file));
+              g_mapped_file_unref (file);
+            }
           g_free (filename);
         }
 
       if (tz->zoneinfo != NULL)
         {
-          const struct tzhead *header = tz->zoneinfo->data;
-          gsize size = tz->zoneinfo->size;
+          gsize size;
+          const struct tzhead *header = g_bytes_get_data (tz->zoneinfo, &size);
 
           /* we only bother to support version 2 */
           if (size < sizeof (struct tzhead) || memcmp (header, "TZif2", 5))
             {
-              g_buffer_unref (tz->zoneinfo);
+              g_bytes_unref (tz->zoneinfo);
               tz->zoneinfo = NULL;
             }
           else
@@ -571,7 +591,7 @@ interval_valid (GTimeZone *tz,
  *
  * This function may, however, modify @time_ in order to deal with
  * non-existent times.  If the non-existent local @time_ of 02:30 were
- * requested on March 13th 2010 in Toronto then this function would
+ * requested on March 14th 2010 in Toronto then this function would
  * adjust @time_ to be 03:00 and return the interval containing the
  * adjusted time.
  *

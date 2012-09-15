@@ -50,22 +50,6 @@
  * hardware memory barrier.  Acquire and release or producer and
  * consumer barrier semantics are not available through this API.
  *
- * On GCC, these macros are implemented using GCC intrinsic operations.
- * On non-GCC compilers they will evaluate to function calls to
- * functions implemented by GLib.
- *
- * If GLib itself was compiled with GCC then these functions will again
- * be implemented by the GCC intrinsics.  On Windows without GCC, the
- * interlocked API is used to implement the functions.
- *
- * With non-GCC compilers on non-Windows systems, the functions are
- * currently incapable of implementing true atomic operations --
- * instead, they fallback to holding a global lock while performing the
- * operation.  This provides atomicity between the threads of one
- * process, but not between separate processes.  For this reason, one
- * should exercise caution when attempting to use these options on
- * shared memory regions.
- *
  * It is very important that all accesses to a particular integer or
  * pointer be performed using only this API and that different sizes of
  * operation are not mixed or used on overlapping memory regions.  Never
@@ -82,12 +66,37 @@
  * perform the operations normally and then release the lock.
  **/
 
-#ifdef G_ATOMIC_OP_USE_GCC_BUILTINS
+/**
+ * G_ATOMIC_LOCK_FREE:
+ *
+ * This macro is defined if the atomic operations of GLib are
+ * implemented using real hardware atomic operations.  This means that
+ * the GLib atomic API can be used between processes and safely mixed
+ * with other (hardware) atomic APIs.
+ *
+ * If this macro is not defined, the atomic operations may be
+ * emulated using a mutex.  In that case, the GLib atomic operations are
+ * only atomic relative to themselves and within a single process.
+ **/
 
-#ifndef __GNUC__
-#error Using GCC builtin atomic ops, but not compiling with GCC?
-#endif
+/* NOTE CAREFULLY:
+ *
+ * This file is the lowest-level part of GLib.
+ *
+ * Other lowlevel parts of GLib (threads, slice allocator, g_malloc,
+ * messages, etc) call into these functions and macros to get work done.
+ *
+ * As such, these functions can not call back into any part of GLib
+ * without risking recursion.
+ */
 
+#ifdef G_ATOMIC_LOCK_FREE
+
+/* if G_ATOMIC_LOCK_FREE was defined by ./configure then we MUST
+ * implement the atomic operations in a lock-free manner.
+ */
+
+#if defined (__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4)
 /**
  * g_atomic_int_get:
  * @atomic: a pointer to a #gint or #guint
@@ -455,7 +464,7 @@ gsize
   return g_atomic_pointer_xor ((volatile gpointer *) atomic, val);
 }
 
-#elif defined (G_PLATFORM_WIN32) && defined(HAVE_WIN32_BUILTINS_FOR_ATOMIC_OPERATIONS)
+#elif defined (G_PLATFORM_WIN32)
 
 #include <windows.h>
 #if !defined(_M_AMD64) && !defined (_M_IA64) && !defined(_M_X64)
@@ -601,21 +610,35 @@ gsize
   return InterlockedXor (atomic, val);
 #endif
 }
-
 #else
 
-#include "gthread.h"
+/* This error occurs when ./configure decided that we should be capable
+ * of lock-free atomics but we find at compile-time that we are not.
+ */
+#error G_ATOMIC_LOCK_FREE defined, but incapable of lock-free atomics.
 
-static GStaticMutex g_atomic_lock;
+#endif /* defined (__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4) */
+
+#else /* G_ATOMIC_LOCK_FREE */
+
+/* We are not permitted to call into any GLib functions from here, so we
+ * can not use GMutex.
+ *
+ * Fortunately, we already take care of the Windows case above, and all
+ * non-Windows platforms on which glib runs have pthreads.  Use those.
+ */
+#include <pthread.h>
+
+static pthread_mutex_t g_atomic_lock = PTHREAD_MUTEX_INITIALIZER;
 
 gint
 (g_atomic_int_get) (volatile gint *atomic)
 {
   gint value;
 
-  g_static_mutex_lock (&g_atomic_lock);
+  pthread_mutex_lock (&g_atomic_lock);
   value = *atomic;
-  g_static_mutex_unlock (&g_atomic_lock);
+  pthread_mutex_unlock (&g_atomic_lock);
 
   return value;
 }
@@ -624,17 +647,17 @@ void
 (g_atomic_int_set) (volatile gint *atomic,
                     gint           value)
 {
-  g_static_mutex_lock (&g_atomic_lock);
+  pthread_mutex_lock (&g_atomic_lock);
   *atomic = value;
-  g_static_mutex_unlock (&g_atomic_lock);
+  pthread_mutex_unlock (&g_atomic_lock);
 }
 
 void
 (g_atomic_int_inc) (volatile gint *atomic)
 {
-  g_static_mutex_lock (&g_atomic_lock);
+  pthread_mutex_lock (&g_atomic_lock);
   (*atomic)++;
-  g_static_mutex_unlock (&g_atomic_lock);
+  pthread_mutex_unlock (&g_atomic_lock);
 }
 
 gboolean
@@ -642,9 +665,9 @@ gboolean
 {
   gboolean is_zero;
 
-  g_static_mutex_lock (&g_atomic_lock);
+  pthread_mutex_lock (&g_atomic_lock);
   is_zero = --(*atomic) == 0;
-  g_static_mutex_unlock (&g_atomic_lock);
+  pthread_mutex_unlock (&g_atomic_lock);
 
   return is_zero;
 }
@@ -656,12 +679,12 @@ gboolean
 {
   gboolean success;
 
-  g_static_mutex_lock (&g_atomic_lock);
+  pthread_mutex_lock (&g_atomic_lock);
 
   if ((success = (*atomic == oldval)))
     *atomic = newval;
 
-  g_static_mutex_unlock (&g_atomic_lock);
+  pthread_mutex_unlock (&g_atomic_lock);
 
   return success;
 }
@@ -672,10 +695,10 @@ gint
 {
   gint oldval;
 
-  g_static_mutex_lock (&g_atomic_lock);
+  pthread_mutex_lock (&g_atomic_lock);
   oldval = *atomic;
   *atomic = oldval + val;
-  g_static_mutex_unlock (&g_atomic_lock);
+  pthread_mutex_unlock (&g_atomic_lock);
 
   return oldval;
 }
@@ -686,10 +709,10 @@ guint
 {
   guint oldval;
 
-  g_static_mutex_lock (&g_atomic_lock);
+  pthread_mutex_lock (&g_atomic_lock);
   oldval = *atomic;
   *atomic = oldval & val;
-  g_static_mutex_unlock (&g_atomic_lock);
+  pthread_mutex_unlock (&g_atomic_lock);
 
   return oldval;
 }
@@ -700,10 +723,10 @@ guint
 {
   guint oldval;
 
-  g_static_mutex_lock (&g_atomic_lock);
+  pthread_mutex_lock (&g_atomic_lock);
   oldval = *atomic;
   *atomic = oldval | val;
-  g_static_mutex_unlock (&g_atomic_lock);
+  pthread_mutex_unlock (&g_atomic_lock);
 
   return oldval;
 }
@@ -714,10 +737,10 @@ guint
 {
   guint oldval;
 
-  g_static_mutex_lock (&g_atomic_lock);
+  pthread_mutex_lock (&g_atomic_lock);
   oldval = *atomic;
   *atomic = oldval ^ val;
-  g_static_mutex_unlock (&g_atomic_lock);
+  pthread_mutex_unlock (&g_atomic_lock);
 
   return oldval;
 }
@@ -729,9 +752,9 @@ gpointer
   volatile gpointer *ptr = atomic;
   gpointer value;
 
-  g_static_mutex_lock (&g_atomic_lock);
+  pthread_mutex_lock (&g_atomic_lock);
   value = *ptr;
-  g_static_mutex_unlock (&g_atomic_lock);
+  pthread_mutex_unlock (&g_atomic_lock);
 
   return value;
 }
@@ -742,9 +765,9 @@ void
 {
   volatile gpointer *ptr = atomic;
 
-  g_static_mutex_lock (&g_atomic_lock);
+  pthread_mutex_lock (&g_atomic_lock);
   *ptr = newval;
-  g_static_mutex_unlock (&g_atomic_lock);
+  pthread_mutex_unlock (&g_atomic_lock);
 }
 
 gboolean
@@ -755,12 +778,12 @@ gboolean
   volatile gpointer *ptr = atomic;
   gboolean success;
 
-  g_static_mutex_lock (&g_atomic_lock);
+  pthread_mutex_lock (&g_atomic_lock);
 
   if ((success = (*ptr == oldval)))
     *ptr = newval;
 
-  g_static_mutex_unlock (&g_atomic_lock);
+  pthread_mutex_unlock (&g_atomic_lock);
 
   return success;
 }
@@ -772,10 +795,10 @@ gssize
   volatile gssize *ptr = atomic;
   gssize oldval;
 
-  g_static_mutex_lock (&g_atomic_lock);
+  pthread_mutex_lock (&g_atomic_lock);
   oldval = *ptr;
   *ptr = oldval + val;
-  g_static_mutex_unlock (&g_atomic_lock);
+  pthread_mutex_unlock (&g_atomic_lock);
 
   return oldval;
 }
@@ -787,10 +810,10 @@ gsize
   volatile gsize *ptr = atomic;
   gsize oldval;
 
-  g_static_mutex_lock (&g_atomic_lock);
+  pthread_mutex_lock (&g_atomic_lock);
   oldval = *ptr;
   *ptr = oldval & val;
-  g_static_mutex_unlock (&g_atomic_lock);
+  pthread_mutex_unlock (&g_atomic_lock);
 
   return oldval;
 }
@@ -802,10 +825,10 @@ gsize
   volatile gsize *ptr = atomic;
   gsize oldval;
 
-  g_static_mutex_lock (&g_atomic_lock);
+  pthread_mutex_lock (&g_atomic_lock);
   oldval = *ptr;
   *ptr = oldval | val;
-  g_static_mutex_unlock (&g_atomic_lock);
+  pthread_mutex_unlock (&g_atomic_lock);
 
   return oldval;
 }
@@ -817,10 +840,10 @@ gsize
   volatile gsize *ptr = atomic;
   gsize oldval;
 
-  g_static_mutex_lock (&g_atomic_lock);
+  pthread_mutex_lock (&g_atomic_lock);
   oldval = *ptr;
   *ptr = oldval ^ val;
-  g_static_mutex_unlock (&g_atomic_lock);
+  pthread_mutex_unlock (&g_atomic_lock);
 
   return oldval;
 }
