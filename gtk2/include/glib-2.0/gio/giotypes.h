@@ -48,6 +48,9 @@ typedef struct _GZlibCompressor               GZlibCompressor;
 typedef struct _GZlibDecompressor             GZlibDecompressor;
 
 typedef struct _GSimpleActionGroup            GSimpleActionGroup;
+typedef struct _GRemoteActionGroup            GRemoteActionGroup;
+typedef struct _GDBusActionGroup              GDBusActionGroup;
+typedef struct _GActionMap                    GActionMap;
 typedef struct _GActionGroup                  GActionGroup;
 typedef struct _GSimpleAction                 GSimpleAction;
 typedef struct _GAction                       GAction;
@@ -56,6 +59,8 @@ typedef struct _GApplicationCommandLine       GApplicationCommandLine;
 typedef struct _GSettingsBackend              GSettingsBackend;
 typedef struct _GSettings                     GSettings;
 typedef struct _GPermission                   GPermission;
+
+typedef struct _GMenuModel                    GMenuModel;
 
 /**
  * GDrive:
@@ -96,6 +101,7 @@ typedef struct _GFilenameCompleter            GFilenameCompleter;
 
 typedef struct _GIcon                         GIcon; /* Dummy typedef */
 typedef struct _GInetAddress                  GInetAddress;
+typedef struct _GInetAddressMask              GInetAddressMask;
 typedef struct _GInetSocketAddress            GInetSocketAddress;
 typedef struct _GInputStream                  GInputStream;
 typedef struct _GInitable                     GInitable;
@@ -122,12 +128,21 @@ typedef struct _GMemoryOutputStream           GMemoryOutputStream;
 typedef struct _GMount                        GMount; /* Dummy typedef */
 typedef struct _GMountOperation               GMountOperation;
 typedef struct _GNetworkAddress               GNetworkAddress;
+typedef struct _GNetworkMonitor               GNetworkMonitor;
 typedef struct _GNetworkService               GNetworkService;
 typedef struct _GOutputStream                 GOutputStream;
 typedef struct _GIOStream                     GIOStream;
 typedef struct _GPollableInputStream          GPollableInputStream; /* Dummy typedef */
 typedef struct _GPollableOutputStream         GPollableOutputStream; /* Dummy typedef */
 typedef struct _GResolver                     GResolver;
+/**
+ * GResource:
+ *
+ * A resource bundle.
+ *
+ * Since: 2.32
+ */
+typedef struct _GResource                     GResource;
 typedef struct _GSeekable                     GSeekable;
 typedef struct _GSimpleAsyncResult            GSimpleAsyncResult;
 
@@ -164,7 +179,7 @@ typedef struct _GSocketClient                               GSocketClient;
  **/
 typedef struct _GSocketConnection                           GSocketConnection;
 /**
- * GSocketClient:
+ * GSocketListener:
  *
  * A helper class for network servers to listen for and accept connections.
  *
@@ -196,7 +211,7 @@ typedef struct _GTcpWrapperConnection                       GTcpWrapperConnectio
 /**
  * GThreadedSocketService:
  *
- * A helper class for handling accepting incomming connections in the
+ * A helper class for handling accepting incoming connections in the
  * glib mainloop and handling them in a thread.
  *
  * Since: 2.22
@@ -285,10 +300,6 @@ typedef gboolean (* GFileReadMoreCallback) (const char *file_contents,
  * @user_data: the data to pass to callback function
  *
  * I/O Job function.
- *
- * Note that depending on whether threads are available, the
- * #GIOScheduler may run jobs in separate threads or in an idle
- * in the mainloop.
  *
  * Long-running jobs should periodically check the @cancellable
  * to see if they have been cancelled.

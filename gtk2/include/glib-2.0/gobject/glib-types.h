@@ -133,6 +133,15 @@ typedef gsize GType;
 #define G_TYPE_PTR_ARRAY (g_ptr_array_get_type ())
 
 /**
+ * G_TYPE_BYTES:
+ *
+ * The #GType for #GBytes.
+ *
+ * Since: 2.32
+ */
+#define G_TYPE_BYTES (g_bytes_get_type ())
+
+/**
  * G_TYPE_VARIANT_TYPE:
  *
  * The #GType for a boxed type holding a #GVariantType.
@@ -209,6 +218,15 @@ typedef gsize GType;
  */
 #define G_TYPE_SOURCE (g_source_get_type ())
 
+/**
+ * G_TYPE_KEY_FILE:
+ *
+ * The #GType for a boxed type holding a #GKeyFile.
+ *
+ * Since: 2.32
+ */
+#define G_TYPE_KEY_FILE (g_key_file_get_type ())
+
 GType   g_date_get_type            (void) G_GNUC_CONST;
 GType   g_strv_get_type            (void) G_GNUC_CONST;
 GType   g_gstring_get_type         (void) G_GNUC_CONST;
@@ -216,21 +234,26 @@ GType   g_hash_table_get_type      (void) G_GNUC_CONST;
 GType   g_array_get_type           (void) G_GNUC_CONST;
 GType   g_byte_array_get_type      (void) G_GNUC_CONST;
 GType   g_ptr_array_get_type       (void) G_GNUC_CONST;
+GType   g_bytes_get_type           (void) G_GNUC_CONST;
 GType   g_variant_type_get_gtype   (void) G_GNUC_CONST;
 GType   g_regex_get_type           (void) G_GNUC_CONST;
+GLIB_AVAILABLE_IN_2_30
 GType   g_match_info_get_type      (void) G_GNUC_CONST;
 GType   g_error_get_type           (void) G_GNUC_CONST;
 GType   g_date_time_get_type       (void) G_GNUC_CONST;
 GType   g_io_channel_get_type      (void) G_GNUC_CONST;
 GType   g_io_condition_get_type    (void) G_GNUC_CONST;
 GType   g_variant_builder_get_type (void) G_GNUC_CONST;
+GType   g_key_file_get_type        (void) G_GNUC_CONST;
+GLIB_AVAILABLE_IN_2_30
 GType   g_main_loop_get_type       (void) G_GNUC_CONST;
+GLIB_AVAILABLE_IN_2_30
 GType   g_main_context_get_type    (void) G_GNUC_CONST;
+GLIB_AVAILABLE_IN_2_30
 GType   g_source_get_type          (void) G_GNUC_CONST;
 
-#if !defined(G_DISABLE_DEPRECATED) || defined(__GI_SCANNER__)
+GLIB_DEPRECATED_FOR('G_TYPE_VARIANT')
 GType   g_variant_get_gtype        (void) G_GNUC_CONST;
-#endif
 
 /**
  * GStrv:

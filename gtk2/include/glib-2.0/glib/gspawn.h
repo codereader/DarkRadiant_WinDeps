@@ -18,7 +18,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
 #error "Only <glib.h> can be included directly."
 #endif
 
@@ -45,22 +45,23 @@ G_BEGIN_DECLS
  * @G_SPAWN_ERROR_FORK: Fork failed due to lack of memory.
  * @G_SPAWN_ERROR_READ: Read or select on pipes failed.
  * @G_SPAWN_ERROR_CHDIR: Changing to working directory failed.
- * @G_SPAWN_ERROR_ACCES: execv() returned %EACCES.
- * @G_SPAWN_ERROR_PERM: execv() returned %EPERM.
- * @G_SPAWN_ERROR_2BIG: execv() returned %E2BIG.
- * @G_SPAWN_ERROR_NOEXEC: execv() returned %ENOEXEC.
- * @G_SPAWN_ERROR_NAMETOOLONG: execv() returned %ENAMETOOLONG.
- * @G_SPAWN_ERROR_NOENT: execv() returned %ENOENT.
- * @G_SPAWN_ERROR_NOMEM: execv() returned %ENOMEM.
- * @G_SPAWN_ERROR_NOTDIR: execv() returned %ENOTDIR.
- * @G_SPAWN_ERROR_LOOP: execv() returned %ELOOP.
- * @G_SPAWN_ERROR_TXTBUSY: execv() returned %ETXTBUSY.
- * @G_SPAWN_ERROR_IO: execv() returned %EIO.
- * @G_SPAWN_ERROR_NFILE: execv() returned %ENFILE.
- * @G_SPAWN_ERROR_MFILE: execv() returned %EMFILE.
- * @G_SPAWN_ERROR_INVAL: execv() returned %EINVAL.
- * @G_SPAWN_ERROR_ISDIR: execv() returned %EISDIR.
- * @G_SPAWN_ERROR_LIBBAD: execv() returned %ELIBBAD.
+ * @G_SPAWN_ERROR_ACCES: execv() returned <literal>EACCES</literal>
+ * @G_SPAWN_ERROR_PERM: execv() returned <literal>EPERM</literal>
+ * @G_SPAWN_ERROR_TOO_BIG: execv() returned <literal>E2BIG</literal>
+ * @G_SPAWN_ERROR_2BIG: deprecated alias for %G_SPAWN_ERROR_TOO_BIG
+ * @G_SPAWN_ERROR_NOEXEC: execv() returned <literal>ENOEXEC</literal>
+ * @G_SPAWN_ERROR_NAMETOOLONG: execv() returned <literal>ENAMETOOLONG</literal>
+ * @G_SPAWN_ERROR_NOENT: execv() returned <literal>ENOENT</literal>
+ * @G_SPAWN_ERROR_NOMEM: execv() returned <literal>ENOMEM</literal>
+ * @G_SPAWN_ERROR_NOTDIR: execv() returned <literal>ENOTDIR</literal>
+ * @G_SPAWN_ERROR_LOOP: execv() returned <literal>ELOOP</literal>
+ * @G_SPAWN_ERROR_TXTBUSY: execv() returned <literal>ETXTBUSY</literal>
+ * @G_SPAWN_ERROR_IO: execv() returned <literal>EIO</literal>
+ * @G_SPAWN_ERROR_NFILE: execv() returned <literal>ENFILE</literal>
+ * @G_SPAWN_ERROR_MFILE: execv() returned <literal>EMFILE</literal>
+ * @G_SPAWN_ERROR_INVAL: execv() returned <literal>EINVAL</literal>
+ * @G_SPAWN_ERROR_ISDIR: execv() returned <literal>EISDIR</literal>
+ * @G_SPAWN_ERROR_LIBBAD: execv() returned <literal>ELIBBAD</literal>
  * @G_SPAWN_ERROR_FAILED: Some other fatal failure,
  *   <literal>error-&gt;message</literal> should explain.
  *
@@ -73,7 +74,10 @@ typedef enum
   G_SPAWN_ERROR_CHDIR,  /* changing to working dir failed */
   G_SPAWN_ERROR_ACCES,  /* execv() returned EACCES */
   G_SPAWN_ERROR_PERM,   /* execv() returned EPERM */
-  G_SPAWN_ERROR_2BIG,   /* execv() returned E2BIG */
+  G_SPAWN_ERROR_TOO_BIG,/* execv() returned E2BIG */
+#ifndef G_DISABLE_DEPRECATED
+  G_SPAWN_ERROR_2BIG = G_SPAWN_ERROR_TOO_BIG,
+#endif
   G_SPAWN_ERROR_NOEXEC, /* execv() returned ENOEXEC */
   G_SPAWN_ERROR_NAMETOOLONG, /* ""  "" ENAMETOOLONG */
   G_SPAWN_ERROR_NOENT,       /* ""  "" ENOENT */
@@ -97,24 +101,36 @@ typedef enum
  * @user_data: user data to pass to the function.
  *
  * Specifies the type of the setup function passed to g_spawn_async(),
- * g_spawn_sync() and g_spawn_async_with_pipes(). On POSIX platforms it
- * is called in the child after GLib has performed all the setup it plans
- * to perform but before calling exec(). On POSIX actions taken in this
- * function will thus only affect the child, not the parent.
+ * g_spawn_sync() and g_spawn_async_with_pipes(), which can, in very
+ * limited ways, be used to affect the child's execution.
  *
- * Note that POSIX allows only async-signal-safe functions (see signal(7))
- * to be called in the child between fork() and exec(), which drastically
- * limits the usefulness of child setup functions.
+ * On POSIX platforms, the function is called in the child after GLib
+ * has performed all the setup it plans to perform, but before calling
+ * exec(). Actions taken in this function will only affect the child,
+ * not the parent.
  *
- * Also note that modifying the environment from the child setup function
- * may not have the intended effect, since it will get overridden by
- * a non-%NULL @env argument to the <literal>g_spawn...</literal> functions.
- *
- * On Windows the function is called in the parent. Its usefulness on
+ * On Windows, the function is called in the parent. Its usefulness on
  * Windows is thus questionable. In many cases executing the child setup
  * function in the parent can have ill effects, and you should be very
  * careful when porting software to Windows that uses child setup
  * functions.
+ *
+ * However, even on POSIX, you are extremely limited in what you can
+ * safely do from a #GSpawnChildSetupFunc, because any mutexes that
+ * were held by other threads in the parent process at the time of the
+ * fork() will still be locked in the child process, and they will
+ * never be unlocked (since the threads that held them don't exist in
+ * the child). POSIX allows only async-signal-safe functions (see
+ * <citerefentry><refentrytitle>signal</refentrytitle><manvolnum>7</manvolnum></citerefentry>)
+ * to be called in the child between fork() and exec(), which
+ * drastically limits the usefulness of child setup functions.
+ *
+ * In particular, it is not safe to call any function which may
+ * call malloc(), which includes POSIX functions such as setenv().
+ * If you need to set up the child environment differently from
+ * the parent, you should use g_get_environ(), g_environ_setenv(),
+ * and g_environ_unsetenv(), and then pass the complete environment
+ * list to the <literal>g_spawn...</literal> function.
  */
 typedef void (* GSpawnChildSetupFunc) (gpointer user_data);
 

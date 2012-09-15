@@ -526,15 +526,13 @@ void        g_object_run_dispose	      (GObject	      *object);
 
 void        g_value_take_object               (GValue         *value,
 					       gpointer        v_object);
-#ifndef G_DISABLE_DEPRECATED
+GLIB_DEPRECATED_FOR(g_value_take_object)
 void        g_value_set_object_take_ownership (GValue         *value,
-					       gpointer        v_object);
-#endif
+                                               gpointer        v_object);
 
-#if !defined(G_DISABLE_DEPRECATED) || defined(GTK_COMPILATION)
+GLIB_DEPRECATED
 gsize	    g_object_compat_control	      (gsize	       what,
 					       gpointer	       data);
-#endif
 
 /* --- implementation macros --- */
 #define G_OBJECT_WARN_INVALID_PSPEC(object, pname, property_id, pspec) \
@@ -565,10 +563,12 @@ G_STMT_START { \
 void    g_clear_object (volatile GObject **object_ptr);
 #define g_clear_object(object_ptr) \
   G_STMT_START {                                                             \
+    G_STATIC_ASSERT (sizeof *(object_ptr) == sizeof (gpointer));             \
     /* Only one access, please */                                            \
-    gpointer *_p = (gpointer) (object_ptr);                                  \
+    gpointer *_p = (gpointer *) (object_ptr);                                \
     gpointer _o;                                                             \
                                                                              \
+    (void) (0 ? (gpointer) *(object_ptr) : 0);                               \
     do                                                                       \
       _o = g_atomic_pointer_get (_p);                                        \
     while G_UNLIKELY (!g_atomic_pointer_compare_and_exchange (_p, _o, NULL));\
@@ -576,6 +576,18 @@ void    g_clear_object (volatile GObject **object_ptr);
     if (_o)                                                                  \
       g_object_unref (_o);                                                   \
   } G_STMT_END
+
+typedef struct {
+    /*<private>*/
+    union { gpointer p; } priv;
+} GWeakRef;
+
+void     g_weak_ref_init       (GWeakRef *weak_ref,
+                                gpointer  object);
+void     g_weak_ref_clear      (GWeakRef *weak_ref);
+gpointer g_weak_ref_get        (GWeakRef *weak_ref);
+void     g_weak_ref_set        (GWeakRef *weak_ref,
+                                gpointer  object);
 
 G_END_DECLS
 

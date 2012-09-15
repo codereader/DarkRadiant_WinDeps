@@ -36,14 +36,6 @@ G_BEGIN_DECLS
 #define G_IS_TLS_CONNECTION_CLASS(class) (G_TYPE_CHECK_CLASS_TYPE ((class), G_TYPE_TLS_CONNECTION))
 #define G_TLS_CONNECTION_GET_CLASS(inst) (G_TYPE_INSTANCE_GET_CLASS ((inst), G_TYPE_TLS_CONNECTION, GTlsConnectionClass))
 
-/**
- * GTlsConnection:
- *
- * TLS connection. This is an abstract type that will be subclassed by
- * a TLS-library-specific subtype.
- *
- * Since: 2.28
- */
 typedef struct _GTlsConnectionClass   GTlsConnectionClass;
 typedef struct _GTlsConnectionPrivate GTlsConnectionPrivate;
 
@@ -83,11 +75,11 @@ struct _GTlsConnectionClass
 
 GType                 g_tls_connection_get_type                    (void) G_GNUC_CONST;
 
-#ifndef G_DISABLE_DEPRECATED
+GLIB_DEPRECATED
 void                  g_tls_connection_set_use_system_certdb       (GTlsConnection       *conn,
-								    gboolean              use_system_certdb);
+                                                                    gboolean              use_system_certdb);
+GLIB_DEPRECATED
 gboolean              g_tls_connection_get_use_system_certdb       (GTlsConnection       *conn);
-#endif /* G_DISABLE_DEPRECATED */
 
 void                  g_tls_connection_set_database                (GTlsConnection       *conn,
 								    GTlsDatabase         *database);

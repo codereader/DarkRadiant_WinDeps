@@ -135,7 +135,7 @@ G_BEGIN_DECLS
  * @G_PARAM_DEPRECATED: the parameter is deprecated and will be removed
  *  in a future version. A warning will be generated if it is used
  *  while running with G_ENABLE_DIAGNOSTIC=1.
- *  Since: 2.26
+ *  Since 2.26
  * 
  * Through the #GParamFlags flag values, certain aspects of parameters
  * can be configured.
@@ -312,10 +312,9 @@ GParamSpec*     g_value_dup_param               (const GValue  *value);
 
 void           g_value_take_param               (GValue        *value,
 					         GParamSpec    *param);
-#ifndef G_DISABLE_DEPRECATED
+GLIB_DEPRECATED_FOR(g_value_take_param)
 void           g_value_set_param_take_ownership (GValue        *value,
-					         GParamSpec    *param);
-#endif
+                                                 GParamSpec    *param);
 
 /* --- convenience functions --- */
 typedef struct _GParamSpecTypeInfo GParamSpecTypeInfo;

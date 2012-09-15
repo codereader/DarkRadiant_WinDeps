@@ -24,7 +24,7 @@
  * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
 
-#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
 #error "Only <glib.h> can be included directly."
 #endif
 
@@ -45,7 +45,7 @@ void g_on_error_stack_trace (const gchar *prg_name);
  * Inserts a breakpoint instruction into the code.
  *
  * On x86 and alpha systems this is implemented as a soft interrupt
- * and on other architectures it raises a %SIGTRAP signal.
+ * and on other architectures it raises a <literal>SIGTRAP</literal> signal.
  */
 #if (defined (__i386__) || defined (__x86_64__)) && defined (__GNUC__) && __GNUC__ >= 2
 #  define G_BREAKPOINT()        G_STMT_START{ __asm__ __volatile__ ("int $03"); }G_STMT_END

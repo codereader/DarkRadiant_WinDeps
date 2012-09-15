@@ -24,7 +24,7 @@
  * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
 
-#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
 #error "Only <glib.h> can be included directly."
 #endif
 
@@ -73,6 +73,8 @@ struct _GQueue
  */
 GQueue*  g_queue_new            (void);
 void     g_queue_free           (GQueue           *queue);
+void     g_queue_free_full      (GQueue           *queue,
+				GDestroyNotify    free_func);
 void     g_queue_init           (GQueue           *queue);
 void     g_queue_clear          (GQueue           *queue);
 gboolean g_queue_is_empty       (GQueue           *queue);

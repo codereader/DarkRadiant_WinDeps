@@ -218,7 +218,7 @@ typedef enum {
  *
  * Flags used when mounting a mount.
  */
-typedef enum {
+typedef enum /*< flags >*/ {
   G_MOUNT_MOUNT_NONE = 0
 } GMountMountFlags;
 
@@ -244,7 +244,7 @@ typedef enum {
  *
  * Since: 2.22
  */
-typedef enum {
+typedef enum /*< flags >*/ {
   G_DRIVE_START_NONE = 0
 } GDriveStartFlags;
 
@@ -393,9 +393,9 @@ typedef enum {
 /**
  * GIOErrorEnum:
  * @G_IO_ERROR_FAILED: Generic error condition for when any operation fails.
- * @G_IO_ERROR_NOT_FOUND: File not found error.
- * @G_IO_ERROR_EXISTS: File already exists error.
- * @G_IO_ERROR_IS_DIRECTORY: File is a directory error.
+ * @G_IO_ERROR_NOT_FOUND: File not found.
+ * @G_IO_ERROR_EXISTS: File already exists.
+ * @G_IO_ERROR_IS_DIRECTORY: File is a directory.
  * @G_IO_ERROR_NOT_DIRECTORY: File is not a directory.
  * @G_IO_ERROR_NOT_EMPTY: File is a directory that isn't empty.
  * @G_IO_ERROR_NOT_REGULAR_FILE: File is not a regular file.
@@ -631,6 +631,48 @@ typedef enum {
 } GResolverError;
 
 /**
+ * GResourceError:
+ * @G_RESOURCE_ERROR_NOT_FOUND: no file was found at the requested path
+ * @G_RESOURCE_ERROR_INTERNAL: unknown error
+ *
+ * An error code used with %G_RESOURCE_ERROR in a #GError returned
+ * from a #GResource routine.
+ *
+ * Since: 2.32
+ */
+typedef enum {
+  G_RESOURCE_ERROR_NOT_FOUND,
+  G_RESOURCE_ERROR_INTERNAL
+} GResourceError;
+
+/**
+ * GResourceFlags:
+ * @G_RESOURCE_FLAGS_NONE: No flags set.
+ * @G_RESOURCE_FLAGS_COMPRESSED: The file is compressed.
+ *
+ * GResourceFlags give information about a particular file inside a resource
+ * bundle.
+ * 
+ * Since: 2.32
+ **/
+typedef enum {
+  G_RESOURCE_FLAGS_NONE       = 0,
+  G_RESOURCE_FLAGS_COMPRESSED = (1<<0)
+} GResourceFlags;
+
+/**
+ * GResourceLookupFlags:
+ * @G_RESOURCE_LOOKUP_FLAGS_NONE: No flags set.
+ *
+ * GResourceLookupFlags determine how resource path lookups are handled.
+ * 
+ * Since: 2.32
+ **/
+typedef enum /*< flags >*/ {
+  G_RESOURCE_LOOKUP_FLAGS_NONE       = 0
+} GResourceLookupFlags;
+
+/**
  * GSocketFamily:
  * @G_SOCKET_FAMILY_INVALID: no address family
  * @G_SOCKET_FAMILY_IPV4: the IPv4 family
@@ -645,9 +687,7 @@ typedef enum {
  */
 typedef enum {
   G_SOCKET_FAMILY_INVALID,
-#ifdef GLIB_SYSDEF_AF_UNIX
   G_SOCKET_FAMILY_UNIX = GLIB_SYSDEF_AF_UNIX,
-#endif
   G_SOCKET_FAMILY_IPV4 = GLIB_SYSDEF_AF_INET,
   G_SOCKET_FAMILY_IPV6 = GLIB_SYSDEF_AF_INET6
 } GSocketFamily;
@@ -691,7 +731,7 @@ typedef enum
  *
  * Since: 2.22
  */
-typedef enum
+typedef enum /*< flags >*/
 {
   G_SOCKET_MSG_NONE,
   G_SOCKET_MSG_OOB = GLIB_SYSDEF_MSG_OOB,
@@ -838,6 +878,7 @@ typedef enum
  * @G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START: If not set and the proxy if for a well-known name,
  * then request the bus to launch an owner for the name if no-one owns the name. This flag can
  * only be used in proxies for well-known names.
+ * @G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES: If set, the property value for any <emphasis>invalidated property</emphasis> will be (asynchronously) retrieved upon receiving the <ulink url="http://dbus.freedesktop.org/doc/dbus-specification.html#standard-interfaces-properties">PropertiesChanged</ulink> D-Bus signal and the property will not cause emission of the #GDBusProxy::g-properties-changed signal. When the value is received the #GDBusProxy::g-properties-changed signal is emitted for the property along with the retrieved value. Since 2.32.
  *
  * Flags used when constructing an instance of a #GDBusProxy derived class.
  *
@@ -848,7 +889,8 @@ typedef enum
   G_DBUS_PROXY_FLAGS_NONE = 0,
   G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES = (1<<0),
   G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS = (1<<1),
-  G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START = (1<<2)
+  G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START = (1<<2),
+  G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES = (1<<3)
 } GDBusProxyFlags;
 
 /**
@@ -1270,10 +1312,11 @@ typedef enum
  *     to the #GApplication::command-line signal handler, via
  *     g_application_command_line_getenv().
  * @G_APPLICATION_NON_UNIQUE: Make no attempts to do any of the typical
- *     single-instance application negotiation.  The application neither
- *     attempts to become the owner of the application ID nor does it
- *     check if an existing owner already exists.  Everything occurs in
- *     the local process.  Since: 2.30.
+ *     single-instance application negotiation, even if the application
+ *     ID is given.  The application neither attempts to become the
+ *     owner of the application ID nor does it check if an existing
+ *     owner already exists.  Everything occurs in the local process.
+ *     Since: 2.30.
  *
  * Flags used to define the behaviour of a #GApplication.
  *
@@ -1480,7 +1523,7 @@ typedef enum
  *
  * Since: 2.30
  */
-typedef enum {
+typedef enum /*< flags >*/ {
   G_TLS_DATABASE_VERIFY_NONE = 0
 } GTlsDatabaseVerifyFlags;
 
@@ -1490,8 +1533,9 @@ typedef enum {
  * @G_TLS_DATABASE_LOOKUP_KEYPAIR: Restrict lookup to certificates that have
  *     a private key.
  *
- * Flags for g_tls_database_lookup_handle(), g_tls_database_lookup_issuer(),
- * and g_tls_database_lookup_issued().
+ * Flags for g_tls_database_lookup_certificate_handle(),
+ * g_tls_database_lookup_certificate_issuer(),
+ * and g_tls_database_lookup_certificates_issued_by().
  *
  * Since: 2.30
  */
@@ -1502,8 +1546,8 @@ typedef enum {
 
 /**
  * GIOModuleScopeFlags:
- * @G_IO_MODULES_SCOPE_NONE: No module scan flags
- * @G_IO_MODULES_SCOPE_BLOCK_DUPLICATES: When using this scope to load or
+ * @G_IO_MODULE_SCOPE_NONE: No module scan flags
+ * @G_IO_MODULE_SCOPE_BLOCK_DUPLICATES: When using this scope to load or
  *     scan modules, automatically block a modules which has the same base
  *     basename as previously loaded module.
  *
@@ -1515,6 +1559,44 @@ typedef enum {
   G_IO_MODULE_SCOPE_NONE,
   G_IO_MODULE_SCOPE_BLOCK_DUPLICATES
 } GIOModuleScopeFlags;
+
+/**
+ * GSocketClientEvent:
+ * @G_SOCKET_CLIENT_RESOLVING: The client is doing a DNS lookup.
+ * @G_SOCKET_CLIENT_RESOLVED: The client has completed a DNS lookup.
+ * @G_SOCKET_CLIENT_CONNECTING: The client is connecting to a remote
+ *   host (either a proxy or the destination server).
+ * @G_SOCKET_CLIENT_CONNECTED: The client has connected to a remote
+ *   host.
+ * @G_SOCKET_CLIENT_PROXY_NEGOTIATING: The client is negotiating
+ *   with a proxy to connect to the destination server.
+ * @G_SOCKET_CLIENT_PROXY_NEGOTIATED: The client has negotiated
+ *   with the proxy server.
+ * @G_SOCKET_CLIENT_TLS_HANDSHAKING: The client is performing a
+ *   TLS handshake.
+ * @G_SOCKET_CLIENT_TLS_HANDSHAKED: The client has performed a
+ *   TLS handshake.
+ * @G_SOCKET_CLIENT_COMPLETE: The client is done with a particular
+ *   #GSocketConnectable.
+ *
+ * Describes an event occurring on a #GSocketClient. See the
+ * #GSocketClient::event signal for more details.
+ *
+ * Additional values may be added to this type in the future.
+ *
+ * Since: 2.32
+ */
+typedef enum {
+  G_SOCKET_CLIENT_RESOLVING,
+  G_SOCKET_CLIENT_RESOLVED,
+  G_SOCKET_CLIENT_CONNECTING,
+  G_SOCKET_CLIENT_CONNECTED,
+  G_SOCKET_CLIENT_PROXY_NEGOTIATING,
+  G_SOCKET_CLIENT_PROXY_NEGOTIATED,
+  G_SOCKET_CLIENT_TLS_HANDSHAKING,
+  G_SOCKET_CLIENT_TLS_HANDSHAKED,
+  G_SOCKET_CLIENT_COMPLETE
+} GSocketClientEvent;
 
 G_END_DECLS
 

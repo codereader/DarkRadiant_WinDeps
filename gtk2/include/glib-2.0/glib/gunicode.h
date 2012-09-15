@@ -19,7 +19,7 @@
  *   Boston, MA 02111-1307, USA.
  */
 
-#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
 #error "Only <glib.h> can be included directly."
 #endif
 
@@ -199,6 +199,8 @@ typedef enum
  * @G_UNICODE_BREAK_HANGUL_LV_SYLLABLE: Hangul LV Syllable (H2)
  * @G_UNICODE_BREAK_HANGUL_LVT_SYLLABLE: Hangul LVT Syllable (H3)
  * @G_UNICODE_BREAK_CLOSE_PARANTHESIS: Closing Parenthesis (CP). Since 2.28
+ * @G_UNICODE_BREAK_CONDITIONAL_JAPANESE_STARTER: Conditional Japanese Starter (CJ). Since: 2.32
+ * @G_UNICODE_BREAK_HEBREW_LETTER: Hebrew Letter (HL). Since: 2.32
  *
  * These are the possible line break classifications.
  *
@@ -247,7 +249,9 @@ typedef enum
   G_UNICODE_BREAK_HANGUL_T_JAMO,
   G_UNICODE_BREAK_HANGUL_LV_SYLLABLE,
   G_UNICODE_BREAK_HANGUL_LVT_SYLLABLE,
-  G_UNICODE_BREAK_CLOSE_PARANTHESIS
+  G_UNICODE_BREAK_CLOSE_PARANTHESIS,
+  G_UNICODE_BREAK_CONDITIONAL_JAPANESE_STARTER,
+  G_UNICODE_BREAK_HEBREW_LETTER
 } GUnicodeBreakType;
 
 /**
@@ -361,6 +365,13 @@ typedef enum
  * @G_UNICODE_SCRIPT_BATAK:      Batak. Since 2.28
  * @G_UNICODE_SCRIPT_BRAHMI:     Brahmi. Since 2.28
  * @G_UNICODE_SCRIPT_MANDAIC:    Mandaic. Since 2.28
+ * @G_UNICODE_SCRIPT_CHAKMA:               Chakma. Since: 2.32
+ * @G_UNICODE_SCRIPT_MEROITIC_CURSIVE:     Meroitic Cursive. Since: 2.32
+ * @G_UNICODE_SCRIPT_MEROITIC_HIEROGLYPHS, Meroitic Hieroglyphs. Since: 2.32
+ * @G_UNICODE_SCRIPT_MIAO:                 Miao. Since: 2.32
+ * @G_UNICODE_SCRIPT_SHARADA:              Sharada. Since: 2.32
+ * @G_UNICODE_SCRIPT_SORA_SOMPENG:         Sora Sompeng. Since: 2.32
+ * @G_UNICODE_SCRIPT_TAKRI:                Takri. Since: 2.32
  *
  * The #GUnicodeScript enumeration identifies different writing
  * systems. The values correspond to the names as defined in the
@@ -377,13 +388,13 @@ typedef enum
 {                         /* ISO 15924 code */
   G_UNICODE_SCRIPT_INVALID_CODE = -1,
   G_UNICODE_SCRIPT_COMMON       = 0,   /* Zyyy */
-  G_UNICODE_SCRIPT_INHERITED,          /* Qaai */
+  G_UNICODE_SCRIPT_INHERITED,          /* Zinh (Qaai) */
   G_UNICODE_SCRIPT_ARABIC,             /* Arab */
   G_UNICODE_SCRIPT_ARMENIAN,           /* Armn */
   G_UNICODE_SCRIPT_BENGALI,            /* Beng */
   G_UNICODE_SCRIPT_BOPOMOFO,           /* Bopo */
   G_UNICODE_SCRIPT_CHEROKEE,           /* Cher */
-  G_UNICODE_SCRIPT_COPTIC,             /* Qaac */
+  G_UNICODE_SCRIPT_COPTIC,             /* Copt (Qaac) */
   G_UNICODE_SCRIPT_CYRILLIC,           /* Cyrl (Cyrs) */
   G_UNICODE_SCRIPT_DESERET,            /* Dsrt */
   G_UNICODE_SCRIPT_DEVANAGARI,         /* Deva */
@@ -483,19 +494,20 @@ typedef enum
   /* Unicode-6.0 additions */
   G_UNICODE_SCRIPT_BATAK,                  /* Batk */
   G_UNICODE_SCRIPT_BRAHMI,                 /* Brah */
-  G_UNICODE_SCRIPT_MANDAIC                 /* Mand */
+  G_UNICODE_SCRIPT_MANDAIC,                /* Mand */
+
+  /* Unicode-6.1 additions */
+  G_UNICODE_SCRIPT_CHAKMA,                 /* Cakm */
+  G_UNICODE_SCRIPT_MEROITIC_CURSIVE,       /* Merc */
+  G_UNICODE_SCRIPT_MEROITIC_HIEROGLYPHS,   /* Mero */
+  G_UNICODE_SCRIPT_MIAO,                   /* Plrd */
+  G_UNICODE_SCRIPT_SHARADA,                /* Shrd */
+  G_UNICODE_SCRIPT_SORA_SOMPENG,           /* Sora */
+  G_UNICODE_SCRIPT_TAKRI                   /* Takr */
 } GUnicodeScript;
 
-guint32 g_unicode_script_to_iso15924 (GUnicodeScript script);
-GUnicodeScript g_unicode_script_from_iso15924 (guint32 iso15924);
-
-/* Returns TRUE if current locale uses UTF-8 charset.  If CHARSET is
- * not null, sets *CHARSET to the name of the current locale's
- * charset.  This value is statically allocated, and should be copied
- * in case the locale's charset will be changed later using setlocale()
- * or in some other way.
- */
-gboolean g_get_charset (const char **charset);
+guint32        g_unicode_script_to_iso15924   (GUnicodeScript script);
+GUnicodeScript g_unicode_script_from_iso15924 (guint32        iso15924);
 
 /* These are all analogs of the <ctype.h> functions.
  */
@@ -559,6 +571,18 @@ gsize g_unichar_fully_decompose (gunichar  ch,
                                  gunichar *result,
                                  gsize     result_len);
 
+/**
+ * G_UNICHAR_MAX_DECOMPOSITION_LENGTH:
+ *
+ * The maximum length (in codepoints) of a compatibility or canonical
+ * decomposition of a single Unicode character.
+ *
+ * This is as defined by Unicode 6.1.
+ *
+ * Since: 2.32
+ */
+#define G_UNICHAR_MAX_DECOMPOSITION_LENGTH 18 /* codepoints */
+
 /* Compute canonical ordering of a string in-place.  This rearranges
    decomposed characters in the string according to their combining
    classes.  See the Unicode manual for more information.  */
@@ -566,11 +590,9 @@ void g_unicode_canonical_ordering (gunichar *string,
                                    gsize     len);
 
 
-#ifndef G_DISABLE_DEPRECATED
-/* Deprecated.  Use g_unichar_fully_decompose() */
+GLIB_DEPRECATED_IN_2_30
 gunichar *g_unicode_canonical_decomposition (gunichar  ch,
                                              gsize    *result_len) G_GNUC_MALLOC;
-#endif
 
 /* Array of skip-bytes-per-initial character.
  */
@@ -606,6 +628,7 @@ gchar*   g_utf8_find_prev_char    (const gchar *str,
 glong    g_utf8_strlen            (const gchar *p,
                                    gssize       max) G_GNUC_PURE;
 
+GLIB_AVAILABLE_IN_2_30
 gchar   *g_utf8_substring         (const gchar *str,
                                    glong        start_pos,
                                    glong        end_pos) G_GNUC_MALLOC;

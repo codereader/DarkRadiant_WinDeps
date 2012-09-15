@@ -78,10 +78,9 @@ void     g_value_set_static_boxed         (GValue        *value,
                                            gconstpointer  v_boxed);
 void     g_value_take_boxed               (GValue        *value,
                                            gconstpointer  v_boxed);
-#ifndef G_DISABLE_DEPRECATED
+GLIB_DEPRECATED_FOR(g_value_take_boxed)
 void     g_value_set_boxed_take_ownership (GValue        *value,
                                            gconstpointer  v_boxed);
-#endif
 gpointer g_value_get_boxed                (const GValue  *value);
 gpointer g_value_dup_boxed                (const GValue  *value);
 
@@ -107,17 +106,8 @@ GType    g_boxed_type_register_static     (const gchar   *name,
  */
 #define G_TYPE_VALUE (g_value_get_type ())
 
-/**
- * G_TYPE_VALUE_ARRAY:
- *
- * The type ID of the "GValueArray" type which is a boxed type,
- * used to pass around pointers to GValueArrays.
- */
-#define G_TYPE_VALUE_ARRAY (g_value_array_get_type ())
-
 GType   g_closure_get_type         (void) G_GNUC_CONST;
 GType   g_value_get_type           (void) G_GNUC_CONST;
-GType   g_value_array_get_type     (void) G_GNUC_CONST;
 
 G_END_DECLS
 

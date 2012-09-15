@@ -24,7 +24,7 @@
  * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
 
-#if defined(G_DISABLE_SINGLE_INCLUDES) && !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
 #error "Only <glib.h> can be included directly."
 #endif
 
@@ -121,13 +121,12 @@ void g_warn_message           (const char     *domain,
                                int             line,
                                const char     *func,
                                const char     *warnexpr);
-#ifndef G_DISABLE_DEPRECATED
+GLIB_DEPRECATED
 void g_assert_warning         (const char *log_domain,
 			       const char *file,
 			       const int   line,
 		               const char *pretty_function,
 		               const char *expression) G_GNUC_NORETURN;
-#endif /* !G_DISABLE_DEPRECATED */
 
 
 #ifndef G_LOG_DOMAIN
