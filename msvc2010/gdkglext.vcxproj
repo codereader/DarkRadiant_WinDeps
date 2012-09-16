@@ -122,61 +122,52 @@
   <ItemGroup>
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkgl.h" />
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglconfig.h" />
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglconfigimpl.h" />
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglcontext.h" />
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglcontextimpl.h" />
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkgldebug.h" />
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkgldefs.h" />
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkgldrawable.h" />
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglenumtypes.h" />
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglext-config.h" />
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglfont.h" />
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglglext.h" />
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglinit.h" />
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglpixmap.h" />
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglprivate.h" />
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglquery.h" />
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglshapes.h" />
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkgltokens.h" />
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkgltypes.h" />
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglversion.h" />
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglwindow.h" />
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\glext\common-header.h" />
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\glext\glext-extra.h" />
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\glext\glext.h" />
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\glext\glxext-extra.h" />
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\glext\glxext.h" />
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\glext\wglext-extra.h" />
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\glext\wglext.h" />
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglwindowimpl.h" />
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkglconfig-win32.h" />
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkglcontext-win32.h" />
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkglpixmap-win32.h" />
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkglprivate-win32.h" />
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkglwglext.h" />
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkglquery-win32.h" />
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkglwin32.h" />
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkglwindow-win32.h" />
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkwin32glconfig.h" />
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkwin32glcontext.h" />
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkwin32glquery.h" />
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkwin32glwindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\gtkglext\gdk\gdkglconfig.c" />
+    <ClCompile Include="..\gtkglext\gdk\gdkglconfigimpl.c" />
     <ClCompile Include="..\gtkglext\gdk\gdkglcontext.c" />
+    <ClCompile Include="..\gtkglext\gdk\gdkglcontextimpl.c" />
     <ClCompile Include="..\gtkglext\gdk\gdkgldrawable.c" />
     <ClCompile Include="..\gtkglext\gdk\gdkglenumtypes.c" />
-    <ClCompile Include="..\gtkglext\gdk\gdkglglext.c" />
     <ClCompile Include="..\gtkglext\gdk\gdkglinit.c" />
-    <ClCompile Include="..\gtkglext\gdk\gdkglpixmap.c" />
     <ClCompile Include="..\gtkglext\gdk\gdkglquery.c" />
-    <ClCompile Include="..\gtkglext\gdk\gdkglshapes.c" />
     <ClCompile Include="..\gtkglext\gdk\gdkglversion.c" />
     <ClCompile Include="..\gtkglext\gdk\gdkglwindow.c" />
+    <ClCompile Include="..\gtkglext\gdk\gdkglwindowimpl.c" />
     <ClCompile Include="..\gtkglext\gdk\win32\gdkglconfig-win32.c" />
     <ClCompile Include="..\gtkglext\gdk\win32\gdkglcontext-win32.c" />
-    <ClCompile Include="..\gtkglext\gdk\win32\gdkgldrawable-win32.c" />
-    <ClCompile Include="..\gtkglext\gdk\win32\gdkglfont-win32.c" />
-    <ClCompile Include="..\gtkglext\gdk\win32\gdkglpixmap-win32.c" />
     <ClCompile Include="..\gtkglext\gdk\win32\gdkglquery-win32.c" />
-    <ClCompile Include="..\gtkglext\gdk\win32\gdkglwglext.c" />
     <ClCompile Include="..\gtkglext\gdk\win32\gdkglwindow-win32.c" />
+    <ClCompile Include="..\gtkglext\gdk\win32\gdkwin32glconfig.c" />
+    <ClCompile Include="..\gtkglext\gdk\win32\gdkwin32glcontext.c" />
+    <ClCompile Include="..\gtkglext\gdk\win32\gdkwin32glwindow.c" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\gtkglext\gdk\gdkglext-gtk20.def" />
     <None Include="..\gtkglext\gdk\gdkglext.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -13,18 +13,48 @@
     <Filter Include="Headers\win32">
       <UniqueIdentifier>{f051ea85-e7e0-4819-9a13-e6c8649f8db3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Headers\glext">
-      <UniqueIdentifier>{f5019bc4-edcb-4ff1-8462-f10e21d72e81}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkgl.h">
-      <Filter>Headers</Filter>
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkglcontext-win32.h">
+      <Filter>Headers\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkglprivate-win32.h">
+      <Filter>Headers\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkglquery-win32.h">
+      <Filter>Headers\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkglwin32.h">
+      <Filter>Headers\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkglwindow-win32.h">
+      <Filter>Headers\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkwin32glconfig.h">
+      <Filter>Headers\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkwin32glcontext.h">
+      <Filter>Headers\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkwin32glquery.h">
+      <Filter>Headers\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkwin32glwindow.h">
+      <Filter>Headers\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkglconfig-win32.h">
+      <Filter>Headers\win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglconfig.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglconfigimpl.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglcontext.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglcontextimpl.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkgldebug.h">
@@ -36,31 +66,13 @@
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkgldrawable.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglenumtypes.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglext-config.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglfont.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglglext.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglinit.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglpixmap.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglprivate.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglquery.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglshapes.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkgltokens.h">
@@ -75,96 +87,18 @@
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglwindow.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\glext\common-header.h">
-      <Filter>Headers\glext</Filter>
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglwindowimpl.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\glext\glext.h">
-      <Filter>Headers\glext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\glext\glext-extra.h">
-      <Filter>Headers\glext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\glext\glxext.h">
-      <Filter>Headers\glext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\glext\glxext-extra.h">
-      <Filter>Headers\glext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\glext\wglext.h">
-      <Filter>Headers\glext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\glext\wglext-extra.h">
-      <Filter>Headers\glext</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkglcontext-win32.h">
-      <Filter>Headers\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkglpixmap-win32.h">
-      <Filter>Headers\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkglprivate-win32.h">
-      <Filter>Headers\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkglwglext.h">
-      <Filter>Headers\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkglwin32.h">
-      <Filter>Headers\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkglwindow-win32.h">
-      <Filter>Headers\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\win32\gdkglconfig-win32.h">
-      <Filter>Headers\win32</Filter>
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkgl.h">
+      <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\gtkglext\gdk\gdkglwindow.c">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkglext\gdk\gdkglconfig.c">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkglext\gdk\gdkglcontext.c">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkglext\gdk\gdkgldrawable.c">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkglext\gdk\gdkglenumtypes.c">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkglext\gdk\gdkglglext.c">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkglext\gdk\gdkglinit.c">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkglext\gdk\gdkglpixmap.c">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkglext\gdk\gdkglquery.c">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkglext\gdk\gdkglshapes.c">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkglext\gdk\gdkglversion.c">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="..\gtkglext\gdk\win32\gdkglconfig-win32.c">
       <Filter>Sources\win32</Filter>
     </ClCompile>
     <ClCompile Include="..\gtkglext\gdk\win32\gdkglcontext-win32.c">
-      <Filter>Sources\win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkglext\gdk\win32\gdkgldrawable-win32.c">
-      <Filter>Sources\win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkglext\gdk\win32\gdkglfont-win32.c">
-      <Filter>Sources\win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkglext\gdk\win32\gdkglpixmap-win32.c">
       <Filter>Sources\win32</Filter>
     </ClCompile>
     <ClCompile Include="..\gtkglext\gdk\win32\gdkglquery-win32.c">
@@ -173,14 +107,50 @@
     <ClCompile Include="..\gtkglext\gdk\win32\gdkglwindow-win32.c">
       <Filter>Sources\win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtkglext\gdk\win32\gdkglwglext.c">
+    <ClCompile Include="..\gtkglext\gdk\win32\gdkwin32glconfig.c">
       <Filter>Sources\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkglext\gdk\win32\gdkwin32glcontext.c">
+      <Filter>Sources\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkglext\gdk\win32\gdkwin32glwindow.c">
+      <Filter>Sources\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkglext\gdk\gdkglinit.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkglext\gdk\gdkglquery.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkglext\gdk\gdkglversion.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkglext\gdk\gdkglwindow.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkglext\gdk\gdkglwindowimpl.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkglext\gdk\gdkglconfig.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkglext\gdk\gdkglconfigimpl.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkglext\gdk\gdkglcontext.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkglext\gdk\gdkglcontextimpl.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkglext\gdk\gdkgldrawable.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkglext\gdk\gdkglenumtypes.c">
+      <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\gtkglext\gdk\gdkglext.def" />
-    <None Include="..\gtkglext\gdk\gdkglext-gtk20.def">
-      <Filter>Sources</Filter>
-    </None>
   </ItemGroup>
 </Project>

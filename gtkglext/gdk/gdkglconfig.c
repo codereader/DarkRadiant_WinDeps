@@ -16,65 +16,38 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H */
+
 #include "gdkglprivate.h"
 #include "gdkglconfig.h"
 
-#ifdef GDKGLEXT_MULTIHEAD_SUPPORT
-#include <gdk/gdkscreen.h>
-#endif /* GDKGLEXT_MULTIHEAD_SUPPORT */
+#include <gdk/gdk.h>
 
-gboolean _gdk_gl_config_no_standard_colormap = FALSE;
+#ifdef GDKGLEXT_WINDOWING_X11
+#include "x11/gdkx11glconfig.h"
+#include "x11/gdkglconfig-x11.h"
+#endif
+#ifdef GDKGLEXT_WINDOWING_WIN32
+#include "win32/gdkwin32glconfig.h"
+#include "win32/gdkglconfig-win32.h"
+#endif
 
-static void gdk_gl_config_class_init (GdkGLConfigClass *klass);
-static void gdk_gl_config_finalize   (GObject          *object);
+G_DEFINE_TYPE (GdkGLConfig,     \
+               gdk_gl_config,   \
+               G_TYPE_OBJECT)
 
-static gpointer parent_class = NULL;
-
-GType
-gdk_gl_config_get_type (void)
+static void
+gdk_gl_config_init (GdkGLConfig *self)
 {
-  static GType type = 0;
-
-  if (!type)
-    {
-      static const GTypeInfo type_info = {
-        sizeof (GdkGLConfigClass),
-        (GBaseInitFunc) NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc) gdk_gl_config_class_init,
-        (GClassFinalizeFunc) NULL,
-        NULL,                   /* class_data */
-        sizeof (GdkGLConfig),
-        0,                      /* n_preallocs */
-        (GInstanceInitFunc) NULL
-      };
-
-      type = g_type_register_static (G_TYPE_OBJECT,
-                                     "GdkGLConfig",
-                                     &type_info, 0);
-    }
-
-  return type;
+  GDK_GL_NOTE_FUNC_PRIVATE ();
 }
 
 static void
 gdk_gl_config_class_init (GdkGLConfigClass *klass)
 {
-  GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
   GDK_GL_NOTE_FUNC_PRIVATE ();
-
-  parent_class = g_type_class_peek_parent (klass);
-
-  object_class->finalize = gdk_gl_config_finalize;
-}
-
-static void
-gdk_gl_config_finalize (GObject *object)
-{
-  GDK_GL_NOTE_FUNC_PRIVATE ();
-
-  G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static GdkGLConfig *
@@ -107,7 +80,6 @@ gdk_gl_config_new_ci (GdkScreen       *screen,
       list[n++] = GDK_GL_STENCIL_SIZE;
       list[n++] = 1;
     }
-  list[n] = GDK_GL_ATTRIB_LIST_NONE;
 
   /* from GLUT */
   /* glXChooseVisual specify GLX_BUFFER_SIZE prefers the
@@ -123,11 +95,7 @@ gdk_gl_config_new_ci (GdkScreen       *screen,
       /* XXX Assumes list[1] is where GDK_GL_BUFFER_SIZE parameter is. */
       list[1] = buf_size_list[i];
 
-#ifdef GDKGLEXT_MULTIHEAD_SUPPORT
-      glconfig = gdk_gl_config_new_for_screen (screen, list);
-#else  /* GDKGLEXT_MULTIHEAD_SUPPORT */
-      glconfig = gdk_gl_config_new (list);
-#endif /* GDKGLEXT_MULTIHEAD_SUPPORT */
+      glconfig = gdk_gl_config_new_for_screen (screen, list, n);
 
       if (glconfig != NULL)
         return glconfig;
@@ -187,13 +155,8 @@ gdk_gl_config_new_rgb (GdkScreen       *screen,
           list[n++] = 1;
         }
     }
-  list[n] = GDK_GL_ATTRIB_LIST_NONE;
 
-#ifdef GDKGLEXT_MULTIHEAD_SUPPORT
-  return gdk_gl_config_new_for_screen (screen, list);
-#else  /* GDKGLEXT_MULTIHEAD_SUPPORT */
-  return gdk_gl_config_new (list);
-#endif /* GDKGLEXT_MULTIHEAD_SUPPORT */
+  return gdk_gl_config_new_for_screen (screen, list, n);
 }
 
 static GdkGLConfig *
@@ -221,7 +184,7 @@ gdk_gl_config_new_by_mode_common (GdkScreen       *screen,
           mode |= GDK_GL_MODE_DOUBLE;
           glconfig = _GL_CONFIG_NEW_BY_MODE (screen, mode);
           if (glconfig != NULL)
-            glconfig->as_single_mode = TRUE;
+            glconfig->impl->as_single_mode = TRUE;
         }
     }
 
@@ -244,16 +207,10 @@ gdk_gl_config_new_by_mode (GdkGLConfigMode mode)
 {
   GdkScreen *screen;
 
-#ifdef GDKGLEXT_MULTIHEAD_SUPPORT
   screen = gdk_screen_get_default ();
-#else  /* GDKGLEXT_MULTIHEAD_SUPPORT */
-  screen = NULL;
-#endif
 
   return gdk_gl_config_new_by_mode_common (screen, mode);
 }
-
-#ifdef GDKGLEXT_MULTIHEAD_SUPPORT
 
 /**
  * gdk_gl_config_new_by_mode_for_screen:
@@ -272,8 +229,6 @@ gdk_gl_config_new_by_mode_for_screen (GdkScreen       *screen,
   return gdk_gl_config_new_by_mode_common (screen, mode);
 }
 
-#endif /* GDKGLEXT_MULTIHEAD_SUPPORT */
-
 /**
  * gdk_gl_config_get_layer_plane:
  * @glconfig: a #GdkGLConfig.
@@ -291,7 +246,7 @@ gdk_gl_config_get_layer_plane (GdkGLConfig *glconfig)
 {
   g_return_val_if_fail (GDK_IS_GL_CONFIG (glconfig), 0);
 
-  return glconfig->layer_plane;
+  return glconfig->impl->layer_plane;
 }
 
 /**
@@ -307,7 +262,7 @@ gdk_gl_config_get_n_aux_buffers (GdkGLConfig *glconfig)
 {
   g_return_val_if_fail (GDK_IS_GL_CONFIG (glconfig), 0);
 
-  return glconfig->n_aux_buffers;
+  return glconfig->impl->n_aux_buffers;
 }
 
 /**
@@ -323,7 +278,7 @@ gdk_gl_config_get_n_sample_buffers (GdkGLConfig *glconfig)
 {
   g_return_val_if_fail (GDK_IS_GL_CONFIG (glconfig), 0);
 
-  return glconfig->n_sample_buffers;
+  return glconfig->impl->n_sample_buffers;
 }
 
 /**
@@ -340,7 +295,7 @@ gdk_gl_config_is_rgba (GdkGLConfig *glconfig)
 {
   g_return_val_if_fail (GDK_IS_GL_CONFIG (glconfig), FALSE);
 
-  return glconfig->is_rgba;
+  return glconfig->impl->is_rgba;
 }
 
 /**
@@ -357,7 +312,7 @@ gdk_gl_config_is_double_buffered (GdkGLConfig *glconfig)
 {
   g_return_val_if_fail (GDK_IS_GL_CONFIG (glconfig), FALSE);
 
-  return (glconfig->is_double_buffered && (!glconfig->as_single_mode));
+  return (glconfig->impl->is_double_buffered && (!glconfig->impl->as_single_mode));
 }
 
 /**
@@ -373,7 +328,7 @@ gdk_gl_config_is_stereo (GdkGLConfig *glconfig)
 {
   g_return_val_if_fail (GDK_IS_GL_CONFIG (glconfig), FALSE);
 
-  return glconfig->is_stereo;
+  return glconfig->impl->is_stereo;
 }
 
 /**
@@ -389,7 +344,7 @@ gdk_gl_config_has_alpha (GdkGLConfig *glconfig)
 {
   g_return_val_if_fail (GDK_IS_GL_CONFIG (glconfig), FALSE);
 
-  return glconfig->has_alpha;
+  return glconfig->impl->has_alpha;
 }
 
 /**
@@ -405,7 +360,7 @@ gdk_gl_config_has_depth_buffer (GdkGLConfig *glconfig)
 {
   g_return_val_if_fail (GDK_IS_GL_CONFIG (glconfig), FALSE);
 
-  return glconfig->has_depth_buffer;
+  return glconfig->impl->has_depth_buffer;
 }
 
 /**
@@ -421,7 +376,7 @@ gdk_gl_config_has_stencil_buffer (GdkGLConfig *glconfig)
 {
   g_return_val_if_fail (GDK_IS_GL_CONFIG (glconfig), FALSE);
 
-  return glconfig->has_stencil_buffer;
+  return glconfig->impl->has_stencil_buffer;
 }
 
 /**
@@ -438,5 +393,211 @@ gdk_gl_config_has_accum_buffer (GdkGLConfig *glconfig)
 {
   g_return_val_if_fail (GDK_IS_GL_CONFIG (glconfig), FALSE);
 
-  return glconfig->has_accum_buffer;
+  return glconfig->impl->has_accum_buffer;
+}
+
+/**
+ * gdk_gl_config_new:
+ * @attrib_list: (array length=n_attribs): a list of attribute/value pairs.
+ * @n_attribs: the number of attributes and values in attrib_list.
+ *
+ * Returns an OpenGL frame buffer configuration that match the specified
+ * attributes.
+ *
+ * attrib_list is a int array that contains the attribute/value pairs.
+ * Available attributes are:
+ * GDK_GL_USE_GL, GDK_GL_BUFFER_SIZE, GDK_GL_LEVEL, GDK_GL_RGBA,
+ * GDK_GL_DOUBLEBUFFER, GDK_GL_STEREO, GDK_GL_AUX_BUFFERS,
+ * GDK_GL_RED_SIZE, GDK_GL_GREEN_SIZE, GDK_GL_BLUE_SIZE, GDK_GL_ALPHA_SIZE,
+ * GDK_GL_DEPTH_SIZE, GDK_GL_STENCIL_SIZE, GDK_GL_ACCUM_RED_SIZE,
+ * GDK_GL_ACCUM_GREEN_SIZE, GDK_GL_ACCUM_BLUE_SIZE, GDK_GL_ACCUM_ALPHA_SIZE.
+ *
+ * Return value: the new #GdkGLConfig.
+ **/
+GdkGLConfig *
+gdk_gl_config_new (const int *attrib_list, gsize n_attribs)
+{
+  return gdk_gl_config_new_for_display(gdk_display_get_default(),
+                                       attrib_list,
+                                       n_attribs);
+}
+
+/**
+ * gdk_gl_config_new_for_display:
+ * @screen: target display.
+ * @attrib_list: (array length=n_attribs): a list of attribute/value pairs.
+ * @n_attribs: the number of attributes and values in attrib_list.
+ *
+ * Returns an OpenGL frame buffer configuration that match the specified
+ * attributes.
+ *
+ * attrib_list is a int array that contains the attribute/value pairs.
+ * Available attributes are:
+ * GDK_GL_USE_GL, GDK_GL_BUFFER_SIZE, GDK_GL_LEVEL, GDK_GL_RGBA,
+ * GDK_GL_DOUBLEBUFFER, GDK_GL_STEREO, GDK_GL_AUX_BUFFERS,
+ * GDK_GL_RED_SIZE, GDK_GL_GREEN_SIZE, GDK_GL_BLUE_SIZE, GDK_GL_ALPHA_SIZE,
+ * GDK_GL_DEPTH_SIZE, GDK_GL_STENCIL_SIZE, GDK_GL_ACCUM_RED_SIZE,
+ * GDK_GL_ACCUM_GREEN_SIZE, GDK_GL_ACCUM_BLUE_SIZE, GDK_GL_ACCUM_ALPHA_SIZE.
+ *
+ * Return value: the new #GdkGLConfig.
+ **/
+GdkGLConfig *
+gdk_gl_config_new_for_display (GdkDisplay *display,
+                               const int *attrib_list,
+                               gsize n_attribs)
+{
+  GdkGLConfig *glconfig = NULL;
+
+#ifdef GDKGLEXT_WINDOWING_X11
+  if (GDK_IS_X11_DISPLAY(display))
+    {
+      glconfig = gdk_x11_gl_config_new_for_display(display,
+                                                   attrib_list,
+                                                   n_attribs);
+    }
+  else
+#endif
+#ifdef GDKGLEXT_WINDOWING_WIN32
+  if (GDK_IS_WIN32_DISPLAY(display))
+    {
+      glconfig = gdk_win32_gl_config_new_for_display(display,
+                                                     attrib_list,
+                                                     n_attribs);
+    }
+  else
+#endif
+    {
+      g_warning("Unsupported GDK backend");
+    }
+
+  return glconfig;
+}
+
+/**
+ * gdk_gl_config_new_for_screen:
+ * @screen: target screen.
+ * @attrib_list: (array length=n_attribs): a list of attribute/value pairs.
+ * @n_attribs: the number of attributes and values in attrib_list.
+ *
+ * Returns an OpenGL frame buffer configuration that match the specified
+ * attributes.
+ *
+ * attrib_list is a int array that contains the attribute/value pairs.
+ * Available attributes are:
+ * GDK_GL_USE_GL, GDK_GL_BUFFER_SIZE, GDK_GL_LEVEL, GDK_GL_RGBA,
+ * GDK_GL_DOUBLEBUFFER, GDK_GL_STEREO, GDK_GL_AUX_BUFFERS,
+ * GDK_GL_RED_SIZE, GDK_GL_GREEN_SIZE, GDK_GL_BLUE_SIZE, GDK_GL_ALPHA_SIZE,
+ * GDK_GL_DEPTH_SIZE, GDK_GL_STENCIL_SIZE, GDK_GL_ACCUM_RED_SIZE,
+ * GDK_GL_ACCUM_GREEN_SIZE, GDK_GL_ACCUM_BLUE_SIZE, GDK_GL_ACCUM_ALPHA_SIZE.
+ *
+ * Return value: the new #GdkGLConfig.
+ **/
+GdkGLConfig *
+gdk_gl_config_new_for_screen (GdkScreen *screen,
+                              const int *attrib_list,
+                              gsize n_attribs)
+{
+  GdkDisplay *display;
+  GdkGLConfig *glconfig = NULL;
+
+  /* The linker returns undefined symbol '_gdk_win32_screen_get_type'
+   * for win32 builds when using GDK_IS_WIN32_SCREEN. Thus we lookup
+   * the screen's display and test the display instead.
+   */
+
+  display = gdk_screen_get_display(screen);
+  g_return_val_if_fail(display != NULL, NULL);
+
+#ifdef GDKGLEXT_WINDOWING_X11
+  if (GDK_IS_X11_DISPLAY(display))
+    {
+      glconfig = gdk_x11_gl_config_new_for_screen(screen,
+                                                  attrib_list,
+                                                  n_attribs);
+    }
+  else
+#endif
+#ifdef GDKGLEXT_WINDOWING_WIN32
+  if (GDK_IS_WIN32_DISPLAY(display))
+    {
+      glconfig = gdk_win32_gl_config_new_for_screen(screen,
+                                                    attrib_list,
+                                                    n_attribs);
+    }
+  else
+#endif
+    {
+      g_warning("Unsupported GDK backend");
+    }
+
+  return glconfig;
+}
+
+/**
+ * gdk_gl_config_get_screen:
+ * @glconfig: a #GdkGLConfig.
+ *
+ * Gets #GdkScreen.
+ *
+ * Return value: the #GdkScreen.
+ **/
+GdkScreen *
+gdk_gl_config_get_screen (GdkGLConfig *glconfig)
+{
+  g_return_val_if_fail (GDK_IS_GL_CONFIG (glconfig), FALSE);
+
+  return GDK_GL_CONFIG_IMPL_GET_CLASS (glconfig->impl)->get_screen (glconfig);
+}
+
+/**
+ * gdk_gl_config_get_attrib:
+ * @glconfig: a #GdkGLConfig.
+ * @attribute: the attribute to be returned.
+ * @value: returns the requested value.
+ *
+ * Gets information about a OpenGL frame buffer configuration.
+ *
+ * Return value: TRUE if it succeeded, FALSE otherwise.
+ **/
+gboolean
+gdk_gl_config_get_attrib (GdkGLConfig *glconfig,
+                          int          attribute,
+                          int         *value)
+{
+  g_return_val_if_fail (GDK_IS_GL_CONFIG (glconfig), FALSE);
+
+  return GDK_GL_CONFIG_IMPL_GET_CLASS (glconfig->impl)->get_attrib (glconfig, attribute, value);
+}
+
+/**
+ * gdk_gl_config_get_visual:
+ * @glconfig: a #GdkGLConfig.
+ *
+ * Gets the #GdkVisual that is appropriate for the OpenGL frame buffer
+ * configuration.
+ *
+ * Return value: the appropriate #GdkVisual.
+ **/
+GdkVisual *
+gdk_gl_config_get_visual (GdkGLConfig *glconfig)
+{
+  g_return_val_if_fail (GDK_IS_GL_CONFIG (glconfig), FALSE);
+
+  return GDK_GL_CONFIG_IMPL_GET_CLASS (glconfig->impl)->get_visual (glconfig);
+}
+
+/**
+ * gdk_gl_config_get_depth:
+ * @glconfig: a #GdkGLConfig.
+ *
+ * Gets the color depth of the OpenGL-capable visual.
+ *
+ * Return value: number of bits per pixel
+ **/
+gint
+gdk_gl_config_get_depth (GdkGLConfig *glconfig)
+{
+  g_return_val_if_fail (GDK_IS_GL_CONFIG (glconfig), FALSE);
+
+  return GDK_GL_CONFIG_IMPL_GET_CLASS (glconfig->impl)->get_depth (glconfig);
 }

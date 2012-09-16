@@ -16,7 +16,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
  */
 
-#include <gdk/gdkdrawable.h>
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H */
+
+#include <gdk/gdk.h>
 
 #include "gdkglprivate.h"
 #include "gdkglcontext.h"
@@ -41,26 +45,6 @@ gdk_gl_drawable_get_type (void)
     }
 
   return type;
-}
-
-/**
- * gdk_gl_drawable_make_current:
- * @gldrawable: a #GdkGLDrawable.
- * @glcontext: a #GdkGLContext.
- *
- * Attach an OpenGL rendering context to a @gldrawable.
- *
- * Return value: TRUE if it is successful, FALSE otherwise.
- **/
-gboolean
-gdk_gl_drawable_make_current (GdkGLDrawable *gldrawable,
-                              GdkGLContext  *glcontext)
-{
-  g_return_val_if_fail (GDK_IS_GL_DRAWABLE (gldrawable), FALSE);
-
-  return GDK_GL_DRAWABLE_GET_CLASS (gldrawable)->make_context_current (gldrawable,
-                                                                       gldrawable,
-                                                                       glcontext);
 }
 
 /**
@@ -126,41 +110,6 @@ gdk_gl_drawable_wait_gdk (GdkGLDrawable *gldrawable)
 }
 
 /**
- * gdk_gl_drawable_gl_begin:
- * @gldrawable: a #GdkGLDrawable.
- * @glcontext: a #GdkGLContext.
- *
- * Delimits the begining of the OpenGL execution.
- *
- * Return value: TRUE if it is successful, FALSE otherwise.
- **/
-gboolean
-gdk_gl_drawable_gl_begin (GdkGLDrawable *gldrawable,
-			  GdkGLContext  *glcontext)
-{
-  g_return_val_if_fail (GDK_IS_GL_DRAWABLE (gldrawable), FALSE);
-
-  return GDK_GL_DRAWABLE_GET_CLASS (gldrawable)->gl_begin (gldrawable,
-                                                           gldrawable,
-                                                           glcontext);
-}
-
-/**
- * gdk_gl_drawable_gl_end:
- * @gldrawable: a #GdkGLDrawable.
- *
- * Delimits the end of the OpenGL execution.
- *
- **/
-void
-gdk_gl_drawable_gl_end (GdkGLDrawable *gldrawable)
-{
-  g_return_if_fail (GDK_IS_GL_DRAWABLE (gldrawable));
-
-  GDK_GL_DRAWABLE_GET_CLASS (gldrawable)->gl_end (gldrawable);
-}
-
-/**
  * gdk_gl_drawable_get_gl_config:
  * @gldrawable: a #GdkGLDrawable.
  *
@@ -174,45 +123,4 @@ gdk_gl_drawable_get_gl_config (GdkGLDrawable *gldrawable)
   g_return_val_if_fail (GDK_IS_GL_DRAWABLE (gldrawable), NULL);
 
   return GDK_GL_DRAWABLE_GET_CLASS (gldrawable)->get_gl_config (gldrawable);
-}
-
-/**
- * gdk_gl_drawable_get_size:
- * @gldrawable: a #GdkGLDrawable.
- * @width: location to store drawable's width, or NULL.
- * @height: location to store drawable's height, or NULL.
- *
- * Fills *width and *height with the size of GL drawable.
- * width or height can be NULL if you only want the other one.
- *
- **/
-void
-gdk_gl_drawable_get_size (GdkGLDrawable *gldrawable,
-                          gint          *width,
-                          gint          *height)
-{
-  g_return_if_fail (GDK_IS_GL_DRAWABLE (gldrawable));
-
-  GDK_GL_DRAWABLE_GET_CLASS (gldrawable)->get_size (gldrawable, width, height);
-}
-
-/**
- * gdk_gl_drawable_get_current:
- *
- * Returns the current #GdkGLDrawable.
- *
- * Return value: the current #GdkGLDrawable or NULL if there is no current drawable.
- **/
-GdkGLDrawable *
-gdk_gl_drawable_get_current (void)
-{
-  GdkGLContext *glcontext;
-
-  GDK_GL_NOTE_FUNC ();
-
-  glcontext = gdk_gl_context_get_current ();
-  if (glcontext == NULL)
-    return NULL;
-
-  return gdk_gl_context_get_gl_drawable (glcontext);
 }

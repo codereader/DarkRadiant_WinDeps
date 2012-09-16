@@ -16,44 +16,50 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H */
+
+#include <gdk/gdk.h>
+
 #include "gdkglwin32.h"
 #include "gdkglprivate-win32.h"
 #include "gdkglconfig-win32.h"
+#include "gdkglwindow-win32.h"
 
-#ifdef GDKGLEXT_MULTIHEAD_SUPPORT
-#include <gdk/gdkscreen.h>
-#endif /* GDKGLEXT_MULTIHEAD_SUPPORT */
+static GdkGLWindow            *_gdk_win32_gl_config_impl_create_gl_window (GdkGLConfig *glconfig,
+                                                                           GdkWindow   *window,
+                                                                           const int   *attrib_list);
+static GdkScreen              *_gdk_win32_gl_config_impl_get_screen       (GdkGLConfig *glconfig);
+static gboolean                _gdk_win32_gl_config_impl_get_attrib       (GdkGLConfig *glconfig,
+                                                                           int          attribute,
+                                                                           int         *value);
+static GdkVisual              *_gdk_win32_gl_config_impl_get_visual       (GdkGLConfig *glconfig);
+static gint                    _gdk_win32_gl_config_impl_get_depth        (GdkGLConfig *glconfig);
+static PIXELFORMATDESCRIPTOR  *_gdk_win32_gl_config_impl_get_pfd          (GdkGLConfig *glconfig);
 
-static void gdk_gl_config_impl_win32_class_init (GdkGLConfigImplWin32Class *klass);
-static void gdk_gl_config_impl_win32_finalize   (GObject                   *object);
+G_DEFINE_TYPE (GdkGLConfigImplWin32,            \
+               gdk_gl_config_impl_win32,        \
+               GDK_TYPE_GL_CONFIG_IMPL)
 
-static gpointer parent_class = NULL;
-
-GType
-gdk_gl_config_impl_win32_get_type (void)
+static void
+gdk_gl_config_impl_win32_init (GdkGLConfigImplWin32 *self)
 {
-  static GType type = 0;
+  GDK_GL_NOTE_FUNC_PRIVATE ();
 
-  if (!type)
-    {
-      static const GTypeInfo type_info = {
-        sizeof (GdkGLConfigImplWin32Class),
-        (GBaseInitFunc) NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc) gdk_gl_config_impl_win32_class_init,
-        (GClassFinalizeFunc) NULL,
-        NULL,                   /* class_data */
-        sizeof (GdkGLConfigImplWin32),
-        0,                      /* n_preallocs */
-        (GInstanceInitFunc) NULL
-      };
+  memset (&self->pfd, 0, sizeof(self->pfd));
+  GDK_GL_NOTE_FUNC_PRIVATE ();
+  self->screen = NULL;
+  GDK_GL_NOTE_FUNC_PRIVATE ();
+  self->depth = 0;
+}
 
-      type = g_type_register_static (GDK_TYPE_GL_CONFIG,
-                                     "GdkGLConfigImplWin32",
-                                     &type_info, 0);
-    }
+static void
+gdk_gl_config_impl_win32_finalize (GObject *object)
+{
+  GDK_GL_NOTE_FUNC_PRIVATE ();
 
-  return type;
+  G_OBJECT_CLASS (gdk_gl_config_impl_win32_parent_class)->finalize (object);
 }
 
 static void
@@ -63,21 +69,15 @@ gdk_gl_config_impl_win32_class_init (GdkGLConfigImplWin32Class *klass)
 
   GDK_GL_NOTE_FUNC_PRIVATE ();
 
-  parent_class = g_type_class_peek_parent (klass);
+  klass->get_pfd = _gdk_win32_gl_config_impl_get_pfd;
+
+  klass->parent_class.create_gl_window = _gdk_win32_gl_config_impl_create_gl_window;
+  klass->parent_class.get_screen       = _gdk_win32_gl_config_impl_get_screen;
+  klass->parent_class.get_attrib       = _gdk_win32_gl_config_impl_get_attrib;
+  klass->parent_class.get_visual       = _gdk_win32_gl_config_impl_get_visual;
+  klass->parent_class.get_depth        = _gdk_win32_gl_config_impl_get_depth;
 
   object_class->finalize = gdk_gl_config_impl_win32_finalize;
-}
-
-static void
-gdk_gl_config_impl_win32_finalize (GObject *object)
-{
-  GdkGLConfigImplWin32 *impl = GDK_GL_CONFIG_IMPL_WIN32 (object);
-
-  GDK_GL_NOTE_FUNC_PRIVATE ();
-
-  g_object_unref (G_OBJECT (impl->colormap));
-
-  G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 /*
@@ -85,9 +85,11 @@ gdk_gl_config_impl_win32_finalize (GObject *object)
  */
 static void
 gdk_gl_config_parse_attrib_list (const int             *attrib_list,
+                                 gsize                  n_attribs,
                                  PIXELFORMATDESCRIPTOR *pfd)
 {
   int *p;
+  int i;
   gboolean buffer_size_is_specified = FALSE;
   BYTE buffer_size;
   int layer_plane;
@@ -107,7 +109,7 @@ gdk_gl_config_parse_attrib_list (const int             *attrib_list,
      PFD_SUPPORT_GDI and PFD_DOUBLEBUFFER are mutually exclusive in
      the current generic implementation. */
   /* PFD_DRAW_TO_WINDOW or PFD_DRAW_TO_BITMAP is not specified at this stage.
-     The flag is set by gdk_gl_(window|pixmap)_new(). */
+     The flag is set by gdk_gl_window_new(). */
   pfd->dwFlags = PFD_SUPPORT_OPENGL |
                  PFD_SUPPORT_GDI;
 
@@ -125,95 +127,109 @@ gdk_gl_config_parse_attrib_list (const int             *attrib_list,
   pfd->iLayerType = PFD_MAIN_PLANE;
 
   p = (int *) attrib_list;
-  while (*p != GDK_GL_ATTRIB_LIST_NONE)
+
+  for (i = 0; (i < n_attribs) && (*p != GDK_GL_ATTRIB_LIST_NONE); ++i)
     {
       switch (*p)
         {
-        case GDK_GL_USE_GL:
-	  /* The buffer supports OpenGL drawing. */
-          pfd->dwFlags |= PFD_SUPPORT_OPENGL;
-          break;
-        case GDK_GL_BUFFER_SIZE:
-	  /* Specifies the number of color bitplanes in each color buffer. */
-          pfd->cColorBits = *(++p);
-	  buffer_size_is_specified = TRUE;
-          break;
-        case GDK_GL_LEVEL:
-          layer_plane = *(++p);
-	  /* Ignored. Earlier implementations of OpenGL used this member,
-	     but it is no longer used. */
-	  if (layer_plane > 0)
-	    pfd->iLayerType = PFD_OVERLAY_PLANE;
-	  else if (layer_plane < 0)
-	    pfd->iLayerType = PFD_UNDERLAY_PLANE;
-          break;
-        case GDK_GL_RGBA:
-	  /* RGBA pixels. */
-          pfd->iPixelType = PFD_TYPE_RGBA;
-          break;
-        case GDK_GL_DOUBLEBUFFER:
-	  /* The buffer is double-buffered. */
-	  pfd->dwFlags &= ~PFD_SUPPORT_GDI;
-          pfd->dwFlags |= PFD_DOUBLEBUFFER;
-          break;
-        case GDK_GL_STEREO:
-	  /* The buffer is stereoscopic.
-	     This flag is not supported in the current generic implementation. */
-          pfd->dwFlags |= PFD_STEREO;
-          break;
-        case GDK_GL_AUX_BUFFERS:
-	  /* Specifies the number of auxiliary buffers.
-	     Auxiliary buffers are not supported. */
-          pfd->cAuxBuffers = *(++p);
-          break;
-        case GDK_GL_RED_SIZE:
-	  /* Specifies the number of red bitplanes in each RGBA color buffer.
-	     Not used by ChoosePixelFormat. */
-          pfd->cRedBits = *(++p);
-          break;
-        case GDK_GL_GREEN_SIZE:
-	  /* Specifies the number of green bitplanes in each RGBA color buffer.
-	     Not used by ChoosePixelFormat. */
-          pfd->cGreenBits = *(++p);
-          break;
-        case GDK_GL_BLUE_SIZE:
-	  /* Specifies the number of blue bitplanes in each RGBA color buffer.
-	     Not used by ChoosePixelFormat. */
-          pfd->cBlueBits = *(++p);
-          break;
-        case GDK_GL_ALPHA_SIZE:
-	  /* Specifies the number of alpha bitplanes in each RGBA color buffer.
-	     Alpha bitplanes are not supported.  */
-	  pfd->cAlphaBits = *(++p);
-          break;
-        case GDK_GL_DEPTH_SIZE:
-	  /* Specifies the depth of the depth (z-axis) buffer. */
-          pfd->cDepthBits = *(++p);
-          break;
-        case GDK_GL_STENCIL_SIZE:
-	  /* Specifies the depth of the stencil buffer. */
-          pfd->cStencilBits = *(++p);
-          break;
-        case GDK_GL_ACCUM_RED_SIZE:
-	  /* Specifies the number of red bitplanes in the accumulation buffer.
-	     Not used by ChoosePixelFormat. */
-	  pfd->cAccumRedBits = *(++p);
-	  break;
-        case GDK_GL_ACCUM_GREEN_SIZE:
-	  /* Specifies the number of green bitplanes in the accumulation buffer.
-	     Not used by ChoosePixelFormat. */
-	  pfd->cAccumGreenBits = *(++p);
-	  break;
-        case GDK_GL_ACCUM_BLUE_SIZE:
-	  /* Specifies the number of blue bitplanes in the accumulation buffer.
-	     Not used by ChoosePixelFormat. */
-	  pfd->cAccumBlueBits = *(++p);
-	  break;
-        case GDK_GL_ACCUM_ALPHA_SIZE:
-	  /* Specifies the number of alpha bitplanes in the accumulation buffer.
-	     Not used by ChoosePixelFormat.*/
-	  pfd->cAccumAlphaBits = *(++p);
-          break;
+          case GDK_GL_USE_GL:
+	          /* The buffer supports OpenGL drawing. */
+            pfd->dwFlags |= PFD_SUPPORT_OPENGL;
+            break;
+          case GDK_GL_BUFFER_SIZE:
+	          /* Specifies the number of color bitplanes in each color buffer. */
+            pfd->cColorBits = *(++p);
+	          buffer_size_is_specified = TRUE;
+            ++i;
+            break;
+          case GDK_GL_LEVEL:
+            layer_plane = *(++p);
+	          /* Ignored. Earlier implementations of OpenGL used this member,
+        	     but it is no longer used. */
+        	  if (layer_plane > 0)
+        	    pfd->iLayerType = PFD_OVERLAY_PLANE;
+        	  else if (layer_plane < 0)
+        	    pfd->iLayerType = PFD_UNDERLAY_PLANE;
+            ++i;
+            break;
+          case GDK_GL_RGBA:
+        	  /* RGBA pixels. */
+            pfd->iPixelType = PFD_TYPE_RGBA;
+            break;
+          case GDK_GL_DOUBLEBUFFER:
+	          /* The buffer is double-buffered. */
+        	  pfd->dwFlags &= ~PFD_SUPPORT_GDI;
+            pfd->dwFlags |= PFD_DOUBLEBUFFER;
+            break;
+          case GDK_GL_STEREO:
+	          /* The buffer is stereoscopic.
+        	     This flag is not supported in the current generic implementation. */
+            pfd->dwFlags |= PFD_STEREO;
+            break;
+          case GDK_GL_AUX_BUFFERS:
+	          /* Specifies the number of auxiliary buffers.
+        	     Auxiliary buffers are not supported. */
+            pfd->cAuxBuffers = *(++p);
+            ++i;
+            break;
+          case GDK_GL_RED_SIZE:
+        	  /* Specifies the number of red bitplanes in each RGBA color buffer.
+        	     Not used by ChoosePixelFormat. */
+            pfd->cRedBits = *(++p);
+            ++i;
+            break;
+          case GDK_GL_GREEN_SIZE:
+        	  /* Specifies the number of green bitplanes in each RGBA color buffer.
+        	     Not used by ChoosePixelFormat. */
+            pfd->cGreenBits = *(++p);
+            ++i;
+            break;
+          case GDK_GL_BLUE_SIZE:
+        	  /* Specifies the number of blue bitplanes in each RGBA color buffer.
+        	     Not used by ChoosePixelFormat. */
+            pfd->cBlueBits = *(++p);
+            ++i;
+            break;
+          case GDK_GL_ALPHA_SIZE:
+	          /* Specifies the number of alpha bitplanes in each RGBA color buffer.
+        	     Alpha bitplanes are not supported.  */
+        	  pfd->cAlphaBits = *(++p);
+            ++i;
+            break;
+          case GDK_GL_DEPTH_SIZE:
+	          /* Specifies the depth of the depth (z-axis) buffer. */
+            pfd->cDepthBits = *(++p);
+            ++i;
+            break;
+          case GDK_GL_STENCIL_SIZE:
+        	  /* Specifies the depth of the stencil buffer. */
+            pfd->cStencilBits = *(++p);
+            ++i;
+            break;
+          case GDK_GL_ACCUM_RED_SIZE:
+        	  /* Specifies the number of red bitplanes in the accumulation buffer.
+        	     Not used by ChoosePixelFormat. */
+        	  pfd->cAccumRedBits = *(++p);
+            ++i;
+        	  break;
+          case GDK_GL_ACCUM_GREEN_SIZE:
+        	  /* Specifies the number of green bitplanes in the accumulation buffer.
+        	     Not used by ChoosePixelFormat. */
+        	  pfd->cAccumGreenBits = *(++p);
+            ++i;
+        	  break;
+          case GDK_GL_ACCUM_BLUE_SIZE:
+	          /* Specifies the number of blue bitplanes in the accumulation buffer.
+        	     Not used by ChoosePixelFormat. */
+        	  pfd->cAccumBlueBits = *(++p);
+            ++i;
+        	  break;
+          case GDK_GL_ACCUM_ALPHA_SIZE:
+        	  /* Specifies the number of alpha bitplanes in the accumulation buffer.
+        	     Not used by ChoosePixelFormat.*/
+        	  pfd->cAccumAlphaBits = *(++p);
+            ++i;
+            break;
         }
       ++p;
     }
@@ -223,7 +239,7 @@ gdk_gl_config_parse_attrib_list (const int             *attrib_list,
     {
       buffer_size = pfd->cRedBits + pfd->cGreenBits + pfd->cBlueBits;
       if (buffer_size != 0)
-	pfd->cColorBits = buffer_size;
+      	pfd->cColorBits = buffer_size;
     }
 
   /* Specifies the total number of bitplanes in the accumulation buffer. */
@@ -244,9 +260,9 @@ gdk_gl_config_parse_attrib_list (const int             *attrib_list,
  */
 /*< private >*/
 int
-_gdk_win32_gl_config_find_pixel_format (HDC                          hdc,
-					CONST PIXELFORMATDESCRIPTOR *req_pfd,
-					PIXELFORMATDESCRIPTOR       *found_pfd)
+_gdk_win32_gl_config_impl_find_pixel_format (HDC                          hdc,
+                                             CONST PIXELFORMATDESCRIPTOR *req_pfd,
+                                             PIXELFORMATDESCRIPTOR       *found_pfd)
 {
   PIXELFORMATDESCRIPTOR pfd, chosen_pfd;
   int pixel_format = 0;
@@ -291,13 +307,13 @@ _gdk_win32_gl_config_find_pixel_format (HDC                          hdc,
   return pixel_format;
 }
 
-/* 
+/*
  * Setup PFD.
  */
 
 static gboolean
-gdk_gl_config_setup_pfd (CONST PIXELFORMATDESCRIPTOR *req_pfd,
-			 PIXELFORMATDESCRIPTOR       *pfd)
+gdk_win32_gl_config_impl_setup_pfd (CONST PIXELFORMATDESCRIPTOR *req_pfd,
+                                    PIXELFORMATDESCRIPTOR       *pfd)
 {
   HDC hdc;
   PIXELFORMATDESCRIPTOR temp_pfd;
@@ -317,7 +333,7 @@ gdk_gl_config_setup_pfd (CONST PIXELFORMATDESCRIPTOR *req_pfd,
   w_pfd = *req_pfd;
   w_pfd.dwFlags &= ~PFD_DRAW_TO_BITMAP;
   w_pfd.dwFlags |= PFD_DRAW_TO_WINDOW;
-  w_pf = _gdk_win32_gl_config_find_pixel_format (hdc, &w_pfd, &w_pfd);
+  w_pf = _gdk_win32_gl_config_impl_find_pixel_format (hdc, &w_pfd, &w_pfd);
 
   GDK_GL_NOTE (MISC, g_message (" -- pixel format for windows = 0x%x", w_pf));
   GDK_GL_NOTE (MISC, _gdk_win32_gl_print_pfd (&w_pfd));
@@ -325,7 +341,7 @@ gdk_gl_config_setup_pfd (CONST PIXELFORMATDESCRIPTOR *req_pfd,
   b_pfd = *req_pfd;
   b_pfd.dwFlags &= ~PFD_DRAW_TO_WINDOW;
   b_pfd.dwFlags |= PFD_DRAW_TO_BITMAP;
-  b_pf = _gdk_win32_gl_config_find_pixel_format (hdc, &b_pfd, &b_pfd);
+  b_pf = _gdk_win32_gl_config_impl_find_pixel_format (hdc, &b_pfd, &b_pfd);
 
   GDK_GL_NOTE (MISC, g_message (" -- pixel format for bitmaps = 0x%x", b_pf));
   GDK_GL_NOTE (MISC, _gdk_win32_gl_print_pfd (&b_pfd));
@@ -383,145 +399,60 @@ gdk_gl_config_setup_pfd (CONST PIXELFORMATDESCRIPTOR *req_pfd,
   return TRUE;
 }
 
-/* 
- * Setup colormap.
- */
-
-/* 
- * !!! RGB palette management should be implemented...
- */
-
-#ifdef GDKGLEXT_MULTIHEAD_SUPPORT
-
-static GdkColormap *
-gdk_gl_config_setup_colormap (GdkScreen             *screen,
-                              PIXELFORMATDESCRIPTOR *pfd,
-                              gboolean               is_rgba)
-{
-  GDK_GL_NOTE_FUNC_PRIVATE ();
-
-  if (is_rgba)
-    {
-      /*
-       * For RGBA mode.
-       */
-
-      /* System default colormap. */
-
-      GDK_GL_NOTE (MISC, g_message (" -- Colormap: system default"));
-
-      return g_object_ref (G_OBJECT (gdk_screen_get_system_colormap (screen)));
-    }
-  else
-    {
-      /*
-       * For color index mode.
-       */
-
-      /* New private colormap. */
-
-      GDK_GL_NOTE (MISC, g_message (" -- Colormap: new allocated writable"));
-
-      return gdk_colormap_new (gdk_screen_get_system_visual (screen), TRUE);
-    }
-
-  /* not reached */
-  return NULL;
-}
-
-#else  /* GDKGLEXT_MULTIHEAD_SUPPORT */
-
-static GdkColormap *
-gdk_gl_config_setup_colormap (GdkScreen             *screen,
-                              PIXELFORMATDESCRIPTOR *pfd,
-                              gboolean               is_rgba)
-{
-  GDK_GL_NOTE_FUNC_PRIVATE ();
-
-  if (is_rgba)
-    {
-      /*
-       * For RGBA mode.
-       */
-
-      /* Default colormap. */
-
-      GDK_GL_NOTE (MISC, g_message (" -- Colormap: system default"));
-
-      return g_object_ref (G_OBJECT (gdk_colormap_get_system ()));
-    }
-  else
-    {
-      /*
-       * For color index mode.
-       */
-
-      /* New private colormap. */
-
-      GDK_GL_NOTE (MISC, g_message (" -- Colormap: new allocated writable"));
-
-      return gdk_colormap_new (gdk_visual_get_system (), TRUE);
-    }
-
-  /* not reached */
-  return NULL;
-}
-
-#endif /* GDKGLEXT_MULTIHEAD_SUPPORT */
-
 static void
-gdk_gl_config_init_attrib (GdkGLConfig *glconfig)
+gdk_win32_gl_config_impl_init_attrib (GdkGLConfig *glconfig)
 {
   PIXELFORMATDESCRIPTOR *pfd;
 
   pfd = GDK_GL_CONFIG_PFD (glconfig);
 
   /* RGBA mode? */
-  glconfig->is_rgba = (pfd->iPixelType == PFD_TYPE_RGBA) ? TRUE : FALSE;
+  glconfig->impl->is_rgba = (pfd->iPixelType == PFD_TYPE_RGBA) ? TRUE : FALSE;
 
   /* Layer plane. */
   if (pfd->bReserved != 0)
     {
-      glconfig->layer_plane = pfd->bReserved & 0x0f;
-      if (glconfig->layer_plane == 0)
-        glconfig->layer_plane = -1 * ((pfd->bReserved & 0xf0) >> 4);
+      glconfig->impl->layer_plane = pfd->bReserved & 0x0f;
+      if (glconfig->impl->layer_plane == 0)
+        glconfig->impl->layer_plane = -1 * ((pfd->bReserved & 0xf0) >> 4);
     }
   else
     {
-      glconfig->layer_plane = 0;
+      glconfig->impl->layer_plane = 0;
     }
 
   /* Double buffering is supported? */
-  glconfig->is_double_buffered = (pfd->dwFlags & PFD_DOUBLEBUFFER) ? TRUE : FALSE;
+  glconfig->impl->is_double_buffered = (pfd->dwFlags & PFD_DOUBLEBUFFER) ? TRUE : FALSE;
 
   /* Stereo is supported? (not work on Windows) */
-  glconfig->is_stereo = (pfd->dwFlags & PFD_STEREO) ? TRUE : FALSE;
+  glconfig->impl->is_stereo = (pfd->dwFlags & PFD_STEREO) ? TRUE : FALSE;
 
   /* Number of aux buffers */
-  glconfig->n_aux_buffers = pfd->cAuxBuffers;
+  glconfig->impl->n_aux_buffers = pfd->cAuxBuffers;
 
   /* Has alpha bits? */
-  glconfig->has_alpha = pfd->cAlphaBits ? TRUE : FALSE;
+  glconfig->impl->has_alpha = pfd->cAlphaBits ? TRUE : FALSE;
 
   /* Has depth buffer? */
-  glconfig->has_depth_buffer = pfd->cDepthBits ? TRUE : FALSE;
+  glconfig->impl->has_depth_buffer = pfd->cDepthBits ? TRUE : FALSE;
 
   /* Has stencil buffer? */
-  glconfig->has_stencil_buffer = pfd->cStencilBits ? TRUE : FALSE;
+  glconfig->impl->has_stencil_buffer = pfd->cStencilBits ? TRUE : FALSE;
 
   /* Has accumulation buffer? */
-  glconfig->has_accum_buffer = pfd->cAccumBits ? TRUE : FALSE;
+  glconfig->impl->has_accum_buffer = pfd->cAccumBits ? TRUE : FALSE;
 
   /* Number of multisample buffers (not supported yet) */
-  glconfig->n_sample_buffers = 0;
+  glconfig->impl->n_sample_buffers = 0;
 }
 
 static GdkGLConfig *
-gdk_gl_config_new_common (GdkScreen *screen,
-                          const int *attrib_list)
+gdk_win32_gl_config_impl_new_common (GdkGLConfig *glconfig,
+                                     GdkScreen   *screen,
+                                     const int   *attrib_list,
+                                     gsize        n_attribs)
 {
-  GdkGLConfig *glconfig;
-  GdkGLConfigImplWin32 *impl;
+  GdkGLConfigImplWin32 *win32_impl;
   PIXELFORMATDESCRIPTOR pfd;
 
   GDK_GL_NOTE_FUNC_PRIVATE ();
@@ -530,7 +461,7 @@ gdk_gl_config_new_common (GdkScreen *screen,
    * Parse GLX style attrib_list.
    */
 
-  gdk_gl_config_parse_attrib_list (attrib_list, &pfd);
+  gdk_gl_config_parse_attrib_list (attrib_list, n_attribs, &pfd);
 
   GDK_GL_NOTE (MISC, _gdk_win32_gl_print_pfd (&pfd));
 
@@ -538,7 +469,7 @@ gdk_gl_config_new_common (GdkScreen *screen,
    * Setup PFD.
    */
 
-  if (!gdk_gl_config_setup_pfd (&pfd, &pfd))
+  if (!gdk_win32_gl_config_impl_setup_pfd (&pfd, &pfd))
     return NULL;
 
   GDK_GL_NOTE (MISC, g_message (" -- created PFD"));
@@ -548,75 +479,70 @@ gdk_gl_config_new_common (GdkScreen *screen,
    * Instantiate the GdkGLConfigImplWin32 object.
    */
 
-  glconfig = g_object_new (GDK_TYPE_GL_CONFIG_IMPL_WIN32, NULL);
-  impl = GDK_GL_CONFIG_IMPL_WIN32 (glconfig);
+  win32_impl = g_object_new (GDK_TYPE_GL_CONFIG_IMPL_WIN32, NULL);
 
-  impl->pfd = pfd;
+  win32_impl->pfd = pfd;
 
-  impl->screen = screen;
-
-  /*
-   * Get an appropriate colormap.
-   */
-
-  impl->colormap = gdk_gl_config_setup_colormap (screen,
-                                                 &pfd,
-                                                 (pfd.iPixelType == PFD_TYPE_RGBA));
+  win32_impl->screen = screen;
 
   /*
    * Set depth (number of bits per pixel).
    */
 
-  impl->depth = pfd.cRedBits + pfd.cGreenBits + pfd.cBlueBits;
+  win32_impl->depth = pfd.cRedBits + pfd.cGreenBits + pfd.cBlueBits;
+
+  /*
+   * Setup GdkGLConfig
+   */
+
+  glconfig->impl = GDK_GL_CONFIG_IMPL (win32_impl);
 
   /*
    * Init configuration attributes.
    */
 
-  gdk_gl_config_init_attrib (glconfig);
+  gdk_win32_gl_config_impl_init_attrib (glconfig);
 
   return glconfig;
 }
 
 GdkGLConfig *
-gdk_gl_config_new (const int *attrib_list)
+_gdk_win32_gl_config_impl_new (GdkGLConfig *glconfig,
+                               const int   *attrib_list,
+                               gsize        n_attribs)
 {
   GdkScreen *screen;
 
   GDK_GL_NOTE_FUNC ();
 
+  g_return_val_if_fail (GDK_IS_WIN32_GL_CONFIG (glconfig), NULL);
   g_return_val_if_fail (attrib_list != NULL, NULL);
 
-#ifdef GDKGLEXT_MULTIHEAD_SUPPORT
   screen = gdk_screen_get_default ();
-#else  /* GDKGLEXT_MULTIHEAD_SUPPORT */
-  screen = NULL;
-#endif /* GDKGLEXT_MULTIHEAD_SUPPORT */
 
-  return gdk_gl_config_new_common (screen, attrib_list);
+  return gdk_win32_gl_config_impl_new_common (glconfig, screen, attrib_list, n_attribs);
 }
 
-#ifdef GDKGLEXT_MULTIHEAD_SUPPORT
-
 GdkGLConfig *
-gdk_gl_config_new_for_screen (GdkScreen *screen,
-                              const int *attrib_list)
+_gdk_win32_gl_config_impl_new_for_screen (GdkGLConfig *glconfig,
+                                          GdkScreen   *screen,
+                                          const int   *attrib_list,
+                                          gsize        n_attribs)
 {
   GDK_GL_NOTE_FUNC ();
 
+  g_return_val_if_fail (GDK_IS_WIN32_GL_CONFIG (glconfig), NULL);
   g_return_val_if_fail (GDK_IS_SCREEN (screen), NULL);
   g_return_val_if_fail (attrib_list != NULL, NULL);
 
-  return gdk_gl_config_new_common (screen, attrib_list);
+  return gdk_win32_gl_config_impl_new_common (glconfig, screen, attrib_list, n_attribs);
 }
 
-#endif /* GDKGLEXT_MULTIHEAD_SUPPORT */
-
 GdkGLConfig *
-gdk_win32_gl_config_new_from_pixel_format (int pixel_format)
+_gdk_win32_gl_config_impl_new_from_pixel_format (GdkGLConfig *glconfig,
+                                                 int pixel_format)
 {
-  GdkGLConfig *glconfig;
-  GdkGLConfigImplWin32 *impl;
+  GdkGLConfigImplWin32 *win32_impl;
 
   HDC hdc;
   PIXELFORMATDESCRIPTOR pfd;
@@ -652,71 +578,89 @@ gdk_win32_gl_config_new_from_pixel_format (int pixel_format)
    * Instantiate the GdkGLConfigImplWin32 object.
    */
 
-  glconfig = g_object_new (GDK_TYPE_GL_CONFIG_IMPL_WIN32, NULL);
-  impl = GDK_GL_CONFIG_IMPL_WIN32 (glconfig);
+  win32_impl = g_object_new (GDK_TYPE_GL_CONFIG_IMPL_WIN32, NULL);
 
-  impl->pfd = pfd;
-
-#ifdef GDKGLEXT_MULTIHEAD_SUPPORT
-  impl->screen = gdk_screen_get_default ();
-#else  /* GDKGLEXT_MULTIHEAD_SUPPORT */
-  impl->screen = NULL;
-#endif /* GDKGLEXT_MULTIHEAD_SUPPORT */
-
-  /*
-   * Get an appropriate colormap.
-   */
-
-  impl->colormap = gdk_gl_config_setup_colormap (impl->screen,
-                                                 &pfd,
-                                                 (pfd.iPixelType == PFD_TYPE_RGBA));
+  win32_impl->pfd = pfd;
+  win32_impl->screen = gdk_screen_get_default ();
 
   /*
    * Set depth (number of bits per pixel).
    */
 
-  impl->depth = pfd.cRedBits + pfd.cGreenBits + pfd.cBlueBits;
+  win32_impl->depth = pfd.cRedBits + pfd.cGreenBits + pfd.cBlueBits;
+
+  /*
+   * Setup GdkGLConfig
+   */
+
+  glconfig->impl = GDK_GL_CONFIG_IMPL (win32_impl);
 
   /*
    * Init configuration attributes.
    */
 
-  gdk_gl_config_init_attrib (glconfig);
+  gdk_win32_gl_config_impl_init_attrib (glconfig);
 
   return glconfig;
 }
 
-GdkScreen *
-gdk_gl_config_get_screen (GdkGLConfig *glconfig)
+static GdkGLWindow *
+_gdk_win32_gl_config_impl_create_gl_window (GdkGLConfig *glconfig,
+                                            GdkWindow   *window,
+                                            const int   *attrib_list)
 {
-  g_return_val_if_fail (GDK_IS_GL_CONFIG_IMPL_WIN32 (glconfig), NULL);
+  GdkGLWindow *glwindow;
+  GdkGLWindow *impl;
 
-  return GDK_GL_CONFIG_IMPL_WIN32 (glconfig)->screen;
+  g_return_val_if_fail (GDK_IS_WIN32_GL_CONFIG (glconfig), NULL);
+
+  glwindow = g_object_new (GDK_TYPE_WIN32_GL_WINDOW, NULL);
+
+  g_return_val_if_fail(glwindow != NULL, NULL);
+
+  impl = _gdk_win32_gl_window_impl_new(glwindow,
+                                       glconfig,
+                                       window,
+                                       attrib_list);
+  if (impl == NULL)
+    g_object_unref(glwindow);
+
+  g_return_val_if_fail(impl != NULL, NULL);
+
+  return glwindow;
+}
+
+static GdkScreen *
+_gdk_win32_gl_config_impl_get_screen (GdkGLConfig *glconfig)
+{
+  g_return_val_if_fail (GDK_IS_WIN32_GL_CONFIG (glconfig), NULL);
+
+  return GDK_GL_CONFIG_IMPL_WIN32 (glconfig->impl)->screen;
 }
 
 /*
  * This code is based on lib/glut/win32_glx.c of GLUT by Nate Robins.
  */
-gboolean
-gdk_gl_config_get_attrib (GdkGLConfig *glconfig,
-                          int          attribute,
-                          int         *value)
+static gboolean
+_gdk_win32_gl_config_impl_get_attrib (GdkGLConfig *glconfig,
+                                      int          attribute,
+                                      int         *value)
 {
-  GdkGLConfigImplWin32 *impl;
+  GdkGLConfigImplWin32 *win32_impl;
 
-  g_return_val_if_fail (GDK_IS_GL_CONFIG_IMPL_WIN32 (glconfig), FALSE);
+  g_return_val_if_fail (GDK_IS_WIN32_GL_CONFIG (glconfig), FALSE);
 
-  impl = GDK_GL_CONFIG_IMPL_WIN32 (glconfig);
+  win32_impl = GDK_GL_CONFIG_IMPL_WIN32 (glconfig->impl);
 
   switch (attribute)
     {
     case GDK_GL_USE_GL:
-      if (impl->pfd.dwFlags & PFD_SUPPORT_OPENGL)
+      if (win32_impl->pfd.dwFlags & PFD_SUPPORT_OPENGL)
         {
-	  *value = 1;
+      	  *value = 1;
 
           /* Mark J. Kilgard says ...
-	     XXX Brad's Matrox Millenium II has problems creating
+	           XXX Brad's Matrox Millenium II has problems creating
              color index windows in 24-bit mode (lead to GDI crash)
              and 32-bit mode (lead to black window).  The cColorBits
              filed of the PIXELFORMATDESCRIPTOR returned claims to
@@ -728,7 +672,7 @@ gdk_gl_config_get_attrib (GdkGLConfig *glconfig,
              -mjk */
 #if 0
           if (impl->pfd.iPixelType == PFD_TYPE_COLORINDEX &&
-	      impl->pfd.cColorBits >= 24)
+	          win32_impl->pfd.cColorBits >= 24)
             *value = 0;
           else
             *value = 1;
@@ -743,55 +687,55 @@ gdk_gl_config_get_attrib (GdkGLConfig *glconfig,
       /* Nate Robins says ...
 	 KLUDGE: if we're RGBA, return the number of bits/pixel,
          otherwise, return 8 (we guessed at 256 colors in CI mode). */
-      if (impl->pfd.iPixelType == PFD_TYPE_RGBA)
-        *value = impl->pfd.cColorBits;
+      if (win32_impl->pfd.iPixelType == PFD_TYPE_RGBA)
+        *value = win32_impl->pfd.cColorBits;
       else
         *value = 8;
       break;
     case GDK_GL_LEVEL:
-      *value = glconfig->layer_plane;
+      *value = glconfig->impl->layer_plane;
       break;
     case GDK_GL_RGBA:
-      *value = impl->pfd.iPixelType == PFD_TYPE_RGBA;
+      *value = win32_impl->pfd.iPixelType == PFD_TYPE_RGBA;
       break;
     case GDK_GL_DOUBLEBUFFER:
-      *value = impl->pfd.dwFlags & PFD_DOUBLEBUFFER;
+      *value = win32_impl->pfd.dwFlags & PFD_DOUBLEBUFFER;
       break;
     case GDK_GL_STEREO:
-      *value = impl->pfd.dwFlags & PFD_STEREO;
+      *value = win32_impl->pfd.dwFlags & PFD_STEREO;
       break;
     case GDK_GL_AUX_BUFFERS:
-      *value = impl->pfd.cAuxBuffers;
+      *value = win32_impl->pfd.cAuxBuffers;
       break;
     case GDK_GL_RED_SIZE:
-      *value = impl->pfd.cRedBits;
+      *value = win32_impl->pfd.cRedBits;
       break;
     case GDK_GL_GREEN_SIZE:
-      *value = impl->pfd.cGreenBits;
+      *value = win32_impl->pfd.cGreenBits;
       break;
     case GDK_GL_BLUE_SIZE:
-      *value = impl->pfd.cBlueBits;
+      *value = win32_impl->pfd.cBlueBits;
       break;
     case GDK_GL_ALPHA_SIZE:
-      *value = impl->pfd.cAlphaBits;
+      *value = win32_impl->pfd.cAlphaBits;
       break;
     case GDK_GL_DEPTH_SIZE:
-      *value = impl->pfd.cDepthBits;
+      *value = win32_impl->pfd.cDepthBits;
       break;
     case GDK_GL_STENCIL_SIZE:
-      *value = impl->pfd.cStencilBits;
+      *value = win32_impl->pfd.cStencilBits;
       break;
     case GDK_GL_ACCUM_RED_SIZE:
-      *value = impl->pfd.cAccumRedBits;
+      *value = win32_impl->pfd.cAccumRedBits;
       break;
     case GDK_GL_ACCUM_GREEN_SIZE:
-      *value = impl->pfd.cAccumGreenBits;
+      *value = win32_impl->pfd.cAccumGreenBits;
       break;
     case GDK_GL_ACCUM_BLUE_SIZE:
-      *value = impl->pfd.cAccumBlueBits;
+      *value = win32_impl->pfd.cAccumBlueBits;
       break;
     case GDK_GL_ACCUM_ALPHA_SIZE:
-      *value = impl->pfd.cAccumAlphaBits;
+      *value = win32_impl->pfd.cAccumAlphaBits;
       break;
     default:
       return FALSE;
@@ -800,36 +744,32 @@ gdk_gl_config_get_attrib (GdkGLConfig *glconfig,
   return TRUE;
 }
 
-GdkColormap *
-gdk_gl_config_get_colormap (GdkGLConfig *glconfig)
+static GdkVisual *
+_gdk_win32_gl_config_impl_get_visual (GdkGLConfig *glconfig)
 {
-  g_return_val_if_fail (GDK_IS_GL_CONFIG_IMPL_WIN32 (glconfig), NULL);
+  g_return_val_if_fail (GDK_IS_WIN32_GL_CONFIG (glconfig), NULL);
 
-  return GDK_GL_CONFIG_IMPL_WIN32 (glconfig)->colormap;
+  /* There is currently no function for retreiving a visual or
+   * PIXELFORMATDESCRIPTOR, or so. We just return the system visual and
+   * hope for the best.
+   */
+  return gdk_screen_get_system_visual (GDK_GL_CONFIG_IMPL_WIN32 (glconfig->impl)->screen);
 }
 
-GdkVisual *
-gdk_gl_config_get_visual (GdkGLConfig *glconfig)
+static gint
+_gdk_win32_gl_config_impl_get_depth (GdkGLConfig *glconfig)
 {
-  g_return_val_if_fail (GDK_IS_GL_CONFIG_IMPL_WIN32 (glconfig), NULL);
+  g_return_val_if_fail (GDK_IS_WIN32_GL_CONFIG (glconfig), 0);
 
-  return gdk_colormap_get_visual (GDK_GL_CONFIG_IMPL_WIN32 (glconfig)->colormap);
+  return GDK_GL_CONFIG_IMPL_WIN32 (glconfig->impl)->depth;
 }
 
-gint
-gdk_gl_config_get_depth (GdkGLConfig *glconfig)
+static PIXELFORMATDESCRIPTOR *
+_gdk_win32_gl_config_impl_get_pfd (GdkGLConfig *glconfig)
 {
-  g_return_val_if_fail (GDK_IS_GL_CONFIG_IMPL_WIN32 (glconfig), 0);
+  g_return_val_if_fail (GDK_IS_WIN32_GL_CONFIG (glconfig), NULL);
 
-  return GDK_GL_CONFIG_IMPL_WIN32 (glconfig)->depth;
-}
-
-PIXELFORMATDESCRIPTOR *
-gdk_win32_gl_config_get_pfd (GdkGLConfig *glconfig)
-{
-  g_return_val_if_fail (GDK_IS_GL_CONFIG_IMPL_WIN32 (glconfig), NULL);
-
-  return &(GDK_GL_CONFIG_IMPL_WIN32 (glconfig)->pfd);
+  return &(GDK_GL_CONFIG_IMPL_WIN32 (glconfig->impl)->pfd);
 }
 
 /*< private >*/
@@ -868,7 +808,7 @@ _gdk_win32_gl_print_pfd (PIXELFORMATDESCRIPTOR *pfd)
 
   g_message (" -- pfd->dwFlags & PFD_SWAP_COPY     = %s",
              (pfd->dwFlags & PFD_SWAP_COPY)     ? "TRUE" : "FALSE");
-  g_message (" -- pfd->dwFlags & PFD_SWAP_EXCHANGE = %s",
+  g_message (" -- pfd_win32->dwFlags & PFD_SWAP_EXCHANGE = %s",
              (pfd->dwFlags & PFD_SWAP_EXCHANGE) ? "TRUE" : "FALSE");
 
   g_message (" -- pfd->iPixelType = %d (%s)",
