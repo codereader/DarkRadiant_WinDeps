@@ -12,9 +12,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -22,7 +20,6 @@
 #include "gtkdebug.h"
 #include "gtkiconcache.h"
 #include "gtkiconcachevalidator.h"
-#include "gtkalias.h"
 
 #include <glib/gstdio.h>
 #include <gdk-pixbuf/gdk-pixdata.h>
@@ -90,9 +87,8 @@ _gtk_icon_cache_new_for_path (const gchar *path)
 
   gchar *cache_filename;
   gint fd = -1;
-  struct stat st;
-  struct stat path_st;
-  CacheInfo info;
+  GStatBuf st;
+  GStatBuf path_st;
 
    /* Check if we have a cache file */
   cache_filename = g_build_filename (path, "icon-theme.cache", NULL);
@@ -108,7 +104,18 @@ _gtk_icon_cache_new_for_path (const gchar *path)
 
   if (fd < 0)
     goto done;
-  
+
+#ifdef G_OS_WIN32
+
+/* Bug 660730: _fstat32 is only defined in msvcrt80.dll+/VS 2005+ */
+/*             or possibly in the msvcrt.dll linked to by the Windows DDK */
+/*             (will need to check on the Windows DDK part later) */
+#if (_MSC_VER >= 1400 || __MSVCRT_VERSION__ >= 0x0800)
+#undef fstat /* Just in case */
+#define fstat _fstat32  
+#endif
+#endif
+
   if (fstat (fd, &st) < 0 || st.st_size < 4)
     goto done;
 
@@ -125,14 +132,16 @@ _gtk_icon_cache_new_for_path (const gchar *path)
   if (!map)
     goto done;
 
-  info.cache = g_mapped_file_get_contents (map);
-  info.cache_size = g_mapped_file_get_length (map);
-  info.n_directories = 0;
-  info.flags = CHECK_OFFSETS|CHECK_STRINGS;
-
 #ifdef G_ENABLE_DEBUG
-  if (gtk_debug_flags & GTK_DEBUG_ICONTHEME)
+  if (gtk_get_debug_flags () & GTK_DEBUG_ICONTHEME)
     {
+      CacheInfo info;
+
+      info.cache = g_mapped_file_get_contents (map);
+      info.cache_size = g_mapped_file_get_length (map);
+      info.n_directories = 0;
+      info.flags = CHECK_OFFSETS|CHECK_STRINGS;
+
       if (!_gtk_icon_cache_validate (&info))
         {
           g_mapped_file_unref (map);
@@ -437,6 +446,9 @@ _gtk_icon_cache_get_icon (GtkIconCache *cache,
 
   offset = find_image_offset (cache, icon_name, directory_index);
   
+  if (!offset)
+    return NULL;
+
   image_data_offset = GET_UINT32 (cache->buffer, offset + 4);
   
   if (!image_data_offset)

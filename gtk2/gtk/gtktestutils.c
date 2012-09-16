@@ -13,21 +13,20 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* need to get the prototypes of all get_type functions */
-#define GTK_ENABLE_BROKEN
-#undef GTK_DISABLE_DEPRECATED
-/* Need to get GDK_WINDOW_OBJECT */
-#undef GDK_DISABLE_DEPRECATED
 
 #include "config.h"
 
-#include <gtk/gtk.h>
-#include "gtkalias.h"
+#include <gtk/gtkx.h>
+#include "gtkspinbutton.h"
+#include "gtkmain.h"
+#include "gtkbox.h"
+#include "gtklabel.h"
+#include "gtkbutton.h"
+#include "gtktextview.h"
+#include "gtkrange.h"
 
 #include <locale.h>
 #include <string.h>
@@ -48,7 +47,7 @@
  *        <parameter>argv</parameter> parameter of main().
  *        Any parameters understood by g_test_init() or gtk_init() are
  *        stripped before return.
- * @Varargs: currently unused
+ * @...: currently unused
  *
  * This function is used to initialize a GTK+ test program.
  *
@@ -79,10 +78,17 @@ gtk_test_init (int    *argcp,
    * - this function could install a mock object around GtkSettings
    */
   g_setenv ("GTK_MODULES", "", TRUE);
-  g_setenv ("GTK2_RC_FILES", "/dev/null", TRUE);
   gtk_disable_setlocale();
   setlocale (LC_ALL, "C");
   g_test_bug_base ("http://bugzilla.gnome.org/show_bug.cgi?id=%s");
+
+  /* XSendEvent() doesn't work yet on XI2 events.
+   * So at the moment gdk_test_simulate_* can only
+   * send events that GTK+ understands if XI2 is
+   * disabled, bummer.
+   */
+  gdk_disable_multidevice ();
+
   gtk_init (argcp, argvp);
 }
 
@@ -90,24 +96,28 @@ static GSList*
 test_find_widget_input_windows (GtkWidget *widget,
                                 gboolean   input_only)
 {
+  GdkWindow *window;
   GList *node, *children;
   GSList *matches = NULL;
   gpointer udata;
-  gdk_window_get_user_data (widget->window, &udata);
-  if (udata == widget && (!input_only || (GDK_IS_WINDOW (widget->window) && GDK_WINDOW_OBJECT (widget->window)->input_only)))
-    matches = g_slist_prepend (matches, widget->window);
+
+  window = gtk_widget_get_window (widget);
+
+  gdk_window_get_user_data (window, &udata);
+  if (udata == widget && (!input_only || (GDK_IS_WINDOW (window) && gdk_window_is_input_only (GDK_WINDOW (window)))))
+    matches = g_slist_prepend (matches, window);
   children = gdk_window_get_children (gtk_widget_get_parent_window (widget));
   for (node = children; node; node = node->next)
     {
       gdk_window_get_user_data (node->data, &udata);
-      if (udata == widget && (!input_only || (GDK_IS_WINDOW (node->data) && GDK_WINDOW_OBJECT (node->data)->input_only)))
+      if (udata == widget && (!input_only || (GDK_IS_WINDOW (node->data) && gdk_window_is_input_only (GDK_WINDOW (node->data)))))
         matches = g_slist_prepend (matches, node->data);
     }
   return g_slist_reverse (matches);
 }
 
 /**
- * gtk_test_widget_send_key
+ * gtk_test_widget_send_key:
  * @widget: Widget to generate a key press and release on.
  * @keyval: A Gdk keyboard value.
  * @modifiers: Keyboard modifiers the event is setup with.
@@ -142,7 +152,7 @@ gtk_test_widget_send_key (GtkWidget      *widget,
 }
 
 /**
- * gtk_test_widget_click
+ * gtk_test_widget_click:
  * @widget: Widget to generate a button click on.
  * @button: Number of the pointer button for the event, usually 1, 2 or 3.
  * @modifiers: Keyboard modifiers the event is setup with.
@@ -178,7 +188,7 @@ gtk_test_widget_click (GtkWidget      *widget,
 }
 
 /**
- * gtk_test_spin_button_click
+ * gtk_test_spin_button_click:
  * @spinner: valid GtkSpinButton widget.
  * @button:  Number of the pointer button for the event, usually 1, 2 or 3.
  * @upwards: %TRUE for upwards arrow click, %FALSE for downwards arrow click.
@@ -196,20 +206,24 @@ gtk_test_spin_button_click (GtkSpinButton  *spinner,
                             guint           button,
                             gboolean        upwards)
 {
+  GdkWindow *down_panel = NULL, *up_panel = NULL, *panel;
   gboolean b1res = FALSE, b2res = FALSE;
-  if (spinner->panel)
+
+  _gtk_spin_button_get_panels (spinner, &down_panel, &up_panel);
+
+  panel = (upwards) ? up_panel : down_panel;
+
+  if (panel)
     {
-      gint width, height, pos;
-      gdk_drawable_get_size (spinner->panel, &width, &height);
-      pos = upwards ? 0 : height - 1;
-      b1res = gdk_test_simulate_button (spinner->panel, width - 1, pos, button, 0, GDK_BUTTON_PRESS);
-      b2res = gdk_test_simulate_button (spinner->panel, width - 1, pos, button, 0, GDK_BUTTON_RELEASE);
+      gint width = gdk_window_get_width (panel);
+      b1res = gdk_test_simulate_button (panel, width - 1, 1, button, 0, GDK_BUTTON_PRESS);
+      b2res = gdk_test_simulate_button (panel, width - 1, 1, button, 0, GDK_BUTTON_RELEASE);
     }
   return b1res && b2res;
 }
 
 /**
- * gtk_test_find_label
+ * gtk_test_find_label:
  * @widget:        Valid label or container widget.
  * @label_pattern: Shell-glob pattern to match a label string.
  *
@@ -274,13 +288,19 @@ widget_geo_dist (GtkWidget *a,
                  GtkWidget *b,
                  GtkWidget *base)
 {
+  GtkAllocation allocation;
   int ax0, ay0, ax1, ay1, bx0, by0, bx1, by1, xdist = 0, ydist = 0;
+
+  gtk_widget_get_allocation (a, &allocation);
   if (!gtk_widget_translate_coordinates (a, base, 0, 0, &ax0, &ay0) ||
-      !gtk_widget_translate_coordinates (a, base, a->allocation.width, a->allocation.height, &ax1, &ay1))
+      !gtk_widget_translate_coordinates (a, base, allocation.width, allocation.height, &ax1, &ay1))
     return -G_MAXINT;
+
+  gtk_widget_get_allocation (b, &allocation);
   if (!gtk_widget_translate_coordinates (b, base, 0, 0, &bx0, &by0) ||
-      !gtk_widget_translate_coordinates (b, base, b->allocation.width, b->allocation.height, &bx1, &by1))
+      !gtk_widget_translate_coordinates (b, base, allocation.width, allocation.height, &bx1, &by1))
     return +G_MAXINT;
+
   if (bx0 >= ax1)
     xdist = bx0 - ax1;
   else if (ax0 >= bx1)
@@ -289,6 +309,7 @@ widget_geo_dist (GtkWidget *a,
     ydist = by0 - ay1;
   else if (ay0 >= by1)
     ydist = ay0 - by1;
+
   return xdist + ydist;
 }
 
@@ -305,7 +326,7 @@ widget_geo_cmp (gconstpointer a,
 }
 
 /**
- * gtk_test_find_sibling
+ * gtk_test_find_sibling:
  * @base_widget:        Valid widget, part of a widget hierarchy
  * @widget_type:        Type of a aearched for sibling widget
  *
@@ -315,7 +336,7 @@ widget_geo_cmp (gconstpointer a,
  * @base_widget will be returned.
  * The general purpose of this function is to find the most likely "action"
  * widget, relative to another labeling widget. Such as finding a
- * button or text entry widget, given it's corresponding label widget.
+ * button or text entry widget, given its corresponding label widget.
  *
  * Returns: (transfer none): a widget of type @widget_type if any is found.
  *
@@ -331,7 +352,7 @@ gtk_test_find_sibling (GtkWidget *base_widget,
   /* find all sibling candidates */
   while (tmpwidget)
     {
-      tmpwidget = tmpwidget->parent;
+      tmpwidget = gtk_widget_get_parent (tmpwidget);
       siblings = g_list_concat (siblings, test_list_descendants (tmpwidget, widget_type));
     }
   /* sort them by distance to base_widget */
@@ -346,7 +367,7 @@ gtk_test_find_sibling (GtkWidget *base_widget,
 }
 
 /**
- * gtk_test_find_widget
+ * gtk_test_find_widget:
  * @widget:        Container widget, usually a GtkWindow.
  * @label_pattern: Shell-glob pattern to match a label string.
  * @widget_type:   Type of a aearched for label sibling widget.
@@ -377,7 +398,7 @@ gtk_test_find_widget (GtkWidget    *widget,
 }
 
 /**
- * gtk_test_slider_set_perc
+ * gtk_test_slider_set_perc:
  * @widget:     valid widget pointer.
  * @percentage: value between 0 and 100.
  *
@@ -399,11 +420,16 @@ gtk_test_slider_set_perc (GtkWidget      *widget,
   else if (GTK_IS_SPIN_BUTTON (widget))
     adjustment = gtk_spin_button_get_adjustment (GTK_SPIN_BUTTON (widget));
   if (adjustment)
-    gtk_adjustment_set_value (adjustment, adjustment->lower + (adjustment->upper - adjustment->lower - adjustment->page_size) * percentage * 0.01);
+    gtk_adjustment_set_value (adjustment, 
+                              gtk_adjustment_get_lower (adjustment) 
+                              + (gtk_adjustment_get_upper (adjustment) 
+                                 - gtk_adjustment_get_lower (adjustment) 
+                                 - gtk_adjustment_get_page_size (adjustment))
+                                * percentage * 0.01);
 }
 
 /**
- * gtk_test_slider_get_value
+ * gtk_test_slider_get_value:
  * @widget:     valid widget pointer.
  *
  * Retrive the literal adjustment value for GtkRange based
@@ -412,7 +438,7 @@ gtk_test_slider_set_perc (GtkWidget      *widget,
  * of the adjustment belonging to @widget, and is not a percentage
  * as passed in to gtk_test_slider_set_perc().
  *
- * Returns: adjustment->value for an adjustment belonging to @widget.
+ * Returns: gtk_adjustment_get_value (adjustment) for an adjustment belonging to @widget.
  *
  * Since: 2.14
  **/
@@ -424,11 +450,11 @@ gtk_test_slider_get_value (GtkWidget *widget)
     adjustment = gtk_range_get_adjustment (GTK_RANGE (widget));
   else if (GTK_IS_SPIN_BUTTON (widget))
     adjustment = gtk_spin_button_get_adjustment (GTK_SPIN_BUTTON (widget));
-  return adjustment ? adjustment->value : 0;
+  return adjustment ? gtk_adjustment_get_value (adjustment) : 0;
 }
 
 /**
- * gtk_test_text_set
+ * gtk_test_text_set:
  * @widget:     valid widget pointer.
  * @string:     a 0-terminated C string
  *
@@ -457,7 +483,7 @@ gtk_test_text_set (GtkWidget   *widget,
 }
 
 /**
- * gtk_test_text_get
+ * gtk_test_text_get:
  * @widget:     valid widget pointer.
  *
  * Retrive the text string of @widget if it is a GtkLabel,
@@ -488,10 +514,10 @@ gtk_test_text_get (GtkWidget *widget)
 }
 
 /**
- * gtk_test_create_widget
+ * gtk_test_create_widget:
  * @widget_type: a valid widget type.
  * @first_property_name: (allow-none): Name of first property to set or %NULL
- * @Varargs: value to set the first property to, followed by more
+ * @...: value to set the first property to, followed by more
  *    name-value pairs, terminated by %NULL
  *
  * This function wraps g_object_new() for widget types.
@@ -499,7 +525,7 @@ gtk_test_text_get (GtkWidget *widget)
  * g_object_ref_sink() them (to keep them alive across a running test)
  * and set them up for destruction during the next test teardown phase.
  *
- * Returns: a newly created widget.
+ * Returns: (transfer none): a newly created widget.
  *
  * Since: 2.14
  */
@@ -541,7 +567,7 @@ test_increment_intp (int *intp)
 }
 
 /**
- * gtk_test_display_button_window
+ * gtk_test_display_button_window:
  * @window_title:       Title of the window to be displayed.
  * @dialog_text:        Text inside the window to be displayed.
  * @...:                %NULL terminated list of (const char *label, int *nump) pairs.
@@ -557,7 +583,7 @@ test_increment_intp (int *intp)
  * The window will quit any running gtk_main()-loop when destroyed, and it
  * will automatically be destroyed upon test function teardown.
  *
- * Returns: a widget pointer to the newly created GtkWindow.
+ * Returns: (transfer full): a widget pointer to the newly created GtkWindow.
  *
  * Since: 2.14
  **/
@@ -568,7 +594,7 @@ gtk_test_display_button_window (const gchar *window_title,
 {
   va_list var_args;
   GtkWidget *window = gtk_test_create_widget (GTK_TYPE_WINDOW, "title", window_title, NULL);
-  GtkWidget *vbox = gtk_test_create_widget (GTK_TYPE_VBOX, "parent", window, NULL);
+  GtkWidget *vbox = gtk_test_create_widget (GTK_TYPE_BOX, "parent", window, "orientation", GTK_ORIENTATION_VERTICAL, NULL);
   const char *arg1;
   gtk_test_create_widget (GTK_TYPE_LABEL, "label", dialog_text, "parent", vbox, NULL);
   g_signal_connect (window, "destroy", G_CALLBACK (try_main_quit), NULL);
@@ -590,7 +616,7 @@ gtk_test_display_button_window (const gchar *window_title,
 }
 
 /**
- * gtk_test_create_simple_window
+ * gtk_test_create_simple_window:
  * @window_title:       Title of the window to be displayed.
  * @dialog_text:        Text inside the window to be displayed.
  *
@@ -608,7 +634,7 @@ gtk_test_create_simple_window (const gchar *window_title,
                                const gchar *dialog_text)
 {
   GtkWidget *window = gtk_test_create_widget (GTK_TYPE_WINDOW, "title", window_title, NULL);
-  GtkWidget *vbox = gtk_test_create_widget (GTK_TYPE_VBOX, "parent", window, NULL);
+  GtkWidget *vbox = gtk_test_create_widget (GTK_TYPE_BOX, "parent", window, "orientation", GTK_ORIENTATION_VERTICAL, NULL);
   gtk_test_create_widget (GTK_TYPE_LABEL, "label", dialog_text, "parent", vbox, NULL);
   g_signal_connect (window, "destroy", G_CALLBACK (try_main_quit), NULL);
   gtk_widget_show_all (vbox);
@@ -619,16 +645,17 @@ static GType *all_registered_types = NULL;
 static guint  n_all_registered_types = 0;
 
 /**
- * gtk_test_list_all_types
+ * gtk_test_list_all_types:
  * @n_types: location to store number of types
- * @returns: (array length=n_types zero-terminated=1) (transfer none):
- *    0-terminated array of type ids
  *
  * Return the type ids that have been registered after
  * calling gtk_test_register_all_types().
  *
+ * Returns: (array length=n_types zero-terminated=1) (transfer none):
+ *    0-terminated array of type ids
+ *
  * Since: 2.14
- **/
+ */
 const GType*
 gtk_test_list_all_types (guint *n_types)
 {
@@ -638,7 +665,7 @@ gtk_test_list_all_types (guint *n_types)
 }
 
 /**
- * gtk_test_register_all_types
+ * gtk_test_register_all_types:
  *
  * Force registration of all core Gtk+ and Gdk object types.
  * This allowes to refer to any of those object types via
@@ -661,6 +688,3 @@ gtk_test_register_all_types (void)
       *tp = 0;
     }
 }
-
-#define __GTK_TEST_UTILS_C__
-#include "gtkaliasdef.c"

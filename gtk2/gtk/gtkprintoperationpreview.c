@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -23,7 +21,6 @@
 #include "gtkprintoperationpreview.h"
 #include "gtkmarshalers.h"
 #include "gtkintl.h"
-#include "gtkalias.h"
 
 
 static void gtk_print_operation_preview_base_init (gpointer g_iface);
@@ -176,7 +173,3 @@ gtk_print_operation_preview_is_selected (GtkPrintOperationPreview *preview,
 
   return GTK_PRINT_OPERATION_PREVIEW_GET_IFACE (preview)->is_selected (preview, page_nr);
 }
-
-
-#define __GTK_PRINT_OPERATION_PREVIEW_C__
-#include "gtkaliasdef.c"

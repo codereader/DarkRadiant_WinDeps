@@ -12,23 +12,43 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  *
  * Authors: Lorenzo Gil Sanchez    <lgs@sicem.biz>
  *          Carlos Garnacho Parro  <carlosg@gnome.org>
  */
 
 #include "config.h"
-#include <gdk/gdkkeysyms.h>
+
+#include "gtkcellrendererspin.h"
+
+#include "gtkadjustment.h"
 #include "gtkintl.h"
 #include "gtkprivate.h"
 #include "gtkspinbutton.h"
-#include "gtkcellrendererspin.h"
-#include "gtkalias.h"
 
-#define GTK_CELL_RENDERER_SPIN_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GTK_TYPE_CELL_RENDERER_SPIN, GtkCellRendererSpinPrivate))
+
+/**
+ * SECTION:gtkcellrendererspin
+ * @Short_description: Renders a spin button in a cell
+ * @Title: GtkCellRendererSpin
+ * @See_also: #GtkCellRendererText, #GtkSpinButton
+ *
+ * #GtkCellRendererSpin renders text in a cell like #GtkCellRendererText from
+ * which it is derived. But while #GtkCellRendererText offers a simple entry to
+ * edit the text, #GtkCellRendererSpin offers a #GtkSpinButton widget. Of course,
+ * that means that the text has to be parseable as a floating point number.
+ *
+ * The range of the spinbutton is taken from the adjustment property of the
+ * cell renderer, which can be set explicitly or mapped to a column in the
+ * tree model, like all properties of cell renders. #GtkCellRendererSpin
+ * also has properties for the #GtkCellRendererSpin:climb-rate and the number
+ * of #GtkCellRendererSpin:digits to display. Other #GtkSpinButton properties
+ * can be set in a handler for the #GtkCellRenderer::editing-started signal.
+ *
+ * The #GtkCellRendererSpin cell renderer was added in GTK+ 2.10.
+ */
+
 
 struct _GtkCellRendererSpinPrivate
 {
@@ -52,8 +72,8 @@ static GtkCellEditable * gtk_cell_renderer_spin_start_editing (GtkCellRenderer  
 							       GdkEvent            *event,
 							       GtkWidget           *widget,
 							       const gchar         *path,
-							       GdkRectangle        *background_area,
-							       GdkRectangle        *cell_area,
+							       const GdkRectangle  *background_area,
+							       const GdkRectangle  *cell_area,
 							       GtkCellRendererState flags);
 enum {
   PROP_0,
@@ -91,7 +111,7 @@ gtk_cell_renderer_spin_class_init (GtkCellRendererSpinClass *klass)
 				   PROP_ADJUSTMENT,
 				   g_param_spec_object ("adjustment",
 							P_("Adjustment"),
-							P_("The adjustment that holds the value of the spinbutton."),
+							P_("The adjustment that holds the value of the spin button"),
 							GTK_TYPE_ADJUSTMENT,
 							GTK_PARAM_READWRITE));
 
@@ -133,7 +153,10 @@ gtk_cell_renderer_spin_init (GtkCellRendererSpin *self)
 {
   GtkCellRendererSpinPrivate *priv;
 
-  priv = GTK_CELL_RENDERER_SPIN_GET_PRIVATE (self);
+  self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
+                                            GTK_TYPE_CELL_RENDERER_SPIN,
+                                            GtkCellRendererSpinPrivate);
+  priv = self->priv;
 
   priv->adjustment = NULL;
   priv->climb_rate = 0.0;
@@ -145,7 +168,7 @@ gtk_cell_renderer_spin_finalize (GObject *object)
 {
   GtkCellRendererSpinPrivate *priv;
 
-  priv = GTK_CELL_RENDERER_SPIN_GET_PRIVATE (object);
+  priv = GTK_CELL_RENDERER_SPIN (object)->priv;
 
   if (priv && priv->adjustment)
     g_object_unref (priv->adjustment);
@@ -163,7 +186,7 @@ gtk_cell_renderer_spin_get_property (GObject      *object,
   GtkCellRendererSpinPrivate *priv;
 
   renderer = GTK_CELL_RENDERER_SPIN (object);
-  priv = GTK_CELL_RENDERER_SPIN_GET_PRIVATE (renderer);
+  priv = renderer->priv;
 
   switch (prop_id)
     {
@@ -193,7 +216,7 @@ gtk_cell_renderer_spin_set_property (GObject      *object,
   GObject *obj;
 
   renderer = GTK_CELL_RENDERER_SPIN (object);
-  priv = GTK_CELL_RENDERER_SPIN_GET_PRIVATE (renderer);
+  priv = renderer->priv;
 
   switch (prop_id)
     {
@@ -258,12 +281,12 @@ gtk_cell_renderer_spin_key_press_event (GtkWidget   *widget,
 {
   if (event->state == 0)
     {
-      if (event->keyval == GDK_Up)
+      if (event->keyval == GDK_KEY_Up)
 	{
 	  gtk_spin_button_spin (GTK_SPIN_BUTTON (widget), GTK_SPIN_STEP_FORWARD, 1);
 	  return TRUE;
 	}
-      else if (event->keyval == GDK_Down)
+      else if (event->keyval == GDK_KEY_Down)
 	{
 	  gtk_spin_button_spin (GTK_SPIN_BUTTON (widget), GTK_SPIN_STEP_BACKWARD, 1);
 	  return TRUE;
@@ -289,22 +312,25 @@ gtk_cell_renderer_spin_button_press_event (GtkWidget      *widget,
 }
 
 static GtkCellEditable *
-gtk_cell_renderer_spin_start_editing (GtkCellRenderer     *cell,
-				      GdkEvent            *event,
-				      GtkWidget           *widget,
-				      const gchar         *path,
-				      GdkRectangle        *background_area,
-				      GdkRectangle        *cell_area,
-				      GtkCellRendererState flags)
+gtk_cell_renderer_spin_start_editing (GtkCellRenderer      *cell,
+				      GdkEvent             *event,
+				      GtkWidget            *widget,
+				      const gchar          *path,
+				      const GdkRectangle   *background_area,
+				      const GdkRectangle   *cell_area,
+				      GtkCellRendererState  flags)
 {
   GtkCellRendererSpinPrivate *priv;
   GtkCellRendererText *cell_text;
   GtkWidget *spin;
+  gboolean editable;
+  gchar *text;
 
   cell_text = GTK_CELL_RENDERER_TEXT (cell);
-  priv = GTK_CELL_RENDERER_SPIN_GET_PRIVATE (cell);
+  priv = GTK_CELL_RENDERER_SPIN (cell)->priv;
 
-  if (!cell_text->editable)
+  g_object_get (cell_text, "editable", &editable, NULL);
+  if (!editable)
     return NULL;
 
   if (!priv->adjustment)
@@ -317,9 +343,13 @@ gtk_cell_renderer_spin_start_editing (GtkCellRenderer     *cell,
                     G_CALLBACK (gtk_cell_renderer_spin_button_press_event),
                     NULL);
 
-  if (cell_text->text)
-    gtk_spin_button_set_value (GTK_SPIN_BUTTON (spin),
-			       g_ascii_strtod (cell_text->text, NULL));
+  g_object_get (cell_text, "text", &text, NULL);
+  if (text)
+    {
+      gtk_spin_button_set_value (GTK_SPIN_BUTTON (spin),
+                                 g_strtod (text, NULL));
+      g_free (text);
+    }
 
   g_object_set_data_full (G_OBJECT (spin), GTK_CELL_RENDERER_SPIN_PATH,
 			  g_strdup (path), g_free);
@@ -350,7 +380,3 @@ gtk_cell_renderer_spin_new (void)
 {
   return g_object_new (GTK_TYPE_CELL_RENDERER_SPIN, NULL);
 }
-
-
-#define __GTK_CELL_RENDERER_SPIN_C__
-#include  "gtkaliasdef.c"

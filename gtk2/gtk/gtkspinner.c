@@ -14,9 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA  02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  *
  * Code adapted from egg-spinner
  * by Christian Hergert <christian.hergert@gmail.com>
@@ -31,12 +29,12 @@
 
 #include "config.h"
 
-#include "gtkintl.h"
-#include "gtkaccessible.h"
-#include "gtkimage.h"
 #include "gtkspinner.h"
-#include "gtkstyle.h"
-#include "gtkalias.h"
+
+#include "gtkimage.h"
+#include "gtkintl.h"
+#include "gtkstylecontext.h"
+#include "a11y/gtkspinneraccessible.h"
 
 
 /**
@@ -54,9 +52,7 @@
  */
 
 
-#define GTK_SPINNER_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GTK_TYPE_SPINNER, GtkSpinnerPrivate))
-
-G_DEFINE_TYPE (GtkSpinner, gtk_spinner, GTK_TYPE_DRAWING_AREA);
+#define SPINNER_SIZE 12
 
 enum {
   PROP_0,
@@ -65,24 +61,11 @@ enum {
 
 struct _GtkSpinnerPrivate
 {
-  guint current;
-  guint num_steps;
-  guint cycle_duration;
   gboolean active;
-  guint timeout;
 };
 
-static void gtk_spinner_class_init     (GtkSpinnerClass *klass);
-static void gtk_spinner_init           (GtkSpinner      *spinner);
-static void gtk_spinner_dispose        (GObject         *gobject);
-static void gtk_spinner_realize        (GtkWidget       *widget);
-static void gtk_spinner_unrealize      (GtkWidget       *widget);
-static gboolean gtk_spinner_expose     (GtkWidget       *widget,
-                                        GdkEventExpose  *event);
-static void gtk_spinner_screen_changed (GtkWidget       *widget,
-                                        GdkScreen       *old_screen);
-static void gtk_spinner_style_set      (GtkWidget       *widget,
-                                        GtkStyle        *prev_style);
+static gboolean gtk_spinner_draw       (GtkWidget       *widget,
+                                        cairo_t         *cr);
 static void gtk_spinner_get_property   (GObject         *object,
                                         guint            param_id,
                                         GValue          *value,
@@ -93,8 +76,15 @@ static void gtk_spinner_set_property   (GObject         *object,
                                         GParamSpec      *pspec);
 static void gtk_spinner_set_active     (GtkSpinner      *spinner,
                                         gboolean         active);
-static AtkObject *gtk_spinner_get_accessible      (GtkWidget *widget);
-static GType      gtk_spinner_accessible_get_type (void);
+static void gtk_spinner_get_preferred_width (GtkWidget  *widget,
+                                        gint            *minimum_size,
+                                        gint            *natural_size);
+static void gtk_spinner_get_preferred_height (GtkWidget *widget,
+                                        gint            *minimum_size,
+                                        gint            *natural_size);
+
+
+G_DEFINE_TYPE (GtkSpinner, gtk_spinner, GTK_TYPE_WIDGET)
 
 static void
 gtk_spinner_class_init (GtkSpinnerClass *klass)
@@ -104,17 +94,13 @@ gtk_spinner_class_init (GtkSpinnerClass *klass)
 
   gobject_class = G_OBJECT_CLASS(klass);
   g_type_class_add_private (gobject_class, sizeof (GtkSpinnerPrivate));
-  gobject_class->dispose = gtk_spinner_dispose;
   gobject_class->get_property = gtk_spinner_get_property;
   gobject_class->set_property = gtk_spinner_set_property;
 
   widget_class = GTK_WIDGET_CLASS(klass);
-  widget_class->expose_event = gtk_spinner_expose;
-  widget_class->realize = gtk_spinner_realize;
-  widget_class->unrealize = gtk_spinner_unrealize;
-  widget_class->screen_changed = gtk_spinner_screen_changed;
-  widget_class->style_set = gtk_spinner_style_set;
-  widget_class->get_accessible = gtk_spinner_get_accessible;
+  widget_class->draw = gtk_spinner_draw;
+  widget_class->get_preferred_width = gtk_spinner_get_preferred_width;
+  widget_class->get_preferred_height = gtk_spinner_get_preferred_height;
 
   /* GtkSpinner:active:
    *
@@ -129,39 +115,8 @@ gtk_spinner_class_init (GtkSpinnerClass *klass)
                                                          P_("Whether the spinner is active"),
                                                          FALSE,
                                                          G_PARAM_READWRITE));
-  /**
-   * GtkSpinner:num-steps:
-   *
-   * The number of steps for the spinner to complete a full loop.
-   * The animation will complete a full cycle in one second by default
-   * (see the #GtkSpinner:cycle-duration style property).
-   *
-   * Since: 2.20
-   */
-  gtk_widget_class_install_style_property (widget_class,
-                                           g_param_spec_uint ("num-steps",
-                                                             P_("Number of steps"),
-                                                             P_("The number of steps for the spinner to complete a full loop. The animation will complete a full cycle in one second by default (see #GtkSpinner:cycle-duration)."),
-                                                             1,
-                                                             G_MAXUINT,
-                                                             12,
-                                                             G_PARAM_READABLE));
 
-  /**
-   * GtkSpinner:cycle-duration:
-   *
-   * The duration in milliseconds for the spinner to complete a full cycle.
-   *
-   * Since: 2.20
-   */
-  gtk_widget_class_install_style_property (widget_class,
-                                           g_param_spec_uint ("cycle-duration",
-                                                             P_("Animation duration"),
-                                                             P_("The length of time in milliseconds for the spinner to complete a full loop"),
-                                                             500,
-                                                             G_MAXUINT,
-                                                             1000,
-                                                             G_PARAM_READABLE));
+  gtk_widget_class_set_accessible_type (widget_class, GTK_TYPE_SPINNER_ACCESSIBLE);
 }
 
 static void
@@ -204,379 +159,79 @@ static void
 gtk_spinner_init (GtkSpinner *spinner)
 {
   GtkSpinnerPrivate *priv;
+  GtkStyleContext *context;
 
-  priv = GTK_SPINNER_GET_PRIVATE (spinner);
-  priv->current = 0;
-  priv->timeout = 0;
-
+  priv = G_TYPE_INSTANCE_GET_PRIVATE (spinner,
+                                      GTK_TYPE_SPINNER,
+                                      GtkSpinnerPrivate);
   spinner->priv = priv;
 
   gtk_widget_set_has_window (GTK_WIDGET (spinner), FALSE);
+
+  context = gtk_widget_get_style_context (GTK_WIDGET (spinner));
+  gtk_style_context_add_class (context, GTK_STYLE_CLASS_SPINNER);
+}
+
+static void
+gtk_spinner_get_preferred_width (GtkWidget *widget,
+                                 gint      *minimum_size,
+                                 gint      *natural_size)
+{
+  if (minimum_size)
+    *minimum_size = SPINNER_SIZE;
+
+  if (natural_size)
+    *natural_size = SPINNER_SIZE;
+}
+
+static void
+gtk_spinner_get_preferred_height (GtkWidget *widget,
+                                  gint      *minimum_size,
+                                  gint      *natural_size)
+{
+  if (minimum_size)
+    *minimum_size = SPINNER_SIZE;
+
+  if (natural_size)
+    *natural_size = SPINNER_SIZE;
 }
 
 static gboolean
-gtk_spinner_expose (GtkWidget      *widget,
-                    GdkEventExpose *event)
+gtk_spinner_draw (GtkWidget *widget,
+                  cairo_t   *cr)
 {
-  GtkStateType state_type;
-  GtkSpinnerPrivate *priv;
-  int width, height;
+  GtkStyleContext *context;
 
-  priv = GTK_SPINNER (widget)->priv;
+  context = gtk_widget_get_style_context (widget);
 
-  width = widget->allocation.width;
-  height = widget->allocation.height;
-
-  if ((width < 12) || (height <12))
-    gtk_widget_set_size_request (widget, 12, 12);
-
-  state_type = GTK_STATE_NORMAL;
-  if (!gtk_widget_is_sensitive (widget))
-   state_type = GTK_STATE_INSENSITIVE;
-
-  gtk_paint_spinner (widget->style,
-                     widget->window,
-                     state_type,
-                     &event->area,
-                     widget,
-                     "spinner",
-                     priv->current,
-                     event->area.x, event->area.y,
-                     event->area.width, event->area.height);
+  gtk_render_activity (context, cr, 0, 0,
+                       gtk_widget_get_allocated_width (widget),
+                       gtk_widget_get_allocated_height (widget));
 
   return FALSE;
 }
 
-static gboolean
-gtk_spinner_timeout (gpointer data)
-{
-  GtkSpinnerPrivate *priv;
-
-  priv = GTK_SPINNER (data)->priv;
-
-  if (priv->current + 1 >= priv->num_steps)
-    priv->current = 0;
-  else
-    priv->current++;
-
-  gtk_widget_queue_draw (GTK_WIDGET (data));
-
-  return TRUE;
-}
-
 static void
-gtk_spinner_add_timeout (GtkSpinner *spinner)
+gtk_spinner_set_active (GtkSpinner *spinner,
+                        gboolean    active)
 {
-  GtkSpinnerPrivate *priv;
+  GtkSpinnerPrivate *priv = spinner->priv;
 
-  priv = spinner->priv;
-
-  priv->timeout = gdk_threads_add_timeout ((guint) priv->cycle_duration / priv->num_steps, gtk_spinner_timeout, spinner);
-}
-
-static void
-gtk_spinner_remove_timeout (GtkSpinner *spinner)
-{
-  GtkSpinnerPrivate *priv;
-
-  priv = spinner->priv;
-
-  g_source_remove (priv->timeout);
-  priv->timeout = 0;
-}
-
-static void
-gtk_spinner_realize (GtkWidget *widget)
-{
-  GtkSpinnerPrivate *priv;
-
-  priv = GTK_SPINNER (widget)->priv;
-
-  GTK_WIDGET_CLASS (gtk_spinner_parent_class)->realize (widget);
-
-  if (priv->active)
-    gtk_spinner_add_timeout (GTK_SPINNER (widget));
-}
-
-static void
-gtk_spinner_unrealize (GtkWidget *widget)
-{
-  GtkSpinnerPrivate *priv;
-
-  priv = GTK_SPINNER (widget)->priv;
-
-  if (priv->timeout != 0)
-    {
-      gtk_spinner_remove_timeout (GTK_SPINNER (widget));
-    }
-
-  GTK_WIDGET_CLASS (gtk_spinner_parent_class)->unrealize (widget);
-}
-
-static void
-gtk_spinner_screen_changed (GtkWidget* widget, GdkScreen* old_screen)
-{
-  GtkSpinner *spinner;
-  GdkScreen* new_screen;
-  GdkColormap* colormap;
-
-  spinner = GTK_SPINNER (widget);
-
-  new_screen = gtk_widget_get_screen (widget);
-  colormap = gdk_screen_get_rgba_colormap (new_screen);
-
-  if (!colormap)
-    {
-      colormap = gdk_screen_get_rgb_colormap (new_screen);
-    }
-
-  gtk_widget_set_colormap (widget, colormap);
-}
-
-static void
-gtk_spinner_style_set (GtkWidget *widget,
-                       GtkStyle  *prev_style)
-{
-  GtkSpinnerPrivate *priv;
-
-  priv = GTK_SPINNER (widget)->priv;
-
-  gtk_widget_style_get (GTK_WIDGET (widget),
-                        "num-steps", &(priv->num_steps),
-                        "cycle-duration", &(priv->cycle_duration),
-                        NULL);
-
-  if (priv->current > priv->num_steps)
-    priv->current = 0;
-}
-
-static void
-gtk_spinner_dispose (GObject *gobject)
-{
-  GtkSpinnerPrivate *priv;
-
-  priv = GTK_SPINNER (gobject)->priv;
-
-  if (priv->timeout != 0)
-    {
-      gtk_spinner_remove_timeout (GTK_SPINNER (gobject));
-    }
-
-  G_OBJECT_CLASS (gtk_spinner_parent_class)->dispose (gobject);
-}
-
-static void
-gtk_spinner_set_active (GtkSpinner *spinner, gboolean active)
-{
-  GtkSpinnerPrivate *priv;
-
-  active = active != FALSE;
-
-  priv = GTK_SPINNER (spinner)->priv;
+  active = !!active;
 
   if (priv->active != active)
     {
       priv->active = active;
+
       g_object_notify (G_OBJECT (spinner), "active");
 
-      if (active && gtk_widget_get_realized (GTK_WIDGET (spinner)) && priv->timeout == 0)
-        {
-          gtk_spinner_add_timeout (spinner);
-        }
-      else if (!active && priv->timeout != 0)
-        {
-          gtk_spinner_remove_timeout (spinner);
-        }
+      if (active)
+        gtk_widget_set_state_flags (GTK_WIDGET (spinner),
+                                    GTK_STATE_FLAG_ACTIVE, FALSE);
+      else
+        gtk_widget_unset_state_flags (GTK_WIDGET (spinner),
+                                      GTK_STATE_FLAG_ACTIVE);
     }
-}
-
-static GType
-gtk_spinner_accessible_factory_get_accessible_type (void)
-{
-  return gtk_spinner_accessible_get_type ();
-}
-
-static AtkObject *
-gtk_spinner_accessible_new (GObject *obj)
-{
-  AtkObject *accessible;
-
-  g_return_val_if_fail (GTK_IS_WIDGET (obj), NULL);
-
-  accessible = g_object_new (gtk_spinner_accessible_get_type (), NULL);
-  atk_object_initialize (accessible, obj);
-
-  return accessible;
-}
-
-static AtkObject*
-gtk_spinner_accessible_factory_create_accessible (GObject *obj)
-{
-  return gtk_spinner_accessible_new (obj);
-}
-
-static void
-gtk_spinner_accessible_factory_class_init (AtkObjectFactoryClass *klass)
-{
-  klass->create_accessible = gtk_spinner_accessible_factory_create_accessible;
-  klass->get_accessible_type = gtk_spinner_accessible_factory_get_accessible_type;
-}
-
-static GType
-gtk_spinner_accessible_factory_get_type (void)
-{
-  static GType type = 0;
-
-  if (!type)
-    {
-      const GTypeInfo tinfo =
-      {
-        sizeof (AtkObjectFactoryClass),
-        NULL,           /* base_init */
-        NULL,           /* base_finalize */
-        (GClassInitFunc) gtk_spinner_accessible_factory_class_init,
-        NULL,           /* class_finalize */
-        NULL,           /* class_data */
-        sizeof (AtkObjectFactory),
-        0,             /* n_preallocs */
-        NULL, NULL
-      };
-
-      type = g_type_register_static (ATK_TYPE_OBJECT_FACTORY,
-                                    I_("GtkSpinnerAccessibleFactory"),
-                                    &tinfo, 0);
-    }
-  return type;
-}
-
-static AtkObjectClass *a11y_parent_class = NULL;
-
-static void
-gtk_spinner_accessible_initialize (AtkObject *accessible,
-                                   gpointer   widget)
-{
-  atk_object_set_name (accessible, C_("throbbing progress animation widget", "Spinner"));
-  atk_object_set_description (accessible, _("Provides visual indication of progress"));
-
-  a11y_parent_class->initialize (accessible, widget);
-}
-
-static void
-gtk_spinner_accessible_class_init (AtkObjectClass *klass)
-{
-  a11y_parent_class = g_type_class_peek_parent (klass);
-
-  klass->initialize = gtk_spinner_accessible_initialize;
-}
-
-static void
-gtk_spinner_accessible_image_get_size (AtkImage *image,
-                                       gint     *width,
-                                       gint     *height)
-{
-  GtkWidget *widget;
-
-  widget = GTK_ACCESSIBLE (image)->widget;
-  if (!widget)
-    {
-      *width = *height = 0;
-    }
-  else
-    {
-      *width = widget->allocation.width;
-      *height = widget->allocation.height;
-    }
-}
-
-static void
-gtk_spinner_accessible_image_interface_init (AtkImageIface *iface)
-{
-  iface->get_image_size = gtk_spinner_accessible_image_get_size;
-}
-
-static GType
-gtk_spinner_accessible_get_type (void)
-{
-  static GType type = 0;
-
-  /* Action interface
-     Name etc. ... */
-  if (G_UNLIKELY (type == 0))
-    {
-      const GInterfaceInfo atk_image_info = {
-              (GInterfaceInitFunc) gtk_spinner_accessible_image_interface_init,
-              (GInterfaceFinalizeFunc) NULL,
-              NULL
-      };
-      GType parent_atk_type;
-      GTypeInfo tinfo = { 0 };
-      GTypeQuery query;
-      AtkObjectFactory *factory;
-
-      if ((type = g_type_from_name ("GtkSpinnerAccessible")))
-        return type;
-
-      factory = atk_registry_get_factory (atk_get_default_registry (),
-                                          GTK_TYPE_IMAGE);
-      if (!factory)
-        return G_TYPE_INVALID;
-
-      parent_atk_type = atk_object_factory_get_accessible_type (factory);
-      if (!parent_atk_type)
-        return G_TYPE_INVALID;
-
-      /*
-       * Figure out the size of the class and instance
-       * we are deriving from
-       */
-      g_type_query (parent_atk_type, &query);
-
-      tinfo.class_init = (GClassInitFunc) gtk_spinner_accessible_class_init;
-      tinfo.class_size    = query.class_size;
-      tinfo.instance_size = query.instance_size;
-
-      /* Register the type */
-      type = g_type_register_static (parent_atk_type,
-                                     "GtkSpinnerAccessible",
-                                     &tinfo, 0);
-
-      g_type_add_interface_static (type, ATK_TYPE_IMAGE,
-                                   &atk_image_info);
-    }
-
-  return type;
-}
-
-static AtkObject *
-gtk_spinner_get_accessible (GtkWidget *widget)
-{
-  static gboolean first_time = TRUE;
-
-  if (first_time)
-    {
-      AtkObjectFactory *factory;
-      AtkRegistry *registry;
-      GType derived_type;
-      GType derived_atk_type;
-
-      /*
-       * Figure out whether accessibility is enabled by looking at the
-       * type of the accessible object which would be created for
-       * the parent type of GtkSpinner.
-       */
-      derived_type = g_type_parent (GTK_TYPE_SPINNER);
-
-      registry = atk_get_default_registry ();
-      factory = atk_registry_get_factory (registry,
-                                          derived_type);
-      derived_atk_type = atk_object_factory_get_accessible_type (factory);
-      if (g_type_is_a (derived_atk_type, GTK_TYPE_ACCESSIBLE))
-        atk_registry_set_factory_type (registry,
-                                       GTK_TYPE_SPINNER,
-                                       gtk_spinner_accessible_factory_get_type ());
-      first_time = FALSE;
-    }
-  return GTK_WIDGET_CLASS (gtk_spinner_parent_class)->get_accessible (widget);
 }
 
 /**
@@ -625,6 +280,3 @@ gtk_spinner_stop (GtkSpinner *spinner)
 
   gtk_spinner_set_active (spinner, FALSE);
 }
-
-#define __GTK_SPINNER_C__
-#include "gtkaliasdef.c"

@@ -37,6 +37,7 @@
 
 #include "gdk-pixbuf-private.h"
 #include "gdk-pixbuf-loader.h"
+#include "gdk-pixdata.h"
 
 #include <glib/gstdio.h>
 
@@ -55,7 +56,7 @@
  * @Title: File Loading
  * @See_also: #GdkPixbufLoader.
  * 
- * The &gdk-pixbuf; library provides a simple mechanism for loading
+ * The GdkPixBuf library provides a simple mechanism for loading
  * an image from a file in synchronous fashion.  This means that the
  * library takes control of the application while the file is being
  * loaded; from the user's point of view, the application will block
@@ -75,17 +76,17 @@
  * 
  * These functions allow to save a #GdkPixbuf in a number of 
  * file formats. The formatted data can be written to a file
- * or to a memory buffer. &gdk-pixbuf; can also call a user-defined
+ * or to a memory buffer. GdkPixBuf can also call a user-defined
  * callback on the data, which allows to e.g. write the image 
  * to a socket or store it in a database.
  */
 
 /**
  * SECTION:module_interface
- * @Short_description: Extending &gdk-pixbuf;
+ * @Short_description: Extending GdkPixBuf
  * @Title: Module Interface
  * 
- * If &gdk-pixbuf; has been compiled with GModule support, it can be extended by
+ * If GdkPixBuf has been compiled with GModule support, it can be extended by
  * modules which can load (and perhaps also save) new image and animation
  * formats. Each loadable module must export a
  * #GdkPixbufModuleFillInfoFunc function named <function>fill_info</function> and
@@ -98,7 +99,7 @@
  * signatures (and other information) via the <function>fill_info</function>
  * function. An external utility, <command>gdk-pixbuf-query-loaders</command>, 
  * uses this to create a text file containing a list of all available loaders and 
- * their signatures. This file is then read at runtime by &gdk-pixbuf; to obtain
+ * their signatures. This file is then read at runtime by GdkPixBuf to obtain
  * the list of available loaders and their signatures. 
  * 
  * 
@@ -107,7 +108,7 @@
  * <function>fill_vtable</function> function will simply not set the corresponding
  * function pointers of the #GdkPixbufModule structure. If a module supports
  * incremental loading (i.e. provides #begin_load, #stop_load and
- * #load_increment), it doesn't have to implement #load, since &gdk-pixbuf; can 
+ * #load_increment), it doesn't have to implement #load, since GdkPixBuf can
  * supply a generic #load implementation wrapping the incremental loading. 
  * 
  * 
@@ -127,16 +128,15 @@
  * </itemizedlist>
  * 
  * 
- * The &gdk-pixbuf; interfaces needed for implementing modules are contained in 
+ * The GdkPixBuf interfaces needed for implementing modules are contained in
  * <filename>gdk-pixbuf-io.h</filename> (and
  * <filename>gdk-pixbuf-animation.h</filename> if the module supports animations).
  * They are not covered by the same stability guarantees as the regular 
- * &gdk-pixbuf; API. To underline this fact, they are protected by 
+ * GdkPixBuf API. To underline this fact, they are protected by
  * <literal>#ifdef GDK_PIXBUF_ENABLE_BACKEND</literal>.
  */
 
 
-#ifndef GDK_PIXBUF_USE_GIO_MIME 
 static gint 
 format_check (GdkPixbufModule *module, guchar *buffer, int size)
 {
@@ -188,7 +188,6 @@ format_check (GdkPixbufModule *module, guchar *buffer, int size)
         }
         return 0;
 }
-#endif
 
 G_LOCK_DEFINE_STATIC (init_lock);
 G_LOCK_DEFINE_STATIC (threadunsafe_loader_lock);
@@ -436,6 +435,9 @@ gdk_pixbuf_io_init (void)
         else                                                            \
                 g_free (builtin_module)
 
+	/* Always include GdkPixdata format */
+        load_one_builtin_module (pixdata);
+
 #ifdef INCLUDE_ani
         load_one_builtin_module (ani);
 #endif
@@ -664,6 +666,7 @@ gdk_pixbuf_io_init (void)
   extern void _gdk_pixbuf__##type##_fill_info   (GdkPixbufFormat *info);   \
   extern void _gdk_pixbuf__##type##_fill_vtable (GdkPixbufModule *module)
 
+module (pixdata);
 module (png);
 module (jpeg);
 module (gif);
@@ -711,6 +714,9 @@ gdk_pixbuf_load_module_unlocked (GdkPixbufModule *image_module,
                 fill_info = _gdk_pixbuf__##id##_fill_info;              \
                 fill_vtable = _gdk_pixbuf__##id##_fill_vtable;  \
         }
+
+        try_module (pixdata,pixdata);
+
 #ifdef INCLUDE_png      
         try_module (png,png);
 #endif
@@ -898,8 +904,10 @@ _gdk_pixbuf_get_module (guchar *buffer, guint size,
         gboolean uncertain;
 
         mime_type = g_content_type_guess (NULL, buffer, size, &uncertain);
-        if (uncertain)
+        if (uncertain && filename != NULL) {
+                g_free (mime_type);
                 mime_type = g_content_type_guess (filename, buffer, size, NULL);
+        }
 
         for (modules = get_file_formats (); modules; modules = g_slist_next (modules)) {
                 GdkPixbufModule *module = (GdkPixbufModule *)modules->data;
@@ -918,6 +926,16 @@ _gdk_pixbuf_get_module (guchar *buffer, guint size,
                         }
                         g_free (type);
                 }
+
+                if (selected != NULL)
+                        break;
+
+		/* Make sure the builtin GdkPixdata support works even without mime sniffing */
+		if (strcmp (info->name, "GdkPixdata") == 0 &&
+		    format_check (module, buffer, size) == 100) {
+			selected = module;
+			break;
+		}
         }
         g_free (mime_type);
 #else
@@ -1653,6 +1671,116 @@ gdk_pixbuf_new_from_stream (GInputStream  *stream,
 }
 
 /**
+ * gdk_pixbuf_new_from_resource:
+ * @resource_path: the path of the resource file
+ * @error: Return location for an error
+ *
+ * Creates a new pixbuf by loading an image from an resource.
+ *
+ * The file format is detected automatically. If %NULL is returned, then
+ * @error will be set.
+ *
+ * Return value: A newly-created pixbuf, or %NULL if any of several error
+ * conditions occurred: the file could not be opened, the image format is
+ * not supported, there was not enough memory to allocate the image buffer,
+ * the stream contained invalid data, or the operation was cancelled.
+ *
+ * Since: 2.26
+ **/
+GdkPixbuf *
+gdk_pixbuf_new_from_resource (const char *resource_path,
+			      GError    **error)
+{
+	GInputStream *stream;
+	GdkPixbuf *pixbuf;
+	guint32 flags;
+	gsize data_size;
+	GBytes *bytes;
+
+	/* We specialize uncompressed GdkPixdata files, making these a reference to the
+	   compiled-in resource data */
+	if (g_resources_get_info  (resource_path, 0, &data_size, &flags, NULL) &&
+	    (flags & G_RESOURCE_FLAGS_COMPRESSED) == 0 &&
+	    data_size >= GDK_PIXDATA_HEADER_LENGTH &&
+	    (bytes = g_resources_lookup_data (resource_path, 0, NULL)) != NULL) {
+		GdkPixbuf*pixbuf = NULL;
+		const guint8 *stream = g_bytes_get_data (bytes, NULL);
+		GdkPixdata pixdata;
+		guint32 magic;
+
+		magic = (stream[0] << 24) + (stream[1] << 16) + (stream[2] << 8) + stream[3];
+		if (magic == GDK_PIXBUF_MAGIC_NUMBER &&
+		    gdk_pixdata_deserialize (&pixdata, data_size, stream, NULL)) {
+			pixbuf = gdk_pixbuf_from_pixdata (&pixdata, FALSE, NULL);
+		}
+
+		if (pixbuf) {
+			/* Free the GBytes with the pixbuf */
+			g_object_set_data_full (G_OBJECT (pixbuf), "gdk-pixbuf-resource-bytes", bytes, (GDestroyNotify) g_bytes_unref);
+			return pixbuf;
+		} else {
+			g_bytes_unref (bytes);
+		}
+	}
+
+	stream = g_resources_open_stream (resource_path, 0, error);
+	if (stream == NULL)
+		return NULL;
+
+	pixbuf = gdk_pixbuf_new_from_stream (stream, NULL, error);
+	g_object_unref (stream);
+	return pixbuf;
+}
+
+/**
+ * gdk_pixbuf_new_from_resource_at_scale:
+ * @resource_path: the path of the resource file
+ * @width: The width the image should have or -1 to not constrain the width
+ * @height: The height the image should have or -1 to not constrain the height
+ * @preserve_aspect_ratio: %TRUE to preserve the image's aspect ratio
+ * @error: Return location for an error
+ *
+ * Creates a new pixbuf by loading an image from an resource.
+ *
+ * The file format is detected automatically. If %NULL is returned, then
+ * @error will be set.
+ *
+ * The image will be scaled to fit in the requested size, optionally
+ * preserving the image's aspect ratio. When preserving the aspect ratio,
+ * a @width of -1 will cause the image to be scaled to the exact given
+ * height, and a @height of -1 will cause the image to be scaled to the
+ * exact given width. When not preserving aspect ratio, a @width or
+ * @height of -1 means to not scale the image at all in that dimension.
+ *
+ * The stream is not closed.
+ *
+ * Return value: A newly-created pixbuf, or %NULL if any of several error
+ * conditions occurred: the file could not be opened, the image format is
+ * not supported, there was not enough memory to allocate the image buffer,
+ * the stream contained invalid data, or the operation was cancelled.
+ *
+ * Since: 2.26
+ */
+GdkPixbuf *
+gdk_pixbuf_new_from_resource_at_scale (const char *resource_path,
+				       int         width,
+				       int         height,
+				       gboolean    preserve_aspect_ratio,
+				       GError    **error)
+{
+	GInputStream *stream;
+	GdkPixbuf *pixbuf;
+
+	stream = g_resources_open_stream (resource_path, 0, error);
+	if (stream == NULL)
+		return NULL;
+
+	pixbuf = gdk_pixbuf_new_from_stream_at_scale (stream, width, height, preserve_aspect_ratio, NULL, error);
+	g_object_unref (stream);
+	return pixbuf;
+}
+
+/**
  * gdk_pixbuf_new_from_stream_async:
  * @stream: a #GInputStream from which to load the pixbuf
  * @cancellable: optional #GCancellable object, %NULL to ignore
@@ -1740,14 +1868,15 @@ info_cb (GdkPixbufLoader *loader,
 /**
  * gdk_pixbuf_get_file_info:
  * @filename: The name of the file to identify.
- * @width: Return location for the width of the image, or %NULL
- * @height: Return location for the height of the image, or %NULL
+ * @width: (out): Return location for the width of the image, or %NULL
+ * @height: (out): Return location for the height of the image, or %NULL
  * 
  * Parses an image file far enough to determine its format and size.
  * 
- * Returns: A #GdkPixbufFormat describing the image format of the file 
- *    or %NULL if the image format wasn't recognized. The return value 
- *    is owned by GdkPixbuf and should not be freed.
+ * Returns: (transfer none): A #GdkPixbufFormat describing the image
+ *    format of the file or %NULL if the image format wasn't
+ *    recognized. The return value is owned by GdkPixbuf and should
+ *    not be freed.
  *
  * Since: 2.4
  **/
@@ -1804,7 +1933,7 @@ gdk_pixbuf_get_file_info (const gchar  *filename,
 
 /**
  * gdk_pixbuf_new_from_xpm_data:
- * @data: Pointer to inline XPM data.
+ * @data: (array zero-terminated=1): Pointer to inline XPM data.
  *
  * Creates a new pixbuf by parsing XPM data in memory.  This data is commonly
  * the result of including an XPM file into a program's C source.
@@ -2093,7 +2222,7 @@ gdk_pixbuf_real_save_to_callback (GdkPixbuf         *pixbuf,
  * @filename: name of file to save.
  * @type: name of file format.
  * @error: (allow-none): return location for error, or %NULL
- * @Varargs: list of key-value save options
+ * @...: list of key-value save options, followed by %NULL
  *
  * Saves pixbuf to a file in format @type. By default, "jpeg", "png", "ico" 
  * and "bmp" are possible file formats to save in, but more formats may be
@@ -2348,7 +2477,7 @@ gdk_pixbuf_savev (GdkPixbuf  *pixbuf,
  * @user_data: user data to pass to the save function.
  * @type: name of file format.
  * @error: (allow-none): return location for error, or %NULL
- * @Varargs: list of key-value save options
+ * @...: list of key-value save options
  *
  * Saves pixbuf in format @type by feeding the produced data to a 
  * callback. Can be used when you want to store the image to something 
@@ -2399,7 +2528,7 @@ gdk_pixbuf_save_to_callback    (GdkPixbuf  *pixbuf,
  * @pixbuf: a #GdkPixbuf.
  * @save_func: (scope call): a function that is called to save each block of data that
  *   the save routine generates.
- * @user_data: (closure save_func): user data to pass to the save function.
+ * @user_data: (closure): user data to pass to the save function.
  * @type: name of file format.
  * @option_keys: (array zero-terminated=1) (element-type utf8): name of options to set, %NULL-terminated
  * @option_values: (array zero-terminated=1) (element-type utf8): values for named options
@@ -2445,11 +2574,12 @@ gdk_pixbuf_save_to_callbackv   (GdkPixbuf  *pixbuf,
 /**
  * gdk_pixbuf_save_to_buffer:
  * @pixbuf: a #GdkPixbuf.
- * @buffer: location to receive a pointer to the new buffer.
+ * @buffer: (array length=buffer_size): location to receive a pointer
+ *   to the new buffer.
  * @buffer_size: location to receive the size of the new buffer.
  * @type: name of file format.
  * @error: (allow-none): return location for error, or %NULL
- * @Varargs: list of key-value save options
+ * @...: list of key-value save options
  *
  * Saves pixbuf to a new buffer in format @type, which is currently "jpeg",
  * "png", "tiff", "ico" or "bmp".  This is a convenience function that uses
@@ -2532,7 +2662,8 @@ save_to_buffer_callback (const gchar *data,
 /**
  * gdk_pixbuf_save_to_bufferv:
  * @pixbuf: a #GdkPixbuf.
- * @buffer: location to receive a pointer to the new buffer.
+ * @buffer: (array length=buffer_size) (out) (element-type guint8):
+ *   location to receive a pointer to the new buffer.
  * @buffer_size: location to receive the size of the new buffer.
  * @type: name of file format.
  * @option_keys: (array zero-terminated=1): name of options to set, %NULL-terminated
@@ -2634,7 +2765,7 @@ save_to_stream (const gchar  *buffer,
  * @type: name of file format
  * @cancellable: optional #GCancellable object, %NULL to ignore
  * @error: (allow-none): return location for error, or %NULL
- * @Varargs: list of key-value save options
+ * @...: list of key-value save options
  *
  * Saves @pixbuf to an output stream.
  *
@@ -2738,7 +2869,7 @@ save_to_stream_thread (GSimpleAsyncResult *result,
  * @cancellable: optional #GCancellable object, %NULL to ignore
  * @callback: a #GAsyncReadyCallback to call when the the pixbuf is loaded
  * @user_data: the data to pass to the callback function
- * @Varargs: list of key-value save options
+ * @...: list of key-value save options
  *
  * Saves @pixbuf to an output stream asynchronously.
  *

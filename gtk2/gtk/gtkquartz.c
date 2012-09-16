@@ -13,16 +13,14 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
 
 #include "gtkquartz.h"
+#include "gtkselectionprivate.h"
 #include <gdk/quartz/gdkquartz.h>
-#include "gtkalias.h"
 
 NSImage *
 _gtk_quartz_create_image_from_pixbuf (GdkPixbuf *pixbuf)
@@ -39,7 +37,7 @@ _gtk_quartz_create_image_from_pixbuf (GdkPixbuf *pixbuf)
 
   pixbuf_width = gdk_pixbuf_get_width (pixbuf);
   pixbuf_height = gdk_pixbuf_get_height (pixbuf);
-  g_return_val_if_fail (pixbuf_width == 0 && pixbuf_height == 0, NULL);
+  g_return_val_if_fail (pixbuf_width != 0 && pixbuf_height != 0, NULL);
   rowstride = gdk_pixbuf_get_rowstride (pixbuf);
   has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
 
@@ -63,7 +61,8 @@ _gtk_quartz_create_image_from_pixbuf (GdkPixbuf *pixbuf)
   if (nsimage_size.width == 0.0 && nsimage_size.height == 0.0)
     {
       [nsimage release];
-      g_return_val_if_fail (FALSE, NULL);
+      g_critical ("%s returned a zero-sized image", G_STRFUNC);
+      return NULL;
     }
   [nsimage lockFocus];
 
@@ -300,30 +299,17 @@ _gtk_quartz_set_selection_data_for_pasteboard (NSPasteboard     *pasteboard,
     }
   else if ([type isEqualTo:NSURLPboardType])
     {
-      gchar **list = NULL;
-      int count;
+      gchar **uris;
 
-      count = gdk_text_property_to_utf8_list_for_display (display,
-                                                          gdk_atom_intern_static_string ("UTF8_STRING"),
-                                                          format,
-                                                          data,
-                                                          length,
-                                                          &list);
-
-      if (count > 0)
+      uris = gtk_selection_data_get_uris (selection_data);
+      if (uris != NULL)
         {
-          gchar **result;
           NSURL *url;
 
-          result = g_uri_list_extract_uris (list[0]);
-
-          url = [NSURL URLWithString:[NSString stringWithUTF8String:result[0]]];
+          url = [NSURL URLWithString:[NSString stringWithUTF8String:uris[0]]];
           [url writeToPasteboard:pasteboard];
-
-          g_strfreev (result);
         }
-
-      g_strfreev (list);
+      g_strfreev (uris);
     }
   else
     [pasteboard setData:[NSData dataWithBytesNoCopy:(void *)data
@@ -332,8 +318,9 @@ _gtk_quartz_set_selection_data_for_pasteboard (NSPasteboard     *pasteboard,
                                             forType:type];
 }
 
-/*
- * Bundle-based functions for various directories. These almost work
+#ifdef QUARTZ_RELOCATION
+
+/* Bundle-based functions for various directories. These almost work
  * even when the application isn't in a bundle, becuase mainBundle
  * paths point to the bin directory in that case. It's a simple matter
  * to test for that and remove the last element.
@@ -413,3 +400,5 @@ _gtk_get_data_prefix (void)
 {
   return get_bundle_path ();
 }
+
+#endif /* QUARTZ_RELOCATION */

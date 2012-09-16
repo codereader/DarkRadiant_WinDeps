@@ -13,19 +13,42 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
+
 #include <string.h>
 #include <stdlib.h>
+
 #include <glib/gprintf.h>
-#include <gtk/gtk.h>
+
 #include "gtkprintsettings.h"
 #include "gtkprintutils.h"
-#include "gtkalias.h"
+#include "gtktypebuiltins.h"
+#include "gtkwidget.h"
+
+
+/**
+ * SECTION:gtkprintsettings
+ * @Short_description: Stores print settings
+ * @Title: GtkPrintSettings
+ *
+ * A GtkPrintSettings object represents the settings of a print dialog in
+ * a system-independent way. The main use for this object is that once
+ * you've printed you can get a settings object that represents the settings
+ * the user chose, and the next time you print you can pass that object in so
+ * that the user doesn't have to re-set all his settings.
+ *
+ * Its also possible to enumerate the settings so that you can easily save
+ * the settings for the next time your app runs, or even store them in a
+ * document. The predefined keys try to use shared values as much as possible
+ * so that moving such a document between systems still works.
+ *
+ * <!-- TODO example of getting, storing and setting settings -->
+ *
+ * Printing support was added in GTK+ 2.10.
+ */
 
 
 typedef struct _GtkPrintSettingsClass GtkPrintSettingsClass;
@@ -37,7 +60,7 @@ typedef struct _GtkPrintSettingsClass GtkPrintSettingsClass;
 struct _GtkPrintSettings
 {
   GObject parent_instance;
-  
+
   GHashTable *hash;
 };
 
@@ -793,8 +816,9 @@ gtk_print_settings_set_use_color (GtkPrintSettings *settings,
 gboolean
 gtk_print_settings_get_collate (GtkPrintSettings *settings)
 {
-  return gtk_print_settings_get_bool (settings, 
-				      GTK_PRINT_SETTINGS_COLLATE);
+  return gtk_print_settings_get_bool_with_default (settings,
+                                                   GTK_PRINT_SETTINGS_COLLATE,
+                                                   TRUE);
 }
 
 /**
@@ -1674,7 +1698,7 @@ gtk_print_settings_set_output_bin (GtkPrintSettings *settings,
 /**
  * gtk_print_settings_load_file:
  * @settings: a #GtkPrintSettings
- * @file_name: the filename to read the settings from
+ * @file_name: (type filename): the filename to read the settings from
  * @error: (allow-none): return location for errors, or %NULL
  *
  * Reads the print settings from @file_name. If the file could not be loaded
@@ -1709,7 +1733,7 @@ gtk_print_settings_load_file (GtkPrintSettings *settings,
 
 /**
  * gtk_print_settings_new_from_file:
- * @file_name: the filename to read the settings from
+ * @file_name: (type filename): the filename to read the settings from
  * @error: (allow-none): return location for errors, or %NULL
  * 
  * Reads the print settings from @file_name. Returns a new #GtkPrintSettings
@@ -1783,7 +1807,7 @@ gtk_print_settings_load_key_file (GtkPrintSettings *settings,
       gchar *value;
 
       value = g_key_file_get_string (key_file,
-				     KEYFILE_GROUP_NAME,
+				     group_name,
 				     keys[i],
 				     NULL);
       if (!value)
@@ -1834,7 +1858,7 @@ gtk_print_settings_new_from_key_file (GKeyFile     *key_file,
 /**
  * gtk_print_settings_to_file:
  * @settings: a #GtkPrintSettings
- * @file_name: the file to save to
+ * @file_name: (type filename): the file to save to
  * @error: (allow-none): return location for errors, or %NULL
  * 
  * This function saves the print settings from @settings to @file_name. If the
@@ -1922,7 +1946,3 @@ gtk_print_settings_to_key_file (GtkPrintSettings  *settings,
 			      (GtkPrintSettingsFunc) add_value_to_key_file,
 			      &data);
 }
-
-
-#define __GTK_PRINT_SETTINGS_C__
-#include "gtkaliasdef.c"

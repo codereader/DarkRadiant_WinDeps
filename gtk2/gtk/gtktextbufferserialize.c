@@ -14,9 +14,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /* FIXME: We should use other error codes for the
@@ -28,11 +26,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <errno.h>
 
 #include "gdk-pixbuf/gdk-pixdata.h"
 #include "gtktextbufferserialize.h"
+#include "gtktexttagprivate.h"
 #include "gtkintl.h"
-#include "gtkalias.h"
 
 
 typedef struct
@@ -53,7 +52,7 @@ serialize_value (GValue *value)
 {
   if (g_value_type_transformable (value->g_type, G_TYPE_STRING))
     {
-      GValue text_value = { 0 };
+      GValue text_value = G_VALUE_INIT;
       gchar *tmp;
 
       g_value_init (&text_value, G_TYPE_STRING);
@@ -70,10 +69,6 @@ serialize_value (GValue *value)
 
       return g_strdup_printf ("%x:%x:%x", color->red, color->green, color->blue);
     }
-  else if (g_type_is_a (value->g_type, GDK_TYPE_DRAWABLE))
-    {
-      /* Don't do anything */
-    }
   else
     {
       g_warning ("Type %s is not serializable\n", g_type_name (value->g_type));
@@ -88,7 +83,7 @@ deserialize_value (const gchar *str,
 {
   if (g_value_type_transformable (G_TYPE_STRING, value->g_type))
     {
-      GValue text_value = { 0 };
+      GValue text_value = G_VALUE_INIT;
       gboolean retval;
 
       g_value_init (&text_value, G_TYPE_STRING);
@@ -114,9 +109,10 @@ deserialize_value (const gchar *str,
       gchar *tmp;
       int v;
 
-      v = strtol (str, &tmp, 10);
+      errno = 0;
+      v = g_ascii_strtoll (str, &tmp, 10);
 
-      if (tmp == NULL || tmp == str)
+      if (errno || tmp == NULL || tmp == str)
 	return FALSE;
 
       g_value_set_int (value, v);
@@ -144,26 +140,32 @@ deserialize_value (const gchar *str,
       gchar *tmp;
 
       old = str;
-      color.red = strtol (old, &tmp, 16);
+      tmp = NULL;
+      errno = 0;
+      color.red = g_ascii_strtoll (old, &tmp, 16);
 
-      if (tmp == NULL || tmp == old)
+      if (errno || tmp == old)
 	return FALSE;
 
       old = tmp;
       if (*old++ != ':')
 	return FALSE;
 
-      color.green = strtol (old, &tmp, 16);
-      if (tmp == NULL || tmp == old)
+      tmp = NULL;
+      errno = 0;
+      color.green = g_ascii_strtoll (old, &tmp, 16);
+      if (errno || tmp == old)
 	return FALSE;
 
       old = tmp;
       if (*old++ != ':')
 	return FALSE;
 
-      color.blue = strtol (old, &tmp, 16);
+      tmp = NULL;
+      errno = 0;
+      color.blue = g_ascii_strtoll (old, &tmp, 16);
 
-      if (tmp == NULL || tmp == old || *tmp != '\0')
+      if (errno || tmp == old || *tmp != '\0')
 	return FALSE;
 
       g_value_set_boxed (value, &color);
@@ -289,9 +291,9 @@ serialize_tag (gpointer key,
   g_string_append (context->tag_table_str, "  <tag ");
 
   /* Handle anonymous tags */
-  if (tag->name)
+  if (tag->priv->name)
     {
-      tag_name = g_markup_escape_text (tag->name, -1);
+      tag_name = g_markup_escape_text (tag->priv->name, -1);
       g_string_append_printf (context->tag_table_str, "name=\"%s\"", tag_name);
       g_free (tag_name);
     }
@@ -302,14 +304,14 @@ serialize_tag (gpointer key,
       g_string_append_printf (context->tag_table_str, "id=\"%d\"", tag_id);
     }
 
-  g_string_append_printf (context->tag_table_str, " priority=\"%d\">\n", tag->priority);
+  g_string_append_printf (context->tag_table_str, " priority=\"%d\">\n", tag->priv->priority);
 
   /* Serialize properties */
   pspecs = g_object_class_list_properties (G_OBJECT_GET_CLASS (tag), &n_pspecs);
 
   for (i = 0; i < n_pspecs; i++)
     {
-      GValue value = { 0 };
+      GValue value = G_VALUE_INIT;
       gchar *tmp, *tmp2;
 
       if (!(pspecs[i]->flags & G_PARAM_READABLE) ||
@@ -486,9 +488,9 @@ serialize_text (GtkTextBuffer        *buffer,
 	  /* Add it to the tag hash table */
 	  g_hash_table_insert (context->tags, tag, tag);
 
-	  if (tag->name)
+	  if (tag->priv->name)
 	    {
-	      tag_name = g_markup_escape_text (tag->name, -1);
+	      tag_name = g_markup_escape_text (tag->priv->name, -1);
 
 	      g_string_append_printf (context->text_str, "<apply_tag name=\"%s\">", tag_name);
 	      g_free (tag_name);
@@ -837,9 +839,11 @@ check_id_or_name (GMarkupParseContext  *context,
 	  has_id = TRUE;
 
 	  /* Try parsing the integer */
-	  *id = strtol (attribute_values[i], &tmp, 10);
+          tmp = NULL;
+          errno = 0;
+	  *id = g_ascii_strtoll (attribute_values[i], &tmp, 10);
 
-	  if (tmp == NULL || tmp == attribute_values[i])
+	  if (errno || tmp == attribute_values[i])
 	    {
 	      set_error (error, context,
 			 G_MARKUP_ERROR, G_MARKUP_ERROR_PARSE,
@@ -998,7 +1002,10 @@ tag_exists (GMarkupParseContext *context,
 	    ParseInfo           *info,
 	    GError             **error)
 {
+  GtkTextTagTable *tag_table;
   const gchar *real_name;
+
+  tag_table = gtk_text_buffer_get_tag_table (info->buffer);
 
   if (info->create_tags)
     {
@@ -1011,11 +1018,11 @@ tag_exists (GMarkupParseContext *context,
       real_name = g_hash_table_lookup (info->substitutions, name);
 
       if (real_name)
-	return gtk_text_tag_table_lookup (info->buffer->tag_table, real_name);
+	return gtk_text_tag_table_lookup (tag_table, real_name);
 
       /* Next, try the list of defined tags */
       if (g_hash_table_lookup (info->defined_tags, name) != NULL)
-	return gtk_text_tag_table_lookup (info->buffer->tag_table, name);
+	return gtk_text_tag_table_lookup (tag_table, name);
 
       set_error (error, context,
 		 G_MARKUP_ERROR, G_MARKUP_ERROR_PARSE,
@@ -1035,7 +1042,7 @@ tag_exists (GMarkupParseContext *context,
 	  return NULL;
 	}
 
-      tag = gtk_text_tag_table_lookup (info->buffer->tag_table, name);
+      tag = gtk_text_tag_table_lookup (tag_table, name);
 
       if (tag)
 	return tag;
@@ -1155,7 +1162,7 @@ parse_attr_element (GMarkupParseContext  *context,
 {
   const gchar *name, *type, *value;
   GType gtype;
-  GValue gvalue = { 0 };
+  GValue gvalue = G_VALUE_INIT;
   GParamSpec *pspec;
 
   g_assert (peek_state (info) == STATE_TAG);
@@ -1226,6 +1233,7 @@ static gchar *
 get_tag_name (ParseInfo   *info,
 	      const gchar *tag_name)
 {
+  GtkTextTagTable *tag_table;
   gchar *name;
   gint i;
 
@@ -1235,8 +1243,9 @@ get_tag_name (ParseInfo   *info,
     return name;
 
   i = 0;
+  tag_table = gtk_text_buffer_get_tag_table (info->buffer);
 
-  while (gtk_text_tag_table_lookup (info->buffer->tag_table, name) != NULL)
+  while (gtk_text_tag_table_lookup (tag_table, name) != NULL)
     {
       g_free (name);
       name = g_strdup_printf ("%s-%d", tag_name, ++i);
@@ -1287,9 +1296,11 @@ parse_tag_element (GMarkupParseContext  *context,
 	    }
 	}
 
-      prio = strtol (priority, &tmp, 10);
+      tmp = NULL;
+      errno = 0;
+      prio = g_ascii_strtoll (priority, &tmp, 10);
 
-      if (tmp == NULL || tmp == priority)
+      if (errno || tmp == priority)
 	{
 	  set_error (error, context,
 		     G_MARKUP_ERROR, G_MARKUP_ERROR_PARSE,
@@ -1455,7 +1466,8 @@ end_element_handler (GMarkupParseContext  *context,
 	  TextTagPrio *prio = list->data;
 
 	  if (info->create_tags)
-	    gtk_text_tag_table_add (info->buffer->tag_table, prio->tag);
+	    gtk_text_tag_table_add (gtk_text_buffer_get_tag_table (info->buffer),
+	                            prio->tag);
 
 	  g_object_unref (prio->tag);
 	  prio->tag = NULL;
@@ -1468,10 +1480,10 @@ end_element_handler (GMarkupParseContext  *context,
       pop_state (info);
       g_assert (peek_state (info) == STATE_TAGS);
 
-      if (info->current_tag->name)
+      if (info->current_tag->priv->name)
 	{
 	  /* Add tag to defined tags hash */
-	  tmp = g_strdup (info->current_tag->name);
+	  tmp = g_strdup (info->current_tag->priv->name);
 	  g_hash_table_insert (info->defined_tags,
 			       tmp, tmp);
 	}
@@ -1770,8 +1782,7 @@ read_headers (const gchar *start,
   return g_list_reverse (headers);
 
  error:
-  g_list_foreach (headers, (GFunc) g_free, NULL);
-  g_list_free (headers);
+  g_list_free_full (headers, g_free);
 
   g_set_error_literal (error,
                        G_MARKUP_ERROR,
@@ -1865,8 +1876,7 @@ _gtk_text_buffer_deserialize_rich_text (GtkTextBuffer *register_buffer,
 			     create_tags, error, headers->next);
 
  out:
-  g_list_foreach (headers, (GFunc)g_free, NULL);
-  g_list_free (headers);
+  g_list_free_full (headers, g_free);
 
   return retval;
 }

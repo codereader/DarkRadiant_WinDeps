@@ -13,31 +13,99 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
 
 #include <errno.h>
-#include <stdlib.h>       
+#include <stdlib.h>
 #include <math.h>
-
 #include <string.h>
+
+#include <cairo-pdf.h>
+
 #include "gtkprintoperation-private.h"
 #include "gtkmarshalers.h"
-#include <cairo-pdf.h>
 #include "gtkintl.h"
 #include "gtkprivate.h"
 #include "gtkmessagedialog.h"
-#include "gtkalias.h"
+#include "gtktypebuiltins.h"
+
+/**
+ * SECTION:gtkprintoperation
+ * @Title: GtkPrintOperation
+ * @Short_description: High-level Printing API
+ * @See_also: #GtkPrintContext, #GtkPrintUnixDialog
+ *
+ * GtkPrintOperation is the high-level, portable printing API.
+ * It looks a bit different than other GTK+ dialogs such as the
+ * #GtkFileChooser, since some platforms don't expose enough
+ * infrastructure to implement a good print dialog. On such
+ * platforms, GtkPrintOperation uses the native print dialog.
+ * On platforms which do not provide a native print dialog, GTK+
+ * uses its own, see #GtkPrintUnixDialog.
+ *
+ * The typical way to use the high-level printing API is to create
+ * a GtkPrintOperation object with gtk_print_operation_new() when
+ * the user selects to print. Then you set some properties on it,
+ * e.g. the page size, any #GtkPrintSettings from previous print
+ * operations, the number of pages, the current page, etc.
+ *
+ * Then you start the print operation by calling gtk_print_operation_run().
+ * It will then show a dialog, let the user select a printer and
+ * options. When the user finished the dialog various signals will
+ * be emitted on the #GtkPrintOperation, the main one being
+ * #GtkPrintOperation::draw-page, which you are supposed to catch
+ * and render the page on the provided #GtkPrintContext using Cairo.
+ *
+ * <example>
+ * <title>The high-level printing API</title>
+ * <programlisting>
+ * static GtkPrintSettings *settings = NULL;
+ *
+ * static void
+ * do_print (void)
+ * {
+ *   GtkPrintOperation *print;
+ *   GtkPrintOperationResult res;
+ *
+ *   print = gtk_print_operation_new ();
+ *
+ *   if (settings != NULL)
+ *     gtk_print_operation_set_print_settings (print, settings);
+ *
+ *   g_signal_connect (print, "begin_print", G_CALLBACK (begin_print), NULL);
+ *   g_signal_connect (print, "draw_page", G_CALLBACK (draw_page), NULL);
+ *
+ *   res = gtk_print_operation_run (print, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
+ *                                  GTK_WINDOW (main_window), NULL);
+ *
+ *   if (res == GTK_PRINT_OPERATION_RESULT_APPLY)
+ *     {
+ *       if (settings != NULL)
+ *         g_object_unref (settings);
+ *       settings = g_object_ref (gtk_print_operation_get_print_settings (print));
+ *     }
+ *
+ *   g_object_unref (print);
+ * }
+ * </programlisting>
+ * </example>
+ *
+ * By default GtkPrintOperation uses an external application to do
+ * print preview. To implement a custom print preview, an application
+ * must connect to the preview signal. The functions
+ * gtk_print_operation_print_preview_render_page(),
+ * gtk_print_operation_preview_end_preview() and
+ * gtk_print_operation_preview_is_selected()
+ * are useful when implementing a print preview.
+ */
 
 #define SHOW_PROGRESS_TIME 1200
 
-#define GTK_PRINT_OPERATION_GET_PRIVATE(obj)(G_TYPE_INSTANCE_GET_PRIVATE ((obj), GTK_TYPE_PRINT_OPERATION, GtkPrintOperationPrivate))
 
-enum 
+enum
 {
   DONE,
   BEGIN_PRINT,
@@ -156,7 +224,9 @@ gtk_print_operation_init (GtkPrintOperation *operation)
   GtkPrintOperationPrivate *priv;
   const char *appname;
 
-  priv = operation->priv = GTK_PRINT_OPERATION_GET_PRIVATE (operation);
+  priv = operation->priv = G_TYPE_INSTANCE_GET_PRIVATE (operation,
+                                                        GTK_TYPE_PRINT_OPERATION,
+                                                        GtkPrintOperationPrivate);
 
   priv->status = GTK_PRINT_STATUS_INITIAL;
   priv->status_string = g_strdup ("");
@@ -205,6 +275,7 @@ static void
 preview_iface_end_preview (GtkPrintOperationPreview *preview)
 {
   GtkPrintOperation *op;
+  GtkPrintOperationResult result;
   
   op = GTK_PRINT_OPERATION (preview);
 
@@ -218,7 +289,14 @@ preview_iface_end_preview (GtkPrintOperationPreview *preview)
   
   _gtk_print_operation_set_status (op, GTK_PRINT_STATUS_FINISHED, NULL);
 
-  g_signal_emit (op, signals[DONE], 0, GTK_PRINT_OPERATION_RESULT_APPLY);
+  if (op->priv->error)
+    result = GTK_PRINT_OPERATION_RESULT_ERROR;
+  else if (op->priv->cancelled)
+    result = GTK_PRINT_OPERATION_RESULT_CANCEL;
+  else
+    result = GTK_PRINT_OPERATION_RESULT_APPLY;
+
+  g_signal_emit (op, signals[DONE], 0, result);
 }
 
 static gboolean
@@ -470,11 +548,19 @@ preview_print_idle_done (gpointer data)
   op = GTK_PRINT_OPERATION (pop->preview);
 
   cairo_surface_finish (pop->surface);
-  /* Surface is destroyed in launch_preview */
-  _gtk_print_operation_platform_backend_launch_preview (op,
-							pop->surface,
-							pop->parent,
-							pop->filename);
+
+  if (op->priv->status == GTK_PRINT_STATUS_FINISHED_ABORTED)
+    {
+      cairo_surface_destroy (pop->surface);
+    }
+  else
+    {
+      /* Surface is destroyed in launch_preview */
+      _gtk_print_operation_platform_backend_launch_preview (op,
+							    pop->surface,
+							    pop->parent,
+							    pop->filename);
+    }
 
   g_free (pop->filename);
 
@@ -500,10 +586,14 @@ preview_print_idle (gpointer data)
   op = GTK_PRINT_OPERATION (pop->preview);
   priv = op->priv;
 
-
   if (priv->page_drawing_state == GTK_PAGE_DRAWING_STATE_READY)
     {
-      if (!pop->pages_data->initialized)
+      if (priv->cancelled)
+	{
+	  done = TRUE;
+          _gtk_print_operation_set_status (op, GTK_PRINT_STATUS_FINISHED_ABORTED, NULL);
+	}
+      else if (!pop->pages_data->initialized)
         {
           pop->pages_data->initialized = TRUE;
           prepare_data (pop->pages_data);
@@ -1880,7 +1970,7 @@ gtk_print_operation_set_custom_tab_label (GtkPrintOperation  *op,
 /**
  * gtk_print_operation_set_export_filename:
  * @op: a #GtkPrintOperation
- * @filename: the filename for the exported file
+ * @filename: (type filename): the filename for the exported file
  * 
  * Sets up the #GtkPrintOperation to generate a file instead
  * of showing the print dialog. The indended use of this function
@@ -2228,10 +2318,18 @@ print_pages_idle_done (gpointer user_data)
     g_main_loop_quit (priv->rloop);
 
   if (!data->is_preview)
-    g_signal_emit (data->op, signals[DONE], 0,
-		   priv->cancelled ?
-		   GTK_PRINT_OPERATION_RESULT_CANCEL :
-		   GTK_PRINT_OPERATION_RESULT_APPLY);
+    {
+      GtkPrintOperationResult result;
+
+      if (priv->error)
+        result = GTK_PRINT_OPERATION_RESULT_ERROR;
+      else if (priv->cancelled)
+        result = GTK_PRINT_OPERATION_RESULT_CANCEL;
+      else
+        result = GTK_PRINT_OPERATION_RESULT_APPLY;
+
+      g_signal_emit (data->op, signals[DONE], 0, result);
+    }
   
   g_object_unref (data->op);
   g_free (data->pages);
@@ -2320,7 +2418,7 @@ gtk_print_operation_set_embed_page_setup (GtkPrintOperation  *op,
  * gtk_print_operation_get_embed_page_setup:
  * @op: a #GtkPrintOperation
  *
- * Gets the value of #GtkPrintOperation::embed-page-setup property.
+ * Gets the value of #GtkPrintOperation:embed-page-setup property.
  * 
  * Returns: whether page setup selection combos are embedded
  *
@@ -2854,8 +2952,19 @@ print_pages (GtkPrintOperation       *op,
  
   if (!do_print) 
     {
+      GtkPrintOperationResult tmp_result;
+
       _gtk_print_operation_set_status (op, GTK_PRINT_STATUS_FINISHED_ABORTED, NULL);
-      g_signal_emit (op, signals[DONE], 0, result);
+
+      if (priv->error)
+        tmp_result = GTK_PRINT_OPERATION_RESULT_ERROR;
+      else if (priv->cancelled)
+        tmp_result = GTK_PRINT_OPERATION_RESULT_CANCEL;
+      else
+        tmp_result = result;
+
+      g_signal_emit (op, signals[DONE], 0, tmp_result);
+
       return;
   }
   
@@ -2907,8 +3016,9 @@ print_pages (GtkPrintOperation       *op,
           gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (error_dialog),
                                                     _("The most probable reason is that a temporary file could not be created."));
 
-          if (parent && parent->group)
-            gtk_window_group_add_window (parent->group, GTK_WINDOW (error_dialog));
+          if (parent && gtk_window_has_group (parent))
+            gtk_window_group_add_window (gtk_window_get_group (parent),
+                                         GTK_WINDOW (error_dialog));
 
           g_signal_connect (error_dialog, "response",
                             G_CALLBACK (gtk_widget_destroy), NULL);
@@ -3132,8 +3242,13 @@ gtk_print_operation_run (GtkPrintOperation        *op,
     print_pages (op, parent, do_print, result);
 
   if (priv->error && error)
-    *error = g_error_copy (priv->error);
-  
+    {
+      *error = g_error_copy (priv->error);
+      result = GTK_PRINT_OPERATION_RESULT_ERROR;
+    }
+  else if (priv->cancelled)
+    result = GTK_PRINT_OPERATION_RESULT_CANCEL;
+ 
   return result;
 }
 
@@ -3188,7 +3303,7 @@ gtk_print_operation_set_support_selection (GtkPrintOperation  *op,
  * gtk_print_operation_get_support_selection:
  * @op: a #GtkPrintOperation
  *
- * Gets the value of #GtkPrintOperation::support-selection property.
+ * Gets the value of #GtkPrintOperation:support-selection property.
  * 
  * Returns: whether the application supports print of selection
  *
@@ -3237,7 +3352,7 @@ gtk_print_operation_set_has_selection (GtkPrintOperation  *op,
  * gtk_print_operation_get_has_selection:
  * @op: a #GtkPrintOperation
  *
- * Gets the value of #GtkPrintOperation::has-selection property.
+ * Gets the value of #GtkPrintOperation:has-selection property.
  * 
  * Returns: whether there is a selection
  *
@@ -3276,6 +3391,3 @@ gtk_print_operation_get_n_pages_to_print (GtkPrintOperation *op)
 
   return op->priv->nr_of_pages_to_print;
 }
-
-#define __GTK_PRINT_OPERATION_C__
-#include "gtkaliasdef.c"

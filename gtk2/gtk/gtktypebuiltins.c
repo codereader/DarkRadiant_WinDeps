@@ -1,11 +1,31 @@
 
 /* Generated data (by glib-mkenums) */
 
-#undef GTK_DISABLE_DEPRECATED
-#define GTK_ENABLE_BROKEN
 #include "gtk.h"
 #include "gtkprivate.h"
-#include "gtkalias.h"
+
+/* enumerations from "gtkaboutdialog.h" */
+GType
+gtk_license_get_type (void)
+{
+    static GType etype = 0;
+    if (G_UNLIKELY(etype == 0)) {
+        static const GEnumValue values[] = {
+            { GTK_LICENSE_UNKNOWN, "GTK_LICENSE_UNKNOWN", "unknown" },
+            { GTK_LICENSE_CUSTOM, "GTK_LICENSE_CUSTOM", "custom" },
+            { GTK_LICENSE_GPL_2_0, "GTK_LICENSE_GPL_2_0", "gpl-2-0" },
+            { GTK_LICENSE_GPL_3_0, "GTK_LICENSE_GPL_3_0", "gpl-3-0" },
+            { GTK_LICENSE_LGPL_2_1, "GTK_LICENSE_LGPL_2_1", "lgpl-2-1" },
+            { GTK_LICENSE_LGPL_3_0, "GTK_LICENSE_LGPL_3_0", "lgpl-3-0" },
+            { GTK_LICENSE_BSD, "GTK_LICENSE_BSD", "bsd" },
+            { GTK_LICENSE_MIT_X11, "GTK_LICENSE_MIT_X11", "mit-x11" },
+            { GTK_LICENSE_ARTISTIC, "GTK_LICENSE_ARTISTIC", "artistic" },
+            { 0, NULL, NULL }
+        };
+        etype = g_enum_register_static (g_intern_static_string ("GtkLicense"), values);
+    }
+    return etype;
+}
 
 /* enumerations from "gtkaccelgroup.h" */
 GType
@@ -24,6 +44,24 @@ gtk_accel_flags_get_type (void)
     return etype;
 }
 
+/* enumerations from "gtkapplication.h" */
+GType
+gtk_application_inhibit_flags_get_type (void)
+{
+    static GType etype = 0;
+    if (G_UNLIKELY(etype == 0)) {
+        static const GFlagsValue values[] = {
+            { GTK_APPLICATION_INHIBIT_LOGOUT, "GTK_APPLICATION_INHIBIT_LOGOUT", "logout" },
+            { GTK_APPLICATION_INHIBIT_SWITCH, "GTK_APPLICATION_INHIBIT_SWITCH", "switch" },
+            { GTK_APPLICATION_INHIBIT_SUSPEND, "GTK_APPLICATION_INHIBIT_SUSPEND", "suspend" },
+            { GTK_APPLICATION_INHIBIT_IDLE, "GTK_APPLICATION_INHIBIT_IDLE", "idle" },
+            { 0, NULL, NULL }
+        };
+        etype = g_flags_register_static (g_intern_static_string ("GtkApplicationInhibitFlags"), values);
+    }
+    return etype;
+}
+
 /* enumerations from "gtkassistant.h" */
 GType
 gtk_assistant_page_type_get_type (void)
@@ -36,6 +74,7 @@ gtk_assistant_page_type_get_type (void)
             { GTK_ASSISTANT_PAGE_CONFIRM, "GTK_ASSISTANT_PAGE_CONFIRM", "confirm" },
             { GTK_ASSISTANT_PAGE_SUMMARY, "GTK_ASSISTANT_PAGE_SUMMARY", "summary" },
             { GTK_ASSISTANT_PAGE_PROGRESS, "GTK_ASSISTANT_PAGE_PROGRESS", "progress" },
+            { GTK_ASSISTANT_PAGE_CUSTOM, "GTK_ASSISTANT_PAGE_CUSTOM", "custom" },
             { 0, NULL, NULL }
         };
         etype = g_enum_register_static (g_intern_static_string ("GtkAssistantPageType"), values);
@@ -77,7 +116,6 @@ gtk_calendar_display_options_get_type (void)
             { GTK_CALENDAR_SHOW_DAY_NAMES, "GTK_CALENDAR_SHOW_DAY_NAMES", "show-day-names" },
             { GTK_CALENDAR_NO_MONTH_CHANGE, "GTK_CALENDAR_NO_MONTH_CHANGE", "no-month-change" },
             { GTK_CALENDAR_SHOW_WEEK_NUMBERS, "GTK_CALENDAR_SHOW_WEEK_NUMBERS", "show-week-numbers" },
-            { GTK_CALENDAR_WEEK_START_MONDAY, "GTK_CALENDAR_WEEK_START_MONDAY", "week-start-monday" },
             { GTK_CALENDAR_SHOW_DETAILS, "GTK_CALENDAR_SHOW_DETAILS", "show-details" },
             { 0, NULL, NULL }
         };
@@ -98,6 +136,8 @@ gtk_cell_renderer_state_get_type (void)
             { GTK_CELL_RENDERER_INSENSITIVE, "GTK_CELL_RENDERER_INSENSITIVE", "insensitive" },
             { GTK_CELL_RENDERER_SORTED, "GTK_CELL_RENDERER_SORTED", "sorted" },
             { GTK_CELL_RENDERER_FOCUSED, "GTK_CELL_RENDERER_FOCUSED", "focused" },
+            { GTK_CELL_RENDERER_EXPANDABLE, "GTK_CELL_RENDERER_EXPANDABLE", "expandable" },
+            { GTK_CELL_RENDERER_EXPANDED, "GTK_CELL_RENDERER_EXPANDED", "expanded" },
             { 0, NULL, NULL }
         };
         etype = g_flags_register_static (g_intern_static_string ("GtkCellRendererState"), values);
@@ -137,6 +177,48 @@ gtk_cell_renderer_accel_mode_get_type (void)
     return etype;
 }
 
+/* enumerations from "gtkcssprovider.h" */
+GType
+gtk_css_provider_error_get_type (void)
+{
+    static GType etype = 0;
+    if (G_UNLIKELY(etype == 0)) {
+        static const GEnumValue values[] = {
+            { GTK_CSS_PROVIDER_ERROR_FAILED, "GTK_CSS_PROVIDER_ERROR_FAILED", "failed" },
+            { GTK_CSS_PROVIDER_ERROR_SYNTAX, "GTK_CSS_PROVIDER_ERROR_SYNTAX", "syntax" },
+            { GTK_CSS_PROVIDER_ERROR_IMPORT, "GTK_CSS_PROVIDER_ERROR_IMPORT", "import" },
+            { GTK_CSS_PROVIDER_ERROR_NAME, "GTK_CSS_PROVIDER_ERROR_NAME", "name" },
+            { GTK_CSS_PROVIDER_ERROR_DEPRECATED, "GTK_CSS_PROVIDER_ERROR_DEPRECATED", "deprecated" },
+            { GTK_CSS_PROVIDER_ERROR_UNKNOWN_VALUE, "GTK_CSS_PROVIDER_ERROR_UNKNOWN_VALUE", "unknown-value" },
+            { 0, NULL, NULL }
+        };
+        etype = g_enum_register_static (g_intern_static_string ("GtkCssProviderError"), values);
+    }
+    return etype;
+}
+
+/* enumerations from "gtkcsssection.h" */
+GType
+gtk_css_section_type_get_type (void)
+{
+    static GType etype = 0;
+    if (G_UNLIKELY(etype == 0)) {
+        static const GEnumValue values[] = {
+            { GTK_CSS_SECTION_DOCUMENT, "GTK_CSS_SECTION_DOCUMENT", "document" },
+            { GTK_CSS_SECTION_IMPORT, "GTK_CSS_SECTION_IMPORT", "import" },
+            { GTK_CSS_SECTION_COLOR_DEFINITION, "GTK_CSS_SECTION_COLOR_DEFINITION", "color-definition" },
+            { GTK_CSS_SECTION_BINDING_SET, "GTK_CSS_SECTION_BINDING_SET", "binding-set" },
+            { GTK_CSS_SECTION_RULESET, "GTK_CSS_SECTION_RULESET", "ruleset" },
+            { GTK_CSS_SECTION_SELECTOR, "GTK_CSS_SECTION_SELECTOR", "selector" },
+            { GTK_CSS_SECTION_DECLARATION, "GTK_CSS_SECTION_DECLARATION", "declaration" },
+            { GTK_CSS_SECTION_VALUE, "GTK_CSS_SECTION_VALUE", "value" },
+            { 0, NULL, NULL }
+        };
+        etype = g_enum_register_static (g_intern_static_string ("GtkCssSectionType"), values);
+    }
+    return etype;
+}
+
 /* enumerations from "gtkdebug.h" */
 GType
 gtk_debug_flag_get_type (void)
@@ -156,6 +238,7 @@ gtk_debug_flag_get_type (void)
             { GTK_DEBUG_ICONTHEME, "GTK_DEBUG_ICONTHEME", "icontheme" },
             { GTK_DEBUG_PRINTING, "GTK_DEBUG_PRINTING", "printing" },
             { GTK_DEBUG_BUILDER, "GTK_DEBUG_BUILDER", "builder" },
+            { GTK_DEBUG_SIZE_REQUEST, "GTK_DEBUG_SIZE_REQUEST", "size-request" },
             { 0, NULL, NULL }
         };
         etype = g_flags_register_static (g_intern_static_string ("GtkDebugFlag"), values);
@@ -172,7 +255,6 @@ gtk_dialog_flags_get_type (void)
         static const GFlagsValue values[] = {
             { GTK_DIALOG_MODAL, "GTK_DIALOG_MODAL", "modal" },
             { GTK_DIALOG_DESTROY_WITH_PARENT, "GTK_DIALOG_DESTROY_WITH_PARENT", "destroy-with-parent" },
-            { GTK_DIALOG_NO_SEPARATOR, "GTK_DIALOG_NO_SEPARATOR", "no-separator" },
             { 0, NULL, NULL }
         };
         etype = g_flags_register_static (g_intern_static_string ("GtkDialogFlags"), values);
@@ -257,31 +339,18 @@ gtk_entry_icon_position_get_type (void)
 
 /* enumerations from "gtkenums.h" */
 GType
-gtk_anchor_type_get_type (void)
+gtk_align_get_type (void)
 {
     static GType etype = 0;
     if (G_UNLIKELY(etype == 0)) {
         static const GEnumValue values[] = {
-            { GTK_ANCHOR_CENTER, "GTK_ANCHOR_CENTER", "center" },
-            { GTK_ANCHOR_NORTH, "GTK_ANCHOR_NORTH", "north" },
-            { GTK_ANCHOR_NORTH_WEST, "GTK_ANCHOR_NORTH_WEST", "north-west" },
-            { GTK_ANCHOR_NORTH_EAST, "GTK_ANCHOR_NORTH_EAST", "north-east" },
-            { GTK_ANCHOR_SOUTH, "GTK_ANCHOR_SOUTH", "south" },
-            { GTK_ANCHOR_SOUTH_WEST, "GTK_ANCHOR_SOUTH_WEST", "south-west" },
-            { GTK_ANCHOR_SOUTH_EAST, "GTK_ANCHOR_SOUTH_EAST", "south-east" },
-            { GTK_ANCHOR_WEST, "GTK_ANCHOR_WEST", "west" },
-            { GTK_ANCHOR_EAST, "GTK_ANCHOR_EAST", "east" },
-            { GTK_ANCHOR_N, "GTK_ANCHOR_N", "n" },
-            { GTK_ANCHOR_NW, "GTK_ANCHOR_NW", "nw" },
-            { GTK_ANCHOR_NE, "GTK_ANCHOR_NE", "ne" },
-            { GTK_ANCHOR_S, "GTK_ANCHOR_S", "s" },
-            { GTK_ANCHOR_SW, "GTK_ANCHOR_SW", "sw" },
-            { GTK_ANCHOR_SE, "GTK_ANCHOR_SE", "se" },
-            { GTK_ANCHOR_W, "GTK_ANCHOR_W", "w" },
-            { GTK_ANCHOR_E, "GTK_ANCHOR_E", "e" },
+            { GTK_ALIGN_FILL, "GTK_ALIGN_FILL", "fill" },
+            { GTK_ALIGN_START, "GTK_ALIGN_START", "start" },
+            { GTK_ALIGN_END, "GTK_ALIGN_END", "end" },
+            { GTK_ALIGN_CENTER, "GTK_ALIGN_CENTER", "center" },
             { 0, NULL, NULL }
         };
-        etype = g_enum_register_static (g_intern_static_string ("GtkAnchorType"), values);
+        etype = g_enum_register_static (g_intern_static_string ("GtkAlign"), values);
     }
     return etype;
 }
@@ -342,7 +411,6 @@ gtk_button_box_style_get_type (void)
     static GType etype = 0;
     if (G_UNLIKELY(etype == 0)) {
         static const GEnumValue values[] = {
-            { GTK_BUTTONBOX_DEFAULT_STYLE, "GTK_BUTTONBOX_DEFAULT_STYLE", "default-style" },
             { GTK_BUTTONBOX_SPREAD, "GTK_BUTTONBOX_SPREAD", "spread" },
             { GTK_BUTTONBOX_EDGE, "GTK_BUTTONBOX_EDGE", "edge" },
             { GTK_BUTTONBOX_START, "GTK_BUTTONBOX_START", "start" },
@@ -351,22 +419,6 @@ gtk_button_box_style_get_type (void)
             { 0, NULL, NULL }
         };
         etype = g_enum_register_static (g_intern_static_string ("GtkButtonBoxStyle"), values);
-    }
-    return etype;
-}
-
-GType
-gtk_curve_type_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GTK_CURVE_TYPE_LINEAR, "GTK_CURVE_TYPE_LINEAR", "linear" },
-            { GTK_CURVE_TYPE_SPLINE, "GTK_CURVE_TYPE_SPLINE", "spline" },
-            { GTK_CURVE_TYPE_FREE, "GTK_CURVE_TYPE_FREE", "free" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GtkCurveType"), values);
     }
     return etype;
 }
@@ -465,23 +517,6 @@ gtk_sensitivity_type_get_type (void)
 }
 
 GType
-gtk_side_type_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GTK_SIDE_TOP, "GTK_SIDE_TOP", "top" },
-            { GTK_SIDE_BOTTOM, "GTK_SIDE_BOTTOM", "bottom" },
-            { GTK_SIDE_LEFT, "GTK_SIDE_LEFT", "left" },
-            { GTK_SIDE_RIGHT, "GTK_SIDE_RIGHT", "right" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GtkSideType"), values);
-    }
-    return etype;
-}
-
-GType
 gtk_text_direction_get_type (void)
 {
     static GType etype = 0;
@@ -510,25 +545,6 @@ gtk_justification_get_type (void)
             { 0, NULL, NULL }
         };
         etype = g_enum_register_static (g_intern_static_string ("GtkJustification"), values);
-    }
-    return etype;
-}
-
-GType
-gtk_match_type_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GTK_MATCH_ALL, "GTK_MATCH_ALL", "all" },
-            { GTK_MATCH_ALL_TAIL, "GTK_MATCH_ALL_TAIL", "all-tail" },
-            { GTK_MATCH_HEAD, "GTK_MATCH_HEAD", "head" },
-            { GTK_MATCH_TAIL, "GTK_MATCH_TAIL", "tail" },
-            { GTK_MATCH_EXACT, "GTK_MATCH_EXACT", "exact" },
-            { GTK_MATCH_LAST, "GTK_MATCH_LAST", "last" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GtkMatchType"), values);
     }
     return etype;
 }
@@ -564,22 +580,6 @@ gtk_message_type_get_type (void)
             { 0, NULL, NULL }
         };
         etype = g_enum_register_static (g_intern_static_string ("GtkMessageType"), values);
-    }
-    return etype;
-}
-
-GType
-gtk_metric_type_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GTK_PIXELS, "GTK_PIXELS", "pixels" },
-            { GTK_INCHES, "GTK_INCHES", "inches" },
-            { GTK_CENTIMETERS, "GTK_CENTIMETERS", "centimeters" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GtkMetricType"), values);
     }
     return etype;
 }
@@ -742,21 +742,6 @@ gtk_position_type_get_type (void)
 }
 
 GType
-gtk_preview_type_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GTK_PREVIEW_COLOR, "GTK_PREVIEW_COLOR", "color" },
-            { GTK_PREVIEW_GRAYSCALE, "GTK_PREVIEW_GRAYSCALE", "grayscale" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GtkPreviewType"), values);
-    }
-    return etype;
-}
-
-GType
 gtk_relief_style_get_type (void)
 {
     static GType etype = 0;
@@ -784,25 +769,6 @@ gtk_resize_mode_get_type (void)
             { 0, NULL, NULL }
         };
         etype = g_enum_register_static (g_intern_static_string ("GtkResizeMode"), values);
-    }
-    return etype;
-}
-
-GType
-gtk_signal_run_type_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GFlagsValue values[] = {
-            { GTK_RUN_FIRST, "GTK_RUN_FIRST", "first" },
-            { GTK_RUN_LAST, "GTK_RUN_LAST", "last" },
-            { GTK_RUN_BOTH, "GTK_RUN_BOTH", "both" },
-            { GTK_RUN_NO_RECURSE, "GTK_RUN_NO_RECURSE", "no-recurse" },
-            { GTK_RUN_ACTION, "GTK_RUN_ACTION", "action" },
-            { GTK_RUN_NO_HOOKS, "GTK_RUN_NO_HOOKS", "no-hooks" },
-            { 0, NULL, NULL }
-        };
-        etype = g_flags_register_static (g_intern_static_string ("GtkSignalRunType"), values);
     }
     return etype;
 }
@@ -846,7 +812,6 @@ gtk_selection_mode_get_type (void)
             { GTK_SELECTION_SINGLE, "GTK_SELECTION_SINGLE", "single" },
             { GTK_SELECTION_BROWSE, "GTK_SELECTION_BROWSE", "browse" },
             { GTK_SELECTION_MULTIPLE, "GTK_SELECTION_MULTIPLE", "multiple" },
-            { GTK_SELECTION_EXTENDED, "GTK_SELECTION_EXTENDED", "extended" },
             { 0, NULL, NULL }
         };
         etype = g_enum_register_static (g_intern_static_string ("GtkSelectionMode"), values);
@@ -883,39 +848,11 @@ gtk_state_type_get_type (void)
             { GTK_STATE_PRELIGHT, "GTK_STATE_PRELIGHT", "prelight" },
             { GTK_STATE_SELECTED, "GTK_STATE_SELECTED", "selected" },
             { GTK_STATE_INSENSITIVE, "GTK_STATE_INSENSITIVE", "insensitive" },
+            { GTK_STATE_INCONSISTENT, "GTK_STATE_INCONSISTENT", "inconsistent" },
+            { GTK_STATE_FOCUSED, "GTK_STATE_FOCUSED", "focused" },
             { 0, NULL, NULL }
         };
         etype = g_enum_register_static (g_intern_static_string ("GtkStateType"), values);
-    }
-    return etype;
-}
-
-GType
-gtk_submenu_direction_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GTK_DIRECTION_LEFT, "GTK_DIRECTION_LEFT", "left" },
-            { GTK_DIRECTION_RIGHT, "GTK_DIRECTION_RIGHT", "right" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GtkSubmenuDirection"), values);
-    }
-    return etype;
-}
-
-GType
-gtk_submenu_placement_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GTK_TOP_BOTTOM, "GTK_TOP_BOTTOM", "top-bottom" },
-            { GTK_LEFT_RIGHT, "GTK_LEFT_RIGHT", "left-right" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GtkSubmenuPlacement"), values);
     }
     return etype;
 }
@@ -933,38 +870,6 @@ gtk_toolbar_style_get_type (void)
             { 0, NULL, NULL }
         };
         etype = g_enum_register_static (g_intern_static_string ("GtkToolbarStyle"), values);
-    }
-    return etype;
-}
-
-GType
-gtk_update_type_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GTK_UPDATE_CONTINUOUS, "GTK_UPDATE_CONTINUOUS", "continuous" },
-            { GTK_UPDATE_DISCONTINUOUS, "GTK_UPDATE_DISCONTINUOUS", "discontinuous" },
-            { GTK_UPDATE_DELAYED, "GTK_UPDATE_DELAYED", "delayed" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GtkUpdateType"), values);
-    }
-    return etype;
-}
-
-GType
-gtk_visibility_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GTK_VISIBILITY_NONE, "GTK_VISIBILITY_NONE", "none" },
-            { GTK_VISIBILITY_PARTIAL, "GTK_VISIBILITY_PARTIAL", "partial" },
-            { GTK_VISIBILITY_FULL, "GTK_VISIBILITY_FULL", "full" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GtkVisibility"), values);
     }
     return etype;
 }
@@ -1240,6 +1145,122 @@ gtk_drag_result_get_type (void)
     return etype;
 }
 
+GType
+gtk_size_request_mode_get_type (void)
+{
+    static GType etype = 0;
+    if (G_UNLIKELY(etype == 0)) {
+        static const GEnumValue values[] = {
+            { GTK_SIZE_REQUEST_HEIGHT_FOR_WIDTH, "GTK_SIZE_REQUEST_HEIGHT_FOR_WIDTH", "height-for-width" },
+            { GTK_SIZE_REQUEST_WIDTH_FOR_HEIGHT, "GTK_SIZE_REQUEST_WIDTH_FOR_HEIGHT", "width-for-height" },
+            { GTK_SIZE_REQUEST_CONSTANT_SIZE, "GTK_SIZE_REQUEST_CONSTANT_SIZE", "constant-size" },
+            { 0, NULL, NULL }
+        };
+        etype = g_enum_register_static (g_intern_static_string ("GtkSizeRequestMode"), values);
+    }
+    return etype;
+}
+
+GType
+gtk_scrollable_policy_get_type (void)
+{
+    static GType etype = 0;
+    if (G_UNLIKELY(etype == 0)) {
+        static const GEnumValue values[] = {
+            { GTK_SCROLL_MINIMUM, "GTK_SCROLL_MINIMUM", "minimum" },
+            { GTK_SCROLL_NATURAL, "GTK_SCROLL_NATURAL", "natural" },
+            { 0, NULL, NULL }
+        };
+        etype = g_enum_register_static (g_intern_static_string ("GtkScrollablePolicy"), values);
+    }
+    return etype;
+}
+
+GType
+gtk_state_flags_get_type (void)
+{
+    static GType etype = 0;
+    if (G_UNLIKELY(etype == 0)) {
+        static const GFlagsValue values[] = {
+            { GTK_STATE_FLAG_NORMAL, "GTK_STATE_FLAG_NORMAL", "normal" },
+            { GTK_STATE_FLAG_ACTIVE, "GTK_STATE_FLAG_ACTIVE", "active" },
+            { GTK_STATE_FLAG_PRELIGHT, "GTK_STATE_FLAG_PRELIGHT", "prelight" },
+            { GTK_STATE_FLAG_SELECTED, "GTK_STATE_FLAG_SELECTED", "selected" },
+            { GTK_STATE_FLAG_INSENSITIVE, "GTK_STATE_FLAG_INSENSITIVE", "insensitive" },
+            { GTK_STATE_FLAG_INCONSISTENT, "GTK_STATE_FLAG_INCONSISTENT", "inconsistent" },
+            { GTK_STATE_FLAG_FOCUSED, "GTK_STATE_FLAG_FOCUSED", "focused" },
+            { GTK_STATE_FLAG_BACKDROP, "GTK_STATE_FLAG_BACKDROP", "backdrop" },
+            { 0, NULL, NULL }
+        };
+        etype = g_flags_register_static (g_intern_static_string ("GtkStateFlags"), values);
+    }
+    return etype;
+}
+
+GType
+gtk_region_flags_get_type (void)
+{
+    static GType etype = 0;
+    if (G_UNLIKELY(etype == 0)) {
+        static const GFlagsValue values[] = {
+            { GTK_REGION_EVEN, "GTK_REGION_EVEN", "even" },
+            { GTK_REGION_ODD, "GTK_REGION_ODD", "odd" },
+            { GTK_REGION_FIRST, "GTK_REGION_FIRST", "first" },
+            { GTK_REGION_LAST, "GTK_REGION_LAST", "last" },
+            { GTK_REGION_ONLY, "GTK_REGION_ONLY", "only" },
+            { GTK_REGION_SORTED, "GTK_REGION_SORTED", "sorted" },
+            { 0, NULL, NULL }
+        };
+        etype = g_flags_register_static (g_intern_static_string ("GtkRegionFlags"), values);
+    }
+    return etype;
+}
+
+GType
+gtk_junction_sides_get_type (void)
+{
+    static GType etype = 0;
+    if (G_UNLIKELY(etype == 0)) {
+        static const GFlagsValue values[] = {
+            { GTK_JUNCTION_NONE, "GTK_JUNCTION_NONE", "none" },
+            { GTK_JUNCTION_CORNER_TOPLEFT, "GTK_JUNCTION_CORNER_TOPLEFT", "corner-topleft" },
+            { GTK_JUNCTION_CORNER_TOPRIGHT, "GTK_JUNCTION_CORNER_TOPRIGHT", "corner-topright" },
+            { GTK_JUNCTION_CORNER_BOTTOMLEFT, "GTK_JUNCTION_CORNER_BOTTOMLEFT", "corner-bottomleft" },
+            { GTK_JUNCTION_CORNER_BOTTOMRIGHT, "GTK_JUNCTION_CORNER_BOTTOMRIGHT", "corner-bottomright" },
+            { GTK_JUNCTION_TOP, "GTK_JUNCTION_TOP", "top" },
+            { GTK_JUNCTION_BOTTOM, "GTK_JUNCTION_BOTTOM", "bottom" },
+            { GTK_JUNCTION_LEFT, "GTK_JUNCTION_LEFT", "left" },
+            { GTK_JUNCTION_RIGHT, "GTK_JUNCTION_RIGHT", "right" },
+            { 0, NULL, NULL }
+        };
+        etype = g_flags_register_static (g_intern_static_string ("GtkJunctionSides"), values);
+    }
+    return etype;
+}
+
+GType
+gtk_border_style_get_type (void)
+{
+    static GType etype = 0;
+    if (G_UNLIKELY(etype == 0)) {
+        static const GEnumValue values[] = {
+            { GTK_BORDER_STYLE_NONE, "GTK_BORDER_STYLE_NONE", "none" },
+            { GTK_BORDER_STYLE_SOLID, "GTK_BORDER_STYLE_SOLID", "solid" },
+            { GTK_BORDER_STYLE_INSET, "GTK_BORDER_STYLE_INSET", "inset" },
+            { GTK_BORDER_STYLE_OUTSET, "GTK_BORDER_STYLE_OUTSET", "outset" },
+            { GTK_BORDER_STYLE_HIDDEN, "GTK_BORDER_STYLE_HIDDEN", "hidden" },
+            { GTK_BORDER_STYLE_DOTTED, "GTK_BORDER_STYLE_DOTTED", "dotted" },
+            { GTK_BORDER_STYLE_DASHED, "GTK_BORDER_STYLE_DASHED", "dashed" },
+            { GTK_BORDER_STYLE_DOUBLE, "GTK_BORDER_STYLE_DOUBLE", "double" },
+            { GTK_BORDER_STYLE_GROOVE, "GTK_BORDER_STYLE_GROOVE", "groove" },
+            { GTK_BORDER_STYLE_RIDGE, "GTK_BORDER_STYLE_RIDGE", "ridge" },
+            { 0, NULL, NULL }
+        };
+        etype = g_enum_register_static (g_intern_static_string ("GtkBorderStyle"), values);
+    }
+    return etype;
+}
+
 /* enumerations from "gtkfilechooser.h" */
 GType
 gtk_file_chooser_action_get_type (void)
@@ -1371,8 +1392,6 @@ gtk_image_type_get_type (void)
     if (G_UNLIKELY(etype == 0)) {
         static const GEnumValue values[] = {
             { GTK_IMAGE_EMPTY, "GTK_IMAGE_EMPTY", "empty" },
-            { GTK_IMAGE_PIXMAP, "GTK_IMAGE_PIXMAP", "pixmap" },
-            { GTK_IMAGE_IMAGE, "GTK_IMAGE_IMAGE", "image" },
             { GTK_IMAGE_PIXBUF, "GTK_IMAGE_PIXBUF", "pixbuf" },
             { GTK_IMAGE_STOCK, "GTK_IMAGE_STOCK", "stock" },
             { GTK_IMAGE_ICON_SET, "GTK_IMAGE_ICON_SET", "icon-set" },
@@ -1418,42 +1437,6 @@ gtk_notebook_tab_get_type (void)
             { 0, NULL, NULL }
         };
         etype = g_enum_register_static (g_intern_static_string ("GtkNotebookTab"), values);
-    }
-    return etype;
-}
-
-/* enumerations from "gtkobject.h" */
-GType
-gtk_object_flags_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GFlagsValue values[] = {
-            { GTK_IN_DESTRUCTION, "GTK_IN_DESTRUCTION", "in-destruction" },
-            { GTK_FLOATING, "GTK_FLOATING", "floating" },
-            { GTK_RESERVED_1, "GTK_RESERVED_1", "reserved-1" },
-            { GTK_RESERVED_2, "GTK_RESERVED_2", "reserved-2" },
-            { 0, NULL, NULL }
-        };
-        etype = g_flags_register_static (g_intern_static_string ("GtkObjectFlags"), values);
-    }
-    return etype;
-}
-
-GType
-gtk_arg_flags_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GFlagsValue values[] = {
-            { GTK_ARG_READABLE, "GTK_ARG_READABLE", "readable" },
-            { GTK_ARG_WRITABLE, "GTK_ARG_WRITABLE", "writable" },
-            { GTK_ARG_CONSTRUCT, "GTK_ARG_CONSTRUCT", "construct" },
-            { GTK_ARG_CONSTRUCT_ONLY, "GTK_ARG_CONSTRUCT_ONLY", "construct-only" },
-            { GTK_ARG_CHILD_ARG, "GTK_ARG_CHILD_ARG", "child-arg" },
-            { 0, NULL, NULL }
-        };
-        etype = g_flags_register_static (g_intern_static_string ("GtkArgFlags"), values);
     }
     return etype;
 }
@@ -1528,137 +1511,6 @@ gtk_print_error_get_type (void)
             { 0, NULL, NULL }
         };
         etype = g_enum_register_static (g_intern_static_string ("GtkPrintError"), values);
-    }
-    return etype;
-}
-
-/* enumerations from "gtkprivate.h" */
-GType
-gtk_private_flags_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GFlagsValue values[] = {
-            { PRIVATE_GTK_USER_STYLE, "PRIVATE_GTK_USER_STYLE", "user-style" },
-            { PRIVATE_GTK_RESIZE_PENDING, "PRIVATE_GTK_RESIZE_PENDING", "resize-pending" },
-            { PRIVATE_GTK_HAS_POINTER, "PRIVATE_GTK_HAS_POINTER", "has-pointer" },
-            { PRIVATE_GTK_SHADOWED, "PRIVATE_GTK_SHADOWED", "shadowed" },
-            { PRIVATE_GTK_HAS_SHAPE_MASK, "PRIVATE_GTK_HAS_SHAPE_MASK", "has-shape-mask" },
-            { PRIVATE_GTK_IN_REPARENT, "PRIVATE_GTK_IN_REPARENT", "in-reparent" },
-            { PRIVATE_GTK_DIRECTION_SET, "PRIVATE_GTK_DIRECTION_SET", "direction-set" },
-            { PRIVATE_GTK_DIRECTION_LTR, "PRIVATE_GTK_DIRECTION_LTR", "direction-ltr" },
-            { PRIVATE_GTK_ANCHORED, "PRIVATE_GTK_ANCHORED", "anchored" },
-            { PRIVATE_GTK_CHILD_VISIBLE, "PRIVATE_GTK_CHILD_VISIBLE", "child-visible" },
-            { PRIVATE_GTK_REDRAW_ON_ALLOC, "PRIVATE_GTK_REDRAW_ON_ALLOC", "redraw-on-alloc" },
-            { PRIVATE_GTK_ALLOC_NEEDED, "PRIVATE_GTK_ALLOC_NEEDED", "alloc-needed" },
-            { PRIVATE_GTK_REQUEST_NEEDED, "PRIVATE_GTK_REQUEST_NEEDED", "request-needed" },
-            { 0, NULL, NULL }
-        };
-        etype = g_flags_register_static (g_intern_static_string ("GtkPrivateFlags"), values);
-    }
-    return etype;
-}
-
-/* enumerations from "gtkprogressbar.h" */
-GType
-gtk_progress_bar_style_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GTK_PROGRESS_CONTINUOUS, "GTK_PROGRESS_CONTINUOUS", "continuous" },
-            { GTK_PROGRESS_DISCRETE, "GTK_PROGRESS_DISCRETE", "discrete" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GtkProgressBarStyle"), values);
-    }
-    return etype;
-}
-
-GType
-gtk_progress_bar_orientation_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GTK_PROGRESS_LEFT_TO_RIGHT, "GTK_PROGRESS_LEFT_TO_RIGHT", "left-to-right" },
-            { GTK_PROGRESS_RIGHT_TO_LEFT, "GTK_PROGRESS_RIGHT_TO_LEFT", "right-to-left" },
-            { GTK_PROGRESS_BOTTOM_TO_TOP, "GTK_PROGRESS_BOTTOM_TO_TOP", "bottom-to-top" },
-            { GTK_PROGRESS_TOP_TO_BOTTOM, "GTK_PROGRESS_TOP_TO_BOTTOM", "top-to-bottom" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GtkProgressBarOrientation"), values);
-    }
-    return etype;
-}
-
-/* enumerations from "gtkrc.h" */
-GType
-gtk_rc_flags_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GFlagsValue values[] = {
-            { GTK_RC_FG, "GTK_RC_FG", "fg" },
-            { GTK_RC_BG, "GTK_RC_BG", "bg" },
-            { GTK_RC_TEXT, "GTK_RC_TEXT", "text" },
-            { GTK_RC_BASE, "GTK_RC_BASE", "base" },
-            { 0, NULL, NULL }
-        };
-        etype = g_flags_register_static (g_intern_static_string ("GtkRcFlags"), values);
-    }
-    return etype;
-}
-
-GType
-gtk_rc_token_type_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GTK_RC_TOKEN_INVALID, "GTK_RC_TOKEN_INVALID", "invalid" },
-            { GTK_RC_TOKEN_INCLUDE, "GTK_RC_TOKEN_INCLUDE", "include" },
-            { GTK_RC_TOKEN_NORMAL, "GTK_RC_TOKEN_NORMAL", "normal" },
-            { GTK_RC_TOKEN_ACTIVE, "GTK_RC_TOKEN_ACTIVE", "active" },
-            { GTK_RC_TOKEN_PRELIGHT, "GTK_RC_TOKEN_PRELIGHT", "prelight" },
-            { GTK_RC_TOKEN_SELECTED, "GTK_RC_TOKEN_SELECTED", "selected" },
-            { GTK_RC_TOKEN_INSENSITIVE, "GTK_RC_TOKEN_INSENSITIVE", "insensitive" },
-            { GTK_RC_TOKEN_FG, "GTK_RC_TOKEN_FG", "fg" },
-            { GTK_RC_TOKEN_BG, "GTK_RC_TOKEN_BG", "bg" },
-            { GTK_RC_TOKEN_TEXT, "GTK_RC_TOKEN_TEXT", "text" },
-            { GTK_RC_TOKEN_BASE, "GTK_RC_TOKEN_BASE", "base" },
-            { GTK_RC_TOKEN_XTHICKNESS, "GTK_RC_TOKEN_XTHICKNESS", "xthickness" },
-            { GTK_RC_TOKEN_YTHICKNESS, "GTK_RC_TOKEN_YTHICKNESS", "ythickness" },
-            { GTK_RC_TOKEN_FONT, "GTK_RC_TOKEN_FONT", "font" },
-            { GTK_RC_TOKEN_FONTSET, "GTK_RC_TOKEN_FONTSET", "fontset" },
-            { GTK_RC_TOKEN_FONT_NAME, "GTK_RC_TOKEN_FONT_NAME", "font-name" },
-            { GTK_RC_TOKEN_BG_PIXMAP, "GTK_RC_TOKEN_BG_PIXMAP", "bg-pixmap" },
-            { GTK_RC_TOKEN_PIXMAP_PATH, "GTK_RC_TOKEN_PIXMAP_PATH", "pixmap-path" },
-            { GTK_RC_TOKEN_STYLE, "GTK_RC_TOKEN_STYLE", "style" },
-            { GTK_RC_TOKEN_BINDING, "GTK_RC_TOKEN_BINDING", "binding" },
-            { GTK_RC_TOKEN_BIND, "GTK_RC_TOKEN_BIND", "bind" },
-            { GTK_RC_TOKEN_WIDGET, "GTK_RC_TOKEN_WIDGET", "widget" },
-            { GTK_RC_TOKEN_WIDGET_CLASS, "GTK_RC_TOKEN_WIDGET_CLASS", "widget-class" },
-            { GTK_RC_TOKEN_CLASS, "GTK_RC_TOKEN_CLASS", "class" },
-            { GTK_RC_TOKEN_LOWEST, "GTK_RC_TOKEN_LOWEST", "lowest" },
-            { GTK_RC_TOKEN_GTK, "GTK_RC_TOKEN_GTK", "gtk" },
-            { GTK_RC_TOKEN_APPLICATION, "GTK_RC_TOKEN_APPLICATION", "application" },
-            { GTK_RC_TOKEN_THEME, "GTK_RC_TOKEN_THEME", "theme" },
-            { GTK_RC_TOKEN_RC, "GTK_RC_TOKEN_RC", "rc" },
-            { GTK_RC_TOKEN_HIGHEST, "GTK_RC_TOKEN_HIGHEST", "highest" },
-            { GTK_RC_TOKEN_ENGINE, "GTK_RC_TOKEN_ENGINE", "engine" },
-            { GTK_RC_TOKEN_MODULE_PATH, "GTK_RC_TOKEN_MODULE_PATH", "module-path" },
-            { GTK_RC_TOKEN_IM_MODULE_PATH, "GTK_RC_TOKEN_IM_MODULE_PATH", "im-module-path" },
-            { GTK_RC_TOKEN_IM_MODULE_FILE, "GTK_RC_TOKEN_IM_MODULE_FILE", "im-module-file" },
-            { GTK_RC_TOKEN_STOCK, "GTK_RC_TOKEN_STOCK", "stock" },
-            { GTK_RC_TOKEN_LTR, "GTK_RC_TOKEN_LTR", "ltr" },
-            { GTK_RC_TOKEN_RTL, "GTK_RC_TOKEN_RTL", "rtl" },
-            { GTK_RC_TOKEN_COLOR, "GTK_RC_TOKEN_COLOR", "color" },
-            { GTK_RC_TOKEN_UNBIND, "GTK_RC_TOKEN_UNBIND", "unbind" },
-            { GTK_RC_TOKEN_LAST, "GTK_RC_TOKEN_LAST", "last" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GtkRcTokenType"), values);
     }
     return etype;
 }
@@ -1817,6 +1669,7 @@ gtk_text_search_flags_get_type (void)
         static const GFlagsValue values[] = {
             { GTK_TEXT_SEARCH_VISIBLE_ONLY, "GTK_TEXT_SEARCH_VISIBLE_ONLY", "visible-only" },
             { GTK_TEXT_SEARCH_TEXT_ONLY, "GTK_TEXT_SEARCH_TEXT_ONLY", "text-only" },
+            { GTK_TEXT_SEARCH_CASE_INSENSITIVE, "GTK_TEXT_SEARCH_CASE_INSENSITIVE", "case-insensitive" },
             { 0, NULL, NULL }
         };
         etype = g_flags_register_static (g_intern_static_string ("GtkTextSearchFlags"), values);
@@ -1846,24 +1699,6 @@ gtk_text_window_type_get_type (void)
 }
 
 /* enumerations from "gtktoolbar.h" */
-GType
-gtk_toolbar_child_type_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GTK_TOOLBAR_CHILD_SPACE, "GTK_TOOLBAR_CHILD_SPACE", "space" },
-            { GTK_TOOLBAR_CHILD_BUTTON, "GTK_TOOLBAR_CHILD_BUTTON", "button" },
-            { GTK_TOOLBAR_CHILD_TOGGLEBUTTON, "GTK_TOOLBAR_CHILD_TOGGLEBUTTON", "togglebutton" },
-            { GTK_TOOLBAR_CHILD_RADIOBUTTON, "GTK_TOOLBAR_CHILD_RADIOBUTTON", "radiobutton" },
-            { GTK_TOOLBAR_CHILD_WIDGET, "GTK_TOOLBAR_CHILD_WIDGET", "widget" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GtkToolbarChildType"), values);
-    }
-    return etype;
-}
-
 GType
 gtk_toolbar_space_style_get_type (void)
 {
@@ -1973,38 +1808,6 @@ gtk_ui_manager_item_type_get_type (void)
 
 /* enumerations from "gtkwidget.h" */
 GType
-gtk_widget_flags_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GFlagsValue values[] = {
-            { GTK_TOPLEVEL, "GTK_TOPLEVEL", "toplevel" },
-            { GTK_NO_WINDOW, "GTK_NO_WINDOW", "no-window" },
-            { GTK_REALIZED, "GTK_REALIZED", "realized" },
-            { GTK_MAPPED, "GTK_MAPPED", "mapped" },
-            { GTK_VISIBLE, "GTK_VISIBLE", "visible" },
-            { GTK_SENSITIVE, "GTK_SENSITIVE", "sensitive" },
-            { GTK_PARENT_SENSITIVE, "GTK_PARENT_SENSITIVE", "parent-sensitive" },
-            { GTK_CAN_FOCUS, "GTK_CAN_FOCUS", "can-focus" },
-            { GTK_HAS_FOCUS, "GTK_HAS_FOCUS", "has-focus" },
-            { GTK_CAN_DEFAULT, "GTK_CAN_DEFAULT", "can-default" },
-            { GTK_HAS_DEFAULT, "GTK_HAS_DEFAULT", "has-default" },
-            { GTK_HAS_GRAB, "GTK_HAS_GRAB", "has-grab" },
-            { GTK_RC_STYLE, "GTK_RC_STYLE", "rc-style" },
-            { GTK_COMPOSITE_CHILD, "GTK_COMPOSITE_CHILD", "composite-child" },
-            { GTK_NO_REPARENT, "GTK_NO_REPARENT", "no-reparent" },
-            { GTK_APP_PAINTABLE, "GTK_APP_PAINTABLE", "app-paintable" },
-            { GTK_RECEIVES_DEFAULT, "GTK_RECEIVES_DEFAULT", "receives-default" },
-            { GTK_DOUBLE_BUFFERED, "GTK_DOUBLE_BUFFERED", "double-buffered" },
-            { GTK_NO_SHOW_ALL, "GTK_NO_SHOW_ALL", "no-show-all" },
-            { 0, NULL, NULL }
-        };
-        etype = g_flags_register_static (g_intern_static_string ("GtkWidgetFlags"), values);
-    }
-    return etype;
-}
-
-GType
 gtk_widget_help_type_get_type (void)
 {
     static GType etype = 0;
@@ -2019,147 +1822,78 @@ gtk_widget_help_type_get_type (void)
     return etype;
 }
 
-/* enumerations from "gtktree.h" */
+/* enumerations from "deprecated/gtkrc.h" */
 GType
-gtk_tree_view_mode_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GTK_TREE_VIEW_LINE, "GTK_TREE_VIEW_LINE", "line" },
-            { GTK_TREE_VIEW_ITEM, "GTK_TREE_VIEW_ITEM", "item" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GtkTreeViewMode"), values);
-    }
-    return etype;
-}
-
-/* enumerations from "gtkclist.h" */
-GType
-gtk_cell_type_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GTK_CELL_EMPTY, "GTK_CELL_EMPTY", "empty" },
-            { GTK_CELL_TEXT, "GTK_CELL_TEXT", "text" },
-            { GTK_CELL_PIXMAP, "GTK_CELL_PIXMAP", "pixmap" },
-            { GTK_CELL_PIXTEXT, "GTK_CELL_PIXTEXT", "pixtext" },
-            { GTK_CELL_WIDGET, "GTK_CELL_WIDGET", "widget" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GtkCellType"), values);
-    }
-    return etype;
-}
-
-GType
-gtk_clist_drag_pos_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GTK_CLIST_DRAG_NONE, "GTK_CLIST_DRAG_NONE", "none" },
-            { GTK_CLIST_DRAG_BEFORE, "GTK_CLIST_DRAG_BEFORE", "before" },
-            { GTK_CLIST_DRAG_INTO, "GTK_CLIST_DRAG_INTO", "into" },
-            { GTK_CLIST_DRAG_AFTER, "GTK_CLIST_DRAG_AFTER", "after" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GtkCListDragPos"), values);
-    }
-    return etype;
-}
-
-GType
-gtk_button_action_get_type (void)
+gtk_rc_flags_get_type (void)
 {
     static GType etype = 0;
     if (G_UNLIKELY(etype == 0)) {
         static const GFlagsValue values[] = {
-            { GTK_BUTTON_IGNORED, "GTK_BUTTON_IGNORED", "ignored" },
-            { GTK_BUTTON_SELECTS, "GTK_BUTTON_SELECTS", "selects" },
-            { GTK_BUTTON_DRAGS, "GTK_BUTTON_DRAGS", "drags" },
-            { GTK_BUTTON_EXPANDS, "GTK_BUTTON_EXPANDS", "expands" },
+            { GTK_RC_FG, "GTK_RC_FG", "fg" },
+            { GTK_RC_BG, "GTK_RC_BG", "bg" },
+            { GTK_RC_TEXT, "GTK_RC_TEXT", "text" },
+            { GTK_RC_BASE, "GTK_RC_BASE", "base" },
             { 0, NULL, NULL }
         };
-        etype = g_flags_register_static (g_intern_static_string ("GtkButtonAction"), values);
-    }
-    return etype;
-}
-
-/* enumerations from "gtkctree.h" */
-GType
-gtk_ctree_pos_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GTK_CTREE_POS_BEFORE, "GTK_CTREE_POS_BEFORE", "before" },
-            { GTK_CTREE_POS_AS_CHILD, "GTK_CTREE_POS_AS_CHILD", "as-child" },
-            { GTK_CTREE_POS_AFTER, "GTK_CTREE_POS_AFTER", "after" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GtkCTreePos"), values);
+        etype = g_flags_register_static (g_intern_static_string ("GtkRcFlags"), values);
     }
     return etype;
 }
 
 GType
-gtk_ctree_line_style_get_type (void)
+gtk_rc_token_type_get_type (void)
 {
     static GType etype = 0;
     if (G_UNLIKELY(etype == 0)) {
         static const GEnumValue values[] = {
-            { GTK_CTREE_LINES_NONE, "GTK_CTREE_LINES_NONE", "none" },
-            { GTK_CTREE_LINES_SOLID, "GTK_CTREE_LINES_SOLID", "solid" },
-            { GTK_CTREE_LINES_DOTTED, "GTK_CTREE_LINES_DOTTED", "dotted" },
-            { GTK_CTREE_LINES_TABBED, "GTK_CTREE_LINES_TABBED", "tabbed" },
+            { GTK_RC_TOKEN_INVALID, "GTK_RC_TOKEN_INVALID", "invalid" },
+            { GTK_RC_TOKEN_INCLUDE, "GTK_RC_TOKEN_INCLUDE", "include" },
+            { GTK_RC_TOKEN_NORMAL, "GTK_RC_TOKEN_NORMAL", "normal" },
+            { GTK_RC_TOKEN_ACTIVE, "GTK_RC_TOKEN_ACTIVE", "active" },
+            { GTK_RC_TOKEN_PRELIGHT, "GTK_RC_TOKEN_PRELIGHT", "prelight" },
+            { GTK_RC_TOKEN_SELECTED, "GTK_RC_TOKEN_SELECTED", "selected" },
+            { GTK_RC_TOKEN_INSENSITIVE, "GTK_RC_TOKEN_INSENSITIVE", "insensitive" },
+            { GTK_RC_TOKEN_FG, "GTK_RC_TOKEN_FG", "fg" },
+            { GTK_RC_TOKEN_BG, "GTK_RC_TOKEN_BG", "bg" },
+            { GTK_RC_TOKEN_TEXT, "GTK_RC_TOKEN_TEXT", "text" },
+            { GTK_RC_TOKEN_BASE, "GTK_RC_TOKEN_BASE", "base" },
+            { GTK_RC_TOKEN_XTHICKNESS, "GTK_RC_TOKEN_XTHICKNESS", "xthickness" },
+            { GTK_RC_TOKEN_YTHICKNESS, "GTK_RC_TOKEN_YTHICKNESS", "ythickness" },
+            { GTK_RC_TOKEN_FONT, "GTK_RC_TOKEN_FONT", "font" },
+            { GTK_RC_TOKEN_FONTSET, "GTK_RC_TOKEN_FONTSET", "fontset" },
+            { GTK_RC_TOKEN_FONT_NAME, "GTK_RC_TOKEN_FONT_NAME", "font-name" },
+            { GTK_RC_TOKEN_BG_PIXMAP, "GTK_RC_TOKEN_BG_PIXMAP", "bg-pixmap" },
+            { GTK_RC_TOKEN_PIXMAP_PATH, "GTK_RC_TOKEN_PIXMAP_PATH", "pixmap-path" },
+            { GTK_RC_TOKEN_STYLE, "GTK_RC_TOKEN_STYLE", "style" },
+            { GTK_RC_TOKEN_BINDING, "GTK_RC_TOKEN_BINDING", "binding" },
+            { GTK_RC_TOKEN_BIND, "GTK_RC_TOKEN_BIND", "bind" },
+            { GTK_RC_TOKEN_WIDGET, "GTK_RC_TOKEN_WIDGET", "widget" },
+            { GTK_RC_TOKEN_WIDGET_CLASS, "GTK_RC_TOKEN_WIDGET_CLASS", "widget-class" },
+            { GTK_RC_TOKEN_CLASS, "GTK_RC_TOKEN_CLASS", "class" },
+            { GTK_RC_TOKEN_LOWEST, "GTK_RC_TOKEN_LOWEST", "lowest" },
+            { GTK_RC_TOKEN_GTK, "GTK_RC_TOKEN_GTK", "gtk" },
+            { GTK_RC_TOKEN_APPLICATION, "GTK_RC_TOKEN_APPLICATION", "application" },
+            { GTK_RC_TOKEN_THEME, "GTK_RC_TOKEN_THEME", "theme" },
+            { GTK_RC_TOKEN_RC, "GTK_RC_TOKEN_RC", "rc" },
+            { GTK_RC_TOKEN_HIGHEST, "GTK_RC_TOKEN_HIGHEST", "highest" },
+            { GTK_RC_TOKEN_ENGINE, "GTK_RC_TOKEN_ENGINE", "engine" },
+            { GTK_RC_TOKEN_MODULE_PATH, "GTK_RC_TOKEN_MODULE_PATH", "module-path" },
+            { GTK_RC_TOKEN_IM_MODULE_PATH, "GTK_RC_TOKEN_IM_MODULE_PATH", "im-module-path" },
+            { GTK_RC_TOKEN_IM_MODULE_FILE, "GTK_RC_TOKEN_IM_MODULE_FILE", "im-module-file" },
+            { GTK_RC_TOKEN_STOCK, "GTK_RC_TOKEN_STOCK", "stock" },
+            { GTK_RC_TOKEN_LTR, "GTK_RC_TOKEN_LTR", "ltr" },
+            { GTK_RC_TOKEN_RTL, "GTK_RC_TOKEN_RTL", "rtl" },
+            { GTK_RC_TOKEN_COLOR, "GTK_RC_TOKEN_COLOR", "color" },
+            { GTK_RC_TOKEN_UNBIND, "GTK_RC_TOKEN_UNBIND", "unbind" },
+            { GTK_RC_TOKEN_LAST, "GTK_RC_TOKEN_LAST", "last" },
             { 0, NULL, NULL }
         };
-        etype = g_enum_register_static (g_intern_static_string ("GtkCTreeLineStyle"), values);
+        etype = g_enum_register_static (g_intern_static_string ("GtkRcTokenType"), values);
     }
     return etype;
 }
 
-GType
-gtk_ctree_expander_style_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GTK_CTREE_EXPANDER_NONE, "GTK_CTREE_EXPANDER_NONE", "none" },
-            { GTK_CTREE_EXPANDER_SQUARE, "GTK_CTREE_EXPANDER_SQUARE", "square" },
-            { GTK_CTREE_EXPANDER_TRIANGLE, "GTK_CTREE_EXPANDER_TRIANGLE", "triangle" },
-            { GTK_CTREE_EXPANDER_CIRCULAR, "GTK_CTREE_EXPANDER_CIRCULAR", "circular" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GtkCTreeExpanderStyle"), values);
-    }
-    return etype;
-}
 
-GType
-gtk_ctree_expansion_type_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GTK_CTREE_EXPANSION_EXPAND, "GTK_CTREE_EXPANSION_EXPAND", "expand" },
-            { GTK_CTREE_EXPANSION_EXPAND_RECURSIVE, "GTK_CTREE_EXPANSION_EXPAND_RECURSIVE", "expand-recursive" },
-            { GTK_CTREE_EXPANSION_COLLAPSE, "GTK_CTREE_EXPANSION_COLLAPSE", "collapse" },
-            { GTK_CTREE_EXPANSION_COLLAPSE_RECURSIVE, "GTK_CTREE_EXPANSION_COLLAPSE_RECURSIVE", "collapse-recursive" },
-            { GTK_CTREE_EXPANSION_TOGGLE, "GTK_CTREE_EXPANSION_TOGGLE", "toggle" },
-            { GTK_CTREE_EXPANSION_TOGGLE_RECURSIVE, "GTK_CTREE_EXPANSION_TOGGLE_RECURSIVE", "toggle-recursive" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GtkCTreeExpansionType"), values);
-    }
-    return etype;
-}
-
-#define __GTK_TYPE_BUILTINS_C__
-#include "gtkaliasdef.c"
 
 /* Generated data ends here */
 

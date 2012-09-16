@@ -13,9 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  *
  * Original author: Owen Taylor <otaylor@redhat.com>
  * 
@@ -104,8 +102,8 @@ static guint16 inuktitut_compose_seqs[] = {
   SYL('v', 0x1555, 0x155d, 2) /* as f */
   SYL('y', 0x1528, 0x153e, 2) /* As j */
 
-  SYL(GDK_lstroke, 0x15a0, 0x15a6, 3) /* l- */
-  SYL(GDK_eng, 0x158f, 0x1595, 3)     /* ng */
+  SYL(GDK_KEY_lstroke, 0x15a0, 0x15a6, 3) /* l- */
+  SYL(GDK_KEY_eng, 0x158f, 0x1595, 3)     /* ng */
 };
 
 static void

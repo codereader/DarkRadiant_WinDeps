@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef _MSC_VER
@@ -43,7 +41,6 @@
 #include "gtkstock.h"
 #include "gtk.h"
 #include "gtkwin32embedwidget.h"
-#include "gtkalias.h"
 
 #define MAX_PAGE_RANGES 20
 #define STATUS_POLLING_TIME 2000
@@ -656,7 +653,7 @@ static HWND
 get_parent_hwnd (GtkWidget *widget)
 {
   gtk_widget_realize (widget);
-  return gdk_win32_drawable_get_handle (widget->window);
+  return gdk_win32_window_get_handle (gtk_widget_get_window (widget));
 }
 
 static void
@@ -1340,7 +1337,7 @@ plug_grab_notify (GtkWidget        *widget,
 		  gboolean          was_grabbed,
 		  GtkPrintOperation *op)
 {
-  EnableWindow (GetAncestor (GDK_WINDOW_HWND (widget->window), GA_ROOT),
+  EnableWindow (GetAncestor (GDK_WINDOW_HWND (gtk_widget_get_window (widget)), GA_ROOT),
 		was_grabbed);
 }
 
@@ -1361,13 +1358,13 @@ pageDlgProc (HWND wnd, UINT message, WPARAM wparam, LPARAM lparam)
 
       SetWindowLongPtrW (wnd, GWLP_USERDATA, (LONG_PTR)op);
       
-      plug = _gtk_win32_embed_widget_new ((GdkNativeWindow) wnd);
+      plug = _gtk_win32_embed_widget_new (wnd);
       gtk_window_set_modal (GTK_WINDOW (plug), TRUE);
       op_win32->embed_widget = plug;
       gtk_container_add (GTK_CONTAINER (plug), op->priv->custom_widget);
       gtk_widget_show (op->priv->custom_widget);
       gtk_widget_show (plug);
-      gdk_window_focus (plug->window, GDK_CURRENT_TIME);
+      gdk_window_focus (gtk_widget_get_window (plug), GDK_CURRENT_TIME);
 
       /* This dialog is modal, so we grab the embed widget */
       gtk_grab_add (plug);
@@ -1412,8 +1409,9 @@ create_application_page (GtkPrintOperation *op)
   const char *tab_label;
 
   /* Make the template the size of the custom widget size request */
-  gtk_widget_size_request (op->priv->custom_widget, &requisition);
-      
+  gtk_widget_get_preferred_size (op->priv->custom_widget,
+                                 &requisition, NULL);
+
   base_units = GetDialogBaseUnits ();
   baseunitX = LOWORD (base_units);
   baseunitY = HIWORD (base_units);
@@ -2134,6 +2132,3 @@ gtk_print_run_page_setup_dialog_async (GtkWindow            *parent,
   done_cb (new_page_setup, data);
   g_object_unref (new_page_setup);
 }
-
-#define __GTK_PRINT_OPERATION_WIN32_C__
-#include "gtkaliasdef.c"

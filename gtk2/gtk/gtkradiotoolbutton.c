@@ -15,9 +15,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -25,7 +23,27 @@
 #include "gtkradiobutton.h"
 #include "gtkintl.h"
 #include "gtkprivate.h"
-#include "gtkalias.h"
+
+
+/**
+ * SECTION:gtkradiotoolbutton
+ * @Short_description: A toolbar item that contains a radio button
+ * @Title: GtkRadioToolButton
+ * @See_also: #GtkToolbar, #GtkToolButton
+ *
+ * A #GtkRadioToolButton is a #GtkToolItem that contains a radio button,
+ * that is, a button that is part of a group of toggle buttons where only
+ * one button can be active at a time.
+ *
+ * Use gtk_radio_tool_button_new() to create a new
+ * #GtkRadioToolButton. Use gtk_radio_tool_button_new_from_widget() to
+ * create a new #GtkRadioToolButton that is part of the same group as an
+ * existing #GtkRadioToolButton. Use
+ * gtk_radio_tool_button_new_from_stock() or
+ * gtk_radio_tool_button_new_with_stock_from_widget() create a new
+ * #GtkRadioToolButton containing a stock item.
+ */
+
 
 enum {
   PROP_0,
@@ -109,7 +127,8 @@ gtk_radio_tool_button_set_property (GObject         *object,
 
 /**
  * gtk_radio_tool_button_new:
- * @group: (allow-none): An existing radio button group, or %NULL if you are creating a new group
+ * @group: (allow-none) (transfer none) (element-type GtkRadioButton): An
+ *   existing radio button group, or %NULL if you are creating a new group
  * 
  * Creates a new #GtkRadioToolButton, adding it to @group.
  * 
@@ -132,7 +151,8 @@ gtk_radio_tool_button_new (GSList *group)
 
 /**
  * gtk_radio_tool_button_new_from_stock:
- * @group: (allow-none): an existing radio button group, or %NULL if you are creating a new group
+ * @group: (allow-none) (element-type GtkRadioButton): an existing radio button
+ *   group, or %NULL if you are creating a new group
  * @stock_id: the name of a stock item
  * 
  * Creates a new #GtkRadioToolButton, adding it to @group. 
@@ -162,8 +182,8 @@ gtk_radio_tool_button_new_from_stock (GSList      *group,
 }
 
 /**
- * gtk_radio_tool_button_new_from_widget:
- * @group: An existing #GtkRadioToolButton
+ * gtk_radio_tool_button_new_from_widget: (constructor)
+ * @group: (allow-none): An existing #GtkRadioToolButton, or %NULL
  *
  * Creates a new #GtkRadioToolButton adding it to the same group as @gruup
  *
@@ -176,17 +196,17 @@ gtk_radio_tool_button_new_from_widget (GtkRadioToolButton *group)
 {
   GSList *list = NULL;
   
-  g_return_val_if_fail (GTK_IS_RADIO_TOOL_BUTTON (group), NULL);
+  g_return_val_if_fail (group == NULL || GTK_IS_RADIO_TOOL_BUTTON (group), NULL);
 
-  if (group)
+  if (group != NULL)
     list = gtk_radio_tool_button_get_group (GTK_RADIO_TOOL_BUTTON (group));
   
   return gtk_radio_tool_button_new (list);
 }
 
 /**
- * gtk_radio_tool_button_new_with_stock_from_widget:
- * @group: An existing #GtkRadioToolButton.
+ * gtk_radio_tool_button_new_with_stock_from_widget: (constructor)
+ * @group: (allow-none): An existing #GtkRadioToolButton.
  * @stock_id: the name of a stock item
  *
  * Creates a new #GtkRadioToolButton adding it to the same group as @group.
@@ -203,9 +223,9 @@ gtk_radio_tool_button_new_with_stock_from_widget (GtkRadioToolButton *group,
 {
   GSList *list = NULL;
   
-  g_return_val_if_fail (GTK_IS_RADIO_TOOL_BUTTON (group), NULL);
+  g_return_val_if_fail (group == NULL || GTK_IS_RADIO_TOOL_BUTTON (group), NULL);
 
-  if (group)
+  if (group != NULL)
     list = gtk_radio_tool_button_get_group (group);
   
   return gtk_radio_tool_button_new_from_stock (list, stock_id);
@@ -223,7 +243,7 @@ get_radio_button (GtkRadioToolButton *button)
  *
  * Returns the radio button group @button belongs to.
  *
- * Return value: (transfer none): The group @button belongs to.
+ * Return value: (transfer none) (element-type GtkRadioButton): The group @button belongs to.
  *
  * Since: 2.4
  */
@@ -238,7 +258,7 @@ gtk_radio_tool_button_get_group (GtkRadioToolButton *button)
 /**
  * gtk_radio_tool_button_set_group:
  * @button: a #GtkRadioToolButton
- * @group: an existing radio button group
+ * @group: (transfer none) (element-type GtkRadioButton): an existing radio button group
  * 
  * Adds @button to @group, removing it from the group it belonged to before.
  * 
@@ -252,6 +272,3 @@ gtk_radio_tool_button_set_group (GtkRadioToolButton *button,
 
   gtk_radio_button_set_group (get_radio_button (button), group);
 }
-
-#define __GTK_RADIO_TOOL_BUTTON_C__
-#include "gtkaliasdef.c"

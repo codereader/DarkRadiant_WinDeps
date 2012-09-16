@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -28,23 +26,46 @@
 #include "config.h"
 
 #include "gtkscrollbar.h"
+
+#include "gtkadjustment.h"
 #include "gtkintl.h"
 #include "gtkprivate.h"
-#include "gtkalias.h"
 
-static void gtk_scrollbar_style_set (GtkWidget *widget,
-                                     GtkStyle  *previous);
+#include "a11y/gtkscrollbaraccessible.h"
 
-G_DEFINE_ABSTRACT_TYPE (GtkScrollbar, gtk_scrollbar, GTK_TYPE_RANGE)
+
+/**
+ * SECTION:gtkscrollbar
+ * @Short_description: A Scrollbar
+ * @Title: GtkScrollbar
+ * @See_also: #GtkAdjustment, #GtkScrolledWindow
+ *
+ * The #GtkScrollbar widget is a horizontal or vertical scrollbar,
+ * depending on the value of the #GtkOrientable:orientation property.
+ *
+ * The position of the thumb in a scrollbar is controlled by the scroll
+ * adjustments. See #GtkAdjustment for the fields in an adjustment - for
+ * #GtkScrollbar, the #GtkAdjustment.value field represents the position
+ * of the scrollbar, which must be between the #GtkAdjustment.lower field
+ * and #GtkAdjustment.upper - #GtkAdjustment.page_size. The
+ * #GtkAdjustment.page_size field represents the size of the visible
+ * scrollable area. The #GtkAdjustment.step_increment and
+ * #GtkAdjustment.page_increment fields are used when the user asks to
+ * step down (using the small stepper arrows) or page down (using for
+ * example the <keycap>PageDown</keycap> key).
+ */
+
+
+static void gtk_scrollbar_style_updated (GtkWidget *widget);
+
+G_DEFINE_TYPE (GtkScrollbar, gtk_scrollbar, GTK_TYPE_RANGE)
 
 static void
 gtk_scrollbar_class_init (GtkScrollbarClass *class)
 {
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (class);
 
-  widget_class->style_set = gtk_scrollbar_style_set;
-
-  GTK_RANGE_CLASS (class)->stepper_detail = "Xscrollbar";
+  widget_class->style_updated = gtk_scrollbar_style_updated;
 
   gtk_widget_class_install_style_property (widget_class,
 					   g_param_spec_int ("min-slider-length",
@@ -89,16 +110,21 @@ gtk_scrollbar_class_init (GtkScrollbarClass *class)
                                                                  P_("Display a second forward arrow button on the opposite end of the scrollbar"),
                                                                  FALSE,
                                                                  GTK_PARAM_READABLE));
+
+  gtk_widget_class_set_accessible_type (widget_class, GTK_TYPE_SCROLLBAR_ACCESSIBLE);
 }
 
 static void
 gtk_scrollbar_init (GtkScrollbar *scrollbar)
 {
+  GtkStyleContext *context;
+
+  context = gtk_widget_get_style_context (GTK_WIDGET (scrollbar));
+  gtk_style_context_add_class (context, GTK_STYLE_CLASS_SCROLLBAR);
 }
 
 static void
-gtk_scrollbar_style_set (GtkWidget *widget,
-                         GtkStyle  *previous)
+gtk_scrollbar_style_updated (GtkWidget *widget)
 {
   GtkRange *range = GTK_RANGE (widget);
   gint slider_length;
@@ -114,18 +140,14 @@ gtk_scrollbar_style_set (GtkWidget *widget,
                         "has-forward-stepper", &has_d,
                         NULL);
 
-  range->min_slider_size = slider_length;
-  range->slider_size_fixed = fixed_size;
+  gtk_range_set_min_slider_size (range, slider_length);
+  gtk_range_set_slider_size_fixed (range, fixed_size);
+  _gtk_range_set_steppers (range,
+                           has_a, has_b, has_c, has_d);
 
-  range->has_stepper_a = has_a;
-  range->has_stepper_b = has_b;
-  range->has_stepper_c = has_c;
-  range->has_stepper_d = has_d;
-
-  GTK_WIDGET_CLASS (gtk_scrollbar_parent_class)->style_set (widget, previous);
+  GTK_WIDGET_CLASS (gtk_scrollbar_parent_class)->style_updated (widget);
 }
 
-#if 0
 /**
  * gtk_scrollbar_new:
  * @orientation: the scrollbar's orientation.
@@ -135,7 +157,7 @@ gtk_scrollbar_style_set (GtkWidget *widget,
  *
  * Return value:  the new #GtkScrollbar.
  *
- * Since: 2.16
+ * Since: 3.0
  **/
 GtkWidget *
 gtk_scrollbar_new (GtkOrientation  orientation,
@@ -149,8 +171,3 @@ gtk_scrollbar_new (GtkOrientation  orientation,
                        "adjustment",  adjustment,
                        NULL);
 }
-#endif
-
-
-#define __GTK_SCROLLBAR_C__
-#include "gtkaliasdef.c"

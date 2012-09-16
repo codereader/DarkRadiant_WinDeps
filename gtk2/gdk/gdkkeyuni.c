@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -25,8 +23,9 @@
  */
 
 #include "config.h"
-#include "gdk.h"
-#include "gdkalias.h"
+
+#include "gdktypes.h"
+
 
 /* Thanks to Markus G. Kuhn <mkuhn@acm.org> for the ksysym<->Unicode
  * mapping functions, from the xterm sources.
@@ -830,15 +829,29 @@ static const struct {
 
   /* Following items added to GTK, not in the xterm table */
 
+  /* A few ASCII control characters */
+#ifndef GDK_WINDOWING_WIN32
+  { 0xFF08 /* Backspace */, '\b' },
+  { 0xFF09 /* Tab       */, '\t'  },
+#endif
+
+  { 0xFF0A /* Linefeed  */, '\n' },
+  { 0xFF0B /* Vert. Tab */, '\v' },
+
+#ifndef GDK_WINDOWING_WIN32
+  { 0xFF0D /* Return    */, '\r' },
+  { 0xFF1B /* Escape    */, '\033' },
+#endif
+
   /* Numeric keypad */
-  
-  { 0xFF80 /* Space */, ' ' },
-  { 0xFFAA /* Multiply */, '*' },
-  { 0xFFAB /* Add */, '+' },
+
+  { 0xFF80 /* Space     */, ' ' },
+  { 0xFFAA /* Multiply  */, '*' },
+  { 0xFFAB /* Add       */, '+' },
   { 0xFFAC /* Separator */, ',' },
-  { 0xFFAD /* Subtract */, '-' },
-  { 0xFFAE /* Decimal */, '.' },
-  { 0xFFAF /* Divide */, '/' },
+  { 0xFFAD /* Subtract  */, '-' },
+  { 0xFFAE /* Decimal   */, '.' },
+  { 0xFFAF /* Divide    */, '/' },
   { 0xFFB0 /* 0 */, '0' },
   { 0xFFB1 /* 1 */, '1' },
   { 0xFFB2 /* 2 */, '2' },
@@ -852,6 +865,10 @@ static const struct {
   { 0xFFBD /* Equal */, '=' },  
 
   /* End numeric keypad */
+
+#ifndef GDK_WINDOWING_WIN32
+  { 0xFFFF /* Delete */, '\177' }
+#endif
 };
 
 /**
@@ -1695,6 +1712,3 @@ gdk_unicode_to_keyval (guint32 wc)
    */
   return wc | 0x01000000;
 }
-
-#define __GDK_KEYUNI_C__
-#include "gdkaliasdef.c"

@@ -110,7 +110,7 @@
 #define PACKAGE_NAME "gdk-pixbuf"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "gdk-pixbuf 2.24.1"
+#define PACKAGE_STRING "gdk-pixbuf 2.26.3"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "gdk-pixbuf"
@@ -119,17 +119,13 @@
 #define PACKAGE_URL "http://www.gtk.org/"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "2.24.1"
+#define PACKAGE_VERSION "2.26.3"
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
 
 /* Define to 1 if gmodule works and should be used */
-#ifndef _MSC_VER
 #define USE_GMODULE 1
-#else
-/*#undef USE_GMODULE*/
-#endif
 
 /* Whether to load modules via .la files rather than directly */
 /*#undef USE_LA_MODULES*/

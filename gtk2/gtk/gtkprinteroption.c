@@ -13,17 +13,16 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
 #include <string.h>
 #include <gmodule.h>
 
+#include "gtkintl.h"
+#include "gtkprivate.h"
 #include "gtkprinteroption.h"
-#include "gtkalias.h"
 
 /*****************************************
  *            GtkPrinterOption           *
@@ -34,7 +33,21 @@ enum {
   LAST_SIGNAL
 };
 
+enum {
+  PROP_0,
+  PROP_VALUE
+};
+
 static guint signals[LAST_SIGNAL] = { 0 };
+
+static void gtk_printer_option_set_property (GObject      *object,
+                                             guint         prop_id,
+                                             const GValue *value,
+                                             GParamSpec   *pspec);
+static void gtk_printer_option_get_property (GObject      *object,
+                                             guint         prop_id,
+                                             GValue       *value,
+                                             GParamSpec   *pspec);
 
 G_DEFINE_TYPE (GtkPrinterOption, gtk_printer_option, G_TYPE_OBJECT)
 
@@ -72,6 +85,8 @@ gtk_printer_option_class_init (GtkPrinterOptionClass *class)
   GObjectClass *gobject_class = (GObjectClass *)class;
 
   gobject_class->finalize = gtk_printer_option_finalize;
+  gobject_class->set_property = gtk_printer_option_set_property;
+  gobject_class->get_property = gtk_printer_option_get_property;
 
   signals[CHANGED] =
     g_signal_new ("changed",
@@ -81,6 +96,14 @@ gtk_printer_option_class_init (GtkPrinterOptionClass *class)
 		  NULL, NULL,
 		  g_cclosure_marshal_VOID__VOID,
 		  G_TYPE_NONE, 0);
+
+  g_object_class_install_property (G_OBJECT_CLASS (class),
+                                   PROP_VALUE,
+                                   g_param_spec_string ("value",
+                                                        P_("Option Value"),
+                                                        P_("Value of the option"),
+                                                        "",
+                                                        GTK_PARAM_READWRITE));
 }
 
 GtkPrinterOption *
@@ -96,6 +119,44 @@ gtk_printer_option_new (const char *name, const char *display_text,
   option->type = type;
   
   return option;
+}
+
+static void
+gtk_printer_option_set_property (GObject         *object,
+                                 guint            prop_id,
+                                 const GValue    *value,
+                                 GParamSpec      *pspec)
+{
+  GtkPrinterOption *option = GTK_PRINTER_OPTION (object);
+
+  switch (prop_id)
+    {
+    case PROP_VALUE:
+      gtk_printer_option_set (option, g_value_get_string (value));
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+    }
+}
+
+static void
+gtk_printer_option_get_property (GObject    *object,
+                                 guint       prop_id,
+                                 GValue     *value,
+                                 GParamSpec *pspec)
+{
+  GtkPrinterOption *option = GTK_PRINTER_OPTION (object);
+
+  switch (prop_id)
+    {
+    case PROP_VALUE:
+      g_value_set_string (value, option->value);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+    }
 }
 
 static void
@@ -115,8 +176,7 @@ gtk_printer_option_set (GtkPrinterOption *option,
     return;
 
   if ((option->type == GTK_PRINTER_OPTION_TYPE_PICKONE ||
-       option->type == GTK_PRINTER_OPTION_TYPE_ALTERNATIVE) &&
-      value != NULL)
+       option->type == GTK_PRINTER_OPTION_TYPE_ALTERNATIVE))
     {
       int i;
       
@@ -132,7 +192,7 @@ gtk_printer_option_set (GtkPrinterOption *option,
       if (i == option->num_choices)
 	return; /* Not found in available choices */
     }
-  
+          
   g_free (option->value);
   option->value = g_strdup (value);
   
@@ -232,7 +292,3 @@ gtk_printer_option_get_activates_default (GtkPrinterOption *option)
 
   return option->activates_default;
 }
-
-
-#define __GTK_PRINTER_OPTION_C__
-#include "gtkaliasdef.c"

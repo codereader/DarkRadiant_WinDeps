@@ -15,9 +15,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -44,7 +42,7 @@
 #include "gtkliststore.h"
 #include "gtkstock.h"
 #include "gtktreemodelfilter.h"
-#include "gtkvseparator.h"
+#include "gtkseparator.h"
 #include "gtkfilechooserdialog.h"
 #include "gtkfilechooserprivate.h"
 #include "gtkfilechooserutils.h"
@@ -52,14 +50,56 @@
 
 #include "gtkfilechooserbutton.h"
 
+#include "gtkorientable.h"
+
+#include "gtktypebuiltins.h"
 #include "gtkprivate.h"
-#include "gtkalias.h"
+#include "gtksettings.h"
+
+
+/**
+ * SECTION:gtkfilechooserbutton
+ * @Short_description: A button to launch a file selection dialog
+ * @Title: GtkFileChooserButton
+ * @See_also:#GtkFileChooserDialog
+ *
+ * The #GtkFileChooserButton is a widget that lets the user select a
+ * file.  It implements the #GtkFileChooser interface.  Visually, it is a
+ * file name with a button to bring up a #GtkFileChooserDialog.
+ * The user can then use that dialog to change the file associated with
+ * that button.  This widget does not support setting the
+ * #GtkFileChooser:select-multiple property to %TRUE.
+ *
+ * <example>
+ * <title>Create a button to let the user select a file in /etc</title>
+ * <programlisting>
+ * {
+ *   GtkWidget *button;
+ *
+ *   button = gtk_file_chooser_button_new (_("Select a file"),
+ *                                         GTK_FILE_CHOOSER_ACTION_OPEN);
+ *   gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (button),
+ *                                        "/etc");
+ * }
+ * </programlisting>
+ * </example>
+ *
+ * The #GtkFileChooserButton supports the #GtkFileChooserAction<!-- -->s
+ * %GTK_FILE_CHOOSER_ACTION_OPEN and %GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER.
+ *
+ * <important>
+ * The #GtkFileChooserButton will ellipsize the label,
+ * and thus will thus request little horizontal space.  To give the button
+ * more space, you should call gtk_widget_get_preferred_size(),
+ * gtk_file_chooser_button_set_width_chars(), or pack the button in
+ * such a way that other interface elements give space to the widget.
+ * </important>
+ */
+
 
 /* **************** *
  *  Private Macros  *
  * **************** */
-
-#define GTK_FILE_CHOOSER_BUTTON_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), GTK_TYPE_FILE_CHOOSER_BUTTON, GtkFileChooserButtonPrivate))
 
 #define DEFAULT_TITLE		N_("Select a File")
 #define DESKTOP_DISPLAY_NAME	N_("Desktop")
@@ -210,10 +250,8 @@ static void     gtk_file_chooser_button_get_property       (GObject          *ob
 							    GParamSpec       *pspec);
 static void     gtk_file_chooser_button_finalize           (GObject          *object);
 
-/* GtkObject Functions */
-static void     gtk_file_chooser_button_destroy            (GtkObject        *object);
-
 /* GtkWidget Functions */
+static void     gtk_file_chooser_button_destroy            (GtkWidget        *widget);
 static void     gtk_file_chooser_button_drag_data_received (GtkWidget        *widget,
 							    GdkDragContext   *context,
 							    gint              x,
@@ -222,14 +260,12 @@ static void     gtk_file_chooser_button_drag_data_received (GtkWidget        *wi
 							    guint             type,
 							    guint             drag_time);
 static void     gtk_file_chooser_button_show_all           (GtkWidget        *widget);
-static void     gtk_file_chooser_button_hide_all           (GtkWidget        *widget);
 static void     gtk_file_chooser_button_show               (GtkWidget        *widget);
 static void     gtk_file_chooser_button_hide               (GtkWidget        *widget);
 static void     gtk_file_chooser_button_map                (GtkWidget        *widget);
 static gboolean gtk_file_chooser_button_mnemonic_activate  (GtkWidget        *widget,
 							    gboolean          group_cycling);
-static void     gtk_file_chooser_button_style_set          (GtkWidget        *widget,
-							    GtkStyle         *old_style);
+static void     gtk_file_chooser_button_style_updated      (GtkWidget        *widget);
 static void     gtk_file_chooser_button_screen_changed     (GtkWidget        *widget,
 							    GdkScreen        *old_screen);
 
@@ -307,7 +343,7 @@ static guint file_chooser_button_signals[LAST_SIGNAL] = { 0 };
  *  GType Declaration  *
  * ******************* */
 
-G_DEFINE_TYPE_WITH_CODE (GtkFileChooserButton, gtk_file_chooser_button, GTK_TYPE_HBOX, { \
+G_DEFINE_TYPE_WITH_CODE (GtkFileChooserButton, gtk_file_chooser_button, GTK_TYPE_BOX, { \
     G_IMPLEMENT_INTERFACE (GTK_TYPE_FILE_CHOOSER, gtk_file_chooser_button_file_chooser_iface_init) \
 })
 
@@ -320,11 +356,9 @@ static void
 gtk_file_chooser_button_class_init (GtkFileChooserButtonClass * class)
 {
   GObjectClass *gobject_class;
-  GtkObjectClass *gtkobject_class;
   GtkWidgetClass *widget_class;
 
   gobject_class = G_OBJECT_CLASS (class);
-  gtkobject_class = GTK_OBJECT_CLASS (class);
   widget_class = GTK_WIDGET_CLASS (class);
 
   gobject_class->constructor = gtk_file_chooser_button_constructor;
@@ -332,15 +366,13 @@ gtk_file_chooser_button_class_init (GtkFileChooserButtonClass * class)
   gobject_class->get_property = gtk_file_chooser_button_get_property;
   gobject_class->finalize = gtk_file_chooser_button_finalize;
 
-  gtkobject_class->destroy = gtk_file_chooser_button_destroy;
-
+  widget_class->destroy = gtk_file_chooser_button_destroy;
   widget_class->drag_data_received = gtk_file_chooser_button_drag_data_received;
   widget_class->show_all = gtk_file_chooser_button_show_all;
-  widget_class->hide_all = gtk_file_chooser_button_hide_all;
   widget_class->show = gtk_file_chooser_button_show;
   widget_class->hide = gtk_file_chooser_button_hide;
   widget_class->map = gtk_file_chooser_button_map;
-  widget_class->style_set = gtk_file_chooser_button_style_set;
+  widget_class->style_updated = gtk_file_chooser_button_style_updated;
   widget_class->screen_changed = gtk_file_chooser_button_screen_changed;
   widget_class->mnemonic_activate = gtk_file_chooser_button_mnemonic_activate;
 
@@ -435,7 +467,9 @@ gtk_file_chooser_button_init (GtkFileChooserButton *button)
   GtkWidget *box, *image, *sep;
   GtkTargetList *target_list;
 
-  priv = button->priv = GTK_FILE_CHOOSER_BUTTON_GET_PRIVATE (button);
+  priv = button->priv = G_TYPE_INSTANCE_GET_PRIVATE (button,
+                                                     GTK_TYPE_FILE_CHOOSER_BUTTON,
+                                                     GtkFileChooserButtonPrivate);
 
   priv->icon_size = FALLBACK_ICON_SIZE;
   priv->focus_on_click = TRUE;
@@ -444,12 +478,13 @@ gtk_file_chooser_button_init (GtkFileChooserButton *button)
 
   /* Button */
   priv->button = gtk_button_new ();
-  g_signal_connect (priv->button, "clicked", G_CALLBACK (button_clicked_cb),
-		    button);
-  gtk_container_add (GTK_CONTAINER (button), priv->button);
+  g_signal_connect (priv->button, "clicked",
+                    G_CALLBACK (button_clicked_cb), button);
+  gtk_box_pack_start (GTK_BOX (button), priv->button, TRUE, TRUE, 0);
+  gtk_widget_set_halign (priv->button, GTK_ALIGN_FILL);
   gtk_widget_show (priv->button);
 
-  box = gtk_hbox_new (FALSE, 4);
+  box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
   gtk_container_add (GTK_CONTAINER (priv->button), box);
   gtk_widget_show (box);
 
@@ -459,17 +494,17 @@ gtk_file_chooser_button_init (GtkFileChooserButton *button)
 
   priv->label = gtk_label_new (_(FALLBACK_DISPLAY_NAME));
   gtk_label_set_ellipsize (GTK_LABEL (priv->label), PANGO_ELLIPSIZE_END);
-  gtk_misc_set_alignment (GTK_MISC (priv->label), 0.0, 0.5);
+  gtk_widget_set_halign (priv->label, GTK_ALIGN_START);
+  gtk_widget_set_valign (priv->label, GTK_ALIGN_CENTER);
   gtk_box_pack_start (GTK_BOX (box), priv->label, TRUE, TRUE, 0);
   //gtk_container_add (GTK_CONTAINER (box), priv->label);
   gtk_widget_show (priv->label);
 
-  sep = gtk_vseparator_new ();
+  sep = gtk_separator_new (GTK_ORIENTATION_VERTICAL);
   gtk_box_pack_start (GTK_BOX (box), sep, FALSE, FALSE, 0);
   gtk_widget_show (sep);
 
-  image = gtk_image_new_from_stock (GTK_STOCK_OPEN,
-				    GTK_ICON_SIZE_MENU);
+  image = gtk_image_new_from_stock (GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU);
   gtk_box_pack_start (GTK_BOX (box), image, FALSE, FALSE, 0);
   gtk_widget_show (image);
 
@@ -488,7 +523,8 @@ gtk_file_chooser_button_init (GtkFileChooserButton *button)
   priv->combo_box_changed_id =
     g_signal_connect (priv->combo_box, "changed",
 		      G_CALLBACK (combo_box_changed_cb), button);
-  gtk_container_add (GTK_CONTAINER (button), priv->combo_box);
+  gtk_box_pack_start (GTK_BOX (button), priv->combo_box, TRUE, TRUE, 0);
+  gtk_widget_set_halign (priv->combo_box, GTK_ALIGN_FILL);
 
   priv->icon_cell = gtk_cell_renderer_pixbuf_new ();
   gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (priv->combo_box),
@@ -821,10 +857,6 @@ gtk_file_chooser_button_set_property (GObject      *object,
       fs_bookmarks_changed_cb (priv->fs, button);
       break;
 
-    case GTK_FILE_CHOOSER_PROP_FILE_SYSTEM_BACKEND:
-      /* Ignore property */
-      break;
-
     case GTK_FILE_CHOOSER_PROP_SELECT_MULTIPLE:
       g_warning ("%s: Choosers of type `%s` do not support selecting multiple files.",
 		 G_STRFUNC, G_OBJECT_TYPE_NAME (object));
@@ -857,7 +889,6 @@ gtk_file_chooser_button_get_property (GObject    *object,
 
     case PROP_TITLE:
     case GTK_FILE_CHOOSER_PROP_ACTION:
-    case GTK_FILE_CHOOSER_PROP_FILE_SYSTEM_BACKEND:
     case GTK_FILE_CHOOSER_PROP_FILTER:
     case GTK_FILE_CHOOSER_PROP_LOCAL_ONLY:
     case GTK_FILE_CHOOSER_PROP_PREVIEW_WIDGET:
@@ -890,13 +921,13 @@ gtk_file_chooser_button_finalize (GObject *object)
 }
 
 /* ********************* *
- *  GtkObject Functions  *
+ *  GtkWidget Functions  *
  * ********************* */
 
 static void
-gtk_file_chooser_button_destroy (GtkObject *object)
+gtk_file_chooser_button_destroy (GtkWidget *widget)
 {
-  GtkFileChooserButton *button = GTK_FILE_CHOOSER_BUTTON (object);
+  GtkFileChooserButton *button = GTK_FILE_CHOOSER_BUTTON (widget);
   GtkFileChooserButtonPrivate *priv = button->priv;
   GtkTreeIter iter;
   GSList *l;
@@ -956,13 +987,8 @@ gtk_file_chooser_button_destroy (GtkObject *object)
       priv->fs = NULL;
     }
 
-  GTK_OBJECT_CLASS (gtk_file_chooser_button_parent_class)->destroy (object);
+  GTK_WIDGET_CLASS (gtk_file_chooser_button_parent_class)->destroy (widget);
 }
-
-
-/* ********************* *
- *  GtkWidget Functions  *
- * ********************* */
 
 struct DndSelectFolderData
 {
@@ -1115,12 +1141,6 @@ static void
 gtk_file_chooser_button_show_all (GtkWidget *widget)
 {
   gtk_widget_show (widget);
-}
-
-static void
-gtk_file_chooser_button_hide_all (GtkWidget *widget)
-{
-  gtk_widget_hide (widget);
 }
 
 static void
@@ -1371,11 +1391,9 @@ change_icon_theme (GtkFileChooserButton *button)
 }
 
 static void
-gtk_file_chooser_button_style_set (GtkWidget *widget,
-				   GtkStyle  *old_style)
+gtk_file_chooser_button_style_updated (GtkWidget *widget)
 {
-  GTK_WIDGET_CLASS (gtk_file_chooser_button_parent_class)->style_set (widget,
-								      old_style);
+  GTK_WIDGET_CLASS (gtk_file_chooser_button_parent_class)->style_updated (widget);
 
   if (gtk_widget_has_screen (widget))
     change_icon_theme (GTK_FILE_CHOOSER_BUTTON (widget));
@@ -1425,7 +1443,7 @@ set_info_get_info_cb (GCancellable *cancellable,
   GdkPixbuf *pixbuf;
   GtkTreePath *path;
   GtkTreeIter iter;
-  GCancellable *model_cancellable;
+  GCancellable *model_cancellable = NULL;
   struct SetDisplayNameData *data = callback_data;
   gboolean is_folder;
 
@@ -1478,7 +1496,8 @@ out:
   gtk_tree_row_reference_free (data->row_ref);
   g_free (data);
 
-  g_object_unref (cancellable);
+  if (model_cancellable)
+    g_object_unref (model_cancellable);
 }
 
 static void
@@ -1576,7 +1595,10 @@ model_free_row_data (GtkFileChooserButton *button,
 		      -1);
 
   if (cancellable)
-    g_cancellable_cancel (cancellable);
+    {
+      g_cancellable_cancel (cancellable);
+      g_object_unref (cancellable);
+    }
 
   switch (type)
     {
@@ -1604,7 +1626,7 @@ model_add_special_get_info_cb (GCancellable *cancellable,
   GtkTreeIter iter;
   GtkTreePath *path;
   GdkPixbuf *pixbuf;
-  GCancellable *model_cancellable;
+  GCancellable *model_cancellable = NULL;
   struct ChangeIconThemeData *data = user_data;
   gchar *name;
 
@@ -1657,7 +1679,8 @@ out:
   gtk_tree_row_reference_free (data->row_ref);
   g_free (data);
 
-  g_object_unref (cancellable);
+  if (model_cancellable)
+    g_object_unref (model_cancellable);
 }
 
 static inline void
@@ -1749,21 +1772,19 @@ model_add_special (GtkFileChooserButton *button)
 
 static void
 model_add_volumes (GtkFileChooserButton *button,
-		   GSList               *volumes)
+                   GSList               *volumes)
 {
   GtkListStore *store;
   gint pos;
   gboolean local_only;
-  GtkFileSystem *file_system;
   GSList *l;
-  
+
   if (!volumes)
     return;
 
   store = GTK_LIST_STORE (button->priv->model);
   pos = model_get_type_position (button, ROW_TYPE_VOLUME);
   local_only = gtk_file_chooser_get_local_only (GTK_FILE_CHOOSER (button->priv->dialog));
-  file_system = button->priv->fs;
 
   for (l = volumes; l; l = l->next)
     {
@@ -2743,33 +2764,6 @@ gtk_file_chooser_button_new (const gchar          *title,
 }
 
 /**
- * gtk_file_chooser_button_new_with_backend:
- * @title: the title of the browse dialog.
- * @action: the open mode for the widget.
- * @backend: the name of the #GtkFileSystem backend to use.
- * 
- * Creates a new file-selecting button widget using @backend.
- * 
- * Returns: a new button widget.
- * 
- * Since: 2.6
- * Deprecated: 2.14: Use gtk_file_chooser_button_new() instead.
- **/
-GtkWidget *
-gtk_file_chooser_button_new_with_backend (const gchar          *title,
-					  GtkFileChooserAction  action,
-					  const gchar          *backend)
-{
-  g_return_val_if_fail (action == GTK_FILE_CHOOSER_ACTION_OPEN ||
-			action == GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER, NULL);
-
-  return g_object_new (GTK_TYPE_FILE_CHOOSER_BUTTON,
-		       "action", action,
-		       "title", (title ? title : _(DEFAULT_TITLE)),
-		       NULL);
-}
-
-/**
  * gtk_file_chooser_button_new_with_dialog:
  * @dialog: the widget to use as dialog
  *
@@ -2926,6 +2920,3 @@ gtk_file_chooser_button_get_focus_on_click (GtkFileChooserButton *button)
   
   return button->priv->focus_on_click;
 }
-
-#define __GTK_FILE_CHOOSER_BUTTON_C__
-#include "gtkaliasdef.c"

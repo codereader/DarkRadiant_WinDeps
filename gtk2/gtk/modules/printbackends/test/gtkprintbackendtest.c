@@ -14,9 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -475,7 +473,7 @@ gtk_print_backend_test_init (GtkPrintBackendTest *backend)
       g_message ("TEST Backend: Adding printer %d\n", i);
 
       gtk_printer_set_has_details (printer, FALSE);
-      gtk_printer_set_icon_name (printer, "gtk-delete"); /* use a delete icon just for fun */
+      gtk_printer_set_icon_name (printer, "edit-delete"); /* use a delete icon just for fun */
       gtk_printer_set_is_active (printer, TRUE);
 
       gtk_print_backend_add_printer (GTK_PRINT_BACKEND (backend), printer);
@@ -525,29 +523,31 @@ test_printer_prepare_for_print (GtkPrinter       *printer,
 {
   gdouble scale;
 
-  print_job->print_pages = gtk_print_settings_get_print_pages (settings);
-  print_job->page_ranges = NULL;
-  print_job->num_page_ranges = 0;
+  gtk_print_job_set_pages (print_job, gtk_print_settings_get_print_pages (settings));
+  gtk_print_job_set_page_ranges (print_job, NULL, 0);
   
-  if (print_job->print_pages == GTK_PRINT_PAGES_RANGES)
-    print_job->page_ranges =
-      gtk_print_settings_get_page_ranges (settings,
-					  &print_job->num_page_ranges);
-  
-  print_job->collate = gtk_print_settings_get_collate (settings);
-  print_job->reverse = gtk_print_settings_get_reverse (settings);
-  print_job->num_copies = gtk_print_settings_get_n_copies (settings);
+  if (gtk_print_job_get_pages (print_job) == GTK_PRINT_PAGES_RANGES)
+    {
+      GtkPageRange *page_ranges;
+      gint num_page_ranges;
+      page_ranges = gtk_print_settings_get_page_ranges (settings, &num_page_ranges);
+      gtk_print_job_set_page_ranges (print_job, page_ranges, num_page_ranges);
+    }
+
+  gtk_print_job_set_collate (print_job, gtk_print_settings_get_collate (settings));
+  gtk_print_job_set_reverse (print_job, gtk_print_settings_get_reverse (settings));
+  gtk_print_job_set_num_copies (print_job, gtk_print_settings_get_n_copies (settings));
 
   scale = gtk_print_settings_get_scale (settings);
   if (scale != 100.0)
-    print_job->scale = scale/100.0;
+    gtk_print_job_set_scale (print_job, scale/100.0);
 
-  print_job->page_set = gtk_print_settings_get_page_set (settings);
-  print_job->rotate_to_orientation = TRUE;
+  gtk_print_job_set_page_set (print_job, gtk_print_settings_get_page_set (settings));
+  gtk_print_job_set_rotate (print_job, TRUE);
 }
 
 static gboolean
-test_printer_details_aquired_cb (GtkPrinter *printer)
+test_printer_details_acquired_cb (GtkPrinter *printer)
 {
   gboolean success;
   gint weight;
@@ -563,7 +563,7 @@ test_printer_details_aquired_cb (GtkPrinter *printer)
   gtk_printer_set_has_details (printer, success);
   g_signal_emit_by_name (printer, "details-acquired", success);
 
-  return FALSE;
+  return G_SOURCE_REMOVE;
 }
 
 static void
@@ -588,7 +588,7 @@ test_printer_request_details (GtkPrinter *printer)
   else
     time *= 1000;
 
-  g_timeout_add (time, (GSourceFunc) test_printer_details_aquired_cb, printer);
+  g_timeout_add (time, (GSourceFunc) test_printer_details_acquired_cb, printer);
 }
 
 

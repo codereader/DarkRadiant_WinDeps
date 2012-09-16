@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -23,8 +21,26 @@
 #include "gtkrecentchooserwidget.h"
 #include "gtkrecentchooserdefault.h"
 #include "gtkrecentchooserutils.h"
+#include "gtkorientable.h"
 #include "gtktypebuiltins.h"
-#include "gtkalias.h"
+
+/**
+ * SECTION:gtkrecentchooserwidget
+ * @Short_description: Displays recently used files
+ * @Title: GtkRecentChooserWidget
+ * @See_also:#GtkRecentChooser, #GtkRecentChooserDialog
+ *
+ * #GtkRecentChooserWidget is a widget suitable for selecting recently used
+ * files.  It is the main building block of a #GtkRecentChooserDialog.  Most
+ * applications will only need to use the latter; you can use
+ * #GtkRecentChooserWidget as part of a larger window if you have special needs.
+ *
+ * Note that #GtkRecentChooserWidget does not have any methods of its own.
+ * Instead, you should use the functions that work on a #GtkRecentChooser.
+ *
+ * Recently used files are supported since GTK+ 2.10.
+ */
+
 
 struct _GtkRecentChooserWidgetPrivate
 {
@@ -51,7 +67,7 @@ static void     gtk_recent_chooser_widget_finalize     (GObject               *o
 
 G_DEFINE_TYPE_WITH_CODE (GtkRecentChooserWidget,
 		         gtk_recent_chooser_widget,
-			 GTK_TYPE_VBOX,
+			 GTK_TYPE_BOX,
 			 G_IMPLEMENT_INTERFACE (GTK_TYPE_RECENT_CHOOSER,
 						_gtk_recent_chooser_delegate_iface_init))
 
@@ -75,7 +91,10 @@ static void
 gtk_recent_chooser_widget_init (GtkRecentChooserWidget *widget)
 {
   widget->priv = G_TYPE_INSTANCE_GET_PRIVATE (widget, GTK_TYPE_RECENT_CHOOSER_WIDGET,
-					      GtkRecentChooserWidgetPrivate);
+                                              GtkRecentChooserWidgetPrivate);
+
+  gtk_orientable_set_orientation (GTK_ORIENTABLE (widget),
+                                  GTK_ORIENTATION_VERTICAL);
 }
 
 static GObject *
@@ -189,6 +208,3 @@ gtk_recent_chooser_widget_new_for_manager (GtkRecentManager *manager)
   		       "recent-manager", manager,
   		       NULL);
 }
-
-#define __GTK_RECENT_CHOOSER_WIDGET_C__
-#include "gtkaliasdef.c"

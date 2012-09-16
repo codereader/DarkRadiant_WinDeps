@@ -12,9 +12,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 
@@ -22,7 +20,19 @@
 #include "gtktreesortable.h"
 #include "gtkmarshalers.h"
 #include "gtkintl.h"
-#include "gtkalias.h"
+
+
+/**
+ * SECTION:gtktreesortable
+ * @Short_description: The interface for sortable models used by GtkTreeView
+ * @Title: GtkTreeSortable
+ * @See_also:#GtkTreeModel, #GtkTreeView
+ *
+ * #GtkTreeSortable is an interface to be implemented by tree models which
+ * support sorting. The #GtkTreeView uses the methods provided by this interface
+ * to sort the model.
+ */
+
 
 static void gtk_tree_sortable_base_init (gpointer g_class);
 
@@ -99,8 +109,8 @@ gtk_tree_sortable_sort_column_changed (GtkTreeSortable *sortable)
 /**
  * gtk_tree_sortable_get_sort_column_id:
  * @sortable: A #GtkTreeSortable
- * @sort_column_id: The sort column id to be filled in
- * @order: The #GtkSortType to be filled in
+ * @sort_column_id: (out): The sort column id to be filled in
+ * @order: (out): The #GtkSortType to be filled in
  * 
  * Fills in @sort_column_id and @order with the current sort column and the
  * order. It returns %TRUE unless the @sort_column_id is 
@@ -257,6 +267,3 @@ gtk_tree_sortable_has_default_sort_func (GtkTreeSortable *sortable)
   
   return (* iface->has_default_sort_func) (sortable);
 }
-
-#define __GTK_TREE_SORTABLE_C__
-#include "gtkaliasdef.c"

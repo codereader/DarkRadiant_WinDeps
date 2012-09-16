@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -31,189 +29,318 @@
 #ifndef __GDK_PRIVATE_X11_H__
 #define __GDK_PRIVATE_X11_H__
 
-#include <gdk/gdkcursor.h>
-#include <gdk/gdkprivate.h>
-#include <gdk/x11/gdkwindow-x11.h>
-#include <gdk/x11/gdkpixmap-x11.h>
-#include <gdk/x11/gdkdisplay-x11.h>
-#include <gdk/gdkinternals.h>
+#include "gdkcursor.h"
+#include "gdkprivate.h"
+#include "gdkinternals.h"
+#include "gdkx.h"
+#include "gdkwindow-x11.h"
+#include "gdkscreen-x11.h"
+#include "gdkdisplay-x11.h"
 
-#define GDK_TYPE_GC_X11              (_gdk_gc_x11_get_type ())
-#define GDK_GC_X11(object)           (G_TYPE_CHECK_INSTANCE_CAST ((object), GDK_TYPE_GC_X11, GdkGCX11))
-#define GDK_GC_X11_CLASS(klass)      (G_TYPE_CHECK_CLASS_CAST ((klass), GDK_TYPE_GC_X11, GdkGCX11Class))
-#define GDK_IS_GC_X11(object)        (G_TYPE_CHECK_INSTANCE_TYPE ((object), GDK_TYPE_GC_X11))
-#define GDK_IS_GC_X11_CLASS(klass)   (G_TYPE_CHECK_CLASS_TYPE ((klass), GDK_TYPE_GC_X11))
-#define GDK_GC_X11_GET_CLASS(obj)    (G_TYPE_INSTANCE_GET_CLASS ((obj), GDK_TYPE_GC_X11, GdkGCX11Class))
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#ifdef XINPUT_2
+#include <X11/extensions/XInput2.h>
+#endif
 
-typedef struct _GdkCursorPrivate       GdkCursorPrivate;
-typedef struct _GdkVisualPrivate       GdkVisualPrivate;
-typedef struct _GdkGCX11      GdkGCX11;
-typedef struct _GdkGCX11Class GdkGCX11Class;
+#include <cairo-xlib.h>
 
-struct _GdkGCX11
-{
-  GdkGC parent_instance;
-  
-  GC xgc;
-  GdkScreen *screen;
-  guint16 dirty_mask;
-  guint have_clip_region : 1;
-  guint have_clip_mask : 1;
-  guint depth : 8;
-};
+void _gdk_x11_error_handler_push (void);
+void _gdk_x11_error_handler_pop  (void);
 
-struct _GdkGCX11Class
-{
-  GdkGCClass parent_class;
-};
+Colormap _gdk_visual_get_x11_colormap (GdkVisual *visual);
 
-struct _GdkCursorPrivate
-{
-  GdkCursor cursor;
-  Cursor xcursor;
-  GdkDisplay *display;
-  gchar *name;
-  guint serial;
-};
+gint          _gdk_x11_screen_visual_get_best_depth      (GdkScreen      *screen);
+GdkVisualType _gdk_x11_screen_visual_get_best_type       (GdkScreen      *screen);
+GdkVisual *   _gdk_x11_screen_get_system_visual          (GdkScreen      *screen);
+GdkVisual*    _gdk_x11_screen_visual_get_best            (GdkScreen      *screen);
+GdkVisual*    _gdk_x11_screen_visual_get_best_with_depth (GdkScreen      *screen,
+                                                          gint            depth);
+GdkVisual*    _gdk_x11_screen_visual_get_best_with_type  (GdkScreen      *screen,
+                                                          GdkVisualType   visual_type);
+GdkVisual*    _gdk_x11_screen_visual_get_best_with_both  (GdkScreen      *screen,
+                                                          gint            depth,
+                                                          GdkVisualType   visual_type);
+void          _gdk_x11_screen_query_depths               (GdkScreen      *screen,
+                                                          gint          **depths,
+                                                          gint           *count);
+void          _gdk_x11_screen_query_visual_types         (GdkScreen      *screen,
+                                                          GdkVisualType **visual_types,
+                                                          gint           *count);
+GList *       _gdk_x11_screen_list_visuals               (GdkScreen      *screen);
 
-struct _GdkVisualPrivate
-{
-  GdkVisual visual;
-  Visual *xvisual;
-  GdkScreen *screen;
-};
 
-#define XID_FONT_BIT (1<<31)
 
-void _gdk_xid_table_insert (GdkDisplay *display,
-			    XID        *xid,
-			    gpointer    data);
-void _gdk_xid_table_remove (GdkDisplay *display,
-			    XID         xid);
-gint _gdk_send_xevent      (GdkDisplay *display,
-			    Window      window,
-			    gboolean    propagate,
-			    glong       event_mask,
-			    XEvent     *event_send);
+void _gdk_x11_display_add_window    (GdkDisplay *display,
+                                     XID        *xid,
+                                     GdkWindow  *window);
+void _gdk_x11_display_remove_window (GdkDisplay *display,
+                                     XID         xid);
 
-GType _gdk_gc_x11_get_type (void);
-
-gboolean _gdk_x11_have_render           (GdkDisplay *display);
-
-GdkGC *_gdk_x11_gc_new                  (GdkDrawable     *drawable,
-					 GdkGCValues     *values,
-					 GdkGCValuesMask  values_mask);
-
-GdkImage *_gdk_x11_copy_to_image       (GdkDrawable *drawable,
-					GdkImage    *image,
-					gint         src_x,
-					gint         src_y,
-					gint         dest_x,
-					gint         dest_y,
-					gint         width,
-					gint         height);
-Pixmap   _gdk_x11_image_get_shm_pixmap (GdkImage    *image);
+gint _gdk_x11_display_send_xevent (GdkDisplay *display,
+                                   Window      window,
+                                   gboolean    propagate,
+                                   glong       event_mask,
+                                   XEvent     *event_send);
 
 /* Routines from gdkgeometry-x11.c */
-void _gdk_window_move_resize_child (GdkWindow     *window,
-                                    gint           x,
-                                    gint           y,
-                                    gint           width,
-                                    gint           height);
-void _gdk_window_process_expose    (GdkWindow     *window,
-                                    gulong         serial,
-                                    GdkRectangle  *area);
+void _gdk_x11_window_move_resize_child (GdkWindow     *window,
+                                        gint           x,
+                                        gint           y,
+                                        gint           width,
+                                        gint           height);
+void _gdk_x11_window_process_expose    (GdkWindow     *window,
+                                        gulong         serial,
+                                        GdkRectangle  *area);
+
+void     _gdk_x11_window_sync_rendering    (GdkWindow       *window);
+gboolean _gdk_x11_window_simulate_key      (GdkWindow       *window,
+                                            gint             x,
+                                            gint             y,
+                                            guint            keyval,
+                                            GdkModifierType  modifiers,
+                                            GdkEventType     key_pressrelease);
+gboolean _gdk_x11_window_simulate_button   (GdkWindow       *window,
+                                            gint             x,
+                                            gint             y,
+                                            guint            button,
+                                            GdkModifierType  modifiers,
+                                            GdkEventType     button_pressrelease);
+gboolean _gdk_x11_window_get_property      (GdkWindow    *window,
+                                            GdkAtom       property,
+                                            GdkAtom       type,
+                                            gulong        offset,
+                                            gulong        length,
+                                            gint          pdelete,
+                                            GdkAtom      *actual_property_type,
+                                            gint         *actual_format_type,
+                                            gint         *actual_length,
+                                            guchar      **data);
+void     _gdk_x11_window_change_property   (GdkWindow    *window,
+                                            GdkAtom       property,
+                                            GdkAtom       type,
+                                            gint          format,
+                                            GdkPropMode   mode,
+                                            const guchar *data,
+                                            gint          nelements);
+void     _gdk_x11_window_delete_property   (GdkWindow    *window,
+                                            GdkAtom       property);
 
 gboolean _gdk_x11_window_queue_antiexpose  (GdkWindow *window,
-					    GdkRegion *area);
-void     _gdk_x11_window_queue_translation (GdkWindow *window,
-					    GdkGC     *gc,
-					    GdkRegion *area,
-					    gint       dx,
-					    gint       dy);
+                                            cairo_region_t *area);
+void     _gdk_x11_window_translate         (GdkWindow *window,
+                                            cairo_region_t *area,
+                                            gint       dx,
+                                            gint       dy);
 
-void     _gdk_selection_window_destroyed   (GdkWindow            *window);
-gboolean _gdk_selection_filter_clear_event (XSelectionClearEvent *event);
+void     _gdk_x11_display_free_translate_queue (GdkDisplay *display);
 
-GdkRegion* _xwindow_get_shape              (Display *xdisplay,
-                                            Window window,
-                                            gint shape_type);
+void     _gdk_x11_selection_window_destroyed   (GdkWindow            *window);
+gboolean _gdk_x11_selection_filter_clear_event (XSelectionClearEvent *event);
 
-void     _gdk_region_get_xrectangles       (const GdkRegion      *region,
-                                            gint                  x_offset,
-                                            gint                  y_offset,
-                                            XRectangle          **rects,
-                                            gint                 *n_rects);
+cairo_region_t* _gdk_x11_xwindow_get_shape  (Display *xdisplay,
+                                             Window   window,
+                                             gint     shape_type);
 
-gboolean _gdk_moveresize_handle_event   (XEvent     *event);
-gboolean _gdk_moveresize_configure_done (GdkDisplay *display,
-					 GdkWindow  *window);
+void     _gdk_x11_region_get_xrectangles   (const cairo_region_t  *region,
+                                            gint                   x_offset,
+                                            gint                   y_offset,
+                                            XRectangle           **rects,
+                                            gint                  *n_rects);
 
-void _gdk_keymap_state_changed    (GdkDisplay      *display,
-				   XEvent          *event);
-void _gdk_keymap_keys_changed     (GdkDisplay      *display);
-gint _gdk_x11_get_group_for_state (GdkDisplay      *display,
-				   GdkModifierType  state);
-void _gdk_keymap_add_virtual_modifiers_compat (GdkKeymap       *keymap,
-                                               GdkModifierType *modifiers);
-gboolean _gdk_keymap_key_is_modifier   (GdkKeymap       *keymap,
-					guint            keycode);
+gboolean _gdk_x11_moveresize_handle_event   (XEvent     *event);
+gboolean _gdk_x11_moveresize_configure_done (GdkDisplay *display,
+                                             GdkWindow  *window);
 
-GC _gdk_x11_gc_flush (GdkGC *gc);
+void     _gdk_x11_keymap_state_changed   (GdkDisplay      *display,
+                                          XEvent          *event);
+void     _gdk_x11_keymap_keys_changed    (GdkDisplay      *display);
+void     _gdk_x11_keymap_add_virt_mods   (GdkKeymap       *keymap,
+                                          GdkModifierType *modifiers);
 
-void _gdk_x11_initialize_locale (void);
+void _gdk_x11_windowing_init    (void);
 
-void _gdk_xgrab_check_unmap        (GdkWindow *window,
-				    gulong     serial);
-void _gdk_xgrab_check_destroy      (GdkWindow *window);
+void _gdk_x11_window_grab_check_unmap   (GdkWindow *window,
+                                         gulong     serial);
+void _gdk_x11_window_grab_check_destroy (GdkWindow *window);
 
 gboolean _gdk_x11_display_is_root_window (GdkDisplay *display,
-					  Window      xroot_window);
+                                          Window      xroot_window);
+
+GdkDisplay * _gdk_x11_display_open            (const gchar *display_name);
+void _gdk_x11_display_make_default            (GdkDisplay *display);
+void _gdk_x11_display_update_grab_info        (GdkDisplay *display,
+                                               GdkDevice  *device,
+                                               gint        status);
+void _gdk_x11_display_update_grab_info_ungrab (GdkDisplay *display,
+                                               GdkDevice  *device,
+                                               guint32     time,
+                                               gulong      serial);
+void _gdk_x11_display_queue_events            (GdkDisplay *display);
+
+
+GdkAppLaunchContext *_gdk_x11_display_get_app_launch_context (GdkDisplay *display);
+Window      _gdk_x11_display_get_drag_protocol     (GdkDisplay      *display,
+                                                    Window           xid,
+                                                    GdkDragProtocol *protocol,
+                                                    guint           *version);
+
+gboolean    _gdk_x11_display_set_selection_owner   (GdkDisplay *display,
+                                                    GdkWindow  *owner,
+                                                    GdkAtom     selection,
+                                                    guint32     time,
+                                                    gboolean    send_event);
+GdkWindow * _gdk_x11_display_get_selection_owner   (GdkDisplay *display,
+                                                    GdkAtom     selection);
+void        _gdk_x11_display_send_selection_notify (GdkDisplay       *display,
+                                                    GdkWindow        *requestor,
+                                                    GdkAtom          selection,
+                                                    GdkAtom          target,
+                                                    GdkAtom          property,
+                                                    guint32          time);
+gint        _gdk_x11_display_get_selection_property (GdkDisplay     *display,
+                                                     GdkWindow      *requestor,
+                                                     guchar        **data,
+                                                     GdkAtom        *ret_type,
+                                                     gint           *ret_format);
+void        _gdk_x11_display_convert_selection      (GdkDisplay     *display,
+                                                     GdkWindow      *requestor,
+                                                     GdkAtom         selection,
+                                                     GdkAtom         target,
+                                                     guint32         time);
+
+gint        _gdk_x11_display_text_property_to_utf8_list (GdkDisplay     *display,
+                                                         GdkAtom         encoding,
+                                                         gint            format,
+                                                         const guchar   *text,
+                                                         gint            length,
+                                                         gchar        ***list);
+gchar *     _gdk_x11_display_utf8_to_string_target      (GdkDisplay     *displayt,
+                                                         const gchar    *str);
+
+void _gdk_x11_device_check_extension_events   (GdkDevice  *device);
+
+GdkDeviceManager *_gdk_x11_device_manager_new (GdkDisplay *display);
+
+#ifdef XINPUT_2
+guchar * _gdk_x11_device_xi2_translate_event_mask (GdkX11DeviceManagerXI2 *device_manager_xi2,
+                                                   GdkEventMask            event_mask,
+                                                   gint                   *len);
+guint    _gdk_x11_device_xi2_translate_state      (XIModifierState *mods_state,
+                                                   XIButtonState   *buttons_state,
+                                                   XIGroupState    *group_state);
+gint     _gdk_x11_device_xi2_get_id               (GdkX11DeviceXI2 *device);
+
+GdkDevice * _gdk_x11_device_manager_xi2_lookup    (GdkX11DeviceManagerXI2 *device_manager_xi2,
+                                                   gint                    device_id);
+void     _gdk_x11_device_xi2_add_scroll_valuator  (GdkX11DeviceXI2    *device,
+                                                   guint               n_valuator,
+                                                   GdkScrollDirection  direction,
+                                                   gdouble             increment);
+gboolean  _gdk_x11_device_xi2_get_scroll_delta    (GdkX11DeviceXI2    *device,
+                                                   guint               n_valuator,
+                                                   gdouble             valuator_value,
+                                                   GdkScrollDirection *direction_ret,
+                                                   gdouble            *delta_ret);
+void     _gdk_device_xi2_reset_scroll_valuators   (GdkX11DeviceXI2    *device);
+
+#endif
+
+void     _gdk_x11_event_translate_keyboard_string (GdkEventKey *event);
+
+void _gdk_x11_display_manager_add_display      (GdkDisplayManager *manager,
+                                                GdkDisplay        *display);
+void _gdk_x11_display_manager_remove_display   (GdkDisplayManager *manager,
+                                                GdkDisplay        *display);
+
+GdkAtom _gdk_x11_display_manager_atom_intern   (GdkDisplayManager *manager,
+                                                const gchar       *atom_name,
+                                                gboolean           copy_name);
+gchar * _gdk_x11_display_manager_get_atom_name (GdkDisplayManager *manager,
+                                                GdkAtom            atom);
+guint   _gdk_x11_display_manager_lookup_keyval (GdkDisplayManager *manager,
+                                                const gchar       *name);
+gchar * _gdk_x11_display_manager_get_keyval_name (GdkDisplayManager *manager,
+                                                  guint              keyval);
+void    _gdk_x11_display_manager_keyval_convert_case (GdkDisplayManager *manager,
+                                                      guint              symbol,
+                                                      guint             *lower,
+                                                      guint             *upper);
+
+GdkCursor *_gdk_x11_display_get_cursor_for_type     (GdkDisplay    *display,
+                                                     GdkCursorType  type);
+GdkCursor *_gdk_x11_display_get_cursor_for_name     (GdkDisplay    *display,
+                                                     const gchar   *name);
+GdkCursor *_gdk_x11_display_get_cursor_for_pixbuf   (GdkDisplay    *display,
+                                                     GdkPixbuf     *pixbuf,
+                                                     gint           x,
+                                                     gint           y);
+gboolean   _gdk_x11_display_supports_cursor_alpha   (GdkDisplay    *display);
+gboolean   _gdk_x11_display_supports_cursor_color   (GdkDisplay    *display);
+void       _gdk_x11_display_get_default_cursor_size (GdkDisplay *display,
+                                                     guint      *width,
+                                                     guint      *height);
+void       _gdk_x11_display_get_maximal_cursor_size (GdkDisplay *display,
+                                                     guint      *width,
+                                                     guint      *height);
+void       _gdk_x11_display_before_process_all_updates (GdkDisplay *display);
+void       _gdk_x11_display_after_process_all_updates  (GdkDisplay *display);
+void       _gdk_x11_display_create_window_impl     (GdkDisplay    *display,
+                                                    GdkWindow     *window,
+                                                    GdkWindow     *real_parent,
+                                                    GdkScreen     *screen,
+                                                    GdkEventMask   event_mask,
+                                                    GdkWindowAttr *attributes,
+                                                    gint           attributes_mask);
 
 void _gdk_x11_precache_atoms (GdkDisplay          *display,
-			      const gchar * const *atom_names,
-			      gint                 n_atoms);
+                              const gchar * const *atom_names,
+                              gint                 n_atoms);
 
-void _gdk_x11_events_init_screen   (GdkScreen *screen);
-void _gdk_x11_events_uninit_screen (GdkScreen *screen);
+GdkFilterReturn
+_gdk_x11_dnd_filter (GdkXEvent *xev,
+                     GdkEvent  *event,
+                     gpointer   data);
 
-void _gdk_events_init           (GdkDisplay *display);
-void _gdk_events_uninit         (GdkDisplay *display);
-void _gdk_windowing_window_init (GdkScreen *screen);
-void _gdk_visual_init           (GdkScreen *screen);
-void _gdk_dnd_init		(GdkDisplay *display);
-void _gdk_windowing_image_init  (GdkDisplay *display);
-void _gdk_input_init            (GdkDisplay *display);
-
-PangoRenderer *_gdk_x11_renderer_get (GdkDrawable *drawable,
-				      GdkGC       *gc);
+void _gdk_x11_screen_init_root_window (GdkScreen *screen);
+void _gdk_x11_screen_init_visuals     (GdkScreen *screen);
+void _gdk_x11_screen_init_events      (GdkScreen *screen);
 
 void _gdk_x11_cursor_update_theme (GdkCursor *cursor);
 void _gdk_x11_cursor_display_finalize (GdkDisplay *display);
 
+void _gdk_x11_window_register_dnd (GdkWindow *window);
+
 gboolean _gdk_x11_get_xft_setting (GdkScreen   *screen,
-				   const gchar *name,
-				   GValue      *value);
+                                   const gchar *name,
+                                   GValue      *value);
 
-extern GdkDrawableClass  _gdk_x11_drawable_class;
-extern gboolean	         _gdk_use_xshm;
-extern const int         _gdk_nenvent_masks;
-extern const int         _gdk_event_mask_table[];
-extern GdkAtom		 _gdk_selection_property;
-extern gboolean          _gdk_synchronize;
+GdkGrabStatus _gdk_x11_convert_grab_status (gint status);
 
-#define GDK_PIXMAP_SCREEN(pix)	      (GDK_DRAWABLE_IMPL_X11 (((GdkPixmapObject *)pix)->impl)->screen)
-#define GDK_PIXMAP_DISPLAY(pix)       (GDK_SCREEN_X11 (GDK_PIXMAP_SCREEN (pix))->display)
-#define GDK_PIXMAP_XROOTWIN(pix)      (GDK_SCREEN_X11 (GDK_PIXMAP_SCREEN (pix))->xroot_window)
-#define GDK_DRAWABLE_DISPLAY(win)     (GDK_IS_WINDOW (win) ? GDK_WINDOW_DISPLAY (win) : GDK_PIXMAP_DISPLAY (win))
-#define GDK_DRAWABLE_SCREEN(win)      (GDK_IS_WINDOW (win) ? GDK_WINDOW_SCREEN (win) : GDK_PIXMAP_SCREEN (win))
-#define GDK_DRAWABLE_XROOTWIN(win)    (GDK_IS_WINDOW (win) ? GDK_WINDOW_XROOTWIN (win) : GDK_PIXMAP_XROOTWIN (win))
-#define GDK_SCREEN_DISPLAY(screen)    (GDK_SCREEN_X11 (screen)->display)
-#define GDK_SCREEN_XROOTWIN(screen)   (GDK_SCREEN_X11 (screen)->xroot_window)
-#define GDK_WINDOW_SCREEN(win)	      (GDK_DRAWABLE_IMPL_X11 (((GdkWindowObject *)win)->impl)->screen)
-#define GDK_WINDOW_DISPLAY(win)       (GDK_SCREEN_X11 (GDK_WINDOW_SCREEN (win))->display)
-#define GDK_WINDOW_XROOTWIN(win)      (GDK_SCREEN_X11 (GDK_WINDOW_SCREEN (win))->xroot_window)
+cairo_surface_t * _gdk_x11_window_create_bitmap_surface (GdkWindow *window,
+                                                         int        width,
+                                                         int        height);
+
+extern const gint        _gdk_x11_event_mask_table[];
+extern const gint        _gdk_x11_event_mask_table_size;
+
+#define GDK_SCREEN_DISPLAY(screen)    (GDK_X11_SCREEN (screen)->display)
+#define GDK_SCREEN_XROOTWIN(screen)   (GDK_X11_SCREEN (screen)->xroot_window)
+#define GDK_WINDOW_SCREEN(win)        (gdk_window_get_screen (win))
+#define GDK_WINDOW_DISPLAY(win)       (GDK_X11_SCREEN (GDK_WINDOW_SCREEN (win))->display)
+#define GDK_WINDOW_XROOTWIN(win)      (GDK_X11_SCREEN (GDK_WINDOW_SCREEN (win))->xroot_window)
 #define GDK_GC_DISPLAY(gc)            (GDK_SCREEN_DISPLAY (GDK_GC_X11(gc)->screen))
-#define GDK_WINDOW_IS_X11(win)        (GDK_IS_WINDOW_IMPL_X11 (((GdkWindowObject *)win)->impl))
+#define GDK_WINDOW_IS_X11(win)        (GDK_IS_WINDOW_IMPL_X11 ((win)->impl))
+
+/* override some macros from gdkx.h with direct-access variants */
+#undef GDK_DISPLAY_XDISPLAY
+#undef GDK_WINDOW_XDISPLAY
+#undef GDK_WINDOW_XID
+#undef GDK_SCREEN_XDISPLAY
+
+#define GDK_DISPLAY_XDISPLAY(display) (GDK_X11_DISPLAY(display)->xdisplay)
+#define GDK_WINDOW_XDISPLAY(win)      (GDK_X11_SCREEN (GDK_WINDOW_SCREEN (win))->xdisplay)
+#define GDK_WINDOW_XID(win)           (GDK_WINDOW_IMPL_X11(GDK_WINDOW (win)->impl)->xid)
+#define GDK_SCREEN_XDISPLAY(screen)   (GDK_X11_SCREEN (screen)->xdisplay)
 
 #endif /* __GDK_PRIVATE_X11_H__ */

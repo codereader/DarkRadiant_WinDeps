@@ -12,9 +12,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
@@ -263,34 +261,15 @@
 #include "config.h"
 #include "gtkactivatable.h"
 #include "gtkactiongroup.h"
-#include "gtktypeutils.h"
 #include "gtkprivate.h"
 #include "gtkintl.h"
-#include "gtkalias.h"
 
 
-static void gtk_activatable_class_init (gpointer g_iface);
-
-GType
-gtk_activatable_get_type (void)
-{
-  static GType activatable_type = 0;
-
-  if (!activatable_type) {
-    activatable_type =
-      g_type_register_static_simple (G_TYPE_INTERFACE, I_("GtkActivatable"),
-				     sizeof (GtkActivatableIface),
-				     (GClassInitFunc) gtk_activatable_class_init,
-				     0, NULL, 0);
-
-    g_type_interface_add_prerequisite (activatable_type, G_TYPE_OBJECT);
-  }
-
-  return activatable_type;
-}
+typedef GtkActivatableIface GtkActivatableInterface;
+G_DEFINE_INTERFACE (GtkActivatable, gtk_activatable, G_TYPE_OBJECT)
 
 static void
-gtk_activatable_class_init (gpointer g_iface)
+gtk_activatable_default_init (GtkActivatableInterface *iface)
 {
   /**
    * GtkActivatable:related-action:
@@ -303,7 +282,7 @@ gtk_activatable_class_init (gpointer g_iface)
    *
    * Since: 2.16
    */
-  g_object_interface_install_property (g_iface,
+  g_object_interface_install_property (iface,
 				       g_param_spec_object ("related-action",
 							    P_("Related Action"),
 							    P_("The action this activatable will activate and receive updates from"),
@@ -326,7 +305,7 @@ gtk_activatable_class_init (gpointer g_iface)
    *
    * Since: 2.16
    */
-  g_object_interface_install_property (g_iface,
+  g_object_interface_install_property (iface,
 				       g_param_spec_boolean ("use-action-appearance",
 							     P_("Use Action Appearance"),
 							     P_("Whether to use the related actions appearance properties"),
@@ -359,9 +338,9 @@ gtk_activatable_update (GtkActivatable *activatable,
  * @action: (allow-none): the related #GtkAction or %NULL
  *
  * This is called to update the activatable completely, this is called
- * internally when the #GtkActivatable::related-action property is set
+ * internally when the #GtkActivatable:related-action property is set
  * or unset and by the implementing class when
- * #GtkActivatable::use-action-appearance changes.
+ * #GtkActivatable:use-action-appearance changes.
  *
  * Since: 2.16
  **/
@@ -559,6 +538,3 @@ gtk_activatable_get_use_action_appearance  (GtkActivatable *activatable)
 
   return use_appearance;
 }
-
-#define __GTK_ACTIVATABLE_C__
-#include "gtkaliasdef.c"

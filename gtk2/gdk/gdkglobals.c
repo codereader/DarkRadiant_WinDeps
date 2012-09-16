@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -26,23 +24,14 @@
 
 #include "config.h"
 
+#include "gdktypes.h"
+#include "gdkinternals.h"
+
 #include <stdio.h>
 
-#include "gdktypes.h"
-#include "gdkprivate.h"
-#include "gdkalias.h"
-
 guint               _gdk_debug_flags = 0;
-gint                _gdk_error_code = 0;
-gint                _gdk_error_warnings = TRUE;
 GList              *_gdk_default_filters = NULL;
 gchar              *_gdk_display_name = NULL;
-gint                _gdk_screen_number = -1;
 gchar              *_gdk_display_arg_name = NULL;
-gboolean            _gdk_native_windows = FALSE;
-
-GSList             *_gdk_displays = NULL;
-
-GMutex              *gdk_threads_mutex = NULL;          /* Global GDK lock */
-GCallback            gdk_threads_lock = NULL;
-GCallback            gdk_threads_unlock = NULL;
+gboolean            _gdk_disable_multidevice = FALSE;
+GdkRenderingMode    _gdk_rendering_mode = GDK_RENDERING_MODE_SIMILAR;

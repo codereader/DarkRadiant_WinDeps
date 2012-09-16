@@ -4,7 +4,7 @@
 
 #ifdef G_ENABLE_DEBUG
 #define g_marshal_value_peek_boolean(v)  g_value_get_boolean (v)
-#define g_marshal_value_peek_char(v)     g_value_get_char (v)
+#define g_marshal_value_peek_char(v)     g_value_get_schar (v)
 #define g_marshal_value_peek_uchar(v)    g_value_get_uchar (v)
 #define g_marshal_value_peek_int(v)      g_value_get_int (v)
 #define g_marshal_value_peek_uint(v)     g_value_get_uint (v)
@@ -49,9 +49,9 @@
 #endif /* !G_ENABLE_DEBUG */
 
 
-/* VOID:VOID (..\..\..\gdk-pixbuf\gdk-pixbuf-marshal.list:25) */
+/* VOID:VOID (./gdk-pixbuf-marshal.list:25) */
 
-/* VOID:INT,INT (..\..\..\gdk-pixbuf\gdk-pixbuf-marshal.list:26) */
+/* VOID:INT,INT (./gdk-pixbuf-marshal.list:26) */
 void
 _gdk_pixbuf_marshal_VOID__INT_INT (GClosure     *closure,
                                    GValue       *return_value G_GNUC_UNUSED,
@@ -88,7 +88,7 @@ _gdk_pixbuf_marshal_VOID__INT_INT (GClosure     *closure,
             data2);
 }
 
-/* VOID:INT,INT,INT,INT (..\..\..\gdk-pixbuf\gdk-pixbuf-marshal.list:27) */
+/* VOID:INT,INT,INT,INT (./gdk-pixbuf-marshal.list:27) */
 void
 _gdk_pixbuf_marshal_VOID__INT_INT_INT_INT (GClosure     *closure,
                                            GValue       *return_value G_GNUC_UNUSED,
@@ -129,5 +129,5 @@ _gdk_pixbuf_marshal_VOID__INT_INT_INT_INT (GClosure     *closure,
             data2);
 }
 
-/* VOID:POINTER (..\..\..\gdk-pixbuf\gdk-pixbuf-marshal.list:28) */
+/* VOID:POINTER (./gdk-pixbuf-marshal.list:28) */
 

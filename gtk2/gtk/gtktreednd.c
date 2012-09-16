@@ -12,16 +12,37 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
 #include <string.h>
 #include "gtktreednd.h"
 #include "gtkintl.h"
-#include "gtkalias.h"
+
+
+/**
+ * SECTION:gtktreednd
+ * @Short_description: Interfaces for drag-and-drop support in GtkTreeView
+ * @Title: GtkTreeView drag-and-drop
+ *
+ * GTK+ supports Drag-and-Drop in tree views with a high-level and a low-level
+ * API.
+ *
+ * The low-level API consists of the GTK+ DND API, augmented by some treeview
+ * utility functions: gtk_tree_view_set_drag_dest_row(),
+ * gtk_tree_view_get_drag_dest_row(), gtk_tree_view_get_dest_row_at_pos(),
+ * gtk_tree_view_create_row_drag_icon(), gtk_tree_set_row_drag_data() and
+ * gtk_tree_get_row_drag_data(). This API leaves a lot of flexibility, but
+ * nothing is done automatically, and implementing advanced features like
+ * hover-to-open-rows or autoscrolling on top of this API is a lot of work.
+ *
+ * On the other hand, if you write to the high-level API, then all the
+ * bookkeeping of rows is done for you, as well as things like hover-to-open
+ * and auto-scroll, but your models have to implement the
+ * #GtkTreeDragSource and #GtkTreeDragDest interfaces.
+ */
+
 
 GType
 gtk_tree_drag_source_get_type (void)
@@ -251,7 +272,7 @@ gtk_tree_set_row_drag_data (GtkSelectionData *selection_data,
   g_return_val_if_fail (GTK_IS_TREE_MODEL (tree_model), FALSE);
   g_return_val_if_fail (path != NULL, FALSE);
 
-  if (selection_data->target != gdk_atom_intern_static_string ("GTK_TREE_MODEL_ROW"))
+  if (gtk_selection_data_get_target (selection_data) != gdk_atom_intern_static_string ("GTK_TREE_MODEL_ROW"))
     return FALSE;
   
   path_str = gtk_tree_path_to_string (path);
@@ -314,14 +335,14 @@ gtk_tree_get_row_drag_data (GtkSelectionData  *selection_data,
 
   if (path)
     *path = NULL;
-  
-  if (selection_data->target != gdk_atom_intern_static_string ("GTK_TREE_MODEL_ROW"))
+
+  if (gtk_selection_data_get_target (selection_data) != gdk_atom_intern_static_string ("GTK_TREE_MODEL_ROW"))
     return FALSE;
 
-  if (selection_data->length < 0)
+  if (gtk_selection_data_get_length (selection_data) < 0)
     return FALSE;
 
-  trd = (void*) selection_data->data;
+  trd = (void*) gtk_selection_data_get_data (selection_data);
 
   if (tree_model)
     *tree_model = trd->model;
@@ -331,6 +352,3 @@ gtk_tree_get_row_drag_data (GtkSelectionData  *selection_data,
   
   return TRUE;
 }
-
-#define __GTK_TREE_DND_C__
-#include "gtkaliasdef.c"

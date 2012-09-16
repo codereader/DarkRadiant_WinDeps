@@ -14,9 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -253,13 +251,21 @@ output_file_from_settings (GtkPrintSettings *settings,
 
       if (locale_name != NULL)
         {
-	  gchar *current_dir = g_get_current_dir ();
-          path = g_build_filename (current_dir, locale_name, NULL);
-          g_free (locale_name);
+          const gchar *document_dir = g_get_user_special_dir (G_USER_DIRECTORY_DOCUMENTS);
+          
+          if (document_dir == NULL)
+            {
+              gchar *current_dir = g_get_current_dir ();
+              path = g_build_filename (current_dir, locale_name, NULL);
+              g_free (current_dir);
+            }
+          else
+            path = g_build_filename (document_dir, locale_name, NULL);
 
           uri = g_filename_to_uri (path, NULL, NULL);
+
+          g_free (locale_name);
           g_free (path);
-	  g_free (current_dir);
 	}
     }
 
@@ -351,14 +357,13 @@ typedef struct {
   GDestroyNotify dnotify;
 } _PrintStreamData;
 
+/* expects GDK lock to be held */
 static void
-file_print_cb (GtkPrintBackendFile *print_backend,
-               GError              *error,
-               gpointer            user_data)
+file_print_cb_locked (GtkPrintBackendFile *print_backend,
+                      GError              *error,
+                      gpointer            user_data)
 {
   _PrintStreamData *ps = (_PrintStreamData *) user_data;
-
-  GDK_THREADS_ENTER ();
 
   if (ps->target_io_stream != NULL)
     g_output_stream_close (G_OUTPUT_STREAM (ps->target_io_stream), NULL, NULL);
@@ -374,8 +379,18 @@ file_print_cb (GtkPrintBackendFile *print_backend,
 
   if (ps->job)
     g_object_unref (ps->job);
- 
+
   g_free (ps);
+}
+
+static void
+file_print_cb (GtkPrintBackendFile *print_backend,
+               GError              *error,
+               gpointer            user_data)
+{
+  GDK_THREADS_ENTER ();
+
+  file_print_cb_locked (print_backend, error, user_data);
 
   GDK_THREADS_LEAVE ();
 }
@@ -393,7 +408,7 @@ file_write (GIOChannel   *source,
 
   error = NULL;
 
-  read_status = 
+  read_status =
     g_io_channel_read_chars (source,
                              buf,
                              _STREAM_MAX_CHUNK_SIZE,
@@ -471,8 +486,8 @@ gtk_print_backend_file_print_stream (GtkPrintBackend        *print_backend,
 error:
   if (internal_error != NULL)
     {
-      file_print_cb (GTK_PRINT_BACKEND_FILE (print_backend),
-                    internal_error, ps);
+      file_print_cb_locked (GTK_PRINT_BACKEND_FILE (print_backend),
+                            internal_error, ps);
 
       g_error_free (internal_error);
       return;
@@ -497,7 +512,7 @@ gtk_print_backend_file_init (GtkPrintBackendFile *backend)
 			  NULL); 
 
   gtk_printer_set_has_details (printer, TRUE);
-  gtk_printer_set_icon_name (printer, "gtk-save");
+  gtk_printer_set_icon_name (printer, "document-save");
   gtk_printer_set_is_active (printer, TRUE);
 
   gtk_print_backend_add_printer (GTK_PRINT_BACKEND (backend), printer);
@@ -752,28 +767,34 @@ file_printer_prepare_for_print (GtkPrinter       *printer,
 				GtkPageSetup     *page_setup)
 {
   gdouble scale;
+  GtkPrintPages pages;
+  GtkPageRange *ranges;
+  gint n_ranges;
 
-  print_job->print_pages = gtk_print_settings_get_print_pages (settings);
-  print_job->page_ranges = NULL;
-  print_job->num_page_ranges = 0;
-  
-  if (print_job->print_pages == GTK_PRINT_PAGES_RANGES)
-    print_job->page_ranges =
-      gtk_print_settings_get_page_ranges (settings,
-					  &print_job->num_page_ranges);
-  
-  print_job->collate = gtk_print_settings_get_collate (settings);
-  print_job->reverse = gtk_print_settings_get_reverse (settings);
-  print_job->num_copies = gtk_print_settings_get_n_copies (settings);
-  print_job->number_up = gtk_print_settings_get_number_up (settings);
-  print_job->number_up_layout = gtk_print_settings_get_number_up_layout (settings);
+  pages = gtk_print_settings_get_print_pages (settings);
+  gtk_print_job_set_pages (print_job, pages);
+
+  if (pages == GTK_PRINT_PAGES_RANGES)
+    ranges = gtk_print_settings_get_page_ranges (settings, &n_ranges);
+  else
+    {
+      ranges = NULL;
+      n_ranges = 0;
+    }
+
+  gtk_print_job_set_page_ranges (print_job, ranges, n_ranges);
+  gtk_print_job_set_collate (print_job, gtk_print_settings_get_collate (settings));
+  gtk_print_job_set_reverse (print_job, gtk_print_settings_get_reverse (settings));
+  gtk_print_job_set_num_copies (print_job, gtk_print_settings_get_n_copies (settings));
+  gtk_print_job_set_n_up (print_job, gtk_print_settings_get_number_up (settings));
+  gtk_print_job_set_n_up_layout (print_job, gtk_print_settings_get_number_up_layout (settings));
 
   scale = gtk_print_settings_get_scale (settings);
   if (scale != 100.0)
-    print_job->scale = scale/100.0;
+    gtk_print_job_set_scale (print_job, scale / 100.0);
 
-  print_job->page_set = gtk_print_settings_get_page_set (settings);
-  print_job->rotate_to_orientation = TRUE;
+  gtk_print_job_set_page_set (print_job, gtk_print_settings_get_page_set (settings));
+  gtk_print_job_set_rotate (print_job, TRUE);
 }
 
 static GList *

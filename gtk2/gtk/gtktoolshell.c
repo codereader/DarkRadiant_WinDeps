@@ -12,9 +12,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  *
  * Author:
  *   Mathias Hasselmann
@@ -24,17 +22,16 @@
 #include "gtktoolshell.h"
 #include "gtkwidget.h"
 #include "gtkintl.h"
-#include "gtkalias.h"
+
 
 /**
  * SECTION:gtktoolshell
  * @Short_description: Interface for containers containing GtkToolItem widgets
  * @Title: GtkToolShell
+ * @see_also: #GtkToolbar, #GtkToolItem
  *
  * The #GtkToolShell interface allows container widgets to provide additional
  * information when embedding #GtkToolItem widgets.
- *
- * @see_also: #GtkToolbar, #GtkToolItem
  */
 
 /**
@@ -43,21 +40,48 @@
  * Dummy structure for accessing instances of #GtkToolShellIface.
  */
 
-GType
-gtk_tool_shell_get_type (void)
+
+typedef GtkToolShellIface GtkToolShellInterface;
+G_DEFINE_INTERFACE (GtkToolShell, gtk_tool_shell, GTK_TYPE_WIDGET);
+
+static GtkReliefStyle gtk_tool_shell_real_get_relief_style (GtkToolShell *shell);
+static GtkOrientation gtk_tool_shell_real_get_text_orientation (GtkToolShell *shell);
+static gfloat gtk_tool_shell_real_get_text_alignment (GtkToolShell *shell);
+static PangoEllipsizeMode gtk_tool_shell_real_get_ellipsize_mode (GtkToolShell *shell);
+
+static void
+gtk_tool_shell_default_init (GtkToolShellInterface *iface)
 {
-  static GType type = 0;
-
-  if (!type)
-    {
-      type = g_type_register_static_simple (G_TYPE_INTERFACE, I_("GtkToolShell"),
-                                            sizeof (GtkToolShellIface),
-                                            NULL, 0, NULL, 0);
-      g_type_interface_add_prerequisite (type, GTK_TYPE_WIDGET);
-    }
-
-  return type;
+  iface->get_relief_style = gtk_tool_shell_real_get_relief_style;
+  iface->get_text_orientation = gtk_tool_shell_real_get_text_orientation;
+  iface->get_text_alignment = gtk_tool_shell_real_get_text_alignment;
+  iface->get_ellipsize_mode = gtk_tool_shell_real_get_ellipsize_mode;
 }
+
+static GtkReliefStyle
+gtk_tool_shell_real_get_relief_style (GtkToolShell *shell)
+{
+  return GTK_RELIEF_NONE;
+}
+
+static GtkOrientation
+gtk_tool_shell_real_get_text_orientation (GtkToolShell *shell)
+{
+  return GTK_ORIENTATION_HORIZONTAL;
+}
+
+static gfloat
+gtk_tool_shell_real_get_text_alignment (GtkToolShell *shell)
+{
+  return 0.5f;
+}
+
+static PangoEllipsizeMode
+gtk_tool_shell_real_get_ellipsize_mode (GtkToolShell *shell)
+{
+  return PANGO_ELLIPSIZE_NONE;
+}
+
 
 /**
  * gtk_tool_shell_get_icon_size:
@@ -99,7 +123,7 @@ gtk_tool_shell_get_orientation (GtkToolShell *shell)
  * @shell: a #GtkToolShell
  *
  * Retrieves whether the tool shell has text, icons, or both. Tool items must
- * not call this function directly, but rely on gtk_tool_item_get_style()
+ * not call this function directly, but rely on gtk_tool_item_get_toolbar_style()
  * instead.
  *
  * Return value: the current style of @shell
@@ -128,10 +152,7 @@ gtk_tool_shell_get_relief_style (GtkToolShell *shell)
 {
   GtkToolShellIface *iface = GTK_TOOL_SHELL_GET_IFACE (shell);
 
-  if (iface->get_relief_style)
-    return iface->get_relief_style (shell);
-
-  return GTK_RELIEF_NONE;
+  return iface->get_relief_style (shell);
 }
 
 /**
@@ -173,10 +194,7 @@ gtk_tool_shell_get_text_orientation (GtkToolShell *shell)
 {
   GtkToolShellIface *iface = GTK_TOOL_SHELL_GET_IFACE (shell);
 
-  if (iface->get_text_orientation)
-    return GTK_TOOL_SHELL_GET_IFACE (shell)->get_text_orientation (shell);
-
-  return GTK_ORIENTATION_HORIZONTAL;
+  return iface->get_text_orientation (shell);
 }
 
 /**
@@ -196,14 +214,11 @@ gtk_tool_shell_get_text_alignment (GtkToolShell *shell)
 {
   GtkToolShellIface *iface = GTK_TOOL_SHELL_GET_IFACE (shell);
 
-  if (iface->get_text_alignment)
-    return GTK_TOOL_SHELL_GET_IFACE (shell)->get_text_alignment (shell);
-
-  return 0.5f;
+  return iface->get_text_alignment (shell);
 }
 
 /**
- * gtk_tool_shell_get_ellipsize_mode
+ * gtk_tool_shell_get_ellipsize_mode:
  * @shell: a #GtkToolShell
  *
  * Retrieves the current ellipsize mode for the tool shell. Tool items must not
@@ -219,10 +234,7 @@ gtk_tool_shell_get_ellipsize_mode (GtkToolShell *shell)
 {
   GtkToolShellIface *iface = GTK_TOOL_SHELL_GET_IFACE (shell);
 
-  if (iface->get_ellipsize_mode)
-    return GTK_TOOL_SHELL_GET_IFACE (shell)->get_ellipsize_mode (shell);
-
-  return PANGO_ELLIPSIZE_NONE;
+  return iface->get_ellipsize_mode (shell);
 }
 
 /**
@@ -247,6 +259,3 @@ gtk_tool_shell_get_text_size_group (GtkToolShell *shell)
 
   return NULL;
 }
-
-#define __GTK_TOOL_SHELL_C__
-#include "gtkaliasdef.c"

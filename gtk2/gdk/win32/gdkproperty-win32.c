@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -34,10 +32,12 @@
 #include "gdkproperty.h"
 #include "gdkselection.h"
 #include "gdkprivate-win32.h"
+#include "gdkwin32.h"
 
 GdkAtom
-gdk_atom_intern (const gchar *atom_name,
-		 gint         only_if_exists)
+_gdk_win32_display_manager_atom_intern (GdkDisplayManager *manager,
+					const gchar *atom_name,
+					gint         only_if_exists)
 {
   ATOM win32_atom;
   GdkAtom retval;
@@ -84,17 +84,9 @@ gdk_atom_intern (const gchar *atom_name,
   return retval;
 }
 
-GdkAtom
-gdk_atom_intern_static_string (const gchar *atom_name)
-{
-  /* on X11 this is supposed to save memory. On win32 there seems to be
-   * no way to make a difference ?
-   */
-  return gdk_atom_intern (atom_name, FALSE);
-}
-
 gchar *
-gdk_atom_name (GdkAtom atom)
+_gdk_win32_display_manager_get_atom_name (GdkDisplayManager *manager, 
+					  GdkAtom            atom)
 {
   ATOM win32_atom;
   gchar name[256];
@@ -122,7 +114,7 @@ gdk_atom_name (GdkAtom atom)
 }
 
 gint
-gdk_property_get (GdkWindow   *window,
+_gdk_win32_window_get_property (GdkWindow   *window,
 		  GdkAtom      property,
 		  GdkAtom      type,
 		  gulong       offset,
@@ -145,7 +137,7 @@ gdk_property_get (GdkWindow   *window,
 }
 
 void
-gdk_property_change (GdkWindow    *window,
+_gdk_win32_window_change_property (GdkWindow    *window,
 		     GdkAtom       property,
 		     GdkAtom       type,
 		     gint          format,
@@ -268,8 +260,8 @@ gdk_property_change (GdkWindow    *window,
 }
 
 void
-gdk_property_delete (GdkWindow *window,
-		     GdkAtom    property)
+_gdk_win32_window_delete_property (GdkWindow *window,
+				   GdkAtom    property)
 {
   gchar *prop_name;
 
@@ -354,7 +346,7 @@ gdk_property_delete (GdkWindow *window,
 
 */
 gboolean
-gdk_screen_get_setting (GdkScreen   *screen,
+_gdk_win32_screen_get_setting (GdkScreen   *screen,
                         const gchar *name,
                         GValue      *value)
 {

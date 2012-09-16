@@ -13,22 +13,15 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 #include <gdk/gdktestutils.h>
 #include <gdk/gdkkeysyms.h>
 #include <win32/gdkwin32.h>
-#include "gdkalias.h"
 
-void
-gdk_test_render_sync (GdkWindow *window)
-{
-}
 
 gboolean
-gdk_test_simulate_key (GdkWindow      *window,
+_gdk_win32_window_simulate_key (GdkWindow      *window,
                        gint            x,
                        gint            y,
                        guint           keyval,
@@ -41,7 +34,7 @@ gdk_test_simulate_key (GdkWindow      *window,
 }
 
 gboolean
-gdk_test_simulate_button (GdkWindow      *window,
+_gdk_win32_window_simulate_button (GdkWindow      *window,
                           gint            x,
                           gint            y,
                           guint           button, /*1..3*/

@@ -1,12 +1,12 @@
 /* GTK - The GIMP Toolkit
  * gtklinkbutton.c - an hyperlink-enabled button
- * 
+ *
  * Copyright (C) 2006 Emmanuele Bassi <ebassi@gmail.com>
  * All rights reserved.
  *
  * Based on gnome-href code by:
- * 	James Henstridge <james@daa.com.au>
- * 
+ *      James Henstridge <james@daa.com.au>
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
@@ -18,11 +18,35 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Cambridge, MA 02139, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * SECTION:gtklinkbutton
+ * @Title: GtkLinkButton
+ * @Short_description: Create buttons bound to a URL
+ * @See_also: #GtkButton
+ *
+ * A GtkLinkButton is a #GtkButton with a hyperlink, similar to the one
+ * used by web browsers, which triggers an action when clicked. It is useful
+ * to show quick links to resources.
+ *
+ * A link button is created by calling either gtk_link_button_new() or
+ * gtk_link_button_new_with_label(). If using the former, the URI you pass
+ * to the constructor is used as a label for the widget.
+ *
+ * The URI bound to a GtkLinkButton can be set specifically using
+ * gtk_link_button_set_uri(), and retrieved using gtk_link_button_get_uri().
+ *
+ * By default, GtkLinkButton calls gtk_show_uri() when the button is
+ * clicked. This behaviour can be overridden by connecting to the
+ * #GtkLinkButton::activate-link signal and returning %TRUE from the
+ * signal handler.
  */
 
 #include "config.h"
+
+#include "gtklinkbutton.h"
 
 #include <string.h>
 
@@ -31,17 +55,17 @@
 #include "gtkimagemenuitem.h"
 #include "gtklabel.h"
 #include "gtkmain.h"
+#include "gtkmarshalers.h"
 #include "gtkmenu.h"
 #include "gtkmenuitem.h"
+#include "gtksizerequest.h"
 #include "gtkstock.h"
 #include "gtkshow.h"
 #include "gtktooltip.h"
-#include "gtklinkbutton.h"
 #include "gtkprivate.h"
-
 #include "gtkintl.h"
-#include "gtkalias.h"
 
+#include "a11y/gtklinkbuttonaccessible.h"
 
 struct _GtkLinkButtonPrivate
 {
@@ -59,7 +83,12 @@ enum
   PROP_VISITED
 };
 
-#define GTK_LINK_BUTTON_GET_PRIVATE(obj)	(G_TYPE_INSTANCE_GET_PRIVATE ((obj), GTK_TYPE_LINK_BUTTON, GtkLinkButtonPrivate))
+enum
+{
+  ACTIVATE_LINK,
+
+  LAST_SIGNAL
+};
 
 static void     gtk_link_button_finalize     (GObject          *object);
 static void     gtk_link_button_get_property (GObject          *object,
@@ -76,8 +105,8 @@ static gboolean gtk_link_button_button_press (GtkWidget        *widget,
 					      GdkEventButton   *event);
 static void     gtk_link_button_clicked      (GtkButton        *button);
 static gboolean gtk_link_button_popup_menu   (GtkWidget        *widget);
-static void     gtk_link_button_style_set    (GtkWidget        *widget,
-					      GtkStyle         *old_style);
+static void     gtk_link_button_style_updated (GtkWidget        *widget);
+static void     gtk_link_button_unrealize    (GtkWidget        *widget);
 static gboolean gtk_link_button_enter_cb     (GtkWidget        *widget,
 					      GdkEventCrossing *event,
 					      gpointer          user_data);
@@ -96,7 +125,7 @@ static gboolean gtk_link_button_query_tooltip_cb (GtkWidget    *widget,
                                                   gboolean      keyboard_tip,
                                                   GtkTooltip   *tooltip,
                                                   gpointer      data);
-
+static gboolean gtk_link_button_activate_link (GtkLinkButton *link_button);
 
 static const GtkTargetEntry link_drop_types[] = {
   { "text/uri-list", 0, 0 },
@@ -106,9 +135,7 @@ static const GtkTargetEntry link_drop_types[] = {
 static const GdkColor default_link_color = { 0, 0, 0, 0xeeee };
 static const GdkColor default_visited_link_color = { 0, 0x5555, 0x1a1a, 0x8b8b };
 
-static GtkLinkButtonUriFunc uri_func = NULL;
-static gpointer uri_func_data = NULL;
-static GDestroyNotify uri_func_destroy = NULL;
+static guint link_signals[LAST_SIGNAL] = { 0, };
 
 G_DEFINE_TYPE (GtkLinkButton, gtk_link_button, GTK_TYPE_BUTTON)
 
@@ -126,16 +153,19 @@ gtk_link_button_class_init (GtkLinkButtonClass *klass)
   
   widget_class->button_press_event = gtk_link_button_button_press;
   widget_class->popup_menu = gtk_link_button_popup_menu;
-  widget_class->style_set = gtk_link_button_style_set;
+  widget_class->style_updated = gtk_link_button_style_updated;
+  widget_class->unrealize = gtk_link_button_unrealize;
   
   container_class->add = gtk_link_button_add;
 
   button_class->clicked = gtk_link_button_clicked;
 
+  klass->activate_link = gtk_link_button_activate_link;
+
   /**
-   * GtkLinkButton:uri
-   * 
-   * The URI bound to this button. 
+   * GtkLinkButton:uri:
+   *
+   * The URI bound to this button.
    *
    * Since: 2.10
    */
@@ -147,8 +177,8 @@ gtk_link_button_class_init (GtkLinkButtonClass *klass)
   				   			NULL,
   				   			G_PARAM_READWRITE));
   /**
-   * GtkLinkButton:visited
-   * 
+   * GtkLinkButton:visited:
+   *
    * The 'visited' state of this button. A visited link is drawn in a
    * different color.
    *
@@ -163,13 +193,40 @@ gtk_link_button_class_init (GtkLinkButtonClass *klass)
                                                          G_PARAM_READWRITE));
   
   g_type_class_add_private (gobject_class, sizeof (GtkLinkButtonPrivate));
+
+  /**
+   * GtkLinkButton::activate-link:
+   * @button: the #GtkLinkButton that emitted the signal
+   *
+   * The ::activate-link signal is emitted each time the #GtkLinkButton
+   * has been clicked.
+   *
+   * The default handler will call gtk_show_uri() with the URI stored inside
+   * the #GtkLinkButton:uri property.
+   *
+   * To override the default behavior, you can connect to the ::activate-link
+   * signal and stop the propagation of the signal by returning %TRUE from
+   * your handler.
+   */
+  link_signals[ACTIVATE_LINK] =
+    g_signal_new (I_("activate-link"),
+                  G_TYPE_FROM_CLASS (klass),
+                  G_SIGNAL_RUN_LAST,
+                  G_STRUCT_OFFSET (GtkLinkButtonClass, activate_link),
+                  _gtk_boolean_handled_accumulator, NULL,
+                  _gtk_marshal_BOOLEAN__VOID,
+                  G_TYPE_BOOLEAN, 0);
+
+  gtk_widget_class_set_accessible_type (widget_class, GTK_TYPE_LINK_BUTTON_ACCESSIBLE);
 }
 
 static void
 gtk_link_button_init (GtkLinkButton *link_button)
 {
-  link_button->priv = GTK_LINK_BUTTON_GET_PRIVATE (link_button),
-  
+  link_button->priv = G_TYPE_INSTANCE_GET_PRIVATE (link_button,
+                                                   GTK_TYPE_LINK_BUTTON,
+                                                   GtkLinkButtonPrivate);
+
   gtk_button_set_relief (GTK_BUTTON (link_button), GTK_RELIEF_NONE);
   
   g_signal_connect (link_button, "enter-notify-event",
@@ -249,6 +306,7 @@ set_link_color (GtkLinkButton *link_button)
 {
   GdkColor *link_color = NULL;
   GtkWidget *label;
+  GdkRGBA rgba;
 
   label = gtk_bin_get_child (GTK_BIN (link_button));
   if (!GTK_IS_LABEL (label))
@@ -269,10 +327,14 @@ set_link_color (GtkLinkButton *link_button)
 	link_color = (GdkColor *) &default_link_color;
     }
 
-  gtk_widget_modify_fg (label, GTK_STATE_NORMAL, link_color);
-  gtk_widget_modify_fg (label, GTK_STATE_ACTIVE, link_color);
-  gtk_widget_modify_fg (label, GTK_STATE_PRELIGHT, link_color);
-  gtk_widget_modify_fg (label, GTK_STATE_SELECTED, link_color);
+  rgba.red = link_color->red / 65535.;
+  rgba.green = link_color->green / 65535.;
+  rgba.blue = link_color->blue / 65535.;
+  rgba.alpha = 1;
+  gtk_widget_override_color (label, GTK_STATE_FLAG_NORMAL, &rgba);
+  gtk_widget_override_color (label, GTK_STATE_FLAG_ACTIVE, &rgba);
+  gtk_widget_override_color (label, GTK_STATE_FLAG_PRELIGHT, &rgba);
+  gtk_widget_override_color (label, GTK_STATE_FLAG_SELECTED, &rgba);
 
   if (link_color != &default_link_color &&
       link_color != &default_visited_link_color)
@@ -311,12 +373,11 @@ gtk_link_button_add (GtkContainer *container,
 }
 
 static void
-gtk_link_button_style_set (GtkWidget *widget,
-			   GtkStyle  *old_style)
+gtk_link_button_style_updated (GtkWidget *widget)
 {
-  GtkLinkButton *link_button = GTK_LINK_BUTTON (widget);
+  GTK_WIDGET_CLASS (gtk_link_button_parent_class)->style_updated (widget);
 
-  set_link_color (link_button);
+  set_link_color (GTK_LINK_BUTTON (widget));
 }
 
 static void
@@ -332,11 +393,19 @@ set_hand_cursor (GtkWidget *widget,
   if (show_hand)
     cursor = gdk_cursor_new_for_display (display, GDK_HAND2);
 
-  gdk_window_set_cursor (widget->window, cursor);
+  gdk_window_set_cursor (gtk_widget_get_window (widget), cursor);
   gdk_display_flush (display);
 
   if (cursor)
-    gdk_cursor_unref (cursor);
+    g_object_unref (cursor);
+}
+
+static void
+gtk_link_button_unrealize (GtkWidget *widget)
+{
+  set_hand_cursor (widget, FALSE);
+
+  GTK_WIDGET_CLASS (gtk_link_button_parent_class)->unrealize (widget);
 }
 
 static void
@@ -357,6 +426,7 @@ popup_position_func (GtkMenu  *menu,
 {
   GtkLinkButton *link_button = GTK_LINK_BUTTON (user_data);
   GtkLinkButtonPrivate *priv = link_button->priv;
+  GtkAllocation allocation;
   GtkWidget *widget = GTK_WIDGET (link_button);
   GdkScreen *screen = gtk_widget_get_screen (widget);
   GtkRequisition req;
@@ -365,16 +435,17 @@ popup_position_func (GtkMenu  *menu,
   
   g_return_if_fail (gtk_widget_get_realized (widget));
 
-  gdk_window_get_origin (widget->window, x, y);
+  gdk_window_get_origin (gtk_widget_get_window (widget), x, y);
 
-  gtk_widget_size_request (priv->popup_menu, &req);
+  gtk_widget_get_preferred_size (priv->popup_menu, &req, NULL);
 
-  *x += widget->allocation.width / 2;
-  *y += widget->allocation.height;
+  gtk_widget_get_allocation (widget, &allocation);
+  *x += allocation.width / 2;
+  *y += allocation.height;
 
   monitor_num = gdk_screen_get_monitor_at_point (screen, *x, *y);
   gtk_menu_set_monitor (menu, monitor_num);
-  gdk_screen_get_monitor_geometry (screen, monitor_num, &monitor);
+  gdk_screen_get_monitor_workarea (screen, monitor_num, &monitor);
 
   *x = CLAMP (*x, monitor.x, monitor.x + MAX (0, monitor.width - req.width));
   *y = CLAMP (*y, monitor.y, monitor.y + MAX (0, monitor.height - req.height));
@@ -455,10 +526,13 @@ gtk_link_button_button_press (GtkWidget      *widget,
   if (!gtk_widget_has_focus (widget))
     gtk_widget_grab_focus (widget);
 
-  if (_gtk_button_event_triggers_context_menu (event))
+  /* Don't popup the menu if there's no URI set,
+   * otherwise the menu item will trigger a warning */
+  if (gdk_event_triggers_context_menu ((GdkEvent *) event) &&
+      GTK_LINK_BUTTON (widget)->priv->uri != NULL)
     {
       gtk_link_button_do_popup (GTK_LINK_BUTTON (widget), event);
-      
+
       return TRUE;
     }
 
@@ -468,35 +542,40 @@ gtk_link_button_button_press (GtkWidget      *widget,
   return FALSE;
 }
 
-static void
-gtk_link_button_clicked (GtkButton *button)
+static gboolean
+gtk_link_button_activate_link (GtkLinkButton *link_button)
 {
-  GtkLinkButton *link_button = GTK_LINK_BUTTON (button);
+  GdkScreen *screen;
+  GError *error;
 
-  if (uri_func)
-    (* uri_func) (link_button, link_button->priv->uri, uri_func_data);
+  if (gtk_widget_has_screen (GTK_WIDGET (link_button)))
+    screen = gtk_widget_get_screen (GTK_WIDGET (link_button));
   else
+    screen = NULL;
+
+  error = NULL;
+  gtk_show_uri (screen, link_button->priv->uri, GDK_CURRENT_TIME, &error);
+  if (error)
     {
-      GdkScreen *screen;
-      GError *error;
+      g_warning ("Unable to show '%s': %s",
+                 link_button->priv->uri,
+                 error->message);
+      g_error_free (error);
 
-      if (gtk_widget_has_screen (GTK_WIDGET (button)))
-        screen = gtk_widget_get_screen (GTK_WIDGET (button));
-      else
-        screen = NULL;
-
-      error = NULL;
-      gtk_show_uri (screen, link_button->priv->uri, GDK_CURRENT_TIME, &error);
-      if (error)
-        {
-          g_warning ("Unable to show '%s': %s",
-                     link_button->priv->uri,
-                     error->message);
-          g_error_free (error);
-        }
+      return FALSE;
     }
 
   gtk_link_button_set_visited (link_button, TRUE);
+
+  return TRUE;
+}
+
+static void
+gtk_link_button_clicked (GtkButton *button)
+{
+  gboolean retval = FALSE;
+
+  g_signal_emit (button, link_signals[ACTIVATE_LINK], 0, &retval);
 }
 
 static gboolean
@@ -540,7 +619,7 @@ gtk_link_button_drag_data_get_cb (GtkWidget        *widget,
   
   uri = g_strdup_printf ("%s\r\n", link_button->priv->uri);
   gtk_selection_data_set (selection,
-  			  selection->target,
+                          gtk_selection_data_get_target (selection),
   			  8,
   			  (guchar *) uri,
 			  strlen (uri));
@@ -702,43 +781,6 @@ gtk_link_button_get_uri (GtkLinkButton *link_button)
 }
 
 /**
- * gtk_link_button_set_uri_hook:
- * @func: (allow-none): a function called each time a #GtkLinkButton is clicked, or %NULL
- * @data: (allow-none): user data to be passed to @func, or %NULL
- * @destroy: (allow-none): a #GDestroyNotify that gets called when @data is no longer needed, or %NULL
- *
- * Sets @func as the function that should be invoked every time a user clicks
- * a #GtkLinkButton. This function is called before every callback registered
- * for the "clicked" signal.
- *
- * If no uri hook has been set, GTK+ defaults to calling gtk_show_uri().
- *
- * Return value: the previously set hook function.
- *
- * Since: 2.10
- *
- * Deprecated: 2.24: Use the #GtkButton::clicked signal instead
- */
-GtkLinkButtonUriFunc
-gtk_link_button_set_uri_hook (GtkLinkButtonUriFunc func,
-			      gpointer             data,
-			      GDestroyNotify       destroy)
-{
-  GtkLinkButtonUriFunc old_uri_func;
-
-  if (uri_func_destroy)
-    (* uri_func_destroy) (uri_func_data);
-
-  old_uri_func = uri_func;
-
-  uri_func = func;
-  uri_func_data = data;
-  uri_func_destroy = destroy;
-
-  return old_uri_func;
-}
-
-/**
  * gtk_link_button_set_visited:
  * @link_button: a #GtkLinkButton
  * @visited: the new 'visited' state
@@ -787,7 +829,3 @@ gtk_link_button_get_visited (GtkLinkButton *link_button)
   
   return link_button->priv->visited;
 }
-
-
-#define __GTK_LINK_BUTTON_C__
-#include "gtkaliasdef.c"

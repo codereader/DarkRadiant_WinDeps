@@ -4,7 +4,7 @@
     <GlibEtcInstallRoot>..\..\..\..\..\vs10\$(Platform)</GlibEtcInstallRoot>
     <CopyDir>$(GlibEtcInstallRoot)</CopyDir>
     <DefDir>$(SolutionDir)$(Configuration)\$(Platform)\obj\$(ProjectName)</DefDir>
-    <GtkApiVersion>2.0</GtkApiVersion>
+    <GtkApiVersion>3.0</GtkApiVersion>
     <GtkBinaryVersion>2.10.0</GtkBinaryVersion>
     <GtkDummyPrefix>\"/dummy\"</GtkDummyPrefix>
     <GtkPrefixDefine>GTK_PREFIX="\"$(GtkDummyPrefix)\""</GtkPrefixDefine>
@@ -557,7 +557,7 @@ copy $(Configuration)\$(Platform)\bin\*-$(GtkApiVersion).lib $(CopyDir)\lib
     <GtkLibtoolCompatibleDllPrefix>lib</GtkLibtoolCompatibleDllPrefix>
     <GtkLibtoolCompatibleDllSuffix>-$(GtkApiVersion)-0</GtkLibtoolCompatibleDllSuffix>
     <GtkSeparateVS10DllPrefix />
-    <GtkSeparateVS10DllSuffix>-2-vs10</GtkSeparateVS10DllSuffix>
+    <GtkSeparateVS10DllSuffix>-3-vs10</GtkSeparateVS10DllSuffix>
     <GtkDllPrefix>$(GtkSeparateVS10DllPrefix)</GtkDllPrefix>
     <GtkDllSuffix>$(GtkSeparateVS10DllSuffix)</GtkDllSuffix>
   </PropertyGroup>
@@ -570,11 +570,11 @@ copy $(Configuration)\$(Platform)\bin\*-$(GtkApiVersion).lib $(CopyDir)\lib
   <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions>HAVE_CONFIG_H;G_DISABLE_SINGLE_INCLUDES;ATK_DISABLE_SINGLE_INCLUDES;GDK_PIXBUF_DISABLE_SINGLE_INCLUDES;GTK_DISABLE_SINGLE_INCLUDES;PANGO_DISABLE_DEPRECATED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\gtk2\gdk;$(W32DepsDir)gtk2\include\gtk-2.0;$(W32DepsDir)gtk2\include\gtk-2.0\gdk;$(W32DepsDir)gtk2\include\gtk-2.0\gtk;$(W32DepsDir)gtk2\include\glib-2.0\glib;$(W32DepsDir)gtk2\include\glib-2.0;$(W32DepsDir)gtk2\include\cairo;$(W32DepsDir)gtk2\include\pango-1.0;$(W32DepsDir)gtk2\include\gdk-pixbuf;$(W32DepsDir)gtk2\include;$(SolutionDir)..\gtk2\glib;$(W32DepsDir)gettext\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\gtk2\gdk;$(SolutionDir)..\gtk2;$(W32DepsDir)gtk2\include\gtk-2.0;$(W32DepsDir)gtk2\include\gtk-2.0\gdk;$(W32DepsDir)gtk2\include\gtk-2.0\gtk;$(W32DepsDir)gtk2\include\glib-2.0\glib;$(W32DepsDir)gtk2\include\glib-2.0;$(W32DepsDir)gtk2\include\cairo;$(SolutionDir)..\gtk2\cairo\util\cairo-gobject;$(W32DepsDir)gtk2\include\pango-1.0;$(W32DepsDir)gtk2\include\gdk-pixbuf;$(W32DepsDir)gtk2\include;$(SolutionDir)..\gtk2\glib;$(W32DepsDir)gettext\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>pangocairo$(LibSuffix)-vc$(PlatformToolsetVersion).lib;cairo$(LibSuffix)-vc$(PlatformToolsetVersion).lib;pango$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdk-pixbuf$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gio$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gmodule$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gobject$(LibSuffix)-vc$(PlatformToolsetVersion).lib;glib$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gettext$(LibSuffix)-vc$(PlatformToolsetVersion).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>pangocairo$(LibSuffix)-vc$(PlatformToolsetVersion).lib;cairo$(LibSuffix)-vc$(PlatformToolsetVersion).lib;cairo-gobject$(LibSuffix)-vc$(PlatformToolsetVersion).lib;pango$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gdk-pixbuf$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gio$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gmodule$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gobject$(LibSuffix)-vc$(PlatformToolsetVersion).lib;glib$(LibSuffix)-vc$(PlatformToolsetVersion).lib;gettext$(LibSuffix)-vc$(PlatformToolsetVersion).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutputBase)gtk2\lib;$(OutputBase)gettext\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>$(OutputBase)/gtk2/lib/$(ProjectName)$(LibSuffix)-vc$(PlatformToolsetVersion).lib</ImportLibrary>
     </Link>

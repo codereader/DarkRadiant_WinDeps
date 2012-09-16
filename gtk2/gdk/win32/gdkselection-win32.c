@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -33,6 +31,7 @@
 #include "gdkselection.h"
 #include "gdkdisplay.h"
 #include "gdkprivate-win32.h"
+#include "gdkwin32.h"
 
 /* We emulate the GDK_SELECTION window properties of windows (as used
  * in the X11 backend) by using a hash table from window handles to
@@ -253,11 +252,11 @@ get_mapped_gdk_atom_name (GdkAtom gdk_target)
 }
 
 gboolean
-gdk_selection_owner_set_for_display (GdkDisplay *display,
-                                     GdkWindow  *owner,
-                                     GdkAtom     selection,
-                                     guint32     time,
-                                     gboolean    send_event)
+_gdk_win32_display_set_selection_owner (GdkDisplay *display,
+					GdkWindow  *owner,
+					GdkAtom     selection,
+					guint32     time,
+					gboolean    send_event)
 {
   HWND hwnd;
   GdkEvent tmp_event;
@@ -323,7 +322,7 @@ gdk_selection_owner_set_for_display (GdkDisplay *display,
       tmp_event.selection.selection = selection;
       tmp_event.selection.target = _utf8_string;
       tmp_event.selection.property = _gdk_selection;
-      tmp_event.selection.requestor = hwnd;
+      tmp_event.selection.requestor = gdk_win32_handle_table_lookup (hwnd);
       tmp_event.selection.time = time;
 
       gdk_event_put (&tmp_event);
@@ -333,8 +332,8 @@ gdk_selection_owner_set_for_display (GdkDisplay *display,
 }
 
 GdkWindow*
-gdk_selection_owner_get_for_display (GdkDisplay *display,
-                                     GdkAtom     selection)
+_gdk_win32_display_get_selection_owner (GdkDisplay *display,
+                                        GdkAtom     selection)
 {
   GdkWindow *window;
 
@@ -348,10 +347,11 @@ gdk_selection_owner_get_for_display (GdkDisplay *display,
       if (owner == NULL)
 	return NULL;
 
-      return gdk_win32_handle_table_lookup ((GdkNativeWindow) owner);
+      return gdk_win32_handle_table_lookup (owner);
     }
 
-  window = gdk_window_lookup ((GdkNativeWindow) g_hash_table_lookup (sel_owner_table, selection));
+  window = gdk_win32_window_lookup_for_display (display,
+                                                g_hash_table_lookup (sel_owner_table, selection));
 
   GDK_NOTE (DND, {
       gchar *sel_name = gdk_atom_name (selection);
@@ -387,10 +387,11 @@ generate_selection_notify (GdkWindow *requestor,
 }
 
 void
-gdk_selection_convert (GdkWindow *requestor,
-		       GdkAtom    selection,
-		       GdkAtom    target,
-		       guint32    time)
+_gdk_win32_display_convert_selection (GdkDisplay *display,
+				      GdkWindow *requestor,
+				      GdkAtom    selection,
+				      GdkAtom    target,
+				      guint32    time)
 {
   HGLOBAL hdata;
   GdkAtom property = _gdk_selection;
@@ -815,10 +816,11 @@ gdk_selection_convert (GdkWindow *requestor,
 }
 
 gint
-gdk_selection_property_get (GdkWindow  *requestor,
-			    guchar    **data,
-			    GdkAtom    *ret_type,
-			    gint       *ret_format)
+_gdk_win32_display_get_selection_property (GdkDisplay *display,
+					   GdkWindow  *requestor,
+					   guchar    **data,
+					   GdkAtom    *ret_type,
+					   gint       *ret_format)
 {
   GdkSelProp *prop;
 
@@ -880,12 +882,12 @@ _gdk_selection_property_delete (GdkWindow *window)
 }
 
 void
-gdk_selection_send_notify_for_display (GdkDisplay      *display,
-                                       GdkNativeWindow  requestor,
-                                       GdkAtom     	selection,
-                                       GdkAtom     	target,
-                                       GdkAtom     	property,
-                                       guint32     	time)
+_gdk_win32_display_send_selection_notify (GdkDisplay   *display,
+					  GdkWindow    *requestor,
+					  GdkAtom     	selection,
+					  GdkAtom     	target,
+					  GdkAtom     	property,
+					  guint32     	time)
 {
   g_return_if_fail (display == _gdk_display);
 
@@ -1031,13 +1033,13 @@ make_list (const gchar  *text,
   return n_strings;
 }
 
-gint 
-gdk_text_property_to_utf8_list_for_display (GdkDisplay    *display,
-                                            GdkAtom        encoding,
-                                            gint           format,
-                                            const guchar  *text,
-                                            gint           length,
-                                            gchar       ***list)
+gint
+_gdk_win32_display_text_property_to_utf8_list (GdkDisplay    *display,
+					       GdkAtom        encoding,
+					       gint           format,
+					       const guchar  *text,
+					       gint           length,
+					       gchar       ***list)
 {
   g_return_val_if_fail (text != NULL, 0);
   g_return_val_if_fail (length >= 0, 0);
@@ -1097,7 +1099,8 @@ gdk_string_to_compound_text_for_display (GdkDisplay  *display,
 }
 
 gchar *
-gdk_utf8_to_string_target (const gchar *str)
+_gdk_win32_display_utf8_to_string_target (GdkDisplay *display,
+					  const gchar *str)
 {
   return _gdk_utf8_to_string_target_internal (str, strlen (str));
 }

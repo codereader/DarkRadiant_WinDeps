@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -30,20 +28,17 @@
 #include <string.h>
 
 #include "gtkmountoperationprivate.h"
-#include "gtkalignment.h"
 #include "gtkbox.h"
 #include "gtkentry.h"
-#include "gtkhbox.h"
+#include "gtkbox.h"
 #include "gtkintl.h"
 #include "gtklabel.h"
-#include "gtkvbox.h"
 #include "gtkmessagedialog.h"
-#include "gtkmisc.h"
 #include "gtkmountoperation.h"
 #include "gtkprivate.h"
 #include "gtkradiobutton.h"
 #include "gtkstock.h"
-#include "gtktable.h"
+#include "gtkgrid.h"
 #include "gtkwindow.h"
 #include "gtktreeview.h"
 #include "gtktreeselection.h"
@@ -53,7 +48,6 @@
 #include "gtkicontheme.h"
 #include "gtkimagemenuitem.h"
 #include "gtkmain.h"
-#include "gtkalias.h"
 
 /**
  * SECTION:filesystem
@@ -419,18 +413,17 @@ table_add_entry (GtkWidget  *table,
   GtkWidget *label;
 
   label = gtk_label_new_with_mnemonic (label_text);
-  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_widget_set_halign (label, GTK_ALIGN_START);
+  gtk_widget_set_valign (label, GTK_ALIGN_CENTER);
+  gtk_widget_set_hexpand (label, TRUE);
 
   entry = gtk_entry_new ();
 
   if (value)
     gtk_entry_set_text (GTK_ENTRY (entry), value);
 
-  gtk_table_attach (GTK_TABLE (table), label,
-                    0, 1, row, row + 1,
-                    GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
-  gtk_table_attach_defaults (GTK_TABLE (table), entry,
-                             1, 2, row, row + 1);
+  gtk_grid_attach (GTK_GRID (table), label, 0, row, 1, 1);
+  gtk_grid_attach (GTK_GRID (table), entry, 1, row, 1, 1);
   gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
 
   g_signal_connect (entry, "changed",
@@ -454,10 +447,10 @@ gtk_mount_operation_ask_password (GMountOperation   *mount_op,
   GtkWidget *widget;
   GtkDialog *dialog;
   GtkWindow *window;
-  GtkWidget *entry_container;
   GtkWidget *hbox, *main_vbox, *vbox, *icon;
   GtkWidget *table;
   GtkWidget *message_label;
+  GtkWidget *content_area, *action_area;
   gboolean   can_anonymous;
   guint      rows;
   const gchar *secondary;
@@ -473,12 +466,14 @@ gtk_mount_operation_ask_password (GMountOperation   *mount_op,
 
   priv->dialog = dialog;
 
+  content_area = gtk_dialog_get_content_area (dialog);
+  action_area = gtk_dialog_get_action_area (dialog);
+
   /* Set the dialog up with HIG properties */
-  gtk_dialog_set_has_separator (dialog, FALSE);
   gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
-  gtk_box_set_spacing (GTK_BOX (dialog->vbox), 2); /* 2 * 5 + 2 = 12 */
-  gtk_container_set_border_width (GTK_CONTAINER (dialog->action_area), 5);
-  gtk_box_set_spacing (GTK_BOX (dialog->action_area), 6);
+  gtk_box_set_spacing (GTK_BOX (content_area), 2); /* 2 * 5 + 2 = 12 */
+  gtk_container_set_border_width (GTK_CONTAINER (action_area), 5);
+  gtk_box_set_spacing (GTK_BOX (action_area), 6);
 
   gtk_window_set_resizable (window, FALSE);
   gtk_window_set_title (window, "");
@@ -496,17 +491,18 @@ gtk_mount_operation_ask_password (GMountOperation   *mount_op,
                                            -1);
 
   /* Build contents */
-  hbox = gtk_hbox_new (FALSE, 12);
+  hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
   gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
-  gtk_box_pack_start (GTK_BOX (dialog->vbox), hbox, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (content_area), hbox, TRUE, TRUE, 0);
 
   icon = gtk_image_new_from_stock (GTK_STOCK_DIALOG_AUTHENTICATION,
                                    GTK_ICON_SIZE_DIALOG);
 
-  gtk_misc_set_alignment (GTK_MISC (icon), 0.5, 0.0);
+  gtk_widget_set_halign (icon, GTK_ALIGN_CENTER);
+  gtk_widget_set_valign (icon, GTK_ALIGN_START);
   gtk_box_pack_start (GTK_BOX (hbox), icon, FALSE, FALSE, 0);
 
-  main_vbox = gtk_vbox_new (FALSE, 18);
+  main_vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 18);
   gtk_box_pack_start (GTK_BOX (hbox), main_vbox, TRUE, TRUE, 0);
 
   secondary = strstr (message, "\n");
@@ -520,7 +516,8 @@ gtk_mount_operation_ask_password (GMountOperation   *mount_op,
 
       message_label = gtk_label_new (NULL);
       gtk_label_set_markup (GTK_LABEL (message_label), s);
-      gtk_misc_set_alignment (GTK_MISC (message_label), 0.0, 0.5);
+      gtk_widget_set_halign (message_label, GTK_ALIGN_START);
+      gtk_widget_set_valign (message_label, GTK_ALIGN_CENTER);
       gtk_label_set_line_wrap (GTK_LABEL (message_label), TRUE);
       gtk_box_pack_start (GTK_BOX (main_vbox), GTK_WIDGET (message_label),
                           FALSE, TRUE, 0);
@@ -531,13 +528,14 @@ gtk_mount_operation_ask_password (GMountOperation   *mount_op,
   else
     {
       message_label = gtk_label_new (message);
-      gtk_misc_set_alignment (GTK_MISC (message_label), 0.0, 0.5);
+      gtk_widget_set_halign (message_label, GTK_ALIGN_START);
+      gtk_widget_set_valign (message_label, GTK_ALIGN_CENTER);
       gtk_label_set_line_wrap (GTK_LABEL (message_label), TRUE);
       gtk_box_pack_start (GTK_BOX (main_vbox), GTK_WIDGET (message_label),
                           FALSE, FALSE, 0);
     }
 
-  vbox = gtk_vbox_new (FALSE, 6);
+  vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
   gtk_box_pack_start (GTK_BOX (main_vbox), vbox, FALSE, FALSE, 0);
 
   can_anonymous = flags & G_ASK_PASSWORD_ANONYMOUS_SUPPORTED;
@@ -549,7 +547,7 @@ gtk_mount_operation_ask_password (GMountOperation   *mount_op,
       GtkWidget *choice;
       GSList    *group;
 
-      anon_box = gtk_vbox_new (FALSE, 6);
+      anon_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
       gtk_box_pack_start (GTK_BOX (vbox), anon_box,
                           FALSE, FALSE, 0);
 
@@ -582,19 +580,15 @@ gtk_mount_operation_ask_password (GMountOperation   *mount_op,
     rows++;
 
   /* The table that holds the entries */
-  entry_container = gtk_alignment_new (0.0, 0.0, 1.0, 1.0);
+  table = gtk_grid_new ();
+  gtk_grid_set_row_spacing (GTK_GRID (table), 6);
+  gtk_grid_set_column_spacing (GTK_GRID (table), 6);
 
-  gtk_alignment_set_padding (GTK_ALIGNMENT (entry_container),
-                             0, 0, can_anonymous ? 12 : 0, 0);
+  if (can_anonymous)
+    gtk_widget_set_margin_left (table, 12);
 
-  gtk_box_pack_start (GTK_BOX (vbox), entry_container,
-                      FALSE, FALSE, 0);
-  priv->entry_container = entry_container;
-
-  table = gtk_table_new (rows, 2, FALSE);
-  gtk_table_set_col_spacings (GTK_TABLE (table), 12);
-  gtk_table_set_row_spacings (GTK_TABLE (table), 6);
-  gtk_container_add (GTK_CONTAINER (entry_container), table);
+  gtk_box_pack_start (GTK_BOX (vbox), table, FALSE, FALSE, 0);
+  priv->entry_container = table;
 
   rows = 0;
 
@@ -623,7 +617,7 @@ gtk_mount_operation_ask_password (GMountOperation   *mount_op,
       GSList       *group;
       GPasswordSave password_save;
 
-      remember_box = gtk_vbox_new (FALSE, 6);
+      remember_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
       gtk_box_pack_start (GTK_BOX (vbox), remember_box,
                           FALSE, FALSE, 0);
 
@@ -1171,7 +1165,7 @@ on_button_press_event_for_process_tree_view (GtkWidget      *widget,
 
   ret = FALSE;
 
-  if (_gtk_button_event_triggers_context_menu (event))
+  if (gdk_event_triggers_context_menu ((GdkEvent *) event))
     {
       ret = do_popup_menu_for_process_tree_view (widget, event, op);
     }
@@ -1179,7 +1173,7 @@ on_button_press_event_for_process_tree_view (GtkWidget      *widget,
   return ret;
 }
 
-static void
+static GtkWidget *
 create_show_processes_dialog (GMountOperation *op,
                               const char      *message,
                               const char      *choices[])
@@ -1213,10 +1207,9 @@ create_show_processes_dialog (GMountOperation *op,
   if (priv->parent_window != NULL)
     gtk_window_set_transient_for (GTK_WINDOW (dialog), priv->parent_window);
   gtk_window_set_title (GTK_WINDOW (dialog), "");
-  gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 
   content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
-  vbox = gtk_vbox_new (FALSE, 12);
+  vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 12);
   gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
   gtk_box_pack_start (GTK_BOX (content_area), vbox, TRUE, TRUE, 0);
 
@@ -1307,9 +1300,9 @@ create_show_processes_dialog (GMountOperation *op,
   g_object_add_weak_pointer (G_OBJECT (tree_view), (gpointer *) &priv->process_tree_view);
 
   g_object_unref (list_store);
-
-  gtk_widget_show_all (dialog);
   g_object_ref (op);
+
+  return dialog;
 }
 
 static void
@@ -1319,6 +1312,7 @@ gtk_mount_operation_show_processes (GMountOperation *op,
                                     const char      *choices[])
 {
   GtkMountOperationPrivate *priv;
+  GtkWidget *dialog = NULL;
 
   g_return_if_fail (GTK_IS_MOUNT_OPERATION (op));
   g_return_if_fail (message != NULL);
@@ -1330,7 +1324,7 @@ gtk_mount_operation_show_processes (GMountOperation *op,
   if (priv->process_list_store == NULL)
     {
       /* need to create the dialog */
-      create_show_processes_dialog (op, message, choices);
+      dialog = create_show_processes_dialog (op, message, choices);
     }
 
   /* otherwise, we're showing the dialog, assume messages+choices hasn't changed */
@@ -1338,6 +1332,11 @@ gtk_mount_operation_show_processes (GMountOperation *op,
   update_process_list_store (GTK_MOUNT_OPERATION (op),
                              priv->process_list_store,
                              processes);
+
+  if (dialog != NULL)
+    {
+      gtk_widget_show_all (dialog);
+    }
 }
 
 static void
@@ -1524,6 +1523,3 @@ gtk_mount_operation_get_screen (GtkMountOperation *op)
   else
     return gdk_screen_get_default ();
 }
-
-#define __GTK_MOUNT_OPERATION_C__
-#include "gtkaliasdef.c"

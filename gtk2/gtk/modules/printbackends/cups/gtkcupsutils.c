@@ -14,9 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -82,6 +80,14 @@ static GtkCupsRequestStateFunc get_states[] = {
   _get_auth,
   _get_read_data
 };
+
+#ifndef HAVE_CUPS_API_1_6
+#define ippSetOperation(ipp_request, ipp_op_id) ipp_request->request.op.operation_id = ipp_op_id
+#define ippSetRequestId(ipp_request, ipp_rq_id) ipp_request->request.op.request_id = ipp_rq_id
+#define ippSetState(ipp_request, ipp_state) ipp_request->state = ipp_state
+#define ippGetString(attr, index, foo) attr->values[index].string.text
+#define ippGetCount(attr) attr->num_values
+#endif
 
 static void
 gtk_cups_result_set_error (GtkCupsResult    *result,
@@ -165,8 +171,8 @@ gtk_cups_request_new_with_username (http_t             *connection,
   request->data_io = data_io;
 
   request->ipp_request = ippNew ();
-  request->ipp_request->request.op.operation_id = operation_id;
-  request->ipp_request->request.op.request_id = 1;
+  ippSetOperation (request->ipp_request, operation_id);
+  ippSetRequestId (request->ipp_request, 1);
 
   language = cupsLangDefault ();
 
@@ -265,6 +271,9 @@ gtk_cups_request_read_write (GtkCupsRequest *request, gboolean connect_only)
       else if (request->type == GTK_CUPS_GET)
         get_states[request->state] (request);
 
+      if (gtk_cups_result_is_error (request->result))
+        request->state = GTK_CUPS_REQUEST_DONE;
+
       if (request->attempts > _GTK_CUPS_MAX_ATTEMPTS &&
           request->state != GTK_CUPS_REQUEST_DONE)
         {
@@ -352,8 +361,8 @@ gtk_cups_request_ipp_get_string (GtkCupsRequest *request,
                                   name,
                                   tag);
 
-  if (attribute != NULL && attribute->values != NULL)
-    return attribute->values[0].string.text;
+  if (attribute != NULL && ippGetCount (attribute) > 0)
+      return ippGetString (attribute, 0, NULL);
   else
     return NULL;
 }
@@ -731,7 +740,7 @@ _post_send (GtkCupsRequest *request)
     request->attempts = 0;
 
     request->state = GTK_CUPS_POST_WRITE_REQUEST;
-    request->ipp_request->state = IPP_IDLE;
+    ippSetState (request->ipp_request, IPP_IDLE);
 }
 
 static void 
@@ -833,11 +842,7 @@ _post_write_data (GtkCupsRequest *request)
         }
 
 
-#if HAVE_CUPS_API_1_2
       if (httpWrite2 (request->http, buffer, bytes) < bytes)
-#else
-      if (httpWrite (request->http, buffer, (int) bytes) < bytes)
-#endif /* HAVE_CUPS_API_1_2 */
         {
           int http_errno;
 
@@ -918,8 +923,8 @@ _get_auth (GtkCupsRequest *request)
  * The callback sets cups_password to NULL to signal that the 
  * password has been used.
  */
-static char *cups_password;
-static char *cups_username;
+static char *cups_password = NULL;
+static char *cups_username = NULL;
 
 static const char *
 passwordCB (const char *prompt)
@@ -955,6 +960,7 @@ _post_check (GtkCupsRequest *request)
 
       if (request->password_state == GTK_CUPS_PASSWORD_APPLIED)
         {
+          request->poll_state = GTK_CUPS_HTTP_IDLE;
           request->password_state = GTK_CUPS_PASSWORD_NOT_VALID;
           request->state = GTK_CUPS_POST_AUTH;
           request->need_password = TRUE;
@@ -972,7 +978,6 @@ _post_check (GtkCupsRequest *request)
         {
           if (request->password_state == GTK_CUPS_PASSWORD_NONE)
             {
-              cups_password = g_strdup ("");
               cups_username = request->username;
               cupsSetPasswordCB (passwordCB);
 
@@ -984,6 +989,7 @@ _post_check (GtkCupsRequest *request)
                   /* move to AUTH state to let the backend 
                    * ask for a password
                    */ 
+                  request->poll_state = GTK_CUPS_HTTP_IDLE;
                   request->state = GTK_CUPS_POST_AUTH;
                   request->need_password = TRUE;
 
@@ -1223,7 +1229,7 @@ _get_send (GtkCupsRequest *request)
   request->state = GTK_CUPS_GET_CHECK;
   request->poll_state = GTK_CUPS_HTTP_READ;
   
-  request->ipp_request->state = IPP_IDLE;
+  ippSetState (request->ipp_request, IPP_IDLE);
 }
 
 static void 
@@ -1249,6 +1255,7 @@ _get_check (GtkCupsRequest *request)
 
       if (request->password_state == GTK_CUPS_PASSWORD_APPLIED)
         {
+          request->poll_state = GTK_CUPS_HTTP_IDLE;
           request->password_state = GTK_CUPS_PASSWORD_NOT_VALID;
           request->state = GTK_CUPS_GET_AUTH;
           request->need_password = TRUE;
@@ -1266,7 +1273,6 @@ _get_check (GtkCupsRequest *request)
         {
           if (request->password_state == GTK_CUPS_PASSWORD_NONE)
             {
-              cups_password = g_strdup ("");
               cups_username = request->username;
               cupsSetPasswordCB (passwordCB);
 
@@ -1278,6 +1284,7 @@ _get_check (GtkCupsRequest *request)
                   /* move to AUTH state to let the backend
                    * ask for a password
                    */
+                  request->poll_state = GTK_CUPS_HTTP_IDLE;
                   request->state = GTK_CUPS_GET_AUTH;
                   request->need_password = TRUE;
 
@@ -1324,7 +1331,7 @@ _get_check (GtkCupsRequest *request)
           return;
         }
 
-      request->state = GTK_CUPS_GET_SEND;
+      request->state = GTK_CUPS_GET_CONNECT;
       request->last_status = HTTP_CONTINUE;
 
      return;
@@ -1409,16 +1416,12 @@ _get_read_data (GtkCupsRequest *request)
 
   request->poll_state = GTK_CUPS_HTTP_READ;
 
-#if HAVE_CUPS_API_1_2
   bytes = httpRead2 (request->http, buffer, sizeof (buffer));
-#else
-  bytes = httpRead (request->http, buffer, sizeof (buffer));
-#endif /* HAVE_CUPS_API_1_2 */
   request->bytes_received += bytes;
 
   GTK_NOTE (PRINTING,
-            g_print ("CUPS Backend: %" G_GSIZE_FORMAT " bytes read\n", bytes));
-  
+            g_print ("CUPS Backend: %"G_GSIZE_FORMAT" bytes read\n", bytes));
+
   io_status =
     g_io_channel_write_chars (request->data_io, 
                               buffer, 
@@ -1440,11 +1443,7 @@ _get_read_data (GtkCupsRequest *request)
     }
 
   /* Stop if we do not expect any more data or EOF was received. */
-#if HAVE_CUPS_API_1_2
   if (httpGetLength2 (request->http) <= request->bytes_received || bytes == 0)
-#else
-  if (httpGetLength (request->http) <= request->bytes_received || bytes == 0)
-#endif /* HAVE_CUPS_API_1_2 */
     {
       request->state = GTK_CUPS_GET_DONE;
       request->poll_state = GTK_CUPS_HTTP_IDLE;
@@ -1502,7 +1501,6 @@ GtkCupsConnectionTest *
 gtk_cups_connection_test_new (const char *server)
 {
   GtkCupsConnectionTest *result = NULL;
-#ifdef HAVE_CUPS_API_1_2
   gchar                 *port_str = NULL;
 
   result = g_new (GtkCupsConnectionTest, 1);
@@ -1522,9 +1520,6 @@ gtk_cups_connection_test_new (const char *server)
   result->at_init = GTK_CUPS_CONNECTION_NOT_AVAILABLE;
 
   result->at_init = gtk_cups_connection_test_get_state (result);
-#else
-  result = g_new (GtkCupsConnectionTest, 1);
-#endif
 
   return result;
 }
@@ -1538,7 +1533,6 @@ gtk_cups_connection_test_new (const char *server)
 GtkCupsConnectionState 
 gtk_cups_connection_test_get_state (GtkCupsConnectionTest *test)
 {
-#ifdef HAVE_CUPS_API_1_2
   GtkCupsConnectionState result = GTK_CUPS_CONNECTION_NOT_AVAILABLE;
   http_addrlist_t       *iter;
   gint                   error_code;
@@ -1619,9 +1613,6 @@ gtk_cups_connection_test_get_state (GtkCupsConnectionTest *test)
 
       return result;
     }
-#else
-  return GTK_CUPS_CONNECTION_AVAILABLE;
-#endif
 }
 
 /* This function frees memory used by the GtkCupsConnectionTest structure.
@@ -1632,7 +1623,6 @@ gtk_cups_connection_test_free (GtkCupsConnectionTest *test)
   if (test == NULL)
     return;
 
-#ifdef HAVE_CUPS_API_1_2
   test->current_addr = NULL;
   test->last_wrong_addr = NULL;
   httpAddrFreeList (test->addrlist);
@@ -1641,6 +1631,5 @@ gtk_cups_connection_test_free (GtkCupsConnectionTest *test)
       close (test->socket);
       test->socket = -1;
     }
-#endif
   g_free (test);
 }

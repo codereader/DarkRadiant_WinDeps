@@ -14,9 +14,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with the Gnome Library; see the file COPYING.LIB.  If not,
- * write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -32,12 +30,26 @@
 
 #include "gtkintl.h"
 #include "gtktoggleaction.h"
-#include "gtktoggleactionprivate.h"
 #include "gtktoggletoolbutton.h"
 #include "gtktogglebutton.h"
 #include "gtkcheckmenuitem.h"
 #include "gtkprivate.h"
-#include "gtkalias.h"
+
+
+/**
+ * SECTION:gtktoggleaction
+ * @Short_description: An action which can be toggled between two states
+ * @Title: GtkToggleAction
+ *
+ * A #GtkToggleAction corresponds roughly to a #GtkCheckMenuItem. It has an
+ * "active" state specifying whether the action has been checked or not.
+ */
+
+struct _GtkToggleActionPrivate
+{
+  guint active        : 1;
+  guint draw_as_radio : 1;
+};
 
 enum 
 {
@@ -109,7 +121,7 @@ gtk_toggle_action_class_init (GtkToggleActionClass *klass)
   /**
    * GtkToggleAction:active:
    *
-   * If the toggle action should be active in or not.
+   * Whether the toggle action should be active.
    *
    * Since: 2.10
    */
@@ -117,10 +129,16 @@ gtk_toggle_action_class_init (GtkToggleActionClass *klass)
                                    PROP_ACTIVE,
                                    g_param_spec_boolean ("active",
                                                          P_("Active"),
-                                                         P_("If the toggle action should be active in or not"),
+                                                         P_("Whether the toggle action should be active"),
                                                          FALSE,
                                                          GTK_PARAM_READWRITE));
-
+  /**
+   * GtkToggleAction::toggled:
+   * @toggleaction: the object which received the signal.
+   *
+   * Should be connected if you wish to perform an action
+   * whenever the #GtkToggleAction state is changed.
+   */
   action_signals[TOGGLED] =
     g_signal_new (I_("toggled"),
                   G_OBJECT_CLASS_TYPE (klass),
@@ -136,7 +154,9 @@ gtk_toggle_action_class_init (GtkToggleActionClass *klass)
 static void
 gtk_toggle_action_init (GtkToggleAction *action)
 {
-  action->private_data = GTK_TOGGLE_ACTION_GET_PRIVATE (action);
+  action->private_data = G_TYPE_INSTANCE_GET_PRIVATE (action,
+                                                      GTK_TYPE_TOGGLE_ACTION,
+                                                      GtkToggleActionPrivate);
   action->private_data->active = FALSE;
   action->private_data->draw_as_radio = FALSE;
 }
@@ -144,10 +164,11 @@ gtk_toggle_action_init (GtkToggleAction *action)
 /**
  * gtk_toggle_action_new:
  * @name: A unique name for the action
- * @label: (allow-none): The label displayed in menu items and on buttons, or %NULL
+ * @label: (allow-none): The label displayed in menu items and on buttons,
+ *         or %NULL
  * @tooltip: (allow-none): A tooltip for the action, or %NULL
- * @stock_id: The stock icon to display in widgets representing the
- *   action, or %NULL
+ * @stock_id: (allow-none): The stock icon to display in widgets representing
+ *            the action, or %NULL
  *
  * Creates a new #GtkToggleAction object. To add the action to
  * a #GtkActionGroup and set the accelerator for the action,
@@ -275,7 +296,7 @@ gtk_toggle_action_set_active (GtkToggleAction *action,
  * @action: the action object
  *
  * Returns the checked state of the toggle action.
-
+ *
  * Returns: the checked state of the toggle action
  *
  * Since: 2.4
@@ -343,5 +364,22 @@ create_menu_item (GtkAction *action)
 		       NULL);
 }
 
-#define __GTK_TOGGLE_ACTION_C__
-#include "gtkaliasdef.c"
+
+/* Private */
+
+/*
+ * _gtk_toggle_action_set_active:
+ * @toggle_action: a #GtkToggleAction
+ * @is_active: whether the action is active or not
+ *
+ * Sets the #GtkToggleAction:active property directly. This function does
+ * not emit signals or notifications: it is left to the caller to do so.
+ */
+void
+_gtk_toggle_action_set_active (GtkToggleAction *toggle_action,
+                               gboolean         is_active)
+{
+  GtkToggleActionPrivate *priv = toggle_action->private_data;
+
+  priv->active = is_active;
+}

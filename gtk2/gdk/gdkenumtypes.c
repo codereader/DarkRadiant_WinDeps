@@ -3,7 +3,6 @@
 
 #define GDK_ENABLE_BROKEN
 #include "gdk.h"
-#include "gdkalias.h"
 
 /* enumerations from "gdkcursor.h" */
 GType
@@ -99,6 +98,80 @@ gdk_cursor_type_get_type (void)
     return etype;
 }
 
+/* enumerations from "gdkdevice.h" */
+GType
+gdk_input_source_get_type (void)
+{
+    static GType etype = 0;
+    if (G_UNLIKELY(etype == 0)) {
+        static const GEnumValue values[] = {
+            { GDK_SOURCE_MOUSE, "GDK_SOURCE_MOUSE", "mouse" },
+            { GDK_SOURCE_PEN, "GDK_SOURCE_PEN", "pen" },
+            { GDK_SOURCE_ERASER, "GDK_SOURCE_ERASER", "eraser" },
+            { GDK_SOURCE_CURSOR, "GDK_SOURCE_CURSOR", "cursor" },
+            { GDK_SOURCE_KEYBOARD, "GDK_SOURCE_KEYBOARD", "keyboard" },
+            { GDK_SOURCE_TOUCHSCREEN, "GDK_SOURCE_TOUCHSCREEN", "touchscreen" },
+            { GDK_SOURCE_TOUCHPAD, "GDK_SOURCE_TOUCHPAD", "touchpad" },
+            { 0, NULL, NULL }
+        };
+        etype = g_enum_register_static (g_intern_static_string ("GdkInputSource"), values);
+    }
+    return etype;
+}
+
+GType
+gdk_input_mode_get_type (void)
+{
+    static GType etype = 0;
+    if (G_UNLIKELY(etype == 0)) {
+        static const GEnumValue values[] = {
+            { GDK_MODE_DISABLED, "GDK_MODE_DISABLED", "disabled" },
+            { GDK_MODE_SCREEN, "GDK_MODE_SCREEN", "screen" },
+            { GDK_MODE_WINDOW, "GDK_MODE_WINDOW", "window" },
+            { 0, NULL, NULL }
+        };
+        etype = g_enum_register_static (g_intern_static_string ("GdkInputMode"), values);
+    }
+    return etype;
+}
+
+GType
+gdk_axis_use_get_type (void)
+{
+    static GType etype = 0;
+    if (G_UNLIKELY(etype == 0)) {
+        static const GEnumValue values[] = {
+            { GDK_AXIS_IGNORE, "GDK_AXIS_IGNORE", "ignore" },
+            { GDK_AXIS_X, "GDK_AXIS_X", "x" },
+            { GDK_AXIS_Y, "GDK_AXIS_Y", "y" },
+            { GDK_AXIS_PRESSURE, "GDK_AXIS_PRESSURE", "pressure" },
+            { GDK_AXIS_XTILT, "GDK_AXIS_XTILT", "xtilt" },
+            { GDK_AXIS_YTILT, "GDK_AXIS_YTILT", "ytilt" },
+            { GDK_AXIS_WHEEL, "GDK_AXIS_WHEEL", "wheel" },
+            { GDK_AXIS_LAST, "GDK_AXIS_LAST", "last" },
+            { 0, NULL, NULL }
+        };
+        etype = g_enum_register_static (g_intern_static_string ("GdkAxisUse"), values);
+    }
+    return etype;
+}
+
+GType
+gdk_device_type_get_type (void)
+{
+    static GType etype = 0;
+    if (G_UNLIKELY(etype == 0)) {
+        static const GEnumValue values[] = {
+            { GDK_DEVICE_TYPE_MASTER, "GDK_DEVICE_TYPE_MASTER", "master" },
+            { GDK_DEVICE_TYPE_SLAVE, "GDK_DEVICE_TYPE_SLAVE", "slave" },
+            { GDK_DEVICE_TYPE_FLOATING, "GDK_DEVICE_TYPE_FLOATING", "floating" },
+            { 0, NULL, NULL }
+        };
+        etype = g_enum_register_static (g_intern_static_string ("GdkDeviceType"), values);
+    }
+    return etype;
+}
+
 /* enumerations from "gdkdnd.h" */
 GType
 gdk_drag_action_get_type (void)
@@ -125,10 +198,10 @@ gdk_drag_protocol_get_type (void)
     static GType etype = 0;
     if (G_UNLIKELY(etype == 0)) {
         static const GEnumValue values[] = {
+            { GDK_DRAG_PROTO_NONE, "GDK_DRAG_PROTO_NONE", "none" },
             { GDK_DRAG_PROTO_MOTIF, "GDK_DRAG_PROTO_MOTIF", "motif" },
             { GDK_DRAG_PROTO_XDND, "GDK_DRAG_PROTO_XDND", "xdnd" },
             { GDK_DRAG_PROTO_ROOTWIN, "GDK_DRAG_PROTO_ROOTWIN", "rootwin" },
-            { GDK_DRAG_PROTO_NONE, "GDK_DRAG_PROTO_NONE", "none" },
             { GDK_DRAG_PROTO_WIN32_DROPFILES, "GDK_DRAG_PROTO_WIN32_DROPFILES", "win32-dropfiles" },
             { GDK_DRAG_PROTO_OLE2, "GDK_DRAG_PROTO_OLE2", "ole2" },
             { GDK_DRAG_PROTO_LOCAL, "GDK_DRAG_PROTO_LOCAL", "local" },
@@ -193,52 +266,20 @@ gdk_event_type_get_type (void)
             { GDK_DROP_FINISHED, "GDK_DROP_FINISHED", "drop-finished" },
             { GDK_CLIENT_EVENT, "GDK_CLIENT_EVENT", "client-event" },
             { GDK_VISIBILITY_NOTIFY, "GDK_VISIBILITY_NOTIFY", "visibility-notify" },
-            { GDK_NO_EXPOSE, "GDK_NO_EXPOSE", "no-expose" },
             { GDK_SCROLL, "GDK_SCROLL", "scroll" },
             { GDK_WINDOW_STATE, "GDK_WINDOW_STATE", "window-state" },
             { GDK_SETTING, "GDK_SETTING", "setting" },
             { GDK_OWNER_CHANGE, "GDK_OWNER_CHANGE", "owner-change" },
             { GDK_GRAB_BROKEN, "GDK_GRAB_BROKEN", "grab-broken" },
             { GDK_DAMAGE, "GDK_DAMAGE", "damage" },
+            { GDK_TOUCH_BEGIN, "GDK_TOUCH_BEGIN", "touch-begin" },
+            { GDK_TOUCH_UPDATE, "GDK_TOUCH_UPDATE", "touch-update" },
+            { GDK_TOUCH_END, "GDK_TOUCH_END", "touch-end" },
+            { GDK_TOUCH_CANCEL, "GDK_TOUCH_CANCEL", "touch-cancel" },
             { GDK_EVENT_LAST, "GDK_EVENT_LAST", "event-last" },
             { 0, NULL, NULL }
         };
         etype = g_enum_register_static (g_intern_static_string ("GdkEventType"), values);
-    }
-    return etype;
-}
-
-GType
-gdk_event_mask_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GFlagsValue values[] = {
-            { GDK_EXPOSURE_MASK, "GDK_EXPOSURE_MASK", "exposure-mask" },
-            { GDK_POINTER_MOTION_MASK, "GDK_POINTER_MOTION_MASK", "pointer-motion-mask" },
-            { GDK_POINTER_MOTION_HINT_MASK, "GDK_POINTER_MOTION_HINT_MASK", "pointer-motion-hint-mask" },
-            { GDK_BUTTON_MOTION_MASK, "GDK_BUTTON_MOTION_MASK", "button-motion-mask" },
-            { GDK_BUTTON1_MOTION_MASK, "GDK_BUTTON1_MOTION_MASK", "button1-motion-mask" },
-            { GDK_BUTTON2_MOTION_MASK, "GDK_BUTTON2_MOTION_MASK", "button2-motion-mask" },
-            { GDK_BUTTON3_MOTION_MASK, "GDK_BUTTON3_MOTION_MASK", "button3-motion-mask" },
-            { GDK_BUTTON_PRESS_MASK, "GDK_BUTTON_PRESS_MASK", "button-press-mask" },
-            { GDK_BUTTON_RELEASE_MASK, "GDK_BUTTON_RELEASE_MASK", "button-release-mask" },
-            { GDK_KEY_PRESS_MASK, "GDK_KEY_PRESS_MASK", "key-press-mask" },
-            { GDK_KEY_RELEASE_MASK, "GDK_KEY_RELEASE_MASK", "key-release-mask" },
-            { GDK_ENTER_NOTIFY_MASK, "GDK_ENTER_NOTIFY_MASK", "enter-notify-mask" },
-            { GDK_LEAVE_NOTIFY_MASK, "GDK_LEAVE_NOTIFY_MASK", "leave-notify-mask" },
-            { GDK_FOCUS_CHANGE_MASK, "GDK_FOCUS_CHANGE_MASK", "focus-change-mask" },
-            { GDK_STRUCTURE_MASK, "GDK_STRUCTURE_MASK", "structure-mask" },
-            { GDK_PROPERTY_CHANGE_MASK, "GDK_PROPERTY_CHANGE_MASK", "property-change-mask" },
-            { GDK_VISIBILITY_NOTIFY_MASK, "GDK_VISIBILITY_NOTIFY_MASK", "visibility-notify-mask" },
-            { GDK_PROXIMITY_IN_MASK, "GDK_PROXIMITY_IN_MASK", "proximity-in-mask" },
-            { GDK_PROXIMITY_OUT_MASK, "GDK_PROXIMITY_OUT_MASK", "proximity-out-mask" },
-            { GDK_SUBSTRUCTURE_MASK, "GDK_SUBSTRUCTURE_MASK", "substructure-mask" },
-            { GDK_SCROLL_MASK, "GDK_SCROLL_MASK", "scroll-mask" },
-            { GDK_ALL_EVENTS_MASK, "GDK_ALL_EVENTS_MASK", "all-events-mask" },
-            { 0, NULL, NULL }
-        };
-        etype = g_flags_register_static (g_intern_static_string ("GdkEventMask"), values);
     }
     return etype;
 }
@@ -269,6 +310,7 @@ gdk_scroll_direction_get_type (void)
             { GDK_SCROLL_DOWN, "GDK_SCROLL_DOWN", "down" },
             { GDK_SCROLL_LEFT, "GDK_SCROLL_LEFT", "left" },
             { GDK_SCROLL_RIGHT, "GDK_SCROLL_RIGHT", "right" },
+            { GDK_SCROLL_SMOOTH, "GDK_SCROLL_SMOOTH", "smooth" },
             { 0, NULL, NULL }
         };
         etype = g_enum_register_static (g_intern_static_string ("GdkScrollDirection"), values);
@@ -307,6 +349,9 @@ gdk_crossing_mode_get_type (void)
             { GDK_CROSSING_GTK_GRAB, "GDK_CROSSING_GTK_GRAB", "gtk-grab" },
             { GDK_CROSSING_GTK_UNGRAB, "GDK_CROSSING_GTK_UNGRAB", "gtk-ungrab" },
             { GDK_CROSSING_STATE_CHANGED, "GDK_CROSSING_STATE_CHANGED", "state-changed" },
+            { GDK_CROSSING_TOUCH_BEGIN, "GDK_CROSSING_TOUCH_BEGIN", "touch-begin" },
+            { GDK_CROSSING_TOUCH_END, "GDK_CROSSING_TOUCH_END", "touch-end" },
+            { GDK_CROSSING_DEVICE_SWITCH, "GDK_CROSSING_DEVICE_SWITCH", "device-switch" },
             { 0, NULL, NULL }
         };
         etype = g_enum_register_static (g_intern_static_string ("GdkCrossingMode"), values);
@@ -342,6 +387,7 @@ gdk_window_state_get_type (void)
             { GDK_WINDOW_STATE_FULLSCREEN, "GDK_WINDOW_STATE_FULLSCREEN", "fullscreen" },
             { GDK_WINDOW_STATE_ABOVE, "GDK_WINDOW_STATE_ABOVE", "above" },
             { GDK_WINDOW_STATE_BELOW, "GDK_WINDOW_STATE_BELOW", "below" },
+            { GDK_WINDOW_STATE_FOCUSED, "GDK_WINDOW_STATE_FOCUSED", "focused" },
             { 0, NULL, NULL }
         };
         etype = g_flags_register_static (g_intern_static_string ("GdkWindowState"), values);
@@ -381,252 +427,6 @@ gdk_owner_change_get_type (void)
     return etype;
 }
 
-/* enumerations from "gdkfont.h" */
-GType
-gdk_font_type_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GDK_FONT_FONT, "GDK_FONT_FONT", "font" },
-            { GDK_FONT_FONTSET, "GDK_FONT_FONTSET", "fontset" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GdkFontType"), values);
-    }
-    return etype;
-}
-
-/* enumerations from "gdkgc.h" */
-GType
-gdk_cap_style_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GDK_CAP_NOT_LAST, "GDK_CAP_NOT_LAST", "not-last" },
-            { GDK_CAP_BUTT, "GDK_CAP_BUTT", "butt" },
-            { GDK_CAP_ROUND, "GDK_CAP_ROUND", "round" },
-            { GDK_CAP_PROJECTING, "GDK_CAP_PROJECTING", "projecting" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GdkCapStyle"), values);
-    }
-    return etype;
-}
-
-GType
-gdk_fill_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GDK_SOLID, "GDK_SOLID", "solid" },
-            { GDK_TILED, "GDK_TILED", "tiled" },
-            { GDK_STIPPLED, "GDK_STIPPLED", "stippled" },
-            { GDK_OPAQUE_STIPPLED, "GDK_OPAQUE_STIPPLED", "opaque-stippled" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GdkFill"), values);
-    }
-    return etype;
-}
-
-GType
-gdk_function_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GDK_COPY, "GDK_COPY", "copy" },
-            { GDK_INVERT, "GDK_INVERT", "invert" },
-            { GDK_XOR, "GDK_XOR", "xor" },
-            { GDK_CLEAR, "GDK_CLEAR", "clear" },
-            { GDK_AND, "GDK_AND", "and" },
-            { GDK_AND_REVERSE, "GDK_AND_REVERSE", "and-reverse" },
-            { GDK_AND_INVERT, "GDK_AND_INVERT", "and-invert" },
-            { GDK_NOOP, "GDK_NOOP", "noop" },
-            { GDK_OR, "GDK_OR", "or" },
-            { GDK_EQUIV, "GDK_EQUIV", "equiv" },
-            { GDK_OR_REVERSE, "GDK_OR_REVERSE", "or-reverse" },
-            { GDK_COPY_INVERT, "GDK_COPY_INVERT", "copy-invert" },
-            { GDK_OR_INVERT, "GDK_OR_INVERT", "or-invert" },
-            { GDK_NAND, "GDK_NAND", "nand" },
-            { GDK_NOR, "GDK_NOR", "nor" },
-            { GDK_SET, "GDK_SET", "set" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GdkFunction"), values);
-    }
-    return etype;
-}
-
-GType
-gdk_join_style_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GDK_JOIN_MITER, "GDK_JOIN_MITER", "miter" },
-            { GDK_JOIN_ROUND, "GDK_JOIN_ROUND", "round" },
-            { GDK_JOIN_BEVEL, "GDK_JOIN_BEVEL", "bevel" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GdkJoinStyle"), values);
-    }
-    return etype;
-}
-
-GType
-gdk_line_style_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GDK_LINE_SOLID, "GDK_LINE_SOLID", "solid" },
-            { GDK_LINE_ON_OFF_DASH, "GDK_LINE_ON_OFF_DASH", "on-off-dash" },
-            { GDK_LINE_DOUBLE_DASH, "GDK_LINE_DOUBLE_DASH", "double-dash" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GdkLineStyle"), values);
-    }
-    return etype;
-}
-
-GType
-gdk_subwindow_mode_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GDK_CLIP_BY_CHILDREN, "GDK_CLIP_BY_CHILDREN", "clip-by-children" },
-            { GDK_INCLUDE_INFERIORS, "GDK_INCLUDE_INFERIORS", "include-inferiors" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GdkSubwindowMode"), values);
-    }
-    return etype;
-}
-
-GType
-gdk_gc_values_mask_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GFlagsValue values[] = {
-            { GDK_GC_FOREGROUND, "GDK_GC_FOREGROUND", "foreground" },
-            { GDK_GC_BACKGROUND, "GDK_GC_BACKGROUND", "background" },
-            { GDK_GC_FONT, "GDK_GC_FONT", "font" },
-            { GDK_GC_FUNCTION, "GDK_GC_FUNCTION", "function" },
-            { GDK_GC_FILL, "GDK_GC_FILL", "fill" },
-            { GDK_GC_TILE, "GDK_GC_TILE", "tile" },
-            { GDK_GC_STIPPLE, "GDK_GC_STIPPLE", "stipple" },
-            { GDK_GC_CLIP_MASK, "GDK_GC_CLIP_MASK", "clip-mask" },
-            { GDK_GC_SUBWINDOW, "GDK_GC_SUBWINDOW", "subwindow" },
-            { GDK_GC_TS_X_ORIGIN, "GDK_GC_TS_X_ORIGIN", "ts-x-origin" },
-            { GDK_GC_TS_Y_ORIGIN, "GDK_GC_TS_Y_ORIGIN", "ts-y-origin" },
-            { GDK_GC_CLIP_X_ORIGIN, "GDK_GC_CLIP_X_ORIGIN", "clip-x-origin" },
-            { GDK_GC_CLIP_Y_ORIGIN, "GDK_GC_CLIP_Y_ORIGIN", "clip-y-origin" },
-            { GDK_GC_EXPOSURES, "GDK_GC_EXPOSURES", "exposures" },
-            { GDK_GC_LINE_WIDTH, "GDK_GC_LINE_WIDTH", "line-width" },
-            { GDK_GC_LINE_STYLE, "GDK_GC_LINE_STYLE", "line-style" },
-            { GDK_GC_CAP_STYLE, "GDK_GC_CAP_STYLE", "cap-style" },
-            { GDK_GC_JOIN_STYLE, "GDK_GC_JOIN_STYLE", "join-style" },
-            { 0, NULL, NULL }
-        };
-        etype = g_flags_register_static (g_intern_static_string ("GdkGCValuesMask"), values);
-    }
-    return etype;
-}
-
-/* enumerations from "gdkimage.h" */
-GType
-gdk_image_type_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GDK_IMAGE_NORMAL, "GDK_IMAGE_NORMAL", "normal" },
-            { GDK_IMAGE_SHARED, "GDK_IMAGE_SHARED", "shared" },
-            { GDK_IMAGE_FASTEST, "GDK_IMAGE_FASTEST", "fastest" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GdkImageType"), values);
-    }
-    return etype;
-}
-
-/* enumerations from "gdkinput.h" */
-GType
-gdk_extension_mode_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GDK_EXTENSION_EVENTS_NONE, "GDK_EXTENSION_EVENTS_NONE", "none" },
-            { GDK_EXTENSION_EVENTS_ALL, "GDK_EXTENSION_EVENTS_ALL", "all" },
-            { GDK_EXTENSION_EVENTS_CURSOR, "GDK_EXTENSION_EVENTS_CURSOR", "cursor" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GdkExtensionMode"), values);
-    }
-    return etype;
-}
-
-GType
-gdk_input_source_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GDK_SOURCE_MOUSE, "GDK_SOURCE_MOUSE", "mouse" },
-            { GDK_SOURCE_PEN, "GDK_SOURCE_PEN", "pen" },
-            { GDK_SOURCE_ERASER, "GDK_SOURCE_ERASER", "eraser" },
-            { GDK_SOURCE_CURSOR, "GDK_SOURCE_CURSOR", "cursor" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GdkInputSource"), values);
-    }
-    return etype;
-}
-
-GType
-gdk_input_mode_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GDK_MODE_DISABLED, "GDK_MODE_DISABLED", "disabled" },
-            { GDK_MODE_SCREEN, "GDK_MODE_SCREEN", "screen" },
-            { GDK_MODE_WINDOW, "GDK_MODE_WINDOW", "window" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GdkInputMode"), values);
-    }
-    return etype;
-}
-
-GType
-gdk_axis_use_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GDK_AXIS_IGNORE, "GDK_AXIS_IGNORE", "ignore" },
-            { GDK_AXIS_X, "GDK_AXIS_X", "x" },
-            { GDK_AXIS_Y, "GDK_AXIS_Y", "y" },
-            { GDK_AXIS_PRESSURE, "GDK_AXIS_PRESSURE", "pressure" },
-            { GDK_AXIS_XTILT, "GDK_AXIS_XTILT", "xtilt" },
-            { GDK_AXIS_YTILT, "GDK_AXIS_YTILT", "ytilt" },
-            { GDK_AXIS_WHEEL, "GDK_AXIS_WHEEL", "wheel" },
-            { GDK_AXIS_LAST, "GDK_AXIS_LAST", "last" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GdkAxisUse"), values);
-    }
-    return etype;
-}
-
 /* enumerations from "gdkproperty.h" */
 GType
 gdk_prop_mode_get_type (void)
@@ -640,55 +440,6 @@ gdk_prop_mode_get_type (void)
             { 0, NULL, NULL }
         };
         etype = g_enum_register_static (g_intern_static_string ("GdkPropMode"), values);
-    }
-    return etype;
-}
-
-/* enumerations from "gdkregion.h" */
-GType
-gdk_fill_rule_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GDK_EVEN_ODD_RULE, "GDK_EVEN_ODD_RULE", "even-odd-rule" },
-            { GDK_WINDING_RULE, "GDK_WINDING_RULE", "winding-rule" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GdkFillRule"), values);
-    }
-    return etype;
-}
-
-GType
-gdk_overlap_type_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GDK_OVERLAP_RECTANGLE_IN, "GDK_OVERLAP_RECTANGLE_IN", "in" },
-            { GDK_OVERLAP_RECTANGLE_OUT, "GDK_OVERLAP_RECTANGLE_OUT", "out" },
-            { GDK_OVERLAP_RECTANGLE_PART, "GDK_OVERLAP_RECTANGLE_PART", "part" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GdkOverlapType"), values);
-    }
-    return etype;
-}
-
-/* enumerations from "gdkrgb.h" */
-GType
-gdk_rgb_dither_get_type (void)
-{
-    static GType etype = 0;
-    if (G_UNLIKELY(etype == 0)) {
-        static const GEnumValue values[] = {
-            { GDK_RGB_DITHER_NONE, "GDK_RGB_DITHER_NONE", "none" },
-            { GDK_RGB_DITHER_NORMAL, "GDK_RGB_DITHER_NORMAL", "normal" },
-            { GDK_RGB_DITHER_MAX, "GDK_RGB_DITHER_MAX", "max" },
-            { 0, NULL, NULL }
-        };
-        etype = g_enum_register_static (g_intern_static_string ("GdkRgbDither"), values);
     }
     return etype;
 }
@@ -728,9 +479,23 @@ gdk_modifier_type_get_type (void)
             { GDK_BUTTON3_MASK, "GDK_BUTTON3_MASK", "button3-mask" },
             { GDK_BUTTON4_MASK, "GDK_BUTTON4_MASK", "button4-mask" },
             { GDK_BUTTON5_MASK, "GDK_BUTTON5_MASK", "button5-mask" },
+            { GDK_MODIFIER_RESERVED_13_MASK, "GDK_MODIFIER_RESERVED_13_MASK", "modifier-reserved-13-mask" },
+            { GDK_MODIFIER_RESERVED_14_MASK, "GDK_MODIFIER_RESERVED_14_MASK", "modifier-reserved-14-mask" },
+            { GDK_MODIFIER_RESERVED_15_MASK, "GDK_MODIFIER_RESERVED_15_MASK", "modifier-reserved-15-mask" },
+            { GDK_MODIFIER_RESERVED_16_MASK, "GDK_MODIFIER_RESERVED_16_MASK", "modifier-reserved-16-mask" },
+            { GDK_MODIFIER_RESERVED_17_MASK, "GDK_MODIFIER_RESERVED_17_MASK", "modifier-reserved-17-mask" },
+            { GDK_MODIFIER_RESERVED_18_MASK, "GDK_MODIFIER_RESERVED_18_MASK", "modifier-reserved-18-mask" },
+            { GDK_MODIFIER_RESERVED_19_MASK, "GDK_MODIFIER_RESERVED_19_MASK", "modifier-reserved-19-mask" },
+            { GDK_MODIFIER_RESERVED_20_MASK, "GDK_MODIFIER_RESERVED_20_MASK", "modifier-reserved-20-mask" },
+            { GDK_MODIFIER_RESERVED_21_MASK, "GDK_MODIFIER_RESERVED_21_MASK", "modifier-reserved-21-mask" },
+            { GDK_MODIFIER_RESERVED_22_MASK, "GDK_MODIFIER_RESERVED_22_MASK", "modifier-reserved-22-mask" },
+            { GDK_MODIFIER_RESERVED_23_MASK, "GDK_MODIFIER_RESERVED_23_MASK", "modifier-reserved-23-mask" },
+            { GDK_MODIFIER_RESERVED_24_MASK, "GDK_MODIFIER_RESERVED_24_MASK", "modifier-reserved-24-mask" },
+            { GDK_MODIFIER_RESERVED_25_MASK, "GDK_MODIFIER_RESERVED_25_MASK", "modifier-reserved-25-mask" },
             { GDK_SUPER_MASK, "GDK_SUPER_MASK", "super-mask" },
             { GDK_HYPER_MASK, "GDK_HYPER_MASK", "hyper-mask" },
             { GDK_META_MASK, "GDK_META_MASK", "meta-mask" },
+            { GDK_MODIFIER_RESERVED_29_MASK, "GDK_MODIFIER_RESERVED_29_MASK", "modifier-reserved-29-mask" },
             { GDK_RELEASE_MASK, "GDK_RELEASE_MASK", "release-mask" },
             { GDK_MODIFIER_MASK, "GDK_MODIFIER_MASK", "modifier-mask" },
             { 0, NULL, NULL }
@@ -741,17 +506,20 @@ gdk_modifier_type_get_type (void)
 }
 
 GType
-gdk_input_condition_get_type (void)
+gdk_modifier_intent_get_type (void)
 {
     static GType etype = 0;
     if (G_UNLIKELY(etype == 0)) {
-        static const GFlagsValue values[] = {
-            { GDK_INPUT_READ, "GDK_INPUT_READ", "read" },
-            { GDK_INPUT_WRITE, "GDK_INPUT_WRITE", "write" },
-            { GDK_INPUT_EXCEPTION, "GDK_INPUT_EXCEPTION", "exception" },
+        static const GEnumValue values[] = {
+            { GDK_MODIFIER_INTENT_PRIMARY_ACCELERATOR, "GDK_MODIFIER_INTENT_PRIMARY_ACCELERATOR", "primary-accelerator" },
+            { GDK_MODIFIER_INTENT_CONTEXT_MENU, "GDK_MODIFIER_INTENT_CONTEXT_MENU", "context-menu" },
+            { GDK_MODIFIER_INTENT_EXTEND_SELECTION, "GDK_MODIFIER_INTENT_EXTEND_SELECTION", "extend-selection" },
+            { GDK_MODIFIER_INTENT_MODIFY_SELECTION, "GDK_MODIFIER_INTENT_MODIFY_SELECTION", "modify-selection" },
+            { GDK_MODIFIER_INTENT_NO_TEXT_INPUT, "GDK_MODIFIER_INTENT_NO_TEXT_INPUT", "no-text-input" },
+            { GDK_MODIFIER_INTENT_SHIFT_GROUP, "GDK_MODIFIER_INTENT_SHIFT_GROUP", "shift-group" },
             { 0, NULL, NULL }
         };
-        etype = g_flags_register_static (g_intern_static_string ("GdkInputCondition"), values);
+        etype = g_enum_register_static (g_intern_static_string ("GdkModifierIntent"), values);
     }
     return etype;
 }
@@ -792,6 +560,59 @@ gdk_grab_status_get_type (void)
     return etype;
 }
 
+GType
+gdk_grab_ownership_get_type (void)
+{
+    static GType etype = 0;
+    if (G_UNLIKELY(etype == 0)) {
+        static const GEnumValue values[] = {
+            { GDK_OWNERSHIP_NONE, "GDK_OWNERSHIP_NONE", "none" },
+            { GDK_OWNERSHIP_WINDOW, "GDK_OWNERSHIP_WINDOW", "window" },
+            { GDK_OWNERSHIP_APPLICATION, "GDK_OWNERSHIP_APPLICATION", "application" },
+            { 0, NULL, NULL }
+        };
+        etype = g_enum_register_static (g_intern_static_string ("GdkGrabOwnership"), values);
+    }
+    return etype;
+}
+
+GType
+gdk_event_mask_get_type (void)
+{
+    static GType etype = 0;
+    if (G_UNLIKELY(etype == 0)) {
+        static const GFlagsValue values[] = {
+            { GDK_EXPOSURE_MASK, "GDK_EXPOSURE_MASK", "exposure-mask" },
+            { GDK_POINTER_MOTION_MASK, "GDK_POINTER_MOTION_MASK", "pointer-motion-mask" },
+            { GDK_POINTER_MOTION_HINT_MASK, "GDK_POINTER_MOTION_HINT_MASK", "pointer-motion-hint-mask" },
+            { GDK_BUTTON_MOTION_MASK, "GDK_BUTTON_MOTION_MASK", "button-motion-mask" },
+            { GDK_BUTTON1_MOTION_MASK, "GDK_BUTTON1_MOTION_MASK", "button1-motion-mask" },
+            { GDK_BUTTON2_MOTION_MASK, "GDK_BUTTON2_MOTION_MASK", "button2-motion-mask" },
+            { GDK_BUTTON3_MOTION_MASK, "GDK_BUTTON3_MOTION_MASK", "button3-motion-mask" },
+            { GDK_BUTTON_PRESS_MASK, "GDK_BUTTON_PRESS_MASK", "button-press-mask" },
+            { GDK_BUTTON_RELEASE_MASK, "GDK_BUTTON_RELEASE_MASK", "button-release-mask" },
+            { GDK_KEY_PRESS_MASK, "GDK_KEY_PRESS_MASK", "key-press-mask" },
+            { GDK_KEY_RELEASE_MASK, "GDK_KEY_RELEASE_MASK", "key-release-mask" },
+            { GDK_ENTER_NOTIFY_MASK, "GDK_ENTER_NOTIFY_MASK", "enter-notify-mask" },
+            { GDK_LEAVE_NOTIFY_MASK, "GDK_LEAVE_NOTIFY_MASK", "leave-notify-mask" },
+            { GDK_FOCUS_CHANGE_MASK, "GDK_FOCUS_CHANGE_MASK", "focus-change-mask" },
+            { GDK_STRUCTURE_MASK, "GDK_STRUCTURE_MASK", "structure-mask" },
+            { GDK_PROPERTY_CHANGE_MASK, "GDK_PROPERTY_CHANGE_MASK", "property-change-mask" },
+            { GDK_VISIBILITY_NOTIFY_MASK, "GDK_VISIBILITY_NOTIFY_MASK", "visibility-notify-mask" },
+            { GDK_PROXIMITY_IN_MASK, "GDK_PROXIMITY_IN_MASK", "proximity-in-mask" },
+            { GDK_PROXIMITY_OUT_MASK, "GDK_PROXIMITY_OUT_MASK", "proximity-out-mask" },
+            { GDK_SUBSTRUCTURE_MASK, "GDK_SUBSTRUCTURE_MASK", "substructure-mask" },
+            { GDK_SCROLL_MASK, "GDK_SCROLL_MASK", "scroll-mask" },
+            { GDK_TOUCH_MASK, "GDK_TOUCH_MASK", "touch-mask" },
+            { GDK_SMOOTH_SCROLL_MASK, "GDK_SMOOTH_SCROLL_MASK", "smooth-scroll-mask" },
+            { GDK_ALL_EVENTS_MASK, "GDK_ALL_EVENTS_MASK", "all-events-mask" },
+            { 0, NULL, NULL }
+        };
+        etype = g_flags_register_static (g_intern_static_string ("GdkEventMask"), values);
+    }
+    return etype;
+}
+
 /* enumerations from "gdkvisual.h" */
 GType
 gdk_visual_type_get_type (void)
@@ -814,16 +635,16 @@ gdk_visual_type_get_type (void)
 
 /* enumerations from "gdkwindow.h" */
 GType
-gdk_window_class_get_type (void)
+gdk_window_window_class_get_type (void)
 {
     static GType etype = 0;
     if (G_UNLIKELY(etype == 0)) {
         static const GEnumValue values[] = {
-            { GDK_INPUT_OUTPUT, "GDK_INPUT_OUTPUT", "output" },
-            { GDK_INPUT_ONLY, "GDK_INPUT_ONLY", "only" },
+            { GDK_INPUT_OUTPUT, "GDK_INPUT_OUTPUT", "input-output" },
+            { GDK_INPUT_ONLY, "GDK_INPUT_ONLY", "input-only" },
             { 0, NULL, NULL }
         };
-        etype = g_enum_register_static (g_intern_static_string ("GdkWindowClass"), values);
+        etype = g_enum_register_static (g_intern_static_string ("GdkWindowWindowClass"), values);
     }
     return etype;
 }
@@ -837,7 +658,6 @@ gdk_window_type_get_type (void)
             { GDK_WINDOW_ROOT, "GDK_WINDOW_ROOT", "root" },
             { GDK_WINDOW_TOPLEVEL, "GDK_WINDOW_TOPLEVEL", "toplevel" },
             { GDK_WINDOW_CHILD, "GDK_WINDOW_CHILD", "child" },
-            { GDK_WINDOW_DIALOG, "GDK_WINDOW_DIALOG", "dialog" },
             { GDK_WINDOW_TEMP, "GDK_WINDOW_TEMP", "temp" },
             { GDK_WINDOW_FOREIGN, "GDK_WINDOW_FOREIGN", "foreign" },
             { GDK_WINDOW_OFFSCREEN, "GDK_WINDOW_OFFSCREEN", "offscreen" },
@@ -858,7 +678,6 @@ gdk_window_attributes_type_get_type (void)
             { GDK_WA_X, "GDK_WA_X", "x" },
             { GDK_WA_Y, "GDK_WA_Y", "y" },
             { GDK_WA_CURSOR, "GDK_WA_CURSOR", "cursor" },
-            { GDK_WA_COLORMAP, "GDK_WA_COLORMAP", "colormap" },
             { GDK_WA_VISUAL, "GDK_WA_VISUAL", "visual" },
             { GDK_WA_WMCLASS, "GDK_WA_WMCLASS", "wmclass" },
             { GDK_WA_NOREDIR, "GDK_WA_NOREDIR", "noredir" },
@@ -1002,8 +821,7 @@ gdk_window_edge_get_type (void)
     return etype;
 }
 
-#define __GDK_ENUM_TYPES_C__
-#include "gdkaliasdef.c"
+ /**/
 
 /* Generated data ends here */
 

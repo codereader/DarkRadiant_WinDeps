@@ -16,20 +16,36 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
-#include "gdk.h"		/* For gdk_rectangle_intersect() */
-#include "gdkcolor.h"
-#include "gdkwindow.h"
-#include "gdkscreen.h"
-#include "gdkintl.h"
-#include "gdkalias.h"
 
-static void gdk_screen_dispose      (GObject        *object);
+#include "gdkscreenprivate.h"
+#include "gdkrectangle.h"
+#include "gdkwindow.h"
+#include "gdkintl.h"
+
+
+/**
+ * SECTION:gdkscreen
+ * @Short_description: Object representing a physical screen
+ * @Title: GdkScreen
+ *
+ * #GdkScreen objects are the GDK representation of the screen on
+ * which windows can be displayed and on which the pointer moves.
+ * X originally identified screens with physical screens, but
+ * nowadays it is more common to have a single #GdkScreen which
+ * combines several physical monitors (see gdk_screen_get_n_monitors()).
+ *
+ * GdkScreen is used throughout GDK and GTK+ to specify which screen
+ * the top level windows are to be displayed on. it is also used to
+ * query the screen specification and default settings such as
+ * the default visual (gdk_screen_get_system_visual()), the dimensions
+ * of the physical monitors (gdk_screen_get_monitor_geometry()), etc.
+ */
+
+
 static void gdk_screen_finalize     (GObject        *object);
 static void gdk_screen_set_property (GObject        *object,
 				     guint           prop_id,
@@ -64,7 +80,6 @@ gdk_screen_class_init (GdkScreenClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-  object_class->dispose = gdk_screen_dispose;
   object_class->finalize = gdk_screen_finalize;
   object_class->set_property = gdk_screen_set_property;
   object_class->get_property = gdk_screen_get_property;
@@ -153,30 +168,6 @@ static void
 gdk_screen_init (GdkScreen *screen)
 {
   screen->resolution = -1.;
-}
-
-static void
-gdk_screen_dispose (GObject *object)
-{
-  GdkScreen *screen = GDK_SCREEN (object);
-  gint i;
-
-  for (i = 0; i < 32; ++i)
-    {
-      if (screen->exposure_gcs[i])
-        {
-          g_object_unref (screen->exposure_gcs[i]);
-          screen->exposure_gcs[i] = NULL;
-        }
-
-      if (screen->normal_gcs[i])
-        {
-          g_object_unref (screen->normal_gcs[i]);
-          screen->normal_gcs[i] = NULL;
-        }
-    }
-
-  G_OBJECT_CLASS (gdk_screen_parent_class)->dispose (object);
 }
 
 static void
@@ -294,12 +285,13 @@ gdk_screen_get_monitor_at_point (GdkScreen *screen,
  * gdk_screen_get_monitor_at_window:
  * @screen: a #GdkScreen.
  * @window: a #GdkWindow
- * @returns: the monitor number in which most of @window is located,
- *           or if @window does not intersect any monitors, a monitor,
- *           close to @window.
  *
- * Returns the number of the monitor in which the largest area of the 
+ * Returns the number of the monitor in which the largest area of the
  * bounding rectangle of @window resides.
+ *
+ * Returns: the monitor number in which most of @window is located,
+ *     or if @window does not intersect any monitors, a monitor,
+ *     close to @window.
  *
  * Since: 2.2
  **/
@@ -313,7 +305,7 @@ gdk_screen_get_monitor_at_window (GdkScreen      *screen,
   g_return_val_if_fail (GDK_IS_SCREEN (screen), -1);
 
   gdk_window_get_geometry (window, &win_rect.x, &win_rect.y, &win_rect.width,
-			   &win_rect.height, NULL);
+			   &win_rect.height);
   gdk_window_get_origin (window, &win_rect.x, &win_rect.y);
   num_monitors = gdk_screen_get_n_monitors (screen);
   
@@ -541,5 +533,517 @@ gdk_screen_set_property (GObject      *object,
     }
 }
 
-#define __GDK_SCREEN_C__
-#include "gdkaliasdef.c"
+/**
+ * gdk_screen_get_display:
+ * @screen: a #GdkScreen
+ *
+ * Gets the display to which the @screen belongs.
+ *
+ * Returns: (transfer none): the display to which @screen belongs
+ *
+ * Since: 2.2
+ **/
+GdkDisplay *
+gdk_screen_get_display (GdkScreen *screen)
+{
+  g_return_val_if_fail (GDK_IS_SCREEN (screen), NULL);
+
+  return GDK_SCREEN_GET_CLASS (screen)->get_display (screen);
+}
+
+
+/**
+ * gdk_screen_get_width:
+ * @screen: a #GdkScreen
+ *
+ * Gets the width of @screen in pixels
+ *
+ * Returns: the width of @screen in pixels.
+ *
+ * Since: 2.2
+ **/
+gint
+gdk_screen_get_width (GdkScreen *screen)
+{
+  g_return_val_if_fail (GDK_IS_SCREEN (screen), 0);
+
+  return GDK_SCREEN_GET_CLASS (screen)->get_width (screen);
+}
+
+/**
+ * gdk_screen_get_height:
+ * @screen: a #GdkScreen
+ *
+ * Gets the height of @screen in pixels
+ *
+ * Returns: the height of @screen in pixels.
+ *
+ * Since: 2.2
+ **/
+gint
+gdk_screen_get_height (GdkScreen *screen)
+{
+  g_return_val_if_fail (GDK_IS_SCREEN (screen), 0);
+
+  return GDK_SCREEN_GET_CLASS (screen)->get_height (screen);
+}
+
+/**
+ * gdk_screen_get_width_mm:
+ * @screen: a #GdkScreen
+ *
+ * Gets the width of @screen in millimeters.
+ * Note that on some X servers this value will not be correct.
+ *
+ * Returns: the width of @screen in millimeters.
+ *
+ * Since: 2.2
+ **/
+gint
+gdk_screen_get_width_mm (GdkScreen *screen)
+{
+  g_return_val_if_fail (GDK_IS_SCREEN (screen), 0);
+
+  return GDK_SCREEN_GET_CLASS (screen)->get_width_mm (screen);
+}
+
+/**
+ * gdk_screen_get_height_mm:
+ * @screen: a #GdkScreen
+ *
+ * Returns the height of @screen in millimeters.
+ * Note that on some X servers this value will not be correct.
+ *
+ * Returns: the heigth of @screen in millimeters.
+ *
+ * Since: 2.2
+ **/
+gint
+gdk_screen_get_height_mm (GdkScreen *screen)
+{
+  g_return_val_if_fail (GDK_IS_SCREEN (screen), 0);
+
+  return GDK_SCREEN_GET_CLASS (screen)->get_height_mm (screen);
+}
+
+/**
+ * gdk_screen_get_number:
+ * @screen: a #GdkScreen
+ *
+ * Gets the index of @screen among the screens in the display
+ * to which it belongs. (See gdk_screen_get_display())
+ *
+ * Returns: the index
+ *
+ * Since: 2.2
+ **/
+gint
+gdk_screen_get_number (GdkScreen *screen)
+{
+  g_return_val_if_fail (GDK_IS_SCREEN (screen), 0);
+
+  return GDK_SCREEN_GET_CLASS (screen)->get_number (screen);
+}
+
+/**
+ * gdk_screen_get_root_window:
+ * @screen: a #GdkScreen
+ *
+ * Gets the root window of @screen.
+ *
+ * Returns: (transfer none): the root window
+ *
+ * Since: 2.2
+ **/
+GdkWindow *
+gdk_screen_get_root_window (GdkScreen *screen)
+{
+  g_return_val_if_fail (GDK_IS_SCREEN (screen), NULL);
+
+  return GDK_SCREEN_GET_CLASS (screen)->get_root_window (screen);
+}
+
+/**
+ * gdk_screen_get_n_monitors:
+ * @screen: a #GdkScreen
+ *
+ * Returns the number of monitors which @screen consists of.
+ *
+ * Returns: number of monitors which @screen consists of
+ *
+ * Since: 2.2
+ */
+gint
+gdk_screen_get_n_monitors (GdkScreen *screen)
+{
+  g_return_val_if_fail (GDK_IS_SCREEN (screen), 0);
+
+  return GDK_SCREEN_GET_CLASS (screen)->get_n_monitors (screen);
+}
+
+/**
+ * gdk_screen_get_primary_monitor:
+ * @screen: a #GdkScreen.
+ *
+ * Gets the primary monitor for @screen.  The primary monitor
+ * is considered the monitor where the 'main desktop' lives.
+ * While normal application windows typically allow the window
+ * manager to place the windows, specialized desktop applications
+ * such as panels should place themselves on the primary monitor.
+ *
+ * If no primary monitor is configured by the user, the return value
+ * will be 0, defaulting to the first monitor.
+ *
+ * Returns: An integer index for the primary monitor, or 0 if none is configured.
+ *
+ * Since: 2.20
+ */
+gint
+gdk_screen_get_primary_monitor (GdkScreen *screen)
+{
+  g_return_val_if_fail (GDK_IS_SCREEN (screen), 0);
+
+  return GDK_SCREEN_GET_CLASS (screen)->get_primary_monitor (screen);
+}
+
+/**
+ * gdk_screen_get_monitor_width_mm:
+ * @screen: a #GdkScreen
+ * @monitor_num: number of the monitor, between 0 and gdk_screen_get_n_monitors (screen)
+ *
+ * Gets the width in millimeters of the specified monitor, if available.
+ *
+ * Returns: the width of the monitor, or -1 if not available
+ *
+ * Since: 2.14
+ */
+gint
+gdk_screen_get_monitor_width_mm	(GdkScreen *screen,
+				 gint       monitor_num)
+{
+  g_return_val_if_fail (GDK_IS_SCREEN (screen), -1);
+  g_return_val_if_fail (monitor_num >= 0, -1);
+  g_return_val_if_fail (monitor_num < gdk_screen_get_n_monitors (screen), -1);
+
+  return GDK_SCREEN_GET_CLASS (screen)->get_monitor_width_mm (screen, monitor_num);
+}
+
+/**
+ * gdk_screen_get_monitor_height_mm:
+ * @screen: a #GdkScreen
+ * @monitor_num: number of the monitor, between 0 and gdk_screen_get_n_monitors (screen)
+ *
+ * Gets the height in millimeters of the specified monitor.
+ *
+ * Returns: the height of the monitor, or -1 if not available
+ *
+ * Since: 2.14
+ */
+gint
+gdk_screen_get_monitor_height_mm (GdkScreen *screen,
+                                  gint       monitor_num)
+{
+  g_return_val_if_fail (GDK_IS_SCREEN (screen), -1);
+  g_return_val_if_fail (monitor_num >= 0, -1);
+  g_return_val_if_fail (monitor_num < gdk_screen_get_n_monitors (screen), -1);
+
+  return GDK_SCREEN_GET_CLASS (screen)->get_monitor_height_mm (screen, monitor_num);
+}
+
+/**
+ * gdk_screen_get_monitor_plug_name:
+ * @screen: a #GdkScreen
+ * @monitor_num: number of the monitor, between 0 and gdk_screen_get_n_monitors (screen)
+ *
+ * Returns the output name of the specified monitor.
+ * Usually something like VGA, DVI, or TV, not the actual
+ * product name of the display device.
+ *
+ * Returns: a newly-allocated string containing the name of the monitor,
+ *   or %NULL if the name cannot be determined
+ *
+ * Since: 2.14
+ */
+gchar *
+gdk_screen_get_monitor_plug_name (GdkScreen *screen,
+				  gint       monitor_num)
+{
+  g_return_val_if_fail (GDK_IS_SCREEN (screen), NULL);
+  g_return_val_if_fail (monitor_num >= 0, NULL);
+  g_return_val_if_fail (monitor_num < gdk_screen_get_n_monitors (screen), NULL);
+
+  return GDK_SCREEN_GET_CLASS (screen)->get_monitor_plug_name (screen, monitor_num);
+}
+
+/**
+ * gdk_screen_get_monitor_geometry:
+ * @screen: a #GdkScreen
+ * @monitor_num: the monitor number
+ * @dest: (out) (allow-none): a #GdkRectangle to be filled with
+ *     the monitor geometry
+ *
+ * Retrieves the #GdkRectangle representing the size and position of
+ * the individual monitor within the entire screen area.
+ *
+ * Monitor numbers start at 0. To obtain the number of monitors of
+ * @screen, use gdk_screen_get_n_monitors().
+ *
+ * Note that the size of the entire screen area can be retrieved via
+ * gdk_screen_get_width() and gdk_screen_get_height().
+ *
+ * Since: 2.2
+ */
+void
+gdk_screen_get_monitor_geometry (GdkScreen    *screen,
+				 gint          monitor_num,
+				 GdkRectangle *dest)
+{
+  g_return_if_fail (GDK_IS_SCREEN (screen));
+  g_return_if_fail (monitor_num >= 0);
+  g_return_if_fail (monitor_num < gdk_screen_get_n_monitors (screen));
+
+  GDK_SCREEN_GET_CLASS(screen)->get_monitor_geometry (screen, monitor_num, dest);
+}
+
+/**
+ * gdk_screen_get_monitor_workarea:
+ * @screen: a #GdkScreen
+ * @monitor_num: the monitor number
+ * @dest: (out) (allow-none): a #GdkRectangle to be filled with
+ *     the monitor workarea
+ *
+ * Retrieves the #GdkRectangle representing the size and position of
+ * the "work area" on a monitor within the entire screen area.
+ *
+ * The work area should be considered when positioning menus and
+ * similar popups, to avoid placing them below panels, docks or other
+ * desktop components.
+ *
+ * Monitor numbers start at 0. To obtain the number of monitors of
+ * @screen, use gdk_screen_get_n_monitors().
+ *
+ * Since: 3.4
+ */
+void
+gdk_screen_get_monitor_workarea (GdkScreen    *screen,
+                                 gint          monitor_num,
+                                 GdkRectangle *dest)
+{
+  g_return_if_fail (GDK_IS_SCREEN (screen));
+  g_return_if_fail (monitor_num >= 0);
+  g_return_if_fail (monitor_num < gdk_screen_get_n_monitors (screen));
+
+  GDK_SCREEN_GET_CLASS (screen)->get_monitor_workarea (screen, monitor_num, dest);
+}
+
+/**
+ * gdk_screen_list_visuals:
+ * @screen: the relevant #GdkScreen.
+ *
+ * Lists the available visuals for the specified @screen.
+ * A visual describes a hardware image data format.
+ * For example, a visual might support 24-bit color, or 8-bit color,
+ * and might expect pixels to be in a certain format.
+ *
+ * Call g_list_free() on the return value when you're finished with it.
+ *
+ * Return value: (transfer container) (element-type GdkVisual):
+ *     a list of visuals; the list must be freed, but not its contents
+ *
+ * Since: 2.2
+ **/
+GList *
+gdk_screen_list_visuals (GdkScreen *screen)
+{
+  g_return_val_if_fail (GDK_IS_SCREEN (screen), NULL);
+
+  return GDK_SCREEN_GET_CLASS (screen)->list_visuals (screen);
+}
+
+/**
+ * gdk_screen_get_system_visual:
+ * @screen: a #GdkScreen.
+ *
+ * Get the system's default visual for @screen.
+ * This is the visual for the root window of the display.
+ * The return value should not be freed.
+ *
+ * Return value: (transfer none): the system visual
+ *
+ * Since: 2.2
+ **/
+GdkVisual *
+gdk_screen_get_system_visual (GdkScreen * screen)
+{
+  g_return_val_if_fail (GDK_IS_SCREEN (screen), NULL);
+
+  return GDK_SCREEN_GET_CLASS (screen)->get_system_visual (screen);
+}
+
+/**
+ * gdk_screen_get_rgba_visual:
+ * @screen: a #GdkScreen
+ *
+ * Gets a visual to use for creating windows with an alpha channel.
+ * The windowing system on which GTK+ is running
+ * may not support this capability, in which case %NULL will
+ * be returned. Even if a non-%NULL value is returned, its
+ * possible that the window's alpha channel won't be honored
+ * when displaying the window on the screen: in particular, for
+ * X an appropriate windowing manager and compositing manager
+ * must be running to provide appropriate display.
+ *
+ * This functionality is not implemented in the Windows backend.
+ *
+ * For setting an overall opacity for a top-level window, see
+ * gdk_window_set_opacity().
+ *
+ * Return value: (transfer none): a visual to use for windows with an
+ *     alpha channel or %NULL if the capability is not available.
+ *
+ * Since: 2.8
+ **/
+GdkVisual *
+gdk_screen_get_rgba_visual (GdkScreen *screen)
+{
+  g_return_val_if_fail (GDK_IS_SCREEN (screen), NULL);
+
+  return GDK_SCREEN_GET_CLASS (screen)->get_rgba_visual (screen);
+}
+
+/**
+ * gdk_screen_is_composited:
+ * @screen: a #GdkScreen
+ *
+ * Returns whether windows with an RGBA visual can reasonably
+ * be expected to have their alpha channel drawn correctly on
+ * the screen.
+ *
+ * On X11 this function returns whether a compositing manager is
+ * compositing @screen.
+ *
+ * Return value: Whether windows with RGBA visuals can reasonably be
+ * expected to have their alpha channels drawn correctly on the screen.
+ *
+ * Since: 2.10
+ **/
+gboolean
+gdk_screen_is_composited (GdkScreen *screen)
+{
+  g_return_val_if_fail (GDK_IS_SCREEN (screen), FALSE);
+
+  return GDK_SCREEN_GET_CLASS (screen)->is_composited (screen);
+}
+
+/**
+ * gdk_screen_make_display_name:
+ * @screen: a #GdkScreen
+ *
+ * Determines the name to pass to gdk_display_open() to get
+ * a #GdkDisplay with this screen as the default screen.
+ *
+ * Return value: a newly allocated string, free with g_free()
+ *
+ * Since: 2.2
+ **/
+gchar *
+gdk_screen_make_display_name (GdkScreen *screen)
+{
+  g_return_val_if_fail (GDK_IS_SCREEN (screen), NULL);
+
+  return GDK_SCREEN_GET_CLASS (screen)->make_display_name (screen);
+}
+
+/**
+ * gdk_screen_get_active_window:
+ * @screen: a #GdkScreen
+ *
+ * Returns the screen's currently active window.
+ *
+ * On X11, this is done by inspecting the _NET_ACTIVE_WINDOW property
+ * on the root window, as described in the <ulink
+ * url="http://www.freedesktop.org/Standards/wm-spec">Extended Window
+ * Manager Hints</ulink>. If there is no currently currently active
+ * window, or the window manager does not support the
+ * _NET_ACTIVE_WINDOW hint, this function returns %NULL.
+ *
+ * On other platforms, this function may return %NULL, depending on whether
+ * it is implementable on that platform.
+ *
+ * The returned window should be unrefed using g_object_unref() when
+ * no longer needed.
+ *
+ * Return value: (transfer full): the currently active window, or %NULL.
+ *
+ * Since: 2.10
+ **/
+GdkWindow *
+gdk_screen_get_active_window (GdkScreen *screen)
+{
+  g_return_val_if_fail (GDK_IS_SCREEN (screen), NULL);
+
+  return GDK_SCREEN_GET_CLASS (screen)->get_active_window (screen);
+}
+
+/**
+ * gdk_screen_get_window_stack:
+ * @screen: a #GdkScreen
+ *
+ * Returns a #GList of #GdkWindow<!-- -->s representing the current
+ * window stack.
+ *
+ * On X11, this is done by inspecting the _NET_CLIENT_LIST_STACKING
+ * property on the root window, as described in the <ulink
+ * url="http://www.freedesktop.org/Standards/wm-spec">Extended Window
+ * Manager Hints</ulink>. If the window manager does not support the
+ * _NET_CLIENT_LIST_STACKING hint, this function returns %NULL.
+ *
+ * On other platforms, this function may return %NULL, depending on whether
+ * it is implementable on that platform.
+ *
+ * The returned list is newly allocated and owns references to the
+ * windows it contains, so it should be freed using g_list_free() and
+ * its windows unrefed using g_object_unref() when no longer needed.
+ *
+ * Return value: (transfer full) (element-type GdkWindow):
+ *     a list of #GdkWindow<!-- -->s for the current window stack,
+ *               or %NULL.
+ *
+ * Since: 2.10
+ **/
+GList *
+gdk_screen_get_window_stack (GdkScreen *screen)
+{
+  g_return_val_if_fail (GDK_IS_SCREEN (screen), NULL);
+
+  return GDK_SCREEN_GET_CLASS (screen)->get_window_stack (screen);
+}
+
+/**
+ * gdk_screen_get_setting:
+ * @screen: the #GdkScreen where the setting is located
+ * @name: the name of the setting
+ * @value: location to store the value of the setting
+ *
+ * Retrieves a desktop-wide setting such as double-click time
+ * for the #GdkScreen @screen.
+ *
+ * FIXME needs a list of valid settings here, or a link to
+ * more information.
+ *
+ * Returns: %TRUE if the setting existed and a value was stored
+ *   in @value, %FALSE otherwise.
+ *
+ * Since: 2.2
+ **/
+gboolean
+gdk_screen_get_setting (GdkScreen   *screen,
+			const gchar *name,
+			GValue      *value)
+{
+  g_return_val_if_fail (GDK_IS_SCREEN (screen), FALSE);
+  g_return_val_if_fail (name != NULL, FALSE);
+  g_return_val_if_fail (value != NULL, FALSE);
+
+  return GDK_SCREEN_GET_CLASS (screen)->get_setting (screen, name, value);
+}

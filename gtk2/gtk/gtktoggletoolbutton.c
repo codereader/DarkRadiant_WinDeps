@@ -14,9 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -30,7 +28,22 @@
 #include "gtktoggleaction.h"
 #include "gtkactivatable.h"
 #include "gtkprivate.h"
-#include "gtkalias.h"
+
+
+/**
+ * SECTION:gtktoggletoolbutton
+ * @Short_description: A GtkToolItem containing a toggle button
+ * @Title: GtkToggleToolButton
+ * @See_also: #GtkToolbar, #GtkToolButton, #GtkSeparatorToolItem
+ *
+ * A #GtkToggleToolButton is a #GtkToolItem that contains a toggle
+ * button.
+ *
+ * Use gtk_toggle_tool_button_new() to create a new
+ * #GtkToggleToolButton. Use gtk_toggle_tool_button_new_from_stock() to
+ * create a new #GtkToggleToolButton containing a stock item.
+ */
+
 
 #define MENU_ID "gtk-toggle-tool-button-menu-id"
 
@@ -44,8 +57,6 @@ enum {
   PROP_ACTIVE
 };
 
-
-#define GTK_TOGGLE_TOOL_BUTTON_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GTK_TYPE_TOGGLE_TOOL_BUTTON, GtkToggleToolButtonPrivate))
 
 struct _GtkToggleToolButtonPrivate
 {
@@ -104,7 +115,7 @@ gtk_toggle_tool_button_class_init (GtkToggleToolButtonClass *klass)
   /**
    * GtkToggleToolButton:active:
    *
-   * If the toggle tool button should be pressed in or not.
+   * If the toggle tool button should be pressed in.
    *
    * Since: 2.8
    */
@@ -112,7 +123,7 @@ gtk_toggle_tool_button_class_init (GtkToggleToolButtonClass *klass)
                                    PROP_ACTIVE,
                                    g_param_spec_boolean ("active",
 							 P_("Active"),
-							 P_("If the toggle button should be pressed in or not"),
+							 P_("If the toggle button should be pressed in"),
 							 FALSE,
 							 GTK_PARAM_READWRITE));
 
@@ -140,7 +151,9 @@ gtk_toggle_tool_button_init (GtkToggleToolButton *button)
   GtkToolButton *tool_button = GTK_TOOL_BUTTON (button);
   GtkToggleButton *toggle_button = GTK_TOGGLE_BUTTON (_gtk_tool_button_get_button (tool_button));
 
-  button->priv = GTK_TOGGLE_TOOL_BUTTON_GET_PRIVATE (button);
+  button->priv = G_TYPE_INSTANCE_GET_PRIVATE (button,
+                                              GTK_TYPE_TOGGLE_TOOL_BUTTON,
+                                              GtkToggleToolButtonPrivate);
 
   /* If the real button is a radio button, it may have been
    * active at the time it was created.
@@ -291,7 +304,9 @@ static void
 button_toggled (GtkWidget           *widget,
 		GtkToggleToolButton *toggle_tool_button)
 {
-  gboolean toggle_active = GTK_TOGGLE_BUTTON (widget)->active;
+  gboolean toggle_active;
+
+  toggle_active = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
 
   if (toggle_tool_button->priv->active != toggle_active)
     {
@@ -446,6 +461,3 @@ gtk_toggle_tool_button_get_active (GtkToggleToolButton *button)
 
   return button->priv->active;
 }
-
-#define __GTK_TOGGLE_TOOL_BUTTON_C__
-#include "gtkaliasdef.c"

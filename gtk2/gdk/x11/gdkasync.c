@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 /* Portions of code in this file are based on code from Xlib
  */
@@ -44,13 +42,16 @@ in this Software without prior written authorization from The Open Group.
 
 */
 #include "config.h"
+
+#include "gdkasync.h"
+#include "gdkprivate-x11.h"
+
 #ifdef NEED_XIPROTO_H_FOR_XREPLY
 #include <X11/extensions/XIproto.h>
 #endif
+
 #include <X11/Xlibint.h>
-#include "gdkasync.h"
-#include "gdkx.h"
-#include "gdkalias.h"
+
 
 typedef struct _ChildInfoChildState ChildInfoChildState;
 typedef struct _ChildInfoState ChildInfoState;
@@ -156,7 +157,7 @@ send_event_handler (Display *dpy,
   else if (dpy->last_request_read == state->get_input_focus_req)
     {
       xGetInputFocusReply replbuf;
-      xGetInputFocusReply *repl;
+      xGetInputFocusReply *repl G_GNUC_UNUSED;
       
       if (rep->generic.type != X_Error)
 	{
@@ -275,100 +276,7 @@ _gdk_x11_send_client_message_async (GdkDisplay           *display,
    * XSync (dpy, 0)
    */
   {
-    xReq *req;
-    
-    GetEmptyReq(GetInputFocus, req);
-    state->get_input_focus_req = dpy->request;
-  }
-  
-  UnlockDisplay(dpy);
-  SyncHandle();
-}
-
-static Bool
-set_input_focus_handler (Display *dpy,
-			 xReply  *rep,
-			 char    *buf,
-			 int      len,
-			 XPointer data)
-{
-  SetInputFocusState *state = (SetInputFocusState *)data;  
-
-  if (dpy->last_request_read == state->set_input_focus_req)
-    {
-      if (rep->generic.type == X_Error &&
-	  rep->error.errorCode == BadMatch)
-	{
-	  /* Consume BadMatch errors, since we have no control
-	   * over them.
-	   */
-	  return True;
-	}
-    }
-  
-  if (dpy->last_request_read == state->get_input_focus_req)
-    {
-      xGetInputFocusReply replbuf;
-      xGetInputFocusReply *repl;
-      
-      if (rep->generic.type != X_Error)
-	{
-	  /* Actually does nothing, since there are no additional bytes
-	   * to read, but maintain good form.
-	   */
-	  repl = (xGetInputFocusReply *)
-	    _XGetAsyncReply(dpy, (char *)&replbuf, rep, buf, len,
-			    (sizeof(xGetInputFocusReply) - sizeof(xReply)) >> 2,
-			    True);
-	}
-
-      DeqAsyncHandler(state->dpy, &state->async);
-
-      g_free (state);
-      
-      return (rep->generic.type != X_Error);
-    }
-
-  return False;
-}
-
-void
-_gdk_x11_set_input_focus_safe (GdkDisplay             *display,
-			       Window                  window,
-			       int                     revert_to,
-			       Time                    time)
-{
-  Display *dpy;
-  SetInputFocusState *state;
-  
-  dpy = GDK_DISPLAY_XDISPLAY (display);
-
-  state = g_new (SetInputFocusState, 1);
-
-  state->dpy = dpy;
-  
-  LockDisplay(dpy);
-
-  state->async.next = dpy->async_handlers;
-  state->async.handler = set_input_focus_handler;
-  state->async.data = (XPointer) state;
-  dpy->async_handlers = &state->async;
-
-  {
-    xSetInputFocusReq *req;
-    
-    GetReq(SetInputFocus, req);
-    req->focus = window;
-    req->revertTo = revert_to;
-    req->time = time;
-    state->set_input_focus_req = dpy->request;
-  }
-
-  /*
-   * XSync (dpy, 0)
-   */
-  {
-    xReq *req;
+    G_GNUC_UNUSED xReq *req;
     
     GetEmptyReq(GetInputFocus, req);
     state->get_input_focus_req = dpy->request;
@@ -650,12 +558,12 @@ _gdk_x11_get_window_child_info (GdkDisplay       *display,
   state.children = NULL;
   state.nchildren = 0;
 
-  gdk_error_trap_push ();
+  gdk_x11_display_error_trap_push (display);
   result = list_children_and_wm_state (dpy, window,
 				       win_has_wm_state ? wm_state_atom : None,
 				       &has_wm_state,
 				       &state.children, &state.nchildren);
-  gdk_error_trap_pop ();
+  gdk_x11_display_error_trap_pop_ignored (display);
   if (!result)
     {
       g_free (state.children);
@@ -778,7 +686,7 @@ roundtrip_handler (Display *dpy,
   if (dpy->last_request_read == state->get_input_focus_req)
     {
       xGetInputFocusReply replbuf;
-      xGetInputFocusReply *repl;
+      xGetInputFocusReply *repl G_GNUC_UNUSED;
       
       if (rep->generic.type != X_Error)
 	{
@@ -831,7 +739,7 @@ _gdk_x11_roundtrip_async (GdkDisplay           *display,
    * XSync (dpy, 0)
    */
   {
-    xReq *req;
+    G_GNUC_UNUSED xReq *req;
     
     GetEmptyReq(GetInputFocus, req);
     state->get_input_focus_req = dpy->request;
@@ -840,6 +748,3 @@ _gdk_x11_roundtrip_async (GdkDisplay           *display,
   UnlockDisplay(dpy);
   SyncHandle();
 }
-
-#define __GDK_ASYNC_C__
-#include "gdkaliasdef.c"

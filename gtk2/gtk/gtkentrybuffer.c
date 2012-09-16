@@ -12,9 +12,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -24,7 +22,6 @@
 #include "gtkmarshalers.h"
 #include "gtkprivate.h"
 #include "gtkwidget.h"
-#include "gtkalias.h"
 
 #include <gdk/gdk.h>
 
@@ -70,13 +67,13 @@ static guint signals[LAST_SIGNAL] = { 0 };
 
 struct _GtkEntryBufferPrivate
 {
-  gint  max_length;
-
   /* Only valid if this class is not derived */
   gchar *normal_text;
   gsize  normal_text_size;
   gsize  normal_text_bytes;
   guint  normal_text_chars;
+
+  gint   max_length;
 };
 
 G_DEFINE_TYPE (GtkEntryBuffer, gtk_entry_buffer, G_TYPE_OBJECT);
@@ -749,6 +746,3 @@ gtk_entry_buffer_emit_deleted_text (GtkEntryBuffer *buffer,
   g_return_if_fail (GTK_IS_ENTRY_BUFFER (buffer));
   g_signal_emit (buffer, signals[DELETED_TEXT], 0, position, n_chars);
 }
-
-#define __GTK_ENTRY_BUFFER_C__
-#include "gtkaliasdef.c"

@@ -12,8 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  *
  * Authors:
  *      Mathias Hasselmann
@@ -26,10 +25,11 @@
 
 #include "gtktoolpaletteprivate.h"
 #include "gtkmarshalers.h"
-
+#include "gtktypebuiltins.h"
 #include "gtkprivate.h"
+#include "gtkscrollable.h"
+#include "gtkorientableprivate.h"
 #include "gtkintl.h"
-#include "gtkalias.h"
 
 #define DEFAULT_ICON_SIZE       GTK_ICON_SIZE_SMALL_TOOLBAR
 #define DEFAULT_ORIENTATION     GTK_ORIENTATION_VERTICAL
@@ -121,6 +121,10 @@ enum
   PROP_ICON_SIZE_SET,
   PROP_ORIENTATION,
   PROP_TOOLBAR_STYLE,
+  PROP_HADJUSTMENT,
+  PROP_VADJUSTMENT,
+  PROP_HSCROLL_POLICY,
+  PROP_VSCROLL_POLICY
 };
 
 enum
@@ -134,7 +138,7 @@ struct _GtkToolItemGroupInfo
 {
   GtkToolItemGroup *widget;
 
-  guint             notify_collapsed;
+  gulong            notify_collapsed;
   guint             pos;
   guint             exclusive : 1;
   guint             expand : 1;
@@ -157,10 +161,15 @@ struct _GtkToolPalettePrivate
 
   GtkSizeGroup         *text_size_group;
 
-  GtkSettings       *settings;
-  gulong             settings_connection;
+  GtkSettings          *settings;
+  gulong                settings_connection;
 
   guint                 drag_source : 2;
+
+  /* GtkScrollablePolicy needs to be checked when
+   * driving the scrollable adjustment values */
+  guint hscroll_policy : 1;
+  guint vscroll_policy : 1;
 };
 
 struct _GtkToolPaletteDragData
@@ -178,10 +187,17 @@ static const GtkTargetEntry dnd_targets[] =
   { "application/x-gtk-tool-palette-group", GTK_TARGET_SAME_APP, 0 },
 };
 
+static void gtk_tool_palette_set_hadjustment (GtkToolPalette *palette,
+                                              GtkAdjustment  *adjustment);
+static void gtk_tool_palette_set_vadjustment (GtkToolPalette *palette,
+                                              GtkAdjustment  *adjustment);
+
+
 G_DEFINE_TYPE_WITH_CODE (GtkToolPalette,
                gtk_tool_palette,
                GTK_TYPE_CONTAINER,
-               G_IMPLEMENT_INTERFACE (GTK_TYPE_ORIENTABLE, NULL));
+               G_IMPLEMENT_INTERFACE (GTK_TYPE_ORIENTABLE, NULL)
+	       G_IMPLEMENT_INTERFACE (GTK_TYPE_SCROLLABLE, NULL))
 
 static void
 gtk_tool_palette_init (GtkToolPalette *palette)
@@ -247,6 +263,7 @@ gtk_tool_palette_set_property (GObject      *object,
         if ((guint) g_value_get_enum (value) != palette->priv->orientation)
           {
             palette->priv->orientation = g_value_get_enum (value);
+            _gtk_orientable_set_style_classes (GTK_ORIENTABLE (palette));
             gtk_tool_palette_reconfigured (palette);
           }
         break;
@@ -258,6 +275,24 @@ gtk_tool_palette_set_property (GObject      *object,
             gtk_tool_palette_reconfigured (palette);
           }
         break;
+
+      case PROP_HADJUSTMENT:
+        gtk_tool_palette_set_hadjustment (palette, g_value_get_object (value));
+        break;
+
+      case PROP_VADJUSTMENT:
+        gtk_tool_palette_set_vadjustment (palette, g_value_get_object (value));
+        break;
+
+      case PROP_HSCROLL_POLICY:
+	palette->priv->hscroll_policy = g_value_get_enum (value);
+	gtk_widget_queue_resize (GTK_WIDGET (palette));
+	break;
+
+      case PROP_VSCROLL_POLICY:
+	palette->priv->vscroll_policy = g_value_get_enum (value);
+	gtk_widget_queue_resize (GTK_WIDGET (palette));
+	break;
 
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -290,6 +325,22 @@ gtk_tool_palette_get_property (GObject    *object,
       case PROP_TOOLBAR_STYLE:
         g_value_set_enum (value, gtk_tool_palette_get_style (palette));
         break;
+
+      case PROP_HADJUSTMENT:
+        g_value_set_object (value, palette->priv->hadjustment);
+        break;
+
+      case PROP_VADJUSTMENT:
+        g_value_set_object (value, palette->priv->vadjustment);
+        break;
+
+      case PROP_HSCROLL_POLICY:
+	g_value_set_enum (value, palette->priv->hscroll_policy);
+	break;
+
+      case PROP_VSCROLL_POLICY:
+	g_value_set_enum (value, palette->priv->vscroll_policy);
+	break;
 
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -349,10 +400,12 @@ static void
 gtk_tool_palette_size_request (GtkWidget      *widget,
                                GtkRequisition *requisition)
 {
-  const gint border_width = GTK_CONTAINER (widget)->border_width;
   GtkToolPalette *palette = GTK_TOOL_PALETTE (widget);
   GtkRequisition child_requisition;
+  guint border_width;
   guint i;
+
+  border_width = gtk_container_get_border_width (GTK_CONTAINER (widget));
 
   requisition->width = 0;
   requisition->height = 0;
@@ -364,7 +417,8 @@ gtk_tool_palette_size_request (GtkWidget      *widget,
       if (!group->widget)
         continue;
 
-      gtk_widget_size_request (GTK_WIDGET (group->widget), &child_requisition);
+      gtk_widget_get_preferred_size (GTK_WIDGET (group->widget),
+                                     &child_requisition, NULL);
 
       if (GTK_ORIENTATION_VERTICAL == palette->priv->orientation)
         {
@@ -383,10 +437,34 @@ gtk_tool_palette_size_request (GtkWidget      *widget,
 }
 
 static void
+gtk_tool_palette_get_preferred_width (GtkWidget *widget,
+				      gint      *minimum,
+				      gint      *natural)
+{
+  GtkRequisition requisition;
+
+  gtk_tool_palette_size_request (widget, &requisition);
+
+  *minimum = *natural = requisition.width;
+}
+
+static void
+gtk_tool_palette_get_preferred_height (GtkWidget *widget,
+				       gint      *minimum,
+				       gint      *natural)
+{
+  GtkRequisition requisition;
+
+  gtk_tool_palette_size_request (widget, &requisition);
+
+  *minimum = *natural = requisition.height;
+}
+
+
+static void
 gtk_tool_palette_size_allocate (GtkWidget     *widget,
                                 GtkAllocation *allocation)
 {
-  const gint border_width = GTK_CONTAINER (widget)->border_width;
   GtkToolPalette *palette = GTK_TOOL_PALETTE (widget);
   GtkAdjustment *adjustment = NULL;
   GtkAllocation child_allocation;
@@ -395,17 +473,20 @@ gtk_tool_palette_size_allocate (GtkWidget     *widget,
   gint remaining_space = 0;
   gint expand_space = 0;
 
-  gint page_start, page_size = 0;
+  gint total_size, page_size;
   gint offset = 0;
   guint i;
+  guint border_width;
 
   gint min_offset = -1, max_offset = -1;
 
   gint x;
 
   gint *group_sizes = g_newa (gint, palette->priv->groups->len);
+  GtkTextDirection direction;
 
-  GtkTextDirection direction = gtk_widget_get_direction (widget);
+  border_width = gtk_container_get_border_width (GTK_CONTAINER (widget));
+  direction = gtk_widget_get_direction (widget);
 
   GTK_WIDGET_CLASS (gtk_tool_palette_parent_class)->size_allocate (widget, allocation);
 
@@ -443,6 +524,8 @@ gtk_tool_palette_size_allocate (GtkWidget     *widget,
     {
       GtkToolItemGroupInfo *group = g_ptr_array_index (palette->priv->groups, i);
       gint size;
+
+      group_sizes[i] = 0;
 
       if (!group->widget)
         continue;
@@ -569,115 +652,87 @@ gtk_tool_palette_size_allocate (GtkWidget     *widget,
       child_allocation.y += border_width;
       child_allocation.y += offset;
 
-      page_start = child_allocation.y;
+      total_size = child_allocation.y;
     }
   else
     {
       x += border_width;
       x += offset;
 
-      page_start = x;
+      total_size = x;
     }
 
   /* update the scrollbar to match the displayed adjustment */
   if (adjustment)
     {
-      gdouble value;
+      gdouble lower, upper;
 
-      adjustment->page_increment = page_size * 0.9;
-      adjustment->step_increment = page_size * 0.1;
-      adjustment->page_size = page_size;
+      total_size = MAX (0, total_size);
+      page_size = MIN (total_size, page_size);
 
       if (GTK_ORIENTATION_VERTICAL == palette->priv->orientation ||
           GTK_TEXT_DIR_LTR == direction)
         {
-          adjustment->lower = 0;
-          adjustment->upper = MAX (0, page_start);
-
-          value = MIN (offset, adjustment->upper - adjustment->page_size);
-          gtk_adjustment_clamp_page (adjustment, value, offset + page_size);
+          lower = 0;
+          upper = total_size;
         }
       else
         {
-          adjustment->lower = page_size - MAX (0, page_start);
-          adjustment->upper = page_size;
+          lower = page_size - total_size;
+          upper = page_size;
 
           offset = -offset;
-
-          value = MAX (offset, adjustment->lower);
-          gtk_adjustment_clamp_page (adjustment, offset, value + page_size);
         }
 
-      gtk_adjustment_changed (adjustment);
+      gtk_adjustment_configure (adjustment,
+                                offset,
+                                lower,
+                                upper,
+                                page_size * 0.1,
+                                page_size * 0.9,
+                                page_size);
     }
-}
-
-static gboolean
-gtk_tool_palette_expose_event (GtkWidget      *widget,
-                               GdkEventExpose *event)
-{
-  GtkToolPalette *palette = GTK_TOOL_PALETTE (widget);
-  GdkDisplay *display;
-  cairo_t *cr;
-  guint i;
-
-  display = gdk_window_get_display (widget->window);
-
-  if (!gdk_display_supports_composite (display))
-    return FALSE;
-
-  cr = gdk_cairo_create (widget->window);
-  gdk_cairo_region (cr, event->region);
-  cairo_clip (cr);
-
-  cairo_push_group (cr);
-
-  for (i = 0; i < palette->priv->groups->len; ++i)
-  {
-    GtkToolItemGroupInfo *info = g_ptr_array_index (palette->priv->groups, i);
-    if (info->widget)
-      _gtk_tool_item_group_paint (info->widget, cr);
-  }
-
-  cairo_pop_group_to_source (cr);
-
-  cairo_paint (cr);
-  cairo_destroy (cr);
-
-  return FALSE;
 }
 
 static void
 gtk_tool_palette_realize (GtkWidget *widget)
 {
-  const gint border_width = GTK_CONTAINER (widget)->border_width;
-  gint attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
+  GtkAllocation allocation;
+  GdkWindow *window;
   GdkWindowAttr attributes;
+  gint attributes_mask;
+  guint border_width;
+
+  gtk_widget_set_realized (widget, TRUE);
+
+  border_width = gtk_container_get_border_width (GTK_CONTAINER (widget));
+
+  gtk_widget_get_allocation (widget, &allocation);
 
   attributes.window_type = GDK_WINDOW_CHILD;
-  attributes.x = widget->allocation.x + border_width;
-  attributes.y = widget->allocation.y + border_width;
-  attributes.width = widget->allocation.width - border_width * 2;
-  attributes.height = widget->allocation.height - border_width * 2;
+  attributes.x = allocation.x + border_width;
+  attributes.y = allocation.y + border_width;
+  attributes.width = allocation.width - border_width * 2;
+  attributes.height = allocation.height - border_width * 2;
   attributes.wclass = GDK_INPUT_OUTPUT;
   attributes.visual = gtk_widget_get_visual (widget);
-  attributes.colormap = gtk_widget_get_colormap (widget);
   attributes.event_mask = gtk_widget_get_events (widget)
                          | GDK_VISIBILITY_NOTIFY_MASK | GDK_EXPOSURE_MASK
                          | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK
                          | GDK_BUTTON_MOTION_MASK;
+  attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL;
 
-  widget->window = gdk_window_new (gtk_widget_get_parent_window (widget),
-                                   &attributes, attributes_mask);
+  window = gdk_window_new (gtk_widget_get_parent_window (widget),
+                           &attributes, attributes_mask);
+  gtk_widget_set_window (widget, window);
+  gdk_window_set_user_data (window, widget);
 
-  gdk_window_set_user_data (widget->window, widget);
-  widget->style = gtk_style_attach (widget->style, widget->window);
-  gtk_style_set_background (widget->style, widget->window, GTK_STATE_NORMAL);
-  gtk_widget_set_realized (widget, TRUE);
+  gtk_style_context_set_background (gtk_widget_get_style_context (widget),
+                                    window);
 
   gtk_container_forall (GTK_CONTAINER (widget),
                         (GtkCallback) gtk_widget_set_parent_window,
-                        widget->window);
+                        window);
 
   gtk_widget_queue_resize_no_redraw (widget);
 }
@@ -686,38 +741,11 @@ static void
 gtk_tool_palette_adjustment_value_changed (GtkAdjustment *adjustment,
                                            gpointer       data)
 {
+  GtkAllocation allocation;
   GtkWidget *widget = GTK_WIDGET (data);
-  gtk_tool_palette_size_allocate (widget, &widget->allocation);
-}
 
-static void
-gtk_tool_palette_set_scroll_adjustments (GtkWidget     *widget,
-                                         GtkAdjustment *hadjustment,
-                                         GtkAdjustment *vadjustment)
-{
-  GtkToolPalette *palette = GTK_TOOL_PALETTE (widget);
-
-  if (hadjustment)
-    g_object_ref_sink (hadjustment);
-  if (vadjustment)
-    g_object_ref_sink (vadjustment);
-
-  if (palette->priv->hadjustment)
-    g_object_unref (palette->priv->hadjustment);
-  if (palette->priv->vadjustment)
-    g_object_unref (palette->priv->vadjustment);
-
-  palette->priv->hadjustment = hadjustment;
-  palette->priv->vadjustment = vadjustment;
-
-  if (palette->priv->hadjustment)
-    g_signal_connect (palette->priv->hadjustment, "value-changed",
-                      G_CALLBACK (gtk_tool_palette_adjustment_value_changed),
-                      palette);
-  if (palette->priv->vadjustment)
-    g_signal_connect (palette->priv->vadjustment, "value-changed",
-                      G_CALLBACK (gtk_tool_palette_adjustment_value_changed),
-                      palette);
+  gtk_widget_get_allocation (widget, &allocation);
+  gtk_tool_palette_size_allocate (widget, &allocation);
 }
 
 static void
@@ -769,15 +797,21 @@ gtk_tool_palette_forall (GtkContainer *container,
                          gpointer      callback_data)
 {
   GtkToolPalette *palette = GTK_TOOL_PALETTE (container);
-  guint i;
-
+  guint i, len;
 
   for (i = 0; i < palette->priv->groups->len; ++i)
     {
       GtkToolItemGroupInfo *info = g_ptr_array_index (palette->priv->groups, i);
+
+      len = palette->priv->groups->len;
+
       if (info->widget)
         callback (GTK_WIDGET (info->widget),
                   callback_data);
+
+      /* At destroy time, 'callback' results in removing a widget,
+       * here we just reset the current index to account for the removed widget. */
+      i -= (len - palette->priv->groups->len);
     }
 }
 
@@ -928,9 +962,9 @@ gtk_tool_palette_class_init (GtkToolPaletteClass *cls)
   oclass->dispose             = gtk_tool_palette_dispose;
   oclass->finalize            = gtk_tool_palette_finalize;
 
-  wclass->size_request        = gtk_tool_palette_size_request;
+  wclass->get_preferred_width = gtk_tool_palette_get_preferred_width;
+  wclass->get_preferred_height= gtk_tool_palette_get_preferred_height;
   wclass->size_allocate       = gtk_tool_palette_size_allocate;
-  wclass->expose_event        = gtk_tool_palette_expose_event;
   wclass->realize             = gtk_tool_palette_realize;
 
   cclass->add                 = gtk_tool_palette_add;
@@ -940,37 +974,16 @@ gtk_tool_palette_class_init (GtkToolPaletteClass *cls)
   cclass->set_child_property  = gtk_tool_palette_set_child_property;
   cclass->get_child_property  = gtk_tool_palette_get_child_property;
 
-  cls->set_scroll_adjustments = gtk_tool_palette_set_scroll_adjustments;
-
   /* Handle screen-changed so we can update our GtkSettings.
    */
   wclass->screen_changed      = gtk_tool_palette_screen_changed;
 
-  /**
-   * GtkToolPalette::set-scroll-adjustments:
-   * @widget: the GtkToolPalette that received the signal
-   * @hadjustment: The horizontal adjustment
-   * @vadjustment: The vertical adjustment
-   *
-   * Set the scroll adjustments for the viewport.
-   * Usually scrolled containers like GtkScrolledWindow will emit this
-   * signal to connect two instances of GtkScrollbar to the scroll
-   * directions of the GtkToolpalette.
-   *
-   * Since: 2.20
-   */
-  wclass->set_scroll_adjustments_signal =
-    g_signal_new ("set-scroll-adjustments",
-                  G_TYPE_FROM_CLASS (oclass),
-                  G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
-                  G_STRUCT_OFFSET (GtkToolPaletteClass, set_scroll_adjustments),
-                  NULL, NULL,
-                  _gtk_marshal_VOID__OBJECT_OBJECT,
-                  G_TYPE_NONE, 2,
-                  GTK_TYPE_ADJUSTMENT,
-                  GTK_TYPE_ADJUSTMENT);
+  g_object_class_override_property (oclass, PROP_ORIENTATION,    "orientation");
 
-  g_object_class_override_property (oclass, PROP_ORIENTATION, "orientation");
+  g_object_class_override_property (oclass, PROP_HADJUSTMENT,    "hadjustment");
+  g_object_class_override_property (oclass, PROP_VADJUSTMENT,    "vadjustment");
+  g_object_class_override_property (oclass, PROP_HSCROLL_POLICY, "hscroll-policy");
+  g_object_class_override_property (oclass, PROP_VSCROLL_POLICY, "vscroll-policy");
 
   /**
    * GtkToolPalette:icon-size:
@@ -1550,13 +1563,17 @@ gtk_tool_palette_get_drop_item (GtkToolPalette *palette,
                                 gint            x,
                                 gint            y)
 {
+  GtkAllocation allocation;
   GtkToolItemGroup *group = gtk_tool_palette_get_drop_group (palette, x, y);
   GtkWidget *widget = GTK_WIDGET (group);
 
   if (group)
-    return gtk_tool_item_group_get_drop_item (group,
-                                              x - widget->allocation.x,
-                                              y - widget->allocation.y);
+    {
+      gtk_widget_get_allocation (widget, &allocation);
+      return gtk_tool_item_group_get_drop_item (group,
+                                                x - allocation.x,
+                                                y - allocation.y);
+    }
 
   return NULL;
 }
@@ -1579,15 +1596,15 @@ gtk_tool_palette_get_drop_group (GtkToolPalette *palette,
                                  gint            x,
                                  gint            y)
 {
-  GtkAllocation *allocation;
+  GtkAllocation allocation;
   guint i;
 
   g_return_val_if_fail (GTK_IS_TOOL_PALETTE (palette), NULL);
 
-  allocation = &GTK_WIDGET (palette)->allocation;
+  gtk_widget_get_allocation (GTK_WIDGET (palette), &allocation);
 
-  g_return_val_if_fail (x >= 0 && x < allocation->width, NULL);
-  g_return_val_if_fail (y >= 0 && y < allocation->height, NULL);
+  g_return_val_if_fail (x >= 0 && x < allocation.width, NULL);
+  g_return_val_if_fail (y >= 0 && y < allocation.height, NULL);
 
   for (i = 0; i < palette->priv->groups->len; ++i)
     {
@@ -1599,12 +1616,13 @@ gtk_tool_palette_get_drop_group (GtkToolPalette *palette,
         continue;
 
       widget = GTK_WIDGET (group->widget);
+      gtk_widget_get_allocation (widget, &allocation);
 
-      x0 = x - widget->allocation.x;
-      y0 = y - widget->allocation.y;
+      x0 = x - allocation.x;
+      y0 = y - allocation.y;
 
-      if (x0 >= 0 && x0 < widget->allocation.width &&
-          y0 >= 0 && y0 < widget->allocation.height)
+      if (x0 >= 0 && x0 < allocation.width &&
+          y0 >= 0 && y0 < allocation.height)
         return GTK_TOOL_ITEM_GROUP (widget);
     }
 
@@ -1628,23 +1646,25 @@ gtk_tool_palette_get_drag_item (GtkToolPalette         *palette,
                                 const GtkSelectionData *selection)
 {
   GtkToolPaletteDragData *data;
+  GdkAtom target;
 
   g_return_val_if_fail (GTK_IS_TOOL_PALETTE (palette), NULL);
   g_return_val_if_fail (NULL != selection, NULL);
 
-  g_return_val_if_fail (selection->format == 8, NULL);
-  g_return_val_if_fail (selection->length == sizeof (GtkToolPaletteDragData), NULL);
-  g_return_val_if_fail (selection->target == dnd_target_atom_item ||
-                        selection->target == dnd_target_atom_group,
+  g_return_val_if_fail (gtk_selection_data_get_format (selection) == 8, NULL);
+  g_return_val_if_fail (gtk_selection_data_get_length (selection) == sizeof (GtkToolPaletteDragData), NULL);
+  target = gtk_selection_data_get_target (selection);
+  g_return_val_if_fail (target == dnd_target_atom_item ||
+                        target == dnd_target_atom_group,
                         NULL);
 
-  data = (GtkToolPaletteDragData*) selection->data;
+  data = (GtkToolPaletteDragData*) gtk_selection_data_get_data (selection);
 
   g_return_val_if_fail (data->palette == palette, NULL);
 
-  if (dnd_target_atom_item == selection->target)
+  if (dnd_target_atom_item == target)
     g_return_val_if_fail (GTK_IS_TOOL_ITEM (data->item), NULL);
-  else if (dnd_target_atom_group == selection->target)
+  else if (dnd_target_atom_group == target)
     g_return_val_if_fail (GTK_IS_TOOL_ITEM_GROUP (data->item), NULL);
 
   return data->item;
@@ -1774,12 +1794,15 @@ gtk_tool_palette_item_drag_data_get (GtkWidget        *widget,
                                      gpointer          data)
 {
   GtkToolPaletteDragData drag_data = { GTK_TOOL_PALETTE (data), NULL };
+  GdkAtom target;
 
-  if (selection->target == dnd_target_atom_item)
+  target = gtk_selection_data_get_target (selection);
+
+  if (target == dnd_target_atom_item)
     drag_data.item = gtk_widget_get_ancestor (widget, GTK_TYPE_TOOL_ITEM);
 
   if (drag_data.item)
-    gtk_selection_data_set (selection, selection->target, 8,
+    gtk_selection_data_set (selection, target, 8,
                             (guchar*) &drag_data, sizeof (drag_data));
 }
 
@@ -1792,12 +1815,15 @@ gtk_tool_palette_child_drag_data_get (GtkWidget        *widget,
                                       gpointer          data)
 {
   GtkToolPaletteDragData drag_data = { GTK_TOOL_PALETTE (data), NULL };
+  GdkAtom target;
 
-  if (selection->target == dnd_target_atom_group)
+  target = gtk_selection_data_get_target (selection);
+
+  if (target == dnd_target_atom_group)
     drag_data.item = gtk_widget_get_ancestor (widget, GTK_TYPE_TOOL_ITEM_GROUP);
 
   if (drag_data.item)
-    gtk_selection_data_set (selection, selection->target, 8,
+    gtk_selection_data_set (selection, target, 8,
                             (guchar*) &drag_data, sizeof (drag_data));
 }
 
@@ -1891,6 +1917,8 @@ _gtk_tool_palette_set_expanding_child (GtkToolPalette *palette,
  * Returns: (transfer none): the horizontal adjustment of @palette
  *
  * Since: 2.20
+ *
+ * Deprecated: 3.0: Use gtk_scrollable_get_hadjustment()
  */
 GtkAdjustment*
 gtk_tool_palette_get_hadjustment (GtkToolPalette *palette)
@@ -1898,6 +1926,35 @@ gtk_tool_palette_get_hadjustment (GtkToolPalette *palette)
   g_return_val_if_fail (GTK_IS_TOOL_PALETTE (palette), NULL);
 
   return palette->priv->hadjustment;
+}
+
+static void
+gtk_tool_palette_set_hadjustment (GtkToolPalette *palette,
+                                  GtkAdjustment  *adjustment)
+{
+  GtkToolPalettePrivate *priv = palette->priv;
+
+  if (adjustment && priv->hadjustment == adjustment)
+    return;
+
+  if (priv->hadjustment != NULL)
+    {
+      g_signal_handlers_disconnect_by_func (priv->hadjustment,
+                                            gtk_tool_palette_adjustment_value_changed,
+                                            palette);
+      g_object_unref (priv->hadjustment);
+    }
+
+  if (adjustment == NULL)
+    adjustment = gtk_adjustment_new (0.0, 0.0, 0.0,
+                                     0.0, 0.0, 0.0);
+
+  g_signal_connect (adjustment, "value-changed",
+                    G_CALLBACK (gtk_tool_palette_adjustment_value_changed),
+                    palette);
+  priv->hadjustment = g_object_ref_sink (adjustment);
+  /* FIXME: Adjustment should probably have its values updated now */
+  g_object_notify (G_OBJECT (palette), "hadjustment");
 }
 
 /**
@@ -1909,6 +1966,8 @@ gtk_tool_palette_get_hadjustment (GtkToolPalette *palette)
  * Returns: (transfer none): the vertical adjustment of @palette
  *
  * Since: 2.20
+ *
+ * Deprecated: 3.0: Use gtk_scrollable_get_vadjustment()
  */
 GtkAdjustment*
 gtk_tool_palette_get_vadjustment (GtkToolPalette *palette)
@@ -1918,6 +1977,35 @@ gtk_tool_palette_get_vadjustment (GtkToolPalette *palette)
   return palette->priv->vadjustment;
 }
 
+static void
+gtk_tool_palette_set_vadjustment (GtkToolPalette *palette,
+                                  GtkAdjustment  *adjustment)
+{
+  GtkToolPalettePrivate *priv = palette->priv;
+
+  if (adjustment && priv->vadjustment == adjustment)
+    return;
+
+  if (priv->vadjustment != NULL)
+    {
+      g_signal_handlers_disconnect_by_func (priv->vadjustment,
+                                            gtk_tool_palette_adjustment_value_changed,
+                                            palette);
+      g_object_unref (priv->vadjustment);
+    }
+
+  if (adjustment == NULL)
+    adjustment = gtk_adjustment_new (0.0, 0.0, 0.0,
+                                     0.0, 0.0, 0.0);
+
+  g_signal_connect (adjustment, "value-changed",
+                    G_CALLBACK (gtk_tool_palette_adjustment_value_changed),
+                    palette);
+  priv->vadjustment = g_object_ref_sink (adjustment);
+  /* FIXME: Adjustment should probably have its values updated now */
+  g_object_notify (G_OBJECT (palette), "vadjustment");
+}
+
 GtkSizeGroup *
 _gtk_tool_palette_get_size_group (GtkToolPalette *palette)
 {
@@ -1925,7 +2013,3 @@ _gtk_tool_palette_get_size_group (GtkToolPalette *palette)
 
   return palette->priv->text_size_group;
 }
-
-
-#define __GTK_TOOL_PALETTE_C__
-#include "gtkaliasdef.c"

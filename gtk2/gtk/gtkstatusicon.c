@@ -16,9 +16,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  *
  * Authors:
  *	Mark McLoughlin <mark@skynet.ie>
@@ -28,40 +26,64 @@
  */
 
 #include "config.h"
+
 #include <string.h>
+#include <stdlib.h>
 
 #include "gtkstatusicon.h"
 
 #include "gtkintl.h"
 #include "gtkiconfactory.h"
+#include "gtkiconhelperprivate.h"
 #include "gtkmain.h"
 #include "gtkmarshalers.h"
-#include "gtktrayicon.h"
-
+#include "gtksizerequest.h"
 #include "gtkprivate.h"
 #include "gtkwidget.h"
 #include "gtktooltip.h"
+#include "gtkicontheme.h"
+#include "gtklabel.h"
+#include "gtktypebuiltins.h"
 
 #ifdef GDK_WINDOWING_X11
 #include "gdk/x11/gdkx.h"
+#include "gtktrayicon.h"
 #endif
 
 #ifdef GDK_WINDOWING_WIN32
-#include "gtkicontheme.h"
-#include "gtklabel.h"
-
-#include "win32/gdkwin32.h"
+#include "gdk/win32/gdkwin32.h"
 #define WM_GTK_TRAY_NOTIFICATION (WM_USER+1)
 #endif
 
-#ifdef GDK_WINDOWING_QUARTZ
-#include "gtkicontheme.h"
-#include "gtklabel.h"
-#endif	
 
-#include "gdkkeysyms.h"
+/**
+ * SECTION:gtkstatusicon
+ * @Short_description: Display an icon in the system tray
+ * @Title: GtkStatusIcon
+ *
+ * The "system tray" or notification area is normally used for transient icons
+ * that indicate some special state. For example, a system tray icon might
+ * appear to tell the user that they have new mail, or have an incoming instant
+ * message, or something along those lines. The basic idea is that creating an
+ * icon in the notification area is less annoying than popping up a dialog.
+ *
+ * A #GtkStatusIcon object can be used to display an icon in a "system tray".
+ * The icon can have a tooltip, and the user can interact with it by
+ * activating it or popping up a context menu. Critical information should
+ * not solely be displayed in a #GtkStatusIcon, since it may not be
+ * visible (e.g. when the user doesn't have a notification area on his panel).
+ * This can be checked with gtk_status_icon_is_embedded().
+ *
+ * On X11, the implementation follows the freedesktop.org "System Tray"
+ * <ulink url="http://www.freedesktop.org/wiki/Specifications/systemtray-spec">specification</ulink>.
+ * Implementations of the "tray" side of this specification can
+ * be found e.g. in the GNOME 2 and KDE panel applications.
+ *
+ * Note that a GtkStatusIcon is <emphasis>not</emphasis> a widget, but just
+ * a #GObject. Making it a widget would be impractical, since the system tray
+ * on Win32 doesn't allow to embed arbitrary widgets.
+ */
 
-#include "gtkalias.h"
 
 #define BLINK_TIMEOUT 500
 
@@ -109,10 +131,11 @@ struct _GtkStatusIconPrivate
 #ifdef GDK_WINDOWING_X11
   GtkWidget    *tray_icon;
   GtkWidget    *image;
+#else
+  GtkWidget    *dummy_widget;
 #endif
 
 #ifdef GDK_WINDOWING_WIN32
-  GtkWidget     *dummy_widget;
   NOTIFYICONDATAW nid;
   gint          taskbar_top;
   gint		last_click_x, last_click_y;
@@ -122,33 +145,14 @@ struct _GtkStatusIconPrivate
 #endif
 	
 #ifdef GDK_WINDOWING_QUARTZ
-  GtkWidget     *dummy_widget;
   GtkQuartzStatusIcon *status_item;
   gchar         *tooltip_text;
   gchar         *title;
 #endif
 
-  gint          size;
-
-  gint          image_width;
-  gint          image_height;
-
-  GtkImageType  storage_type;
-
-  union
-    {
-      GdkPixbuf *pixbuf;
-      gchar     *stock_id;
-      gchar     *icon_name;
-      GIcon     *gicon;
-    } image_data;
-
-  GdkPixbuf    *blank_icon;
-  guint         blinking_timeout;
-
-  guint         blinking : 1;
-  guint         blink_off : 1;
-  guint         visible : 1;
+  gint           size;
+  GtkIconHelper *icon_helper;
+  guint          visible : 1;
 };
 
 static GObject* gtk_status_icon_constructor      (GType                  type,
@@ -171,6 +175,12 @@ static void     gtk_status_icon_screen_changed   (GtkStatusIcon  *status_icon,
 						  GdkScreen      *old_screen);
 static void     gtk_status_icon_embedded_changed (GtkStatusIcon *status_icon);
 static void     gtk_status_icon_orientation_changed (GtkStatusIcon *status_icon);
+static void     gtk_status_icon_padding_changed  (GtkStatusIcon *status_icon);
+static void     gtk_status_icon_icon_size_changed(GtkStatusIcon *status_icon);
+static void     gtk_status_icon_fg_changed       (GtkStatusIcon *status_icon);
+static void     gtk_status_icon_color_changed    (GtkTrayIcon   *tray,
+                                                  GParamSpec    *pspec,
+                                                  GtkStatusIcon *status_icon);
 static gboolean gtk_status_icon_scroll           (GtkStatusIcon  *status_icon,
 						  GdkEventScroll *event);
 static gboolean gtk_status_icon_query_tooltip    (GtkStatusIcon *status_icon,
@@ -187,7 +197,6 @@ static gboolean gtk_status_icon_button_press     (GtkStatusIcon  *status_icon,
 						  GdkEventButton *event);
 static gboolean gtk_status_icon_button_release   (GtkStatusIcon  *status_icon,
 						  GdkEventButton *event);
-static void     gtk_status_icon_disable_blinking (GtkStatusIcon  *status_icon);
 static void     gtk_status_icon_reset_image_data (GtkStatusIcon  *status_icon);
 static void     gtk_status_icon_update_image    (GtkStatusIcon *status_icon);
 
@@ -283,26 +292,11 @@ gtk_status_icon_class_init (GtkStatusIconClass *class)
 							GDK_TYPE_SCREEN,
  							GTK_PARAM_READWRITE));
 
-  /**
-   * GtkStatusIcon:blinking:
-   *
-   * Whether or not the status icon is blinking.
-   *
-   * Deprecated: 2.22: This property will be removed in GTK+ 3
-   */
-  g_object_class_install_property (gobject_class,
-				   PROP_BLINKING,
-				   g_param_spec_boolean ("blinking",
-							 P_("Blinking"),
-							 P_("Whether or not the status icon is blinking"),
-							 FALSE,
-							 GTK_PARAM_READWRITE | G_PARAM_DEPRECATED));
-
   g_object_class_install_property (gobject_class,
 				   PROP_VISIBLE,
 				   g_param_spec_boolean ("visible",
 							 P_("Visible"),
-							 P_("Whether or not the status icon is visible"),
+							 P_("Whether the status icon is visible"),
 							 TRUE,
 							 GTK_PARAM_READWRITE));
 
@@ -318,7 +312,7 @@ gtk_status_icon_class_init (GtkStatusIconClass *class)
 				   PROP_EMBEDDED,
 				   g_param_spec_boolean ("embedded",
 							 P_("Embedded"),
-							 P_("Whether or not the status icon is embedded"),
+							 P_("Whether the status icon is embedded"),
 							 FALSE,
 							 GTK_PARAM_READABLE));
 
@@ -518,7 +512,8 @@ gtk_status_icon_class_init (GtkStatusIconClass *class)
   /**
    * GtkStatusIcon::button-press-event:
    * @status_icon: the object which received the signal
-   * @event: the #GdkEventButton which triggered this signal
+   * @event: (type Gdk.EventButton): the #GdkEventButton which triggered 
+   *                                 this signal
    *
    * The ::button-press-event signal will be emitted when a button
    * (typically from a mouse) is pressed.
@@ -544,7 +539,8 @@ gtk_status_icon_class_init (GtkStatusIconClass *class)
   /**
    * GtkStatusIcon::button-release-event:
    * @status_icon: the object which received the signal
-   * @event: the #GdkEventButton which triggered this signal
+   * @event: (type Gdk.EventButton): the #GdkEventButton which triggered 
+   *                                 this signal
    *
    * The ::button-release-event signal will be emitted when a button
    * (typically from a mouse) is released.
@@ -570,16 +566,19 @@ gtk_status_icon_class_init (GtkStatusIconClass *class)
   /**
    * GtkStatusIcon::scroll-event:
    * @status_icon: the object which received the signal.
-   * @event: the #GdkEventScroll which triggered this signal
+   * @event: (type Gdk.EventScroll): the #GdkEventScroll which triggered 
+   *                                 this signal
    *
    * The ::scroll-event signal is emitted when a button in the 4 to 7
-   * range is pressed. Wheel mice are usually configured to generate 
+   * range is pressed. Wheel mice are usually configured to generate
    * button press events for buttons 4 and 5 when the wheel is turned.
    *
    * Whether this event is emitted is platform-dependent.
    *
-   * Returns: %TRUE to stop other handlers from being invoked for the event. 
+   * Returns: %TRUE to stop other handlers from being invoked for the event.
    *   %FALSE to propagate the event further.
+   *
+   * Since: 2.16
    */
   status_icon_signals[SCROLL_EVENT_SIGNAL] =
     g_signal_new (I_("scroll_event"),
@@ -658,7 +657,7 @@ build_button_event (GtkStatusIconPrivate *priv,
   e->axes = NULL;
   e->state = 0;
   e->button = button;
-  e->device = gdk_display_get_default ()->core_pointer;
+  //FIXME: e->device = gdk_display_get_default ()->core_pointer;
   e->x_root = e->x;
   e->y_root = e->y;
 }
@@ -682,7 +681,7 @@ button_callback (gpointer data)
   gdk_event_free ((GdkEvent *) bc->event);
   g_free (data);
 
-  return FALSE;
+  return G_SOURCE_REMOVE;
 }
 
 static UINT taskbar_created_msg = 0;
@@ -835,15 +834,12 @@ gtk_status_icon_init (GtkStatusIcon *status_icon)
   priv = G_TYPE_INSTANCE_GET_PRIVATE (status_icon, GTK_TYPE_STATUS_ICON,
 				      GtkStatusIconPrivate);
   status_icon->priv = priv;
-  
-  priv->storage_type = GTK_IMAGE_EMPTY;
+
+  priv->icon_helper = _gtk_icon_helper_new ();
   priv->visible      = TRUE;
 
 #ifdef GDK_WINDOWING_X11
   priv->size         = 0;
-  priv->image_width  = 0;
-  priv->image_height = 0;
-
   priv->tray_icon = GTK_WIDGET (_gtk_tray_icon_new (NULL));
 
   gtk_widget_add_events (GTK_WIDGET (priv->tray_icon),
@@ -858,6 +854,18 @@ gtk_status_icon_init (GtkStatusIcon *status_icon)
 			    G_CALLBACK (gtk_status_icon_embedded_changed), status_icon);
   g_signal_connect_swapped (priv->tray_icon, "notify::orientation",
 			    G_CALLBACK (gtk_status_icon_orientation_changed), status_icon);
+  g_signal_connect_swapped (priv->tray_icon, "notify::padding",
+			    G_CALLBACK (gtk_status_icon_padding_changed), status_icon);
+  g_signal_connect_swapped (priv->tray_icon, "notify::icon-size",
+			    G_CALLBACK (gtk_status_icon_icon_size_changed), status_icon);
+  g_signal_connect_swapped (priv->tray_icon, "notify::fg-color",
+                            G_CALLBACK (gtk_status_icon_fg_changed), status_icon);
+  g_signal_connect (priv->tray_icon, "notify::error-color",
+                    G_CALLBACK (gtk_status_icon_color_changed), status_icon);
+  g_signal_connect (priv->tray_icon, "notify::warning-color",
+                    G_CALLBACK (gtk_status_icon_color_changed), status_icon);
+  g_signal_connect (priv->tray_icon, "notify::success-color",
+                    G_CALLBACK (gtk_status_icon_color_changed), status_icon);
   g_signal_connect_swapped (priv->tray_icon, "button-press-event",
 			    G_CALLBACK (gtk_status_icon_button_press), status_icon);
   g_signal_connect_swapped (priv->tray_icon, "button-release-event",
@@ -873,9 +881,17 @@ gtk_status_icon_init (GtkStatusIcon *status_icon)
   gtk_container_add (GTK_CONTAINER (priv->tray_icon), priv->image);
   gtk_widget_show (priv->image);
 
+  /* Force-initialize the symbolic colors */
+  g_object_notify (G_OBJECT (priv->tray_icon), "fg-color");
+  g_object_notify (G_OBJECT (priv->tray_icon), "error-color");
+  g_object_notify (G_OBJECT (priv->tray_icon), "warning-color");
+  g_object_notify (G_OBJECT (priv->tray_icon), "success-color");
+
   g_signal_connect_swapped (priv->image, "size-allocate",
 			    G_CALLBACK (gtk_status_icon_size_allocate), status_icon);
 
+#else /* !GDK_WINDOWING_X11 */
+  priv->dummy_widget = gtk_label_new ("");
 #endif
 
 #ifdef GDK_WINDOWING_WIN32
@@ -898,10 +914,6 @@ gtk_status_icon_init (GtkStatusIcon *status_icon)
 
   /* Are the system tray icons always 16 pixels square? */
   priv->size         = 16;
-  priv->image_width  = 16;
-  priv->image_height = 16;
-
-  priv->dummy_widget = gtk_label_new ("");
 
   memset (&priv->nid, 0, sizeof (priv->nid));
 
@@ -932,14 +944,10 @@ gtk_status_icon_init (GtkStatusIcon *status_icon)
 #endif
 	
 #ifdef GDK_WINDOWING_QUARTZ
-  priv->dummy_widget = gtk_label_new ("");
-
   QUARTZ_POOL_ALLOC;
 
   priv->status_item = [[GtkQuartzStatusIcon alloc] initWithStatusIcon:status_icon];
-
-  priv->image_width = priv->image_height = [priv->status_item getHeight];
-  priv->size = priv->image_height;
+  priv->size = [priv->status_item getHeight];
 
   QUARTZ_POOL_RELEASE;
 
@@ -978,13 +986,8 @@ gtk_status_icon_finalize (GObject *object)
   GtkStatusIcon *status_icon = GTK_STATUS_ICON (object);
   GtkStatusIconPrivate *priv = status_icon->priv;
 
-  gtk_status_icon_disable_blinking (status_icon);
-  
   gtk_status_icon_reset_image_data (status_icon);
-
-  if (priv->blank_icon)
-    g_object_unref (priv->blank_icon);
-  priv->blank_icon = NULL;
+  g_clear_object (&priv->icon_helper);
 
 #ifdef GDK_WINDOWING_X11
   g_signal_handlers_disconnect_by_func (priv->tray_icon,
@@ -995,6 +998,14 @@ gtk_status_icon_finalize (GObject *object)
 			                gtk_status_icon_embedded_changed, status_icon);
   g_signal_handlers_disconnect_by_func (priv->tray_icon,
 			                gtk_status_icon_orientation_changed, status_icon);
+  g_signal_handlers_disconnect_by_func (priv->tray_icon,
+			                gtk_status_icon_padding_changed, status_icon);
+  g_signal_handlers_disconnect_by_func (priv->tray_icon,
+			                gtk_status_icon_icon_size_changed, status_icon);
+  g_signal_handlers_disconnect_by_func (priv->tray_icon,
+                                        gtk_status_icon_fg_changed, status_icon);
+  g_signal_handlers_disconnect_by_func (priv->tray_icon,
+                                        gtk_status_icon_color_changed, status_icon);
   g_signal_handlers_disconnect_by_func (priv->tray_icon,
 			                gtk_status_icon_button_press, status_icon);
   g_signal_handlers_disconnect_by_func (priv->tray_icon,
@@ -1007,6 +1018,8 @@ gtk_status_icon_finalize (GObject *object)
 		    	                gtk_status_icon_screen_changed, status_icon);
   gtk_widget_destroy (priv->image);
   gtk_widget_destroy (priv->tray_icon);
+#else /* !GDK_WINDOWING_X11 */
+  gtk_widget_destroy (priv->dummy_widget);
 #endif
 
 #ifdef GDK_WINDOWING_WIN32
@@ -1015,8 +1028,6 @@ gtk_status_icon_finalize (GObject *object)
   if (priv->nid.hIcon)
     DestroyIcon (priv->nid.hIcon);
   g_free (priv->tooltip_text);
-
-  gtk_widget_destroy (priv->dummy_widget);
 
   status_icons = g_slist_remove (status_icons, status_icon);
 #endif
@@ -1059,9 +1070,6 @@ gtk_status_icon_set_property (GObject      *object,
     case PROP_SCREEN:
       gtk_status_icon_set_screen (status_icon, g_value_get_object (value));
       break;
-    case PROP_BLINKING:
-      gtk_status_icon_set_blinking (status_icon, g_value_get_boolean (value));
-      break;
     case PROP_VISIBLE:
       gtk_status_icon_set_visible (status_icon, g_value_get_boolean (value));
       break;
@@ -1090,39 +1098,20 @@ gtk_status_icon_get_property (GObject    *object,
 			      GParamSpec *pspec)
 {
   GtkStatusIcon *status_icon = GTK_STATUS_ICON (object);
-  GtkStatusIconPrivate *priv = status_icon->priv;
-
-  /* The "getter" functions whine if you try to get the wrong
-   * storage type. This function is instead robust against that,
-   * so that GUI builders don't have to jump through hoops
-   * to avoid g_warning
-   */
 
   switch (prop_id)
     {
     case PROP_PIXBUF:
-      if (priv->storage_type != GTK_IMAGE_PIXBUF)
-	g_value_set_object (value, NULL);
-      else
-	g_value_set_object (value, gtk_status_icon_get_pixbuf (status_icon));
+      g_value_set_object (value, gtk_status_icon_get_pixbuf (status_icon));
       break;
     case PROP_STOCK:
-      if (priv->storage_type != GTK_IMAGE_STOCK)
-	g_value_set_string (value, NULL);
-      else
-	g_value_set_string (value, gtk_status_icon_get_stock (status_icon));
+      g_value_set_string (value, gtk_status_icon_get_stock (status_icon));
       break;
     case PROP_ICON_NAME:
-      if (priv->storage_type != GTK_IMAGE_ICON_NAME)
-	g_value_set_string (value, NULL);
-      else
-	g_value_set_string (value, gtk_status_icon_get_icon_name (status_icon));
+      g_value_set_string (value, gtk_status_icon_get_icon_name (status_icon));
       break;
     case PROP_GICON:
-      if (priv->storage_type != GTK_IMAGE_GICON)
-        g_value_set_object (value, NULL);
-      else
-        g_value_set_object (value, gtk_status_icon_get_gicon (status_icon));
+      g_value_set_object (value, gtk_status_icon_get_gicon (status_icon));
       break;
     case PROP_STORAGE_TYPE:
       g_value_set_enum (value, gtk_status_icon_get_storage_type (status_icon));
@@ -1132,9 +1121,6 @@ gtk_status_icon_get_property (GObject    *object,
       break;
     case PROP_SCREEN:
       g_value_set_object (value, gtk_status_icon_get_screen (status_icon));
-      break;
-    case PROP_BLINKING:
-      g_value_set_boolean (value, gtk_status_icon_get_blinking (status_icon));
       break;
     case PROP_VISIBLE:
       g_value_set_boolean (value, gtk_status_icon_get_visible (status_icon));
@@ -1206,7 +1192,7 @@ gtk_status_icon_new_from_pixbuf (GdkPixbuf *pixbuf)
 
 /**
  * gtk_status_icon_new_from_file:
- * @filename: a filename
+ * @filename: (type filename): a filename
  * 
  * Creates a status icon displaying the file @filename. 
  *
@@ -1321,47 +1307,15 @@ emit_size_changed_signal (GtkStatusIcon *status_icon,
 
 #endif
 
-static GdkPixbuf *
-gtk_status_icon_blank_icon (GtkStatusIcon *status_icon)
-{
-  GtkStatusIconPrivate *priv = status_icon->priv;
-
-  if (priv->blank_icon)
-    {
-      gint width, height;
-
-      width  = gdk_pixbuf_get_width (priv->blank_icon);
-      height = gdk_pixbuf_get_height (priv->blank_icon);
-
-
-      if (width == priv->image_width && height == priv->image_height)
-	return priv->blank_icon;
-      else
-	{
-	  g_object_unref (priv->blank_icon);
-	  priv->blank_icon = NULL;
-	}
-    }
-
-  priv->blank_icon = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8,
-				     priv->image_width, 
-				     priv->image_height);
-  if (priv->blank_icon)
-    gdk_pixbuf_fill (priv->blank_icon, 0);
-
-  return priv->blank_icon;
-}
-
-#ifdef GDK_WINDOWING_X11
-
-static GtkIconSize
-find_icon_size (GtkWidget *widget, 
-		gint       pixel_size)
+/* rounds the pixel size to the nearest size avaiable in the theme */
+static gint
+round_pixel_size (GtkWidget *widget, 
+                  gint       pixel_size)
 {
   GdkScreen *screen;
   GtkSettings *settings;
-  GtkIconSize s, size;
-  gint w, h, d, dist;
+  GtkIconSize s;
+  gint w, h, d, dist, size;
 
   screen = gtk_widget_get_screen (widget);
 
@@ -1369,28 +1323,25 @@ find_icon_size (GtkWidget *widget,
     return GTK_ICON_SIZE_MENU;
 
   settings = gtk_settings_get_for_screen (screen);
-  
+
   dist = G_MAXINT;
-  size = GTK_ICON_SIZE_MENU;
+  size = 0;
 
   for (s = GTK_ICON_SIZE_MENU; s <= GTK_ICON_SIZE_DIALOG; s++)
     {
-      if (gtk_icon_size_lookup_for_settings (settings, s, &w, &h) &&
-	  w <= pixel_size && h <= pixel_size)
+      if (gtk_icon_size_lookup_for_settings (settings, s, &w, &h))
 	{
-	  d = MAX (pixel_size - w, pixel_size - h);
+	  d = MAX (abs (pixel_size - w), abs (pixel_size - h));
 	  if (d < dist)
 	    {
 	      dist = d;
-	      size = s;
+              size = MAX (w, h);
 	    }
 	}
     }
   
   return size;
 }
-
-#endif
 
 static void
 gtk_status_icon_update_image (GtkStatusIcon *status_icon)
@@ -1399,257 +1350,86 @@ gtk_status_icon_update_image (GtkStatusIcon *status_icon)
 #ifdef GDK_WINDOWING_WIN32
   HICON prev_hicon;
 #endif
+  GtkStyleContext *context;
+  GtkWidget *widget;
+  GtkImageType storage_type = _gtk_icon_helper_get_storage_type (priv->icon_helper);
+  GdkPixbuf *pixbuf;
+  gint round_size;
 
-  if (priv->blink_off)
+#ifdef GDK_WINDOWING_X11
+  widget = priv->image;
+#else
+  widget = priv->dummy_widget;
+#endif
+
+  context = gtk_widget_get_style_context (widget);
+  round_size = round_pixel_size (widget, priv->size);
+
+  if (storage_type == GTK_IMAGE_PIXBUF)
+    {
+      GdkPixbuf *scaled;
+      gint width;
+      gint height;
+
+      pixbuf = _gtk_icon_helper_ensure_pixbuf (priv->icon_helper, context);
+
+      width  = gdk_pixbuf_get_width  (pixbuf);
+      height = gdk_pixbuf_get_height (pixbuf);
+
+      if (width > round_size || height > round_size)
+        {
+          scaled = gdk_pixbuf_scale_simple (pixbuf,
+                                            MIN (round_size, width),
+                                            MIN (round_size, height),
+                                            GDK_INTERP_BILINEAR);
+          g_object_unref (pixbuf);
+          pixbuf = scaled;
+        }
+    }
+  else
+    {
+      _gtk_icon_helper_set_pixel_size (priv->icon_helper, round_size);
+      pixbuf = _gtk_icon_helper_ensure_pixbuf (priv->icon_helper, context);
+    }
+
+  if (pixbuf != NULL)
     {
 #ifdef GDK_WINDOWING_X11
-      gtk_image_set_from_pixbuf (GTK_IMAGE (priv->image),
-				 gtk_status_icon_blank_icon (status_icon));
+      gtk_image_set_from_pixbuf (GTK_IMAGE (priv->image), pixbuf);
 #endif
 #ifdef GDK_WINDOWING_WIN32
       prev_hicon = priv->nid.hIcon;
-      priv->nid.hIcon = gdk_win32_pixbuf_to_hicon_libgtk_only (gtk_status_icon_blank_icon (status_icon));
+      priv->nid.hIcon = gdk_win32_pixbuf_to_hicon_libgtk_only (pixbuf);
       priv->nid.uFlags |= NIF_ICON;
       if (priv->nid.hWnd != NULL && priv->visible)
-	if (!Shell_NotifyIconW (NIM_MODIFY, &priv->nid))
-	  g_warning (G_STRLOC ": Shell_NotifyIcon(NIM_MODIFY) failed");
+        if (!Shell_NotifyIconW (NIM_MODIFY, &priv->nid))
+          g_warning (G_STRLOC ": Shell_NotifyIcon(NIM_MODIFY) failed");
       if (prev_hicon)
-	DestroyIcon (prev_hicon);
+        DestroyIcon (prev_hicon);
 #endif
 #ifdef GDK_WINDOWING_QUARTZ
       QUARTZ_POOL_ALLOC;
-      [priv->status_item setImage:gtk_status_icon_blank_icon (status_icon)];
+      [priv->status_item setImage:pixbuf];
       QUARTZ_POOL_RELEASE;
 #endif
-      return;
     }
-
-  switch (priv->storage_type)
+  else
     {
-    case GTK_IMAGE_PIXBUF:
-      {
-	GdkPixbuf *pixbuf;
-
-	pixbuf = priv->image_data.pixbuf;
-
-	if (pixbuf)
-	  {
-	    GdkPixbuf *scaled;
-	    gint size;
-	    gint width;
-	    gint height;
-
-	    size = priv->size;
-
-	    width  = gdk_pixbuf_get_width  (pixbuf);
-	    height = gdk_pixbuf_get_height (pixbuf);
-
-	    if (width > size || height > size)
-	      scaled = gdk_pixbuf_scale_simple (pixbuf,
-						MIN (size, width),
-						MIN (size, height),
-						GDK_INTERP_BILINEAR);
-	    else
-	      scaled = g_object_ref (pixbuf);
-
-#ifdef GDK_WINDOWING_X11
-	    gtk_image_set_from_pixbuf (GTK_IMAGE (priv->image), scaled);
-#endif
-#ifdef GDK_WINDOWING_WIN32
-	    prev_hicon = priv->nid.hIcon;
-	    priv->nid.hIcon = gdk_win32_pixbuf_to_hicon_libgtk_only (scaled);
-	    priv->nid.uFlags |= NIF_ICON;
-	    if (priv->nid.hWnd != NULL && priv->visible)
-	      if (!Shell_NotifyIconW (NIM_MODIFY, &priv->nid))
-		  g_warning (G_STRLOC ": Shell_NotifyIcon(NIM_MODIFY) failed");
-	    if (prev_hicon)
-	      DestroyIcon (prev_hicon);
-#endif
-#ifdef GDK_WINDOWING_QUARTZ
-      QUARTZ_POOL_ALLOC;
-      [priv->status_item setImage:scaled];
-      QUARTZ_POOL_RELEASE;
-#endif
-			
-	    g_object_unref (scaled);
-	  }
-	else
-	  {
-#ifdef GDK_WINDOWING_X11
-	    gtk_image_set_from_pixbuf (GTK_IMAGE (priv->image), NULL);
-#endif
-#ifdef GDK_WINDOWING_WIN32
-	    priv->nid.uFlags &= ~NIF_ICON;
-	    if (priv->nid.hWnd != NULL && priv->visible)
-	      if (!Shell_NotifyIconW (NIM_MODIFY, &priv->nid))
-		g_warning (G_STRLOC ": Shell_NotifyIcon(NIM_MODIFY) failed");
-#endif
-#ifdef GDK_WINDOWING_QUARTZ
-      [priv->status_item setImage:NULL];
-#endif
-	  }
-      }
-      break;
-
-    case GTK_IMAGE_STOCK:
-      {
-#ifdef GDK_WINDOWING_X11
-	GtkIconSize size = find_icon_size (priv->image, priv->size);
-	gtk_image_set_from_stock (GTK_IMAGE (priv->image),
-				  priv->image_data.stock_id,
-				  size);
-#endif
-#ifdef GDK_WINDOWING_WIN32
-	{
-	  GdkPixbuf *pixbuf =
-	    gtk_widget_render_icon (priv->dummy_widget,
-				    priv->image_data.stock_id,
-				    GTK_ICON_SIZE_SMALL_TOOLBAR,
-				    NULL);
-
-	  prev_hicon = priv->nid.hIcon;
-	  priv->nid.hIcon = gdk_win32_pixbuf_to_hicon_libgtk_only (pixbuf);
-	  priv->nid.uFlags |= NIF_ICON;
-	  if (priv->nid.hWnd != NULL && priv->visible)
-	    if (!Shell_NotifyIconW (NIM_MODIFY, &priv->nid))
-	      g_warning (G_STRLOC ": Shell_NotifyIcon(NIM_MODIFY) failed");
-	  if (prev_hicon)
-	    DestroyIcon (prev_hicon);
-	  g_object_unref (pixbuf);
-	}
-#endif
-#ifdef GDK_WINDOWING_QUARTZ
-	{
-	  GdkPixbuf *pixbuf;
-
-	  pixbuf = gtk_widget_render_icon (priv->dummy_widget,
-					   priv->image_data.stock_id,
-					   GTK_ICON_SIZE_SMALL_TOOLBAR,
-					   NULL);
-	  QUARTZ_POOL_ALLOC;
-	  [priv->status_item setImage:pixbuf];
-	  QUARTZ_POOL_RELEASE;
-	  g_object_unref (pixbuf);
-	}	
-#endif
-      }
-      break;
-      
-    case GTK_IMAGE_ICON_NAME:
-      {
-#ifdef GDK_WINDOWING_X11
-	GtkIconSize size = find_icon_size (priv->image, priv->size);
-	gtk_image_set_from_icon_name (GTK_IMAGE (priv->image),
-				      priv->image_data.icon_name,
-				      size);
-#endif
-#ifdef GDK_WINDOWING_WIN32
-	{
-	  GdkPixbuf *pixbuf =
-	    gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
-				      priv->image_data.icon_name,
-				      priv->size,
-				      0, NULL);
-	  
-	  prev_hicon = priv->nid.hIcon;
-	  priv->nid.hIcon = gdk_win32_pixbuf_to_hicon_libgtk_only (pixbuf);
-	  priv->nid.uFlags |= NIF_ICON;
-	  if (priv->nid.hWnd != NULL && priv->visible)
-	    if (!Shell_NotifyIconW (NIM_MODIFY, &priv->nid))
-	      g_warning (G_STRLOC ": Shell_NotifyIcon(NIM_MODIFY) failed");
-	  if (prev_hicon)
-	    DestroyIcon (prev_hicon);
-	  g_object_unref (pixbuf);
-	}
-#endif
-#ifdef GDK_WINDOWING_QUARTZ
-	{
-	  GdkPixbuf *pixbuf;
-
-	  pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
-					     priv->image_data.icon_name,
-					     priv->size,
-					     0, NULL);
-
-	  QUARTZ_POOL_ALLOC;
-	  [priv->status_item setImage:pixbuf];
-	  QUARTZ_POOL_RELEASE;
-	  g_object_unref (pixbuf);
-	}
-#endif
-	
-      }
-      break;
-
-    case GTK_IMAGE_GICON:
-      {
-#ifdef GDK_WINDOWING_X11
-        GtkIconSize size = find_icon_size (priv->image, priv->size);
-        gtk_image_set_from_gicon (GTK_IMAGE (priv->image),
-                                  priv->image_data.gicon,
-                                  size);
-#endif
-#ifdef GDK_WINDOWING_WIN32
-      {
-        GtkIconInfo *info =
-        gtk_icon_theme_lookup_by_gicon (gtk_icon_theme_get_default (),
-                                        priv->image_data.gicon,
-                                        priv->size,
-                                        0);
-        GdkPixbuf *pixbuf = gtk_icon_info_load_icon (info, NULL);
-
-        prev_hicon = priv->nid.hIcon;
-        priv->nid.hIcon = gdk_win32_pixbuf_to_hicon_libgtk_only (pixbuf);
-        priv->nid.uFlags |= NIF_ICON;
-        if (priv->nid.hWnd != NULL && priv->visible)
-          if (!Shell_NotifyIconW (NIM_MODIFY, &priv->nid))
-            g_warning (G_STRLOC ": Shell_NotifyIcon(NIM_MODIFY) failed");
-          if (prev_hicon)
-            DestroyIcon (prev_hicon);
-          g_object_unref (pixbuf);
-      }
-#endif
-#ifdef GDK_WINDOWING_QUARTZ
-      {
-        GtkIconInfo *info =
-        gtk_icon_theme_lookup_by_gicon (gtk_icon_theme_get_default (),
-                                        priv->image_data.gicon,
-                                        priv->size,
-                                        0);
-        GdkPixbuf *pixbuf = gtk_icon_info_load_icon (info, NULL);
-
-        QUARTZ_POOL_ALLOC;
-        [priv->status_item setImage:pixbuf];
-        QUARTZ_POOL_RELEASE;
-        g_object_unref (pixbuf);
-      }
-#endif
-
-      }
-      break;
-
-    case GTK_IMAGE_EMPTY:
 #ifdef GDK_WINDOWING_X11
       gtk_image_set_from_pixbuf (GTK_IMAGE (priv->image), NULL);
 #endif
 #ifdef GDK_WINDOWING_WIN32
       priv->nid.uFlags &= ~NIF_ICON;
       if (priv->nid.hWnd != NULL && priv->visible)
-	if (!Shell_NotifyIconW (NIM_MODIFY, &priv->nid))
-	  g_warning (G_STRLOC ": Shell_NotifyIcon(NIM_MODIFY) failed");
+        if (!Shell_NotifyIconW (NIM_MODIFY, &priv->nid))
+          g_warning (G_STRLOC ": Shell_NotifyIcon(NIM_MODIFY) failed");
 #endif
 #ifdef GDK_WINDOWING_QUARTZ
-        {
-          QUARTZ_POOL_ALLOC;
-          [priv->status_item setImage:NULL];
-          QUARTZ_POOL_RELEASE;
-        }
+      [priv->status_item setImage:NULL];
 #endif
-      break;
-    default:
-      g_assert_not_reached ();
-      break;
     }
+
+  g_clear_object (&pixbuf);
 }
 
 #ifdef GDK_WINDOWING_X11
@@ -1668,9 +1448,6 @@ gtk_status_icon_size_allocate (GtkStatusIcon *status_icon,
     size = allocation->height;
   else
     size = allocation->width;
-
-  priv->image_width = allocation->width - GTK_MISC (priv->image)->xpad * 2;
-  priv->image_height = allocation->height - GTK_MISC (priv->image)->ypad * 2;
 
   if (priv->size != size)
     {
@@ -1700,15 +1477,103 @@ gtk_status_icon_screen_changed (GtkStatusIcon *status_icon,
 #ifdef GDK_WINDOWING_X11
 
 static void
+gtk_status_icon_padding_changed (GtkStatusIcon *status_icon)
+{
+  GtkStatusIconPrivate *priv = status_icon->priv;
+  GtkOrientation orientation;
+  gint padding;
+
+  orientation = _gtk_tray_icon_get_orientation (GTK_TRAY_ICON (priv->tray_icon));
+  padding = _gtk_tray_icon_get_padding (GTK_TRAY_ICON (priv->tray_icon));
+
+  if (orientation == GTK_ORIENTATION_HORIZONTAL)
+    {
+      gtk_widget_set_margin_left (priv->image, padding);
+      gtk_widget_set_margin_right (priv->image, padding);
+    }
+  else
+    {
+      gtk_widget_set_margin_bottom (priv->image, padding);
+      gtk_widget_set_margin_top (priv->image, padding);
+    }
+}
+
+static void
+gtk_status_icon_icon_size_changed (GtkStatusIcon *status_icon)
+{
+  GtkStatusIconPrivate *priv = status_icon->priv;
+  gint icon_size;
+
+  icon_size = _gtk_tray_icon_get_icon_size (GTK_TRAY_ICON (priv->tray_icon));
+
+  if (icon_size != 0)
+    gtk_image_set_pixel_size (GTK_IMAGE (priv->image), icon_size);
+  else
+    gtk_image_set_pixel_size (GTK_IMAGE (priv->image), -1);
+}
+
+static void
 gtk_status_icon_embedded_changed (GtkStatusIcon *status_icon)
 {
+  gtk_status_icon_padding_changed (status_icon);
+  gtk_status_icon_icon_size_changed (status_icon);
   g_object_notify (G_OBJECT (status_icon), "embedded");
 }
 
 static void
 gtk_status_icon_orientation_changed (GtkStatusIcon *status_icon)
 {
+  gtk_status_icon_padding_changed (status_icon);
   g_object_notify (G_OBJECT (status_icon), "orientation");
+}
+
+static void
+gtk_status_icon_fg_changed (GtkStatusIcon *status_icon)
+{
+  GtkStatusIconPrivate *priv = status_icon->priv;
+  GdkRGBA *rgba;
+
+  g_object_get (priv->tray_icon, "fg-color", &rgba, NULL);
+
+  gtk_widget_override_color (priv->image, GTK_STATE_FLAG_NORMAL, rgba);
+
+  gdk_rgba_free (rgba);
+}
+
+static void
+gtk_status_icon_color_changed (GtkTrayIcon   *tray,
+                               GParamSpec    *pspec,
+                               GtkStatusIcon *status_icon)
+{
+  GtkStatusIconPrivate *priv = status_icon->priv;
+  const gchar *name;
+
+  switch (pspec->name[0])
+    {
+    case 'e':
+      name = "error";
+      break;
+    case 'w':
+      name = "warning";
+      break;
+    case 's':
+      name = "success";
+      break;
+    default:
+      name = NULL;
+      break;
+    }
+
+  if (name)
+    {
+      GdkRGBA rgba;
+
+      g_object_get (priv->tray_icon, pspec->name, &rgba, NULL);
+
+      rgba.alpha = 1;
+
+      gtk_widget_override_symbolic_color (priv->image, name, &rgba);
+    }
 }
 
 static gboolean
@@ -1720,11 +1585,11 @@ gtk_status_icon_key_press (GtkStatusIcon  *status_icon,
   state = event->state & gtk_accelerator_get_default_mod_mask ();
   keyval = event->keyval;
   if (state == 0 &&
-      (keyval == GDK_Return ||
-       keyval == GDK_KP_Enter ||
-       keyval == GDK_ISO_Enter ||
-       keyval == GDK_space ||
-       keyval == GDK_KP_Space))
+      (keyval == GDK_KEY_Return ||
+       keyval == GDK_KEY_KP_Enter ||
+       keyval == GDK_KEY_ISO_Enter ||
+       keyval == GDK_KEY_space ||
+       keyval == GDK_KEY_KP_Space))
     {
       emit_activate_signal (status_icon);
       return TRUE;
@@ -1753,12 +1618,12 @@ gtk_status_icon_button_press (GtkStatusIcon  *status_icon,
   if (handled)
     return TRUE;
 
-  if (_gtk_button_event_triggers_context_menu (event))
+  if (gdk_event_triggers_context_menu ((GdkEvent *) event))
     {
       emit_popup_menu_signal (status_icon, event->button, event->time);
       return TRUE;
     }
-  else if (event->button == 1 && event->type == GDK_BUTTON_PRESS)
+  else if (event->button == GDK_BUTTON_PRIMARY && event->type == GDK_BUTTON_PRESS)
     {
       emit_activate_signal (status_icon);
       return TRUE;
@@ -1809,38 +1674,22 @@ static void
 gtk_status_icon_reset_image_data (GtkStatusIcon *status_icon)
 {
   GtkStatusIconPrivate *priv = status_icon->priv;
+  GtkImageType storage_type = _gtk_icon_helper_get_storage_type (priv->icon_helper);
 
-  switch (priv->storage_type)
+  switch (storage_type)
   {
     case GTK_IMAGE_PIXBUF:
-      if (priv->image_data.pixbuf)
-	g_object_unref (priv->image_data.pixbuf);
-      priv->image_data.pixbuf = NULL;
       g_object_notify (G_OBJECT (status_icon), "pixbuf");
       break;
-
     case GTK_IMAGE_STOCK:
-      g_free (priv->image_data.stock_id);
-      priv->image_data.stock_id = NULL;
-
       g_object_notify (G_OBJECT (status_icon), "stock");
-      break;
-      
+      break;    
     case GTK_IMAGE_ICON_NAME:
-      g_free (priv->image_data.icon_name);
-      priv->image_data.icon_name = NULL;
-
       g_object_notify (G_OBJECT (status_icon), "icon-name");
       break;
-
     case GTK_IMAGE_GICON:
-      if (priv->image_data.gicon)
-        g_object_unref (priv->image_data.gicon);
-      priv->image_data.gicon = NULL;
-
       g_object_notify (G_OBJECT (status_icon), "gicon");
       break;
-
     case GTK_IMAGE_EMPTY:
       break;
     default:
@@ -1848,7 +1697,7 @@ gtk_status_icon_reset_image_data (GtkStatusIcon *status_icon)
       break;
   }
 
-  priv->storage_type = GTK_IMAGE_EMPTY;
+  _gtk_icon_helper_clear (priv->icon_helper);
   g_object_notify (G_OBJECT (status_icon), "storage-type");
 }
 
@@ -1863,25 +1712,27 @@ gtk_status_icon_set_image (GtkStatusIcon *status_icon,
 
   gtk_status_icon_reset_image_data (status_icon);
 
-  priv->storage_type = storage_type;
   g_object_notify (G_OBJECT (status_icon), "storage-type");
 
+  /* the icon size we pass here doesn't really matter, since
+   * we force a pixel size before doing the actual rendering anyway.
+   */
   switch (storage_type) 
     {
     case GTK_IMAGE_PIXBUF:
-      priv->image_data.pixbuf = (GdkPixbuf *)data;
+      _gtk_icon_helper_set_pixbuf (priv->icon_helper, data);
       g_object_notify (G_OBJECT (status_icon), "pixbuf");
       break;
     case GTK_IMAGE_STOCK:
-      priv->image_data.stock_id = g_strdup ((const gchar *)data);
+      _gtk_icon_helper_set_stock_id (priv->icon_helper, data, GTK_ICON_SIZE_SMALL_TOOLBAR);
       g_object_notify (G_OBJECT (status_icon), "stock");
       break;
     case GTK_IMAGE_ICON_NAME:
-      priv->image_data.icon_name = g_strdup ((const gchar *)data);
+      _gtk_icon_helper_set_icon_name (priv->icon_helper, data, GTK_ICON_SIZE_SMALL_TOOLBAR);
       g_object_notify (G_OBJECT (status_icon), "icon-name");
       break;
     case GTK_IMAGE_GICON:
-      priv->image_data.gicon = (GIcon *)data;
+      _gtk_icon_helper_set_gicon (priv->icon_helper, data, GTK_ICON_SIZE_SMALL_TOOLBAR);
       g_object_notify (G_OBJECT (status_icon), "gicon");
       break;
     default:
@@ -1910,9 +1761,6 @@ gtk_status_icon_set_from_pixbuf (GtkStatusIcon *status_icon,
   g_return_if_fail (GTK_IS_STATUS_ICON (status_icon));
   g_return_if_fail (pixbuf == NULL || GDK_IS_PIXBUF (pixbuf));
 
-  if (pixbuf)
-    g_object_ref (pixbuf);
-
   gtk_status_icon_set_image (status_icon, GTK_IMAGE_PIXBUF,
       			     (gpointer) pixbuf);
 }
@@ -1920,7 +1768,7 @@ gtk_status_icon_set_from_pixbuf (GtkStatusIcon *status_icon,
 /**
  * gtk_status_icon_set_from_file:
  * @status_icon: a #GtkStatusIcon
- * @filename: a filename
+ * @filename: (type filename): a filename
  * 
  * Makes @status_icon display the file @filename.
  * See gtk_status_icon_new_from_file() for details.
@@ -2004,9 +1852,6 @@ gtk_status_icon_set_from_gicon (GtkStatusIcon *status_icon,
   g_return_if_fail (GTK_IS_STATUS_ICON (status_icon));
   g_return_if_fail (icon != NULL);
 
-  if (icon)
-    g_object_ref (icon);
-
   gtk_status_icon_set_image (status_icon, GTK_IMAGE_GICON,
                              (gpointer) icon);
 }
@@ -2028,7 +1873,7 @@ gtk_status_icon_get_storage_type (GtkStatusIcon *status_icon)
 {
   g_return_val_if_fail (GTK_IS_STATUS_ICON (status_icon), GTK_IMAGE_EMPTY);
 
-  return status_icon->priv->storage_type;
+  return _gtk_icon_helper_get_storage_type (status_icon->priv->icon_helper);
 }
 /**
  * gtk_status_icon_get_pixbuf:
@@ -2054,13 +1899,7 @@ gtk_status_icon_get_pixbuf (GtkStatusIcon *status_icon)
 
   priv = status_icon->priv;
 
-  g_return_val_if_fail (priv->storage_type == GTK_IMAGE_PIXBUF ||
-			priv->storage_type == GTK_IMAGE_EMPTY, NULL);
-
-  if (priv->storage_type == GTK_IMAGE_EMPTY)
-    priv->image_data.pixbuf = NULL;
-
-  return priv->image_data.pixbuf;
+  return _gtk_icon_helper_peek_pixbuf (priv->icon_helper);
 }
 
 /**
@@ -2087,13 +1926,7 @@ gtk_status_icon_get_stock (GtkStatusIcon *status_icon)
 
   priv = status_icon->priv;
 
-  g_return_val_if_fail (priv->storage_type == GTK_IMAGE_STOCK ||
-			priv->storage_type == GTK_IMAGE_EMPTY, NULL);
-  
-  if (priv->storage_type == GTK_IMAGE_EMPTY)
-    priv->image_data.stock_id = NULL;
-
-  return priv->image_data.stock_id;
+  return _gtk_icon_helper_get_stock_id (priv->icon_helper);
 }
 
 /**
@@ -2119,13 +1952,7 @@ gtk_status_icon_get_icon_name (GtkStatusIcon *status_icon)
 
   priv = status_icon->priv;
 
-  g_return_val_if_fail (priv->storage_type == GTK_IMAGE_ICON_NAME ||
-			priv->storage_type == GTK_IMAGE_EMPTY, NULL);
-
-  if (priv->storage_type == GTK_IMAGE_EMPTY)
-    priv->image_data.icon_name = NULL;
-
-  return priv->image_data.icon_name;
+  return _gtk_icon_helper_get_icon_name (priv->icon_helper);
 }
 
 /**
@@ -2153,13 +1980,7 @@ gtk_status_icon_get_gicon (GtkStatusIcon *status_icon)
 
   priv = status_icon->priv;
 
-  g_return_val_if_fail (priv->storage_type == GTK_IMAGE_GICON ||
-                        priv->storage_type == GTK_IMAGE_EMPTY, NULL);
-
-  if (priv->storage_type == GTK_IMAGE_EMPTY)
-    priv->image_data.gicon = NULL;
-
-  return priv->image_data.gicon;
+  return _gtk_icon_helper_peek_gicon (priv->icon_helper);
 }
 
 /**
@@ -2229,67 +2050,6 @@ gtk_status_icon_get_screen (GtkStatusIcon *status_icon)
 #else
   return gdk_screen_get_default ();
 #endif
-}
-
-/**
- * gtk_status_icon_set_tooltip:
- * @status_icon: a #GtkStatusIcon
- * @tooltip_text: (allow-none): the tooltip text, or %NULL
- *
- * Sets the tooltip of the status icon.
- *
- * Since: 2.10
- *
- * Deprecated: 2.16: Use gtk_status_icon_set_tooltip_text() instead.
- */
-void
-gtk_status_icon_set_tooltip (GtkStatusIcon *status_icon,
-			     const gchar   *tooltip_text)
-{
-  gtk_status_icon_set_tooltip_text (status_icon, tooltip_text);
-}
-
-static gboolean
-gtk_status_icon_blinker (GtkStatusIcon *status_icon)
-{
-  GtkStatusIconPrivate *priv = status_icon->priv;
-  
-  priv->blink_off = !priv->blink_off;
-
-  gtk_status_icon_update_image (status_icon);
-
-  return TRUE;
-}
-
-static void
-gtk_status_icon_enable_blinking (GtkStatusIcon *status_icon)
-{
-  GtkStatusIconPrivate *priv = status_icon->priv;
-  
-  if (!priv->blinking_timeout)
-    {
-      gtk_status_icon_blinker (status_icon);
-
-      priv->blinking_timeout =
-	gdk_threads_add_timeout (BLINK_TIMEOUT, 
-		       (GSourceFunc) gtk_status_icon_blinker, 
-		       status_icon);
-    }
-}
-
-static void
-gtk_status_icon_disable_blinking (GtkStatusIcon *status_icon)
-{
-  GtkStatusIconPrivate *priv = status_icon->priv;
-  
-  if (priv->blinking_timeout)
-    {
-      g_source_remove (priv->blinking_timeout);
-      priv->blinking_timeout = 0;
-      priv->blink_off = FALSE;
-
-      gtk_status_icon_update_image (status_icon);
-    }
 }
 
 /**
@@ -2366,66 +2126,6 @@ gtk_status_icon_get_visible (GtkStatusIcon *status_icon)
 }
 
 /**
- * gtk_status_icon_set_blinking:
- * @status_icon: a #GtkStatusIcon
- * @blinking: %TRUE to turn blinking on, %FALSE to turn it off
- * 
- * Makes the status icon start or stop blinking. 
- * Note that blinking user interface elements may be problematic
- * for some users, and thus may be turned off, in which case
- * this setting has no effect.
- *
- * Since: 2.10
- *
- * Deprecated: 2.22: This function will be removed in GTK+ 3
- **/
-void
-gtk_status_icon_set_blinking (GtkStatusIcon *status_icon,
-			      gboolean       blinking)
-{
-  GtkStatusIconPrivate *priv;
-
-  g_return_if_fail (GTK_IS_STATUS_ICON (status_icon));
-
-  priv = status_icon->priv;
-
-  blinking = blinking != FALSE;
-
-  if (priv->blinking != blinking)
-    {
-      priv->blinking = blinking;
-
-      if (blinking)
-	gtk_status_icon_enable_blinking (status_icon);
-      else
-	gtk_status_icon_disable_blinking (status_icon);
-
-      g_object_notify (G_OBJECT (status_icon), "blinking");
-    }
-}
-
-/**
- * gtk_status_icon_get_blinking:
- * @status_icon: a #GtkStatusIcon
- * 
- * Returns whether the icon is blinking, see 
- * gtk_status_icon_set_blinking().
- * 
- * Return value: %TRUE if the icon is blinking
- *
- * Since: 2.10
- *
- * Deprecated: 2.22: This function will be removed in GTK+ 3
- **/
-gboolean
-gtk_status_icon_get_blinking (GtkStatusIcon *status_icon)
-{
-  g_return_val_if_fail (GTK_IS_STATUS_ICON (status_icon), FALSE);
-
-  return status_icon->priv->blinking;
-}
-
-/**
  * gtk_status_icon_is_embedded:
  * @status_icon: a #GtkStatusIcon
  * 
@@ -2449,7 +2149,7 @@ gtk_status_icon_is_embedded (GtkStatusIcon *status_icon)
 #ifdef GDK_WINDOWING_X11
   plug = GTK_PLUG (status_icon->priv->tray_icon);
 
-  if (plug->socket_window)
+  if (gtk_plug_get_embedded (plug))
     return TRUE;
   else
     return FALSE;
@@ -2465,11 +2165,12 @@ gtk_status_icon_is_embedded (GtkStatusIcon *status_icon)
 /**
  * gtk_status_icon_position_menu:
  * @menu: the #GtkMenu
- * @x: return location for the x position
- * @y: return location for the y position
- * @push_in: whether the first menu item should be offset (pushed in) to be
- *           aligned with the menu popup position (only useful for GtkOptionMenu).
- * @user_data: the status icon to position the menu on
+ * @x: (out): return location for the x position
+ * @y: (out): return location for the y position
+ * @push_in: (out): whether the first menu item should be offset
+ *           (pushed in) to be aligned with the menu popup position
+ *           (only useful for GtkOptionMenu).
+ * @user_data: (type GtkStatusIcon): the status icon to position the menu on
  *
  * Menu positioning function to use with gtk_menu_popup()
  * to position @menu aligned to the status icon @user_data.
@@ -2484,6 +2185,7 @@ gtk_status_icon_position_menu (GtkMenu  *menu,
 			       gpointer  user_data)
 {
 #ifdef GDK_WINDOWING_X11
+  GtkAllocation allocation;
   GtkStatusIcon *status_icon;
   GtkStatusIconPrivate *priv;
   GtkTrayIcon *tray_icon;
@@ -2492,6 +2194,7 @@ gtk_status_icon_position_menu (GtkMenu  *menu,
   GtkTextDirection direction;
   GtkRequisition menu_req;
   GdkRectangle monitor;
+  GdkWindow *window;
   gint monitor_num, height, width, xoffset, yoffset;
   
   g_return_if_fail (GTK_IS_MENU (menu));
@@ -2507,30 +2210,33 @@ gtk_status_icon_position_menu (GtkMenu  *menu,
   screen = gtk_widget_get_screen (widget);
   gtk_menu_set_screen (menu, screen);
 
-  monitor_num = gdk_screen_get_monitor_at_window (screen, widget->window);
+  window = gtk_widget_get_window (widget);
+  monitor_num = gdk_screen_get_monitor_at_window (screen, window);
   if (monitor_num < 0)
     monitor_num = 0;
   gtk_menu_set_monitor (menu, monitor_num);
 
-  gdk_screen_get_monitor_geometry (screen, monitor_num, &monitor);
+  gdk_screen_get_monitor_workarea (screen, monitor_num, &monitor);
 
-  gdk_window_get_origin (widget->window, x, y);
-  
-  gtk_widget_size_request (GTK_WIDGET (menu), &menu_req);
+  gdk_window_get_origin (window, x, y);
 
+  menu_req.width = gtk_widget_get_allocated_width (GTK_WIDGET (menu));
+  menu_req.height = gtk_widget_get_allocated_height (GTK_WIDGET (menu));
+
+  gtk_widget_get_allocation (widget, &allocation);
   if (_gtk_tray_icon_get_orientation (tray_icon) == GTK_ORIENTATION_VERTICAL)
     {
       width = 0;
-      height = widget->allocation.height;
-      xoffset = widget->allocation.width;
+      height = allocation.height;
+      xoffset = allocation.width;
       yoffset = 0;
     }
   else
     {
-      width = widget->allocation.width;
+      width = allocation.width;
       height = 0;
       xoffset = 0;
-      yoffset = widget->allocation.height;
+      yoffset = allocation.height;
     }
 
   if (direction == GTK_TEXT_DIR_RTL)
@@ -2591,14 +2297,14 @@ gtk_status_icon_position_menu (GtkMenu  *menu,
 /**
  * gtk_status_icon_get_geometry:
  * @status_icon: a #GtkStatusIcon
- * @screen: (out) (transfer none) (allow-none): return location for the screen, or %NULL if the
- *          information is not needed
- * @area: (out) (allow-none): return location for the area occupied by the status
- *        icon, or %NULL
- * @orientation: (out) (allow-none): return location for the orientation of the panel
- *    in which the status icon is embedded, or %NULL. A panel
- *    at the top or bottom of the screen is horizontal, a panel
- *    at the left or right is vertical.
+ * @screen: (out) (transfer none) (allow-none): return location for
+ *          the screen, or %NULL if the information is not needed
+ * @area: (out) (allow-none): return location for the area occupied by
+ *        the status icon, or %NULL
+ * @orientation: (out) (allow-none): return location for the
+ *    orientation of the panel in which the status icon is embedded,
+ *    or %NULL. A panel at the top or bottom of the screen is
+ *    horizontal, a panel at the left or right is vertical.
  *
  * Obtains information about the location of the status icon
  * on screen. This information can be used to e.g. position 
@@ -2625,6 +2331,7 @@ gtk_status_icon_get_geometry (GtkStatusIcon    *status_icon,
 			      GtkOrientation   *orientation)
 {
 #ifdef GDK_WINDOWING_X11   
+  GtkAllocation allocation;
   GtkWidget *widget;
   GtkStatusIconPrivate *priv;
   gint x, y;
@@ -2639,11 +2346,14 @@ gtk_status_icon_get_geometry (GtkStatusIcon    *status_icon,
 
   if (area)
     {
-      gdk_window_get_origin (widget->window, &x, &y);
+      gdk_window_get_origin (gtk_widget_get_window (widget),
+                             &x, &y);
+
+      gtk_widget_get_allocation (widget, &allocation);
       area->x = x;
       area->y = y;
-      area->width = widget->allocation.width;
-      area->height = widget->allocation.height;
+      area->width = allocation.width;
+      area->height = allocation.height;
     }
 
   if (orientation)
@@ -2925,7 +2635,7 @@ gtk_status_icon_get_x11_window_id (GtkStatusIcon *status_icon)
 {
 #ifdef GDK_WINDOWING_X11
   gtk_widget_realize (GTK_WIDGET (status_icon->priv->tray_icon));
-  return GDK_WINDOW_XID (GTK_WIDGET (status_icon->priv->tray_icon)->window);
+  return GDK_WINDOW_XID (gtk_widget_get_window (GTK_WIDGET (status_icon->priv->tray_icon)));
 #else
   return 0;
 #endif
@@ -3036,7 +2746,3 @@ gtk_status_icon_set_name (GtkStatusIcon *status_icon,
     gtk_window_set_wmclass (GTK_WINDOW (priv->tray_icon), name, name);
 #endif
 }
-
-
-#define __GTK_STATUS_ICON_C__
-#include "gtkaliasdef.c"

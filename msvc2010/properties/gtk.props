@@ -6,6 +6,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions>$(GtkDefines);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\gtk2\gtk;$(SolutionDir)..\gtk2\gtk\a11y;$(SolutionDir)..\gtk2\gtk\deprecated;$(W32DepsDir)gtk2\include\gtk-2.0\gtk\a11y;$(W32DepsDir)gtk2\include\gtk-2.0\gtk\deprecated;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>atk$(LibSuffix)-vc$(PlatformToolsetVersion).lib;pangowin32$(LibSuffix)-vc$(PlatformToolsetVersion).lib;imm32.lib;winspool.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>

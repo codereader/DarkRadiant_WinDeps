@@ -12,9 +12,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  *
  * Written by Owen Taylor <otaylor@redhat.com>, based on code by
  * Carsten Haitzler <raster@rasterman.com>
@@ -201,9 +199,7 @@ G_GNUC_INTERNAL void         theme_pixbuf_set_border   (ThemePixbuf  *theme_pb,
 G_GNUC_INTERNAL void         theme_pixbuf_set_stretch  (ThemePixbuf  *theme_pb,
 					gboolean      stretch);
 G_GNUC_INTERNAL void         theme_pixbuf_render       (ThemePixbuf  *theme_pb,
-					GdkWindow    *window,
-					GdkBitmap    *mask,
-					GdkRectangle *clip_rect,
+                                        cairo_t      *cr,
 					guint         component_mask,
 					gboolean      center,
 					gint          dest_x,

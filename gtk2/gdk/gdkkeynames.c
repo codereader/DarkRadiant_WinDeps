@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -25,17 +23,17 @@
  */
 
 #include "config.h"
-#include <glib/gprintf.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "gdkkeysyms.h"
 #include "gdkinternals.h"
-#include "gdkalias.h"
 
 /* Key handling not part of the keymap */
 
 #include "keyname-table.h"
+
+#include <glib/gprintf.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define GDK_NUM_KEYS G_N_ELEMENTS (gdk_keys_by_keyval)
 
@@ -45,22 +43,8 @@ gdk_keys_keyval_compare (const void *pkey, const void *pbase)
   return (*(int *) pkey) - ((gdk_key *) pbase)->keyval;
 }
 
-/**
- * gdk_keyval_name:
- * @keyval: a key value
- *
- * Converts a key value into a symbolic name.
- *
- * The names are the same as those in the
- * <filename>&lt;gdk/gdkkeysyms.h&gt;</filename> header file
- * but without the leading "GDK_KEY_".
- *
- * Return value: (transfer none): a string containing the name of the key,
- *     or %NULL if @keyval is not a valid key. The string should not be
- *     modified.
- */
-gchar*
-gdk_keyval_name (guint keyval)
+static gchar*
+_gdk_keyval_name (guint keyval)
 {
   static gchar buf[100];
   gdk_key *found;
@@ -100,21 +84,8 @@ gdk_keys_name_compare (const void *pkey, const void *pbase)
 		 (const char *) (keynames + ((const gdk_key *) pbase)->offset));
 }
 
-/**
- * gdk_keyval_from_name:
- * @keyval_name: a key name
- *
- * Converts a key name to a key value.
- *
- * The names are the same as those in the
- * <filename>&lt;gdk/gdkkeysyms.h&gt;</filename> header file
- * but without the leading "GDK_KEY_".
- *
- * Returns: the corresponding key value, or %GDK_KEY_VoidSymbol
- *     if the key name is not a valid key
- */
-guint
-gdk_keyval_from_name (const gchar *keyval_name)
+static guint
+_gdk_keyval_from_name (const gchar *keyval_name)
 {
   gdk_key *found;
 
@@ -126,8 +97,5 @@ gdk_keyval_from_name (const gchar *keyval_name)
   if (found != NULL)
     return found->keyval;
   else
-    return GDK_VoidSymbol;
+    return GDK_KEY_VoidSymbol;
 }
-
-#define __GDK_KEYNAMES_C__
-#include "gdkaliasdef.c"

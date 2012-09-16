@@ -14,9 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -30,7 +28,22 @@
 #include "gtktypebuiltins.h"
 #include "gtkprivate.h"
 #include "gtkmarshalers.h"
-#include "gtkalias.h"
+
+/**
+ * SECTION:gtkrecentchooser
+ * @Short_description: Interface implemented by widgets displaying recently
+ *   used files
+ * @Title: GtkRecentChooser
+ * @See_also: #GtkRecentManager, #GtkRecentChooserDialog,
+ *   #GtkRecentChooserWidget, #GtkRecentChooserMenu
+ *
+ * #GtkRecentChooser is an interface that can be implemented by widgets
+ * displaying the list of recently used files.  In GTK+, the main objects
+ * that implement this interface are #GtkRecentChooserWidget,
+ * #GtkRecentChooserDialog and #GtkRecentChooserMenu.
+ *
+ * Recently used files are supported since GTK+ 2.10.
+ */
 
 
 enum
@@ -41,7 +54,6 @@ enum
   LAST_SIGNAL
 };
 
-static void     gtk_recent_chooser_class_init         (gpointer          g_iface);
 static gboolean recent_chooser_has_show_numbers       (GtkRecentChooser *chooser);
 
 static GQuark      quark_gtk_related_action               = 0;
@@ -52,35 +64,21 @@ static const gchar gtk_use_action_appearance_key[]        = "gtk-use-action-appe
 
 static guint chooser_signals[LAST_SIGNAL] = { 0, };
 
-GType
-gtk_recent_chooser_get_type (void)
-{
-  static GType chooser_type = 0;
-  
-  if (!chooser_type)
-    {
-      chooser_type = g_type_register_static_simple (G_TYPE_INTERFACE,
-						    I_("GtkRecentChooser"),
-						    sizeof (GtkRecentChooserIface),
-						    (GClassInitFunc) gtk_recent_chooser_class_init,
-						    0, NULL, 0);
-      
-      g_type_interface_add_prerequisite (chooser_type, G_TYPE_OBJECT);
-    }
-  
-  return chooser_type;
-}
+
+typedef GtkRecentChooserIface GtkRecentChooserInterface;
+G_DEFINE_INTERFACE (GtkRecentChooser, gtk_recent_chooser, G_TYPE_OBJECT);
+
 
 static void
-gtk_recent_chooser_class_init (gpointer g_iface)
+gtk_recent_chooser_default_init (GtkRecentChooserInterface *iface)
 {
-  GType iface_type = G_TYPE_FROM_INTERFACE (g_iface);
+  GType iface_type = G_TYPE_FROM_INTERFACE (iface);
 
   quark_gtk_related_action        = g_quark_from_static_string (gtk_related_action_key);
   quark_gtk_use_action_appearance = g_quark_from_static_string (gtk_use_action_appearance_key);
   
   /**
-   * GtkRecentChooser::selection-changed
+   * GtkRecentChooser::selection-changed:
    * @chooser: the object which received the signal
    *
    * This signal is emitted when there is a change in the set of
@@ -100,7 +98,7 @@ gtk_recent_chooser_class_init (gpointer g_iface)
                   G_TYPE_NONE, 0);
    
   /**
-   * GtkRecentChooser::item-activated
+   * GtkRecentChooser::item-activated:
    * @chooser: the object which received the signal
    *
    * This signal is emitted when the user "activates" a recent item
@@ -127,7 +125,7 @@ gtk_recent_chooser_class_init (gpointer g_iface)
    *
    * Since: 2.10
    */
-  g_object_interface_install_property (g_iface,
+  g_object_interface_install_property (iface,
   				       g_param_spec_object ("recent-manager",
   				       			    P_("Recent Manager"),
   				       			    P_("The RecentManager object to use"),
@@ -142,7 +140,7 @@ gtk_recent_chooser_class_init (gpointer g_iface)
    *
    * Since: 2.10
    */
-  g_object_interface_install_property (g_iface,
+  g_object_interface_install_property (iface,
    				       g_param_spec_boolean ("show-private",
    							     P_("Show Private"),
    							     P_("Whether the private items should be displayed"),
@@ -156,7 +154,7 @@ gtk_recent_chooser_class_init (gpointer g_iface)
    *
    * Since: 2.10
    */
-  g_object_interface_install_property (g_iface,
+  g_object_interface_install_property (iface,
   				       g_param_spec_boolean ("show-tips",
   				       			     P_("Show Tooltips"),
   				       			     P_("Whether there should be a tooltip on the item"),
@@ -169,7 +167,7 @@ gtk_recent_chooser_class_init (gpointer g_iface)
    *
    * Since: 2.10
    */
-  g_object_interface_install_property (g_iface,
+  g_object_interface_install_property (iface,
   				       g_param_spec_boolean ("show-icons",
   				       			     P_("Show Icons"),
   				       			     P_("Whether there should be an icon near the item"),
@@ -185,7 +183,7 @@ gtk_recent_chooser_class_init (gpointer g_iface)
    *
    * Since: 2.10
    */
-  g_object_interface_install_property (g_iface,
+  g_object_interface_install_property (iface,
   				       g_param_spec_boolean ("show-not-found",
   				       			     P_("Show Not Found"),
   				       			     P_("Whether the items pointing to unavailable resources should be displayed"),
@@ -198,7 +196,7 @@ gtk_recent_chooser_class_init (gpointer g_iface)
    *
    * Since: 2.10
    */
-  g_object_interface_install_property (g_iface,
+  g_object_interface_install_property (iface,
    				       g_param_spec_boolean ("select-multiple",
    							     P_("Select Multiple"),
    							     P_("Whether to allow multiple items to be selected"),
@@ -212,7 +210,7 @@ gtk_recent_chooser_class_init (gpointer g_iface)
    *
    * Since: 2.10
    */
-  g_object_interface_install_property (g_iface,
+  g_object_interface_install_property (iface,
 		  		       g_param_spec_boolean ("local-only",
 					       		     P_("Local only"),
 							     P_("Whether the selected resource(s) should be limited to local file: URIs"),
@@ -229,7 +227,7 @@ gtk_recent_chooser_class_init (gpointer g_iface)
    *
    * Since: 2.10
    */
-  g_object_interface_install_property (g_iface,
+  g_object_interface_install_property (iface,
    				       g_param_spec_int ("limit",
    							 P_("Limit"),
    							 P_("The maximum number of items to be displayed"),
@@ -244,7 +242,7 @@ gtk_recent_chooser_class_init (gpointer g_iface)
    *
    * Since: 2.10
    */
-  g_object_interface_install_property (g_iface,
+  g_object_interface_install_property (iface,
 		  		       g_param_spec_enum ("sort-type",
 					       		  P_("Sort Type"),
 							  P_("The sorting order of the items displayed"),
@@ -259,7 +257,7 @@ gtk_recent_chooser_class_init (gpointer g_iface)
    *
    * Since: 2.10
    */
-  g_object_interface_install_property (g_iface,
+  g_object_interface_install_property (iface,
   				       g_param_spec_object ("filter",
   				       			    P_("Filter"),
   				       			    P_("The current filter for selecting which resources are displayed"),
@@ -607,72 +605,6 @@ recent_chooser_has_show_numbers (GtkRecentChooser *chooser)
 }
 
 /**
- * gtk_recent_chooser_set_show_numbers:
- * @chooser: a #GtkRecentChooser
- * @show_numbers: %TRUE to show numbers, %FALSE otherwise
- *
- * Whether to show recently used resources prepended by a unique number.
- *
- * Deprecated: 2.12: Use gtk_recent_chooser_menu_set_show_numbers() instead.
- *
- * Since: 2.10
- */
-void
-gtk_recent_chooser_set_show_numbers (GtkRecentChooser *chooser,
-				     gboolean          show_numbers)
-{
-  g_return_if_fail (GTK_IS_RECENT_CHOOSER (chooser));
-
-  if (!recent_chooser_has_show_numbers (chooser))
-    {
-      g_warning ("Choosers of type `%s' do not support showing numbers",
-		 G_OBJECT_TYPE_NAME (chooser));
-      
-      return;
-    }
-  
-  g_object_set (chooser, "show-numbers", show_numbers, NULL);
-}
-
-/**
- * gtk_recent_chooser_get_show_numbers:
- * @chooser: a #GtkRecentChooser
- *
- * Returns whether @chooser should display recently used resources
- * prepended by a unique number.
- *
- * Deprecated: 2.12: use gtk_recent_chooser_menu_get_show_numbers() instead.
- *
- * Return value: %TRUE if the recent chooser should show display numbers,
- *   %FALSE otherwise.
- *
- * Since: 2.10
- */
-gboolean
-gtk_recent_chooser_get_show_numbers (GtkRecentChooser *chooser)
-{
-  GParamSpec *pspec;
-  gboolean show_numbers;
-  
-  g_return_val_if_fail (GTK_IS_RECENT_CHOOSER (chooser), FALSE);
-
-  pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (chooser),
-		  			"show-numbers");
-  if (!pspec || pspec->value_type != G_TYPE_BOOLEAN)
-    {
-      g_warning ("Choosers of type `%s' do not support showing numbers",
-		 G_OBJECT_TYPE_NAME (chooser));
-
-      return FALSE;
-    }
-  
-  g_object_get (chooser, "show-numbers", &show_numbers, NULL);
-  
-  return show_numbers;
-}
-
-
-/**
  * gtk_recent_chooser_set_sort_type:
  * @chooser: a #GtkRecentChooser
  * @sort_type: sort order that the chooser should use
@@ -961,10 +893,7 @@ gtk_recent_chooser_get_uris (GtkRecentChooser *chooser,
   if (length)
     *length = i;
   
-  g_list_foreach (items,
-  		  (GFunc) gtk_recent_info_unref,
-  		  NULL);
-  g_list_free (items);
+  g_list_free_full (items, (GDestroyNotify) gtk_recent_info_unref);
   
   return retval;
 }
@@ -1198,6 +1127,3 @@ _gtk_recent_chooser_get_use_action_appearance (GtkRecentChooser *recent_chooser)
 {
   return !GPOINTER_TO_INT (g_object_get_qdata (G_OBJECT (recent_chooser), quark_gtk_use_action_appearance));
 }
-
-#define __GTK_RECENT_CHOOSER_C__
-#include "gtkaliasdef.c"

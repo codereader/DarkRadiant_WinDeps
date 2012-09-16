@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -23,12 +21,11 @@
 #include <string.h>
 
 #include "gtkmodules.h"
-#include "gtkmain.h"
 #include "gtksettings.h"
 #include "gtkdebug.h"
-#include "gtkprivate.h" /* GTK_LIBDIR */
-#include "gtkintl.h" 
-#include "gtkalias.h"
+#include "gtkprivate.h"
+#include "gtkmodulesprivate.h"
+#include "gtkintl.h"
 
 #include <gmodule.h>
 
@@ -67,15 +64,15 @@ get_module_path (void)
 
   home_dir = g_get_home_dir();
   if (home_dir)
-    home_gtk_dir = g_build_filename (home_dir, ".gtk-2.0", NULL);
+    home_gtk_dir = g_build_filename (home_dir, ".gtk-3.0", NULL);
 
   module_path_env = g_getenv ("GTK_PATH");
   exe_prefix = g_getenv ("GTK_EXE_PREFIX");
 
   if (exe_prefix)
-    default_dir = g_build_filename (exe_prefix, "lib", "gtk-2.0", NULL);
+    default_dir = g_build_filename (exe_prefix, "lib", "gtk-3.0", NULL);
   else
-    default_dir = g_build_filename (GTK_LIBDIR, "gtk-2.0", NULL);
+    default_dir = g_build_filename (_gtk_get_libdir (), "gtk-3.0", NULL);
 
   if (module_path_env && home_gtk_dir)
     module_path = g_build_path (G_SEARCHPATH_SEPARATOR_S,
@@ -259,6 +256,21 @@ cmp_module (GtkModuleInfo *info,
   return info->module != module;
 }
 
+static gboolean
+module_is_blacklisted (const gchar *name,
+                       gboolean     verbose)
+{
+  if (g_str_equal (name, "gail"))
+    {
+      if (verbose)
+        g_message ("Not loading module \"gail\": The functionality is provided by GTK natively. Please try to not load it.");
+
+      return TRUE;
+    }
+
+  return FALSE;
+}
+
 static GSList *
 load_module (GSList      *module_list,
 	     const gchar *name)
@@ -275,22 +287,31 @@ load_module (GSList      *module_list,
       for (l = gtk_modules; l; l = l->next)
 	{
 	  info = l->data;
-	  if (g_slist_find_custom (info->names, name, 
+	  if (g_slist_find_custom (info->names, name,
 				   (GCompareFunc)strcmp))
 	    {
 	      info->ref_count++;
 	      
 	      success = TRUE;
+              break;
 	    }
+          info = NULL;
 	}
 
-      if (!success) 
+      if (!success)
 	{
 	  module = find_module (name);
 
 	  if (module)
 	    {
-	      if (g_module_symbol (module, "gtk_module_init", &modinit_func_ptr))
+              /* Do the check this late so we only warn about existing modules,
+               * not old modules that are still in the modules path. */
+              if (module_is_blacklisted (name, TRUE))
+                {
+                  modinit_func = NULL;
+                  success = TRUE;
+                }
+              else if (g_module_symbol (module, "gtk_module_init", &modinit_func_ptr))
 		modinit_func = modinit_func_ptr;
 	      else
 		modinit_func = NULL;
@@ -323,7 +344,7 @@ load_module (GSList      *module_list,
 		      gtk_modules = g_slist_append (gtk_modules, info);
 		      
 		      /* display_init == NULL indicates a non-multihead aware module.
-		       * For these, we delay the call to init_func until first display is 
+		       * For these, we delay the call to init_func until first display is
 		       * opened, see default_display_notify_cb().
 		       * For multihead aware modules, we call init_func immediately,
 		       * and also call display_init_func on all opened displays.
@@ -356,7 +377,7 @@ load_module (GSList      *module_list,
 	}
     }
 
-  if (success)
+  if (success && info)
     {
       if (!g_slist_find (module_list, info))
 	{
@@ -364,11 +385,14 @@ load_module (GSList      *module_list,
 	}
     }
   else
-   {
-      const gchar *error = g_module_error ();
+    {
+      if (!module_is_blacklisted (name, FALSE))
+        {
+          const gchar *error = g_module_error ();
 
-      g_message ("Failed to load module \"%s\"%s%s",
-                 name, error ? ": " : "", error ? error : "");
+          g_message ("Failed to load module \"%s\"%s%s",
+                     name, error ? ": " : "", error ? error : "");
+        }
     }
 
   return module_list;
@@ -484,7 +508,7 @@ display_opened_cb (GdkDisplayManager *display_manager,
   
   for (i = 0; i < gdk_display_get_n_screens (display); i++)
     {
-      GValue value = { 0, };
+      GValue value = G_VALUE_INIT;
 
       g_value_init (&value, G_TYPE_STRING);
 
@@ -571,4 +595,30 @@ _gtk_modules_settings_changed (GtkSettings *settings,
 			  I_("gtk-modules"),
 			  new_modules,
 			  settings_destroy_notify);
+}
+
+/* Return TRUE if module_to_check causes version conflicts.
+ * If module_to_check is NULL, check the main module.
+ */
+gboolean
+_gtk_module_has_mixed_deps (GModule *module_to_check)
+{
+  GModule *module;
+  gpointer func;
+  gboolean result;
+
+  if (!module_to_check)
+    module = g_module_open (NULL, 0);
+  else
+    module = module_to_check;
+
+  if (g_module_symbol (module, "gtk_progress_get_type", &func))
+    result = TRUE;
+  else
+    result = FALSE;
+
+  if (!module_to_check)
+    g_module_close (module);
+
+  return result;
 }

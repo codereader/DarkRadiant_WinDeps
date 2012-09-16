@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -34,15 +32,16 @@
 #include <io.h>
 
 #include "gdk.h"
-#include "gdkregion-generic.h"
 #include "gdkkeysyms.h"
 #include "gdkinternals.h"
 #include "gdkintl.h"
 #include "gdkprivate-win32.h"
-#include "gdkinput-win32.h"
+#include "gdkwin32.h"
 
 #include <objbase.h>
 
+#include <windows.h>
+#include <wintab.h>
 #include <imm.h>
 
 static gboolean gdk_synchronize = FALSE;
@@ -64,7 +63,7 @@ const GOptionEntry _gdk_windowing_args[] = {
   { NULL }
 };
 
-int __stdcall
+BOOL WINAPI
 DllMain (HINSTANCE hinstDLL,
 	 DWORD     dwReason,
 	 LPVOID    reserved)
@@ -75,7 +74,7 @@ DllMain (HINSTANCE hinstDLL,
 }
 
 void
-_gdk_windowing_init (void)
+_gdk_win32_windowing_init (void)
 {
   gchar buf[10];
 
@@ -151,97 +150,6 @@ _gdk_other_api_failed (const gchar *where,
   g_warning ("%s: %s failed", where, api);
 }
 
-void
-gdk_set_use_xshm (gboolean use_xshm)
-{
-  /* Always on */
-}
-
-gboolean
-gdk_get_use_xshm (void)
-{
-  return TRUE;
-}
-
-gint
-gdk_screen_get_width (GdkScreen *screen)
-{
-  return GDK_WINDOW_OBJECT (_gdk_root)->width;
-}
-
-gint
-gdk_screen_get_height (GdkScreen *screen)
-{
-  return GDK_WINDOW_OBJECT (_gdk_root)->height;
-}
-gint
-gdk_screen_get_width_mm (GdkScreen *screen)
-{
-  return (double) gdk_screen_get_width (screen) / GetDeviceCaps (_gdk_display_hdc, LOGPIXELSX) * 25.4;
-}
-
-gint
-gdk_screen_get_height_mm (GdkScreen *screen)
-{
-  return (double) gdk_screen_get_height (screen) / GetDeviceCaps (_gdk_display_hdc, LOGPIXELSY) * 25.4;
-}
-
-void
-_gdk_windowing_display_set_sm_client_id (GdkDisplay  *display,
-					 const gchar *sm_client_id)
-{
-  g_warning("gdk_set_sm_client_id %s", sm_client_id ? sm_client_id : "NULL");
-}
-
-void
-gdk_display_beep (GdkDisplay *display)
-{
-  g_return_if_fail (display == gdk_display_get_default());
-  if (!MessageBeep (-1))
-    Beep (1000, 50);
-}
-
-void
-_gdk_windowing_exit (void)
-{
-  _gdk_win32_dnd_exit ();
-  CoUninitialize ();
-  DeleteDC (_gdk_display_hdc);
-  _gdk_display_hdc = NULL;
-}
-
-gchar *
-gdk_get_display (void)
-{
-  return g_strdup (gdk_display_get_name (gdk_display_get_default ()));
-}
-
-void
-gdk_error_trap_push (void)
-{
-}
-
-gint
-gdk_error_trap_pop (void)
-{
-  return 0;
-}
-
-void
-gdk_notify_startup_complete (void)
-{
-}
-
-void
-gdk_notify_startup_complete_with_id (const gchar* startup_id)
-{
-}
-
-void          
-gdk_window_set_startup_id (GdkWindow   *window,
-			   const gchar *startup_id)
-{
-}
 
 #ifdef G_ENABLE_DEBUG
 
@@ -402,100 +310,6 @@ _gdk_win32_print_dc (HDC hdc)
 }
 
 gchar *
-_gdk_win32_cap_style_to_string (GdkCapStyle cap_style)
-{
-  switch (cap_style)
-    {
-#define CASE(x) case GDK_CAP_##x: return #x
-    CASE (NOT_LAST);
-    CASE (BUTT);
-    CASE (ROUND);
-    CASE (PROJECTING);
-#undef CASE
-    default: return static_printf ("illegal_%d", cap_style);
-    }
-  /* NOTREACHED */
-  return NULL;
-}
-
-gchar *
-_gdk_win32_fill_style_to_string (GdkFill fill)
-{
-  switch (fill)
-    {
-#define CASE(x) case GDK_##x: return #x
-    CASE (SOLID);
-    CASE (TILED);
-    CASE (STIPPLED);
-    CASE (OPAQUE_STIPPLED);
-#undef CASE
-    default: return static_printf ("illegal_%d", fill);
-    }
-  /* NOTREACHED */
-  return NULL;
-}
-
-gchar *
-_gdk_win32_function_to_string (GdkFunction function)
-{
-  switch (function)
-    {
-#define CASE(x) case GDK_##x: return #x
-    CASE (COPY);
-    CASE (INVERT);
-    CASE (XOR);
-    CASE (CLEAR);
-    CASE (AND);
-    CASE (AND_REVERSE);
-    CASE (AND_INVERT);
-    CASE (NOOP);
-    CASE (OR);
-    CASE (EQUIV);
-    CASE (OR_REVERSE);
-    CASE (COPY_INVERT);
-    CASE (OR_INVERT);
-    CASE (NAND);
-    CASE (SET);
-#undef CASE
-    default: return static_printf ("illegal_%d", function);
-    }
-  /* NOTREACHED */
-  return NULL; 
-}
-
-gchar *
-_gdk_win32_join_style_to_string (GdkJoinStyle join_style)
-{
-  switch (join_style)
-    {
-#define CASE(x) case GDK_JOIN_##x: return #x
-    CASE (MITER);
-    CASE (ROUND);
-    CASE (BEVEL);
-#undef CASE
-    default: return static_printf ("illegal_%d", join_style);
-    }
-  /* NOTREACHED */
-  return NULL; 
-}
-
-gchar *
-_gdk_win32_line_style_to_string (GdkLineStyle line_style)
-{
-  switch (line_style)
-    {
-#define CASE(x) case GDK_LINE_##x: return #x
-    CASE(SOLID);
-    CASE(ON_OFF_DASH);  
-    CASE(DOUBLE_DASH);  
-#undef CASE
-    default: return static_printf ("illegal_%d", line_style);
-    }
-  /* NOTREACHED */
-  return NULL; 
-}
-
-gchar *
 _gdk_win32_drag_protocol_to_string (GdkDragProtocol protocol)
 {
   switch (protocol)
@@ -513,42 +327,6 @@ _gdk_win32_drag_protocol_to_string (GdkDragProtocol protocol)
     }
   /* NOTREACHED */
   return NULL; 
-}
-
-gchar *
-_gdk_win32_gcvalues_mask_to_string (GdkGCValuesMask mask)
-{
-  gchar buf[400];
-  gchar *bufp = buf;
-  gchar *s = "";
-
-  buf[0] = '\0';
-
-#define BIT(x) 						\
-  if (mask & GDK_GC_##x) 				\
-    (bufp += g_sprintf (bufp, "%s" #x, s), s = "|")
-
-  BIT (FOREGROUND);
-  BIT (BACKGROUND);
-  BIT (FONT);
-  BIT (FUNCTION);
-  BIT (FILL);
-  BIT (TILE);
-  BIT (STIPPLE);
-  BIT (CLIP_MASK);
-  BIT (SUBWINDOW);
-  BIT (TS_X_ORIGIN);
-  BIT (TS_Y_ORIGIN);
-  BIT (CLIP_X_ORIGIN);
-  BIT (CLIP_Y_ORIGIN);
-  BIT (EXPOSURES);
-  BIT (LINE_WIDTH);
-  BIT (LINE_STYLE);
-  BIT (CAP_STYLE);
-  BIT (JOIN_STYLE);
-#undef BIT
-
-  return static_printf ("%s", buf);  
 }
 
 gchar *
@@ -1171,28 +949,26 @@ _gdk_win32_gdkrectangle_to_string (const GdkRectangle *rect)
 }
 
 gchar *
-_gdk_win32_gdkregion_to_string (const GdkRegion *rgn)
+_gdk_win32_cairo_region_to_string (const cairo_region_t *rgn)
 {
+  cairo_rectangle_int_t extents;
+  cairo_region_get_extents (rgn, &extents);
   return static_printf ("%dx%d@%+d%+d",
-			(rgn->extents.x2 - rgn->extents.x1),
-			(rgn->extents.y2 - rgn->extents.y1),
-			rgn->extents.x1, rgn->extents.y1);
+			extents.width, extents.height,
+			extents.x, extents.y);
 }
 
 gchar *
-_gdk_win32_drawable_description (GdkDrawable *d)
+_gdk_win32_window_description (GdkWindow *d)
 {
-  gint width, height, depth;
-
-  g_return_val_if_fail (GDK_IS_DRAWABLE (d), NULL);
-
-  gdk_drawable_get_size (d, &width, &height);
-  depth = gdk_drawable_get_depth (d);
+  g_return_val_if_fail (GDK_IS_WINDOW (d), NULL);
 
   return static_printf ("%s:%p:%dx%dx%d",
 			G_OBJECT_TYPE_NAME (d),
-			GDK_DRAWABLE_HANDLE (d),
-			width, height, depth);
+			GDK_WINDOW_HWND (d),
+			gdk_window_get_width (GDK_WINDOW (d)),
+                        gdk_window_get_height (GDK_WINDOW (d)),
+                        gdk_visual_get_depth (gdk_window_get_visual (GDK_WINDOW (d))));
 }
 
 #endif /* G_ENABLE_DEBUG */

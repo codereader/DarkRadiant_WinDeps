@@ -14,9 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -44,7 +42,7 @@
 #include "gtkprintjob.h"
 #include "gtklabel.h"
 #include "gtkintl.h"
-#include "gtkalias.h"
+
 
 typedef struct 
 {
@@ -201,8 +199,8 @@ _gtk_print_operation_platform_backend_launch_preview (GtkPrintOperation *op,
 						      GtkWindow         *parent,
 						      const gchar       *filename)
 {
-  gint argc;
-  gchar **argv;
+  GAppInfo *appinfo;
+  GdkAppLaunchContext *context;
   gchar *cmd;
   gchar *preview_cmd;
   GtkSettings *settings;
@@ -276,7 +274,11 @@ _gtk_print_operation_platform_backend_launch_preview (GtkPrintOperation *op,
   quoted_filename = g_shell_quote (filename);
   quoted_settings_filename = g_shell_quote (settings_filename);
   cmd = shell_command_substitute_file (preview_cmd, quoted_filename, quoted_settings_filename, &filename_used, &settings_used);
-  g_shell_parse_argv (cmd, &argc, &argv, &error);
+
+  appinfo = g_app_info_create_from_commandline (cmd,
+                                                "Print Preview",
+                                                G_APP_INFO_CREATE_NONE,
+                                                &error);
 
   g_free (preview_cmd);
   g_free (quoted_filename);
@@ -286,9 +288,12 @@ _gtk_print_operation_platform_backend_launch_preview (GtkPrintOperation *op,
   if (error != NULL)
     goto out;
 
-  gdk_spawn_on_screen (screen, NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, &error);
+  context = gdk_display_get_app_launch_context (gdk_screen_get_display (screen));
+  gdk_app_launch_context_set_screen (context, screen);
+  g_app_info_launch (appinfo, NULL, G_APP_LAUNCH_CONTEXT (context), &error);
 
-  g_strfreev (argv);
+  g_object_unref (context);
+  g_object_unref (appinfo);
 
   if (error != NULL)
     {
@@ -306,24 +311,14 @@ _gtk_print_operation_platform_backend_launch_preview (GtkPrintOperation *op,
  out:
   if (error != NULL)
     {
-      GtkWidget *edialog;
-      edialog = gtk_message_dialog_new (parent, 
-                                        GTK_DIALOG_DESTROY_WITH_PARENT,
-                                        GTK_MESSAGE_ERROR,
-                                        GTK_BUTTONS_CLOSE,
-                                        _("Error launching preview") /* FIXME better text */);
-      gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (edialog),
-                                                "%s", error->message);
-      g_signal_connect (edialog, "response",
-                        G_CALLBACK (gtk_widget_destroy), NULL);
+      if (op->priv->error == NULL)
+        op->priv->error = error;
+      else
+        g_error_free (error);
 
-      gtk_window_present (GTK_WINDOW (edialog));
-
-      g_error_free (error);
-
-      filename_used = FALSE; 
+      filename_used = FALSE;
       settings_used = FALSE;
-   } 
+   }
 
   if (!filename_used)
     g_unlink (filename);
@@ -333,7 +328,7 @@ _gtk_print_operation_platform_backend_launch_preview (GtkPrintOperation *op,
 
   if (fd > 0)
     close (fd);
-  
+
   if (key_file)
     g_key_file_free (key_file);
   g_free (data);
@@ -341,29 +336,15 @@ _gtk_print_operation_platform_backend_launch_preview (GtkPrintOperation *op,
 }
 
 static void
-unix_finish_send  (GtkPrintJob *job,
-                   gpointer     user_data, 
-                   GError      *error)
+unix_finish_send  (GtkPrintJob  *job,
+                   gpointer      user_data, 
+                   const GError *error)
 {
   GtkPrintOperation *op = (GtkPrintOperation *) user_data;
   GtkPrintOperationUnix *op_unix = op->priv->platform_data;
 
-  if (error != NULL)
-    {
-      GtkWidget *edialog;
-      edialog = gtk_message_dialog_new (op_unix->parent, 
-                                        GTK_DIALOG_DESTROY_WITH_PARENT,
-                                        GTK_MESSAGE_ERROR,
-                                        GTK_BUTTONS_CLOSE,
-                                        _("Error printing") /* FIXME better text */);
-      gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (edialog),
-                                                "%s", error->message);
-      gtk_window_set_modal (GTK_WINDOW (edialog), TRUE);
-      g_signal_connect (edialog, "response",
-                        G_CALLBACK (gtk_widget_destroy), NULL);
-
-      gtk_window_present (GTK_WINDOW (edialog));
-    }
+  if (error != NULL && op->priv->error == NULL)
+    op->priv->error = g_error_copy (error);
 
   op_unix->data_sent = TRUE;
 
@@ -601,18 +582,16 @@ finish_print (PrintResponseData *rdata,
 	    g_signal_connect (job, "status-changed",
 			      G_CALLBACK (job_status_changed_cb), op);
 	  
-          priv->print_pages = job->print_pages;
-          priv->page_ranges = job->page_ranges;
-          priv->num_page_ranges = job->num_page_ranges;
-	  
-          priv->manual_num_copies = job->num_copies;
-          priv->manual_collation = job->collate;
-          priv->manual_reverse = job->reverse;
-          priv->manual_page_set = job->page_set;
-          priv->manual_scale = job->scale;
-          priv->manual_orientation = job->rotate_to_orientation;
-          priv->manual_number_up = job->number_up;
-          priv->manual_number_up_layout = job->number_up_layout;
+          priv->print_pages = gtk_print_job_get_pages (job);
+          priv->page_ranges = gtk_print_job_get_page_ranges (job, &priv->num_page_ranges);
+          priv->manual_num_copies = gtk_print_job_get_num_copies (job);
+          priv->manual_collation = gtk_print_job_get_collate (job);
+          priv->manual_reverse = gtk_print_job_get_reverse (job);
+          priv->manual_page_set = gtk_print_job_get_page_set (job);
+          priv->manual_scale = gtk_print_job_get_scale (job);
+          priv->manual_orientation = gtk_print_job_get_rotate (job);
+          priv->manual_number_up = gtk_print_job_get_n_up (job);
+          priv->manual_number_up_layout = gtk_print_job_get_n_up_layout (job);
         }
     } 
  out:
@@ -1018,7 +997,8 @@ gtk_print_run_page_setup_dialog (GtkWindow        *parent,
  * @parent: (allow-none): transient parent, or %NULL
  * @page_setup: (allow-none): an existing #GtkPageSetup, or %NULL
  * @settings: a #GtkPrintSettings
- * @done_cb: a function to call when the user saves the modified page setup
+ * @done_cb: (scope async): a function to call when the user saves
+ *           the modified page setup
  * @data: user data to pass to @done_cb
  * 
  * Runs a page setup dialog, letting the user modify the values from @page_setup. 
@@ -1086,7 +1066,7 @@ find_printer_idle (gpointer data)
   
   printer_finder_free (finder);
 
-  return FALSE;
+  return G_SOURCE_REMOVE;
 }
 
 static void
@@ -1234,6 +1214,3 @@ find_printer (const gchar *printer,
   if (finder->backends == NULL && !finder->found_printer)
     g_idle_add (find_printer_idle, finder);
 }
-
-#define __GTK_PRINT_OPERATION_UNIX_C__
-#include "gtkaliasdef.c"

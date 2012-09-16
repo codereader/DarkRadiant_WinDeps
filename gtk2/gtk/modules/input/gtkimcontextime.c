@@ -14,9 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -24,6 +22,10 @@
  *  Please see the following site for the detail of Windows IME API.
  *  http://msdn.microsoft.com/library/default.asp?url=/library/en-us/appendix/hh/appendix/imeimes2_35ph.asp
  */
+
+#ifdef GTK_DISABLE_DEPRECATED
+#undef GTK_DISABLE_DEPRECATED
+#endif
 
 #include "gtkimcontextime.h"
 
@@ -343,6 +345,9 @@ gtk_im_context_ime_reset (GtkIMContext *context)
   GtkIMContextIME *context_ime = GTK_IM_CONTEXT_IME (context);
   HWND hwnd;
   HIMC himc;
+
+  if (!context_ime->client_window)
+    return;
 
   hwnd = GDK_WINDOW_HWND (context_ime->client_window);
   himc = ImmGetContext (hwnd);
@@ -851,7 +856,7 @@ gtk_im_context_ime_set_preedit_font (GtkIMContext *context)
       PangoLanguage *pango_lang = pango_language_from_string (lang);
       PangoFontset *fontset =
 	pango_context_load_fontset (pango_context,
-				    widget->style->font_desc,
+				    gtk_widget_get_style (widget)->font_desc,
 				    pango_lang);
       gunichar *sample =
 	g_utf8_to_ucs4 (pango_language_get_sample_string (pango_lang),
@@ -873,7 +878,7 @@ gtk_im_context_ime_set_preedit_font (GtkIMContext *context)
       g_object_unref (fontset);
     }
   else
-    font = pango_context_load_font (pango_context, widget->style->font_desc);
+    font = pango_context_load_font (pango_context, gtk_widget_get_style (widget)->font_desc);
 
   if (!font)
     goto ERROR_OUT;

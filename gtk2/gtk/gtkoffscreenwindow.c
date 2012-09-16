@@ -10,78 +10,111 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  *
  * Authors: Cody Russell <crussell@canonical.com>
  *          Alexander Larsson <alexl@redhat.com>
  */
 
-#undef GDK_DISABLE_DEPRECATED /* We need gdk_drawable_get_size() */
+#include "config.h"
 
 #include "gtkoffscreenwindow.h"
-#include "gtkalias.h"
+#include "gtkwidgetprivate.h"
+#include "gtkcontainerprivate.h"
+#include "gtkprivate.h"
 
 /**
  * SECTION:gtkoffscreenwindow
- * @short_description: A toplevel container widget used to manage offscreen
- *    rendering of child widgets.
+ * @short_description: A toplevel to manage offscreen rendering of child widgets
  * @title: GtkOffscreenWindow
  *
- * #GtkOffscreenWindow is strictly intended to be used for obtaining
+ * GtkOffscreenWindow is strictly intended to be used for obtaining
  * snapshots of widgets that are not part of a normal widget hierarchy.
- * It differs from gtk_widget_get_snapshot() in that the widget you
- * want to get a snapshot of need not be displayed on the user's screen
- * as a part of a widget hierarchy.  However, since #GtkOffscreenWindow
- * is a toplevel widget you cannot obtain snapshots of a full window
- * with it since you cannot pack a toplevel widget in another toplevel.
+ * Since #GtkOffscreenWindow is a toplevel widget you cannot obtain
+ * snapshots of a full window with it since you cannot pack a toplevel
+ * widget in another toplevel.
  *
  * The idea is to take a widget and manually set the state of it,
- * add it to a #GtkOffscreenWindow and then retrieve the snapshot
- * as a #GdkPixmap or #GdkPixbuf.
+ * add it to a GtkOffscreenWindow and then retrieve the snapshot
+ * as a #cairo_surface_t or #GdkPixbuf.
  *
- * #GtkOffscreenWindow derives from #GtkWindow only as an implementation
+ * GtkOffscreenWindow derives from #GtkWindow only as an implementation
  * detail.  Applications should not use any API specific to #GtkWindow
  * to operate on this object.  It should be treated as a #GtkBin that
  * has no parent widget.
  *
- * When contained offscreen widgets are redrawn, #GtkOffscreenWindow
+ * When contained offscreen widgets are redrawn, GtkOffscreenWindow
  * will emit a #GtkWidget::damage-event signal.
  */
 
 G_DEFINE_TYPE (GtkOffscreenWindow, gtk_offscreen_window, GTK_TYPE_WINDOW);
 
 static void
-gtk_offscreen_window_size_request (GtkWidget *widget,
-                                   GtkRequisition *requisition)
+gtk_offscreen_window_get_preferred_width (GtkWidget *widget,
+					  gint      *minimum,
+					  gint      *natural)
 {
   GtkBin *bin = GTK_BIN (widget);
+  GtkWidget *child;
   gint border_width;
-  gint default_width, default_height;
+  gint default_width;
 
   border_width = gtk_container_get_border_width (GTK_CONTAINER (widget));
 
-  requisition->width = border_width * 2;
-  requisition->height = border_width * 2;
+  *minimum = border_width * 2;
+  *natural = border_width * 2;
 
-  if (bin->child && gtk_widget_get_visible (bin->child))
+  child = gtk_bin_get_child (bin);
+
+  if (child != NULL && gtk_widget_get_visible (child))
     {
-      GtkRequisition child_req;
+      gint child_min, child_nat;
 
-      gtk_widget_size_request (bin->child, &child_req);
+      gtk_widget_get_preferred_width (child, &child_min, &child_nat);
 
-      requisition->width += child_req.width;
-      requisition->height += child_req.height;
+      *minimum += child_min;
+      *natural += child_nat;
     }
 
   gtk_window_get_default_size (GTK_WINDOW (widget),
-                               &default_width, &default_height);
-  if (default_width > 0)
-    requisition->width = default_width;
+                               &default_width, NULL);
 
-  if (default_height > 0)
-    requisition->height = default_height;
+  *minimum = MAX (*minimum, default_width);
+  *natural = MAX (*natural, default_width);
+}
+
+static void
+gtk_offscreen_window_get_preferred_height (GtkWidget *widget,
+					   gint      *minimum,
+					   gint      *natural)
+{
+  GtkBin *bin = GTK_BIN (widget);
+  GtkWidget *child;
+  gint border_width;
+  gint default_height;
+
+  border_width = gtk_container_get_border_width (GTK_CONTAINER (widget));
+
+  *minimum = border_width * 2;
+  *natural = border_width * 2;
+
+  child = gtk_bin_get_child (bin);
+
+  if (child != NULL && gtk_widget_get_visible (child))
+    {
+      gint child_min, child_nat;
+
+      gtk_widget_get_preferred_height (child, &child_min, &child_nat);
+
+      *minimum += child_min;
+      *natural += child_nat;
+    }
+
+  gtk_window_get_default_size (GTK_WINDOW (widget),
+                               NULL, &default_height);
+
+  *minimum = MAX (*minimum, default_height);
+  *natural = MAX (*natural, default_height);
 }
 
 static void
@@ -89,20 +122,23 @@ gtk_offscreen_window_size_allocate (GtkWidget *widget,
                                     GtkAllocation *allocation)
 {
   GtkBin *bin = GTK_BIN (widget);
+  GtkWidget *child;
   gint border_width;
 
-  widget->allocation = *allocation;
+  gtk_widget_set_allocation (widget, allocation);
 
   border_width = gtk_container_get_border_width (GTK_CONTAINER (widget));
 
   if (gtk_widget_get_realized (widget))
-    gdk_window_move_resize (widget->window,
+    gdk_window_move_resize (gtk_widget_get_window (widget),
                             allocation->x,
                             allocation->y,
                             allocation->width,
                             allocation->height);
 
-  if (bin->child && gtk_widget_get_visible (bin->child))
+  child = gtk_bin_get_child (bin);
+
+  if (child != NULL && gtk_widget_get_visible (child))
     {
       GtkAllocation  child_alloc;
 
@@ -111,7 +147,7 @@ gtk_offscreen_window_size_allocate (GtkWidget *widget,
       child_alloc.width = allocation->width - 2 * border_width;
       child_alloc.height = allocation->height - 2 * border_width;
 
-      gtk_widget_size_allocate (bin->child, &child_alloc);
+      gtk_widget_size_allocate (child, &child_alloc);
     }
 
   gtk_widget_queue_draw (widget);
@@ -120,39 +156,41 @@ gtk_offscreen_window_size_allocate (GtkWidget *widget,
 static void
 gtk_offscreen_window_realize (GtkWidget *widget)
 {
+  GtkAllocation allocation;
   GtkBin *bin;
+  GtkWidget *child;
+  GdkWindow *window;
   GdkWindowAttr attributes;
   gint attributes_mask;
-  gint border_width;
 
   bin = GTK_BIN (widget);
 
   gtk_widget_set_realized (widget, TRUE);
 
-  border_width = gtk_container_get_border_width (GTK_CONTAINER (widget));
+  gtk_widget_get_allocation (widget, &allocation);
 
-  attributes.x = widget->allocation.x;
-  attributes.y = widget->allocation.y;
-  attributes.width = widget->allocation.width;
-  attributes.height = widget->allocation.height;
+  attributes.x = allocation.x;
+  attributes.y = allocation.y;
+  attributes.width = allocation.width;
+  attributes.height = allocation.height;
   attributes.window_type = GDK_WINDOW_OFFSCREEN;
   attributes.event_mask = gtk_widget_get_events (widget) | GDK_EXPOSURE_MASK;
   attributes.visual = gtk_widget_get_visual (widget);
-  attributes.colormap = gtk_widget_get_colormap (widget);
   attributes.wclass = GDK_INPUT_OUTPUT;
 
-  attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
+  attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL;
 
-  widget->window = gdk_window_new (gtk_widget_get_parent_window (widget),
-                                   &attributes, attributes_mask);
-  gdk_window_set_user_data (widget->window, widget);
+  window = gdk_window_new (gtk_widget_get_parent_window (widget),
+                           &attributes, attributes_mask);
+  gtk_widget_set_window (widget, window);
+  gdk_window_set_user_data (window, widget);
 
-  if (bin->child)
-    gtk_widget_set_parent_window (bin->child, widget->window);
+  child = gtk_bin_get_child (bin);
+  if (child)
+    gtk_widget_set_parent_window (child, window);
 
-  widget->style = gtk_style_attach (widget->style, widget->window);
-
-  gtk_style_set_background (widget->style, widget->window, GTK_STATE_NORMAL);
+  gtk_style_context_set_background (gtk_widget_get_style_context (widget),
+                                    window);
 }
 
 static void
@@ -161,7 +199,7 @@ gtk_offscreen_window_resize (GtkWidget *widget)
   GtkAllocation allocation = { 0, 0 };
   GtkRequisition requisition;
 
-  gtk_widget_size_request (widget, &requisition);
+  gtk_widget_get_preferred_size (widget, &requisition, NULL);
 
   allocation.width  = requisition.width;
   allocation.height = requisition.height;
@@ -174,7 +212,7 @@ move_focus (GtkWidget       *widget,
 {
   gtk_widget_child_focus (widget, dir);
 
-  if (!GTK_CONTAINER (widget)->focus_child)
+  if (!gtk_container_get_focus_child (GTK_CONTAINER (widget)))
     gtk_window_set_focus (GTK_WINDOW (widget), NULL);
 }
 
@@ -184,11 +222,11 @@ gtk_offscreen_window_show (GtkWidget *widget)
   gboolean need_resize;
   GtkContainer *container;
 
-  GTK_WIDGET_SET_FLAGS (widget, GTK_VISIBLE);
+  _gtk_widget_set_visible_flag (widget, TRUE);
 
   container = GTK_CONTAINER (widget);
-  need_resize = container->need_resize || !gtk_widget_get_realized (widget);
-  container->need_resize = FALSE;
+  need_resize = _gtk_container_get_need_resize (container) || !gtk_widget_get_realized (widget);
+  _gtk_container_set_need_resize (container, FALSE);
 
   if (need_resize)
     gtk_offscreen_window_resize (widget);
@@ -203,7 +241,7 @@ gtk_offscreen_window_show (GtkWidget *widget)
 static void
 gtk_offscreen_window_hide (GtkWidget *widget)
 {
-  GTK_WIDGET_UNSET_FLAGS (widget, GTK_VISIBLE);
+  _gtk_widget_set_visible_flag (widget, FALSE);
   gtk_widget_unmap (widget);
 }
 
@@ -228,7 +266,8 @@ gtk_offscreen_window_class_init (GtkOffscreenWindowClass *class)
   widget_class->realize = gtk_offscreen_window_realize;
   widget_class->show = gtk_offscreen_window_show;
   widget_class->hide = gtk_offscreen_window_hide;
-  widget_class->size_request = gtk_offscreen_window_size_request;
+  widget_class->get_preferred_width = gtk_offscreen_window_get_preferred_width;
+  widget_class->get_preferred_height = gtk_offscreen_window_get_preferred_height;
   widget_class->size_allocate = gtk_offscreen_window_size_allocate;
 
   container_class->check_resize = gtk_offscreen_window_check_resize;
@@ -244,9 +283,7 @@ gtk_offscreen_window_init (GtkOffscreenWindow *window)
  * gtk_offscreen_window_new:
  *
  * Creates a toplevel container widget that is used to retrieve
- * snapshots of widgets without showing them on the screen.  For
- * widgets that are on the screen and part of a normal widget
- * hierarchy, gtk_widget_get_snapshot() can be used instead.
+ * snapshots of widgets without showing them on the screen.
  *
  * Return value: A pointer to a #GtkWidget
  *
@@ -259,24 +296,24 @@ gtk_offscreen_window_new (void)
 }
 
 /**
- * gtk_offscreen_window_get_pixmap:
+ * gtk_offscreen_window_get_surface:
  * @offscreen: the #GtkOffscreenWindow contained widget.
  *
  * Retrieves a snapshot of the contained widget in the form of
- * a #GdkPixmap.  If you need to keep this around over window
+ * a #cairo_surface_t.  If you need to keep this around over window
  * resizes then you should add a reference to it.
  *
- * Returns: (transfer none): A #GdkPixmap pointer to the offscreen pixmap,
- *     or %NULL.
+ * Returns: (transfer none): A #cairo_surface_t pointer to the offscreen
+ *     surface, or %NULL.
  *
  * Since: 2.20
  */
-GdkPixmap *
-gtk_offscreen_window_get_pixmap (GtkOffscreenWindow *offscreen)
+cairo_surface_t *
+gtk_offscreen_window_get_surface (GtkOffscreenWindow *offscreen)
 {
   g_return_val_if_fail (GTK_IS_OFFSCREEN_WINDOW (offscreen), NULL);
 
-  return gdk_offscreen_window_get_pixmap (GTK_WIDGET (offscreen)->window);
+  return gdk_offscreen_window_get_surface (gtk_widget_get_window (GTK_WIDGET (offscreen)));
 }
 
 /**
@@ -295,26 +332,22 @@ gtk_offscreen_window_get_pixmap (GtkOffscreenWindow *offscreen)
 GdkPixbuf *
 gtk_offscreen_window_get_pixbuf (GtkOffscreenWindow *offscreen)
 {
-  GdkPixmap *pixmap = NULL;
+  cairo_surface_t *surface;
   GdkPixbuf *pixbuf = NULL;
+  GdkWindow *window;
 
   g_return_val_if_fail (GTK_IS_OFFSCREEN_WINDOW (offscreen), NULL);
 
-  pixmap = gdk_offscreen_window_get_pixmap (GTK_WIDGET (offscreen)->window);
+  window = gtk_widget_get_window (GTK_WIDGET (offscreen));
+  surface = gdk_offscreen_window_get_surface (window);
 
-  if (pixmap != NULL)
+  if (surface != NULL)
     {
-      gint width, height;
-
-      gdk_drawable_get_size (pixmap, &width, &height);
-
-      pixbuf = gdk_pixbuf_get_from_drawable (NULL, pixmap, NULL,
-                                             0, 0, 0, 0,
-                                             width, height);
+      pixbuf = gdk_pixbuf_get_from_surface (surface,
+                                            0, 0,
+                                            gdk_window_get_width (window),
+                                            gdk_window_get_height (window));
     }
 
   return pixbuf;
 }
-
-#define __GTK_OFFSCREEN_WINDOW_C__
-#include "gtkaliasdef.c"

@@ -14,26 +14,93 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
 
+#include "gtktooltip.h"
+
 #include <math.h>
 #include <string.h>
 
-#include "gtktooltip.h"
 #include "gtkintl.h"
 #include "gtkwindow.h"
 #include "gtkmain.h"
 #include "gtklabel.h"
 #include "gtkimage.h"
-#include "gtkhbox.h"
-#include "gtkalignment.h"
+#include "gtkbox.h"
+#include "gtksettings.h"
+#include "gtksizerequest.h"
+#include "gtkstylecontext.h"
+#include "gtkwindowprivate.h"
 
-#include "gtkalias.h"
+
+/**
+ * SECTION:gtktooltip
+ * @Short_description: Add tips to your widgets
+ * @Title: GtkTooltip
+ *
+ * Basic tooltips can be realized simply by using gtk_widget_set_tooltip_text()
+ * or gtk_widget_set_tooltip_markup() without any explicit tooltip object.
+ *
+ * When you need a tooltip with a little more fancy contents, like adding an
+ * image, or you want the tooltip to have different contents per #GtkTreeView
+ * row or cell, you will have to do a little more work:
+ * <itemizedlist>
+ * <listitem>
+ * <para>
+ * Set the #GtkWidget:has-tooltip property to %TRUE, this will make GTK+
+ * monitor the widget for motion and related events which are needed to
+ * determine when and where to show a tooltip.
+ * </para>
+ * </listitem>
+ * <listitem>
+ * <para>
+ * Connect to the #GtkWidget::query-tooltip signal.  This signal will be
+ * emitted when a tooltip is supposed to be shown. One of the arguments passed
+ * to the signal handler is a GtkTooltip object. This is the object that we
+ * are about to display as a tooltip, and can be manipulated in your callback
+ * using functions like gtk_tooltip_set_icon(). There are functions for setting
+ * the tooltip's markup, setting an image from a stock icon, or even putting in
+ * a custom widget.
+ * </para>
+ * </listitem>
+ * <listitem>
+ * <para>
+ * Return %TRUE from your query-tooltip handler. This causes the tooltip to be
+ * show. If you return %FALSE, it will not be shown.
+ * </para>
+ * </listitem>
+ * </itemizedlist>
+ *
+ * In the probably rare case where you want to have even more control over the
+ * tooltip that is about to be shown, you can set your own #GtkWindow which
+ * will be used as tooltip window.  This works as follows:
+ * <itemizedlist>
+ * <listitem>
+ * <para>
+ * Set #GtkWidget:has-tooltip and connect to #GtkWidget::query-tooltip as
+ * before.
+ * </para>
+ * </listitem>
+ * <listitem>
+ * <para>
+ * Use gtk_widget_set_tooltip_window() to set a #GtkWindow created by you as
+ * tooltip window.
+ * </para>
+ * </listitem>
+ * <listitem>
+ * <para>
+ * In the #GtkWidget::query-tooltip callback you can access your window using
+ * gtk_widget_get_tooltip_window() and manipulate as you wish. The semantics of
+ * the return value are exactly as before, return %TRUE to show the window,
+ * %FALSE to not show it.
+ * </para>
+ * </listitem>
+ * </itemizedlist>
+ */
+
 
 #undef DEBUG_TOOLTIP
 
@@ -49,7 +116,6 @@ struct _GtkTooltip
   GObject parent_instance;
 
   GtkWidget *window;
-  GtkWidget *alignment;
   GtkWidget *box;
   GtkWidget *image;
   GtkWidget *label;
@@ -88,8 +154,12 @@ static void       gtk_tooltip_class_init           (GtkTooltipClass *klass);
 static void       gtk_tooltip_init                 (GtkTooltip      *tooltip);
 static void       gtk_tooltip_dispose              (GObject         *object);
 
-static void       gtk_tooltip_window_style_set     (GtkTooltip      *tooltip);
-static gboolean   gtk_tooltip_paint_window         (GtkTooltip      *tooltip);
+static gboolean   gtk_tooltip_paint_window         (GtkTooltip      *tooltip,
+                                                    cairo_t         *cr);
+static void       gtk_tooltip_realize_window       (GtkTooltip      *tooltip,
+                                                    GtkWidget       *widget);
+static void       gtk_tooltip_composited_changed   (GtkTooltip      *tooltip,
+                                                    GtkWidget       *widget);
 static void       gtk_tooltip_window_hide          (GtkWidget       *widget,
 						    gpointer         user_data);
 static void       gtk_tooltip_display_closed       (GdkDisplay      *display,
@@ -114,6 +184,14 @@ gtk_tooltip_class_init (GtkTooltipClass *klass)
 static void
 gtk_tooltip_init (GtkTooltip *tooltip)
 {
+  GtkStyleContext *context;
+  GtkWidget *window;
+  GtkWidget *box;
+  GtkWidget *image;
+  GtkWidget *label;
+  GdkScreen *screen;
+  GdkVisual *visual;
+
   tooltip->timeout_id = 0;
   tooltip->browse_mode_timeout_id = 0;
 
@@ -128,42 +206,50 @@ gtk_tooltip_init (GtkTooltip *tooltip)
 
   tooltip->last_window = NULL;
 
-  tooltip->window = g_object_ref (gtk_window_new (GTK_WINDOW_POPUP));
-  gtk_window_set_type_hint (GTK_WINDOW (tooltip->window),
-			    GDK_WINDOW_TYPE_HINT_TOOLTIP);
-  gtk_widget_set_app_paintable (tooltip->window, TRUE);
-  gtk_window_set_resizable (GTK_WINDOW (tooltip->window), FALSE);
-  gtk_widget_set_name (tooltip->window, "gtk-tooltip");
-  g_signal_connect (tooltip->window, "hide",
-		    G_CALLBACK (gtk_tooltip_window_hide), tooltip);
+  window = g_object_ref (gtk_window_new (GTK_WINDOW_POPUP));
+  screen = gtk_widget_get_screen (window);
+  visual = gdk_screen_get_rgba_visual (screen);
 
-  tooltip->alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
-  gtk_alignment_set_padding (GTK_ALIGNMENT (tooltip->alignment),
-			     tooltip->window->style->ythickness,
-			     tooltip->window->style->ythickness,
-			     tooltip->window->style->xthickness,
-			     tooltip->window->style->xthickness);
-  gtk_container_add (GTK_CONTAINER (tooltip->window), tooltip->alignment);
-  gtk_widget_show (tooltip->alignment);
+  if (visual != NULL)
+    gtk_widget_set_visual (window, visual);
 
-  g_signal_connect_swapped (tooltip->window, "style-set",
-			    G_CALLBACK (gtk_tooltip_window_style_set), tooltip);
-  g_signal_connect_swapped (tooltip->window, "expose-event",
-			    G_CALLBACK (gtk_tooltip_paint_window), tooltip);
+  gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_TOOLTIP);
+  gtk_widget_set_app_paintable (window, TRUE);
+  gtk_window_set_resizable (GTK_WINDOW (window), FALSE);
+  gtk_widget_set_name (window, "gtk-tooltip");
+  g_signal_connect (window, "hide",
+                    G_CALLBACK (gtk_tooltip_window_hide), tooltip);
 
-  tooltip->box = gtk_hbox_new (FALSE, tooltip->window->style->xthickness);
-  gtk_container_add (GTK_CONTAINER (tooltip->alignment), tooltip->box);
-  gtk_widget_show (tooltip->box);
+  context = gtk_widget_get_style_context (window);
+  gtk_style_context_add_class (context, GTK_STYLE_CLASS_TOOLTIP);
 
-  tooltip->image = gtk_image_new ();
-  gtk_box_pack_start (GTK_BOX (tooltip->box), tooltip->image,
-		      FALSE, FALSE, 0);
+  g_signal_connect_swapped (window, "draw",
+                            G_CALLBACK (gtk_tooltip_paint_window), tooltip);
+  g_signal_connect_swapped (window, "realize",
+                            G_CALLBACK (gtk_tooltip_realize_window), tooltip);
+  g_signal_connect_swapped (window, "composited-changed",
+                            G_CALLBACK (gtk_tooltip_composited_changed), tooltip);
 
-  tooltip->label = gtk_label_new ("");
-  gtk_label_set_line_wrap (GTK_LABEL (tooltip->label), TRUE);
-  gtk_box_pack_start (GTK_BOX (tooltip->box), tooltip->label,
-		      FALSE, FALSE, 0);
+  /* FIXME: don't hardcode the padding */
+  box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+  gtk_widget_set_margin_left (box, 6);
+  gtk_widget_set_margin_right (box, 6);
+  gtk_widget_set_margin_top (box, 6);
+  gtk_widget_set_margin_bottom (box, 6);
+  gtk_container_add (GTK_CONTAINER (window), box);
+  gtk_widget_show (box);
 
+  image = gtk_image_new ();
+  gtk_box_pack_start (GTK_BOX (box), image, FALSE, FALSE, 0);
+
+  label = gtk_label_new ("");
+  gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+  gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
+
+  tooltip->window = window;
+  tooltip->box = box;
+  tooltip->image = image;
+  tooltip->label = label;
   tooltip->custom_widget = NULL;
 }
 
@@ -462,9 +548,11 @@ gtk_tooltip_trigger_tooltip_query (GdkDisplay *display)
   gint x, y;
   GdkWindow *window;
   GdkEvent event;
+  GdkDevice *device;
 
   /* Trigger logic as if the mouse moved */
-  window = gdk_display_get_window_at_pointer (display, &x, &y);
+  device = gdk_device_manager_get_client_pointer (gdk_display_get_device_manager (display));
+  window = gdk_device_get_window_at_position (device, &x, &y);
   if (!window)
     return;
 
@@ -497,32 +585,83 @@ gtk_tooltip_reset (GtkTooltip *tooltip)
 }
 
 static void
-gtk_tooltip_window_style_set (GtkTooltip *tooltip)
+paint_background_and_frame (GtkTooltip *tooltip,
+                            cairo_t *cr)
 {
-  gtk_alignment_set_padding (GTK_ALIGNMENT (tooltip->alignment),
-			     tooltip->window->style->ythickness,
-			     tooltip->window->style->ythickness,
-			     tooltip->window->style->xthickness,
-			     tooltip->window->style->xthickness);
-  gtk_box_set_spacing (GTK_BOX (tooltip->box),
-		       tooltip->window->style->xthickness);
+  GtkStyleContext *context;
+  gint width, height;
 
-  gtk_widget_queue_draw (tooltip->window);
+  width = gtk_widget_get_allocated_width (tooltip->window);
+  height = gtk_widget_get_allocated_height (tooltip->window);
+  context = gtk_widget_get_style_context (tooltip->window);
+
+  gtk_render_background (context, cr,
+                         0, 0, width, height);
+  gtk_render_frame (context, cr,
+                    0, 0, width, height);  
+}
+
+static void
+maybe_update_shape (GtkTooltip *tooltip)
+{
+  cairo_t *cr;
+  cairo_surface_t *surface;
+  cairo_region_t *region;
+
+  /* fallback to XShape only for non-composited clients */
+  if (gtk_widget_is_composited (tooltip->window))
+    {
+      gtk_widget_shape_combine_region (tooltip->window, NULL);
+      return;
+    }
+
+  surface = gdk_window_create_similar_surface (gtk_widget_get_window (tooltip->window),
+                                               CAIRO_CONTENT_COLOR_ALPHA,
+                                               gtk_widget_get_allocated_width (tooltip->window),
+                                               gtk_widget_get_allocated_height (tooltip->window));
+
+  cr = cairo_create (surface);
+  paint_background_and_frame (tooltip, cr);
+  cairo_destroy (cr);
+
+  region = gdk_cairo_region_create_from_surface (surface);
+  gtk_widget_shape_combine_region (tooltip->window, region);
+
+  cairo_surface_destroy (surface);
+  cairo_region_destroy (region);
+}
+
+static void
+gtk_tooltip_composited_changed (GtkTooltip *tooltip,
+                                GtkWidget  *widget)
+{
+  if (gtk_widget_get_realized (tooltip->window))
+    maybe_update_shape (tooltip);
+}
+
+static void
+gtk_tooltip_realize_window (GtkTooltip *tooltip,
+                            GtkWidget *widget)
+{
+  maybe_update_shape (tooltip);
 }
 
 static gboolean
-gtk_tooltip_paint_window (GtkTooltip *tooltip)
+gtk_tooltip_paint_window (GtkTooltip *tooltip,
+                          cairo_t    *cr)
 {
-  gtk_paint_flat_box (tooltip->window->style,
-		      tooltip->window->window,
-		      GTK_STATE_NORMAL,
-		      GTK_SHADOW_OUT,
-		      NULL,
-		      tooltip->window,
-		      "tooltip",
-		      0, 0,
-		      tooltip->window->allocation.width,
-		      tooltip->window->allocation.height);
+  if (gtk_widget_is_composited (tooltip->window))
+    {
+      /* clear any background */
+      cairo_save (cr);
+      cairo_set_source_rgba (cr, 0, 0, 0, 0);
+      cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
+      cairo_paint (cr);
+      cairo_restore (cr);
+    }
+
+  maybe_update_shape (tooltip);
+  paint_background_and_frame (tooltip, cr);
 
   return FALSE;
 }
@@ -551,12 +690,15 @@ static void
 child_location_foreach (GtkWidget *child,
 			gpointer   data)
 {
+  GtkAllocation child_allocation;
   gint x, y;
   struct ChildLocation *child_loc = data;
 
   /* Ignore invisible widgets */
   if (!gtk_widget_is_drawable (child))
     return;
+
+  gtk_widget_get_allocation (child, &child_allocation);
 
   x = 0;
   y = 0;
@@ -573,17 +715,17 @@ child_location_foreach (GtkWidget *child,
 #ifdef DEBUG_TOOLTIP
       g_print ("candidate: %s  alloc=[(%d,%d)  %dx%d]     (%d, %d)->(%d, %d)\n",
 	       gtk_widget_get_name (child),
-	       child->allocation.x,
-	       child->allocation.y,
-	       child->allocation.width,
-	       child->allocation.height,
+               child_allocation.x,
+               child_allocation.y,
+               child_allocation.width,
+               child_allocation.height,
 	       child_loc->x, child_loc->y,
 	       x, y);
 #endif /* DEBUG_TOOLTIP */
 
       /* (x, y) relative to child's allocation. */
-      if (x >= 0 && x < child->allocation.width
-	  && y >= 0 && y < child->allocation.height)
+      if (x >= 0 && x < child_allocation.width
+	  && y >= 0 && y < child_allocation.height)
         {
 	  if (GTK_IS_CONTAINER (child))
 	    {
@@ -620,22 +762,28 @@ window_to_alloc (GtkWidget *dest_widget,
 		 gint      *dest_x,
 		 gint      *dest_y)
 {
+  GtkAllocation allocation;
+
+  gtk_widget_get_allocation (dest_widget, &allocation);
+
   /* Translate from window relative to allocation relative */
-  if (gtk_widget_get_has_window (dest_widget) && dest_widget->parent)
+  if (gtk_widget_get_has_window (dest_widget) &&
+      gtk_widget_get_parent (dest_widget))
     {
       gint wx, wy;
-      gdk_window_get_position (dest_widget->window, &wx, &wy);
+      gdk_window_get_position (gtk_widget_get_window (dest_widget),
+                               &wx, &wy);
 
       /* Offset coordinates if widget->window is smaller than
        * widget->allocation.
        */
-      src_x += wx - dest_widget->allocation.x;
-      src_y += wy - dest_widget->allocation.y;
+      src_x += wx - allocation.x;
+      src_y += wy - allocation.y;
     }
   else
     {
-      src_x -= dest_widget->allocation.x;
-      src_y -= dest_widget->allocation.y;
+      src_x -= allocation.x;
+      src_y -= allocation.y;
     }
 
   if (dest_x)
@@ -678,7 +826,7 @@ _gtk_widget_find_at_coords (GdkWindow *window,
    * coordinates stay relative to the current window.
    * We end up with window == widget->window, coordinates relative to that.
    */
-  while (window && window != event_widget->window)
+  while (window && window != gtk_widget_get_window (event_widget))
     {
       gdouble px, py;
 
@@ -748,6 +896,7 @@ find_topmost_widget_coords_from_event (GdkEvent *event,
 				       gint     *x,
 				       gint     *y)
 {
+  GtkAllocation allocation;
   gint tx, ty;
   gdouble dx, dy;
   GtkWidget *tmp;
@@ -761,8 +910,9 @@ find_topmost_widget_coords_from_event (GdkEvent *event,
     return NULL;
 
   /* Make sure the pointer can actually be on the widget returned. */
-  if (tx < 0 || tx >= tmp->allocation.width ||
-      ty < 0 || ty >= tmp->allocation.height)
+  gtk_widget_get_allocation (tmp, &allocation);
+  if (tx < 0 || tx >= allocation.width ||
+      ty < 0 || ty >= allocation.height)
     return NULL;
 
   if (x)
@@ -843,7 +993,7 @@ gtk_tooltip_run_requery (GtkWidget  **widget,
 
       if (!return_value)
         {
-	  GtkWidget *parent = (*widget)->parent;
+	  GtkWidget *parent = gtk_widget_get_parent (*widget);
 
 	  if (parent)
 	    gtk_widget_translate_coordinates (*widget, parent, *x, *y, x, y);
@@ -868,6 +1018,7 @@ static void
 get_bounding_box (GtkWidget    *widget,
                   GdkRectangle *bounds)
 {
+  GtkAllocation allocation;
   GdkWindow *window;
   gint x, y;
   gint w, h;
@@ -877,11 +1028,14 @@ get_bounding_box (GtkWidget    *widget,
   gint x4, y4;
 
   window = gtk_widget_get_parent_window (widget);
+  if (window == NULL)
+    window = gtk_widget_get_window (widget);
 
-  x = widget->allocation.x;
-  y = widget->allocation.y;
-  w = widget->allocation.width;
-  h = widget->allocation.height;
+  gtk_widget_get_allocation (widget, &allocation);
+  x = allocation.x;
+  y = allocation.y;
+  w = allocation.width;
+  h = allocation.height;
 
   gdk_window_get_root_coords (window, x, y, &x1, &y1);
   gdk_window_get_root_coords (window, x + w, y, &x2, &y2);
@@ -902,71 +1056,150 @@ gtk_tooltip_position (GtkTooltip *tooltip,
 		      GdkDisplay *display,
 		      GtkWidget  *new_tooltip_widget)
 {
-  gint x, y;
+  gint x, y, width, height;
   GdkScreen *screen;
+  gint monitor_num;
+  GdkRectangle monitor;
+  guint cursor_size;
+  GdkRectangle bounds;
+
+#define MAX_DISTANCE 32
+
+  gtk_widget_realize (GTK_WIDGET (tooltip->current_window));
 
   tooltip->tooltip_widget = new_tooltip_widget;
 
+  screen = gtk_widget_get_screen (new_tooltip_widget);
+
+  width = gtk_widget_get_allocated_width (GTK_WIDGET (tooltip->current_window));
+  height = gtk_widget_get_allocated_height (GTK_WIDGET (tooltip->current_window));
+
+  monitor_num = gdk_screen_get_monitor_at_point (screen,
+                                                 tooltip->last_x,
+                                                 tooltip->last_y);
+  gdk_screen_get_monitor_workarea (screen, monitor_num, &monitor);
+
+  get_bounding_box (new_tooltip_widget, &bounds);
+
   /* Position the tooltip */
-  /* FIXME: should we swap this when RTL is enabled? */
+
+  cursor_size = gdk_display_get_default_cursor_size (display);
+
+  /* Try below */
+  x = bounds.x + bounds.width / 2 - width / 2;
+  y = bounds.y + bounds.height + 4;
+
+  if (y + height <= monitor.y + monitor.height)
+    {
+      if (tooltip->keyboard_mode_enabled)
+        goto found;
+
+      if (y <= tooltip->last_y + cursor_size + MAX_DISTANCE)
+        {
+          if (tooltip->last_x + cursor_size + MAX_DISTANCE < x)
+            x = tooltip->last_x + cursor_size + MAX_DISTANCE;
+          else if (x + width < tooltip->last_x - MAX_DISTANCE)
+            x = tooltip->last_x - MAX_DISTANCE - width;
+
+          goto found;
+        }
+   }
+
+  /* Try above */
+  x = bounds.x + bounds.width / 2 - width / 2;
+  y = bounds.y - height - 4;
+
+  if (y >= monitor.y)
+    {
+      if (tooltip->keyboard_mode_enabled)
+        goto found;
+
+      if (y + height >= tooltip->last_y - MAX_DISTANCE)
+        {
+          if (tooltip->last_x + cursor_size + MAX_DISTANCE < x)
+            x = tooltip->last_x + cursor_size + MAX_DISTANCE;
+          else if (x + width < tooltip->last_x - MAX_DISTANCE)
+            x = tooltip->last_x - MAX_DISTANCE - width;
+
+          goto found;
+        }
+    }
+
+  /* Try right FIXME: flip on rtl ? */
+  x = bounds.x + bounds.width + 4;
+  y = bounds.y + bounds.height / 2 - height / 2;
+
+  if (x + width <= monitor.x + monitor.width)
+    {
+      if (tooltip->keyboard_mode_enabled)
+        goto found;
+
+      if (x <= tooltip->last_x + cursor_size + MAX_DISTANCE)
+        {
+          if (tooltip->last_y + cursor_size + MAX_DISTANCE < y)
+            y = tooltip->last_y + cursor_size + MAX_DISTANCE;
+          else if (y + height < tooltip->last_y - MAX_DISTANCE)
+            y = tooltip->last_y - MAX_DISTANCE - height;
+
+          goto found;
+        }
+    }
+
+  /* Try left FIXME: flip on rtl ? */
+  x = bounds.x - width - 4;
+  y = bounds.y + bounds.height / 2 - height / 2;
+
+  if (x >= monitor.x)
+    {
+      if (tooltip->keyboard_mode_enabled)
+        goto found;
+
+      if (x + width >= tooltip->last_x - MAX_DISTANCE)
+        {
+          if (tooltip->last_y + cursor_size + MAX_DISTANCE < y)
+            y = tooltip->last_y + cursor_size + MAX_DISTANCE;
+          else if (y + height < tooltip->last_y - MAX_DISTANCE)
+            y = tooltip->last_y - MAX_DISTANCE - height;
+
+          goto found;
+        }
+    }
+
+   /* Fallback */
   if (tooltip->keyboard_mode_enabled)
     {
-      GdkRectangle bounds;
-
-      get_bounding_box (new_tooltip_widget, &bounds);
-
-      /* For keyboard mode we position the tooltip below the widget,
-       * right of the center of the widget.
-       */
-      x = bounds.x + bounds.width / 2;
+      x = bounds.x + bounds.width / 2 - width / 2;
       y = bounds.y + bounds.height + 4;
     }
   else
     {
-      guint cursor_size;
-
-      x = tooltip->last_x;
-      y = tooltip->last_y;
-
-      /* For mouse mode, we position the tooltip right of the cursor,
-       * a little below the cursor's center.
-       */
-      cursor_size = gdk_display_get_default_cursor_size (display);
-      x += cursor_size / 2;
-      y += cursor_size / 2;
+      /* At cursor */
+      x = tooltip->last_x + cursor_size * 3 / 4;
+      y = tooltip->last_y + cursor_size * 3 / 4;
     }
 
-  screen = gtk_widget_get_screen (new_tooltip_widget);
-
+found:
   /* Show it */
   if (tooltip->current_window)
     {
-      gint monitor_num;
-      GdkRectangle monitor;
-      GtkRequisition requisition;
-
-      gtk_widget_size_request (GTK_WIDGET (tooltip->current_window),
-                               &requisition);
-
-      monitor_num = gdk_screen_get_monitor_at_point (screen, x, y);
-      gdk_screen_get_monitor_geometry (screen, monitor_num, &monitor);
-
-      if (x + requisition.width > monitor.x + monitor.width)
-        x -= x - (monitor.x + monitor.width) + requisition.width;
+      if (x + width > monitor.x + monitor.width)
+        x -= x - (monitor.x + monitor.width) + width;
       else if (x < monitor.x)
         x = monitor.x;
 
-      if (y + requisition.height > monitor.y + monitor.height)
-        y -= y - (monitor.y + monitor.height) + requisition.height;
-  
+      if (y + height > monitor.y + monitor.height)
+        y -= y - (monitor.y + monitor.height) + height;
+      else if (y < monitor.y)
+        y = monitor.y;
+
       if (!tooltip->keyboard_mode_enabled)
         {
           /* don't pop up under the pointer */
-          if (x <= tooltip->last_x && tooltip->last_x < x + requisition.width &&
-              y <= tooltip->last_y && tooltip->last_y < y + requisition.height)
-            y = tooltip->last_y - requisition.height - 2;
+          if (x <= tooltip->last_x && tooltip->last_x < x + width &&
+              y <= tooltip->last_y && tooltip->last_y < y + height)
+            y = tooltip->last_y - height - 2;
         }
-  
+
       gtk_window_move (GTK_WINDOW (tooltip->current_window), x, y);
       gtk_widget_show (GTK_WIDGET (tooltip->current_window));
     }
@@ -980,37 +1213,37 @@ gtk_tooltip_show_tooltip (GdkDisplay *display)
 
   GdkWindow *window;
   GtkWidget *tooltip_widget;
-  GtkWidget *pointer_widget;
   GtkTooltip *tooltip;
   gboolean has_tooltip;
   gboolean return_value = FALSE;
 
   tooltip = g_object_get_data (G_OBJECT (display),
-			       "gdk-display-current-tooltip");
+                               "gdk-display-current-tooltip");
 
   if (tooltip->keyboard_mode_enabled)
     {
       x = y = -1;
-      pointer_widget = tooltip_widget = tooltip->keyboard_widget;
+      tooltip_widget = tooltip->keyboard_widget;
     }
   else
     {
+      GdkDevice *device;
       gint tx, ty;
 
       window = tooltip->last_window;
 
       if (!GDK_IS_WINDOW (window))
-	return;
+        return;
 
-      gdk_window_get_pointer (window, &x, &y, NULL);
+      device = gdk_device_manager_get_client_pointer (gdk_display_get_device_manager (display));
+
+      gdk_window_get_device_position (window, device, &x, &y, NULL);
 
       gdk_window_get_root_coords (window, x, y, &tx, &ty);
       tooltip->last_x = tx;
       tooltip->last_y = ty;
 
-      pointer_widget = tooltip_widget = _gtk_widget_find_at_coords (window,
-                                                                    x, y,
-                                                                    &x, &y);
+      tooltip_widget = _gtk_widget_find_at_coords (window, x, y, &x, &y);
     }
 
   if (!tooltip_widget)
@@ -1025,9 +1258,9 @@ gtk_tooltip_show_tooltip (GdkDisplay *display)
   if (!tooltip->current_window)
     {
       if (gtk_widget_get_tooltip_window (tooltip_widget))
-	tooltip->current_window = gtk_widget_get_tooltip_window (tooltip_widget);
+        tooltip->current_window = gtk_widget_get_tooltip_window (tooltip_widget);
       else
-	tooltip->current_window = GTK_WINDOW (GTK_TOOLTIP (tooltip)->window);
+        tooltip->current_window = GTK_WINDOW (GTK_TOOLTIP (tooltip)->window);
     }
 
   screen = gtk_widget_get_screen (tooltip_widget);
@@ -1036,13 +1269,13 @@ gtk_tooltip_show_tooltip (GdkDisplay *display)
   if (screen != gtk_widget_get_screen (tooltip->window))
     {
       g_signal_handlers_disconnect_by_func (display,
-					    gtk_tooltip_display_closed,
-					    tooltip);
+                                            gtk_tooltip_display_closed,
+                                            tooltip);
 
       gtk_window_set_screen (GTK_WINDOW (tooltip->window), screen);
 
       g_signal_connect (display, "closed",
-			G_CALLBACK (gtk_tooltip_display_closed), tooltip);
+                        G_CALLBACK (gtk_tooltip_display_closed), tooltip);
     }
 
   gtk_tooltip_position (tooltip, display, tooltip_widget);
@@ -1118,7 +1351,7 @@ tooltip_popup_timeout (gpointer data)
   GdkDisplay *display;
   GtkTooltip *tooltip;
 
-  display = GDK_DISPLAY_OBJECT (data);
+  display = GDK_DISPLAY (data);
   tooltip = g_object_get_data (G_OBJECT (display),
 			       "gdk-display-current-tooltip");
 
@@ -1171,6 +1404,7 @@ _gtk_tooltip_focus_in (GtkWidget *widget)
   gboolean return_value = FALSE;
   GdkDisplay *display;
   GtkTooltip *tooltip;
+  GdkDevice *device;
 
   /* Get current tooltip for this display */
   display = gtk_widget_get_display (widget);
@@ -1181,12 +1415,24 @@ _gtk_tooltip_focus_in (GtkWidget *widget)
   if (!tooltip || !tooltip->keyboard_mode_enabled)
     return;
 
+  device = gtk_get_current_event_device ();
+
+  if (device && gdk_device_get_source (device) == GDK_SOURCE_KEYBOARD)
+    device = gdk_device_get_associated_device (device);
+
+  /* This function should be called by either a focus in event,
+   * or a key binding. In either case there should be a device.
+   */
+  if (!device)
+    return;
+
   if (tooltip->keyboard_widget)
     g_object_unref (tooltip->keyboard_widget);
 
   tooltip->keyboard_widget = g_object_ref (widget);
 
-  gdk_window_get_pointer (widget->window, &x, &y, NULL);
+  gdk_window_get_device_position (gtk_widget_get_window (widget),
+                                  device, &x, &y, NULL);
 
   return_value = gtk_tooltip_run_requery (&widget, tooltip, &x, &y);
   if (!return_value)
@@ -1286,27 +1532,38 @@ _gtk_tooltip_hide (GtkWidget *widget)
   toplevel = gtk_widget_get_toplevel (widget);
 
   if (widget == tooltip->tooltip_widget
-      || toplevel->window == tooltip->toplevel_window)
+      || gtk_widget_get_window (toplevel) == tooltip->toplevel_window)
     gtk_tooltip_hide_tooltip (tooltip);
 }
 
 static gboolean
-tooltips_enabled (GdkWindow *window)
+tooltips_enabled (GdkEvent *event)
 {
+  GdkDevice *source_device;
+  GdkInputSource source;
+  GdkWindow *window;
   gboolean enabled;
-  gboolean touchscreen;
   GdkScreen *screen;
   GtkSettings *settings;
 
+  window = event->any.window;
+  source_device = gdk_event_get_source_device (event);
+
+  if (!source_device)
+    return FALSE;
+
+  source = gdk_device_get_source (source_device);
   screen = gdk_window_get_screen (window);
   settings = gtk_settings_get_for_screen (screen);
 
   g_object_get (settings,
-		"gtk-touchscreen-mode", &touchscreen,
 		"gtk-enable-tooltips", &enabled,
 		NULL);
 
-  return (!touchscreen && enabled);
+  if (enabled && source != GDK_SOURCE_TOUCHSCREEN)
+    return TRUE;
+
+  return FALSE;
 }
 
 void
@@ -1318,7 +1575,7 @@ _gtk_tooltip_handle_event (GdkEvent *event)
   GdkDisplay *display;
   GtkTooltip *current_tooltip;
 
-  if (!tooltips_enabled (event->any.window))
+  if (!tooltips_enabled (event))
     return;
 
   /* Returns coordinates relative to has_tooltip_widget's allocation. */
@@ -1381,13 +1638,13 @@ _gtk_tooltip_handle_event (GdkEvent *event)
       case GDK_KEY_PRESS:
       case GDK_DRAG_ENTER:
       case GDK_GRAB_BROKEN:
+      case GDK_SCROLL:
 	gtk_tooltip_hide_tooltip (current_tooltip);
 	break;
 
       case GDK_MOTION_NOTIFY:
       case GDK_ENTER_NOTIFY:
       case GDK_LEAVE_NOTIFY:
-      case GDK_SCROLL:
 	if (current_tooltip)
 	  {
 	    gboolean tip_area_set;
@@ -1444,7 +1701,3 @@ _gtk_tooltip_handle_event (GdkEvent *event)
 	break;
     }
 }
-
-
-#define __GTK_TOOLTIP_C__
-#include "gtkaliasdef.c"

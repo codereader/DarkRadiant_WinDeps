@@ -14,9 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -30,14 +28,25 @@
 #include "gtkrecentchooserutils.h"
 #include "gtkrecentchooserprivate.h"
 #include "gtkprivate.h"
-#include "gtkalias.h"
+
+/**
+ * SECTION:gtkrecentaction
+ * @Short_description: An action of which represents a list of recently used files
+ * @Title: GtkRecentAction
+ *
+ * A #GtkRecentAction represents a list of recently used files, which
+ * can be shown by widgets such as #GtkRecentChooserDialog or
+ * #GtkRecentChooserMenu.
+ *
+ * To construct a submenu showing recently used files, use a #GtkRecentAction
+ * as the action for a &lt;menuitem&gt;. To construct a menu toolbutton showing
+ * the recently used files in the popup menu, use a #GtkRecentAction as the
+ * action for a &lt;toolitem&gt; element.
+ */
+
 
 #define FALLBACK_ITEM_LIMIT     10
 
-#define GTK_RECENT_ACTION_GET_PRIVATE(obj)      \
-        (G_TYPE_INSTANCE_GET_PRIVATE ((obj),    \
-         GTK_TYPE_RECENT_ACTION,                \
-         GtkRecentActionPrivate))
 
 struct _GtkRecentActionPrivate
 {
@@ -151,16 +160,16 @@ gtk_recent_action_unselect_uri (GtkRecentChooser *chooser,
 static void
 gtk_recent_action_select_all (GtkRecentChooser *chooser)
 {
-  g_warning (_("This function is not implemented for "
-               "widgets of class '%s'"),
+  g_warning ("This function is not implemented for "
+	     "widgets of class '%s'",
              g_type_name (G_OBJECT_TYPE (chooser)));
 }
 
 static void
 gtk_recent_action_unselect_all (GtkRecentChooser *chooser)
 {
-  g_warning (_("This function is not implemented for "
-               "widgets of class '%s'"),
+  g_warning ("This function is not implemented for "
+	     "widgets of class '%s'",
              g_type_name (G_OBJECT_TYPE (chooser)));
 }
 
@@ -180,7 +189,7 @@ gtk_recent_action_get_items (GtkRecentChooser *chooser)
 static GtkRecentManager *
 gtk_recent_action_get_recent_manager (GtkRecentChooser *chooser)
 {
-  return GTK_RECENT_ACTION_GET_PRIVATE (chooser)->manager;
+  return GTK_RECENT_ACTION (chooser)->priv->manager;
 }
 
 static void
@@ -244,7 +253,8 @@ static void
 gtk_recent_action_add_filter (GtkRecentChooser *chooser,
                               GtkRecentFilter  *filter)
 {
-  GtkRecentActionPrivate *priv = GTK_RECENT_ACTION_GET_PRIVATE (chooser);
+  GtkRecentAction *action = GTK_RECENT_ACTION (chooser);
+  GtkRecentActionPrivate *priv = action->priv;
 
   if (priv->current_filter != filter)
     set_current_filter (GTK_RECENT_ACTION (chooser), filter);
@@ -254,7 +264,8 @@ static void
 gtk_recent_action_remove_filter (GtkRecentChooser *chooser,
                                  GtkRecentFilter  *filter)
 {
-  GtkRecentActionPrivate *priv = GTK_RECENT_ACTION_GET_PRIVATE (chooser);
+  GtkRecentAction *action = GTK_RECENT_ACTION (chooser);
+  GtkRecentActionPrivate *priv = action->priv;
 
   if (priv->current_filter == filter)
     set_current_filter (GTK_RECENT_ACTION (chooser), NULL);
@@ -263,10 +274,12 @@ gtk_recent_action_remove_filter (GtkRecentChooser *chooser,
 static GSList *
 gtk_recent_action_list_filters (GtkRecentChooser *chooser)
 {
+  GtkRecentAction *action = GTK_RECENT_ACTION (chooser);
+  GtkRecentActionPrivate *priv = action->priv;
   GSList *retval = NULL;
   GtkRecentFilter *current_filter;
 
-  current_filter = GTK_RECENT_ACTION_GET_PRIVATE (chooser)->current_filter;
+  current_filter = priv->current_filter;
   retval = g_slist_prepend (retval, current_filter);
 
   return retval;
@@ -293,11 +306,14 @@ gtk_recent_chooser_iface_init (GtkRecentChooserIface *iface)
 static void
 gtk_recent_action_activate (GtkAction *action)
 {
+  GtkRecentAction *recent_action = GTK_RECENT_ACTION (action);
+  GtkRecentActionPrivate *priv = recent_action->priv;
+
   /* we have probably been invoked by a menu tool button or by a
    * direct call of gtk_action_activate(); since no item has been
    * selected, we must unset the current recent chooser pointer
    */
-  GTK_RECENT_ACTION_GET_PRIVATE (action)->current_chooser = NULL;
+  priv->current_chooser = NULL;
 }
 
 static void
@@ -546,7 +562,8 @@ gtk_recent_action_get_property (GObject    *gobject,
                                 GValue     *value,
                                 GParamSpec *pspec)
 {
-  GtkRecentActionPrivate *priv = GTK_RECENT_ACTION_GET_PRIVATE (gobject);
+  GtkRecentAction *action = GTK_RECENT_ACTION (gobject);
+  GtkRecentActionPrivate *priv = action->priv;
 
   switch (prop_id)
     {
@@ -625,7 +642,9 @@ gtk_recent_action_init (GtkRecentAction *action)
 {
   GtkRecentActionPrivate *priv;
 
-  action->priv = priv = GTK_RECENT_ACTION_GET_PRIVATE (action);
+  action->priv = priv = G_TYPE_INSTANCE_GET_PRIVATE (action,
+                                                     GTK_TYPE_RECENT_ACTION,
+                                                     GtkRecentActionPrivate);
 
   priv->show_numbers = FALSE;
   priv->show_icons = TRUE;
@@ -649,10 +668,11 @@ gtk_recent_action_init (GtkRecentAction *action)
 /**
  * gtk_recent_action_new:
  * @name: a unique name for the action
- * @label: (allow-none): the label displayed in menu items and on buttons, or %NULL
+ * @label: (allow-none): the label displayed in menu items and on buttons,
+ *   or %NULL
  * @tooltip: (allow-none): a tooltip for the action, or %NULL
- * @stock_id: the stock icon to display in widgets representing the
- *   action, or %NULL
+ * @stock_id: (allow-none): the stock icon to display in widgets representing
+ *   the action, or %NULL
  *
  * Creates a new #GtkRecentAction object. To add the action to
  * a #GtkActionGroup and set the accelerator for the action,
@@ -681,10 +701,11 @@ gtk_recent_action_new (const gchar *name,
 /**
  * gtk_recent_action_new_for_manager:
  * @name: a unique name for the action
- * @label: (allow-none): the label displayed in menu items and on buttons, or %NULL
+ * @label: (allow-none): the label displayed in menu items and on buttons,
+ *   or %NULL
  * @tooltip: (allow-none): a tooltip for the action, or %NULL
- * @stock_id: the stock icon to display in widgets representing the
- *   action, or %NULL
+ * @stock_id: (allow-none): the stock icon to display in widgets representing
+ *   the action, or %NULL
  * @manager: (allow-none): a #GtkRecentManager, or %NULL for using the default
  *   #GtkRecentManager
  *
@@ -765,6 +786,3 @@ gtk_recent_action_set_show_numbers (GtkRecentAction *action,
       g_object_unref (action);
     }
 }
-
-#define __GTK_RECENT_ACTION_C__
-#include "gtkaliasdef.c"

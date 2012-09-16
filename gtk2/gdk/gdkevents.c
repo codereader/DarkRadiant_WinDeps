@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -25,18 +23,34 @@
  */
 
 #include "config.h"
-#include <string.h>		/* For memset() */
 
-#include "gdk.h"
 #include "gdkinternals.h"
-#include "gdkalias.h"
+#include "gdkdisplayprivate.h"
+
+#include <string.h>
+#include <math.h>
+
+
+/**
+ * SECTION:events
+ * @Short_description: Functions for handling events from the window system
+ * @Title: Events
+ * @See_also: <link linkend="gdk-Event-Structures">Event Structures</link>
+ *
+ * This section describes functions dealing with events from the window
+ * system.
+ *
+ * In GTK+ applications the events are handled automatically in
+ * gtk_main_do_event() and passed on to the appropriate widgets, so these
+ * functions are rarely needed. Though some of the fields in the
+ * <link linkend="gdk-Event-Structures">Event Structures</link> are useful.
+ */
+
 
 typedef struct _GdkIOClosure GdkIOClosure;
 
 struct _GdkIOClosure
 {
-  GdkInputFunction function;
-  GdkInputCondition condition;
   GDestroyNotify notify;
   gpointer data;
 };
@@ -44,9 +58,16 @@ struct _GdkIOClosure
 /* Private variable declarations
  */
 
-GdkEventFunc   _gdk_event_func = NULL;    /* Callback for events */
-gpointer       _gdk_event_data = NULL;
-GDestroyNotify _gdk_event_notify = NULL;
+static GdkEventFunc   _gdk_event_func = NULL;    /* Callback for events */
+static gpointer       _gdk_event_data = NULL;
+static GDestroyNotify _gdk_event_notify = NULL;
+
+void
+_gdk_event_emit (GdkEvent *event)
+{
+  if (_gdk_event_func)
+    (*_gdk_event_func) (event, _gdk_event_data);
+}
 
 /*********************************************
  * Functions for maintaining the event queue *
@@ -149,15 +170,15 @@ _gdk_event_queue_insert_after (GdkDisplay *display,
 }
 
 /**
- * _gdk_event_queue_insert_after:
+ * _gdk_event_queue_insert_before:
  * @display: a #GdkDisplay
- * @sibling: Append after this event.
- * @event: Event to append.
+ * @sibling: Append before this event
+ * @event: Event to prepend
  *
- * Appends an event before the specified event, or if it isn't in
- * the queue, onto the tail of the event queue.
+ * Prepends an event before the specified event, or if it isn't in
+ * the queue, onto the head of the event queue.
  *
- * Returns: the newly appended list node.
+ * Returns: the newly prepended list node.
  *
  * Since: 2.16
  */
@@ -255,6 +276,45 @@ gdk_event_handler_set (GdkEventFunc   func,
 }
 
 /**
+ * gdk_events_pending:
+ *
+ * Checks if any events are ready to be processed for any display.
+ *
+ * Return value: %TRUE if any events are pending.
+ */
+gboolean
+gdk_events_pending (void)
+{
+  GSList *list, *l;
+  gboolean pending;
+
+  pending = FALSE;
+  list = gdk_display_manager_list_displays (gdk_display_manager_get ());
+  for (l = list; l; l = l->next)
+    {
+      if (_gdk_event_queue_find_first (l->data))
+        {
+          pending = TRUE;
+          goto out;
+        }
+    }
+
+  for (l = list; l; l = l->next)
+    {
+      if (gdk_display_has_pending (l->data))
+        {
+          pending = TRUE;
+          goto out;
+        }
+    }
+
+ out:
+  g_slist_free (list);
+
+  return pending;
+}
+
+/**
  * gdk_event_get:
  * 
  * Checks all open displays for a #GdkEvent to process,to be processed
@@ -267,16 +327,21 @@ gdk_event_handler_set (GdkEventFunc   func,
 GdkEvent*
 gdk_event_get (void)
 {
-  GSList *tmp_list;
+  GSList *list, *l;
+  GdkEvent *event;
 
-  for (tmp_list = _gdk_displays; tmp_list; tmp_list = tmp_list->next)
+  event = NULL;
+  list = gdk_display_manager_list_displays (gdk_display_manager_get ());
+  for (l = list; l; l = l->next)
     {
-      GdkEvent *event = gdk_display_get_event (tmp_list->data);
+      event = gdk_display_get_event (l->data);
       if (event)
-	return event;
+        break;
     }
 
-  return NULL;
+  g_slist_free (list);
+
+  return event;
 }
 
 /**
@@ -292,16 +357,21 @@ gdk_event_get (void)
 GdkEvent*
 gdk_event_peek (void)
 {
-  GSList *tmp_list;
+  GSList *list, *l;
+  GdkEvent *event;
 
-  for (tmp_list = _gdk_displays; tmp_list; tmp_list = tmp_list->next)
+  event = NULL;
+  list = gdk_display_manager_list_displays (gdk_display_manager_get ());
+  for (l = list; l; l = l->next)
     {
-      GdkEvent *event = gdk_display_peek_event (tmp_list->data);
+      event = gdk_display_peek_event (l->data);
       if (event)
-	return event;
+        break;
     }
 
-  return NULL;
+  g_slist_free (list);
+
+  return event;
 }
 
 /**
@@ -320,7 +390,7 @@ gdk_event_put (const GdkEvent *event)
   g_return_if_fail (event != NULL);
 
   if (event->any.window)
-    display = gdk_drawable_get_display (event->any.window);
+    display = gdk_window_get_display (event->any.window);
   else
     {
       GDK_NOTE (MULTIHEAD,
@@ -387,11 +457,22 @@ gdk_event_new (GdkEventType type)
       new_event->button.x_root = 0.;
       new_event->button.y_root = 0.;
       break;
+    case GDK_TOUCH_BEGIN:
+    case GDK_TOUCH_UPDATE:
+    case GDK_TOUCH_END:
+    case GDK_TOUCH_CANCEL:
+      new_event->touch.x = 0.;
+      new_event->touch.y = 0.;
+      new_event->touch.x_root = 0.;
+      new_event->touch.y_root = 0.;
+      break;
     case GDK_SCROLL:
       new_event->scroll.x = 0.;
       new_event->scroll.y = 0.;
       new_event->scroll.x_root = 0.;
       new_event->scroll.y_root = 0.;
+      new_event->scroll.delta_x = 0.;
+      new_event->scroll.delta_y = 0.;
       break;
     case GDK_ENTER_NOTIFY:
     case GDK_LEAVE_NOTIFY:
@@ -415,7 +496,31 @@ gdk_event_is_allocated (const GdkEvent *event)
 
   return FALSE;
 }
- 
+
+void
+_gdk_event_set_pointer_emulated (GdkEvent *event,
+                                 gboolean  emulated)
+{
+  if (gdk_event_is_allocated (event))
+    {
+      GdkEventPrivate *private = (GdkEventPrivate *) event;
+
+      if (emulated)
+        private->flags |= GDK_EVENT_POINTER_EMULATED;
+      else
+        private->flags &= ~(GDK_EVENT_POINTER_EMULATED);
+    }
+}
+
+gboolean
+_gdk_event_get_pointer_emulated (GdkEvent *event)
+{
+  if (gdk_event_is_allocated (event))
+    return (((GdkEventPrivate *) event)->flags & GDK_EVENT_POINTER_EMULATED) != 0;
+
+  return FALSE;
+}
+
 /**
  * gdk_event_copy:
  * @event: a #GdkEvent
@@ -431,9 +536,9 @@ gdk_event_copy (const GdkEvent *event)
 {
   GdkEventPrivate *new_private;
   GdkEvent *new_event;
-  
+
   g_return_val_if_fail (event != NULL, NULL);
-  
+
   new_event = gdk_event_new (GDK_NOTHING);
   new_private = (GdkEventPrivate *)new_event;
 
@@ -446,21 +551,23 @@ gdk_event_copy (const GdkEvent *event)
       GdkEventPrivate *private = (GdkEventPrivate *)event;
 
       new_private->screen = private->screen;
+      new_private->device = private->device;
+      new_private->source_device = private->source_device;
     }
-  
+
   switch (event->any.type)
     {
     case GDK_KEY_PRESS:
     case GDK_KEY_RELEASE:
       new_event->key.string = g_strdup (event->key.string);
       break;
-      
+
     case GDK_ENTER_NOTIFY:
     case GDK_LEAVE_NOTIFY:
       if (event->crossing.subwindow != NULL)
-	g_object_ref (event->crossing.subwindow);
+        g_object_ref (event->crossing.subwindow);
       break;
-      
+
     case GDK_DRAG_ENTER:
     case GDK_DRAG_LEAVE:
     case GDK_DRAG_MOTION:
@@ -469,38 +576,62 @@ gdk_event_copy (const GdkEvent *event)
     case GDK_DROP_FINISHED:
       g_object_ref (event->dnd.context);
       break;
-      
+
     case GDK_EXPOSE:
     case GDK_DAMAGE:
       if (event->expose.region)
-	new_event->expose.region = gdk_region_copy (event->expose.region);
+        new_event->expose.region = cairo_region_copy (event->expose.region);
       break;
-      
+
     case GDK_SETTING:
       new_event->setting.name = g_strdup (new_event->setting.name);
       break;
 
     case GDK_BUTTON_PRESS:
+    case GDK_2BUTTON_PRESS:
+    case GDK_3BUTTON_PRESS:
     case GDK_BUTTON_RELEASE:
-      if (event->button.axes) 
-	new_event->button.axes = g_memdup (event->button.axes, 
-					     sizeof (gdouble) * event->button.device->num_axes);
+      if (event->button.axes)
+        new_event->button.axes = g_memdup (event->button.axes,
+                                           sizeof (gdouble) * gdk_device_get_n_axes (event->button.device));
+      break;
+
+    case GDK_TOUCH_BEGIN:
+    case GDK_TOUCH_UPDATE:
+    case GDK_TOUCH_END:
+    case GDK_TOUCH_CANCEL:
+      if (event->touch.axes)
+        new_event->touch.axes = g_memdup (event->touch.axes,
+                                           sizeof (gdouble) * gdk_device_get_n_axes (event->touch.device));
       break;
 
     case GDK_MOTION_NOTIFY:
-      if (event->motion.axes) 
-	new_event->motion.axes = g_memdup (event->motion.axes, 
-					   sizeof (gdouble) * event->motion.device->num_axes);
-      
+      if (event->motion.axes)
+        new_event->motion.axes = g_memdup (event->motion.axes,
+                                           sizeof (gdouble) * gdk_device_get_n_axes (event->motion.device));
       break;
-      
+
+    case GDK_OWNER_CHANGE:
+      new_event->owner_change.owner = event->owner_change.owner;
+      if (new_event->owner_change.owner)
+        g_object_ref (new_event->owner_change.owner);
+      break;
+
+    case GDK_SELECTION_CLEAR:
+    case GDK_SELECTION_NOTIFY:
+    case GDK_SELECTION_REQUEST:
+      new_event->selection.requestor = event->selection.requestor;
+      if (new_event->selection.requestor)
+        g_object_ref (new_event->selection.requestor);
+      break;
+
     default:
       break;
     }
 
   if (gdk_event_is_allocated (event))
-    _gdk_windowing_event_data_copy (event, new_event);
-  
+    _gdk_display_event_data_copy (gdk_display_get_default (), event, new_event);
+
   return new_event;
 }
 
@@ -510,12 +641,14 @@ gdk_event_copy (const GdkEvent *event)
  * 
  * Frees a #GdkEvent, freeing or decrementing any resources associated with it.
  * Note that this function should only be called with events returned from
- * functions such as gdk_event_peek(), gdk_event_get(),
- * gdk_event_get_graphics_expose() and gdk_event_copy() and gdk_event_new().
+ * functions such as gdk_event_peek(), gdk_event_get(), gdk_event_copy()
+ * and gdk_event_new().
  **/
 void
 gdk_event_free (GdkEvent *event)
 {
+  GdkDisplay *display;
+
   g_return_if_fail (event != NULL);
 
   if (event->any.window)
@@ -540,18 +673,28 @@ gdk_event_free (GdkEvent *event)
     case GDK_DRAG_STATUS:
     case GDK_DROP_START:
     case GDK_DROP_FINISHED:
-      g_object_unref (event->dnd.context);
+      if (event->dnd.context != NULL)
+        g_object_unref (event->dnd.context);
       break;
 
     case GDK_BUTTON_PRESS:
+    case GDK_2BUTTON_PRESS:
+    case GDK_3BUTTON_PRESS:
     case GDK_BUTTON_RELEASE:
       g_free (event->button.axes);
       break;
-      
+
+    case GDK_TOUCH_BEGIN:
+    case GDK_TOUCH_UPDATE:
+    case GDK_TOUCH_END:
+    case GDK_TOUCH_CANCEL:
+      g_free (event->touch.axes);
+      break;
+
     case GDK_EXPOSE:
     case GDK_DAMAGE:
       if (event->expose.region)
-	gdk_region_destroy (event->expose.region);
+	cairo_region_destroy (event->expose.region);
       break;
       
     case GDK_MOTION_NOTIFY:
@@ -562,11 +705,25 @@ gdk_event_free (GdkEvent *event)
       g_free (event->setting.name);
       break;
       
+    case GDK_OWNER_CHANGE:
+      if (event->owner_change.owner)
+        g_object_unref (event->owner_change.owner);
+      break;
+
+    case GDK_SELECTION_CLEAR:
+    case GDK_SELECTION_NOTIFY:
+    case GDK_SELECTION_REQUEST:
+      if (event->selection.requestor)
+        g_object_unref (event->selection.requestor);
+      break;
+
     default:
       break;
     }
 
-  _gdk_windowing_event_data_free (event);
+  display = gdk_display_get_default ();
+  if (display)
+    _gdk_display_event_data_free (display, event);
 
   g_hash_table_remove (event_hash, event);
   g_slice_free (GdkEventPrivate, (GdkEventPrivate*) event);
@@ -594,6 +751,11 @@ gdk_event_get_time (const GdkEvent *event)
       case GDK_3BUTTON_PRESS:
       case GDK_BUTTON_RELEASE:
 	return event->button.time;
+      case GDK_TOUCH_BEGIN:
+      case GDK_TOUCH_UPDATE:
+      case GDK_TOUCH_END:
+      case GDK_TOUCH_CANCEL:
+        return event->touch.time;
       case GDK_SCROLL:
         return event->scroll.time;
       case GDK_KEY_PRESS:
@@ -620,7 +782,6 @@ gdk_event_get_time (const GdkEvent *event)
 	return event->dnd.time;
       case GDK_CLIENT_EVENT:
       case GDK_VISIBILITY_NOTIFY:
-      case GDK_NO_EXPOSE:
       case GDK_CONFIGURE:
       case GDK_FOCUS_CHANGE:
       case GDK_NOTHING:
@@ -670,7 +831,13 @@ gdk_event_get_state (const GdkEvent        *event,
       case GDK_2BUTTON_PRESS:
       case GDK_3BUTTON_PRESS:
       case GDK_BUTTON_RELEASE:
-        *state =  event->button.state;
+        *state = event->button.state;
+        return TRUE;
+      case GDK_TOUCH_BEGIN:
+      case GDK_TOUCH_UPDATE:
+      case GDK_TOUCH_END:
+      case GDK_TOUCH_CANCEL:
+        *state = event->touch.state;
         return TRUE;
       case GDK_SCROLL:
 	*state =  event->scroll.state;
@@ -684,11 +851,8 @@ gdk_event_get_state (const GdkEvent        *event,
 	*state =  event->crossing.state;
         return TRUE;
       case GDK_PROPERTY_NOTIFY:
-	*state =  event->property.state;
-        return TRUE;
       case GDK_VISIBILITY_NOTIFY:
       case GDK_CLIENT_EVENT:
-      case GDK_NO_EXPOSE:
       case GDK_CONFIGURE:
       case GDK_FOCUS_CHANGE:
       case GDK_SELECTION_CLEAR:
@@ -764,6 +928,13 @@ gdk_event_get_coords (const GdkEvent *event,
       x = event->button.x;
       y = event->button.y;
       break;
+    case GDK_TOUCH_BEGIN:
+    case GDK_TOUCH_UPDATE:
+    case GDK_TOUCH_END:
+    case GDK_TOUCH_CANCEL:
+      x = event->touch.x;
+      y = event->touch.y;
+      break;
     case GDK_MOTION_NOTIFY:
       x = event->motion.x;
       y = event->motion.y;
@@ -818,6 +989,13 @@ gdk_event_get_root_coords (const GdkEvent *event,
       x = event->button.x_root;
       y = event->button.y_root;
       break;
+    case GDK_TOUCH_BEGIN:
+    case GDK_TOUCH_UPDATE:
+    case GDK_TOUCH_END:
+    case GDK_TOUCH_CANCEL:
+      x = event->touch.x_root;
+      y = event->touch.y_root;
+      break;
     case GDK_ENTER_NOTIFY:
     case GDK_LEAVE_NOTIFY:
       x = event->crossing.x_root;
@@ -841,6 +1019,241 @@ gdk_event_get_root_coords (const GdkEvent *event,
     *x_root = x;
   if (y_root)
     *y_root = y;
+
+  return fetched;
+}
+
+/**
+ * gdk_event_get_button:
+ * @event: a #GdkEvent
+ * @button: (out): location to store mouse button number
+ *
+ * Extract the button number from an event.
+ *
+ * Return value: %TRUE if the event delivered a button number
+ *
+ * Since: 3.2
+ **/
+gboolean
+gdk_event_get_button (const GdkEvent *event,
+                      guint *button)
+{
+  gboolean fetched = TRUE;
+  guint number = 0;
+
+  g_return_val_if_fail (event != NULL, FALSE);
+  
+  switch (event->type)
+    {
+    case GDK_BUTTON_PRESS:
+    case GDK_2BUTTON_PRESS:
+    case GDK_3BUTTON_PRESS:
+    case GDK_BUTTON_RELEASE:
+      number = event->button.button;
+      break;
+    default:
+      fetched = FALSE;
+      break;
+    }
+
+  if (button)
+    *button = number;
+
+  return fetched;
+}
+
+/**
+ * gdk_event_get_click_count:
+ * @event: a #GdkEvent
+ * @click_count: (out): location to store click count
+ *
+ * Extracts the click count from an event.
+ *
+ * Return value: %TRUE if the event delivered a click count
+ *
+ * Since: 3.2
+ */
+gboolean
+gdk_event_get_click_count (const GdkEvent *event,
+                           guint *click_count)
+{
+  gboolean fetched = TRUE;
+  guint number = 0;
+
+  g_return_val_if_fail (event != NULL, FALSE);
+
+  switch (event->type)
+    {
+    case GDK_BUTTON_PRESS:
+    case GDK_BUTTON_RELEASE:
+      number = 1;
+      break;
+    case GDK_2BUTTON_PRESS:
+      number = 2;
+      break;
+    case GDK_3BUTTON_PRESS:
+      number = 3;
+      break;
+    default:
+      fetched = FALSE;
+      break;
+    }
+
+  if (click_count)
+    *click_count = number;
+
+  return fetched;
+}
+
+/**
+ * gdk_event_get_keyval:
+ * @event: a #GdkEvent
+ * @keyval: (out): location to store the keyval
+ *
+ * Extracts the keyval from an event.
+ *
+ * Return value: %TRUE if the event delivered a key symbol
+ *
+ * Since: 3.2
+ */
+gboolean
+gdk_event_get_keyval (const GdkEvent *event,
+                      guint *keyval)
+{
+  gboolean fetched = TRUE;
+  guint number = 0;
+
+  switch (event->type)
+    {
+    case GDK_KEY_PRESS:
+    case GDK_KEY_RELEASE:
+      number = event->key.keyval;
+      break;
+    default:
+      fetched = FALSE;
+      break;
+    }
+
+  if (keyval)
+    *keyval = number;
+
+  return fetched;
+}
+
+/**
+ * gdk_event_get_keycode:
+ * @event: a #GdkEvent
+ * @keycode: (out): location to store the keycode
+ *
+ * Extracts the hardware keycode from an event.
+ *
+ * Return value: %TRUE if the event delivered a hardware keycode
+ *
+ * Since: 3.2
+ */
+gboolean
+gdk_event_get_keycode (const GdkEvent *event,
+                       guint16 *keycode)
+{
+  gboolean fetched = TRUE;
+  guint16 number = 0;
+
+  switch (event->type)
+    {
+    case GDK_KEY_PRESS:
+    case GDK_KEY_RELEASE:
+      number = event->key.hardware_keycode;
+      break;
+    default:
+      fetched = FALSE;
+      break;
+    }
+
+  if (keycode)
+    *keycode = number;
+
+  return fetched;
+}
+
+/**
+ * gdk_event_get_scroll_direction:
+ * @event: a #GdkEvent
+ * @direction: (out): location to store the scroll direction
+ *
+ * Extracts the scroll direction from an event.
+ *
+ * Return value: %TRUE if the event delivered a scroll direction
+ *
+ * Since: 3.2
+ */
+gboolean
+gdk_event_get_scroll_direction (const GdkEvent *event,
+                                GdkScrollDirection *direction)
+{
+  gboolean fetched = TRUE;
+  GdkScrollDirection dir = 0;
+
+  switch (event->type)
+    {
+    case GDK_SCROLL:
+      if (event->scroll.direction == GDK_SCROLL_SMOOTH)
+        fetched = FALSE;
+      else
+        dir = event->scroll.direction;
+      break;
+    default:
+      fetched = FALSE;
+      break;
+    }
+
+  if (direction)
+    *direction = dir;
+
+  return fetched;
+}
+
+/**
+ * gdk_event_get_scroll_deltas:
+ * @event: a #GdkEvent
+ * @delta_x: (out): return location for X delta
+ * @delta_y: (out): return location for Y delta
+ *
+ * Retrieves the scroll deltas from a #GdkEvent
+ *
+ * Returns: %TRUE if the event contains smooth scroll information
+ *
+ * Since: 3.4
+ **/
+gboolean
+gdk_event_get_scroll_deltas (const GdkEvent *event,
+                             gdouble        *delta_x,
+                             gdouble        *delta_y)
+{
+  gboolean fetched = TRUE;
+  gdouble dx = 0.0;
+  gdouble dy = 0.0;
+
+  switch (event->type)
+    {
+    case GDK_SCROLL:
+      if (event->scroll.direction == GDK_SCROLL_SMOOTH)
+        {
+          dx = event->scroll.delta_x;
+          dy = event->scroll.delta_y;
+        }
+      else
+        fetched = FALSE;
+      break;
+    default:
+      fetched = FALSE;
+      break;
+    }
+
+  if (delta_x)
+    *delta_x = dx;
+
+  if (delta_y)
+    *delta_y = dy;
 
   return fetched;
 }
@@ -872,7 +1285,7 @@ gdk_event_get_axis (const GdkEvent *event,
       
       switch (event->type)
 	{
-	case GDK_MOTION_NOTIFY:
+        case GDK_MOTION_NOTIFY:
 	  x = event->motion.x;
 	  y = event->motion.y;
 	  break;
@@ -884,6 +1297,13 @@ gdk_event_get_axis (const GdkEvent *event,
 	case GDK_BUTTON_RELEASE:
 	  x = event->button.x;
 	  y = event->button.y;
+	  break;
+        case GDK_TOUCH_BEGIN:
+        case GDK_TOUCH_UPDATE:
+        case GDK_TOUCH_END:
+        case GDK_TOUCH_CANCEL:
+	  x = event->touch.x;
+	  y = event->touch.y;
 	  break;
 	case GDK_ENTER_NOTIFY:
 	case GDK_LEAVE_NOTIFY:
@@ -908,6 +1328,14 @@ gdk_event_get_axis (const GdkEvent *event,
       device = event->button.device;
       axes = event->button.axes;
     }
+  else if (event->type == GDK_TOUCH_BEGIN ||
+           event->type == GDK_TOUCH_UPDATE ||
+           event->type == GDK_TOUCH_END ||
+           event->type == GDK_TOUCH_CANCEL)
+    {
+      device = event->touch.device;
+      axes = event->touch.axes;
+    }
   else if (event->type == GDK_MOTION_NOTIFY)
     {
       device = event->motion.device;
@@ -920,10 +1348,225 @@ gdk_event_get_axis (const GdkEvent *event,
 }
 
 /**
+ * gdk_event_set_device:
+ * @event: a #GdkEvent
+ * @device: a #GdkDevice
+ *
+ * Sets the device for @event to @device. The event must
+ * have been allocated by GTK+, for instance, by
+ * gdk_event_copy().
+ *
+ * Since: 3.0
+ **/
+void
+gdk_event_set_device (GdkEvent  *event,
+                      GdkDevice *device)
+{
+  GdkEventPrivate *private;
+
+  g_return_if_fail (gdk_event_is_allocated (event));
+
+  private = (GdkEventPrivate *) event;
+
+  private->device = device;
+
+  switch (event->type)
+    {
+    case GDK_MOTION_NOTIFY:
+      event->motion.device = device;
+      break;
+    case GDK_BUTTON_PRESS:
+    case GDK_2BUTTON_PRESS:
+    case GDK_3BUTTON_PRESS:
+    case GDK_BUTTON_RELEASE:
+      event->button.device = device;
+      break;
+    case GDK_TOUCH_BEGIN:
+    case GDK_TOUCH_UPDATE:
+    case GDK_TOUCH_END:
+    case GDK_TOUCH_CANCEL:
+      event->touch.device = device;
+      break;
+    case GDK_SCROLL:
+      event->scroll.device = device;
+      break;
+    case GDK_PROXIMITY_IN:
+    case GDK_PROXIMITY_OUT:
+      event->proximity.device = device;
+      break;
+    default:
+      break;
+    }
+}
+
+/**
+ * gdk_event_get_device:
+ * @event: a #GdkEvent.
+ *
+ * If the event contains a "device" field, this function will return
+ * it, else it will return %NULL.
+ *
+ * Returns: (transfer none): a #GdkDevice, or %NULL.
+ *
+ * Since: 3.0
+ **/
+GdkDevice *
+gdk_event_get_device (const GdkEvent *event)
+{
+  g_return_val_if_fail (event != NULL, NULL);
+
+  if (gdk_event_is_allocated (event))
+    {
+      GdkEventPrivate *private = (GdkEventPrivate *) event;
+
+      if (private->device)
+        return private->device;
+    }
+
+  switch (event->type)
+    {
+    case GDK_MOTION_NOTIFY:
+      return event->motion.device;
+    case GDK_BUTTON_PRESS:
+    case GDK_2BUTTON_PRESS:
+    case GDK_3BUTTON_PRESS:
+    case GDK_BUTTON_RELEASE:
+      return event->button.device;
+    case GDK_TOUCH_BEGIN:
+    case GDK_TOUCH_UPDATE:
+    case GDK_TOUCH_END:
+    case GDK_TOUCH_CANCEL:
+      return event->touch.device;
+    case GDK_SCROLL:
+      return event->scroll.device;
+    case GDK_PROXIMITY_IN:
+    case GDK_PROXIMITY_OUT:
+      return event->proximity.device;
+    default:
+      break;
+    }
+
+  /* Fallback if event has no device set */
+  switch (event->type)
+    {
+    case GDK_MOTION_NOTIFY:
+    case GDK_BUTTON_PRESS:
+    case GDK_2BUTTON_PRESS:
+    case GDK_3BUTTON_PRESS:
+    case GDK_BUTTON_RELEASE:
+    case GDK_TOUCH_BEGIN:
+    case GDK_TOUCH_UPDATE:
+    case GDK_TOUCH_END:
+    case GDK_TOUCH_CANCEL:
+    case GDK_ENTER_NOTIFY:
+    case GDK_LEAVE_NOTIFY:
+    case GDK_FOCUS_CHANGE:
+    case GDK_PROXIMITY_IN:
+    case GDK_PROXIMITY_OUT:
+    case GDK_DRAG_ENTER:
+    case GDK_DRAG_LEAVE:
+    case GDK_DRAG_MOTION:
+    case GDK_DRAG_STATUS:
+    case GDK_DROP_START:
+    case GDK_DROP_FINISHED:
+    case GDK_SCROLL:
+    case GDK_GRAB_BROKEN:
+    case GDK_KEY_PRESS:
+    case GDK_KEY_RELEASE:
+      {
+        GdkDisplay *display;
+        GdkDeviceManager *device_manager;
+        GdkDevice *client_pointer;
+
+        g_warning ("Event with type %d not holding a GdkDevice. "
+                   "It is most likely synthesized outside Gdk/GTK+\n",
+                   event->type);
+
+        display = gdk_window_get_display (event->any.window);
+        device_manager = gdk_display_get_device_manager (display);
+        client_pointer = gdk_device_manager_get_client_pointer (device_manager);
+
+        if (event->type == GDK_KEY_PRESS ||
+            event->type == GDK_KEY_RELEASE)
+          return gdk_device_get_associated_device (client_pointer);
+        else
+          return client_pointer;
+      }
+      break;
+    default:
+      return NULL;
+    }
+}
+
+/**
+ * gdk_event_set_source_device:
+ * @event: a #GdkEvent
+ * @device: a #GdkDevice
+ *
+ * Sets the slave device for @event to @device.
+ *
+ * The event must have been allocated by GTK+,
+ * for instance by gdk_event_copy().
+ *
+ * Since: 3.0
+ **/
+void
+gdk_event_set_source_device (GdkEvent  *event,
+                             GdkDevice *device)
+{
+  GdkEventPrivate *private;
+
+  g_return_if_fail (gdk_event_is_allocated (event));
+  g_return_if_fail (GDK_IS_DEVICE (device));
+
+  private = (GdkEventPrivate *) event;
+
+  private->source_device = device;
+}
+
+/**
+ * gdk_event_get_source_device:
+ * @event: a #GdkEvent
+ *
+ * This function returns the hardware (slave) #GdkDevice that has
+ * triggered the event, falling back to the virtual (master) device
+ * (as in gdk_event_get_device()) if the event wasn't caused by
+ * interaction with a hardware device. This may happen for example
+ * in synthesized crossing events after a #GdkWindow updates its
+ * geometry or a grab is acquired/released.
+ *
+ * If the event does not contain a device field, this function will
+ * return %NULL.
+ *
+ * Returns: (transfer none): a #GdkDevice, or %NULL.
+ *
+ * Since: 3.0
+ **/
+GdkDevice *
+gdk_event_get_source_device (const GdkEvent *event)
+{
+  GdkEventPrivate *private;
+
+  g_return_val_if_fail (event != NULL, NULL);
+
+  if (!gdk_event_is_allocated (event))
+    return NULL;
+
+  private = (GdkEventPrivate *) event;
+
+  if (private->source_device)
+    return private->source_device;
+
+  /* Fallback to event device */
+  return gdk_event_get_device (event);
+}
+
+/**
  * gdk_event_request_motions:
  * @event: a valid #GdkEvent
  *
  * Request more motion notifies if @event is a motion notify hint event.
+ *
  * This function should be used instead of gdk_window_get_pointer() to
  * request further motion notifies, because it also works for extension
  * events where motion notifies are provided for devices other than the
@@ -931,7 +1574,7 @@ gdk_event_get_axis (const GdkEvent *event,
  * motion events from a %GDK_MOTION_NOTIFY event usually works like this:
  *
  * |[
- * { 
+ * {
  *   /&ast; motion_event handler &ast;/
  *   x = motion_event->x;
  *   y = motion_event->y;
@@ -953,9 +1596,190 @@ gdk_event_request_motions (const GdkEventMotion *event)
     {
       gdk_device_get_state (event->device, event->window, NULL, NULL);
       
-      display = gdk_drawable_get_display (event->window);
-      _gdk_display_enable_motion_hints (display);
+      display = gdk_window_get_display (event->window);
+      _gdk_display_enable_motion_hints (display, event->device);
     }
+}
+
+/**
+ * gdk_event_triggers_context_menu:
+ * @event: a #GdkEvent, currently only button events are meaningful values
+ *
+ * This function returns whether a #GdkEventButton should trigger a
+ * context menu, according to platform conventions. The right mouse
+ * button always triggers context menus. Additionally, if
+ * gdk_keymap_get_modifier_mask() returns a non-0 mask for
+ * %GDK_MODIFIER_INTENT_CONTEXT_MENU, then the left mouse button will
+ * also trigger a context menu if this modifier is pressed.
+ *
+ * This function should always be used instead of simply checking for
+ * event->button == %GDK_BUTTON_SECONDARY.
+ *
+ * Returns: %TRUE if the event should trigger a context menu.
+ *
+ * Since: 3.4
+ **/
+gboolean
+gdk_event_triggers_context_menu (const GdkEvent *event)
+{
+  g_return_val_if_fail (event != NULL, FALSE);
+
+  if (event->type == GDK_BUTTON_PRESS)
+    {
+      const GdkEventButton *bevent = (const GdkEventButton *) event;
+      GdkDisplay *display;
+      GdkModifierType modifier;
+
+      g_return_val_if_fail (GDK_IS_WINDOW (bevent->window), FALSE);
+
+      if (bevent->button == GDK_BUTTON_SECONDARY &&
+          ! (bevent->state & (GDK_BUTTON1_MASK | GDK_BUTTON2_MASK)))
+        return TRUE;
+
+      display = gdk_window_get_display (bevent->window);
+
+      modifier = gdk_keymap_get_modifier_mask (gdk_keymap_get_for_display (display),
+                                               GDK_MODIFIER_INTENT_CONTEXT_MENU);
+
+      if (modifier != 0 &&
+          bevent->button == GDK_BUTTON_PRIMARY &&
+          ! (bevent->state & (GDK_BUTTON2_MASK | GDK_BUTTON3_MASK)) &&
+          (bevent->state & modifier))
+        return TRUE;
+    }
+
+  return FALSE;
+}
+
+static gboolean
+gdk_events_get_axis_distances (GdkEvent *event1,
+                               GdkEvent *event2,
+                               gdouble  *x_distance,
+                               gdouble  *y_distance,
+                               gdouble  *distance)
+{
+  gdouble x1, x2, y1, y2;
+  gdouble xd, yd;
+
+  if (!gdk_event_get_coords (event1, &x1, &y1) ||
+      !gdk_event_get_coords (event2, &x2, &y2))
+    return FALSE;
+
+  xd = x2 - x1;
+  yd = y2 - y1;
+
+  if (x_distance)
+    *x_distance = xd;
+
+  if (y_distance)
+    *y_distance = yd;
+
+  if (distance)
+    *distance = sqrt ((xd * xd) + (yd * yd));
+
+  return TRUE;
+}
+
+/**
+ * gdk_events_get_distance:
+ * @event1: first #GdkEvent
+ * @event2: second #GdkEvent
+ * @distance: (out): return location for the distance
+ *
+ * If both events have X/Y information, the distance between both coordinates
+ * (as in a straight line going from @event1 to @event2) will be returned.
+ *
+ * Returns: %TRUE if the distance could be calculated.
+ *
+ * Since: 3.0
+ **/
+gboolean
+gdk_events_get_distance (GdkEvent *event1,
+                         GdkEvent *event2,
+                         gdouble  *distance)
+{
+  return gdk_events_get_axis_distances (event1, event2,
+                                        NULL, NULL,
+                                        distance);
+}
+
+/**
+ * gdk_events_get_angle:
+ * @event1: first #GdkEvent
+ * @event2: second #GdkEvent
+ * @angle: (out): return location for the relative angle between both events
+ *
+ * If both events contain X/Y information, this function will return %TRUE
+ * and return in @angle the relative angle from @event1 to @event2. The rotation
+ * direction for positive angles is from the positive X axis towards the positive
+ * Y axis.
+ *
+ * Returns: %TRUE if the angle could be calculated.
+ *
+ * Since: 3.0
+ **/
+gboolean
+gdk_events_get_angle (GdkEvent *event1,
+                      GdkEvent *event2,
+                      gdouble  *angle)
+{
+  gdouble x_distance, y_distance, distance;
+
+  if (!gdk_events_get_axis_distances (event1, event2,
+                                      &x_distance, &y_distance,
+                                      &distance))
+    return FALSE;
+
+  if (angle)
+    {
+      *angle = atan2 (x_distance, y_distance);
+
+      /* Invert angle */
+      *angle = (2 * G_PI) - *angle;
+
+      /* Shift it 90° */
+      *angle += G_PI / 2;
+
+      /* And constraint it to 0°-360° */
+      *angle = fmod (*angle, 2 * G_PI);
+    }
+
+  return TRUE;
+}
+
+/**
+ * gdk_events_get_center:
+ * @event1: first #GdkEvent
+ * @event2: second #GdkEvent
+ * @x: (out): return location for the X coordinate of the center
+ * @y: (out): return location for the Y coordinate of the center
+ *
+ * If both events contain X/Y information, the center of both coordinates
+ * will be returned in @x and @y.
+ *
+ * Returns: %TRUE if the center could be calculated.
+ *
+ * Since: 3.0
+ **/
+gboolean
+gdk_events_get_center (GdkEvent *event1,
+                       GdkEvent *event2,
+                       gdouble  *x,
+                       gdouble  *y)
+{
+  gdouble x1, x2, y1, y2;
+
+  if (!gdk_event_get_coords (event1, &x1, &y1) ||
+      !gdk_event_get_coords (event2, &x2, &y2))
+    return FALSE;
+
+  if (x)
+    *x = (x2 + x1) / 2;
+
+  if (y)
+    *y = (y2 + y1) / 2;
+
+  return TRUE;
 }
 
 /**
@@ -994,7 +1818,7 @@ gdk_event_set_screen (GdkEvent  *event,
  * to which <literal>event->motion.x_root</literal> and
  * <literal>event->motion.y_root</literal> are relative.
  * 
- * Return value: the screen for the event
+ * Return value: (transfer none): the screen for the event
  *
  * Since: 2.2
  **/
@@ -1010,7 +1834,34 @@ gdk_event_get_screen (const GdkEvent *event)
     }
 
   if (event->any.window)
-    return gdk_drawable_get_screen (event->any.window);
+    return gdk_window_get_screen (event->any.window);
+
+  return NULL;
+}
+
+/**
+ * gdk_event_get_event_sequence:
+ * @event: a #GdkEvent
+ *
+ * If @event if of type %GDK_TOUCH_BEGIN, %GDK_TOUCH_UPDATE,
+ * %GDK_TOUCH_END or %GDK_TOUCH_CANCEL, returns the #GdkEventSequence
+ * to which the event belongs. Otherwise, return %NULL.
+ *
+ * Returns: the event sequence that the event belongs to
+ *
+ * Since: 3.4
+ */
+GdkEventSequence *
+gdk_event_get_event_sequence (const GdkEvent *event)
+{
+  if (!event)
+    return NULL;
+
+  if (event->type == GDK_TOUCH_BEGIN ||
+      event->type == GDK_TOUCH_UPDATE ||
+      event->type == GDK_TOUCH_END ||
+      event->type == GDK_TOUCH_CANCEL)
+    return event->touch.sequence;
 
   return NULL;
 }
@@ -1046,194 +1897,92 @@ gdk_get_show_events (void)
   return (_gdk_debug_flags & GDK_DEBUG_EVENTS) != 0;
 }
 
-static void
-gdk_io_destroy (gpointer data)
-{
-  GdkIOClosure *closure = data;
-
-  if (closure->notify)
-    closure->notify (closure->data);
-
-  g_free (closure);
-}
-
 /* What do we do with G_IO_NVAL?
  */
 #define READ_CONDITION (G_IO_IN | G_IO_HUP | G_IO_ERR)
 #define WRITE_CONDITION (G_IO_OUT | G_IO_ERR)
 #define EXCEPTION_CONDITION (G_IO_PRI)
 
-static gboolean  
-gdk_io_invoke (GIOChannel   *source,
-	       GIOCondition  condition,
-	       gpointer      data)
-{
-  GdkIOClosure *closure = data;
-  GdkInputCondition gdk_cond = 0;
-
-  if (condition & READ_CONDITION)
-    gdk_cond |= GDK_INPUT_READ;
-  if (condition & WRITE_CONDITION)
-    gdk_cond |= GDK_INPUT_WRITE;
-  if (condition & EXCEPTION_CONDITION)
-    gdk_cond |= GDK_INPUT_EXCEPTION;
-
-  if (closure->condition & gdk_cond)
-    closure->function (closure->data, g_io_channel_unix_get_fd (source), gdk_cond);
-
-  return TRUE;
-}
-
-/**
- * gdk_input_add_full:
- * @source: a file descriptor.
- * @condition: the condition.
- * @function: the callback function.
- * @data: callback data passed to @function.
- * @destroy: callback function to call with @data when the input
- * handler is removed.
- *
- * Establish a callback when a condition becomes true on
- * a file descriptor.
- *
- * Returns: a tag that can later be used as an argument to
- * gdk_input_remove().
- *
- * Deprecated: 2.14: Use g_io_add_watch_full() on a #GIOChannel
- */
-gint
-gdk_input_add_full (gint	      source,
-		    GdkInputCondition condition,
-		    GdkInputFunction  function,
-		    gpointer	      data,
-		    GDestroyNotify    destroy)
-{
-  guint result;
-  GdkIOClosure *closure = g_new (GdkIOClosure, 1);
-  GIOChannel *channel;
-  GIOCondition cond = 0;
-
-  closure->function = function;
-  closure->condition = condition;
-  closure->notify = destroy;
-  closure->data = data;
-
-  if (condition & GDK_INPUT_READ)
-    cond |= READ_CONDITION;
-  if (condition & GDK_INPUT_WRITE)
-    cond |= WRITE_CONDITION;
-  if (condition & GDK_INPUT_EXCEPTION)
-    cond |= EXCEPTION_CONDITION;
-
-  channel = g_io_channel_unix_new (source);
-  result = g_io_add_watch_full (channel, G_PRIORITY_DEFAULT, cond, 
-				gdk_io_invoke,
-				closure, gdk_io_destroy);
-  g_io_channel_unref (channel);
-
-  return result;
-}
-
-/**
- * gdk_input_add:
- * @source: a file descriptor.
- * @condition: the condition.
- * @function: the callback function.
- * @data: callback data passed to @function.
- *
- * Establish a callback when a condition becomes true on
- * a file descriptor.
- *
- * Returns: a tag that can later be used as an argument to
- * gdk_input_remove().
- *
- * Deprecated: 2.14: Use g_io_add_watch() on a #GIOChannel
- */
-gint
-gdk_input_add (gint		 source,
-	       GdkInputCondition condition,
-	       GdkInputFunction	 function,
-	       gpointer		 data)
-{
-  return gdk_input_add_full (source, condition, function, data, NULL);
-}
-
-void
-gdk_input_remove (gint tag)
-{
-  g_source_remove (tag);
-}
-
 static void
 gdk_synthesize_click (GdkDisplay *display,
-		      GdkEvent   *event,
-		      gint	  nclicks)
+                      GdkEvent   *event,
+                      gint        nclicks)
 {
-  GdkEvent temp_event;
   GdkEvent *event_copy;
-  GList *link;
-  
-  g_return_if_fail (event != NULL);
-  
-  temp_event = *event;
-  temp_event.type = (nclicks == 2) ? GDK_2BUTTON_PRESS : GDK_3BUTTON_PRESS;
 
-  event_copy = gdk_event_copy (&temp_event);
-  link = _gdk_event_queue_append (display, event_copy);
+  event_copy = gdk_event_copy (event);
+  event_copy->type = (nclicks == 2) ? GDK_2BUTTON_PRESS : GDK_3BUTTON_PRESS;
+
+  _gdk_event_queue_append (display, event_copy);
 }
 
 void
 _gdk_event_button_generate (GdkDisplay *display,
 			    GdkEvent   *event)
 {
-  if ((event->button.time < (display->button_click_time[1] + 2*display->double_click_time)) &&
-      (event->button.window == display->button_window[1]) &&
-      (event->button.button == display->button_number[1]) &&
-      (ABS (event->button.x - display->button_x[1]) <= display->double_click_distance) &&
-      (ABS (event->button.y - display->button_y[1]) <= display->double_click_distance))
-{
-      gdk_synthesize_click (display, event, 3);
-            
-      display->button_click_time[1] = 0;
-      display->button_click_time[0] = 0;
-      display->button_window[1] = NULL;
-      display->button_window[0] = NULL;
-      display->button_number[1] = -1;
-      display->button_number[0] = -1;
-      display->button_x[0] = display->button_x[1] = 0;
-      display->button_y[0] = display->button_y[1] = 0;
+  GdkMultipleClickInfo *info;
+
+  g_return_if_fail (event->type == GDK_BUTTON_PRESS);
+
+  info = g_hash_table_lookup (display->multiple_click_info, event->button.device);
+
+  if (G_UNLIKELY (!info))
+    {
+      info = g_new0 (GdkMultipleClickInfo, 1);
+      info->button_number[0] = info->button_number[1] = -1;
+
+      g_hash_table_insert (display->multiple_click_info,
+                           event->button.device, info);
     }
-  else if ((event->button.time < (display->button_click_time[0] + display->double_click_time)) &&
-	   (event->button.window == display->button_window[0]) &&
-	   (event->button.button == display->button_number[0]) &&
-	   (ABS (event->button.x - display->button_x[0]) <= display->double_click_distance) &&
-	   (ABS (event->button.y - display->button_y[0]) <= display->double_click_distance))
+
+  if ((event->button.time < (info->button_click_time[1] + 2 * display->double_click_time)) &&
+      (event->button.window == info->button_window[1]) &&
+      (event->button.button == info->button_number[1]) &&
+      (ABS (event->button.x - info->button_x[1]) <= display->double_click_distance) &&
+      (ABS (event->button.y - info->button_y[1]) <= display->double_click_distance))
+    {
+      gdk_synthesize_click (display, event, 3);
+
+      info->button_click_time[1] = 0;
+      info->button_click_time[0] = 0;
+      info->button_window[1] = NULL;
+      info->button_window[0] = NULL;
+      info->button_number[1] = -1;
+      info->button_number[0] = -1;
+      info->button_x[0] = info->button_x[1] = 0;
+      info->button_y[0] = info->button_y[1] = 0;
+    }
+  else if ((event->button.time < (info->button_click_time[0] + display->double_click_time)) &&
+	   (event->button.window == info->button_window[0]) &&
+	   (event->button.button == info->button_number[0]) &&
+	   (ABS (event->button.x - info->button_x[0]) <= display->double_click_distance) &&
+	   (ABS (event->button.y - info->button_y[0]) <= display->double_click_distance))
     {
       gdk_synthesize_click (display, event, 2);
       
-      display->button_click_time[1] = display->button_click_time[0];
-      display->button_click_time[0] = event->button.time;
-      display->button_window[1] = display->button_window[0];
-      display->button_window[0] = event->button.window;
-      display->button_number[1] = display->button_number[0];
-      display->button_number[0] = event->button.button;
-      display->button_x[1] = display->button_x[0];
-      display->button_x[0] = event->button.x;
-      display->button_y[1] = display->button_y[0];
-      display->button_y[0] = event->button.y;
+      info->button_click_time[1] = info->button_click_time[0];
+      info->button_click_time[0] = event->button.time;
+      info->button_window[1] = info->button_window[0];
+      info->button_window[0] = event->button.window;
+      info->button_number[1] = info->button_number[0];
+      info->button_number[0] = event->button.button;
+      info->button_x[1] = info->button_x[0];
+      info->button_x[0] = event->button.x;
+      info->button_y[1] = info->button_y[0];
+      info->button_y[0] = event->button.y;
     }
   else
     {
-      display->button_click_time[1] = 0;
-      display->button_click_time[0] = event->button.time;
-      display->button_window[1] = NULL;
-      display->button_window[0] = event->button.window;
-      display->button_number[1] = -1;
-      display->button_number[0] = event->button.button;
-      display->button_x[1] = 0;
-      display->button_x[0] = event->button.x;
-      display->button_y[1] = 0;
-      display->button_y[0] = event->button.y;
+      info->button_click_time[1] = 0;
+      info->button_click_time[0] = event->button.time;
+      info->button_window[1] = NULL;
+      info->button_window[0] = event->button.window;
+      info->button_number[1] = -1;
+      info->button_number[0] = event->button.button;
+      info->button_x[1] = 0;
+      info->button_x[0] = event->button.x;
+      info->button_y[1] = 0;
+      info->button_y[0] = event->button.y;
     }
 }
 
@@ -1251,7 +2000,7 @@ gdk_synthesize_window_state (GdkWindow     *window,
   temp_event.window_state.type = GDK_WINDOW_STATE;
   temp_event.window_state.send_event = FALSE;
   
-  old = ((GdkWindowObject*) temp_event.window_state.window)->state;
+  old = temp_event.window_state.window->state;
   
   temp_event.window_state.new_window_state = old;
   temp_event.window_state.new_window_state |= set_flags;
@@ -1266,7 +2015,7 @@ gdk_synthesize_window_state (GdkWindow     *window,
    * inconsistent state to the user.
    */
   
-  ((GdkWindowObject*) window)->state = temp_event.window_state.new_window_state;
+  window->state = temp_event.window_state.new_window_state;
 
   if (temp_event.window_state.changed_mask & GDK_WINDOW_STATE_WITHDRAWN)
     _gdk_window_update_viewable (window);
@@ -1276,12 +2025,11 @@ gdk_synthesize_window_state (GdkWindow     *window,
    * Non-toplevels do use the GDK_WINDOW_STATE_WITHDRAWN flag
    * internally so we needed to update window->state.
    */
-  switch (((GdkWindowObject*) window)->window_type)
+  switch (window->window_type)
     {
     case GDK_WINDOW_TOPLEVEL:
-    case GDK_WINDOW_DIALOG:
     case GDK_WINDOW_TEMP: /* ? */
-      gdk_display_put_event (gdk_drawable_get_display (window), &temp_event);
+      gdk_display_put_event (gdk_window_get_display (window), &temp_event);
       break;
       
     case GDK_WINDOW_FOREIGN:
@@ -1346,17 +2094,9 @@ gdk_display_set_double_click_distance (GdkDisplay *display,
   display->double_click_distance = distance;
 }
 
-GType
-gdk_event_get_type (void)
-{
-  static GType our_type = 0;
-  
-  if (our_type == 0)
-    our_type = g_boxed_type_register_static (g_intern_static_string ("GdkEvent"),
-					     (GBoxedCopyFunc)gdk_event_copy,
-					     (GBoxedFreeFunc)gdk_event_free);
-  return our_type;
-}
+G_DEFINE_BOXED_TYPE (GdkEvent, gdk_event,
+                     gdk_event_copy,
+                     gdk_event_free)
 
 /**
  * gdk_setting_get:
@@ -1375,6 +2115,3 @@ gdk_setting_get (const gchar *name,
 {
   return gdk_screen_get_setting (gdk_screen_get_default (), name, value);
 }
-
-#define __GDK_EVENTS_C__
-#include "gdkaliasdef.c"

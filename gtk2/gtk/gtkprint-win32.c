@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef _MSC_VER
@@ -25,7 +23,6 @@
 
 #include "config.h"
 #include "gtkprint-win32.h"
-#include "gtkalias.h"
 
 void
 gtk_print_win32_devnames_free (GtkPrintWin32Devnames *devnames)
@@ -155,7 +152,3 @@ gtk_print_win32_devnames_from_printer_name (const char *printer_name)
 
   return devnames;
 }
-
-
-#define __GTK_PRINT_WIN32_C__
-#include "gtkaliasdef.c"

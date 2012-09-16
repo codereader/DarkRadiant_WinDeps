@@ -12,9 +12,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  * 
  * This file contains code shared between GtkTreeStore and GtkListStore.  Please
  * do not use it.
@@ -22,7 +20,6 @@
 
 #include "config.h"
 #include "gtktreedatalist.h"
-#include "gtkalias.h"
 #include <string.h>
 
 /* node allocation
@@ -55,6 +52,8 @@ _gtk_tree_data_list_free (GtkTreeDataList *list,
 	g_object_unref (tmp->data.v_pointer);
       else if (g_type_is_a (column_headers [i], G_TYPE_BOXED) && tmp->data.v_pointer != NULL)
 	g_boxed_free (column_headers [i], (gpointer) tmp->data.v_pointer);
+      else if (g_type_is_a (column_headers [i], G_TYPE_VARIANT) && tmp->data.v_pointer != NULL)
+	g_variant_unref ((gpointer) tmp->data.v_pointer);
 
       g_slice_free (GtkTreeDataList, tmp);
       i++;
@@ -85,6 +84,7 @@ _gtk_tree_data_list_check_type (GType type)
     G_TYPE_POINTER,
     G_TYPE_BOXED,
     G_TYPE_OBJECT,
+    G_TYPE_VARIANT,
     G_TYPE_INVALID
   };
 
@@ -129,7 +129,7 @@ _gtk_tree_data_list_node_to_value (GtkTreeDataList *list,
       g_value_set_boolean (value, (gboolean) list->data.v_int);
       break;
     case G_TYPE_CHAR:
-      g_value_set_char (value, (gchar) list->data.v_char);
+      g_value_set_schar (value, (gchar) list->data.v_char);
       break;
     case G_TYPE_UCHAR:
       g_value_set_uchar (value, (guchar) list->data.v_uchar);
@@ -173,6 +173,9 @@ _gtk_tree_data_list_node_to_value (GtkTreeDataList *list,
     case G_TYPE_BOXED:
       g_value_set_boxed (value, (gpointer) list->data.v_pointer);
       break;
+    case G_TYPE_VARIANT:
+      g_value_set_variant (value, (gpointer) list->data.v_pointer);
+      break;
     case G_TYPE_OBJECT:
       g_value_set_object (value, (GObject *) list->data.v_pointer);
       break;
@@ -192,7 +195,7 @@ _gtk_tree_data_list_value_to_node (GtkTreeDataList *list,
       list->data.v_int = g_value_get_boolean (value);
       break;
     case G_TYPE_CHAR:
-      list->data.v_char = g_value_get_char (value);
+      list->data.v_char = g_value_get_schar (value);
       break;
     case G_TYPE_UCHAR:
       list->data.v_uchar = g_value_get_uchar (value);
@@ -244,6 +247,11 @@ _gtk_tree_data_list_value_to_node (GtkTreeDataList *list,
 	g_boxed_free (G_VALUE_TYPE (value), list->data.v_pointer);
       list->data.v_pointer = g_value_dup_boxed (value);
       break;
+    case G_TYPE_VARIANT:
+      if (list->data.v_pointer)
+	g_variant_unref (list->data.v_pointer);
+      list->data.v_pointer = g_value_dup_variant (value);
+      break;
     default:
       g_warning ("%s: Unsupported type (%s) stored.", G_STRLOC, g_type_name (G_VALUE_TYPE (value)));
       break;
@@ -294,6 +302,12 @@ _gtk_tree_data_list_node_copy (GtkTreeDataList *list,
       else
 	new_list->data.v_pointer = NULL;
       break;
+    case G_TYPE_VARIANT:
+      if (list->data.v_pointer)
+	new_list->data.v_pointer = g_variant_ref (list->data.v_pointer);
+      else
+	new_list->data.v_pointer = NULL;
+      break;
     default:
       g_warning ("Unsupported node type (%s) copied.", g_type_name (type));
       break;
@@ -310,8 +324,8 @@ _gtk_tree_data_list_compare_func (GtkTreeModel *model,
 {
   gint column = GPOINTER_TO_INT (user_data);
   GType type = gtk_tree_model_get_column_type (model, column);
-  GValue a_value = {0, };
-  GValue b_value = {0, };
+  GValue a_value = G_VALUE_INIT;
+  GValue b_value = G_VALUE_INIT;
   gint retval;
   const gchar *stra, *strb;
 
@@ -329,9 +343,9 @@ _gtk_tree_data_list_compare_func (GtkTreeModel *model,
 	retval = 1;
       break;
     case G_TYPE_CHAR:
-      if (g_value_get_char (&a_value) < g_value_get_char (&b_value))
+      if (g_value_get_schar (&a_value) < g_value_get_schar (&b_value))
 	retval = -1;
-      else if (g_value_get_char (&a_value) == g_value_get_char (&b_value))
+      else if (g_value_get_schar (&a_value) == g_value_get_schar (&b_value))
 	retval = 0;
       else
 	retval = 1;
@@ -433,6 +447,7 @@ _gtk_tree_data_list_compare_func (GtkTreeModel *model,
       if (strb == NULL) strb = "";
       retval = g_utf8_collate (stra, strb);
       break;
+    case G_TYPE_VARIANT:
     case G_TYPE_POINTER:
     case G_TYPE_BOXED:
     case G_TYPE_OBJECT:

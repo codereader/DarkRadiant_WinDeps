@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -327,25 +325,6 @@ setup_im (GtkXIMInfo *info)
 		NULL);
 
   info->settings = gtk_settings_get_for_screen (info->screen);
-
-  if (!g_object_class_find_property (G_OBJECT_GET_CLASS (info->settings),
-				     "gtk-im-preedit-style"))
-    gtk_settings_install_property (g_param_spec_enum ("gtk-im-preedit-style",
-						      P_("IM Preedit style"),
-						      P_("How to draw the input method preedit string"),
-						      GTK_TYPE_IM_PREEDIT_STYLE,
-						      GTK_IM_PREEDIT_CALLBACK,
-						      G_PARAM_READWRITE));
-
-  if (!g_object_class_find_property (G_OBJECT_GET_CLASS (info->settings),
-				     "gtk-im-status-style"))
-    gtk_settings_install_property (g_param_spec_enum ("gtk-im-status-style",
-						      P_("IM Status style"),
-						      P_("How to draw the input method statusbar"),
-						      GTK_TYPE_IM_STATUS_STYLE,
-						      GTK_IM_STATUS_CALLBACK,
-						      G_PARAM_READWRITE));
-
   info->status_set = g_signal_connect_swapped (info->settings,
 					       "notify::gtk-im-status-style",
 					       G_CALLBACK (status_style_change),
@@ -669,6 +648,8 @@ gtk_im_context_xim_new (void)
   GtkIMContextXIM *result;
   const gchar *charset;
 
+  if (!GDK_IS_X11_DISPLAY(gdk_display_get_default()))
+    return NULL;
   result = g_object_new (GTK_TYPE_IM_CONTEXT_XIM, NULL);
 
   result->locale = g_strdup (setlocale (LC_CTYPE, NULL));
@@ -726,9 +707,9 @@ gtk_im_context_xim_filter_keypress (GtkIMContext *context,
   xevent.type = (event->type == GDK_KEY_PRESS) ? KeyPress : KeyRelease;
   xevent.serial = 0;		/* hope it doesn't matter */
   xevent.send_event = event->send_event;
-  xevent.display = GDK_DRAWABLE_XDISPLAY (event->window);
-  xevent.window = GDK_DRAWABLE_XID (event->window);
-  xevent.root = GDK_DRAWABLE_XID (root_window);
+  xevent.display = GDK_WINDOW_XDISPLAY (event->window);
+  xevent.window = GDK_WINDOW_XID (event->window);
+  xevent.root = GDK_WINDOW_XID (root_window);
   xevent.subwindow = xevent.window;
   xevent.time = event->time;
   xevent.x = xevent.x_root = 0;
@@ -737,7 +718,7 @@ gtk_im_context_xim_filter_keypress (GtkIMContext *context,
   xevent.keycode = event->hardware_keycode;
   xevent.same_screen = True;
   
-  if (XFilterEvent ((XEvent *)&xevent, GDK_DRAWABLE_XID (context_xim->client_window)))
+  if (XFilterEvent ((XEvent *)&xevent, GDK_WINDOW_XID (context_xim->client_window)))
     return TRUE;
   
   if (event->state &
@@ -1453,7 +1434,7 @@ gtk_im_context_xim_get_ic (GtkIMContextXIM *context_xim)
 
       xic = XCreateIC (context_xim->im_info->im,
 		       XNInputStyle, im_style,
-		       XNClientWindow, GDK_DRAWABLE_XID (context_xim->client_window),
+		       XNClientWindow, GDK_WINDOW_XID (context_xim->client_window),
 		       name1, list1,
 		       name2, list2,
 		       NULL);
@@ -1692,10 +1673,12 @@ on_status_toplevel_configure (GtkWidget         *toplevel,
   if (status_window->window)
     {
       height = gdk_screen_get_height (gtk_widget_get_screen (toplevel));
-  
-      gdk_window_get_frame_extents (toplevel->window, &rect);
-      gtk_widget_size_request (status_window->window, &requisition);
-      
+
+      gdk_window_get_frame_extents (gtk_widget_get_window (toplevel),
+                                    &rect);
+      gtk_widget_get_preferred_size ( (status_window->window),
+                                 &requisition, NULL);
+
       if (rect.y + rect.height + requisition.height < height)
 	y = rect.y + rect.height;
       else
@@ -1769,43 +1752,29 @@ status_window_get (GtkWidget *toplevel)
 /* Draw the background (normally white) and border for the status window
  */
 static gboolean
-on_status_window_expose_event (GtkWidget      *widget,
-			       GdkEventExpose *event)
+on_status_window_draw (GtkWidget *widget,
+                       cairo_t   *cr)
 {
-  cairo_t *cr;
+  GtkStyleContext *style;
+  GdkRGBA color;
 
-  cr = gdk_cairo_create (widget->window);
+  style = gtk_widget_get_style_context (widget);
 
-  gdk_cairo_set_source_color (cr, &widget->style->base[GTK_STATE_NORMAL]);
-  cairo_rectangle (cr,
-                   0, 0,
-                   widget->allocation.width, widget->allocation.height);
-  cairo_fill (cr);
+  gtk_style_context_get_background_color (style, 0, &color);
+  gdk_cairo_set_source_rgba (cr, &color);
+  cairo_paint (cr);
 
-  gdk_cairo_set_source_color (cr, &widget->style->text[GTK_STATE_NORMAL]);
+  gtk_style_context_get_color (style, 0, &color);
+  gdk_cairo_set_source_rgba (cr, &color);
+  cairo_paint (cr);
+
   cairo_rectangle (cr, 
                    0, 0,
-                   widget->allocation.width - 1, widget->allocation.height - 1);
+                   gtk_widget_get_allocated_width (widget) - 1,
+                   gtk_widget_get_allocated_height (widget) - 1);
   cairo_fill (cr);
 
   return FALSE;
-}
-
-/* We watch the ::style-set signal for our label widget
- * and use that to change it's foreground color to match
- * the 'text' color of the toplevel window. The text/base
- * pair of colors might be reversed from the fg/bg pair
- * that are normally used for labels.
- */
-static void
-on_status_window_style_set (GtkWidget *toplevel,
-			    GtkStyle  *previous_style,
-			    GtkWidget *label)
-{
-  gint i;
-  
-  for (i = 0; i < 5; i++)
-    gtk_widget_modify_fg (label, i, &toplevel->style->text[i]);
 }
 
 /* Creates the widgets for the status window; called when we
@@ -1824,15 +1793,13 @@ status_window_make_window (StatusWindow *status_window)
   gtk_widget_set_app_paintable (window, TRUE);
 
   status_label = gtk_label_new ("");
-  gtk_misc_set_padding (GTK_MISC (status_label), 1, 1);
+  g_object_set (status_label, "margin", 1, NULL);
   gtk_widget_show (status_label);
   
-  g_signal_connect (window, "style-set",
-		    G_CALLBACK (on_status_window_style_set), status_label);
   gtk_container_add (GTK_CONTAINER (window), status_label);
   
-  g_signal_connect (window, "expose-event",
-		    G_CALLBACK (on_status_window_expose_event), NULL);
+  g_signal_connect (window, "draw",
+		    G_CALLBACK (on_status_window_draw), NULL);
   
   gtk_window_set_screen (GTK_WINDOW (status_window->window),
 			 gtk_widget_get_screen (status_window->toplevel));
@@ -1854,7 +1821,7 @@ status_window_set_text (StatusWindow *status_window,
       if (!status_window->window)
 	status_window_make_window (status_window);
       
-      label = GTK_BIN (status_window->window)->child;
+      label = gtk_bin_get_child (GTK_BIN (status_window->window));
       gtk_label_set_text (GTK_LABEL (label), text);
   
       gtk_widget_show (status_window->window);

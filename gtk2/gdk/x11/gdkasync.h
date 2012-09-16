@@ -13,16 +13,14 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef __GDK_ASYNC_H__
 #define __GDK_ASYNC_H__
 
+#include "gdkdisplay.h"
 #include <X11/Xlib.h>
-#include "gdk.h"
 
 G_BEGIN_DECLS
 
@@ -54,10 +52,6 @@ void _gdk_x11_send_client_message_async (GdkDisplay            *display,
 					 XClientMessageEvent   *event_send,
 					 GdkSendXEventCallback  callback,
 					 gpointer               data);
-void _gdk_x11_set_input_focus_safe      (GdkDisplay            *display,
-					 Window                 window,
-					 int                    revert_to,
-					 Time                   time);
 
 gboolean _gdk_x11_get_window_child_info (GdkDisplay       *display,
 					 Window            window,

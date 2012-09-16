@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -38,24 +36,48 @@
 #include "gtktextbufferrichtext.h"
 #include "gtktextbtree.h"
 #include "gtktextiterprivate.h"
+#include "gtktexttagprivate.h"
 #include "gtkprivate.h"
 #include "gtkintl.h"
-#include "gtkalias.h"
 
 
-#define GTK_TEXT_BUFFER_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GTK_TYPE_TEXT_BUFFER, GtkTextBufferPrivate))
+/**
+ * SECTION:gtktextbuffer
+ * @Short_description: Stores attributed text for display in a GtkTextView
+ * @Title: GtkTextBuffer
+ * @See_also: #GtkTextView, #GtkTextIter, #GtkTextMark
+ *
+ * You may wish to begin by reading the <link linkend="TextWidget">text widget
+ * conceptual overview</link> which gives an overview of all the objects and data
+ * types related to the text widget and how they work together.
+ */
 
-typedef struct _GtkTextBufferPrivate GtkTextBufferPrivate;
+
+typedef struct _GtkTextLogAttrCache GtkTextLogAttrCache;
 
 struct _GtkTextBufferPrivate
 {
   GtkTargetList  *copy_target_list;
   GtkTargetEntry *copy_target_entries;
-  gint            n_copy_target_entries;
-
   GtkTargetList  *paste_target_list;
   GtkTargetEntry *paste_target_entries;
+
+  gint            n_copy_target_entries;
   gint            n_paste_target_entries;
+
+  GtkTextTagTable *tag_table;
+  GtkTextBTree *btree;
+
+  GSList *clipboard_contents_buffers;
+  GSList *selection_clipboards;
+
+  GtkTextLogAttrCache *log_attr_cache;
+
+  guint user_action_count;
+
+  /* Whether the buffer has been modified since last save */
+  guint modified : 1;
+  guint has_selection : 1;
 };
 
 
@@ -64,10 +86,9 @@ typedef struct _ClipboardRequest ClipboardRequest;
 struct _ClipboardRequest
 {
   GtkTextBuffer *buffer;
-  gboolean interactive;
-  gboolean default_editable;
-  gboolean is_clipboard;
-  gboolean replace_selection;
+  guint interactive : 1;
+  guint default_editable : 1;
+  guint replace_selection : 1;
 };
 
 enum {
@@ -295,6 +316,8 @@ gtk_text_buffer_class_init (GtkTextBufferClass *klass)
                   GTK_TYPE_TEXT_ITER | G_SIGNAL_TYPE_STATIC_SCOPE,
                   G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE,
                   G_TYPE_INT);
+  g_signal_set_va_marshaller (signals[INSERT_TEXT], G_TYPE_FROM_CLASS (klass),
+                              _gtk_marshal_VOID__BOXED_STRING_INTv);
 
   /**
    * GtkTextBuffer::insert-pixbuf:
@@ -609,8 +632,12 @@ gtk_text_buffer_class_init (GtkTextBufferClass *klass)
 static void
 gtk_text_buffer_init (GtkTextBuffer *buffer)
 {
-  buffer->clipboard_contents_buffers = NULL;
-  buffer->tag_table = NULL;
+  buffer->priv = G_TYPE_INSTANCE_GET_PRIVATE (buffer,
+                                              GTK_TYPE_TEXT_BUFFER,
+                                              GtkTextBufferPrivate);
+
+  buffer->priv->clipboard_contents_buffers = NULL;
+  buffer->priv->tag_table = NULL;
 
   /* allow copying of arbiatray stuff in the internal rich text format */
   gtk_text_buffer_register_serialize_tagset (buffer, NULL);
@@ -619,12 +646,14 @@ gtk_text_buffer_init (GtkTextBuffer *buffer)
 static void
 set_table (GtkTextBuffer *buffer, GtkTextTagTable *table)
 {
-  g_return_if_fail (buffer->tag_table == NULL);
+  GtkTextBufferPrivate *priv = buffer->priv;
+
+  g_return_if_fail (priv->tag_table == NULL);
 
   if (table)
     {
-      buffer->tag_table = table;
-      g_object_ref (buffer->tag_table);
+      priv->tag_table = table;
+      g_object_ref (priv->tag_table);
       _gtk_text_tag_table_add_buffer (table, buffer);
     }
 }
@@ -632,13 +661,15 @@ set_table (GtkTextBuffer *buffer, GtkTextTagTable *table)
 static GtkTextTagTable*
 get_table (GtkTextBuffer *buffer)
 {
-  if (buffer->tag_table == NULL)
+  GtkTextBufferPrivate *priv = buffer->priv;
+
+  if (priv->tag_table == NULL)
     {
-      buffer->tag_table = gtk_text_tag_table_new ();
-      _gtk_text_tag_table_add_buffer (buffer->tag_table, buffer);
+      priv->tag_table = gtk_text_tag_table_new ();
+      _gtk_text_tag_table_add_buffer (priv->tag_table, buffer);
     }
 
-  return buffer->tag_table;
+  return priv->tag_table;
 }
 
 static void
@@ -699,7 +730,7 @@ gtk_text_buffer_get_property (GObject         *object,
       }
 
     case PROP_HAS_SELECTION:
-      g_value_set_boolean (value, text_buffer->has_selection);
+      g_value_set_boolean (value, text_buffer->priv->has_selection);
       break;
 
     case PROP_CURSOR_POSITION:
@@ -755,28 +786,30 @@ static void
 gtk_text_buffer_finalize (GObject *object)
 {
   GtkTextBuffer *buffer;
+  GtkTextBufferPrivate *priv;
 
   buffer = GTK_TEXT_BUFFER (object);
+  priv = buffer->priv;
 
   remove_all_selection_clipboards (buffer);
 
-  if (buffer->tag_table)
+  if (priv->tag_table)
     {
-      _gtk_text_tag_table_remove_buffer (buffer->tag_table, buffer);
-      g_object_unref (buffer->tag_table);
-      buffer->tag_table = NULL;
+      _gtk_text_tag_table_remove_buffer (priv->tag_table, buffer);
+      g_object_unref (priv->tag_table);
+      priv->tag_table = NULL;
     }
 
-  if (buffer->btree)
+  if (priv->btree)
     {
-      _gtk_text_btree_unref (buffer->btree);
-      buffer->btree = NULL;
+      _gtk_text_btree_unref (priv->btree);
+      priv->btree = NULL;
     }
 
-  if (buffer->log_attr_cache)
-    free_log_attr_cache (buffer->log_attr_cache);
+  if (priv->log_attr_cache)
+    free_log_attr_cache (priv->log_attr_cache);
 
-  buffer->log_attr_cache = NULL;
+  priv->log_attr_cache = NULL;
 
   gtk_text_buffer_free_target_lists (buffer);
 
@@ -786,11 +819,13 @@ gtk_text_buffer_finalize (GObject *object)
 static GtkTextBTree*
 get_btree (GtkTextBuffer *buffer)
 {
-  if (buffer->btree == NULL)
-    buffer->btree = _gtk_text_btree_new (gtk_text_buffer_get_tag_table (buffer),
-                                         buffer);
+  GtkTextBufferPrivate *priv = buffer->priv;
 
-  return buffer->btree;
+  if (priv->btree == NULL)
+    priv->btree = _gtk_text_btree_new (gtk_text_buffer_get_tag_table (buffer),
+                                       buffer);
+
+  return priv->btree;
 }
 
 GtkTextBTree*
@@ -1399,8 +1434,8 @@ gtk_text_buffer_insert_range (GtkTextBuffer     *buffer,
   g_return_if_fail (end != NULL);
   g_return_if_fail (gtk_text_iter_get_buffer (start) ==
                     gtk_text_iter_get_buffer (end));
-  g_return_if_fail (gtk_text_iter_get_buffer (start)->tag_table ==
-                    buffer->tag_table);  
+  g_return_if_fail (gtk_text_iter_get_buffer (start)->priv->tag_table ==
+                    buffer->priv->tag_table);
   g_return_if_fail (gtk_text_iter_get_buffer (iter) == buffer);
   
   gtk_text_buffer_real_insert_range (buffer, iter, start, end, FALSE);
@@ -1435,8 +1470,8 @@ gtk_text_buffer_insert_range_interactive (GtkTextBuffer     *buffer,
   g_return_val_if_fail (end != NULL, FALSE);
   g_return_val_if_fail (gtk_text_iter_get_buffer (start) ==
                         gtk_text_iter_get_buffer (end), FALSE);
-  g_return_val_if_fail (gtk_text_iter_get_buffer (start)->tag_table ==
-                        buffer->tag_table, FALSE);
+  g_return_val_if_fail (gtk_text_iter_get_buffer (start)->priv->tag_table ==
+                        buffer->priv->tag_table, FALSE);
 
   if (gtk_text_iter_can_insert (iter, default_editable))
     {
@@ -1454,10 +1489,10 @@ gtk_text_buffer_insert_range_interactive (GtkTextBuffer     *buffer,
  * @text: UTF-8 text
  * @len: length of @text, or -1
  * @first_tag: first tag to apply to @text
- * @Varargs: NULL-terminated list of tags to apply
+ * @...: %NULL-terminated list of tags to apply
  *
  * Inserts @text into @buffer at @iter, applying the list of tags to
- * the newly-inserted text. The last tag specified must be NULL to
+ * the newly-inserted text. The last tag specified must be %NULL to
  * terminate the list. Equivalent to calling gtk_text_buffer_insert(),
  * then gtk_text_buffer_apply_tag() on the inserted text;
  * gtk_text_buffer_insert_with_tags() is just a convenience function.
@@ -1508,7 +1543,7 @@ gtk_text_buffer_insert_with_tags (GtkTextBuffer *buffer,
  * @text: UTF-8 text
  * @len: length of @text, or -1
  * @first_tag_name: name of a tag to apply to @text
- * @Varargs: more tag names
+ * @...: more tag names
  *
  * Same as gtk_text_buffer_insert_with_tags(), but allows you
  * to pass in tag names instead of tag objects.
@@ -1546,7 +1581,7 @@ gtk_text_buffer_insert_with_tags_by_name  (GtkTextBuffer *buffer,
     {
       GtkTextTag *tag;
 
-      tag = gtk_text_tag_table_lookup (buffer->tag_table,
+      tag = gtk_text_tag_table_lookup (buffer->priv->tag_table,
                                        tag_name);
 
       if (tag == NULL)
@@ -1586,9 +1621,9 @@ gtk_text_buffer_real_delete_range (GtkTextBuffer *buffer,
   update_selection_clipboards (buffer);
 
   has_selection = gtk_text_buffer_get_selection_bounds (buffer, NULL, NULL);
-  if (has_selection != buffer->has_selection)
+  if (has_selection != buffer->priv->has_selection)
     {
-      buffer->has_selection = has_selection;
+      buffer->priv->has_selection = has_selection;
       g_object_notify (G_OBJECT (buffer), "has-selection");
     }
 
@@ -2431,7 +2466,7 @@ gtk_text_buffer_select_range (GtkTextBuffer     *buffer,
  * @buffer: a #GtkTextBuffer
  * @tag_name: (allow-none): name of the new tag, or %NULL
  * @first_property_name: (allow-none): name of first property to set, or %NULL
- * @Varargs: %NULL-terminated list of property names and values
+ * @...: %NULL-terminated list of property names and values
  *
  * Creates a tag and adds it to the tag table for @buffer.
  * Equivalent to calling gtk_text_tag_new() and then adding the
@@ -2481,7 +2516,7 @@ gtk_text_buffer_real_apply_tag (GtkTextBuffer     *buffer,
                                 const GtkTextIter *start,
                                 const GtkTextIter *end)
 {
-  if (tag->table != buffer->tag_table)
+  if (tag->priv->table != buffer->priv->tag_table)
     {
       g_warning ("Can only apply tags that are in the tag table for the buffer");
       return;
@@ -2496,7 +2531,7 @@ gtk_text_buffer_real_remove_tag (GtkTextBuffer     *buffer,
                                  const GtkTextIter *start,
                                  const GtkTextIter *end)
 {
-  if (tag->table != buffer->tag_table)
+  if (tag->priv->table != buffer->priv->tag_table)
     {
       g_warning ("Can only remove tags that are in the tag table for the buffer");
       return;
@@ -2530,9 +2565,9 @@ gtk_text_buffer_real_mark_set (GtkTextBuffer     *buffer,
                                                             NULL,
                                                             NULL);
 
-      if (has_selection != buffer->has_selection)
+      if (has_selection != buffer->priv->has_selection)
         {
-          buffer->has_selection = has_selection;
+          buffer->priv->has_selection = has_selection;
           g_object_notify (G_OBJECT (buffer), "has-selection");
         }
     }
@@ -2588,7 +2623,7 @@ gtk_text_buffer_apply_tag (GtkTextBuffer     *buffer,
   g_return_if_fail (end != NULL);
   g_return_if_fail (gtk_text_iter_get_buffer (start) == buffer);
   g_return_if_fail (gtk_text_iter_get_buffer (end) == buffer);
-  g_return_if_fail (tag->table == buffer->tag_table);
+  g_return_if_fail (tag->priv->table == buffer->priv->tag_table);
   
   gtk_text_buffer_emit_tag (buffer, tag, TRUE, start, end);
 }
@@ -2617,7 +2652,7 @@ gtk_text_buffer_remove_tag (GtkTextBuffer     *buffer,
   g_return_if_fail (end != NULL);
   g_return_if_fail (gtk_text_iter_get_buffer (start) == buffer);
   g_return_if_fail (gtk_text_iter_get_buffer (end) == buffer);
-  g_return_if_fail (tag->table == buffer->tag_table);
+  g_return_if_fail (tag->priv->table == buffer->priv->tag_table);
   
   gtk_text_buffer_emit_tag (buffer, tag, FALSE, start, end);
 }
@@ -2999,7 +3034,7 @@ gtk_text_buffer_get_modified (GtkTextBuffer *buffer)
 {
   g_return_val_if_fail (GTK_IS_TEXT_BUFFER (buffer), FALSE);
 
-  return buffer->modified;
+  return buffer->priv->modified;
 }
 
 /**
@@ -3023,11 +3058,11 @@ gtk_text_buffer_set_modified (GtkTextBuffer *buffer,
 
   fixed_setting = setting != FALSE;
 
-  if (buffer->modified == fixed_setting)
+  if (buffer->priv->modified == fixed_setting)
     return;
   else
     {
-      buffer->modified = fixed_setting;
+      buffer->priv->modified = fixed_setting;
       g_signal_emit (buffer, signals[MODIFIED_CHANGED], 0);
     }
 }
@@ -3047,7 +3082,7 @@ gtk_text_buffer_get_has_selection (GtkTextBuffer *buffer)
 {
   g_return_val_if_fail (GTK_IS_TEXT_BUFFER (buffer), FALSE);
 
-  return buffer->has_selection;
+  return buffer->priv->has_selection;
 }
 
 
@@ -3133,7 +3168,7 @@ clipboard_get_selection_cb (GtkClipboard     *clipboard,
            * used within-process
            */
           gtk_selection_data_set (selection_data,
-                                  selection_data->target,
+                                  gtk_selection_data_get_target (selection_data),
                                   8, /* bytes */
                                   (void*)&buffer,
                                   sizeof (buffer));
@@ -3144,11 +3179,11 @@ clipboard_get_selection_cb (GtkClipboard     *clipboard,
           gsize   len;
 
           str = gtk_text_buffer_serialize (buffer, buffer,
-                                           selection_data->target,
+                                           gtk_selection_data_get_target (selection_data),
                                            &start, &end, &len);
 
           gtk_selection_data_set (selection_data,
-                                  selection_data->target,
+                                  gtk_selection_data_get_target (selection_data),
                                   8, /* bytes */
                                   str, len);
           g_free (str);
@@ -3203,7 +3238,7 @@ clipboard_get_contents_cb (GtkClipboard     *clipboard,
        * be used within-process. OK to supply a NULL value for contents.
        */
       gtk_selection_data_set (selection_data,
-                              selection_data->target,
+                              gtk_selection_data_get_target (selection_data),
                               8, /* bytes */
                               (void*)&contents,
                               sizeof (contents));
@@ -3221,11 +3256,11 @@ clipboard_get_contents_cb (GtkClipboard     *clipboard,
       gtk_text_buffer_get_bounds (contents, &start, &end);
 
       str = gtk_text_buffer_serialize (clipboard_source_buffer, contents,
-                                       selection_data->target,
+                                       gtk_selection_data_get_target (selection_data),
                                        &start, &end, &len);
 
       gtk_selection_data_set (selection_data,
-			      selection_data->target,
+			      gtk_selection_data_get_target (selection_data),
 			      8, /* bytes */
 			      str, len);
       g_free (str);
@@ -3391,23 +3426,22 @@ selection_data_get_buffer (GtkSelectionData *selection_data,
   GtkTextBuffer *src_buffer = NULL;
 
   /* If we can get the owner, the selection is in-process */
-  owner = gdk_selection_owner_get_for_display (selection_data->display,
-					       selection_data->selection);
+  owner = gdk_selection_owner_get_for_display (gtk_selection_data_get_display (selection_data),
+					       gtk_selection_data_get_selection (selection_data));
 
   if (owner == NULL)
     return NULL;
   
   if (gdk_window_get_window_type (owner) == GDK_WINDOW_FOREIGN)
     return NULL;
- 
-  if (selection_data->type !=
-      gdk_atom_intern_static_string ("GTK_TEXT_BUFFER_CONTENTS"))
+
+  if (gtk_selection_data_get_data_type (selection_data) != gdk_atom_intern_static_string ("GTK_TEXT_BUFFER_CONTENTS"))
     return NULL;
 
-  if (selection_data->length != sizeof (src_buffer))
+  if (gtk_selection_data_get_length (selection_data) != sizeof (src_buffer))
     return NULL;
-          
-  memcpy (&src_buffer, selection_data->data, sizeof (src_buffer));
+
+  memcpy (&src_buffer, gtk_selection_data_get_data (selection_data), sizeof (src_buffer));
 
   if (src_buffer == NULL)
     return NULL;
@@ -3604,9 +3638,9 @@ static void
 update_selection_clipboards (GtkTextBuffer *buffer)
 {
   GtkTextBufferPrivate *priv;
-  GSList               *tmp_list = buffer->selection_clipboards;
+  GSList               *tmp_list = buffer->priv->selection_clipboards;
 
-  priv = GTK_TEXT_BUFFER_GET_PRIVATE (buffer);
+  priv = buffer->priv;
 
   gtk_text_buffer_get_copy_target_list (buffer);
 
@@ -3648,7 +3682,7 @@ static SelectionClipboard *
 find_selection_clipboard (GtkTextBuffer *buffer,
 			  GtkClipboard  *clipboard)
 {
-  GSList *tmp_list = buffer->selection_clipboards;
+  GSList *tmp_list = buffer->priv->selection_clipboards;
   while (tmp_list)
     {
       SelectionClipboard *selection_clipboard = tmp_list->data;
@@ -3691,7 +3725,8 @@ gtk_text_buffer_add_selection_clipboard (GtkTextBuffer *buffer,
       selection_clipboard->clipboard = clipboard;
       selection_clipboard->ref_count = 1;
 
-      buffer->selection_clipboards = g_slist_prepend (buffer->selection_clipboards, selection_clipboard);
+      buffer->priv->selection_clipboards = g_slist_prepend (buffer->priv->selection_clipboards,
+                                                            selection_clipboard);
     }
 }
 
@@ -3722,8 +3757,8 @@ gtk_text_buffer_remove_selection_clipboard (GtkTextBuffer *buffer,
       if (gtk_clipboard_get_owner (selection_clipboard->clipboard) == G_OBJECT (buffer))
 	gtk_clipboard_clear (selection_clipboard->clipboard);
 
-      buffer->selection_clipboards = g_slist_remove (buffer->selection_clipboards,
-                                                     selection_clipboard);
+      buffer->priv->selection_clipboards = g_slist_remove (buffer->priv->selection_clipboards,
+                                                           selection_clipboard);
       
       g_free (selection_clipboard);
     }
@@ -3732,9 +3767,11 @@ gtk_text_buffer_remove_selection_clipboard (GtkTextBuffer *buffer,
 static void
 remove_all_selection_clipboards (GtkTextBuffer *buffer)
 {
-  g_slist_foreach (buffer->selection_clipboards, (GFunc)g_free, NULL);
-  g_slist_free (buffer->selection_clipboards);
-  buffer->selection_clipboards = NULL;
+  GtkTextBufferPrivate *priv = buffer->priv;
+
+  g_slist_foreach (priv->selection_clipboards, (GFunc)g_free, NULL);
+  g_slist_free (priv->selection_clipboards);
+  priv->selection_clipboards = NULL;
 }
 
 /**
@@ -3767,7 +3804,7 @@ gtk_text_buffer_paste_clipboard (GtkTextBuffer *buffer,
 
   data->buffer = g_object_ref (buffer);
   data->interactive = TRUE;
-  data->default_editable = default_editable;
+  data->default_editable = !!default_editable;
 
   /* When pasting with the cursor inside the selection area, you
    * replace the selection with the new text, otherwise, you
@@ -3943,7 +3980,7 @@ cut_or_copy (GtkTextBuffer *buffer,
   GtkTextIter start;
   GtkTextIter end;
 
-  priv = GTK_TEXT_BUFFER_GET_PRIVATE (buffer);
+  priv = buffer->priv;
 
   gtk_text_buffer_get_copy_target_list (buffer);
 
@@ -4080,9 +4117,9 @@ gtk_text_buffer_begin_user_action (GtkTextBuffer *buffer)
 {
   g_return_if_fail (GTK_IS_TEXT_BUFFER (buffer));
 
-  buffer->user_action_count += 1;
+  buffer->priv->user_action_count += 1;
   
-  if (buffer->user_action_count == 1)
+  if (buffer->priv->user_action_count == 1)
     {
       /* Outermost nested user action begin emits the signal */
       g_signal_emit (buffer, signals[BEGIN_USER_ACTION], 0);
@@ -4100,11 +4137,11 @@ void
 gtk_text_buffer_end_user_action (GtkTextBuffer *buffer)
 {
   g_return_if_fail (GTK_IS_TEXT_BUFFER (buffer));
-  g_return_if_fail (buffer->user_action_count > 0);
+  g_return_if_fail (buffer->priv->user_action_count > 0);
   
-  buffer->user_action_count -= 1;
+  buffer->priv->user_action_count -= 1;
   
-  if (buffer->user_action_count == 0)
+  if (buffer->priv->user_action_count == 0)
     {
       /* Ended the outermost-nested user action end, so emit the signal */
       g_signal_emit (buffer, signals[END_USER_ACTION], 0);
@@ -4114,7 +4151,7 @@ gtk_text_buffer_end_user_action (GtkTextBuffer *buffer)
 static void
 gtk_text_buffer_free_target_lists (GtkTextBuffer *buffer)
 {
-  GtkTextBufferPrivate *priv = GTK_TEXT_BUFFER_GET_PRIVATE (buffer);
+  GtkTextBufferPrivate *priv = buffer->priv;
 
   if (priv->copy_target_list)
     {
@@ -4188,7 +4225,7 @@ gtk_text_buffer_get_copy_target_list (GtkTextBuffer *buffer)
 
   g_return_val_if_fail (GTK_IS_TEXT_BUFFER (buffer), NULL);
 
-  priv = GTK_TEXT_BUFFER_GET_PRIVATE (buffer);
+  priv = buffer->priv;
 
   if (! priv->copy_target_list)
     priv->copy_target_list =
@@ -4220,7 +4257,7 @@ gtk_text_buffer_get_paste_target_list (GtkTextBuffer *buffer)
 
   g_return_val_if_fail (GTK_IS_TEXT_BUFFER (buffer), NULL);
 
-  priv = GTK_TEXT_BUFFER_GET_PRIVATE (buffer);
+  priv = buffer->priv;
 
   if (! priv->paste_target_list)
     priv->paste_target_list =
@@ -4322,12 +4359,15 @@ _gtk_text_buffer_get_line_log_attrs (GtkTextBuffer     *buffer,
                                      const GtkTextIter *anywhere_in_line,
                                      gint              *char_len)
 {
+  GtkTextBufferPrivate *priv;
   gint line;
   GtkTextLogAttrCache *cache;
   gint i;
   
   g_return_val_if_fail (GTK_IS_TEXT_BUFFER (buffer), NULL);
   g_return_val_if_fail (anywhere_in_line != NULL, NULL);
+
+  priv = buffer->priv;
 
   /* special-case for empty last line in buffer */
   if (gtk_text_iter_is_end (anywhere_in_line) &&
@@ -4342,19 +4382,19 @@ _gtk_text_buffer_get_line_log_attrs (GtkTextBuffer     *buffer,
    * the start of a paragraph changes
    */
   
-  if (buffer->log_attr_cache == NULL)
+  if (priv->log_attr_cache == NULL)
     {
-      buffer->log_attr_cache = g_new0 (GtkTextLogAttrCache, 1);
-      buffer->log_attr_cache->chars_changed_stamp =
+      priv->log_attr_cache = g_new0 (GtkTextLogAttrCache, 1);
+      priv->log_attr_cache->chars_changed_stamp =
         _gtk_text_btree_get_chars_changed_stamp (get_btree (buffer));
     }
-  else if (buffer->log_attr_cache->chars_changed_stamp !=
+  else if (priv->log_attr_cache->chars_changed_stamp !=
            _gtk_text_btree_get_chars_changed_stamp (get_btree (buffer)))
     {
-      clear_log_attr_cache (buffer->log_attr_cache);
+      clear_log_attr_cache (priv->log_attr_cache);
     }
   
-  cache = buffer->log_attr_cache;
+  cache = priv->log_attr_cache;
   line = gtk_text_iter_get_line (anywhere_in_line);
 
   i = 0;
@@ -4395,8 +4435,8 @@ _gtk_text_buffer_notify_will_remove_tag (GtkTextBuffer *buffer,
    * code messing things up at this point; the tag MUST be removed
    * entirely.
    */
-  if (buffer->btree)
-    _gtk_text_btree_notify_will_remove_tag (buffer->btree, tag);
+  if (buffer->priv->btree)
+    _gtk_text_btree_notify_will_remove_tag (buffer->priv->btree, tag);
 }
 
 /*
@@ -4409,5 +4449,301 @@ _gtk_text_buffer_spew (GtkTextBuffer *buffer)
   _gtk_text_btree_spew (get_btree (buffer));
 }
 
-#define __GTK_TEXT_BUFFER_C__
-#include "gtkaliasdef.c"
+void
+_gtk_text_buffer_get_text_before (GtkTextBuffer   *buffer,
+                                  AtkTextBoundary  boundary_type,
+                                  GtkTextIter     *position,
+                                  GtkTextIter     *start,
+                                  GtkTextIter     *end)
+{
+  gint line_number;
+
+  *start = *position;
+  *end = *start;
+
+  switch (boundary_type)
+    {
+    case ATK_TEXT_BOUNDARY_CHAR:
+      gtk_text_iter_backward_char (start);
+      break;
+
+    case ATK_TEXT_BOUNDARY_WORD_START:
+      if (!gtk_text_iter_starts_word (start))
+        gtk_text_iter_backward_word_start (start);
+      *end = *start;
+      gtk_text_iter_backward_word_start (start);
+      break;
+
+    case ATK_TEXT_BOUNDARY_WORD_END:
+      if (gtk_text_iter_inside_word (start) &&
+          !gtk_text_iter_starts_word (start))
+        gtk_text_iter_backward_word_start (start);
+      while (!gtk_text_iter_ends_word (start))
+        {
+          if (!gtk_text_iter_backward_char (start))
+            break;
+        }
+      *end = *start;
+      gtk_text_iter_backward_word_start (start);
+      while (!gtk_text_iter_ends_word (start))
+        {
+          if (!gtk_text_iter_backward_char (start))
+            break;
+        }
+      break;
+
+    case ATK_TEXT_BOUNDARY_SENTENCE_START:
+      if (!gtk_text_iter_starts_sentence (start))
+        gtk_text_iter_backward_sentence_start (start);
+      *end = *start;
+      gtk_text_iter_backward_sentence_start (start);
+      break;
+
+    case ATK_TEXT_BOUNDARY_SENTENCE_END:
+      if (gtk_text_iter_inside_sentence (start) &&
+          !gtk_text_iter_starts_sentence (start))
+        gtk_text_iter_backward_sentence_start (start);
+      while (!gtk_text_iter_ends_sentence (start))
+        {
+          if (!gtk_text_iter_backward_char (start))
+            break;
+        }
+      *end = *start;
+      gtk_text_iter_backward_sentence_start (start);
+      while (!gtk_text_iter_ends_sentence (start))
+        {
+          if (!gtk_text_iter_backward_char (start))
+            break;
+        }
+      break;
+
+    case ATK_TEXT_BOUNDARY_LINE_START:
+      line_number = gtk_text_iter_get_line (start);
+      if (line_number == 0)
+        {
+          gtk_text_buffer_get_iter_at_offset (buffer, start, 0);
+        }
+      else
+        {
+          gtk_text_iter_backward_line (start);
+          gtk_text_iter_forward_line (start);
+        }
+      *end = *start;
+      gtk_text_iter_backward_line (start);
+      break;
+
+    case ATK_TEXT_BOUNDARY_LINE_END:
+      line_number = gtk_text_iter_get_line (start);
+      if (line_number == 0)
+        {
+          gtk_text_buffer_get_iter_at_offset (buffer, start, 0);
+          *end = *start;
+        }
+      else
+        {
+          gtk_text_iter_backward_line (start);
+          *end = *start;
+          while (!gtk_text_iter_ends_line (start))
+            {
+              if (!gtk_text_iter_backward_char (start))
+                break;
+            }
+          gtk_text_iter_forward_to_line_end (end);
+        }
+      break;
+    }
+}
+
+void
+_gtk_text_buffer_get_text_at (GtkTextBuffer   *buffer,
+                              AtkTextBoundary  boundary_type,
+                              GtkTextIter     *position,
+                              GtkTextIter     *start,
+                              GtkTextIter     *end)
+{
+  gint line_number;
+
+  *start = *position;
+  *end = *start;
+
+  switch (boundary_type)
+    {
+    case ATK_TEXT_BOUNDARY_CHAR:
+      gtk_text_iter_forward_char (end);
+      break;
+
+    case ATK_TEXT_BOUNDARY_WORD_START:
+      if (!gtk_text_iter_starts_word (start))
+        gtk_text_iter_backward_word_start (start);
+      if (gtk_text_iter_inside_word (end))
+        gtk_text_iter_forward_word_end (end);
+      while (!gtk_text_iter_starts_word (end))
+        {
+          if (!gtk_text_iter_forward_char (end))
+            break;
+        }
+      break;
+
+    case ATK_TEXT_BOUNDARY_WORD_END:
+      if (gtk_text_iter_inside_word (start) &&
+          !gtk_text_iter_starts_word (start))
+        gtk_text_iter_backward_word_start (start);
+      while (!gtk_text_iter_ends_word (start))
+        {
+          if (!gtk_text_iter_backward_char (start))
+            break;
+        }
+      gtk_text_iter_forward_word_end (end);
+      break;
+
+    case ATK_TEXT_BOUNDARY_SENTENCE_START:
+      if (!gtk_text_iter_starts_sentence (start))
+        gtk_text_iter_backward_sentence_start (start);
+      if (gtk_text_iter_inside_sentence (end))
+        gtk_text_iter_forward_sentence_end (end);
+      while (!gtk_text_iter_starts_sentence (end))
+        {
+          if (!gtk_text_iter_forward_char (end))
+            break;
+        }
+      break;
+
+    case ATK_TEXT_BOUNDARY_SENTENCE_END:
+      if (gtk_text_iter_inside_sentence (start) &&
+          !gtk_text_iter_starts_sentence (start))
+        gtk_text_iter_backward_sentence_start (start);
+      while (!gtk_text_iter_ends_sentence (start))
+        {
+          if (!gtk_text_iter_backward_char (start))
+            break;
+        }
+      gtk_text_iter_forward_sentence_end (end);
+      break;
+
+    case ATK_TEXT_BOUNDARY_LINE_START:
+      line_number = gtk_text_iter_get_line (start);
+      if (line_number == 0)
+        {
+          gtk_text_buffer_get_iter_at_offset (buffer, start, 0);
+        }
+      else
+        {
+          gtk_text_iter_backward_line (start);
+          gtk_text_iter_forward_line (start);
+        }
+      gtk_text_iter_forward_line (end);
+      break;
+
+    case ATK_TEXT_BOUNDARY_LINE_END:
+      line_number = gtk_text_iter_get_line (start);
+      if (line_number == 0)
+        {
+          gtk_text_buffer_get_iter_at_offset (buffer, start, 0);
+        }
+      else
+        {
+          gtk_text_iter_backward_line (start);
+          gtk_text_iter_forward_line (start);
+        }
+      while (!gtk_text_iter_ends_line (start))
+        {
+          if (!gtk_text_iter_backward_char (start))
+            break;
+        }
+      gtk_text_iter_forward_to_line_end (end);
+      break;
+   }
+}
+
+void
+_gtk_text_buffer_get_text_after (GtkTextBuffer   *buffer,
+                                 AtkTextBoundary  boundary_type,
+                                 GtkTextIter     *position,
+                                 GtkTextIter     *start,
+                                 GtkTextIter     *end)
+{
+  *start = *position;
+  *end = *start;
+
+  switch (boundary_type)
+    {
+    case ATK_TEXT_BOUNDARY_CHAR:
+      gtk_text_iter_forward_char (start);
+      gtk_text_iter_forward_chars (end, 2);
+      break;
+
+    case ATK_TEXT_BOUNDARY_WORD_START:
+      if (gtk_text_iter_inside_word (end))
+        gtk_text_iter_forward_word_end (end);
+      while (!gtk_text_iter_starts_word (end))
+        {
+          if (!gtk_text_iter_forward_char (end))
+            break;
+        }
+      *start = *end;
+      if (!gtk_text_iter_is_end (end))
+        {
+          gtk_text_iter_forward_word_end (end);
+          while (!gtk_text_iter_starts_word (end))
+            {
+              if (!gtk_text_iter_forward_char (end))
+                break;
+            }
+        }
+      break;
+
+    case ATK_TEXT_BOUNDARY_WORD_END:
+      gtk_text_iter_forward_word_end (end);
+      *start = *end;
+      if (!gtk_text_iter_is_end (end))
+        gtk_text_iter_forward_word_end (end);
+      break;
+
+    case ATK_TEXT_BOUNDARY_SENTENCE_START:
+      if (gtk_text_iter_inside_sentence (end))
+        gtk_text_iter_forward_sentence_end (end);
+      while (!gtk_text_iter_starts_sentence (end))
+        {
+          if (!gtk_text_iter_forward_char (end))
+            break;
+        }
+      *start = *end;
+      if (!gtk_text_iter_is_end (end))
+        {
+          gtk_text_iter_forward_sentence_end (end);
+          while (!gtk_text_iter_starts_sentence (end))
+            {
+              if (!gtk_text_iter_forward_char (end))
+                break;
+            }
+        }
+      break;
+
+    case ATK_TEXT_BOUNDARY_SENTENCE_END:
+      gtk_text_iter_forward_sentence_end (end);
+      *start = *end;
+      if (!gtk_text_iter_is_end (end))
+        gtk_text_iter_forward_sentence_end (end);
+      break;
+
+    case ATK_TEXT_BOUNDARY_LINE_START:
+      gtk_text_iter_forward_line (end);
+      *start = *end;
+      gtk_text_iter_forward_line (end);
+      break;
+
+    case ATK_TEXT_BOUNDARY_LINE_END:
+      gtk_text_iter_forward_line (start);
+      *end = *start;
+      if (!gtk_text_iter_is_end (start))
+        {
+          while (!gtk_text_iter_ends_line (start))
+            {
+              if (!gtk_text_iter_backward_char (start))
+                break;
+            }
+          gtk_text_iter_forward_to_line_end (end);
+        }
+      break;
+    }
+}

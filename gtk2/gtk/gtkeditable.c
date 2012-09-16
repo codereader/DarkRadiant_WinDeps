@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -24,13 +22,55 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+/**
+ * SECTION:gtkeditable
+ * @Short_description: Interface for text-editing widgets
+ * @Title: GtkEditable
+ *
+ * The #GtkEditable interface is an interface which should be implemented by
+ * text editing widgets, such as #GtkEntry and #GtkSpinButton. It contains functions
+ * for generically manipulating an editable widget, a large number of action
+ * signals used for key bindings, and several signals that an application can
+ * connect to to modify the behavior of a widget.
+ *
+ * As an example of the latter usage, by connecting
+ * the following handler to #GtkEditable::insert-text, an application
+ * can convert all entry into a widget into uppercase.
+ *
+ * <example>
+ * <title>Forcing entry to uppercase.</title>
+ * <programlisting>
+ * #include &lt;ctype.h&gt;
+ *
+ * void
+ * insert_text_handler (GtkEditable &ast;editable,
+ *                      const gchar &ast;text,
+ *                      gint         length,
+ *                      gint        &ast;position,
+ *                      gpointer     data)
+ * {
+ *   gchar &ast;result = g_utf8_strup (text, length);
+ *
+ *   g_signal_handlers_block_by_func (editable,
+ *                                (gpointer) insert_text_handler, data);
+ *   gtk_editable_insert_text (editable, result, length, position);
+ *   g_signal_handlers_unblock_by_func (editable,
+ *                                      (gpointer) insert_text_handler, data);
+ *
+ *   g_signal_stop_emission_by_name (editable, "insert_text");
+ *
+ *   g_free (result);
+ * }
+ * </programlisting>
+ * </example>
+ */
+
 #include "config.h"
 #include <string.h>
 
 #include "gtkeditable.h"
 #include "gtkmarshalers.h"
 #include "gtkintl.h"
-#include "gtkalias.h"
 
 
 static void gtk_editable_base_init (gpointer g_class);
@@ -45,7 +85,7 @@ gtk_editable_get_type (void)
     {
       const GTypeInfo editable_info =
       {
-	sizeof (GtkEditableClass),  /* class_size */
+	sizeof (GtkEditableInterface),  /* class_size */
 	gtk_editable_base_init,	    /* base_init */
 	NULL,			    /* base_finalize */
       };
@@ -86,7 +126,7 @@ gtk_editable_base_init (gpointer g_class)
       g_signal_new (I_("insert-text"),
 		    GTK_TYPE_EDITABLE,
 		    G_SIGNAL_RUN_LAST,
-		    G_STRUCT_OFFSET (GtkEditableClass, insert_text),
+		    G_STRUCT_OFFSET (GtkEditableInterface, insert_text),
 		    NULL, NULL,
 		    _gtk_marshal_VOID__STRING_INT_POINTER,
 		    G_TYPE_NONE, 3,
@@ -113,7 +153,7 @@ gtk_editable_base_init (gpointer g_class)
       g_signal_new (I_("delete-text"),
 		    GTK_TYPE_EDITABLE,
 		    G_SIGNAL_RUN_LAST,
-		    G_STRUCT_OFFSET (GtkEditableClass, delete_text),
+		    G_STRUCT_OFFSET (GtkEditableInterface, delete_text),
 		    NULL, NULL,
 		    _gtk_marshal_VOID__INT_INT,
 		    G_TYPE_NONE, 2,
@@ -135,7 +175,7 @@ gtk_editable_base_init (gpointer g_class)
       g_signal_new (I_("changed"),
 		    GTK_TYPE_EDITABLE,
 		    G_SIGNAL_RUN_LAST,
-		    G_STRUCT_OFFSET (GtkEditableClass, changed),
+		    G_STRUCT_OFFSET (GtkEditableInterface, changed),
 		    NULL, NULL,
 		    _gtk_marshal_VOID__VOID,
 		    G_TYPE_NONE, 0);
@@ -156,6 +196,8 @@ gtk_editable_base_init (gpointer g_class)
  *
  * Note that the position is in characters, not in bytes. 
  * The function updates @position to point after the newly inserted text.
+ *
+ * Virtual: do_insert_text
  */
 void
 gtk_editable_insert_text (GtkEditable *editable,
@@ -169,7 +211,7 @@ gtk_editable_insert_text (GtkEditable *editable,
   if (new_text_length < 0)
     new_text_length = strlen (new_text);
   
-  GTK_EDITABLE_GET_CLASS (editable)->do_insert_text (editable, new_text, new_text_length, position);
+  GTK_EDITABLE_GET_IFACE (editable)->do_insert_text (editable, new_text, new_text_length, position);
 }
 
 /**
@@ -184,6 +226,8 @@ gtk_editable_insert_text (GtkEditable *editable,
  * are those from @start_pos to the end of the text.
  *
  * Note that the positions are specified in characters, not bytes.
+ *
+ * Virtual: do_delete_text
  */
 void
 gtk_editable_delete_text (GtkEditable *editable,
@@ -192,7 +236,7 @@ gtk_editable_delete_text (GtkEditable *editable,
 {
   g_return_if_fail (GTK_IS_EDITABLE (editable));
 
-  GTK_EDITABLE_GET_CLASS (editable)->do_delete_text (editable, start_pos, end_pos);
+  GTK_EDITABLE_GET_IFACE (editable)->do_delete_text (editable, start_pos, end_pos);
 }
 
 /**
@@ -219,7 +263,7 @@ gtk_editable_get_chars (GtkEditable *editable,
 {
   g_return_val_if_fail (GTK_IS_EDITABLE (editable), NULL);
 
-  return GTK_EDITABLE_GET_CLASS (editable)->get_chars (editable, start_pos, end_pos);
+  return GTK_EDITABLE_GET_IFACE (editable)->get_chars (editable, start_pos, end_pos);
 }
 
 /**
@@ -241,7 +285,7 @@ gtk_editable_set_position (GtkEditable      *editable,
 {
   g_return_if_fail (GTK_IS_EDITABLE (editable));
 
-  GTK_EDITABLE_GET_CLASS (editable)->set_position (editable, position);
+  GTK_EDITABLE_GET_IFACE (editable)->set_position (editable, position);
 }
 
 /**
@@ -260,7 +304,7 @@ gtk_editable_get_position (GtkEditable *editable)
 {
   g_return_val_if_fail (GTK_IS_EDITABLE (editable), 0);
 
-  return GTK_EDITABLE_GET_CLASS (editable)->get_position (editable);
+  return GTK_EDITABLE_GET_IFACE (editable)->get_position (editable);
 }
 
 /**
@@ -287,7 +331,7 @@ gtk_editable_get_selection_bounds (GtkEditable *editable,
   
   g_return_val_if_fail (GTK_IS_EDITABLE (editable), FALSE);
 
-  result = GTK_EDITABLE_GET_CLASS (editable)->get_selection_bounds (editable, &tmp_start, &tmp_end);
+  result = GTK_EDITABLE_GET_IFACE (editable)->get_selection_bounds (editable, &tmp_start, &tmp_end);
 
   if (start_pos)
     *start_pos = MIN (tmp_start, tmp_end);
@@ -328,6 +372,8 @@ gtk_editable_delete_selection (GtkEditable *editable)
  * the end of the text.
  * 
  * Note that positions are specified in characters, not bytes.
+ *
+ * Virtual: set_selection_bounds
  */
 void
 gtk_editable_select_region (GtkEditable *editable,
@@ -336,7 +382,7 @@ gtk_editable_select_region (GtkEditable *editable,
 {
   g_return_if_fail (GTK_IS_EDITABLE (editable));
   
-  GTK_EDITABLE_GET_CLASS (editable)->set_selection_bounds (editable, start_pos, end_pos);
+  GTK_EDITABLE_GET_IFACE (editable)->set_selection_bounds (editable, start_pos, end_pos);
 }
 
 /**
@@ -424,6 +470,3 @@ gtk_editable_get_editable (GtkEditable *editable)
 
   return value;
 }
-
-#define __GTK_EDITABLE_C__
-#include "gtkaliasdef.c"

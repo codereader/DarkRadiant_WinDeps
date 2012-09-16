@@ -13,9 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
@@ -23,24 +21,24 @@
  * @Short_description: Interface for objects that can be built by GtkBuilder
  * @Title: GtkBuildable
  *
- * In order to allow construction from a <link linkend="BUILDER-UI">GtkBuilder
- * UI description</link>, an object class must implement the
- * GtkBuildable interface. The interface includes methods for setting
- * names and properties of objects, parsing custom tags, constructing
- * child objects.
+ * GtkBuildable allows objects to extend and customize thier deserialization 
+ * from <link linkend="BUILDER-UI">GtkBuilder UI descriptions</link>.
+ * The interface includes methods for setting names and properties of objects, 
+ * parsing custom tags and constructing child objects.
  *
  * The GtkBuildable interface is implemented by all widgets and
  * many of the non-widget objects that are provided by GTK+. The
- * main user of this interface is #GtkBuilder, there should be
+ * main user of this interface is #GtkBuilder. There should be
  * very little need for applications to call any
  * <function>gtk_buildable_...</function> functions.
+ *
+ * <note><para>An object only needs to implement this interface if it needs
+ * to extend the #GtkBuilder format or run any extra routines at deserialization time</para></note>
  */
 
 #include "config.h"
 #include "gtkbuildable.h"
-#include "gtktypeutils.h"
 #include "gtkintl.h"
-#include "gtkalias.h"
 
 
 typedef GtkBuildableIface GtkBuildableInterface;
@@ -357,6 +355,3 @@ gtk_buildable_get_internal_child (GtkBuildable *buildable,
 
   return (* iface->get_internal_child) (buildable, builder, childname);
 }
-
-#define __GTK_BUILDABLE_C__
-#include "gtkaliasdef.c"

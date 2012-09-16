@@ -12,21 +12,38 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
-#include <stdlib.h>
+
 #include "gtkcellrenderertext.h"
+
+#include <stdlib.h>
+
 #include "gtkeditable.h"
 #include "gtkentry.h"
+#include "gtksizerequest.h"
 #include "gtkmarshalers.h"
 #include "gtkintl.h"
 #include "gtkprivate.h"
 #include "gtktreeprivate.h"
-#include "gtkalias.h"
+#include "a11y/gtktextcellaccessible.h"
+
+
+/**
+ * SECTION:gtkcellrenderertext
+ * @Short_description: Renders text in a cell
+ * @Title: GtkCellRendererText
+ *
+ * A #GtkCellRendererText renders a given text in its cell, using the font, color and
+ * style information provided by its properties. The text will be ellipsized if it is
+ * too long and the #GtkCellRendererText:ellipsize property allows it.
+ *
+ * If the #GtkCellRenderer:mode is %GTK_CELL_RENDERER_MODE_EDITABLE,
+ * the #GtkCellRendererText allows to edit its text using an entry.
+ */
+
 
 static void gtk_cell_renderer_text_finalize   (GObject                  *object);
 
@@ -38,28 +55,41 @@ static void gtk_cell_renderer_text_set_property  (GObject                  *obje
 						  guint                     param_id,
 						  const GValue             *value,
 						  GParamSpec               *pspec);
-static void gtk_cell_renderer_text_get_size   (GtkCellRenderer          *cell,
-					       GtkWidget                *widget,
-					       GdkRectangle             *cell_area,
-					       gint                     *x_offset,
-					       gint                     *y_offset,
-					       gint                     *width,
-					       gint                     *height);
 static void gtk_cell_renderer_text_render     (GtkCellRenderer          *cell,
-					       GdkWindow                *window,
+					       cairo_t                  *cr,
 					       GtkWidget                *widget,
-					       GdkRectangle             *background_area,
-					       GdkRectangle             *cell_area,
-					       GdkRectangle             *expose_area,
+					       const GdkRectangle       *background_area,
+					       const GdkRectangle       *cell_area,
 					       GtkCellRendererState      flags);
 
 static GtkCellEditable *gtk_cell_renderer_text_start_editing (GtkCellRenderer      *cell,
 							      GdkEvent             *event,
 							      GtkWidget            *widget,
 							      const gchar          *path,
-							      GdkRectangle         *background_area,
-							      GdkRectangle         *cell_area,
+							      const GdkRectangle   *background_area,
+							      const GdkRectangle   *cell_area,
 							      GtkCellRendererState  flags);
+
+static void       gtk_cell_renderer_text_get_preferred_width            (GtkCellRenderer       *cell,
+                                                                         GtkWidget             *widget,
+                                                                         gint                  *minimal_size,
+                                                                         gint                  *natural_size);
+static void       gtk_cell_renderer_text_get_preferred_height           (GtkCellRenderer       *cell,
+                                                                         GtkWidget             *widget,
+                                                                         gint                  *minimal_size,
+                                                                         gint                  *natural_size);
+static void       gtk_cell_renderer_text_get_preferred_height_for_width (GtkCellRenderer       *cell,
+                                                                         GtkWidget             *widget,
+                                                                         gint                   width,
+                                                                         gint                  *minimum_height,
+                                                                         gint                  *natural_height);
+static void       gtk_cell_renderer_text_get_aligned_area               (GtkCellRenderer       *cell,
+									 GtkWidget             *widget,
+									 GtkCellRendererState   flags,
+									 const GdkRectangle    *cell_area,
+									 GdkRectangle          *aligned_area);
+
+
 
 enum {
   EDITED,
@@ -74,6 +104,7 @@ enum {
   PROP_ATTRIBUTES,
   PROP_SINGLE_PARAGRAPH_MODE,
   PROP_WIDTH_CHARS,
+  PROP_MAX_WIDTH_CHARS,
   PROP_WRAP_WIDTH,
   PROP_ALIGN,
   
@@ -82,6 +113,8 @@ enum {
   PROP_FOREGROUND,
   PROP_BACKGROUND_GDK,
   PROP_FOREGROUND_GDK,
+  PROP_BACKGROUND_RGBA,
+  PROP_FOREGROUND_RGBA,
   PROP_FONT,
   PROP_FONT_DESC,
   PROP_FAMILY,
@@ -123,31 +156,50 @@ static guint text_cell_renderer_signals [LAST_SIGNAL];
 
 #define GTK_CELL_RENDERER_TEXT_PATH "gtk-cell-renderer-text-path"
 
-#define GTK_CELL_RENDERER_TEXT_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GTK_TYPE_CELL_RENDERER_TEXT, GtkCellRendererTextPrivate))
-
-typedef struct _GtkCellRendererTextPrivate GtkCellRendererTextPrivate;
 struct _GtkCellRendererTextPrivate
 {
-  guint single_paragraph : 1;
-  guint language_set : 1;
-  guint markup_set : 1;
-  guint ellipsize_set : 1;
-  guint align_set : 1;
-  
+  GtkWidget *entry;
+
+  PangoAttrList        *extra_attrs;
+  GdkRGBA               foreground;
+  GdkRGBA               background;
+  PangoAlignment        align;
+  PangoEllipsizeMode    ellipsize;
+  PangoFontDescription *font;
+  PangoLanguage        *language;
+  PangoUnderline        underline_style;
+  PangoWrapMode         wrap_mode;
+
+  gchar *text;
+
+  gdouble font_scale;
+
+  gint rise;
+  gint fixed_height_rows;
+  gint width_chars;
+  gint max_width_chars;
+  gint wrap_width;
+
+  guint in_entry_menu     : 1;
+  guint strikethrough     : 1;
+  guint editable          : 1;
+  guint scale_set         : 1;
+  guint foreground_set    : 1;
+  guint background_set    : 1;
+  guint underline_set     : 1;
+  guint rise_set          : 1;
+  guint strikethrough_set : 1;
+  guint editable_set      : 1;
+  guint calc_fixed_height : 1;
+  guint single_paragraph  : 1;
+  guint language_set      : 1;
+  guint markup_set        : 1;
+  guint ellipsize_set     : 1;
+  guint align_set         : 1;
+
   gulong focus_out_id;
-  PangoLanguage *language;
-  PangoEllipsizeMode ellipsize;
-  PangoWrapMode wrap_mode;
-  PangoAlignment align;
-  
   gulong populate_popup_id;
   gulong entry_menu_popdown_timeout;
-  gboolean in_entry_menu;
-  
-  gint width_chars;
-  gint wrap_width;
-  
-  GtkWidget *entry;
 };
 
 G_DEFINE_TYPE (GtkCellRendererText, gtk_cell_renderer_text, GTK_TYPE_CELL_RENDERER)
@@ -156,18 +208,21 @@ static void
 gtk_cell_renderer_text_init (GtkCellRendererText *celltext)
 {
   GtkCellRendererTextPrivate *priv;
+  GtkCellRenderer *cell = GTK_CELL_RENDERER (celltext);
 
-  priv = GTK_CELL_RENDERER_TEXT_GET_PRIVATE (celltext);
+  celltext->priv = G_TYPE_INSTANCE_GET_PRIVATE (celltext,
+                                                GTK_TYPE_CELL_RENDERER_TEXT,
+                                                GtkCellRendererTextPrivate);
+  priv = celltext->priv;
 
-  GTK_CELL_RENDERER (celltext)->xalign = 0.0;
-  GTK_CELL_RENDERER (celltext)->yalign = 0.5;
-  GTK_CELL_RENDERER (celltext)->xpad = 2;
-  GTK_CELL_RENDERER (celltext)->ypad = 2;
-  celltext->font_scale = 1.0;
-  celltext->fixed_height_rows = -1;
-  celltext->font = pango_font_description_new ();
+  gtk_cell_renderer_set_alignment (cell, 0.0, 0.5);
+  gtk_cell_renderer_set_padding (cell, 2, 2);
+  priv->font_scale = 1.0;
+  priv->fixed_height_rows = -1;
+  priv->font = pango_font_description_new ();
 
   priv->width_chars = -1;
+  priv->max_width_chars = -1;
   priv->wrap_width = -1;
   priv->wrap_mode = PANGO_WRAP_CHAR;
   priv->align = PANGO_ALIGN_LEFT;
@@ -185,9 +240,12 @@ gtk_cell_renderer_text_class_init (GtkCellRendererTextClass *class)
   object_class->get_property = gtk_cell_renderer_text_get_property;
   object_class->set_property = gtk_cell_renderer_text_set_property;
 
-  cell_class->get_size = gtk_cell_renderer_text_get_size;
   cell_class->render = gtk_cell_renderer_text_render;
   cell_class->start_editing = gtk_cell_renderer_text_start_editing;
+  cell_class->get_preferred_width = gtk_cell_renderer_text_get_preferred_width;
+  cell_class->get_preferred_height = gtk_cell_renderer_text_get_preferred_height;
+  cell_class->get_preferred_height_for_width = gtk_cell_renderer_text_get_preferred_height_for_width;
+  cell_class->get_aligned_area = gtk_cell_renderer_text_get_aligned_area;
 
   g_object_class_install_property (object_class,
                                    PROP_TEXT,
@@ -217,7 +275,7 @@ gtk_cell_renderer_text_class_init (GtkCellRendererTextClass *class)
                                    PROP_SINGLE_PARAGRAPH_MODE,
                                    g_param_spec_boolean ("single-paragraph-mode",
                                                          P_("Single Paragraph Mode"),
-                                                         P_("Whether or not to keep all text in a single paragraph"),
+                                                         P_("Whether to keep all text in a single paragraph"),
                                                          FALSE,
                                                          GTK_PARAM_READWRITE));
 
@@ -230,14 +288,35 @@ gtk_cell_renderer_text_class_init (GtkCellRendererTextClass *class)
                                                         NULL,
                                                         GTK_PARAM_WRITABLE));
 
+  /**
+   * GtkCellRendererText:background-gdk:
+   *
+   * Background color as a #GdkColor
+   *
+   * Deprecated: 3.4: Use #GtkCellRendererText:background-rgba instead.
+   */
   g_object_class_install_property (object_class,
                                    PROP_BACKGROUND_GDK,
                                    g_param_spec_boxed ("background-gdk",
                                                        P_("Background color"),
                                                        P_("Background color as a GdkColor"),
                                                        GDK_TYPE_COLOR,
-                                                       GTK_PARAM_READWRITE));  
+                                                       GTK_PARAM_READWRITE | G_PARAM_DEPRECATED));
 
+  /**
+   * GtkCellRendererText:background-rgba:
+   *
+   * Background color as a #GdkRGBA
+   *
+   * Since: 3.0
+   */
+  g_object_class_install_property (object_class,
+                                   PROP_BACKGROUND_RGBA,
+                                   g_param_spec_boxed ("background-rgba",
+                                                       P_("Background color as RGBA"),
+                                                       P_("Background color as a GdkRGBA"),
+                                                       GDK_TYPE_RGBA,
+                                                       GTK_PARAM_READWRITE));
   g_object_class_install_property (object_class,
                                    PROP_FOREGROUND,
                                    g_param_spec_string ("foreground",
@@ -246,12 +325,34 @@ gtk_cell_renderer_text_class_init (GtkCellRendererTextClass *class)
                                                         NULL,
                                                         GTK_PARAM_WRITABLE));
 
+  /**
+   * GtkCellRendererText:foreground-gdk:
+   *
+   * Foreground color as a #GdkColor
+   *
+   * Deprecated: 3.4: Use #GtkCellRendererText:foreground-rgba instead.
+   */
   g_object_class_install_property (object_class,
                                    PROP_FOREGROUND_GDK,
                                    g_param_spec_boxed ("foreground-gdk",
                                                        P_("Foreground color"),
                                                        P_("Foreground color as a GdkColor"),
                                                        GDK_TYPE_COLOR,
+                                                       GTK_PARAM_READWRITE | G_PARAM_DEPRECATED));
+
+  /**
+   * GtkCellRendererText:foreground-rgba:
+   *
+   * Foreground color as a #GdkRGBA
+   *
+   * Since: 3.0
+   */
+  g_object_class_install_property (object_class,
+                                   PROP_FOREGROUND_RGBA,
+                                   g_param_spec_boxed ("foreground-rgba",
+                                                       P_("Foreground color as RGBA"),
+                                                       P_("Foreground color as a GdkRGBA"),
+                                                       GDK_TYPE_RGBA,
                                                        GTK_PARAM_READWRITE));
 
 
@@ -435,6 +536,31 @@ gtk_cell_renderer_text_class_init (GtkCellRendererTextClass *class)
                                                      -1,
                                                      GTK_PARAM_READWRITE));
   
+
+  /**
+   * GtkCellRendererText:max-width-chars:
+   * 
+   * The desired maximum width of the cell, in characters. If this property 
+   * is set to -1, the width will be calculated automatically.
+   *
+   * For cell renderers that ellipsize or wrap text; this property
+   * controls the maximum reported width of the cell. The
+   * cell should not receive any greater allocation unless it is
+   * set to expand in its #GtkCellLayout and all of the cell's siblings
+   * have received their natural width.
+   *
+   * Since: 3.0
+   **/
+  g_object_class_install_property (object_class,
+                                   PROP_MAX_WIDTH_CHARS,
+                                   g_param_spec_int ("max-width-chars",
+                                                     P_("Maximum Width In Characters"),
+                                                     P_("The maximum width of the cell, in characters"),
+                                                     -1,
+                                                     G_MAXINT,
+                                                     -1,
+                                                     GTK_PARAM_READWRITE));
+  
   /**
    * GtkCellRendererText:wrap-mode:
    *
@@ -458,7 +584,7 @@ gtk_cell_renderer_text_class_init (GtkCellRendererTextClass *class)
   /**
    * GtkCellRendererText:wrap-width:
    *
-   * Specifies the width at which the text is wrapped. The wrap-mode property can 
+   * Specifies the minimum width at which the text is wrapped. The wrap-mode property can 
    * be used to influence at what character positions the line breaks can be placed.
    * Setting wrap-width to -1 turns wrapping off.
    *
@@ -494,6 +620,8 @@ gtk_cell_renderer_text_class_init (GtkCellRendererTextClass *class)
 						      PANGO_ALIGN_LEFT,
 						      GTK_PARAM_READWRITE));
   
+
+
   /* Style props are set or not */
 
 #define ADD_SET_PROP(propname, propval, nick, blurb) g_object_class_install_property (object_class, propval, g_param_spec_boolean (propname, nick, blurb, FALSE, GTK_PARAM_READWRITE))
@@ -563,7 +691,7 @@ gtk_cell_renderer_text_class_init (GtkCellRendererTextClass *class)
                 P_("Whether this tag affects the alignment mode"));
 
   /**
-   * GtkCellRendererText::edited
+   * GtkCellRendererText::edited:
    * @renderer: the object which received the signal
    * @path: the path identifying the edited cell
    * @new_text: the new text
@@ -585,22 +713,22 @@ gtk_cell_renderer_text_class_init (GtkCellRendererTextClass *class)
 		  G_TYPE_STRING);
 
   g_type_class_add_private (object_class, sizeof (GtkCellRendererTextPrivate));
+
+  _gtk_cell_renderer_class_set_accessible_type (cell_class, GTK_TYPE_TEXT_CELL_ACCESSIBLE);
 }
 
 static void
 gtk_cell_renderer_text_finalize (GObject *object)
 {
   GtkCellRendererText *celltext = GTK_CELL_RENDERER_TEXT (object);
-  GtkCellRendererTextPrivate *priv;
+  GtkCellRendererTextPrivate *priv = celltext->priv;
 
-  priv = GTK_CELL_RENDERER_TEXT_GET_PRIVATE (object);
+  pango_font_description_free (priv->font);
 
-  pango_font_description_free (celltext->font);
+  g_free (priv->text);
 
-  g_free (celltext->text);
-
-  if (celltext->extra_attrs)
-    pango_attr_list_unref (celltext->extra_attrs);
+  if (priv->extra_attrs)
+    pango_attr_list_unref (priv->extra_attrs);
 
   if (priv->language)
     g_object_unref (priv->language);
@@ -637,18 +765,16 @@ gtk_cell_renderer_text_get_property (GObject        *object,
 				     GParamSpec     *pspec)
 {
   GtkCellRendererText *celltext = GTK_CELL_RENDERER_TEXT (object);
-  GtkCellRendererTextPrivate *priv;
-
-  priv = GTK_CELL_RENDERER_TEXT_GET_PRIVATE (object);
+  GtkCellRendererTextPrivate *priv = celltext->priv;
 
   switch (param_id)
     {
     case PROP_TEXT:
-      g_value_set_string (value, celltext->text);
+      g_value_set_string (value, priv->text);
       break;
 
     case PROP_ATTRIBUTES:
-      g_value_set_boxed (value, celltext->extra_attrs);
+      g_value_set_boxed (value, priv->extra_attrs);
       break;
 
     case PROP_SINGLE_PARAGRAPH_MODE:
@@ -658,11 +784,11 @@ gtk_cell_renderer_text_get_property (GObject        *object,
     case PROP_BACKGROUND_GDK:
       {
         GdkColor color;
-        
-        color.red = celltext->background.red;
-        color.green = celltext->background.green;
-        color.blue = celltext->background.blue;
-        
+
+        color.red = (guint16) (priv->background.red * 65535);
+        color.green = (guint16) (priv->background.green * 65535);
+        color.blue = (guint16) (priv->background.blue * 65535);
+
         g_value_set_boxed (value, &color);
       }
       break;
@@ -670,69 +796,77 @@ gtk_cell_renderer_text_get_property (GObject        *object,
     case PROP_FOREGROUND_GDK:
       {
         GdkColor color;
-        
-        color.red = celltext->foreground.red;
-        color.green = celltext->foreground.green;
-        color.blue = celltext->foreground.blue;
-        
+
+        color.red = (guint16) (priv->foreground.red * 65535);
+        color.green = (guint16) (priv->foreground.green * 65535);
+        color.blue = (guint16) (priv->foreground.blue * 65535);
+
         g_value_set_boxed (value, &color);
       }
       break;
 
+    case PROP_BACKGROUND_RGBA:
+      g_value_set_boxed (value, &priv->background);
+      break;
+
+    case PROP_FOREGROUND_RGBA:
+      g_value_set_boxed (value, &priv->foreground);
+      break;
+
     case PROP_FONT:
-        g_value_take_string (value, pango_font_description_to_string (celltext->font));
+        g_value_take_string (value, pango_font_description_to_string (priv->font));
       break;
       
     case PROP_FONT_DESC:
-      g_value_set_boxed (value, celltext->font);
+      g_value_set_boxed (value, priv->font);
       break;
 
     case PROP_FAMILY:
-      g_value_set_string (value, pango_font_description_get_family (celltext->font));
+      g_value_set_string (value, pango_font_description_get_family (priv->font));
       break;
 
     case PROP_STYLE:
-      g_value_set_enum (value, pango_font_description_get_style (celltext->font));
+      g_value_set_enum (value, pango_font_description_get_style (priv->font));
       break;
 
     case PROP_VARIANT:
-      g_value_set_enum (value, pango_font_description_get_variant (celltext->font));
+      g_value_set_enum (value, pango_font_description_get_variant (priv->font));
       break;
 
     case PROP_WEIGHT:
-      g_value_set_int (value, pango_font_description_get_weight (celltext->font));
+      g_value_set_int (value, pango_font_description_get_weight (priv->font));
       break;
 
     case PROP_STRETCH:
-      g_value_set_enum (value, pango_font_description_get_stretch (celltext->font));
+      g_value_set_enum (value, pango_font_description_get_stretch (priv->font));
       break;
 
     case PROP_SIZE:
-      g_value_set_int (value, pango_font_description_get_size (celltext->font));
+      g_value_set_int (value, pango_font_description_get_size (priv->font));
       break;
 
     case PROP_SIZE_POINTS:
-      g_value_set_double (value, ((double)pango_font_description_get_size (celltext->font)) / (double)PANGO_SCALE);
+      g_value_set_double (value, ((double)pango_font_description_get_size (priv->font)) / (double)PANGO_SCALE);
       break;
 
     case PROP_SCALE:
-      g_value_set_double (value, celltext->font_scale);
+      g_value_set_double (value, priv->font_scale);
       break;
       
     case PROP_EDITABLE:
-      g_value_set_boolean (value, celltext->editable);
+      g_value_set_boolean (value, priv->editable);
       break;
 
     case PROP_STRIKETHROUGH:
-      g_value_set_boolean (value, celltext->strikethrough);
+      g_value_set_boolean (value, priv->strikethrough);
       break;
 
     case PROP_UNDERLINE:
-      g_value_set_enum (value, celltext->underline_style);
+      g_value_set_enum (value, priv->underline_style);
       break;
 
     case PROP_RISE:
-      g_value_set_int (value, celltext->rise);
+      g_value_set_int (value, priv->rise);
       break;  
 
     case PROP_LANGUAGE:
@@ -756,11 +890,11 @@ gtk_cell_renderer_text_get_property (GObject        *object,
       break;
 
     case PROP_BACKGROUND_SET:
-      g_value_set_boolean (value, celltext->background_set);
+      g_value_set_boolean (value, priv->background_set);
       break;
 
     case PROP_FOREGROUND_SET:
-      g_value_set_boolean (value, celltext->foreground_set);
+      g_value_set_boolean (value, priv->foreground_set);
       break;
 
     case PROP_FAMILY_SET:
@@ -771,29 +905,29 @@ gtk_cell_renderer_text_get_property (GObject        *object,
     case PROP_SIZE_SET:
       {
 	PangoFontMask mask = get_property_font_set_mask (param_id);
-	g_value_set_boolean (value, (pango_font_description_get_set_fields (celltext->font) & mask) != 0);
+	g_value_set_boolean (value, (pango_font_description_get_set_fields (priv->font) & mask) != 0);
 	
 	break;
       }
 
     case PROP_SCALE_SET:
-      g_value_set_boolean (value, celltext->scale_set);
+      g_value_set_boolean (value, priv->scale_set);
       break;
       
     case PROP_EDITABLE_SET:
-      g_value_set_boolean (value, celltext->editable_set);
+      g_value_set_boolean (value, priv->editable_set);
       break;
 
     case PROP_STRIKETHROUGH_SET:
-      g_value_set_boolean (value, celltext->strikethrough_set);
+      g_value_set_boolean (value, priv->strikethrough_set);
       break;
 
     case PROP_UNDERLINE_SET:
-      g_value_set_boolean (value, celltext->underline_set);
+      g_value_set_boolean (value, priv->underline_set);
       break;
 
     case  PROP_RISE_SET:
-      g_value_set_boolean (value, celltext->rise_set);
+      g_value_set_boolean (value, priv->rise_set);
       break;
 
     case PROP_LANGUAGE_SET:
@@ -812,6 +946,10 @@ gtk_cell_renderer_text_get_property (GObject        *object,
       g_value_set_int (value, priv->width_chars);
       break;  
 
+    case PROP_MAX_WIDTH_CHARS:
+      g_value_set_int (value, priv->max_width_chars);
+      break;  
+
     case PROP_BACKGROUND:
     case PROP_FOREGROUND:
     case PROP_MARKUP:
@@ -824,25 +962,25 @@ gtk_cell_renderer_text_get_property (GObject        *object,
 
 static void
 set_bg_color (GtkCellRendererText *celltext,
-              GdkColor            *color)
+              GdkRGBA             *rgba)
 {
-  if (color)
+  GtkCellRendererTextPrivate *priv = celltext->priv;
+
+  if (rgba)
     {
-      if (!celltext->background_set)
+      if (!priv->background_set)
         {
-          celltext->background_set = TRUE;
+          priv->background_set = TRUE;
           g_object_notify (G_OBJECT (celltext), "background-set");
         }
-      
-      celltext->background.red = color->red;
-      celltext->background.green = color->green;
-      celltext->background.blue = color->blue;
+
+      priv->background = *rgba;
     }
   else
     {
-      if (celltext->background_set)
+      if (priv->background_set)
         {
-          celltext->background_set = FALSE;
+          priv->background_set = FALSE;
           g_object_notify (G_OBJECT (celltext), "background-set");
         }
     }
@@ -851,25 +989,25 @@ set_bg_color (GtkCellRendererText *celltext,
 
 static void
 set_fg_color (GtkCellRendererText *celltext,
-              GdkColor            *color)
+              GdkRGBA             *rgba)
 {
-  if (color)
+  GtkCellRendererTextPrivate *priv = celltext->priv;
+
+  if (rgba)
     {
-      if (!celltext->foreground_set)
+      if (!priv->foreground_set)
         {
-          celltext->foreground_set = TRUE;
+          priv->foreground_set = TRUE;
           g_object_notify (G_OBJECT (celltext), "foreground-set");
         }
-      
-      celltext->foreground.red = color->red;
-      celltext->foreground.green = color->green;
-      celltext->foreground.blue = color->blue;
+
+      priv->foreground = *rgba;
     }
   else
     {
-      if (celltext->foreground_set)
+      if (priv->foreground_set)
         {
-          celltext->foreground_set = FALSE;
+          priv->foreground_set = FALSE;
           g_object_notify (G_OBJECT (celltext), "foreground-set");
         }
     }
@@ -955,6 +1093,7 @@ static void
 set_font_description (GtkCellRendererText  *celltext,
                       PangoFontDescription *font_desc)
 {
+  GtkCellRendererTextPrivate *priv = celltext->priv;
   GObject *object = G_OBJECT (celltext);
   PangoFontDescription *new_font_desc;
   PangoFontMask old_mask, new_mask, changed_mask, set_changed_mask;
@@ -964,14 +1103,14 @@ set_font_description (GtkCellRendererText  *celltext,
   else
     new_font_desc = pango_font_description_new ();
 
-  old_mask = pango_font_description_get_set_fields (celltext->font);
+  old_mask = pango_font_description_get_set_fields (priv->font);
   new_mask = pango_font_description_get_set_fields (new_font_desc);
 
   changed_mask = old_mask | new_mask;
   set_changed_mask = old_mask ^ new_mask;
 
-  pango_font_description_free (celltext->font);
-  celltext->font = new_font_desc;
+  pango_font_description_free (priv->font);
+  priv->font = new_font_desc;
   
   g_object_freeze_notify (object);
 
@@ -1006,34 +1145,32 @@ gtk_cell_renderer_text_set_property (GObject      *object,
 				     GParamSpec   *pspec)
 {
   GtkCellRendererText *celltext = GTK_CELL_RENDERER_TEXT (object);
-  GtkCellRendererTextPrivate *priv;
-
-  priv = GTK_CELL_RENDERER_TEXT_GET_PRIVATE (object);
+  GtkCellRendererTextPrivate *priv = celltext->priv;
 
   switch (param_id)
     {
     case PROP_TEXT:
-      g_free (celltext->text);
+      g_free (priv->text);
 
       if (priv->markup_set)
         {
-          if (celltext->extra_attrs)
-            pango_attr_list_unref (celltext->extra_attrs);
-          celltext->extra_attrs = NULL;
+          if (priv->extra_attrs)
+            pango_attr_list_unref (priv->extra_attrs);
+          priv->extra_attrs = NULL;
           priv->markup_set = FALSE;
         }
 
-      celltext->text = g_value_dup_string (value);
+      priv->text = g_value_dup_string (value);
       g_object_notify (object, "text");
       break;
 
     case PROP_ATTRIBUTES:
-      if (celltext->extra_attrs)
-	pango_attr_list_unref (celltext->extra_attrs);
+      if (priv->extra_attrs)
+	pango_attr_list_unref (priv->extra_attrs);
 
-      celltext->extra_attrs = g_value_get_boxed (value);
-      if (celltext->extra_attrs)
-        pango_attr_list_ref (celltext->extra_attrs);
+      priv->extra_attrs = g_value_get_boxed (value);
+      if (priv->extra_attrs)
+        pango_attr_list_ref (priv->extra_attrs);
       break;
     case PROP_MARKUP:
       {
@@ -1057,13 +1194,13 @@ gtk_cell_renderer_text_set_property (GObject      *object,
 	    return;
 	  }
 
-	g_free (celltext->text);
+	g_free (priv->text);
 
-	if (celltext->extra_attrs)
-	  pango_attr_list_unref (celltext->extra_attrs);
+	if (priv->extra_attrs)
+	  pango_attr_list_unref (priv->extra_attrs);
 
-	celltext->text = text;
-	celltext->extra_attrs = attrs;
+	priv->text = text;
+	priv->extra_attrs = attrs;
         priv->markup_set = TRUE;
       }
       break;
@@ -1074,12 +1211,12 @@ gtk_cell_renderer_text_set_property (GObject      *object,
       
     case PROP_BACKGROUND:
       {
-        GdkColor color;
+        GdkRGBA rgba;
 
         if (!g_value_get_string (value))
           set_bg_color (celltext, NULL);       /* reset to background_set to FALSE */
-        else if (gdk_color_parse (g_value_get_string (value), &color))
-          set_bg_color (celltext, &color);
+        else if (gdk_rgba_parse (&rgba, g_value_get_string (value)))
+          set_bg_color (celltext, &rgba);
         else
           g_warning ("Don't know color `%s'", g_value_get_string (value));
 
@@ -1089,12 +1226,12 @@ gtk_cell_renderer_text_set_property (GObject      *object,
       
     case PROP_FOREGROUND:
       {
-        GdkColor color;
+        GdkRGBA rgba;
 
         if (!g_value_get_string (value))
           set_fg_color (celltext, NULL);       /* reset to foreground_set to FALSE */
-        else if (gdk_color_parse (g_value_get_string (value), &color))
-          set_fg_color (celltext, &color);
+        else if (gdk_rgba_parse (&rgba, g_value_get_string (value)))
+          set_fg_color (celltext, &rgba);
         else
           g_warning ("Don't know color `%s'", g_value_get_string (value));
 
@@ -1103,11 +1240,57 @@ gtk_cell_renderer_text_set_property (GObject      *object,
       break;
 
     case PROP_BACKGROUND_GDK:
+      {
+        GdkColor *color;
+
+        color = g_value_get_boxed (value);
+        if (color)
+          {
+            GdkRGBA rgba;
+
+            rgba.red = color->red / 65535.;
+            rgba.green = color->green / 65535.;
+            rgba.blue = color->blue / 65535.;
+            rgba.alpha = 1;
+
+            set_bg_color (celltext, &rgba);
+          }
+        else
+          {
+            set_bg_color (celltext, NULL);
+          }
+      }
+      break;
+
+    case PROP_FOREGROUND_GDK:
+      {
+        GdkColor *color;
+
+        color = g_value_get_boxed (value);
+        if (color)
+          {
+            GdkRGBA rgba;
+
+            rgba.red = color->red / 65535.;
+            rgba.green = color->green / 65535.;
+            rgba.blue = color->blue / 65535.;
+            rgba.alpha = 1;
+
+            set_fg_color (celltext, &rgba);
+          }
+        else
+          {
+            set_fg_color (celltext, NULL);
+          }
+      }
+      break;
+
+    case PROP_BACKGROUND_RGBA:
       /* This notifies the GObject itself. */
       set_bg_color (celltext, g_value_get_boxed (value));
       break;
 
-    case PROP_FOREGROUND_GDK:
+    case PROP_FOREGROUND_RGBA:
       /* This notifies the GObject itself. */
       set_fg_color (celltext, g_value_get_boxed (value));
       break;
@@ -1126,16 +1309,16 @@ gtk_cell_renderer_text_set_property (GObject      *object,
 
 	pango_font_description_free (font_desc);
         
-	if (celltext->fixed_height_rows != -1)
-	  celltext->calc_fixed_height = TRUE;
+	if (priv->fixed_height_rows != -1)
+	  priv->calc_fixed_height = TRUE;
       }
       break;
 
     case PROP_FONT_DESC:
       set_font_description (celltext, g_value_get_boxed (value));
       
-      if (celltext->fixed_height_rows != -1)
-	celltext->calc_fixed_height = TRUE;
+      if (priv->fixed_height_rows != -1)
+	priv->calc_fixed_height = TRUE;
       break;
 
     case PROP_FAMILY:
@@ -1146,46 +1329,46 @@ gtk_cell_renderer_text_set_property (GObject      *object,
     case PROP_SIZE:
     case PROP_SIZE_POINTS:
       {
-	PangoFontMask old_set_mask = pango_font_description_get_set_fields (celltext->font);
+	PangoFontMask old_set_mask = pango_font_description_get_set_fields (priv->font);
 	
 	switch (param_id)
 	  {
 	  case PROP_FAMILY:
-	    pango_font_description_set_family (celltext->font,
+	    pango_font_description_set_family (priv->font,
 					       g_value_get_string (value));
 	    break;
 	  case PROP_STYLE:
-	    pango_font_description_set_style (celltext->font,
+	    pango_font_description_set_style (priv->font,
 					      g_value_get_enum (value));
 	    break;
 	  case PROP_VARIANT:
-	    pango_font_description_set_variant (celltext->font,
+	    pango_font_description_set_variant (priv->font,
 						g_value_get_enum (value));
 	    break;
 	  case PROP_WEIGHT:
-	    pango_font_description_set_weight (celltext->font,
+	    pango_font_description_set_weight (priv->font,
 					       g_value_get_int (value));
 	    break;
 	  case PROP_STRETCH:
-	    pango_font_description_set_stretch (celltext->font,
+	    pango_font_description_set_stretch (priv->font,
 						g_value_get_enum (value));
 	    break;
 	  case PROP_SIZE:
-	    pango_font_description_set_size (celltext->font,
+	    pango_font_description_set_size (priv->font,
 					     g_value_get_int (value));
 	    g_object_notify (object, "size-points");
 	    break;
 	  case PROP_SIZE_POINTS:
-	    pango_font_description_set_size (celltext->font,
+	    pango_font_description_set_size (priv->font,
 					     g_value_get_double (value) * PANGO_SCALE);
 	    g_object_notify (object, "size");
 	    break;
 	  }
 	
-	if (celltext->fixed_height_rows != -1)
-	  celltext->calc_fixed_height = TRUE;
+	if (priv->fixed_height_rows != -1)
+	  priv->calc_fixed_height = TRUE;
 	
-	notify_set_changed (object, old_set_mask & pango_font_description_get_set_fields (celltext->font));
+	notify_set_changed (object, old_set_mask & pango_font_description_get_set_fields (priv->font));
 	g_object_notify (object, "font-desc");
 	g_object_notify (object, "font");
 
@@ -1193,42 +1376,42 @@ gtk_cell_renderer_text_set_property (GObject      *object,
       }
       
     case PROP_SCALE:
-      celltext->font_scale = g_value_get_double (value);
-      celltext->scale_set = TRUE;
-      if (celltext->fixed_height_rows != -1)
-	celltext->calc_fixed_height = TRUE;
+      priv->font_scale = g_value_get_double (value);
+      priv->scale_set = TRUE;
+      if (priv->fixed_height_rows != -1)
+	priv->calc_fixed_height = TRUE;
       g_object_notify (object, "scale-set");
       break;
       
     case PROP_EDITABLE:
-      celltext->editable = g_value_get_boolean (value);
-      celltext->editable_set = TRUE;
-      if (celltext->editable)
-        GTK_CELL_RENDERER (celltext)->mode = GTK_CELL_RENDERER_MODE_EDITABLE;
+      priv->editable = g_value_get_boolean (value);
+      priv->editable_set = TRUE;
+      if (priv->editable)
+        g_object_set (celltext, "mode", GTK_CELL_RENDERER_MODE_EDITABLE, NULL);
       else
-        GTK_CELL_RENDERER (celltext)->mode = GTK_CELL_RENDERER_MODE_INERT;
+        g_object_set (celltext, "mode", GTK_CELL_RENDERER_MODE_INERT, NULL);
       g_object_notify (object, "editable-set");
       break;
 
     case PROP_STRIKETHROUGH:
-      celltext->strikethrough = g_value_get_boolean (value);
-      celltext->strikethrough_set = TRUE;
+      priv->strikethrough = g_value_get_boolean (value);
+      priv->strikethrough_set = TRUE;
       g_object_notify (object, "strikethrough-set");
       break;
 
     case PROP_UNDERLINE:
-      celltext->underline_style = g_value_get_enum (value);
-      celltext->underline_set = TRUE;
+      priv->underline_style = g_value_get_enum (value);
+      priv->underline_set = TRUE;
       g_object_notify (object, "underline-set");
             
       break;
 
     case PROP_RISE:
-      celltext->rise = g_value_get_int (value);
-      celltext->rise_set = TRUE;
+      priv->rise = g_value_get_int (value);
+      priv->rise_set = TRUE;
       g_object_notify (object, "rise-set");
-      if (celltext->fixed_height_rows != -1)
-	celltext->calc_fixed_height = TRUE;
+      if (priv->fixed_height_rows != -1)
+	priv->calc_fixed_height = TRUE;
       break;  
 
     case PROP_LANGUAGE:
@@ -1257,6 +1440,10 @@ gtk_cell_renderer_text_set_property (GObject      *object,
       priv->width_chars = g_value_get_int (value);
       break;  
 
+    case PROP_MAX_WIDTH_CHARS:
+      priv->max_width_chars = g_value_get_int (value);
+      break;  
+
     case PROP_ALIGN:
       priv->align = g_value_get_enum (value);
       priv->align_set = TRUE;
@@ -1264,11 +1451,11 @@ gtk_cell_renderer_text_set_property (GObject      *object,
       break;
 
     case PROP_BACKGROUND_SET:
-      celltext->background_set = g_value_get_boolean (value);
+      priv->background_set = g_value_get_boolean (value);
       break;
 
     case PROP_FOREGROUND_SET:
-      celltext->foreground_set = g_value_get_boolean (value);
+      priv->foreground_set = g_value_get_boolean (value);
       break;
 
     case PROP_FAMILY_SET:
@@ -1279,37 +1466,37 @@ gtk_cell_renderer_text_set_property (GObject      *object,
     case PROP_SIZE_SET:
       if (!g_value_get_boolean (value))
 	{
-	  pango_font_description_unset_fields (celltext->font,
+	  pango_font_description_unset_fields (priv->font,
 					       get_property_font_set_mask (param_id));
 	}
       else
 	{
 	  PangoFontMask changed_mask;
 	  
-	  changed_mask = set_font_desc_fields (celltext->font,
+	  changed_mask = set_font_desc_fields (priv->font,
 					       get_property_font_set_mask (param_id));
 	  notify_fields_changed (G_OBJECT (celltext), changed_mask);
 	}
       break;
 
     case PROP_SCALE_SET:
-      celltext->scale_set = g_value_get_boolean (value);
+      priv->scale_set = g_value_get_boolean (value);
       break;
       
     case PROP_EDITABLE_SET:
-      celltext->editable_set = g_value_get_boolean (value);
+      priv->editable_set = g_value_get_boolean (value);
       break;
 
     case PROP_STRIKETHROUGH_SET:
-      celltext->strikethrough_set = g_value_get_boolean (value);
+      priv->strikethrough_set = g_value_get_boolean (value);
       break;
 
     case PROP_UNDERLINE_SET:
-      celltext->underline_set = g_value_get_boolean (value);
+      priv->underline_set = g_value_get_boolean (value);
       break;
 
     case PROP_RISE_SET:
-      celltext->rise_set = g_value_get_boolean (value);
+      priv->rise_set = g_value_get_boolean (value);
       break;
 
     case PROP_LANGUAGE_SET:
@@ -1362,26 +1549,27 @@ add_attr (PangoAttrList  *attr_list,
 static PangoLayout*
 get_layout (GtkCellRendererText *celltext,
             GtkWidget           *widget,
-            gboolean             will_render,
+            const GdkRectangle  *cell_area,
             GtkCellRendererState flags)
 {
+  GtkCellRendererTextPrivate *priv = celltext->priv;
   PangoAttrList *attr_list;
   PangoLayout *layout;
   PangoUnderline uline;
-  GtkCellRendererTextPrivate *priv;
+  gint xpad;
 
-  priv = GTK_CELL_RENDERER_TEXT_GET_PRIVATE (celltext);
-  
-  layout = gtk_widget_create_pango_layout (widget, celltext->text);
+  layout = gtk_widget_create_pango_layout (widget, priv->text);
 
-  if (celltext->extra_attrs)
-    attr_list = pango_attr_list_copy (celltext->extra_attrs);
+  gtk_cell_renderer_get_padding (GTK_CELL_RENDERER (celltext), &xpad, NULL);
+
+  if (priv->extra_attrs)
+    attr_list = pango_attr_list_copy (priv->extra_attrs);
   else
     attr_list = pango_attr_list_new ();
 
   pango_layout_set_single_paragraph_mode (layout, priv->single_paragraph);
 
-  if (will_render)
+  if (cell_area)
     {
       /* Add options that affect appearance but not size */
       
@@ -1389,30 +1577,32 @@ get_layout (GtkCellRendererText *celltext,
        * background_area not the PangoLayout area
        */
       
-      if (celltext->foreground_set
+      if (priv->foreground_set
 	  && (flags & GTK_CELL_RENDERER_SELECTED) == 0)
         {
           PangoColor color;
 
-          color = celltext->foreground;
-          
+          color.red = (guint16) (priv->foreground.red * 65535);
+          color.green = (guint16) (priv->foreground.green * 65535);
+          color.blue = (guint16) (priv->foreground.blue * 65535);
+
           add_attr (attr_list,
                     pango_attr_foreground_new (color.red, color.green, color.blue));
         }
 
-      if (celltext->strikethrough_set)
+      if (priv->strikethrough_set)
         add_attr (attr_list,
-                  pango_attr_strikethrough_new (celltext->strikethrough));
+                  pango_attr_strikethrough_new (priv->strikethrough));
     }
 
-  add_attr (attr_list, pango_attr_font_desc_new (celltext->font));
+  add_attr (attr_list, pango_attr_font_desc_new (priv->font));
 
-  if (celltext->scale_set &&
-      celltext->font_scale != 1.0)
-    add_attr (attr_list, pango_attr_scale_new (celltext->font_scale));
+  if (priv->scale_set &&
+      priv->font_scale != 1.0)
+    add_attr (attr_list, pango_attr_scale_new (priv->font_scale));
   
-  if (celltext->underline_set)
-    uline = celltext->underline_style;
+  if (priv->underline_set)
+    uline = priv->underline_style;
   else
     uline = PANGO_UNDERLINE_NONE;
 
@@ -1437,10 +1627,15 @@ get_layout (GtkCellRendererText *celltext,
     }
 
   if (uline != PANGO_UNDERLINE_NONE)
-    add_attr (attr_list, pango_attr_underline_new (celltext->underline_style));
+    add_attr (attr_list, pango_attr_underline_new (priv->underline_style));
 
-  if (celltext->rise_set)
-    add_attr (attr_list, pango_attr_rise_new (celltext->rise));
+  if (priv->rise_set)
+    add_attr (attr_list, pango_attr_rise_new (priv->rise));
+
+  /* Now apply the attributes as they will effect the outcome
+   * of pango_layout_get_extents() */
+  pango_layout_set_attributes (layout, attr_list);
+  pango_attr_list_unref (attr_list);
 
   if (priv->ellipsize_set)
     pango_layout_set_ellipsize (layout, priv->ellipsize);
@@ -1449,7 +1644,20 @@ get_layout (GtkCellRendererText *celltext,
 
   if (priv->wrap_width != -1)
     {
-      pango_layout_set_width (layout, priv->wrap_width * PANGO_SCALE);
+      PangoRectangle rect;
+      gint           width, text_width;
+
+      pango_layout_get_extents (layout, NULL, &rect);
+      text_width = rect.width;
+
+      if (cell_area)
+	width = (cell_area->width - xpad * 2) * PANGO_SCALE;
+      else
+	width = priv->wrap_width * PANGO_SCALE;
+
+      width = MIN (width, text_width);
+
+      pango_layout_set_width (layout, width);
       pango_layout_set_wrap (layout, priv->wrap_mode);
     }
   else
@@ -1471,43 +1679,47 @@ get_layout (GtkCellRendererText *celltext,
 
       pango_layout_set_alignment (layout, align);
     }
-
-  pango_layout_set_attributes (layout, attr_list);
-
-  pango_attr_list_unref (attr_list);
   
   return layout;
 }
 
+
 static void
-get_size (GtkCellRenderer *cell,
-	  GtkWidget       *widget,
-	  GdkRectangle    *cell_area,
-	  PangoLayout     *layout,
-	  gint            *x_offset,
-	  gint            *y_offset,
-	  gint            *width,
-	  gint            *height)
+get_size (GtkCellRenderer    *cell,
+	  GtkWidget          *widget,
+	  const GdkRectangle *cell_area,
+	  PangoLayout        *layout,
+	  gint               *x_offset,
+	  gint               *y_offset,
+	  gint               *width,
+	  gint               *height)
 {
-  GtkCellRendererText *celltext = (GtkCellRendererText *) cell;
+  GtkCellRendererText *celltext = GTK_CELL_RENDERER_TEXT (cell);
+  GtkCellRendererTextPrivate *priv = celltext->priv;
   PangoRectangle rect;
-  GtkCellRendererTextPrivate *priv;
+  gint xpad, ypad;
+  gint cell_width, cell_height;
 
-  priv = GTK_CELL_RENDERER_TEXT_GET_PRIVATE (cell);
+  gtk_cell_renderer_get_padding (cell, &xpad, &ypad);
 
-  if (celltext->calc_fixed_height)
+  if (priv->calc_fixed_height)
     {
+      GtkStyleContext *style_context;
+      GtkStateFlags state;
       PangoContext *context;
       PangoFontMetrics *metrics;
       PangoFontDescription *font_desc;
       gint row_height;
 
-      font_desc = pango_font_description_copy_static (widget->style->font_desc);
-      pango_font_description_merge_static (font_desc, celltext->font, TRUE);
+      style_context = gtk_widget_get_style_context (widget);
+      state = gtk_widget_get_state_flags (widget);
 
-      if (celltext->scale_set)
+      font_desc = pango_font_description_copy_static (gtk_style_context_get_font (style_context, state));
+      pango_font_description_merge_static (font_desc, priv->font, TRUE);
+
+      if (priv->scale_set)
 	pango_font_description_set_size (font_desc,
-					 celltext->font_scale * pango_font_description_get_size (font_desc));
+					 priv->font_scale * pango_font_description_get_size (font_desc));
 
       context = gtk_widget_get_pango_context (widget);
 
@@ -1520,16 +1732,18 @@ get_size (GtkCellRenderer *cell,
 
       pango_font_description_free (font_desc);
 
+      gtk_cell_renderer_get_fixed_size (cell, &cell_width, &cell_height);
+
       gtk_cell_renderer_set_fixed_size (cell,
-					cell->width, 2*cell->ypad +
-					celltext->fixed_height_rows * PANGO_PIXELS (row_height));
+					cell_width, 2 * ypad +
+					priv->fixed_height_rows * PANGO_PIXELS (row_height));
       
       if (height)
 	{
-	  *height = cell->height;
+	  *height = cell_height;
 	  height = NULL;
 	}
-      celltext->calc_fixed_height = FALSE;
+      priv->calc_fixed_height = FALSE;
       if (width == NULL)
 	return;
     }
@@ -1537,51 +1751,32 @@ get_size (GtkCellRenderer *cell,
   if (layout)
     g_object_ref (layout);
   else
-    layout = get_layout (celltext, widget, FALSE, 0);
+    layout = get_layout (celltext, widget, NULL, 0);
 
   pango_layout_get_pixel_extents (layout, NULL, &rect);
 
-  if (height)
-    *height = cell->ypad * 2 + rect.height;
-
-  /* The minimum size for ellipsized labels is ~ 3 chars */
-  if (width)
-    {
-      if (priv->ellipsize || priv->width_chars > 0)
-	{
-	  PangoContext *context;
-	  PangoFontMetrics *metrics;
-	  gint char_width;
-
-	  context = pango_layout_get_context (layout);
-	  metrics = pango_context_get_metrics (context, widget->style->font_desc, pango_context_get_language (context));
-
-	  char_width = pango_font_metrics_get_approximate_char_width (metrics);
-	  pango_font_metrics_unref (metrics);
-	  
-	  *width = cell->xpad * 2 + (PANGO_PIXELS (char_width) * MAX (priv->width_chars, 3));
-	}
-      else
-	{
-	  *width = cell->xpad * 2 + rect.x + rect.width;
-	}	  
-    }
-
   if (cell_area)
     {
+      gfloat xalign, yalign;
+
+      gtk_cell_renderer_get_alignment (cell, &xalign, &yalign);
+
+      rect.height = MIN (rect.height, cell_area->height - 2 * ypad);
+      rect.width  = MIN (rect.width, cell_area->width - 2 * xpad);
+
       if (x_offset)
 	{
 	  if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL)
-	    *x_offset = (1.0 - cell->xalign) * (cell_area->width - (rect.x + rect.width + (2 * cell->xpad)));
+	    *x_offset = (1.0 - xalign) * (cell_area->width - (rect.width + (2 * xpad)));
 	  else 
-	    *x_offset = cell->xalign * (cell_area->width - (rect.x + rect.width + (2 * cell->xpad)));
+	    *x_offset = xalign * (cell_area->width - (rect.width + (2 * xpad)));
 
 	  if ((priv->ellipsize_set && priv->ellipsize != PANGO_ELLIPSIZE_NONE) || priv->wrap_width != -1)
 	    *x_offset = MAX(*x_offset, 0);
 	}
       if (y_offset)
 	{
-	  *y_offset = cell->yalign * (cell_area->height - (rect.height + (2 * cell->ypad)));
+	  *y_offset = yalign * (cell_area->height - (rect.height + (2 * ypad)));
 	  *y_offset = MAX (*y_offset, 0);
 	}
     }
@@ -1591,106 +1786,66 @@ get_size (GtkCellRenderer *cell,
       if (y_offset) *y_offset = 0;
     }
 
+  if (height)
+    *height = ypad * 2 + rect.height;
+
+  if (width)
+    *width = xpad * 2 + rect.width;
+
   g_object_unref (layout);
-}
-
-
-static void
-gtk_cell_renderer_text_get_size (GtkCellRenderer *cell,
-				 GtkWidget       *widget,
-				 GdkRectangle    *cell_area,
-				 gint            *x_offset,
-				 gint            *y_offset,
-				 gint            *width,
-				 gint            *height)
-{
-  get_size (cell, widget, cell_area, NULL,
-	    x_offset, y_offset, width, height);
 }
 
 static void
 gtk_cell_renderer_text_render (GtkCellRenderer      *cell,
-			       GdkDrawable          *window,
+			       cairo_t              *cr,
 			       GtkWidget            *widget,
-			       GdkRectangle         *background_area,
-			       GdkRectangle         *cell_area,
-			       GdkRectangle         *expose_area,
+			       const GdkRectangle   *background_area,
+			       const GdkRectangle   *cell_area,
 			       GtkCellRendererState  flags)
 
 {
-  GtkCellRendererText *celltext = (GtkCellRendererText *) cell;
+  GtkCellRendererText *celltext = GTK_CELL_RENDERER_TEXT (cell);
+  GtkCellRendererTextPrivate *priv = celltext->priv;
+  GtkStyleContext *context;
   PangoLayout *layout;
-  GtkStateType state;
-  gint x_offset;
-  gint y_offset;
-  GtkCellRendererTextPrivate *priv;
+  gint x_offset = 0;
+  gint y_offset = 0;
+  gint xpad, ypad;
+  PangoRectangle rect;
 
-  priv = GTK_CELL_RENDERER_TEXT_GET_PRIVATE (cell);
-
-  layout = get_layout (celltext, widget, TRUE, flags);
+  layout = get_layout (celltext, widget, cell_area, flags);
   get_size (cell, widget, cell_area, layout, &x_offset, &y_offset, NULL, NULL);
+  context = gtk_widget_get_style_context (widget);
 
-  if (!cell->sensitive) 
+  if (priv->background_set && (flags & GTK_CELL_RENDERER_SELECTED) == 0)
     {
-      state = GTK_STATE_INSENSITIVE;
-    }
-  else if ((flags & GTK_CELL_RENDERER_SELECTED) == GTK_CELL_RENDERER_SELECTED)
-    {
-      if (gtk_widget_has_focus (widget))
-	state = GTK_STATE_SELECTED;
-      else
-	state = GTK_STATE_ACTIVE;
-    }
-  else if ((flags & GTK_CELL_RENDERER_PRELIT) == GTK_CELL_RENDERER_PRELIT &&
-	   gtk_widget_get_state (widget) == GTK_STATE_PRELIGHT)
-    {
-      state = GTK_STATE_PRELIGHT;
-    }
-  else
-    {
-      if (gtk_widget_get_state (widget) == GTK_STATE_INSENSITIVE)
-	state = GTK_STATE_INSENSITIVE;
-      else
-	state = GTK_STATE_NORMAL;
-    }
-
-  if (celltext->background_set && 
-      (flags & GTK_CELL_RENDERER_SELECTED) == 0)
-    {
-      cairo_t *cr = gdk_cairo_create (window);
-
-      if (expose_area)
-	{
-	  gdk_cairo_rectangle (cr, expose_area);
-	  cairo_clip (cr);
-	}
-
       gdk_cairo_rectangle (cr, background_area);
-      cairo_set_source_rgb (cr,
-			    celltext->background.red / 65535.,
-			    celltext->background.green / 65535.,
-			    celltext->background.blue / 65535.);
+      gdk_cairo_set_source_rgba (cr, &priv->background);
       cairo_fill (cr);
-      
-      cairo_destroy (cr);
     }
+
+  gtk_cell_renderer_get_padding (cell, &xpad, &ypad);
 
   if (priv->ellipsize_set && priv->ellipsize != PANGO_ELLIPSIZE_NONE)
-    pango_layout_set_width (layout, 
-			    (cell_area->width - x_offset - 2 * cell->xpad) * PANGO_SCALE);
+    pango_layout_set_width (layout,
+			    (cell_area->width - x_offset - 2 * xpad) * PANGO_SCALE);
   else if (priv->wrap_width == -1)
     pango_layout_set_width (layout, -1);
 
-  gtk_paint_layout (widget->style,
-                    window,
-                    state,
-		    TRUE,
-                    expose_area,
-                    widget,
-                    "cellrenderertext",
-                    cell_area->x + x_offset + cell->xpad,
-                    cell_area->y + y_offset + cell->ypad,
-                    layout);
+  pango_layout_get_pixel_extents (layout, NULL, &rect);
+  x_offset = x_offset - rect.x;
+
+  cairo_save (cr);
+
+  gdk_cairo_rectangle (cr, cell_area);
+  cairo_clip (cr);
+
+  gtk_render_layout (context, cr,
+                     cell_area->x + x_offset + xpad,
+                     cell_area->y + y_offset + ypad,
+                     layout);
+
+  cairo_restore (cr);
 
   g_object_unref (layout);
 }
@@ -1699,12 +1854,12 @@ static void
 gtk_cell_renderer_text_editing_done (GtkCellEditable *entry,
 				     gpointer         data)
 {
+  GtkCellRendererTextPrivate *priv;
   const gchar *path;
   const gchar *new_text;
   gboolean canceled;
-  GtkCellRendererTextPrivate *priv;
 
-  priv = GTK_CELL_RENDERER_TEXT_GET_PRIVATE (data);
+  priv = GTK_CELL_RENDERER_TEXT (data)->priv;
 
   priv->entry = NULL;
 
@@ -1745,7 +1900,7 @@ popdown_timeout (gpointer data)
 {
   GtkCellRendererTextPrivate *priv;
 
-  priv = GTK_CELL_RENDERER_TEXT_GET_PRIVATE (data);
+  priv = GTK_CELL_RENDERER_TEXT (data)->priv;
 
   priv->entry_menu_popdown_timeout = 0;
 
@@ -1761,7 +1916,7 @@ gtk_cell_renderer_text_popup_unmap (GtkMenu *menu,
 {
   GtkCellRendererTextPrivate *priv;
 
-  priv = GTK_CELL_RENDERER_TEXT_GET_PRIVATE (data);
+  priv = GTK_CELL_RENDERER_TEXT (data)->priv;
 
   priv->in_entry_menu = FALSE;
 
@@ -1779,7 +1934,7 @@ gtk_cell_renderer_text_populate_popup (GtkEntry *entry,
 {
   GtkCellRendererTextPrivate *priv;
 
-  priv = GTK_CELL_RENDERER_TEXT_GET_PRIVATE (data);
+  priv = GTK_CELL_RENDERER_TEXT (data)->priv;
 
   if (priv->entry_menu_popdown_timeout)
     {
@@ -1800,7 +1955,7 @@ gtk_cell_renderer_text_focus_out_event (GtkWidget *entry,
 {
   GtkCellRendererTextPrivate *priv;
 
-  priv = GTK_CELL_RENDERER_TEXT_GET_PRIVATE (data);
+  priv = GTK_CELL_RENDERER_TEXT (data)->priv;
 
   if (priv->in_entry_menu)
     return FALSE;
@@ -1820,58 +1975,32 @@ gtk_cell_renderer_text_start_editing (GtkCellRenderer      *cell,
 				      GdkEvent             *event,
 				      GtkWidget            *widget,
 				      const gchar          *path,
-				      GdkRectangle         *background_area,
-				      GdkRectangle         *cell_area,
+				      const GdkRectangle   *background_area,
+				      const GdkRectangle   *cell_area,
 				      GtkCellRendererState  flags)
 {
-  GtkRequisition requisition;
   GtkCellRendererText *celltext;
   GtkCellRendererTextPrivate *priv;
+  gfloat xalign, yalign;
 
   celltext = GTK_CELL_RENDERER_TEXT (cell);
-  priv = GTK_CELL_RENDERER_TEXT_GET_PRIVATE (cell);
+  priv = celltext->priv;
 
   /* If the cell isn't editable we return NULL. */
-  if (celltext->editable == FALSE)
+  if (priv->editable == FALSE)
     return NULL;
 
-  priv->entry = g_object_new (GTK_TYPE_ENTRY,
-			      "has-frame", FALSE,
-			      "xalign", cell->xalign,
-			      NULL);
+  gtk_cell_renderer_get_alignment (cell, &xalign, &yalign);
 
-  if (celltext->text)
-    gtk_entry_set_text (GTK_ENTRY (priv->entry), celltext->text);
+  priv->entry = gtk_entry_new ();
+  gtk_entry_set_has_frame (GTK_ENTRY (priv->entry), FALSE);
+  gtk_entry_set_alignment (GTK_ENTRY (priv->entry), xalign);
+
+  if (priv->text)
+    gtk_entry_set_text (GTK_ENTRY (priv->entry), priv->text);
   g_object_set_data_full (G_OBJECT (priv->entry), I_(GTK_CELL_RENDERER_TEXT_PATH), g_strdup (path), g_free);
   
   gtk_editable_select_region (GTK_EDITABLE (priv->entry), 0, -1);
-  
-  gtk_widget_size_request (priv->entry, &requisition);
-  if (requisition.height < cell_area->height)
-    {
-      GtkBorder *style_border;
-      GtkBorder border;
-
-      gtk_widget_style_get (priv->entry,
-			    "inner-border", &style_border,
-			    NULL);
-
-      if (style_border)
-        {
-	  border = *style_border;
-	  g_boxed_free (GTK_TYPE_BORDER, style_border);
-	}
-      else
-        {
-	  /* Since boxed style properties can't have default values ... */
-	  border.left = 2;
-	  border.right = 2;
-	}
-
-      border.top = (cell_area->height - requisition.height) / 2;
-      border.bottom = (cell_area->height - requisition.height) / 2;
-      gtk_entry_set_inner_border (GTK_ENTRY (priv->entry), &border);
-    }
 
   priv->in_entry_menu = FALSE;
   if (priv->entry_menu_popdown_timeout)
@@ -1914,21 +2043,187 @@ void
 gtk_cell_renderer_text_set_fixed_height_from_font (GtkCellRendererText *renderer,
 						   gint                 number_of_rows)
 {
+  GtkCellRendererTextPrivate *priv;
+  GtkCellRenderer *cell;
+
   g_return_if_fail (GTK_IS_CELL_RENDERER_TEXT (renderer));
   g_return_if_fail (number_of_rows == -1 || number_of_rows > 0);
 
+  cell = GTK_CELL_RENDERER (renderer);
+  priv = renderer->priv;
+
   if (number_of_rows == -1)
     {
-      gtk_cell_renderer_set_fixed_size (GTK_CELL_RENDERER (renderer),
-					GTK_CELL_RENDERER (renderer)->width,
-					-1);
+      gint width, height;
+
+      gtk_cell_renderer_get_fixed_size (cell, &width, &height);
+      gtk_cell_renderer_set_fixed_size (cell, width, -1);
     }
   else
     {
-      renderer->fixed_height_rows = number_of_rows;
-      renderer->calc_fixed_height = TRUE;
+      priv->fixed_height_rows = number_of_rows;
+      priv->calc_fixed_height = TRUE;
     }
 }
 
-#define __GTK_CELL_RENDERER_TEXT_C__
-#include "gtkaliasdef.c"
+static void
+gtk_cell_renderer_text_get_preferred_width (GtkCellRenderer *cell,
+                                            GtkWidget       *widget,
+                                            gint            *minimum_size,
+                                            gint            *natural_size)
+{
+  GtkCellRendererTextPrivate *priv;
+  GtkCellRendererText        *celltext;
+  GtkStyleContext            *style_context;
+  const PangoFontDescription *font_desc;
+  PangoLayout                *layout;
+  PangoContext               *context;
+  PangoFontMetrics           *metrics;
+  PangoRectangle              rect;
+  gint char_width, text_width, ellipsize_chars, xpad;
+  gint min_width, nat_width;
+
+  /* "width-chars" Hard-coded minimum width:
+   *    - minimum size should be MAX (width-chars, strlen ("..."));
+   *    - natural size should be MAX (width-chars, strlen (label->text));
+   *
+   * "wrap-width" User specified natural wrap width
+   *    - minimum size should be MAX (width-chars, 0)
+   *    - natural size should be MIN (wrap-width, strlen (label->text))
+   */
+
+  celltext = GTK_CELL_RENDERER_TEXT (cell);
+  priv = celltext->priv;
+
+  style_context = gtk_widget_get_style_context (widget);
+
+  gtk_cell_renderer_get_padding (cell, &xpad, NULL);
+
+  layout = get_layout (celltext, widget, NULL, 0);
+
+  /* Fetch the length of the complete unwrapped text */
+  pango_layout_set_width (layout, -1);
+  pango_layout_get_extents (layout, NULL, &rect);
+  text_width = rect.width;
+
+  /* Fetch the average size of a charachter */
+  context = pango_layout_get_context (layout);
+  font_desc = gtk_style_context_get_font (style_context, 0);
+  metrics = pango_context_get_metrics (context, font_desc,
+                                       pango_context_get_language (context));
+
+  char_width = pango_font_metrics_get_approximate_char_width (metrics);
+
+  pango_font_metrics_unref (metrics);
+  g_object_unref (layout);
+
+  /* enforce minimum width for ellipsized labels at ~3 chars */
+  if (priv->ellipsize_set && priv->ellipsize != PANGO_ELLIPSIZE_NONE)
+    ellipsize_chars = 3;
+  else
+    ellipsize_chars = 0;
+
+  if ((priv->ellipsize_set && priv->ellipsize != PANGO_ELLIPSIZE_NONE) || priv->width_chars > 0)
+    min_width = xpad * 2 +
+      MIN (PANGO_PIXELS_CEIL (text_width),
+           (PANGO_PIXELS (char_width) * MAX (priv->width_chars, ellipsize_chars)));
+  /* If no width-chars set, minimum for wrapping text will be the wrap-width */
+  else if (priv->wrap_width > -1)
+    min_width = xpad * 2 + rect.x + MIN (PANGO_PIXELS_CEIL (text_width), priv->wrap_width);
+  else
+    min_width = xpad * 2 + rect.x + PANGO_PIXELS_CEIL (text_width);
+
+  if (priv->width_chars > 0)
+    nat_width = xpad * 2 +
+      MAX ((PANGO_PIXELS (char_width) * priv->width_chars), PANGO_PIXELS_CEIL (text_width));
+  else
+    nat_width = xpad * 2 + PANGO_PIXELS_CEIL (text_width);
+
+  nat_width = MAX (nat_width, min_width);
+
+  if (priv->max_width_chars > 0)
+    {
+      gint max_width = xpad * 2 + PANGO_PIXELS (char_width) * priv->max_width_chars;
+      
+      min_width = MIN (min_width, max_width);
+      nat_width = MIN (nat_width, max_width);
+    }
+
+  if (minimum_size)
+    *minimum_size = min_width;
+
+  if (natural_size)
+    *natural_size = nat_width;
+}
+
+static void
+gtk_cell_renderer_text_get_preferred_height_for_width (GtkCellRenderer *cell,
+                                                       GtkWidget       *widget,
+                                                       gint             width,
+                                                       gint            *minimum_height,
+                                                       gint            *natural_height)
+{
+  GtkCellRendererText *celltext;
+  PangoLayout         *layout;
+  gint                 text_height, xpad, ypad;
+
+
+  celltext = GTK_CELL_RENDERER_TEXT (cell);
+
+  gtk_cell_renderer_get_padding (cell, &xpad, &ypad);
+
+  layout = get_layout (celltext, widget, NULL, 0);
+
+  pango_layout_set_width (layout, (width - xpad * 2) * PANGO_SCALE);
+  pango_layout_get_pixel_size (layout, NULL, &text_height);
+
+  if (minimum_height)
+    *minimum_height = text_height + ypad * 2;
+
+  if (natural_height)
+    *natural_height = text_height + ypad * 2;
+
+  g_object_unref (layout);
+}
+
+static void
+gtk_cell_renderer_text_get_preferred_height (GtkCellRenderer *cell,
+                                             GtkWidget       *widget,
+                                             gint            *minimum_size,
+                                             gint            *natural_size)
+{
+  gint min_width;
+
+  /* Thankfully cell renderers dont rotate, so they only have to do
+   * height-for-width and not the opposite. Here we have only to return
+   * the height for the base minimum width of the renderer.
+   *
+   * Note this code path wont be followed by GtkTreeView which is
+   * height-for-width specifically.
+   */
+  gtk_cell_renderer_get_preferred_width (cell, widget, &min_width, NULL);
+  gtk_cell_renderer_text_get_preferred_height_for_width (cell, widget, min_width,
+                                                         minimum_size, natural_size);
+}
+
+static void
+gtk_cell_renderer_text_get_aligned_area (GtkCellRenderer       *cell,
+					 GtkWidget             *widget,
+					 GtkCellRendererState   flags,
+					 const GdkRectangle    *cell_area,
+					 GdkRectangle          *aligned_area)
+{
+  GtkCellRendererText *celltext = GTK_CELL_RENDERER_TEXT (cell);
+  PangoLayout *layout;
+  gint x_offset = 0;
+  gint y_offset = 0;
+
+  layout = get_layout (celltext, widget, cell_area, flags);
+  get_size (cell, widget, cell_area, layout, &x_offset, &y_offset, 
+	    &aligned_area->width, &aligned_area->height);
+
+  aligned_area->x = cell_area->x + x_offset;
+  aligned_area->y = cell_area->y + y_offset;
+
+  g_object_unref (layout);
+}

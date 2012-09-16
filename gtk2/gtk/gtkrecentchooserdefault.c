@@ -1,7 +1,7 @@
 /* GTK - The GIMP Toolkit
  * gtkrecentchooserdefault.c
  * Copyright (C) 2005-2006, Emmanuele Bassi
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -46,8 +44,8 @@
 #include "gtkeventbox.h"
 #include "gtkexpander.h"
 #include "gtkframe.h"
-#include "gtkhbox.h"
-#include "gtkhpaned.h"
+#include "gtkbox.h"
+#include "gtkpaned.h"
 #include "gtkimage.h"
 #include "gtkimagemenuitem.h"
 #include "gtkintl.h"
@@ -57,14 +55,14 @@
 #include "gtkscrolledwindow.h"
 #include "gtkseparatormenuitem.h"
 #include "gtksizegroup.h"
-#include "gtktable.h"
+#include "gtksizerequest.h"
 #include "gtktreemodelsort.h"
 #include "gtktreemodelfilter.h"
 #include "gtktreeselection.h"
 #include "gtktreestore.h"
 #include "gtktooltip.h"
 #include "gtktypebuiltins.h"
-#include "gtkvbox.h"
+#include "gtkorientable.h"
 #include "gtkactivatable.h"
 
 #include "gtkrecentmanager.h"
@@ -74,8 +72,6 @@
 #include "gtkrecentchooserutils.h"
 #include "gtkrecentchooserdefault.h"
 
-#include "gtkprivate.h"
-#include "gtkalias.h"
 
 enum 
 {
@@ -89,16 +85,16 @@ enum
 
 struct _GtkRecentChooserDefault
 {
-  GtkVBox parent_instance;
-  
+  GtkBox parent_instance;
+
   GtkRecentManager *manager;
   gulong manager_changed_id;
   guint local_manager : 1;
-  
+
   gint icon_size;
 
   /* RecentChooser properties */
-  gint limit;  
+  gint limit;
   GtkRecentSortType sort_type;
   guint show_private : 1;
   guint show_not_found : 1;
@@ -142,14 +138,13 @@ struct _GtkRecentChooserDefault
 
 typedef struct _GtkRecentChooserDefaultClass
 {
-  GtkVBoxClass parent_class;
+  GtkBoxClass parent_class;
 } GtkRecentChooserDefaultClass;
 
 enum {
   RECENT_URI_COLUMN,
   RECENT_DISPLAY_NAME_COLUMN,
   RECENT_INFO_COLUMN,
-    
   N_RECENT_COLUMNS
 };
 
@@ -292,7 +287,7 @@ static void gtk_recent_chooser_sync_action_properties (GtkActivatable       *act
 
 G_DEFINE_TYPE_WITH_CODE (GtkRecentChooserDefault,
 			 _gtk_recent_chooser_default,
-			 GTK_TYPE_VBOX,
+			 GTK_TYPE_BOX,
 			 G_IMPLEMENT_INTERFACE (GTK_TYPE_RECENT_CHOOSER,
 				 		gtk_recent_chooser_iface_init)
 			 G_IMPLEMENT_INTERFACE (GTK_TYPE_ACTIVATABLE,
@@ -352,9 +347,12 @@ _gtk_recent_chooser_default_init (GtkRecentChooserDefault *impl)
 {
   gtk_box_set_spacing (GTK_BOX (impl), 6);
 
+  gtk_orientable_set_orientation (GTK_ORIENTABLE (impl),
+                                  GTK_ORIENTATION_VERTICAL);
+
   /* by default, we use the global manager */
   impl->local_manager = FALSE;
-  
+
   impl->limit = FALLBACK_ITEM_LIMIT;
   impl->sort_type = GTK_RECENT_SORT_NONE;
 
@@ -434,6 +432,7 @@ gtk_recent_chooser_default_constructor (GType                  type,
   gtk_tree_view_column_set_resizable (impl->icon_column, FALSE);
   
   renderer = gtk_cell_renderer_pixbuf_new ();
+  g_object_set (renderer, "stock-size", GTK_ICON_SIZE_BUTTON, NULL);
   gtk_tree_view_column_pack_start (impl->icon_column, renderer, FALSE);
   gtk_tree_view_column_set_cell_data_func (impl->icon_column,
   					   renderer,
@@ -471,8 +470,8 @@ gtk_recent_chooser_default_constructor (GType                  type,
 		       GDK_ACTION_COPY);
   gtk_drag_source_add_uri_targets (impl->recent_view);
 
-  impl->filter_combo_hbox = gtk_hbox_new (FALSE, 12);
-  
+  impl->filter_combo_hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
+
   impl->filter_combo = gtk_combo_box_text_new ();
   gtk_combo_box_set_focus_on_click (GTK_COMBO_BOX (impl->filter_combo), FALSE);
   g_signal_connect (impl->filter_combo, "changed",
@@ -628,12 +627,8 @@ gtk_recent_chooser_default_dispose (GObject *object)
       impl->load_id = 0;
     }
 
-  if (impl->recent_items)
-    {
-      g_list_foreach (impl->recent_items, (GFunc) gtk_recent_info_unref, NULL);
-      g_list_free (impl->recent_items);
-      impl->recent_items = NULL;
-    }
+  g_list_free_full (impl->recent_items, (GDestroyNotify) gtk_recent_info_unref);
+  impl->recent_items = NULL;
 
   if (impl->manager && impl->manager_changed_id)
     {
@@ -710,8 +705,9 @@ error_message_with_parent (GtkWindow   *parent,
   gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 					    "%s", detail);
 
-  if (parent->group)
-    gtk_window_group_add_window (parent->group, GTK_WINDOW (dialog));
+  if (gtk_window_has_group (parent))
+    gtk_window_group_add_window (gtk_window_get_group (parent),
+                                 GTK_WINDOW (dialog));
 
   gtk_dialog_run (GTK_DIALOG (dialog));
   gtk_widget_destroy (dialog);
@@ -757,11 +753,12 @@ set_busy_cursor (GtkRecentChooserDefault *impl,
   if (show_busy_cursor)
     cursor = gdk_cursor_new_for_display (display, GDK_WATCH);
 
-  gdk_window_set_cursor (GTK_WIDGET (toplevel)->window, cursor);
+  gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (toplevel)),
+                         cursor);
   gdk_display_flush (display);
 
   if (cursor)
-    gdk_cursor_unref (cursor);
+    g_object_unref (cursor);
 }
 
 static void
@@ -836,10 +833,7 @@ load_recent_items (gpointer user_data)
       /* we have finished loading, so we remove the items cache */
       impl->load_state = LOAD_LOADING;
       
-      g_list_foreach (impl->recent_items,
-      		      (GFunc) gtk_recent_info_unref,
-      		      NULL);
-      g_list_free (impl->recent_items);
+      g_list_free_full (impl->recent_items, (GDestroyNotify) gtk_recent_info_unref);
       
       impl->recent_items = NULL;
       impl->n_recent_items = 0;
@@ -925,6 +919,7 @@ reload_recent_items (GtkRecentChooserDefault *impl)
 static void
 set_default_size (GtkRecentChooserDefault *impl)
 {
+  GtkScrolledWindow *scrollw;
   GtkWidget *widget;
   gint width, height;
   gint font_size;
@@ -932,32 +927,39 @@ set_default_size (GtkRecentChooserDefault *impl)
   gint monitor_num;
   GtkRequisition req;
   GdkRectangle monitor;
+  GtkStyleContext *context;
+  GtkStateFlags state;
 
   widget = GTK_WIDGET (impl);
+  context = gtk_widget_get_style_context (widget);
+  state = gtk_widget_get_state_flags (widget);
 
   /* Size based on characters and the icon size */
-  font_size = pango_font_description_get_size (widget->style->font_desc);
+  font_size = pango_font_description_get_size (gtk_style_context_get_font (context, state));
   font_size = PANGO_PIXELS (font_size);
 
   width = impl->icon_size + font_size * NUM_CHARS;
   height = (impl->icon_size + font_size) * NUM_LINES;
 
   /* Use at least the requisition size... */
-  gtk_widget_size_request (widget, &req);
+  gtk_widget_get_preferred_size (widget, &req, NULL);
   width = MAX (width, req.width);
   height = MAX (height, req.height);
 
   /* ... but no larger than the monitor */
   screen = gtk_widget_get_screen (widget);
-  monitor_num = gdk_screen_get_monitor_at_window (screen, widget->window);
+  monitor_num = gdk_screen_get_monitor_at_window (screen,
+                                                  gtk_widget_get_window (widget));
 
-  gdk_screen_get_monitor_geometry (screen, monitor_num, &monitor);
+  gdk_screen_get_monitor_workarea (screen, monitor_num, &monitor);
 
   width = MIN (width, monitor.width * 3 / 4);
   height = MIN (height, monitor.height * 3 / 4);
 
   /* Set size */
-  gtk_widget_set_size_request (impl->recent_view, width, height);
+  scrollw = GTK_SCROLLED_WINDOW (gtk_widget_get_parent (impl->recent_view));
+  gtk_scrolled_window_set_min_content_width (scrollw, width);
+  gtk_scrolled_window_set_min_content_height (scrollw, height);
 }
 
 static void
@@ -980,23 +982,17 @@ recent_icon_data_func (GtkTreeViewColumn *tree_column,
 		       GtkTreeIter       *iter,
 		       gpointer           user_data)
 {
-  GtkRecentChooserDefault *impl = GTK_RECENT_CHOOSER_DEFAULT (user_data);
   GtkRecentInfo *info = NULL;
-  GdkPixbuf *pixbuf;
-  
-  gtk_tree_model_get (model, iter,
-                      RECENT_INFO_COLUMN, &info,
-                      -1);
+  GIcon *icon;
+
+  gtk_tree_model_get (model, iter, RECENT_INFO_COLUMN, &info, -1);
   g_assert (info != NULL);
-  
-  pixbuf = gtk_recent_info_get_icon (info, impl->icon_size);
-  
-  g_object_set (cell,
-                "pixbuf", pixbuf,
-                NULL);
-  
-  if (pixbuf)  
-    g_object_unref (pixbuf);
+
+  icon = gtk_recent_info_get_gicon (info);
+  g_object_set (cell, "gicon", icon, NULL);
+
+  if (icon != NULL)
+    g_object_unref (icon);
 
   gtk_recent_info_unref (info);
 }
@@ -1831,6 +1827,7 @@ popup_position_func (GtkMenu   *menu,
                      gboolean  *push_in,
                      gpointer	user_data)
 {
+  GtkAllocation allocation;
   GtkWidget *widget = GTK_WIDGET (user_data);
   GdkScreen *screen = gtk_widget_get_screen (widget);
   GtkRequisition req;
@@ -1840,16 +1837,19 @@ popup_position_func (GtkMenu   *menu,
   if (G_UNLIKELY (!gtk_widget_get_realized (widget)))
     return;
 
-  gdk_window_get_origin (widget->window, x, y);
+  gdk_window_get_origin (gtk_widget_get_window (widget),
+                         x, y);
 
-  gtk_widget_size_request (GTK_WIDGET (menu), &req);
+  gtk_widget_get_preferred_size (GTK_WIDGET (menu),
+                                 &req, NULL);
 
-  *x += (widget->allocation.width - req.width) / 2;
-  *y += (widget->allocation.height - req.height) / 2;
+  gtk_widget_get_allocation (widget, &allocation);
+  *x += (allocation.width - req.width) / 2;
+  *y += (allocation.height - req.height) / 2;
 
   monitor_num = gdk_screen_get_monitor_at_point (screen, *x, *y);
   gtk_menu_set_monitor (menu, monitor_num);
-  gdk_screen_get_monitor_geometry (screen, monitor_num, &monitor);
+  gdk_screen_get_monitor_workarea (screen, monitor_num, &monitor);
 
   *x = CLAMP (*x, monitor.x, monitor.x + MAX (0, monitor.width - req.width));
   *y = CLAMP (*y, monitor.y, monitor.y + MAX (0, monitor.height - req.height));
@@ -1894,7 +1894,7 @@ recent_view_button_press_cb (GtkWidget      *widget,
 {
   GtkRecentChooserDefault *impl = GTK_RECENT_CHOOSER_DEFAULT (user_data);
 
-  if (_gtk_button_event_triggers_context_menu (event))
+  if (gdk_event_triggers_context_menu ((GdkEvent *) event))
     {
       GtkTreePath *path;
       gboolean res;

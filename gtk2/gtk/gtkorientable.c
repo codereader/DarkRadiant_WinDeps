@@ -16,17 +16,31 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
 
-#include "gtkorientable.h"
+#include "gtkorientableprivate.h"
 #include "gtkprivate.h"
+#include "gtktypebuiltins.h"
 #include "gtkintl.h"
-#include "gtkalias.h"
+
+
+/**
+ * SECTION:gtkorientable
+ * @Short_description: An interface for flippable widgets
+ * @Title: GtkOrientable
+ *
+ * The #GtkOrientable interface is implemented by all widgets that can be
+ * oriented horizontally or vertically. Historically, such widgets have been
+ * realized as subclasses of a common base class (e.g #GtkBox/#GtkHBox/#GtkVBox
+ * or #GtkScale/#GtkHScale/#GtkVScale). #GtkOrientable is more flexible in that
+ * it allows the orientation to be changed at runtime, allowing the widgets
+ * to 'flip'.
+ *
+ * #GtkOrientable was introduced in GTK+ 2.16.
+ */
 
 
 typedef GtkOrientableIface GtkOrientableInterface;
@@ -69,6 +83,9 @@ gtk_orientable_set_orientation (GtkOrientable  *orientable,
   g_object_set (orientable,
                 "orientation", orientation,
                 NULL);
+
+  if (GTK_IS_WIDGET (orientable))
+    _gtk_orientable_set_style_classes (orientable);
 }
 
 /**
@@ -96,5 +113,26 @@ gtk_orientable_get_orientation (GtkOrientable *orientable)
   return orientation;
 }
 
-#define __GTK_ORIENTABLE_C__
-#include "gtkaliasdef.c"
+void
+_gtk_orientable_set_style_classes (GtkOrientable *orientable)
+{
+  GtkStyleContext *context;
+  GtkOrientation orientation;
+
+  g_return_if_fail (GTK_IS_ORIENTABLE (orientable));
+  g_return_if_fail (GTK_IS_WIDGET (orientable));
+
+  context = gtk_widget_get_style_context (GTK_WIDGET (orientable));
+  orientation = gtk_orientable_get_orientation (orientable);
+
+  if (orientation == GTK_ORIENTATION_HORIZONTAL)
+    {
+      gtk_style_context_add_class (context, GTK_STYLE_CLASS_HORIZONTAL);
+      gtk_style_context_remove_class (context, GTK_STYLE_CLASS_VERTICAL);
+    }
+  else
+    {
+      gtk_style_context_add_class (context, GTK_STYLE_CLASS_VERTICAL);
+      gtk_style_context_remove_class (context, GTK_STYLE_CLASS_HORIZONTAL);
+    }
+}

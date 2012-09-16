@@ -59,12 +59,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "gtktexttag.h"
+#include "gtktexttagprivate.h"
 #include "gtktexttagtable.h"
 #include "gtktextlayout.h"
 #include "gtktextiterprivate.h"
 #include "gtkdebug.h"
 #include "gtktextmarkprivate.h"
-#include "gtkalias.h"
 
 /*
  * Types
@@ -143,14 +143,14 @@ struct _GtkTextBTreeNode {
   int level;                            /* Level of this node in the B-tree.
                                          * 0 refers to the bottom of the tree
                                          * (children are lines, not nodes). */
+  int num_lines;                        /* Total number of lines (leaves) in
+                                         * the subtree rooted here. */
+  int num_chars;                        /* Number of chars below here */
+  int num_children;                     /* Number of children of this node. */
   union {                               /* First in linked list of children. */
     struct _GtkTextBTreeNode *node;         /* Used if level > 0. */
     GtkTextLine *line;         /* Used if level == 0. */
   } children;
-  int num_children;                     /* Number of children of this node. */
-  int num_lines;                        /* Total number of lines (leaves) in
-                                         * the subtree rooted here. */
-  int num_chars;                        /* Number of chars below here */
 
   NodeData *node_data;
 };
@@ -754,7 +754,7 @@ _gtk_text_btree_delete (GtkTextIter *start,
 
   tree = _gtk_text_iter_get_btree (start);
  
-  if (gtk_debug_flags & GTK_DEBUG_TEXT)
+  if (gtk_get_debug_flags () & GTK_DEBUG_TEXT)
     _gtk_text_btree_check (tree);
   
   /* Broadcast the need for redisplay before we break the iterators */
@@ -1076,7 +1076,7 @@ _gtk_text_btree_delete (GtkTextIter *start,
   chars_changed (tree);
   segments_changed (tree);
 
-  if (gtk_debug_flags & GTK_DEBUG_TEXT)
+  if (gtk_get_debug_flags () & GTK_DEBUG_TEXT)
     _gtk_text_btree_check (tree);
 
   /* Re-initialize our iterators */
@@ -1358,7 +1358,7 @@ find_line_by_y (GtkTextBTree *tree, BTreeView *view,
 {
   gint current_y = 0;
 
-  if (gtk_debug_flags & GTK_DEBUG_TEXT)
+  if (gtk_get_debug_flags () & GTK_DEBUG_TEXT)
     _gtk_text_btree_check (tree);
 
   if (node->level == 0)
@@ -1779,7 +1779,7 @@ _gtk_text_btree_tag (const GtkTextIter *start_orig,
   g_return_if_fail (GTK_IS_TEXT_TAG (tag));
   g_return_if_fail (_gtk_text_iter_get_btree (start_orig) ==
                     _gtk_text_iter_get_btree (end_orig));
-  g_return_if_fail (tag->table == _gtk_text_iter_get_btree (start_orig)->table);
+  g_return_if_fail (tag->priv->table == _gtk_text_iter_get_btree (start_orig)->table);
   
 #if 0
   printf ("%s tag %s from %d to %d\n",
@@ -2010,7 +2010,7 @@ _gtk_text_btree_tag (const GtkTextIter *start_orig,
 
   queue_tag_redisplay (tree, tag, &start, &end);
 
-  if (gtk_debug_flags & GTK_DEBUG_TEXT)
+  if (gtk_get_debug_flags () & GTK_DEBUG_TEXT)
     _gtk_text_btree_check (tree);
 }
 
@@ -2390,8 +2390,8 @@ copy_segment (GString *string,
       if (copy)
         {
           g_string_append_len (string,
-                               gtk_text_unknown_char_utf8,
-                               3);
+                               _gtk_text_unknown_char_utf8,
+                               GTK_TEXT_UNKNOWN_CHAR_UTF8_LEN);
 
         }
     }
@@ -2506,10 +2506,10 @@ _gtk_text_btree_char_is_invisible (const GtkTextIter *iter)
           || (seg->type == &gtk_text_toggle_off_type))
         {
           tag = seg->body.toggle.info->tag;
-          if (tag->invisible_set)
+          if (tag->priv->invisible_set)
             {
-              tags[tag->priority] = tag;
-              tagCnts[tag->priority]++;
+              tags[tag->priv->priority] = tag;
+              tagCnts[tag->priv->priority]++;
             }
         }
     }
@@ -2530,10 +2530,10 @@ _gtk_text_btree_char_is_invisible (const GtkTextIter *iter)
               || (seg->type == &gtk_text_toggle_off_type))
             {
               tag = seg->body.toggle.info->tag;
-              if (tag->invisible_set)
+              if (tag->priv->invisible_set)
                 {
-                  tags[tag->priority] = tag;
-                  tagCnts[tag->priority]++;
+                  tags[tag->priv->priority] = tag;
+                  tagCnts[tag->priv->priority]++;
                 }
             }
         }
@@ -2559,10 +2559,10 @@ _gtk_text_btree_char_is_invisible (const GtkTextIter *iter)
               if (summary->toggle_count & 1)
                 {
                   tag = summary->info->tag;
-                  if (tag->invisible_set)
+                  if (tag->priv->invisible_set)
                     {
-                      tags[tag->priority] = tag;
-                      tagCnts[tag->priority] += summary->toggle_count;
+                      tags[tag->priv->priority] = tag;
+                      tagCnts[tag->priv->priority] += summary->toggle_count;
                     }
                 }
             }
@@ -2589,7 +2589,7 @@ _gtk_text_btree_char_is_invisible (const GtkTextIter *iter)
             }
 #endif
 #endif
-          invisible = tags[i]->values->invisible;
+          invisible = tags[i]->priv->values->invisible;
           break;
         }
     }
@@ -2735,7 +2735,7 @@ real_set_mark (GtkTextBTree      *tree,
   
   iter = *where;
 
-  if (gtk_debug_flags & GTK_DEBUG_TEXT)
+  if (gtk_get_debug_flags () & GTK_DEBUG_TEXT)
     _gtk_text_iter_check (&iter);
   
   if (mark != NULL)
@@ -2792,7 +2792,7 @@ real_set_mark (GtkTextBTree      *tree,
                              mark);
     }
 
-  if (gtk_debug_flags & GTK_DEBUG_TEXT)
+  if (gtk_get_debug_flags () & GTK_DEBUG_TEXT)
     _gtk_text_iter_check (&iter);
   
   /* Link mark into new location */
@@ -2807,10 +2807,10 @@ real_set_mark (GtkTextBTree      *tree,
 
   redisplay_mark_if_visible (mark);
 
-  if (gtk_debug_flags & GTK_DEBUG_TEXT)
+  if (gtk_get_debug_flags () & GTK_DEBUG_TEXT)
     _gtk_text_iter_check (&iter);
 
-  if (gtk_debug_flags & GTK_DEBUG_TEXT)
+  if (gtk_get_debug_flags () & GTK_DEBUG_TEXT)
     _gtk_text_btree_check (tree);
   
   return mark;
@@ -4328,7 +4328,7 @@ _gtk_text_line_next_could_contain_tag (GtkTextLine  *line,
 
   g_return_val_if_fail (line != NULL, NULL);
 
-  if (gtk_debug_flags & GTK_DEBUG_TEXT)
+  if (gtk_get_debug_flags () & GTK_DEBUG_TEXT)
     _gtk_text_btree_check (tree);
 
   if (tag == NULL)
@@ -4491,7 +4491,7 @@ _gtk_text_line_previous_could_contain_tag (GtkTextLine  *line,
 
   g_return_val_if_fail (line != NULL, NULL);
 
-  if (gtk_debug_flags & GTK_DEBUG_TEXT)
+  if (gtk_get_debug_flags () & GTK_DEBUG_TEXT)
     _gtk_text_btree_check (tree);
 
   if (tag == NULL)
@@ -4720,7 +4720,7 @@ gtk_text_line_new (void)
 {
   GtkTextLine *line;
 
-  line = g_new0(GtkTextLine, 1);
+  line = g_slice_new0 (GtkTextLine);
   line->dir_strong = PANGO_DIRECTION_NEUTRAL;
   line->dir_propagated_forward = PANGO_DIRECTION_NEUTRAL;
   line->dir_propagated_back = PANGO_DIRECTION_NEUTRAL;
@@ -4751,7 +4751,7 @@ gtk_text_line_destroy (GtkTextBTree *tree, GtkTextLine *line)
       ld = next;
     }
 
-  g_free (line);
+  g_slice_free (GtkTextLine, line);
 }
 
 static void
@@ -4862,7 +4862,7 @@ gtk_text_btree_node_new (void)
 {
   GtkTextBTreeNode *node;
 
-  node = g_new (GtkTextBTreeNode, 1);
+  node = g_slice_new (GtkTextBTreeNode);
 
   node->node_data = NULL;
 
@@ -5263,7 +5263,7 @@ _gtk_text_btree_validate (GtkTextBTree *tree,
       if (new_height)
         *new_height = state.new_height;
 
-      if (gtk_debug_flags & GTK_DEBUG_TEXT)
+      if (gtk_get_debug_flags () & GTK_DEBUG_TEXT)
         _gtk_text_btree_check (tree);
 
       return TRUE;
@@ -5513,7 +5513,7 @@ gtk_text_btree_node_free_empty (GtkTextBTree *tree,
 
   summary_list_destroy (node->summary);
   node_data_list_destroy (node->node_data);
-  g_free (node);
+  g_slice_free (GtkTextBTreeNode, node);
 }
 
 static NodeData*
@@ -5972,7 +5972,7 @@ post_insert_fixup (GtkTextBTree *tree,
       gtk_text_btree_rebalance (tree, node);
     }
 
-  if (gtk_debug_flags & GTK_DEBUG_TEXT)
+  if (gtk_get_debug_flags () & GTK_DEBUG_TEXT)
     _gtk_text_btree_check (tree);
 }
 
@@ -6538,7 +6538,7 @@ gtk_text_btree_link_segment (GtkTextLineSegment *seg,
   cleanup_line (line);
   segments_changed (tree);
 
-  if (gtk_debug_flags & GTK_DEBUG_TEXT)
+  if (gtk_get_debug_flags () & GTK_DEBUG_TEXT)
     _gtk_text_btree_check (tree);
 }
 
@@ -6799,7 +6799,7 @@ gtk_text_btree_node_check_consistency (GtkTextBTree     *tree,
                           break;
                         }
                       g_error ("gtk_text_btree_node_check_consistency: GtkTextBTreeNode tag \"%s\" not %s",
-                               summary->info->tag->name,
+                               summary->info->tag->priv->name,
                                "present in parent summaries");
                     }
                   if (summary->info == summary2->info)
@@ -6835,7 +6835,7 @@ gtk_text_btree_node_check_consistency (GtkTextBTree     *tree,
       if (summary->info->toggle_count == summary->toggle_count)
         {
           g_error ("gtk_text_btree_node_check_consistency: found unpruned root for \"%s\"",
-                   summary->info->tag->name);
+                   summary->info->tag->priv->name);
         }
       toggle_count = 0;
       if (node->level == 0)
@@ -6889,7 +6889,7 @@ gtk_text_btree_node_check_consistency (GtkTextBTree     *tree,
           if (summary2->info == summary->info)
             {
               g_error ("gtk_text_btree_node_check_consistency: duplicated GtkTextBTreeNode tag: %s",
-                       summary->info->tag->name);
+                       summary->info->tag->priv->name);
             }
         }
     }
@@ -6941,19 +6941,19 @@ _gtk_text_btree_check (GtkTextBTree *tree)
               if (info->toggle_count != 0)
                 {
                   g_error ("_gtk_text_btree_check found \"%s\" with toggles (%d) but no root",
-                           tag->name, info->toggle_count);
+                           tag->priv->name, info->toggle_count);
                 }
               continue;         /* no ranges for the tag */
             }
           else if (info->toggle_count == 0)
             {
               g_error ("_gtk_text_btree_check found root for \"%s\" with no toggles",
-                       tag->name);
+                       tag->priv->name);
             }
           else if (info->toggle_count & 1)
             {
               g_error ("_gtk_text_btree_check found odd toggle count for \"%s\" (%d)",
-                       tag->name, info->toggle_count);
+                       tag->priv->name, info->toggle_count);
             }
           for (summary = node->summary; summary != NULL;
                summary = summary->next)
@@ -7008,7 +7008,7 @@ _gtk_text_btree_check (GtkTextBTree *tree)
           if (count != info->toggle_count)
             {
               g_error ("_gtk_text_btree_check toggle_count (%d) wrong for \"%s\" should be (%d)",
-                       info->toggle_count, tag->name, count);
+                       info->toggle_count, tag->priv->name, count);
             }
         }
     }
@@ -7117,7 +7117,7 @@ _gtk_text_btree_spew (GtkTextBTree *tree)
         info = list->data;
 
         printf ("  tag `%s': root at %p, toggle count %d\n",
-                info->tag->name, info->tag_root, info->toggle_count);
+                info->tag->priv->name, info->tag_root, info->toggle_count);
 
         list = g_slist_next (list);
       }
@@ -7183,7 +7183,7 @@ _gtk_text_btree_spew_line_short (GtkTextLine *line, int indent)
                seg->type == &gtk_text_toggle_off_type)
         {
           printf ("%s tag `%s' %s\n",
-                  spaces, seg->body.toggle.info->tag->name,
+                  spaces, seg->body.toggle.info->tag->priv->name,
                   seg->type == &gtk_text_toggle_off_type ? "off" : "on");
         }
 
@@ -7210,7 +7210,7 @@ _gtk_text_btree_spew_node (GtkTextBTreeNode *node, int indent)
   while (s)
     {
       printf ("%s %d toggles of `%s' below this node\n",
-              spaces, s->toggle_count, s->info->tag->name);
+              spaces, s->toggle_count, s->info->tag->priv->name);
       s = s->next;
     }
 
@@ -7285,10 +7285,7 @@ _gtk_text_btree_spew_segment (GtkTextBTree* tree, GtkTextLineSegment * seg)
            seg->type == &gtk_text_toggle_off_type)
     {
       printf ("       tag `%s' priority %d\n",
-              seg->body.toggle.info->tag->name,
-              seg->body.toggle.info->tag->priority);
+              seg->body.toggle.info->tag->priv->name,
+              seg->body.toggle.info->tag->priv->priority);
     }
 }
-
-#define __GTK_TEXT_BTREE_C__
-#include "gtkaliasdef.c"

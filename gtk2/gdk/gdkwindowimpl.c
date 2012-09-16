@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -25,28 +23,29 @@
  */
 
 #include "config.h"
+
 #include "gdkwindowimpl.h"
+
 #include "gdkinternals.h"
 
-#include "gdkalias.h"
 
-GType
-gdk_window_impl_get_type (void)
+G_DEFINE_TYPE (GdkWindowImpl, gdk_window_impl, G_TYPE_OBJECT);
+
+static gboolean
+gdk_window_impl_beep (GdkWindow *window)
 {
-  static GType gtype = 0;
-
-  if (G_UNLIKELY (!gtype))
-    {
-      gtype = g_type_register_static_simple (G_TYPE_INTERFACE,
-                                             "GdkWindowImpl",
-                                             sizeof (GdkWindowImplIface),
-                                             NULL, 0, NULL, 0);
-      g_type_interface_add_prerequisite (gtype, G_TYPE_OBJECT);
-    }
-
-  return gtype;
+  /* FALSE means windows can't beep, so the display will be
+   * made to beep instead. */
+  return FALSE;
 }
 
-#define __GDK_WINDOW_IMPL_C__
-#include "gdkaliasdef.c"
+static void
+gdk_window_impl_class_init (GdkWindowImplClass *impl_class)
+{
+  impl_class->beep = gdk_window_impl_beep;
+}
 
+static void
+gdk_window_impl_init (GdkWindowImpl *impl)
+{
+}

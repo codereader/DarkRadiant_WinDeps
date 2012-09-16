@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -26,12 +24,18 @@
 
 #include "config.h"
 #include "gtktexttypes.h"
-#include "gtkalias.h"
 
 /* These are used to represent embedded non-character objects
  * if you return a string representation of a text buffer
  */
-const gchar gtk_text_unknown_char_utf8[] = { '\xEF', '\xBF', '\xBC', '\0' };
+const gchar _gtk_text_unknown_char_utf8[] = { '\xEF', '\xBF', '\xBC', '\0' };
+
+/* This is to be used only by libgtk test programs */
+const gchar *
+gtk_text_unknown_char_utf8_gtk_tests_only (void)
+{
+  return _gtk_text_unknown_char_utf8;
+}
 
 static inline gboolean
 inline_byte_begins_utf8_char (const gchar *byte)
@@ -44,6 +48,3 @@ gtk_text_byte_begins_utf8_char (const gchar *byte)
 {
   return inline_byte_begins_utf8_char (byte);
 }
-
-#define __GTK_TEXT_TYPES_C__
-#include "gtkaliasdef.c"

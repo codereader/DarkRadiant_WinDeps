@@ -14,9 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -25,7 +23,7 @@
 #include "gtkfilesystem.h"
 #include "gtktypebuiltins.h"
 #include "gtkintl.h"
-#include "gtkalias.h"
+
 
 static gboolean       delegate_set_current_folder     (GtkFileChooser    *chooser,
 						       GFile             *file,
@@ -90,9 +88,6 @@ _gtk_file_chooser_install_properties (GObjectClass *klass)
   g_object_class_override_property (klass,
 				    GTK_FILE_CHOOSER_PROP_EXTRA_WIDGET,
 				    "extra-widget");
-  g_object_class_override_property (klass,
-				    GTK_FILE_CHOOSER_PROP_FILE_SYSTEM_BACKEND,
-				    "file-system-backend");
   g_object_class_override_property (klass,
 				    GTK_FILE_CHOOSER_PROP_FILTER,
 				    "filter");

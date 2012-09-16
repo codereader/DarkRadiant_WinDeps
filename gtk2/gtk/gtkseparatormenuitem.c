@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -25,8 +23,20 @@
  */
 
 #include "config.h"
+
 #include "gtkseparatormenuitem.h"
-#include "gtkalias.h"
+
+#include "gtkstylecontext.h"
+
+/**
+ * SECTION:gtkseparatormenuitem
+ * @Short_description: A separator used in menus
+ * @Title: GtkSeparatorMenuItem
+ *
+ * The #GtkSeparatorMenuItem is a separator used to group
+ * items within a menu. It displays a horizontal line with a shadow to
+ * make it appear sunken into the interface.
+ */
 
 G_DEFINE_TYPE (GtkSeparatorMenuItem, gtk_separator_menu_item, GTK_TYPE_MENU_ITEM)
 
@@ -34,18 +44,28 @@ static void
 gtk_separator_menu_item_class_init (GtkSeparatorMenuItemClass *class)
 {
   GTK_CONTAINER_CLASS (class)->child_type = NULL;
+
+  gtk_widget_class_set_accessible_role (GTK_WIDGET_CLASS (class), ATK_ROLE_SEPARATOR);
 }
 
 static void 
 gtk_separator_menu_item_init (GtkSeparatorMenuItem *item)
 {
+  GtkStyleContext *context;
+
+  context = gtk_widget_get_style_context (GTK_WIDGET (item));
+  gtk_style_context_add_class (context, GTK_STYLE_CLASS_SEPARATOR);
 }
 
+/**
+ * gtk_separator_menu_item_new:
+ *
+ * Creates a new #GtkSeparatorMenuItem.
+ *
+ * Returns: a new #GtkSeparatorMenuItem.
+ */
 GtkWidget *
 gtk_separator_menu_item_new (void)
 {
   return g_object_new (GTK_TYPE_SEPARATOR_MENU_ITEM, NULL);
 }
-
-#define __GTK_SEPARATOR_MENU_ITEM_C__
-#include "gtkaliasdef.c"

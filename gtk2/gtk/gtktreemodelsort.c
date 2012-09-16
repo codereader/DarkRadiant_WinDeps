@@ -13,28 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/* NOTE: There is a potential for confusion in this code as to whether an iter,
- * path or value refers to the GtkTreeModelSort model, or the child model being
- * sorted.  As a convention, variables referencing the child model will have an
- * s_ prefix before them (ie. s_iter, s_value, s_path);
- */
-
-/* ITER FORMAT:
- *
- * iter->stamp = tree_model_sort->stamp
- * iter->user_data = SortLevel
- * iter->user_data2 = SortElt
- */
-
-/* WARNING: this code is dangerous, can cause sleepless nights,
- * can cause your dog to die among other bad things
- *
- * we warned you and we're not liable for any head injuries.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -47,44 +26,229 @@
 #include "gtkintl.h"
 #include "gtkprivate.h"
 #include "gtktreednd.h"
-#include "gtkalias.h"
+
+
+/**
+ * SECTION:gtktreemodelsort
+ * @Short_description: A GtkTreeModel which makes an underlying tree model sortable
+ * @Title: GtkTreeModelSort
+ * @See_also: #GtkTreeModel, #GtkListStore, #GtkTreeStore, #GtkTreeSortable, #GtkTreeModelFilter
+ *
+ * The #GtkTreeModelSort is a model which implements the #GtkTreeSortable
+ * interface.  It does not hold any data itself, but rather is created with
+ * a child model and proxies its data.  It has identical column types to
+ * this child model, and the changes in the child are propagated.  The
+ * primary purpose of this model is to provide a way to sort a different
+ * model without modifying it. Note that the sort function used by
+ * #GtkTreeModelSort is not guaranteed to be stable.
+ *
+ * The use of this is best demonstrated through an example.  In the
+ * following sample code we create two #GtkTreeView widgets each with a
+ * view of the same data.  As the model is wrapped here by a
+ * #GtkTreeModelSort, the two #GtkTreeView<!-- -->s can each sort their
+ * view of the data without affecting the other.  By contrast, if we
+ * simply put the same model in each widget, then sorting the first would
+ * sort the second.
+ *
+ * <example>
+ * <title>Using a <structname>GtkTreeModelSort</structname></title>
+ * <programlisting>
+ * {
+ *   GtkTreeView *tree_view1;
+ *   GtkTreeView *tree_view2;
+ *   GtkTreeModel *sort_model1;
+ *   GtkTreeModel *sort_model2;
+ *   GtkTreeModel *child_model;
+ *
+ *   // get the child model
+ *   child_model = get_my_model ();
+ *
+ *   // Create the first tree
+ *   sort_model1 = gtk_tree_model_sort_new_with_model (child_model);
+ *   tree_view1 = gtk_tree_view_new_with_model (sort_model1);
+ *
+ *   // Create the second tree
+ *   sort_model2 = gtk_tree_model_sort_new_with_model (child_model);
+ *   tree_view2 = gtk_tree_view_new_with_model (sort_model2);
+ *
+ *   // Now we can sort the two models independently
+ *   gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (sort_model1),
+ *                                         COLUMN_1, GTK_SORT_ASCENDING);
+ *   gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (sort_model2),
+ *                                         COLUMN_1, GTK_SORT_DESCENDING);
+ * }
+ * </programlisting>
+ * </example>
+ *
+ * To demonstrate how to access the underlying child model from the sort
+ * model, the next example will be a callback for the #GtkTreeSelection
+ * #GtkTreeSelection::changed signal.  In this callback, we get a string
+ * from COLUMN_1 of the model.  We then modify the string, find the same
+ * selected row on the child model, and change the row there.
+ *
+ * <example>
+ * <title>Accessing the child model of in a selection changed callback</title>
+ * <programlisting>
+ * void
+ * selection_changed (GtkTreeSelection *selection, gpointer data)
+ * {
+ *   GtkTreeModel *sort_model = NULL;
+ *   GtkTreeModel *child_model;
+ *   GtkTreeIter sort_iter;
+ *   GtkTreeIter child_iter;
+ *   char *some_data = NULL;
+ *   char *modified_data;
+ *
+ *   // Get the current selected row and the model.
+ *   if (! gtk_tree_selection_get_selected (selection,
+ *                                          &sort_model,
+ *                                          &sort_iter))
+ *     return;
+ *
+ *   /<!---->* Look up the current value on the selected row and get a new value
+ *    * to change it to.
+ *    *<!---->/
+ *   gtk_tree_model_get (GTK_TREE_MODEL (sort_model), &sort_iter,
+ *                       COLUMN_1, &some_data,
+ *                       -1);
+ *
+ *   modified_data = change_the_data (some_data);
+ *   g_free (some_data);
+ *
+ *   // Get an iterator on the child model, instead of the sort model.
+ *   gtk_tree_model_sort_convert_iter_to_child_iter (GTK_TREE_MODEL_SORT (sort_model),
+ *                                                   &child_iter,
+ *                                                   &sort_iter);
+ *
+ *   /<!---->* Get the child model and change the value of the row.  In this
+ *    * example, the child model is a GtkListStore.  It could be any other
+ *    * type of model, though.
+ *    *<!---->/
+ *   child_model = gtk_tree_model_sort_get_model (GTK_TREE_MODEL_SORT (sort_model));
+ *   gtk_list_store_set (GTK_LIST_STORE (child_model), &child_iter,
+ *                       COLUMN_1, &modified_data,
+ *                       -1);
+ *   g_free (modified_data);
+ * }
+ * </programlisting>
+ * </example>
+ */
+
+
+/* Notes on this implementation of GtkTreeModelSort
+ * ================================================
+ *
+ * Warnings
+ * --------
+ *
+ * In this code there is a potential for confusion as to whether an iter,
+ * path or value refers to the GtkTreeModelSort model, or to the child model
+ * that has been set. As a convention, variables referencing the child model
+ * will have an s_ prefix before them (ie. s_iter, s_value, s_path);
+ * Conversion of iterators and paths between GtkTreeModelSort and the child
+ * model is done through the various gtk_tree_model_sort_convert_* functions.
+ *
+ * Iterator format
+ * ---------------
+ *
+ * The iterator format of iterators handed out by GtkTreeModelSort is as
+ * follows:
+ *
+ *    iter->stamp = tree_model_sort->stamp
+ *    iter->user_data = SortLevel
+ *    iter->user_data2 = SortElt
+ *
+ * Internal data structure
+ * -----------------------
+ *
+ * Using SortLevel and SortElt, GtkTreeModelSort maintains a "cache" of
+ * the mapping from GtkTreeModelSort nodes to nodes in the child model.
+ * This is to avoid sorting a level each time an operation is requested
+ * on GtkTreeModelSort, such as get iter, get path, get value.
+ *
+ * A SortElt corresponds to a single node. A node and its siblings are
+ * stored in a SortLevel. The SortLevel keeps a reference to the parent
+ * SortElt and its SortLevel (if any). The SortElt can have a "children"
+ * pointer set, which points at a child level (a sub level).
+ *
+ * In a SortLevel, nodes are stored in a GSequence. The GSequence
+ * allows for fast additions and removals, and supports sorting
+ * the level of SortElt nodes.
+ *
+ * It is important to recognize the two different mappings that play
+ * a part in this code:
+ *   I.  The mapping from the client to this model. The order in which
+ *       nodes are stored in the GSequence is the order in which the
+ *       nodes are exposed to clients of the GtkTreeModelSort.
+ *   II. The mapping from this model to its child model. Each SortElt
+ *       contains an "offset" field which is the offset of the
+ *       corresponding node in the child model.
+ *
+ * Reference counting
+ * ------------------
+ *
+ * GtkTreeModelSort forwards all reference and unreference operations
+ * to the corresponding node in the child model. The reference count
+ * of each node is also maintained internally, in the "ref_count"
+ * fields in SortElt and SortLevel. For each ref and unref operation on
+ * a SortElt, the "ref_count" of the SortLevel is updated accordingly.
+ * In addition, if a SortLevel has a parent, a reference is taken on
+ * this parent. This happens in gtk_tree_model_sort_build_level() and
+ * the reference is released again in gtk_tree_model_sort_free_level().
+ * This ensures that when GtkTreeModelSort takes a reference on a node
+ * (for example during sorting), all parent nodes are referenced
+ * according to reference counting rule 1, see the GtkTreeModel
+ * documentation.
+ *
+ * When a level has a reference count of zero, which means that
+ * none of the nodes in the level is referenced, the level has
+ * a "zero ref count" on all its parents. As soon as the level
+ * reaches a reference count of zero, the zero ref count value is
+ * incremented by one on all parents of this level. Similarly, as
+ * soon as the reference count of a level changes from zero, the
+ * zero ref count value is decremented by one on all parents.
+ *
+ * The zero ref count value is used to clear unused portions of
+ * the cache. If a SortElt has a zero ref count of one, then
+ * its child level is unused and can be removed from the cache.
+ * If the zero ref count value is higher than one, then the
+ * child level contains sublevels which are unused as well.
+ * gtk_tree_model_sort_clear_cache() uses this to not recurse
+ * into levels which have a zero ref count of zero.
+ */
 
 typedef struct _SortElt SortElt;
 typedef struct _SortLevel SortLevel;
 typedef struct _SortData SortData;
-typedef struct _SortTuple SortTuple;
 
 struct _SortElt
 {
-  GtkTreeIter  iter;
-  SortLevel   *children;
-  gint         offset;
-  gint         ref_count;
-  gint         zero_ref_count;
+  GtkTreeIter    iter;
+  SortLevel     *children;
+  gint           offset;
+  gint           ref_count;
+  gint           zero_ref_count;
+  GSequenceIter *siter; /* iter into seq */
+  gint           old_index; /* used while sorting */
 };
 
 struct _SortLevel
 {
-  GArray    *array;
+  GSequence *seq;
   gint       ref_count;
-  gint       parent_elt_index;
+  SortElt   *parent_elt;
   SortLevel *parent_level;
 };
 
 struct _SortData
 {
   GtkTreeModelSort *tree_model_sort;
+  GtkTreeIterCompareFunc sort_func;
+  gpointer sort_data;
+
   GtkTreePath *parent_path;
   gint parent_path_depth;
   gint *parent_path_indices;
-  GtkTreeIterCompareFunc sort_func;
-  gpointer sort_data;
-};
-
-struct _SortTuple
-{
-  SortElt   *elt;
-  gint       offset;
 };
 
 /* Properties */
@@ -95,21 +259,54 @@ enum {
 };
 
 
+struct _GtkTreeModelSortPrivate
+{
+  gpointer root;
+  gint stamp;
+  guint child_flags;
+  GtkTreeModel *child_model;
+  gint zero_ref_count;
 
-#define GTK_TREE_MODEL_SORT_CACHE_CHILD_ITERS(tree_model_sort) \
-	(((GtkTreeModelSort *)tree_model_sort)->child_flags&GTK_TREE_MODEL_ITERS_PERSIST)
+  /* sort information */
+  GList *sort_list;
+  gint sort_column_id;
+  GtkSortType order;
+
+  /* default sort */
+  GtkTreeIterCompareFunc default_sort_func;
+  gpointer default_sort_data;
+  GDestroyNotify default_sort_destroy;
+
+  /* signal ids */
+  gulong changed_id;
+  gulong inserted_id;
+  gulong has_child_toggled_id;
+  gulong deleted_id;
+  gulong reordered_id;
+};
+
+/* Set this to 0 to disable caching of child iterators.  This
+ * allows for more stringent testing.  It is recommended to set this
+ * to one when refactoring this code and running the unit tests to
+ * catch more errors.
+ */
+#if 1
+#  define GTK_TREE_MODEL_SORT_CACHE_CHILD_ITERS(tree_model_sort) \
+	(((GtkTreeModelSort *)tree_model_sort)->priv->child_flags&GTK_TREE_MODEL_ITERS_PERSIST)
+#else
+#  define GTK_TREE_MODEL_SORT_CACHE_CHILD_ITERS(tree_model_sort) (FALSE)
+#endif
+
 #define SORT_ELT(sort_elt) ((SortElt *)sort_elt)
 #define SORT_LEVEL(sort_level) ((SortLevel *)sort_level)
-
-#define SORT_LEVEL_PARENT_ELT(level) (&g_array_index (SORT_LEVEL ((level))->parent_level->array, SortElt, SORT_LEVEL ((level))->parent_elt_index))
-#define SORT_LEVEL_ELT_INDEX(level, elt) (SORT_ELT ((elt)) - SORT_ELT (SORT_LEVEL ((level))->array->data))
+#define GET_ELT(siter) ((SortElt *) (siter ? g_sequence_get (siter) : NULL))
 
 
 #define GET_CHILD_ITER(tree_model_sort,ch_iter,so_iter) gtk_tree_model_sort_convert_iter_to_child_iter((GtkTreeModelSort*)(tree_model_sort), (ch_iter), (so_iter));
 
 #define NO_SORT_FUNC ((GtkTreeIterCompareFunc) 0x1)
 
-#define VALID_ITER(iter, tree_model_sort) ((iter) != NULL && (iter)->user_data != NULL && (iter)->user_data2 != NULL && (tree_model_sort)->stamp == (iter)->stamp)
+#define VALID_ITER(iter, tree_model_sort) ((iter) != NULL && (iter)->user_data != NULL && (iter)->user_data2 != NULL && (tree_model_sort)->priv->stamp == (iter)->stamp)
 
 /* general (object/interface init, etc) */
 static void gtk_tree_model_sort_tree_model_init       (GtkTreeModelIface     *iface);
@@ -163,6 +360,8 @@ static void         gtk_tree_model_sort_get_value          (GtkTreeModel        
                                                             GValue                *value);
 static gboolean     gtk_tree_model_sort_iter_next          (GtkTreeModel          *tree_model,
                                                             GtkTreeIter           *iter);
+static gboolean     gtk_tree_model_sort_iter_previous      (GtkTreeModel          *tree_model,
+                                                            GtkTreeIter           *iter);
 static gboolean     gtk_tree_model_sort_iter_children      (GtkTreeModel          *tree_model,
                                                             GtkTreeIter           *iter,
                                                             GtkTreeIter           *parent);
@@ -215,19 +414,16 @@ static gboolean     gtk_tree_model_sort_has_default_sort_func (GtkTreeSortable  
 /* Private functions (sort funcs, level handling and other utils) */
 static void         gtk_tree_model_sort_build_level       (GtkTreeModelSort *tree_model_sort,
 							   SortLevel        *parent_level,
-							   gint              parent_elt_index);
+                                                           SortElt          *parent_elt);
 static void         gtk_tree_model_sort_free_level        (GtkTreeModelSort *tree_model_sort,
-							   SortLevel        *sort_level);
+							   SortLevel        *sort_level,
+                                                           gboolean          unref);
 static void         gtk_tree_model_sort_increment_stamp   (GtkTreeModelSort *tree_model_sort);
 static void         gtk_tree_model_sort_sort_level        (GtkTreeModelSort *tree_model_sort,
 							   SortLevel        *level,
 							   gboolean          recurse,
 							   gboolean          emit_reordered);
 static void         gtk_tree_model_sort_sort              (GtkTreeModelSort *tree_model_sort);
-static gint         gtk_tree_model_sort_level_find_insert (GtkTreeModelSort *tree_model_sort,
-							   SortLevel        *level,
-							   GtkTreeIter      *iter,
-							   gint             skip_index);
 static gboolean     gtk_tree_model_sort_insert_value      (GtkTreeModelSort *tree_model_sort,
 							   SortLevel        *level,
 							   GtkTreePath      *s_path,
@@ -239,6 +435,15 @@ static void         gtk_tree_model_sort_set_model         (GtkTreeModelSort *tre
 static GtkTreePath *gtk_real_tree_model_sort_convert_child_path_to_path (GtkTreeModelSort *tree_model_sort,
 									 GtkTreePath      *child_path,
 									 gboolean          build_levels);
+
+static gint         gtk_tree_model_sort_compare_func        (gconstpointer     a,
+                                                             gconstpointer     b,
+                                                             gpointer          user_data);
+static gint         gtk_tree_model_sort_offset_compare_func (gconstpointer     a,
+                                                             gconstpointer     b,
+                                                             gpointer          user_data);
+static void         gtk_tree_model_sort_clear_cache_helper  (GtkTreeModelSort *tree_model_sort,
+                                                             SortLevel        *level);
 
 
 G_DEFINE_TYPE_WITH_CODE (GtkTreeModelSort, gtk_tree_model_sort, G_TYPE_OBJECT,
@@ -252,11 +457,17 @@ G_DEFINE_TYPE_WITH_CODE (GtkTreeModelSort, gtk_tree_model_sort, G_TYPE_OBJECT,
 static void
 gtk_tree_model_sort_init (GtkTreeModelSort *tree_model_sort)
 {
-  tree_model_sort->sort_column_id = GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID;
-  tree_model_sort->stamp = 0;
-  tree_model_sort->zero_ref_count = 0;
-  tree_model_sort->root = NULL;
-  tree_model_sort->sort_list = NULL;
+  GtkTreeModelSortPrivate *priv;
+
+  priv = G_TYPE_INSTANCE_GET_PRIVATE (tree_model_sort,
+                                      GTK_TYPE_TREE_MODEL_SORT,
+                                      GtkTreeModelSortPrivate);
+  tree_model_sort->priv = priv;
+  priv->sort_column_id = GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID;
+  priv->stamp = 0;
+  priv->zero_ref_count = 0;
+  priv->root = NULL;
+  priv->sort_list = NULL;
 }
 
 static void
@@ -279,6 +490,8 @@ gtk_tree_model_sort_class_init (GtkTreeModelSortClass *class)
 							P_("The model for the TreeModelSort to sort"),
 							GTK_TYPE_TREE_MODEL,
 							GTK_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+  g_type_class_add_private (class, sizeof (GtkTreeModelSortPrivate));
 }
 
 static void
@@ -291,6 +504,7 @@ gtk_tree_model_sort_tree_model_init (GtkTreeModelIface *iface)
   iface->get_path = gtk_tree_model_sort_get_path;
   iface->get_value = gtk_tree_model_sort_get_value;
   iface->iter_next = gtk_tree_model_sort_iter_next;
+  iface->iter_previous = gtk_tree_model_sort_iter_previous;
   iface->iter_children = gtk_tree_model_sort_iter_children;
   iface->iter_has_child = gtk_tree_model_sort_iter_has_child;
   iface->iter_n_children = gtk_tree_model_sort_iter_n_children;
@@ -345,23 +559,24 @@ static void
 gtk_tree_model_sort_finalize (GObject *object)
 {
   GtkTreeModelSort *tree_model_sort = (GtkTreeModelSort *) object;
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
 
   gtk_tree_model_sort_set_model (tree_model_sort, NULL);
 
-  if (tree_model_sort->root)
-    gtk_tree_model_sort_free_level (tree_model_sort, tree_model_sort->root);
+  if (priv->root)
+    gtk_tree_model_sort_free_level (tree_model_sort, priv->root, TRUE);
 
-  if (tree_model_sort->sort_list)
+  if (priv->sort_list)
     {
-      _gtk_tree_data_list_header_free (tree_model_sort->sort_list);
-      tree_model_sort->sort_list = NULL;
+      _gtk_tree_data_list_header_free (priv->sort_list);
+      priv->sort_list = NULL;
     }
 
-  if (tree_model_sort->default_sort_destroy)
+  if (priv->default_sort_destroy)
     {
-      tree_model_sort->default_sort_destroy (tree_model_sort->default_sort_data);
-      tree_model_sort->default_sort_destroy = NULL;
-      tree_model_sort->default_sort_data = NULL;
+      priv->default_sort_destroy (priv->default_sort_data);
+      priv->default_sort_destroy = NULL;
+      priv->default_sort_data = NULL;
     }
 
 
@@ -399,13 +614,129 @@ gtk_tree_model_sort_get_property (GObject    *object,
   switch (prop_id)
     {
     case PROP_MODEL:
-      g_value_set_object (value, gtk_tree_model_sort_get_model(tree_model_sort));
+      g_value_set_object (value, gtk_tree_model_sort_get_model (tree_model_sort));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
     }
 }
+
+/* helpers */
+static SortElt *
+sort_elt_new (void)
+{
+  return g_slice_new (SortElt);
+}
+
+static void
+sort_elt_free (gpointer elt)
+{
+  g_slice_free (SortElt, elt);
+}
+
+static void
+increase_offset_iter (gpointer data,
+                      gpointer user_data)
+{
+  SortElt *elt = data;
+  gint offset = GPOINTER_TO_INT (user_data);
+
+  if (elt->offset >= offset)
+    elt->offset++;
+}
+
+static void
+decrease_offset_iter (gpointer data,
+                      gpointer user_data)
+{
+  SortElt *elt = data;
+  gint offset = GPOINTER_TO_INT (user_data);
+
+  if (elt->offset > offset)
+    elt->offset--;
+}
+
+static void
+fill_sort_data (SortData         *data,
+                GtkTreeModelSort *tree_model_sort,
+                SortLevel        *level)
+{
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
+
+  data->tree_model_sort = tree_model_sort;
+
+  if (priv->sort_column_id != GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID)
+    {
+      GtkTreeDataSortHeader *header;
+      
+      header = _gtk_tree_data_list_get_header (priv->sort_list,
+					       priv->sort_column_id);
+      
+      g_return_if_fail (header != NULL);
+      g_return_if_fail (header->func != NULL);
+      
+      data->sort_func = header->func;
+      data->sort_data = header->data;
+    }
+  else
+    {
+      /* absolutely SHOULD NOT happen: */
+      g_return_if_fail (priv->default_sort_func != NULL);
+
+      data->sort_func = priv->default_sort_func;
+      data->sort_data = priv->default_sort_data;
+    }
+
+  if (level->parent_elt)
+    {
+      data->parent_path = gtk_tree_model_sort_elt_get_path (level->parent_level,
+                                                            level->parent_elt);
+      gtk_tree_path_append_index (data->parent_path, 0);
+    }
+  else
+    {
+      data->parent_path = gtk_tree_path_new_first ();
+    }
+  data->parent_path_depth = gtk_tree_path_get_depth (data->parent_path);
+  data->parent_path_indices = gtk_tree_path_get_indices (data->parent_path);
+}
+
+static void
+free_sort_data (SortData *data)
+{
+  gtk_tree_path_free (data->parent_path);
+}
+
+static SortElt *
+lookup_elt_with_offset (GtkTreeModelSort *tree_model_sort,
+                        SortLevel        *level,
+                        gint              offset,
+                        GSequenceIter   **ret_siter)
+{
+  GSequenceIter *siter, *end_siter;
+
+  /* FIXME: We have to do a search like this, because the sequence is not
+   * (always) sorted on offset order.  Perhaps we should introduce a
+   * second sequence which is sorted on offset order.
+   */
+  end_siter = g_sequence_get_end_iter (level->seq);
+  for (siter = g_sequence_get_begin_iter (level->seq);
+       siter != end_siter;
+       siter = g_sequence_iter_next (siter))
+    {
+      SortElt *elt = g_sequence_get (siter);
+
+      if (elt->offset == offset)
+        break;
+    }
+
+  if (ret_siter)
+    *ret_siter = siter;
+
+  return GET_ELT (siter);
+}
+
 
 static void
 gtk_tree_model_sort_row_changed (GtkTreeModel *s_model,
@@ -414,17 +745,18 @@ gtk_tree_model_sort_row_changed (GtkTreeModel *s_model,
 				 gpointer      data)
 {
   GtkTreeModelSort *tree_model_sort = GTK_TREE_MODEL_SORT (data);
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
   GtkTreePath *path = NULL;
   GtkTreeIter iter;
   GtkTreeIter tmpiter;
 
-  SortElt tmp;
   SortElt *elt;
   SortLevel *level;
+  SortData sort_data;
 
   gboolean free_s_path = FALSE;
 
-  gint index = 0, old_index, i;
+  gint index = 0, old_index;
 
   g_return_if_fail (start_s_path != NULL || start_s_iter != NULL);
 
@@ -450,9 +782,9 @@ gtk_tree_model_sort_row_changed (GtkTreeModel *s_model,
   level = iter.user_data;
   elt = iter.user_data2;
 
-  if (level->array->len < 2 ||
-      (tree_model_sort->sort_column_id == GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID &&
-       tree_model_sort->default_sort_func == NO_SORT_FUNC))
+  if (g_sequence_get_length (level->seq) < 2 ||
+      (priv->sort_column_id == GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID &&
+       priv->default_sort_func == NO_SORT_FUNC))
     {
       if (free_s_path)
 	gtk_tree_path_free (start_s_path);
@@ -464,47 +796,24 @@ gtk_tree_model_sort_row_changed (GtkTreeModel *s_model,
 
       return;
     }
-  
-  if (!GTK_TREE_MODEL_SORT_CACHE_CHILD_ITERS (tree_model_sort))
-    {
-      gtk_tree_model_get_iter (tree_model_sort->child_model,
-			       &tmpiter, start_s_path);
-    }
-
-  old_index = elt - SORT_ELT (level->array->data);
-
-  memcpy (&tmp, elt, sizeof (SortElt));
 
   if (GTK_TREE_MODEL_SORT_CACHE_CHILD_ITERS (tree_model_sort))
-    index = gtk_tree_model_sort_level_find_insert (tree_model_sort,
-						   level,
-						   &tmp.iter,
-						   old_index);
+    tmpiter = elt->iter;
   else
-    index = gtk_tree_model_sort_level_find_insert (tree_model_sort,
-						   level,
-						   &tmpiter,
-						   old_index);
+    gtk_tree_model_get_iter (priv->child_model,
+                             &tmpiter, start_s_path);
 
-  if (index < old_index)
-    {
-      g_memmove (level->array->data + ((index + 1)*sizeof (SortElt)),
-		 level->array->data + ((index)*sizeof (SortElt)),
-		 (old_index - index)* sizeof(SortElt));
-    }
-  else if (index > old_index)
-    {
-      g_memmove (level->array->data + ((old_index)*sizeof (SortElt)),
-		 level->array->data + ((old_index + 1)*sizeof (SortElt)),
-		 (index - old_index)* sizeof(SortElt));
-    }
-  memcpy (level->array->data + ((index)*sizeof (SortElt)),
-	  &tmp, sizeof (SortElt));
+  old_index = g_sequence_iter_get_position (elt->siter);
 
-  for (i = 0; i < level->array->len; i++)
-    if (g_array_index (level->array, SortElt, i).children)
-      g_array_index (level->array, SortElt, i).children->parent_elt_index = i;
+  fill_sort_data (&sort_data, tree_model_sort, level);
+  g_sequence_sort_changed (elt->siter,
+                           gtk_tree_model_sort_compare_func,
+                           &sort_data);
+  free_sort_data (&sort_data);
 
+  index = g_sequence_iter_get_position (elt->siter);
+
+  /* Prepare the path for signal emission */
   gtk_tree_path_up (path);
   gtk_tree_path_append_index (path, index);
 
@@ -518,9 +827,9 @@ gtk_tree_model_sort_row_changed (GtkTreeModel *s_model,
 
       GtkTreePath *tmppath;
 
-      new_order = g_new (gint, level->array->len);
+      new_order = g_new (gint, g_sequence_get_length (level->seq));
 
-      for (j = 0; j < level->array->len; j++)
+      for (j = 0; j < g_sequence_get_length (level->seq); j++)
         {
 	  if (index > old_index)
 	    {
@@ -543,11 +852,11 @@ gtk_tree_model_sort_row_changed (GtkTreeModel *s_model,
 	  /* else? shouldn't really happen */
 	}
 
-      if (level->parent_elt_index >= 0)
+      if (level->parent_elt)
         {
-	  iter.stamp = tree_model_sort->stamp;
+	  iter.stamp = priv->stamp;
 	  iter.user_data = level->parent_level;
-	  iter.user_data2 = SORT_LEVEL_PARENT_ELT (level);
+	  iter.user_data2 = level->parent_elt;
 
 	  tmppath = gtk_tree_model_get_path (GTK_TREE_MODEL (tree_model_sort), &iter);
 
@@ -584,6 +893,7 @@ gtk_tree_model_sort_row_inserted (GtkTreeModel          *s_model,
 				  gpointer               data)
 {
   GtkTreeModelSort *tree_model_sort = GTK_TREE_MODEL_SORT (data);
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
   GtkTreePath *path;
   GtkTreeIter iter;
   GtkTreeIter real_s_iter;
@@ -596,7 +906,7 @@ gtk_tree_model_sort_row_inserted (GtkTreeModel          *s_model,
   SortLevel *level;
   SortLevel *parent_level = NULL;
 
-  parent_level = level = SORT_LEVEL (tree_model_sort->root);
+  parent_level = level = SORT_LEVEL (priv->root);
 
   g_return_if_fail (s_path != NULL || s_iter != NULL);
 
@@ -611,9 +921,9 @@ gtk_tree_model_sort_row_inserted (GtkTreeModel          *s_model,
   else
     real_s_iter = *s_iter;
 
-  if (!tree_model_sort->root)
+  if (!priv->root)
     {
-      gtk_tree_model_sort_build_level (tree_model_sort, NULL, -1);
+      gtk_tree_model_sort_build_level (tree_model_sort, NULL, NULL);
 
       /* the build level already put the inserted iter in the level,
 	 so no need to handle this signal anymore */
@@ -624,15 +934,13 @@ gtk_tree_model_sort_row_inserted (GtkTreeModel          *s_model,
   /* find the parent level */
   while (i < gtk_tree_path_get_depth (s_path) - 1)
     {
-      gint j;
-
       if (!level)
 	{
 	  /* level not yet build, we won't cover this signal */
 	  goto done;
 	}
 
-      if (level->array->len < gtk_tree_path_get_indices (s_path)[i])
+      if (g_sequence_get_length (level->seq) < gtk_tree_path_get_indices (s_path)[i])
 	{
 	  g_warning ("%s: A node was inserted with a parent that's not in the tree.\n"
 		     "This possibly means that a GtkTreeModel inserted a child node\n"
@@ -641,13 +949,9 @@ gtk_tree_model_sort_row_inserted (GtkTreeModel          *s_model,
 	  goto done;
 	}
 
-      elt = NULL;
-      for (j = 0; j < level->array->len; j++)
-	if (g_array_index (level->array, SortElt, j).offset == gtk_tree_path_get_indices (s_path)[i])
-	  {
-	    elt = &g_array_index (level->array, SortElt, j);
-	    break;
-	  }
+      elt = lookup_elt_with_offset (tree_model_sort, level,
+                                    gtk_tree_path_get_indices (s_path)[i],
+                                    NULL);
 
       g_return_if_fail (elt != NULL);
 
@@ -665,9 +969,9 @@ gtk_tree_model_sort_row_inserted (GtkTreeModel          *s_model,
   if (!parent_level)
     goto done;
 
-  if (level->ref_count == 0 && level != tree_model_sort->root)
+  if (level->ref_count == 0 && level != priv->root)
     {
-      gtk_tree_model_sort_free_level (tree_model_sort, level);
+      gtk_tree_model_sort_free_level (tree_model_sort, level, TRUE);
       goto done;
     }
 
@@ -731,7 +1035,6 @@ gtk_tree_model_sort_row_deleted (GtkTreeModel *s_model,
   SortLevel *level;
   GtkTreeIter iter;
   gint offset;
-  gint i;
 
   g_return_if_fail (s_path != NULL);
 
@@ -745,52 +1048,46 @@ gtk_tree_model_sort_row_deleted (GtkTreeModel *s_model,
   elt = SORT_ELT (iter.user_data2);
   offset = elt->offset;
 
-  /* we _need_ to emit ::row_deleted before we start unreffing the node
-   * itself. This is because of the row refs, which start unreffing nodes
-   * when we emit ::row_deleted
-   */
-  gtk_tree_model_row_deleted (GTK_TREE_MODEL (data), path);
-
   gtk_tree_model_get_iter (GTK_TREE_MODEL (data), &iter, path);
 
   while (elt->ref_count > 0)
     gtk_tree_model_sort_real_unref_node (GTK_TREE_MODEL (data), &iter, FALSE);
 
+  /* If this node has children, we free the level (recursively) here
+   * and specify that unref may not be used, because parent and its
+   * children have been removed by now.
+   */
+  if (elt->children)
+    gtk_tree_model_sort_free_level (tree_model_sort,
+                                    elt->children, FALSE);
+
   if (level->ref_count == 0)
     {
-      /* This will prune the level, so I can just emit the signal and 
-       * not worry about cleaning this level up. 
-       * Careful, root level is not cleaned up in increment stamp.
-       */
       gtk_tree_model_sort_increment_stamp (tree_model_sort);
+      gtk_tree_model_row_deleted (GTK_TREE_MODEL (data), path);
       gtk_tree_path_free (path);
-      if (level == tree_model_sort->root)
+
+      if (level == tree_model_sort->priv->root)
 	{
-	  gtk_tree_model_sort_free_level (tree_model_sort, 
-					  tree_model_sort->root);
-	  tree_model_sort->root = NULL;
+	  gtk_tree_model_sort_free_level (tree_model_sort,
+					  tree_model_sort->priv->root,
+                                          TRUE);
+	  tree_model_sort->priv->root = NULL;
 	}
       return;
     }
 
+  g_sequence_remove (elt->siter);
+  elt = NULL;
+
+  /* The sequence is not ordered on offset, so we traverse the entire
+   * sequence.
+   */
+  g_sequence_foreach (level->seq, decrease_offset_iter,
+                      GINT_TO_POINTER (offset));
+
   gtk_tree_model_sort_increment_stamp (tree_model_sort);
-
-  /* Remove the row */
-  for (i = 0; i < level->array->len; i++)
-    if (elt->offset == g_array_index (level->array, SortElt, i).offset)
-      break;
-
-  g_array_remove_index (level->array, i);
-
-  /* update all offsets */
-  for (i = 0; i < level->array->len; i++)
-    {
-      elt = & (g_array_index (level->array, SortElt, i));
-      if (elt->offset > offset)
-	elt->offset--;
-      if (elt->children)
-	elt->children->parent_elt_index = i;
-    }
+  gtk_tree_model_row_deleted (GTK_TREE_MODEL (data), path);
 
   gtk_tree_path_free (path);
 }
@@ -806,18 +1103,20 @@ gtk_tree_model_sort_rows_reordered (GtkTreeModel *s_model,
   SortLevel *level;
   GtkTreeIter iter;
   gint *tmp_array;
-  int i, j;
+  int i, length;
   GtkTreePath *path;
+  GSequenceIter *siter, *end_siter;
   GtkTreeModelSort *tree_model_sort = GTK_TREE_MODEL_SORT (data);
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
 
   g_return_if_fail (new_order != NULL);
 
   if (s_path == NULL || gtk_tree_path_get_depth (s_path) == 0)
     {
-      if (tree_model_sort->root == NULL)
+      if (priv->root == NULL)
 	return;
       path = gtk_tree_path_new ();
-      level = SORT_LEVEL (tree_model_sort->root);
+      level = SORT_LEVEL (priv->root);
     }
   else
     {
@@ -826,7 +1125,6 @@ gtk_tree_model_sort_rows_reordered (GtkTreeModel *s_model,
 	return;
       gtk_tree_model_get_iter (GTK_TREE_MODEL (data), &iter, path);
 
-      level = SORT_LEVEL (iter.user_data);
       elt = SORT_ELT (iter.user_data2);
 
       if (!elt->children)
@@ -838,30 +1136,55 @@ gtk_tree_model_sort_rows_reordered (GtkTreeModel *s_model,
       level = elt->children;
     }
 
-  if (level->array->len < 2)
+  length = g_sequence_get_length (level->seq);
+  if (length < 2)
     {
       gtk_tree_path_free (path);
       return;
     }
 
-  tmp_array = g_new (int, level->array->len);
-  for (i = 0; i < level->array->len; i++)
+  tmp_array = g_new (int, length);
+
+  /* FIXME: I need to think about whether this can be done in a more
+   * efficient way?
+   */
+  i = 0;
+  end_siter = g_sequence_get_end_iter (level->seq);
+  for (siter = g_sequence_get_begin_iter (level->seq);
+       siter != end_siter;
+       siter = g_sequence_iter_next (siter))
     {
-      for (j = 0; j < level->array->len; j++)
+      gint j;
+      SortElt *elt = g_sequence_get (siter);
+
+      for (j = 0; j < length; j++)
 	{
-	  if (g_array_index (level->array, SortElt, i).offset == new_order[j])
+	  if (elt->offset == new_order[j])
 	    tmp_array[i] = j;
 	}
+
+      i++;
     }
 
-  for (i = 0; i < level->array->len; i++)
-    g_array_index (level->array, SortElt, i).offset = tmp_array[i];
+  /* This loop cannot be merged with the above loop nest, because that
+   * would introduce duplicate offsets.
+   */
+  i = 0;
+  end_siter = g_sequence_get_end_iter (level->seq);
+  for (siter = g_sequence_get_begin_iter (level->seq);
+       siter != end_siter;
+       siter = g_sequence_iter_next (siter))
+    {
+      SortElt *elt = g_sequence_get (siter);
+
+      elt->offset = tmp_array[i];
+      i++;
+    }
   g_free (tmp_array);
 
-  if (tree_model_sort->sort_column_id == GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID &&
-      tree_model_sort->default_sort_func == NO_SORT_FUNC)
+  if (priv->sort_column_id == GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID &&
+      priv->default_sort_func == NO_SORT_FUNC)
     {
-
       gtk_tree_model_sort_sort_level (tree_model_sort, level,
 				      FALSE, FALSE);
       gtk_tree_model_sort_increment_stamp (tree_model_sort);
@@ -891,9 +1214,9 @@ gtk_tree_model_sort_get_flags (GtkTreeModel *tree_model)
   GtkTreeModelSort *tree_model_sort = (GtkTreeModelSort *) tree_model;
   GtkTreeModelFlags flags;
 
-  g_return_val_if_fail (tree_model_sort->child_model != NULL, 0);
+  g_return_val_if_fail (tree_model_sort->priv->child_model != NULL, 0);
 
-  flags = gtk_tree_model_get_flags (tree_model_sort->child_model);
+  flags = gtk_tree_model_get_flags (tree_model_sort->priv->child_model);
 
   if ((flags & GTK_TREE_MODEL_LIST_ONLY) == GTK_TREE_MODEL_LIST_ONLY)
     return GTK_TREE_MODEL_LIST_ONLY;
@@ -906,10 +1229,10 @@ gtk_tree_model_sort_get_n_columns (GtkTreeModel *tree_model)
 {
   GtkTreeModelSort *tree_model_sort = (GtkTreeModelSort *) tree_model;
 
-  if (tree_model_sort->child_model == 0)
+  if (tree_model_sort->priv->child_model == 0)
     return 0;
 
-  return gtk_tree_model_get_n_columns (tree_model_sort->child_model);
+  return gtk_tree_model_get_n_columns (tree_model_sort->priv->child_model);
 }
 
 static GType
@@ -918,9 +1241,9 @@ gtk_tree_model_sort_get_column_type (GtkTreeModel *tree_model,
 {
   GtkTreeModelSort *tree_model_sort = (GtkTreeModelSort *) tree_model;
 
-  g_return_val_if_fail (tree_model_sort->child_model != NULL, G_TYPE_INVALID);
+  g_return_val_if_fail (tree_model_sort->priv->child_model != NULL, G_TYPE_INVALID);
 
-  return gtk_tree_model_get_column_type (tree_model_sort->child_model, index);
+  return gtk_tree_model_get_column_type (tree_model_sort->priv->child_model, index);
 }
 
 static gboolean
@@ -929,42 +1252,67 @@ gtk_tree_model_sort_get_iter (GtkTreeModel *tree_model,
 			      GtkTreePath  *path)
 {
   GtkTreeModelSort *tree_model_sort = (GtkTreeModelSort *) tree_model;
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
   gint *indices;
+  SortElt *elt;
   SortLevel *level;
   gint depth, i;
+  GSequenceIter *siter;
 
-  g_return_val_if_fail (tree_model_sort->child_model != NULL, FALSE);
+  g_return_val_if_fail (priv->child_model != NULL, FALSE);
 
   indices = gtk_tree_path_get_indices (path);
 
-  if (tree_model_sort->root == NULL)
-    gtk_tree_model_sort_build_level (tree_model_sort, NULL, -1);
-  level = SORT_LEVEL (tree_model_sort->root);
+  if (priv->root == NULL)
+    gtk_tree_model_sort_build_level (tree_model_sort, NULL, NULL);
+  level = SORT_LEVEL (priv->root);
 
   depth = gtk_tree_path_get_depth (path);
   if (depth == 0)
-    return FALSE;
-
-  for (i = 0; i < depth - 1; i++)
-    {
-      if ((level == NULL) ||
-	  (indices[i] >= level->array->len))
-	return FALSE;
-
-      if (g_array_index (level->array, SortElt, indices[i]).children == NULL)
-	gtk_tree_model_sort_build_level (tree_model_sort, level, indices[i]);
-      level = g_array_index (level->array, SortElt, indices[i]).children;
-    }
-
-  if (!level || indices[i] >= level->array->len)
     {
       iter->stamp = 0;
       return FALSE;
     }
 
-  iter->stamp = tree_model_sort->stamp;
+  for (i = 0; i < depth - 1; i++)
+    {
+      if ((level == NULL) ||
+	  (indices[i] >= g_sequence_get_length (level->seq)))
+        {
+          iter->stamp = 0;
+          return FALSE;
+        }
+
+      siter = g_sequence_get_iter_at_pos (level->seq, indices[i]);
+      if (g_sequence_iter_is_end (siter))
+        {
+          iter->stamp = 0;
+          return FALSE;
+        }
+
+      elt = GET_ELT (siter);
+      if (elt->children == NULL)
+	gtk_tree_model_sort_build_level (tree_model_sort, level, elt);
+
+      level = elt->children;
+    }
+
+  if (!level || indices[i] >= g_sequence_get_length (level->seq))
+    {
+      iter->stamp = 0;
+      return FALSE;
+    }
+
+  iter->stamp = priv->stamp;
   iter->user_data = level;
-  iter->user_data2 = &g_array_index (level->array, SortElt, indices[depth - 1]);
+
+  siter = g_sequence_get_iter_at_pos (level->seq, indices[depth - 1]);
+  if (g_sequence_iter_is_end (siter))
+    {
+      iter->stamp = 0;
+      return FALSE;
+    }
+  iter->user_data2 = GET_ELT (siter);
 
   return TRUE;
 }
@@ -974,23 +1322,27 @@ gtk_tree_model_sort_get_path (GtkTreeModel *tree_model,
 			      GtkTreeIter  *iter)
 {
   GtkTreeModelSort *tree_model_sort = (GtkTreeModelSort *) tree_model;
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
   GtkTreePath *retval;
   SortLevel *level;
-  gint elt_index;
+  SortElt *elt;
 
-  g_return_val_if_fail (tree_model_sort->child_model != NULL, NULL);
-  g_return_val_if_fail (tree_model_sort->stamp == iter->stamp, NULL);
+  g_return_val_if_fail (priv->child_model != NULL, NULL);
+  g_return_val_if_fail (priv->stamp == iter->stamp, NULL);
 
   retval = gtk_tree_path_new ();
 
   level = SORT_LEVEL (iter->user_data);
-  elt_index = SORT_LEVEL_ELT_INDEX (level, iter->user_data2);
+  elt = SORT_ELT (iter->user_data2);
 
   while (level)
     {
-      gtk_tree_path_prepend_index (retval, elt_index);
+      gint index;
 
-      elt_index = level->parent_elt_index;
+      index = g_sequence_iter_get_position (elt->siter);
+      gtk_tree_path_prepend_index (retval, index);
+
+      elt = level->parent_elt;
       level = level->parent_level;
     }
 
@@ -1004,13 +1356,14 @@ gtk_tree_model_sort_get_value (GtkTreeModel *tree_model,
 			       GValue       *value)
 {
   GtkTreeModelSort *tree_model_sort = (GtkTreeModelSort *) tree_model;
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
   GtkTreeIter child_iter;
 
-  g_return_if_fail (tree_model_sort->child_model != NULL);
+  g_return_if_fail (priv->child_model != NULL);
   g_return_if_fail (VALID_ITER (iter, tree_model_sort));
 
   GET_CHILD_ITER (tree_model_sort, &child_iter, iter);
-  gtk_tree_model_get_value (tree_model_sort->child_model,
+  gtk_tree_model_get_value (priv->child_model,
 			    &child_iter, column, value);
 }
 
@@ -1019,21 +1372,48 @@ gtk_tree_model_sort_iter_next (GtkTreeModel *tree_model,
 			       GtkTreeIter  *iter)
 {
   GtkTreeModelSort *tree_model_sort = (GtkTreeModelSort *) tree_model;
-  SortLevel *level;
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
   SortElt *elt;
+  GSequenceIter *siter;
 
-  g_return_val_if_fail (tree_model_sort->child_model != NULL, FALSE);
-  g_return_val_if_fail (tree_model_sort->stamp == iter->stamp, FALSE);
+  g_return_val_if_fail (priv->child_model != NULL, FALSE);
+  g_return_val_if_fail (priv->stamp == iter->stamp, FALSE);
 
-  level = iter->user_data;
   elt = iter->user_data2;
 
-  if (elt - (SortElt *)level->array->data >= level->array->len - 1)
+  siter = g_sequence_iter_next (elt->siter);
+  if (g_sequence_iter_is_end (siter))
     {
       iter->stamp = 0;
       return FALSE;
     }
-  iter->user_data2 = elt + 1;
+  iter->user_data2 = GET_ELT (siter);
+
+  return TRUE;
+}
+
+static gboolean
+gtk_tree_model_sort_iter_previous (GtkTreeModel *tree_model,
+                                   GtkTreeIter  *iter)
+{
+  GtkTreeModelSort *tree_model_sort = (GtkTreeModelSort *) tree_model;
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
+  SortElt *elt;
+  GSequenceIter *siter;
+
+  g_return_val_if_fail (priv->child_model != NULL, FALSE);
+  g_return_val_if_fail (priv->stamp == iter->stamp, FALSE);
+
+  elt = iter->user_data2;
+
+  if (g_sequence_iter_is_begin (elt->siter))
+    {
+      iter->stamp = 0;
+      return FALSE;
+    }
+
+  siter = g_sequence_iter_prev (elt->siter);
+  iter->user_data2 = GET_ELT (siter);
 
   return TRUE;
 }
@@ -1044,24 +1424,25 @@ gtk_tree_model_sort_iter_children (GtkTreeModel *tree_model,
 				   GtkTreeIter  *parent)
 {
   GtkTreeModelSort *tree_model_sort = (GtkTreeModelSort *) tree_model;
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
   SortLevel *level;
 
   iter->stamp = 0;
-  g_return_val_if_fail (tree_model_sort->child_model != NULL, FALSE);
+  g_return_val_if_fail (priv->child_model != NULL, FALSE);
   if (parent) 
     g_return_val_if_fail (VALID_ITER (parent, tree_model_sort), FALSE);
 
   if (parent == NULL)
     {
-      if (tree_model_sort->root == NULL)
-	gtk_tree_model_sort_build_level (tree_model_sort, NULL, -1);
-      if (tree_model_sort->root == NULL)
+      if (priv->root == NULL)
+	gtk_tree_model_sort_build_level (tree_model_sort, NULL, NULL);
+      if (priv->root == NULL)
 	return FALSE;
 
-      level = tree_model_sort->root;
-      iter->stamp = tree_model_sort->stamp;
+      level = priv->root;
+      iter->stamp = priv->stamp;
       iter->user_data = level;
-      iter->user_data2 = level->array->data;
+      iter->user_data2 = g_sequence_get (g_sequence_get_begin_iter (level->seq));
     }
   else
     {
@@ -1071,15 +1452,14 @@ gtk_tree_model_sort_iter_children (GtkTreeModel *tree_model,
       elt = SORT_ELT (parent->user_data2);
 
       if (elt->children == NULL)
-        gtk_tree_model_sort_build_level (tree_model_sort, level,
-                                         SORT_LEVEL_ELT_INDEX (level, elt));
+        gtk_tree_model_sort_build_level (tree_model_sort, level, elt);
 
       if (elt->children == NULL)
 	return FALSE;
 
-      iter->stamp = tree_model_sort->stamp;
+      iter->stamp = priv->stamp;
       iter->user_data = elt->children;
-      iter->user_data2 = elt->children->array->data;
+      iter->user_data2 = g_sequence_get (g_sequence_get_begin_iter (elt->children->seq));
     }
 
   return TRUE;
@@ -1090,14 +1470,15 @@ gtk_tree_model_sort_iter_has_child (GtkTreeModel *tree_model,
 				    GtkTreeIter  *iter)
 {
   GtkTreeModelSort *tree_model_sort = (GtkTreeModelSort *) tree_model;
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
   GtkTreeIter child_iter;
 
-  g_return_val_if_fail (tree_model_sort->child_model != NULL, FALSE);
+  g_return_val_if_fail (priv->child_model != NULL, FALSE);
   g_return_val_if_fail (VALID_ITER (iter, tree_model_sort), FALSE);
 
   GET_CHILD_ITER (tree_model_sort, &child_iter, iter);
 
-  return gtk_tree_model_iter_has_child (tree_model_sort->child_model, &child_iter);
+  return gtk_tree_model_iter_has_child (priv->child_model, &child_iter);
 }
 
 static gint
@@ -1105,18 +1486,19 @@ gtk_tree_model_sort_iter_n_children (GtkTreeModel *tree_model,
 				     GtkTreeIter  *iter)
 {
   GtkTreeModelSort *tree_model_sort = (GtkTreeModelSort *) tree_model;
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
   GtkTreeIter child_iter;
 
-  g_return_val_if_fail (tree_model_sort->child_model != NULL, 0);
+  g_return_val_if_fail (priv->child_model != NULL, 0);
   if (iter) 
     g_return_val_if_fail (VALID_ITER (iter, tree_model_sort), 0);
 
   if (iter == NULL)
-    return gtk_tree_model_iter_n_children (tree_model_sort->child_model, NULL);
+    return gtk_tree_model_iter_n_children (priv->child_model, NULL);
 
   GET_CHILD_ITER (tree_model_sort, &child_iter, iter);
 
-  return gtk_tree_model_iter_n_children (tree_model_sort->child_model, &child_iter);
+  return gtk_tree_model_iter_n_children (priv->child_model, &child_iter);
 }
 
 static gboolean
@@ -1141,15 +1523,15 @@ gtk_tree_model_sort_iter_nth_child (GtkTreeModel *tree_model,
     }
 
   level = children.user_data;
-  if (n >= level->array->len)
+  if (n >= g_sequence_get_length (level->seq))
     {
       iter->stamp = 0;
       return FALSE;
     }
 
-  iter->stamp = tree_model_sort->stamp;
+  iter->stamp = tree_model_sort->priv->stamp;
   iter->user_data = level;
-  iter->user_data2 = &g_array_index (level->array, SortElt, n);
+  iter->user_data2 = g_sequence_get (g_sequence_get_iter_at_pos (level->seq, n));
 
   return TRUE;
 }
@@ -1160,19 +1542,20 @@ gtk_tree_model_sort_iter_parent (GtkTreeModel *tree_model,
 				 GtkTreeIter  *child)
 { 
   GtkTreeModelSort *tree_model_sort = (GtkTreeModelSort *) tree_model;
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
   SortLevel *level;
 
   iter->stamp = 0;
-  g_return_val_if_fail (tree_model_sort->child_model != NULL, FALSE);
+  g_return_val_if_fail (priv->child_model != NULL, FALSE);
   g_return_val_if_fail (VALID_ITER (child, tree_model_sort), FALSE);
 
   level = child->user_data;
 
   if (level->parent_level)
     {
-      iter->stamp = tree_model_sort->stamp;
+      iter->stamp = priv->stamp;
       iter->user_data = level->parent_level;
-      iter->user_data2 = SORT_LEVEL_PARENT_ELT (level);
+      iter->user_data2 = level->parent_elt;
 
       return TRUE;
     }
@@ -1184,18 +1567,18 @@ gtk_tree_model_sort_ref_node (GtkTreeModel *tree_model,
 			      GtkTreeIter  *iter)
 {
   GtkTreeModelSort *tree_model_sort = (GtkTreeModelSort *) tree_model;
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
   GtkTreeIter child_iter;
-  SortLevel *level, *parent_level;
+  SortLevel *level;
   SortElt *elt;
-  gint parent_elt_index;
 
-  g_return_if_fail (tree_model_sort->child_model != NULL);
+  g_return_if_fail (priv->child_model != NULL);
   g_return_if_fail (VALID_ITER (iter, tree_model_sort));
 
   GET_CHILD_ITER (tree_model_sort, &child_iter, iter);
 
   /* Reference the node in the child model */
-  gtk_tree_model_ref_node (tree_model_sort->child_model, &child_iter);
+  gtk_tree_model_ref_node (priv->child_model, &child_iter);
 
   /* Increase the reference count of this element and its level */
   level = iter->user_data;
@@ -1204,40 +1587,22 @@ gtk_tree_model_sort_ref_node (GtkTreeModel *tree_model,
   elt->ref_count++;
   level->ref_count++;
 
-  /* Increase the reference count of all parent elements */
-  parent_level = level->parent_level;
-  parent_elt_index = level->parent_elt_index;
-
-  while (parent_level)
-    {
-      GtkTreeIter tmp_iter;
-
-      tmp_iter.stamp = tree_model_sort->stamp;
-      tmp_iter.user_data = parent_level;
-      tmp_iter.user_data2 = &g_array_index (parent_level->array, SortElt, parent_elt_index);
-
-      gtk_tree_model_sort_ref_node (tree_model, &tmp_iter);
-
-      parent_elt_index = parent_level->parent_elt_index;
-      parent_level = parent_level->parent_level;
-    }
-
   if (level->ref_count == 1)
     {
       SortLevel *parent_level = level->parent_level;
-      gint parent_elt_index = level->parent_elt_index;
+      SortElt *parent_elt = level->parent_elt;
 
       /* We were at zero -- time to decrement the zero_ref_count val */
       while (parent_level)
         {
-	  g_array_index (parent_level->array, SortElt, parent_elt_index).zero_ref_count--;
+          parent_elt->zero_ref_count--;
 
-          parent_elt_index = parent_level->parent_elt_index;
+          parent_elt = parent_level->parent_elt;
 	  parent_level = parent_level->parent_level;
 	}
 
-      if (tree_model_sort->root != level)
-	tree_model_sort->zero_ref_count--;
+      if (priv->root != level)
+	priv->zero_ref_count--;
     }
 }
 
@@ -1247,11 +1612,11 @@ gtk_tree_model_sort_real_unref_node (GtkTreeModel *tree_model,
 				     gboolean      propagate_unref)
 {
   GtkTreeModelSort *tree_model_sort = (GtkTreeModelSort *) tree_model;
-  SortLevel *level, *parent_level;
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
+  SortLevel *level;
   SortElt *elt;
-  gint parent_elt_index;
 
-  g_return_if_fail (tree_model_sort->child_model != NULL);
+  g_return_if_fail (priv->child_model != NULL);
   g_return_if_fail (VALID_ITER (iter, tree_model_sort));
 
   if (propagate_unref)
@@ -1259,7 +1624,7 @@ gtk_tree_model_sort_real_unref_node (GtkTreeModel *tree_model,
       GtkTreeIter child_iter;
 
       GET_CHILD_ITER (tree_model_sort, &child_iter, iter);
-      gtk_tree_model_unref_node (tree_model_sort->child_model, &child_iter);
+      gtk_tree_model_unref_node (priv->child_model, &child_iter);
     }
 
   level = iter->user_data;
@@ -1270,40 +1635,22 @@ gtk_tree_model_sort_real_unref_node (GtkTreeModel *tree_model,
   elt->ref_count--;
   level->ref_count--;
 
-  /* Decrease the reference count of all parent elements */
-  parent_level = level->parent_level;
-  parent_elt_index = level->parent_elt_index;
-
-  while (parent_level)
-    {
-      GtkTreeIter tmp_iter;
-
-      tmp_iter.stamp = tree_model_sort->stamp;
-      tmp_iter.user_data = parent_level;
-      tmp_iter.user_data2 = &g_array_index (parent_level->array, SortElt, parent_elt_index);
-
-      gtk_tree_model_sort_real_unref_node (tree_model, &tmp_iter, FALSE);
-
-      parent_elt_index = parent_level->parent_elt_index;
-      parent_level = parent_level->parent_level;
-    }
-
   if (level->ref_count == 0)
     {
       SortLevel *parent_level = level->parent_level;
-      gint parent_elt_index = level->parent_elt_index;
+      SortElt *parent_elt = level->parent_elt;
 
       /* We are at zero -- time to increment the zero_ref_count val */
       while (parent_level)
 	{
-	  g_array_index (parent_level->array, SortElt, parent_elt_index).zero_ref_count++;
+          parent_elt->zero_ref_count++;
 
-	  parent_elt_index = parent_level->parent_elt_index;
+          parent_elt = parent_level->parent_elt;
 	  parent_level = parent_level->parent_level;
 	}
 
-      if (tree_model_sort->root != level)
-	tree_model_sort->zero_ref_count++;
+      if (priv->root != level)
+	priv->zero_ref_count++;
     }
 }
 
@@ -1321,14 +1668,15 @@ gtk_tree_model_sort_get_sort_column_id (GtkTreeSortable *sortable,
 					GtkSortType     *order)
 {
   GtkTreeModelSort *tree_model_sort = (GtkTreeModelSort *)sortable;
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
 
   if (sort_column_id)
-    *sort_column_id = tree_model_sort->sort_column_id;
+    *sort_column_id = priv->sort_column_id;
   if (order)
-    *order = tree_model_sort->order;
+    *order = priv->order;
 
-  if (tree_model_sort->sort_column_id == GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID ||
-      tree_model_sort->sort_column_id == GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID)
+  if (priv->sort_column_id == GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID ||
+      priv->sort_column_id == GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID)
     return FALSE;
   
   return TRUE;
@@ -1340,6 +1688,7 @@ gtk_tree_model_sort_set_sort_column_id (GtkTreeSortable *sortable,
 					GtkSortType      order)
 {
   GtkTreeModelSort *tree_model_sort = (GtkTreeModelSort *)sortable;
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
 
   if (sort_column_id != GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID)
     {
@@ -1347,7 +1696,7 @@ gtk_tree_model_sort_set_sort_column_id (GtkTreeSortable *sortable,
         {
           GtkTreeDataSortHeader *header = NULL;
 
-          header = _gtk_tree_data_list_get_header (tree_model_sort->sort_list,
+          header = _gtk_tree_data_list_get_header (priv->sort_list,
 	  				           sort_column_id);
 
           /* we want to make sure that we have a function */
@@ -1355,13 +1704,13 @@ gtk_tree_model_sort_set_sort_column_id (GtkTreeSortable *sortable,
           g_return_if_fail (header->func != NULL);
         }
       else
-        g_return_if_fail (tree_model_sort->default_sort_func != NULL);
+        g_return_if_fail (priv->default_sort_func != NULL);
 
-      if (tree_model_sort->sort_column_id == sort_column_id)
+      if (priv->sort_column_id == sort_column_id)
         {
           if (sort_column_id != GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID)
 	    {
-	      if (tree_model_sort->order == order)
+	      if (priv->order == order)
 	        return;
 	    }
           else
@@ -1369,8 +1718,8 @@ gtk_tree_model_sort_set_sort_column_id (GtkTreeSortable *sortable,
         }
     }
 
-  tree_model_sort->sort_column_id = sort_column_id;
-  tree_model_sort->order = order;
+  priv->sort_column_id = sort_column_id;
+  priv->order = order;
 
   gtk_tree_sortable_sort_column_changed (sortable);
 
@@ -1385,12 +1734,13 @@ gtk_tree_model_sort_set_sort_func (GtkTreeSortable        *sortable,
 				   GDestroyNotify          destroy)
 {
   GtkTreeModelSort *tree_model_sort = (GtkTreeModelSort *) sortable;
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
 
-  tree_model_sort->sort_list = _gtk_tree_data_list_set_header (tree_model_sort->sort_list,
-							       sort_column_id,
-							       func, data, destroy);
+  priv->sort_list = _gtk_tree_data_list_set_header (priv->sort_list,
+						    sort_column_id,
+						    func, data, destroy);
 
-  if (tree_model_sort->sort_column_id == sort_column_id)
+  if (priv->sort_column_id == sort_column_id)
     gtk_tree_model_sort_sort (tree_model_sort);
 }
 
@@ -1401,20 +1751,21 @@ gtk_tree_model_sort_set_default_sort_func (GtkTreeSortable        *sortable,
 					   GDestroyNotify          destroy)
 {
   GtkTreeModelSort *tree_model_sort = (GtkTreeModelSort *)sortable;
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
 
-  if (tree_model_sort->default_sort_destroy)
+  if (priv->default_sort_destroy)
     {
-      GDestroyNotify d = tree_model_sort->default_sort_destroy;
+      GDestroyNotify d = priv->default_sort_destroy;
 
-      tree_model_sort->default_sort_destroy = NULL;
-      d (tree_model_sort->default_sort_data);
+      priv->default_sort_destroy = NULL;
+      d (priv->default_sort_data);
     }
 
-  tree_model_sort->default_sort_func = func;
-  tree_model_sort->default_sort_data = data;
-  tree_model_sort->default_sort_destroy = destroy;
+  priv->default_sort_func = func;
+  priv->default_sort_data = data;
+  priv->default_sort_destroy = destroy;
 
-  if (tree_model_sort->sort_column_id == GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID)
+  if (priv->sort_column_id == GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID)
     gtk_tree_model_sort_sort (tree_model_sort);
 }
 
@@ -1423,7 +1774,7 @@ gtk_tree_model_sort_has_default_sort_func (GtkTreeSortable *sortable)
 {
   GtkTreeModelSort *tree_model_sort = (GtkTreeModelSort *)sortable;
 
-  return (tree_model_sort->default_sort_func != NULL);
+  return (tree_model_sort->priv->default_sort_func != NULL);
 }
 
 /* DragSource interface */
@@ -1437,7 +1788,7 @@ gtk_tree_model_sort_row_draggable (GtkTreeDragSource *drag_source,
 
   child_path = gtk_tree_model_sort_convert_path_to_child_path (tree_model_sort,
                                                                path);
-  draggable = gtk_tree_drag_source_row_draggable (GTK_TREE_DRAG_SOURCE (tree_model_sort->child_model), child_path);
+  draggable = gtk_tree_drag_source_row_draggable (GTK_TREE_DRAG_SOURCE (tree_model_sort->priv->child_model), child_path);
   gtk_tree_path_free (child_path);
 
   return draggable;
@@ -1453,7 +1804,7 @@ gtk_tree_model_sort_drag_data_get (GtkTreeDragSource *drag_source,
   gboolean gotten;
 
   child_path = gtk_tree_model_sort_convert_path_to_child_path (tree_model_sort, path);
-  gotten = gtk_tree_drag_source_drag_data_get (GTK_TREE_DRAG_SOURCE (tree_model_sort->child_model), child_path, selection_data);
+  gotten = gtk_tree_drag_source_drag_data_get (GTK_TREE_DRAG_SOURCE (tree_model_sort->priv->child_model), child_path, selection_data);
   gtk_tree_path_free (child_path);
 
   return gotten;
@@ -1468,7 +1819,7 @@ gtk_tree_model_sort_drag_data_delete (GtkTreeDragSource *drag_source,
   gboolean deleted;
 
   child_path = gtk_tree_model_sort_convert_path_to_child_path (tree_model_sort, path);
-  deleted = gtk_tree_drag_source_drag_data_delete (GTK_TREE_DRAG_SOURCE (tree_model_sort->child_model), child_path);
+  deleted = gtk_tree_drag_source_drag_data_delete (GTK_TREE_DRAG_SOURCE (tree_model_sort->priv->child_model), child_path);
   gtk_tree_path_free (child_path);
 
   return deleted;
@@ -1482,34 +1833,31 @@ gtk_tree_model_sort_compare_func (gconstpointer a,
 {
   SortData *data = (SortData *)user_data;
   GtkTreeModelSort *tree_model_sort = data->tree_model_sort;
-  SortTuple *sa = (SortTuple *)a;
-  SortTuple *sb = (SortTuple *)b;
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
+  const SortElt *sa = a;
+  const SortElt *sb = b;
 
   GtkTreeIter iter_a, iter_b;
   gint retval;
 
-  /* shortcut, if we've the same offsets here, they should be equal */
-  if (sa->offset == sb->offset)
-    return 0;
-
   if (GTK_TREE_MODEL_SORT_CACHE_CHILD_ITERS (tree_model_sort))
     {
-      iter_a = sa->elt->iter;
-      iter_b = sb->elt->iter;
+      iter_a = sa->iter;
+      iter_b = sb->iter;
     }
   else
     {
-      data->parent_path_indices [data->parent_path_depth-1] = sa->elt->offset;
-      gtk_tree_model_get_iter (GTK_TREE_MODEL (tree_model_sort->child_model), &iter_a, data->parent_path);
-      data->parent_path_indices [data->parent_path_depth-1] = sb->elt->offset;
-      gtk_tree_model_get_iter (GTK_TREE_MODEL (tree_model_sort->child_model), &iter_b, data->parent_path);
+      data->parent_path_indices [data->parent_path_depth-1] = sa->offset;
+      gtk_tree_model_get_iter (GTK_TREE_MODEL (priv->child_model), &iter_a, data->parent_path);
+      data->parent_path_indices [data->parent_path_depth-1] = sb->offset;
+      gtk_tree_model_get_iter (GTK_TREE_MODEL (priv->child_model), &iter_b, data->parent_path);
     }
 
-  retval = (* data->sort_func) (GTK_TREE_MODEL (tree_model_sort->child_model),
+  retval = (* data->sort_func) (GTK_TREE_MODEL (priv->child_model),
 				&iter_a, &iter_b,
 				data->sort_data);
 
-  if (tree_model_sort->order == GTK_SORT_DESCENDING)
+  if (priv->order == GTK_SORT_DESCENDING)
     {
       if (retval > 0)
 	retval = -1;
@@ -1527,19 +1875,19 @@ gtk_tree_model_sort_offset_compare_func (gconstpointer a,
 {
   gint retval;
 
-  SortTuple *sa = (SortTuple *)a;
-  SortTuple *sb = (SortTuple *)b;
+  const SortElt *sa = (SortElt *)a;
+  const SortElt *sb = (SortElt *)b;
 
   SortData *data = (SortData *)user_data;
 
-  if (sa->elt->offset < sb->elt->offset)
+  if (sa->offset < sb->offset)
     retval = -1;
-  else if (sa->elt->offset > sb->elt->offset)
+  else if (sa->offset > sb->offset)
     retval = 1;
   else
     retval = 0;
 
-  if (data->tree_model_sort->order == GTK_SORT_DESCENDING)
+  if (data->tree_model_sort->priv->order == GTK_SORT_DESCENDING)
     {
       if (retval > 0)
 	retval = -1;
@@ -1556,10 +1904,10 @@ gtk_tree_model_sort_sort_level (GtkTreeModelSort *tree_model_sort,
 				gboolean          recurse,
 				gboolean          emit_reordered)
 {
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
   gint i;
-  gint ref_offset;
-  GArray *sort_array;
-  GArray *new_array;
+  GSequenceIter *begin_siter, *end_siter, *siter;
+  SortElt *begin_elt;
   gint *new_order;
 
   GtkTreeIter iter;
@@ -1569,103 +1917,61 @@ gtk_tree_model_sort_sort_level (GtkTreeModelSort *tree_model_sort,
 
   g_return_if_fail (level != NULL);
 
-  if (level->array->len < 1 && !((SortElt *)level->array->data)->children)
+  begin_siter = g_sequence_get_begin_iter (level->seq);
+  begin_elt = g_sequence_get (begin_siter);
+
+  if (g_sequence_get_length (level->seq) < 1 && !begin_elt->children)
     return;
 
-  iter.stamp = tree_model_sort->stamp;
+  iter.stamp = priv->stamp;
   iter.user_data = level;
-  iter.user_data2 = &g_array_index (level->array, SortElt, 0);
+  iter.user_data2 = begin_elt;
 
   gtk_tree_model_sort_ref_node (GTK_TREE_MODEL (tree_model_sort), &iter);
-  ref_offset = g_array_index (level->array, SortElt, 0).offset;
 
-  /* Set up data */
-  data.tree_model_sort = tree_model_sort;
-  if (level->parent_elt_index >= 0)
+  i = 0;
+  end_siter = g_sequence_get_end_iter (level->seq);
+  for (siter = g_sequence_get_begin_iter (level->seq);
+       siter != end_siter;
+       siter = g_sequence_iter_next (siter))
     {
-      data.parent_path = gtk_tree_model_sort_elt_get_path (level->parent_level,
-							   SORT_LEVEL_PARENT_ELT (level));
-      gtk_tree_path_append_index (data.parent_path, 0);
-    }
-  else
-    {
-      data.parent_path = gtk_tree_path_new_first ();
-    }
-  data.parent_path_depth = gtk_tree_path_get_depth (data.parent_path);
-  data.parent_path_indices = gtk_tree_path_get_indices (data.parent_path);
+      SortElt *elt = g_sequence_get (siter);
 
-  /* make the array to be sorted */
-  sort_array = g_array_sized_new (FALSE, FALSE, sizeof (SortTuple), level->array->len);
-  for (i = 0; i < level->array->len; i++)
-    {
-      SortTuple tuple;
-
-      tuple.elt = &g_array_index (level->array, SortElt, i);
-      tuple.offset = i;
-
-      g_array_append_val (sort_array, tuple);
+      elt->old_index = i;
+      i++;
     }
 
-    if (tree_model_sort->sort_column_id != GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID)
-      {
-	GtkTreeDataSortHeader *header = NULL;
-
-	header = _gtk_tree_data_list_get_header (tree_model_sort->sort_list,
-						 tree_model_sort->sort_column_id);
-
-	g_return_if_fail (header != NULL);
-	g_return_if_fail (header->func != NULL);
-
-	data.sort_func = header->func;
-	data.sort_data = header->data;
-      }
-    else
-      {
-	/* absolutely SHOULD NOT happen: */
-	g_return_if_fail (tree_model_sort->default_sort_func != NULL);
-
-	data.sort_func = tree_model_sort->default_sort_func;
-	data.sort_data = tree_model_sort->default_sort_data;
-      }
+  fill_sort_data (&data, tree_model_sort, level);
 
   if (data.sort_func == NO_SORT_FUNC)
-    g_array_sort_with_data (sort_array,
-			    gtk_tree_model_sort_offset_compare_func,
-			    &data);
+    g_sequence_sort (level->seq, gtk_tree_model_sort_offset_compare_func,
+                     &data);
   else
-    g_array_sort_with_data (sort_array,
-			    gtk_tree_model_sort_compare_func,
-			    &data);
+    g_sequence_sort (level->seq, gtk_tree_model_sort_compare_func, &data);
 
-  gtk_tree_path_free (data.parent_path);
+  free_sort_data (&data);
 
-  new_array = g_array_sized_new (FALSE, FALSE, sizeof (SortElt), level->array->len);
-  new_order = g_new (gint, level->array->len);
+  new_order = g_new (gint, g_sequence_get_length (level->seq));
 
-  for (i = 0; i < level->array->len; i++)
+  i = 0;
+  end_siter = g_sequence_get_end_iter (level->seq);
+  for (siter = g_sequence_get_begin_iter (level->seq);
+       siter != end_siter;
+       siter = g_sequence_iter_next (siter))
     {
-      SortElt *elt;
+      SortElt *elt = g_sequence_get (siter);
 
-      elt = g_array_index (sort_array, SortTuple, i).elt;
-      new_order[i] = g_array_index (sort_array, SortTuple, i).offset;
-
-      g_array_append_val (new_array, *elt);
-      if (elt->children)
-	elt->children->parent_elt_index = i;
+      new_order[i++] = elt->old_index;
     }
-
-  g_array_free (level->array, TRUE);
-  level->array = new_array;
-  g_array_free (sort_array, TRUE);
 
   if (emit_reordered)
     {
       gtk_tree_model_sort_increment_stamp (tree_model_sort);
-      if (level->parent_elt_index >= 0)
+      if (level->parent_elt)
 	{
-	  iter.stamp = tree_model_sort->stamp;
+	  iter.stamp = priv->stamp;
 	  iter.user_data = level->parent_level;
-	  iter.user_data2 = SORT_LEVEL_PARENT_ELT (level);
+	  iter.user_data2 = level->parent_elt;
 
 	  path = gtk_tree_model_get_path (GTK_TREE_MODEL (tree_model_sort),
 					  &iter);
@@ -1687,9 +1993,12 @@ gtk_tree_model_sort_sort_level (GtkTreeModelSort *tree_model_sort,
   /* recurse, if possible */
   if (recurse)
     {
-      for (i = 0; i < level->array->len; i++)
+      end_siter = g_sequence_get_end_iter (level->seq);
+      for (siter = g_sequence_get_begin_iter (level->seq);
+           siter != end_siter;
+           siter = g_sequence_iter_next (siter))
 	{
-	  SortElt *elt = &g_array_index (level->array, SortElt, i);
+	  SortElt *elt = g_sequence_get (siter);
 
 	  if (elt->children)
 	    gtk_tree_model_sort_sort_level (tree_model_sort,
@@ -1703,17 +2012,9 @@ gtk_tree_model_sort_sort_level (GtkTreeModelSort *tree_model_sort,
   /* get the iter we referenced at the beginning of this function and
    * unref it again
    */
-  iter.stamp = tree_model_sort->stamp;
+  iter.stamp = priv->stamp;
   iter.user_data = level;
-
-  for (i = 0; i < level->array->len; i++)
-    {
-      if (g_array_index (level->array, SortElt, i).offset == ref_offset)
-        {
-	  iter.user_data2 = &g_array_index (level->array, SortElt, i);
-	  break;
-	}
-    }
+  iter.user_data2 = begin_elt;
 
   gtk_tree_model_sort_unref_node (GTK_TREE_MODEL (tree_model_sort), &iter);
 }
@@ -1721,154 +2022,75 @@ gtk_tree_model_sort_sort_level (GtkTreeModelSort *tree_model_sort,
 static void
 gtk_tree_model_sort_sort (GtkTreeModelSort *tree_model_sort)
 {
-  if (tree_model_sort->sort_column_id == GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID)
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
+
+  if (priv->sort_column_id == GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID)
     return;
 
-  if (!tree_model_sort->root)
+  if (!priv->root)
     return;
 
-  if (tree_model_sort->sort_column_id != GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID)
+  if (priv->sort_column_id != GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID)
     {
       GtkTreeDataSortHeader *header = NULL;
 
-      header = _gtk_tree_data_list_get_header (tree_model_sort->sort_list,
-					       tree_model_sort->sort_column_id);
+      header = _gtk_tree_data_list_get_header (priv->sort_list,
+					       priv->sort_column_id);
 
       /* we want to make sure that we have a function */
       g_return_if_fail (header != NULL);
       g_return_if_fail (header->func != NULL);
     }
   else
-    g_return_if_fail (tree_model_sort->default_sort_func != NULL);
+    g_return_if_fail (priv->default_sort_func != NULL);
 
-  gtk_tree_model_sort_sort_level (tree_model_sort, tree_model_sort->root,
+  gtk_tree_model_sort_sort_level (tree_model_sort, priv->root,
 				  TRUE, TRUE);
 }
 
 /* signal helpers */
-static gint
-gtk_tree_model_sort_level_find_insert (GtkTreeModelSort *tree_model_sort,
-				       SortLevel        *level,
-				       GtkTreeIter      *iter,
-				       gint             skip_index)
-{
-  gint start, middle, end;
-  gint cmp;
-  SortElt *tmp_elt;
-  GtkTreeIter tmp_iter;
-
-  GtkTreeIterCompareFunc func;
-  gpointer data;
-
-  if (tree_model_sort->sort_column_id != GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID)
-    {
-      GtkTreeDataSortHeader *header;
-      
-      header = _gtk_tree_data_list_get_header (tree_model_sort->sort_list,
-					       tree_model_sort->sort_column_id);
-      
-      g_return_val_if_fail (header != NULL, 0);
-      
-      func = header->func;
-      data = header->data;
-    }
-  else
-    {
-      func = tree_model_sort->default_sort_func;
-      data = tree_model_sort->default_sort_data;
-      
-      g_return_val_if_fail (func != NO_SORT_FUNC, 0);
-    }
-
-  g_return_val_if_fail (func != NULL, 0);
-
-  start = 0;
-  end = level->array->len;
-  if (skip_index < 0)
-    skip_index = end;
-  else
-    end--;
-
-  if (start == end)
-    return 0;
-  
-  while (start != end)
-    {
-      middle = (start + end) / 2;
-
-      if (middle < skip_index)
-	tmp_elt = &(g_array_index (level->array, SortElt, middle));
-      else
-	tmp_elt = &(g_array_index (level->array, SortElt, middle + 1));
-  
-      if (!GTK_TREE_MODEL_SORT_CACHE_CHILD_ITERS (tree_model_sort))
-	{
-	  GtkTreePath *path = gtk_tree_model_sort_elt_get_path (level, tmp_elt);
-	  gtk_tree_model_get_iter (tree_model_sort->child_model,
-				   &tmp_iter, path);
-	  gtk_tree_path_free (path);
-	}
-      else
-	tmp_iter = tmp_elt->iter;
-  
-      if (tree_model_sort->order == GTK_SORT_ASCENDING)
-	cmp = (* func) (GTK_TREE_MODEL (tree_model_sort->child_model),
-			&tmp_iter, iter, data);
-      else
-	cmp = (* func) (GTK_TREE_MODEL (tree_model_sort->child_model),
-			iter, &tmp_iter, data);
-
-      if (cmp <= 0)
-	start = middle + 1;
-      else
-	end = middle;
-    }
-
-  if (cmp <= 0)
-    return middle + 1;
-  else
-    return middle;
-}
-
 static gboolean
 gtk_tree_model_sort_insert_value (GtkTreeModelSort *tree_model_sort,
 				  SortLevel        *level,
 				  GtkTreePath      *s_path,
 				  GtkTreeIter      *s_iter)
 {
-  gint offset, index, i;
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
+  SortElt *elt;
+  SortData data;
+  gint offset;
 
-  SortElt elt;
-  SortElt *tmp_elt;
+  elt = sort_elt_new ();
 
   offset = gtk_tree_path_get_indices (s_path)[gtk_tree_path_get_depth (s_path) - 1];
 
   if (GTK_TREE_MODEL_SORT_CACHE_CHILD_ITERS (tree_model_sort))
-    elt.iter = *s_iter;
-  elt.offset = offset;
-  elt.zero_ref_count = 0;
-  elt.ref_count = 0;
-  elt.children = NULL;
+    elt->iter = *s_iter;
+  elt->offset = offset;
+  elt->zero_ref_count = 0;
+  elt->ref_count = 0;
+  elt->children = NULL;
 
   /* update all larger offsets */
-  tmp_elt = SORT_ELT (level->array->data);
-  for (i = 0; i < level->array->len; i++, tmp_elt++)
-    if (tmp_elt->offset >= offset)
-      tmp_elt->offset++;
+  g_sequence_foreach (level->seq, increase_offset_iter, GINT_TO_POINTER (offset));
 
-  if (tree_model_sort->sort_column_id == GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID &&
-      tree_model_sort->default_sort_func == NO_SORT_FUNC)
-    index = offset;
+  fill_sort_data (&data, tree_model_sort, level);
+
+  if (priv->sort_column_id == GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID &&
+      priv->default_sort_func == NO_SORT_FUNC)
+    {
+      elt->siter = g_sequence_insert_sorted (level->seq, elt,
+                                             gtk_tree_model_sort_offset_compare_func,
+                                             &data);
+    }
   else
-    index = gtk_tree_model_sort_level_find_insert (tree_model_sort,
-                                                   level, s_iter,
-                                                   -1);
+    {
+      elt->siter = g_sequence_insert_sorted (level->seq, elt,
+                                             gtk_tree_model_sort_compare_func,
+                                             &data);
+    }
 
-  g_array_insert_vals (level->array, index, &elt, 1);
-  tmp_elt = SORT_ELT (level->array->data);
-  for (i = 0; i < level->array->len; i++, tmp_elt++)
-    if (tmp_elt->children)
-      tmp_elt->children->parent_elt_index = i;
+  free_sort_data (&data);
 
   return TRUE;
 }
@@ -1894,7 +2116,7 @@ gtk_tree_model_sort_elt_get_path (SortLevel *level,
       if (!walker->parent_level)
 	break;
 
-      walker2 = SORT_LEVEL_PARENT_ELT (walker);
+      walker2 = walker->parent_elt;
       walker = walker->parent_level;
     }
 
@@ -1915,71 +2137,73 @@ static void
 gtk_tree_model_sort_set_model (GtkTreeModelSort *tree_model_sort,
                                GtkTreeModel     *child_model)
 {
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
+
   if (child_model)
     g_object_ref (child_model);
 
-  if (tree_model_sort->child_model)
+  if (priv->child_model)
     {
-      g_signal_handler_disconnect (tree_model_sort->child_model,
-                                   tree_model_sort->changed_id);
-      g_signal_handler_disconnect (tree_model_sort->child_model,
-                                   tree_model_sort->inserted_id);
-      g_signal_handler_disconnect (tree_model_sort->child_model,
-                                   tree_model_sort->has_child_toggled_id);
-      g_signal_handler_disconnect (tree_model_sort->child_model,
-                                   tree_model_sort->deleted_id);
-      g_signal_handler_disconnect (tree_model_sort->child_model,
-				   tree_model_sort->reordered_id);
+      g_signal_handler_disconnect (priv->child_model,
+                                   priv->changed_id);
+      g_signal_handler_disconnect (priv->child_model,
+                                   priv->inserted_id);
+      g_signal_handler_disconnect (priv->child_model,
+                                   priv->has_child_toggled_id);
+      g_signal_handler_disconnect (priv->child_model,
+                                   priv->deleted_id);
+      g_signal_handler_disconnect (priv->child_model,
+				   priv->reordered_id);
 
       /* reset our state */
-      if (tree_model_sort->root)
-	gtk_tree_model_sort_free_level (tree_model_sort, tree_model_sort->root);
-      tree_model_sort->root = NULL;
-      _gtk_tree_data_list_header_free (tree_model_sort->sort_list);
-      tree_model_sort->sort_list = NULL;
-      g_object_unref (tree_model_sort->child_model);
+      if (priv->root)
+	gtk_tree_model_sort_free_level (tree_model_sort, priv->root, TRUE);
+      priv->root = NULL;
+      _gtk_tree_data_list_header_free (priv->sort_list);
+      priv->sort_list = NULL;
+      g_object_unref (priv->child_model);
     }
 
-  tree_model_sort->child_model = child_model;
+  priv->child_model = child_model;
 
   if (child_model)
     {
       GType *types;
       gint i, n_columns;
 
-      tree_model_sort->changed_id =
+      priv->changed_id =
         g_signal_connect (child_model, "row-changed",
                           G_CALLBACK (gtk_tree_model_sort_row_changed),
                           tree_model_sort);
-      tree_model_sort->inserted_id =
+      priv->inserted_id =
         g_signal_connect (child_model, "row-inserted",
                           G_CALLBACK (gtk_tree_model_sort_row_inserted),
                           tree_model_sort);
-      tree_model_sort->has_child_toggled_id =
+      priv->has_child_toggled_id =
         g_signal_connect (child_model, "row-has-child-toggled",
                           G_CALLBACK (gtk_tree_model_sort_row_has_child_toggled),
                           tree_model_sort);
-      tree_model_sort->deleted_id =
+      priv->deleted_id =
         g_signal_connect (child_model, "row-deleted",
                           G_CALLBACK (gtk_tree_model_sort_row_deleted),
                           tree_model_sort);
-      tree_model_sort->reordered_id =
+      priv->reordered_id =
 	g_signal_connect (child_model, "rows-reordered",
 			  G_CALLBACK (gtk_tree_model_sort_rows_reordered),
 			  tree_model_sort);
 
-      tree_model_sort->child_flags = gtk_tree_model_get_flags (child_model);
+      priv->child_flags = gtk_tree_model_get_flags (child_model);
       n_columns = gtk_tree_model_get_n_columns (child_model);
 
       types = g_new (GType, n_columns);
       for (i = 0; i < n_columns; i++)
         types[i] = gtk_tree_model_get_column_type (child_model, i);
 
-      tree_model_sort->sort_list = _gtk_tree_data_list_header_new (n_columns, types);
+      priv->sort_list = _gtk_tree_data_list_header_new (n_columns, types);
       g_free (types);
 
-      tree_model_sort->default_sort_func = NO_SORT_FUNC;
-      tree_model_sort->stamp = g_random_int ();
+      priv->default_sort_func = NO_SORT_FUNC;
+      priv->stamp = g_random_int ();
     }
 }
 
@@ -1996,7 +2220,7 @@ gtk_tree_model_sort_get_model (GtkTreeModelSort *tree_model)
 {
   g_return_val_if_fail (GTK_IS_TREE_MODEL_SORT (tree_model), NULL);
 
-  return tree_model->child_model;
+  return tree_model->priv->child_model;
 }
 
 
@@ -2005,24 +2229,26 @@ gtk_real_tree_model_sort_convert_child_path_to_path (GtkTreeModelSort *tree_mode
 						     GtkTreePath      *child_path,
 						     gboolean          build_levels)
 {
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
   gint *child_indices;
   GtkTreePath *retval;
   SortLevel *level;
   gint i;
 
-  g_return_val_if_fail (tree_model_sort->child_model != NULL, NULL);
+  g_return_val_if_fail (priv->child_model != NULL, NULL);
   g_return_val_if_fail (child_path != NULL, NULL);
 
   retval = gtk_tree_path_new ();
   child_indices = gtk_tree_path_get_indices (child_path);
 
-  if (tree_model_sort->root == NULL && build_levels)
-    gtk_tree_model_sort_build_level (tree_model_sort, NULL, -1);
-  level = SORT_LEVEL (tree_model_sort->root);
+  if (priv->root == NULL && build_levels)
+    gtk_tree_model_sort_build_level (tree_model_sort, NULL, NULL);
+  level = SORT_LEVEL (priv->root);
 
   for (i = 0; i < gtk_tree_path_get_depth (child_path); i++)
     {
-      gint j;
+      SortElt *tmp;
+      GSequenceIter *siter;
       gboolean found_child = FALSE;
 
       if (!level)
@@ -2031,25 +2257,23 @@ gtk_real_tree_model_sort_convert_child_path_to_path (GtkTreeModelSort *tree_mode
 	  return NULL;
 	}
 
-      if (child_indices[i] >= level->array->len)
+      if (child_indices[i] >= g_sequence_get_length (level->seq))
 	{
 	  gtk_tree_path_free (retval);
 	  return NULL;
 	}
-      for (j = 0; j < level->array->len; j++)
-	{
-	  if ((g_array_index (level->array, SortElt, j)).offset == child_indices[i])
-	    {
-	      gtk_tree_path_append_index (retval, j);
-	      if (g_array_index (level->array, SortElt, j).children == NULL && build_levels)
-		{
-		  gtk_tree_model_sort_build_level (tree_model_sort, level, j);
-		}
-	      level = g_array_index (level->array, SortElt, j).children;
-	      found_child = TRUE;
-	      break;
-	    }
-	}
+      tmp = lookup_elt_with_offset (tree_model_sort, level,
+                                    child_indices[i], &siter);
+      if (tmp)
+        {
+          gtk_tree_path_append_index (retval, g_sequence_iter_get_position (siter));
+          if (tmp->children == NULL && build_levels)
+            gtk_tree_model_sort_build_level (tree_model_sort, level, tmp);
+
+          level = tmp->children;
+          found_child = TRUE;
+        }
+
       if (! found_child)
 	{
 	  gtk_tree_path_free (retval);
@@ -2078,7 +2302,7 @@ gtk_tree_model_sort_convert_child_path_to_path (GtkTreeModelSort *tree_model_sor
 						GtkTreePath      *child_path)
 {
   g_return_val_if_fail (GTK_IS_TREE_MODEL_SORT (tree_model_sort), NULL);
-  g_return_val_if_fail (tree_model_sort->child_model != NULL, NULL);
+  g_return_val_if_fail (tree_model_sort->priv->child_model != NULL, NULL);
   g_return_val_if_fail (child_path != NULL, NULL);
 
   return gtk_real_tree_model_sort_convert_child_path_to_path (tree_model_sort, child_path, TRUE);
@@ -2104,16 +2328,17 @@ gtk_tree_model_sort_convert_child_iter_to_iter (GtkTreeModelSort *tree_model_sor
 {
   gboolean ret;
   GtkTreePath *child_path, *path;
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
 
   g_return_val_if_fail (GTK_IS_TREE_MODEL_SORT (tree_model_sort), FALSE);
-  g_return_val_if_fail (tree_model_sort->child_model != NULL, FALSE);
+  g_return_val_if_fail (priv->child_model != NULL, FALSE);
   g_return_val_if_fail (sort_iter != NULL, FALSE);
   g_return_val_if_fail (child_iter != NULL, FALSE);
   g_return_val_if_fail (sort_iter != child_iter, FALSE);
 
   sort_iter->stamp = 0;
 
-  child_path = gtk_tree_model_get_path (tree_model_sort->child_model, child_iter);
+  child_path = gtk_tree_model_get_path (priv->child_model, child_iter);
   g_return_val_if_fail (child_path != NULL, FALSE);
 
   path = gtk_tree_model_sort_convert_child_path_to_path (tree_model_sort, child_path);
@@ -2149,34 +2374,44 @@ GtkTreePath *
 gtk_tree_model_sort_convert_path_to_child_path (GtkTreeModelSort *tree_model_sort,
 						GtkTreePath      *sorted_path)
 {
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
   gint *sorted_indices;
   GtkTreePath *retval;
   SortLevel *level;
   gint i;
 
   g_return_val_if_fail (GTK_IS_TREE_MODEL_SORT (tree_model_sort), NULL);
-  g_return_val_if_fail (tree_model_sort->child_model != NULL, NULL);
+  g_return_val_if_fail (priv->child_model != NULL, NULL);
   g_return_val_if_fail (sorted_path != NULL, NULL);
 
   retval = gtk_tree_path_new ();
   sorted_indices = gtk_tree_path_get_indices (sorted_path);
-  if (tree_model_sort->root == NULL)
-    gtk_tree_model_sort_build_level (tree_model_sort, NULL, -1);
-  level = SORT_LEVEL (tree_model_sort->root);
+  if (priv->root == NULL)
+    gtk_tree_model_sort_build_level (tree_model_sort, NULL, NULL);
+  level = SORT_LEVEL (priv->root);
 
   for (i = 0; i < gtk_tree_path_get_depth (sorted_path); i++)
     {
-      gint count = sorted_indices[i];
+      SortElt *elt = NULL;
+      GSequenceIter *siter;
 
       if ((level == NULL) ||
-	  (level->array->len <= count))
+	  (g_sequence_get_length (level->seq) <= sorted_indices[i]))
 	{
 	  gtk_tree_path_free (retval);
 	  return NULL;
 	}
 
-      if (g_array_index (level->array, SortElt, count).children == NULL)
-	gtk_tree_model_sort_build_level (tree_model_sort, level, count);
+      siter = g_sequence_get_iter_at_pos (level->seq, sorted_indices[i]);
+      if (g_sequence_iter_is_end (siter))
+        {
+          gtk_tree_path_free (retval);
+          return NULL;
+        }
+
+      elt = GET_ELT (siter);
+      if (elt->children == NULL)
+	gtk_tree_model_sort_build_level (tree_model_sort, level, elt);
 
       if (level == NULL)
         {
@@ -2184,8 +2419,8 @@ gtk_tree_model_sort_convert_path_to_child_path (GtkTreeModelSort *tree_model_sor
 	  break;
 	}
 
-      gtk_tree_path_append_index (retval, g_array_index (level->array, SortElt, count).offset);
-      level = g_array_index (level->array, SortElt, count).children;
+      gtk_tree_path_append_index (retval, elt->offset);
+      level = elt->children;
     }
  
   return retval;
@@ -2204,8 +2439,9 @@ gtk_tree_model_sort_convert_iter_to_child_iter (GtkTreeModelSort *tree_model_sor
 						GtkTreeIter      *child_iter,
 						GtkTreeIter      *sorted_iter)
 {
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
   g_return_if_fail (GTK_IS_TREE_MODEL_SORT (tree_model_sort));
-  g_return_if_fail (tree_model_sort->child_model != NULL);
+  g_return_if_fail (priv->child_model != NULL);
   g_return_if_fail (child_iter != NULL);
   g_return_if_fail (VALID_ITER (sorted_iter, tree_model_sort));
   g_return_if_fail (sorted_iter != child_iter);
@@ -2217,48 +2453,49 @@ gtk_tree_model_sort_convert_iter_to_child_iter (GtkTreeModelSort *tree_model_sor
   else
     {
       GtkTreePath *path;
+      gboolean valid = FALSE;
 
       path = gtk_tree_model_sort_elt_get_path (sorted_iter->user_data,
 					       sorted_iter->user_data2);
-      gtk_tree_model_get_iter (tree_model_sort->child_model, child_iter, path);
+      valid = gtk_tree_model_get_iter (priv->child_model, child_iter, path);
       gtk_tree_path_free (path);
+
+      g_return_if_fail (valid == TRUE);
     }
 }
 
 static void
 gtk_tree_model_sort_build_level (GtkTreeModelSort *tree_model_sort,
 				 SortLevel        *parent_level,
-				 gint              parent_elt_index)
+                                 SortElt          *parent_elt)
 {
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
   GtkTreeIter iter;
-  SortElt *parent_elt = NULL;
   SortLevel *new_level;
   gint length = 0;
   gint i;
 
-  g_assert (tree_model_sort->child_model != NULL);
+  g_assert (priv->child_model != NULL);
 
   if (parent_level == NULL)
     {
-      if (gtk_tree_model_get_iter_first (tree_model_sort->child_model, &iter) == FALSE)
+      if (gtk_tree_model_get_iter_first (priv->child_model, &iter) == FALSE)
 	return;
-      length = gtk_tree_model_iter_n_children (tree_model_sort->child_model, NULL);
+      length = gtk_tree_model_iter_n_children (priv->child_model, NULL);
     }
   else
     {
       GtkTreeIter parent_iter;
       GtkTreeIter child_parent_iter;
 
-      parent_elt = &g_array_index (parent_level->array, SortElt, parent_elt_index);
-
-      parent_iter.stamp = tree_model_sort->stamp;
+      parent_iter.stamp = priv->stamp;
       parent_iter.user_data = parent_level;
       parent_iter.user_data2 = parent_elt;
 
       gtk_tree_model_sort_convert_iter_to_child_iter (tree_model_sort,
 						      &child_parent_iter,
 						      &parent_iter);
-      if (gtk_tree_model_iter_children (tree_model_sort->child_model,
+      if (gtk_tree_model_iter_children (priv->child_model,
 					&iter,
 					&child_parent_iter) == FALSE)
 	return;
@@ -2268,46 +2505,51 @@ gtk_tree_model_sort_build_level (GtkTreeModelSort *tree_model_sort,
 						      &child_parent_iter,
 						      &parent_iter);
 
-      length = gtk_tree_model_iter_n_children (tree_model_sort->child_model, &child_parent_iter);
+      length = gtk_tree_model_iter_n_children (priv->child_model, &child_parent_iter);
+
+      gtk_tree_model_sort_ref_node (GTK_TREE_MODEL (tree_model_sort),
+                                    &parent_iter);
     }
 
   g_return_if_fail (length > 0);
 
   new_level = g_new (SortLevel, 1);
-  new_level->array = g_array_sized_new (FALSE, FALSE, sizeof (SortElt), length);
+  new_level->seq = g_sequence_new (sort_elt_free);
   new_level->ref_count = 0;
   new_level->parent_level = parent_level;
-  new_level->parent_elt_index = parent_elt_index;
+  new_level->parent_elt = parent_elt;
 
-  if (parent_elt_index >= 0)
+  if (parent_elt)
     parent_elt->children = new_level;
   else
-    tree_model_sort->root = new_level;
+    priv->root = new_level;
 
   /* increase the count of zero ref_counts.*/
   while (parent_level)
     {
-      g_array_index (parent_level->array, SortElt, parent_elt_index).zero_ref_count++;
+      parent_elt->zero_ref_count++;
 
-      parent_elt_index = parent_level->parent_elt_index;
+      parent_elt = parent_level->parent_elt;
       parent_level = parent_level->parent_level;
     }
 
-  if (new_level != tree_model_sort->root)
-    tree_model_sort->zero_ref_count++;
+  if (new_level != priv->root)
+    priv->zero_ref_count++;
 
   for (i = 0; i < length; i++)
     {
-      SortElt sort_elt;
-      sort_elt.offset = i;
-      sort_elt.zero_ref_count = 0;
-      sort_elt.ref_count = 0;
-      sort_elt.children = NULL;
+      SortElt *sort_elt;
+
+      sort_elt = sort_elt_new ();
+      sort_elt->offset = i;
+      sort_elt->zero_ref_count = 0;
+      sort_elt->ref_count = 0;
+      sort_elt->children = NULL;
 
       if (GTK_TREE_MODEL_SORT_CACHE_CHILD_ITERS (tree_model_sort))
 	{
-	  sort_elt.iter = iter;
-	  if (gtk_tree_model_iter_next (tree_model_sort->child_model, &iter) == FALSE &&
+	  sort_elt->iter = iter;
+	  if (gtk_tree_model_iter_next (priv->child_model, &iter) == FALSE &&
 	      i < length - 1)
 	    {
 	      if (parent_level)
@@ -2337,7 +2579,8 @@ gtk_tree_model_sort_build_level (GtkTreeModelSort *tree_model_sort,
 	      return;
 	    }
 	}
-      g_array_append_val (new_level->array, sort_elt);
+
+      sort_elt->siter = g_sequence_append (new_level->seq, sort_elt);
     }
 
   /* sort level */
@@ -2347,43 +2590,65 @@ gtk_tree_model_sort_build_level (GtkTreeModelSort *tree_model_sort,
 
 static void
 gtk_tree_model_sort_free_level (GtkTreeModelSort *tree_model_sort,
-				SortLevel        *sort_level)
+				SortLevel        *sort_level,
+                                gboolean          unref)
 {
-  gint i;
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
+  GSequenceIter *siter;
+  GSequenceIter *end_siter;
 
   g_assert (sort_level);
 
-  for (i = 0; i < sort_level->array->len; i++)
+  end_siter = g_sequence_get_end_iter (sort_level->seq);
+  for (siter = g_sequence_get_begin_iter (sort_level->seq);
+       siter != end_siter;
+       siter = g_sequence_iter_next (siter))
     {
-      if (g_array_index (sort_level->array, SortElt, i).children)
-	gtk_tree_model_sort_free_level (tree_model_sort,
-					SORT_LEVEL (g_array_index (sort_level->array, SortElt, i).children));
+      SortElt *elt = g_sequence_get (siter);
+
+      if (elt->children)
+        gtk_tree_model_sort_free_level (tree_model_sort,
+                                        elt->children, unref);
     }
 
   if (sort_level->ref_count == 0)
     {
       SortLevel *parent_level = sort_level->parent_level;
-      gint parent_elt_index = sort_level->parent_elt_index;
+      SortElt *parent_elt = sort_level->parent_elt;
 
       while (parent_level)
         {
-	  g_array_index (parent_level->array, SortElt, parent_elt_index).zero_ref_count--;
+          parent_elt->zero_ref_count--;
 
-          parent_elt_index = parent_level->parent_elt_index;
+          parent_elt = parent_level->parent_elt;
 	  parent_level = parent_level->parent_level;
 	}
 
-      if (sort_level != tree_model_sort->root)
-	tree_model_sort->zero_ref_count--;
+      if (sort_level != priv->root)
+	priv->zero_ref_count--;
     }
 
-  if (sort_level->parent_elt_index >= 0)
-    SORT_LEVEL_PARENT_ELT (sort_level)->children = NULL;
-  else
-    tree_model_sort->root = NULL;
+  if (sort_level->parent_elt)
+    {
+      if (unref)
+        {
+          GtkTreeIter parent_iter;
 
-  g_array_free (sort_level->array, TRUE);
-  sort_level->array = NULL;
+          parent_iter.stamp = tree_model_sort->priv->stamp;
+          parent_iter.user_data = sort_level->parent_level;
+          parent_iter.user_data2 = sort_level->parent_elt;
+
+          gtk_tree_model_sort_unref_node (GTK_TREE_MODEL (tree_model_sort),
+                                          &parent_iter);
+        }
+
+      sort_level->parent_elt->children = NULL;
+    }
+  else
+    priv->root = NULL;
+
+  g_sequence_free (sort_level->seq);
+  sort_level->seq = NULL;
 
   g_free (sort_level);
   sort_level = NULL;
@@ -2392,31 +2657,39 @@ gtk_tree_model_sort_free_level (GtkTreeModelSort *tree_model_sort,
 static void
 gtk_tree_model_sort_increment_stamp (GtkTreeModelSort *tree_model_sort)
 {
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
+
   do
     {
-      tree_model_sort->stamp++;
+      priv->stamp++;
     }
-  while (tree_model_sort->stamp == 0);
+  while (priv->stamp == 0);
 
   gtk_tree_model_sort_clear_cache (tree_model_sort);
+}
+
+static void
+gtk_tree_model_sort_clear_cache_helper_iter (gpointer data,
+                                             gpointer user_data)
+{
+  GtkTreeModelSort *tree_model_sort = user_data;
+  SortElt *elt = data;
+
+  if (elt->zero_ref_count > 0)
+    gtk_tree_model_sort_clear_cache_helper (tree_model_sort, elt->children);
 }
 
 static void
 gtk_tree_model_sort_clear_cache_helper (GtkTreeModelSort *tree_model_sort,
 					SortLevel        *level)
 {
-  gint i;
-
   g_assert (level != NULL);
 
-  for (i = 0; i < level->array->len; i++)
-    {
-      if (g_array_index (level->array, SortElt, i).zero_ref_count > 0)
-	gtk_tree_model_sort_clear_cache_helper (tree_model_sort, g_array_index (level->array, SortElt, i).children);
-    }
+  g_sequence_foreach (level->seq, gtk_tree_model_sort_clear_cache_helper_iter,
+                      tree_model_sort);
 
-  if (level->ref_count == 0 && level != tree_model_sort->root)
-    gtk_tree_model_sort_free_level (tree_model_sort, level);
+  if (level->ref_count == 0 && level != tree_model_sort->priv->root)
+    gtk_tree_model_sort_free_level (tree_model_sort, level, TRUE);
 }
 
 /**
@@ -2431,23 +2704,25 @@ gtk_tree_model_sort_clear_cache_helper (GtkTreeModelSort *tree_model_sort,
 void
 gtk_tree_model_sort_reset_default_sort_func (GtkTreeModelSort *tree_model_sort)
 {
+  GtkTreeModelSortPrivate *priv = tree_model_sort->priv;
+
   g_return_if_fail (GTK_IS_TREE_MODEL_SORT (tree_model_sort));
 
-  if (tree_model_sort->default_sort_destroy)
+  if (priv->default_sort_destroy)
     {
-      GDestroyNotify d = tree_model_sort->default_sort_destroy;
+      GDestroyNotify d = priv->default_sort_destroy;
 
-      tree_model_sort->default_sort_destroy = NULL;
-      d (tree_model_sort->default_sort_data);
+      priv->default_sort_destroy = NULL;
+      d (priv->default_sort_data);
     }
 
-  tree_model_sort->default_sort_func = NO_SORT_FUNC;
-  tree_model_sort->default_sort_data = NULL;
-  tree_model_sort->default_sort_destroy = NULL;
+  priv->default_sort_func = NO_SORT_FUNC;
+  priv->default_sort_data = NULL;
+  priv->default_sort_destroy = NULL;
 
-  if (tree_model_sort->sort_column_id == GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID)
+  if (priv->sort_column_id == GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID)
     gtk_tree_model_sort_sort (tree_model_sort);
-  tree_model_sort->sort_column_id = GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID;
+  priv->sort_column_id = GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID;
 }
 
 /**
@@ -2466,19 +2741,22 @@ gtk_tree_model_sort_clear_cache (GtkTreeModelSort *tree_model_sort)
 {
   g_return_if_fail (GTK_IS_TREE_MODEL_SORT (tree_model_sort));
 
-  if (tree_model_sort->zero_ref_count > 0)
-    gtk_tree_model_sort_clear_cache_helper (tree_model_sort, (SortLevel *)tree_model_sort->root);
+  if (tree_model_sort->priv->zero_ref_count > 0)
+    gtk_tree_model_sort_clear_cache_helper (tree_model_sort, (SortLevel *)tree_model_sort->priv->root);
 }
 
 static gboolean
 gtk_tree_model_sort_iter_is_valid_helper (GtkTreeIter *iter,
 					  SortLevel   *level)
 {
-  gint i;
+  GSequenceIter *siter;
+  GSequenceIter *end_siter;
 
-  for (i = 0; i < level->array->len; i++)
+  end_siter = g_sequence_get_end_iter (level->seq);
+  for (siter = g_sequence_get_begin_iter (level->seq);
+       siter != end_siter; siter = g_sequence_iter_next (siter))
     {
-      SortElt *elt = &g_array_index (level->array, SortElt, i);
+      SortElt *elt = g_sequence_get (siter);
 
       if (iter->user_data == level && iter->user_data2 == elt)
 	return TRUE;
@@ -2517,8 +2795,5 @@ gtk_tree_model_sort_iter_is_valid (GtkTreeModelSort *tree_model_sort,
     return FALSE;
 
   return gtk_tree_model_sort_iter_is_valid_helper (iter,
-						   tree_model_sort->root);
+						   tree_model_sort->priv->root);
 }
-
-#define __GTK_TREE_MODEL_SORT_C__
-#include "gtkaliasdef.c"

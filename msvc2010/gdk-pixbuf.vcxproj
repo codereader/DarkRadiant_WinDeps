@@ -153,31 +153,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf.c" />
     <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-animation.c" />
+    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-csource.c" />
     <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-data.c" />
+    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-enum-types.c" />
     <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-io.c" />
     <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-loader.c" />
     <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-scale.c" />
-    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-simple-anim.c" />
     <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-scaled-anim.c" />
+    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-simple-anim.c" />
     <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-util.c" />
+    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf.c" />
     <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixdata.c" />
-    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-enum-types.c" />
     <ClCompile Include="..\gtk2\gdk-pixbuf\io-ani-animation.c" />
     <ClCompile Include="..\gtk2\gdk-pixbuf\io-ani.c" />
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-gif-animation.c" />
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-icns.c" />
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-pcx.c" />
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-png.c" />
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-pnm.c" />
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-qtif.c" />
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-ras.c" />
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-tga.c" />
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-wbmp.c" />
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-xbm.c" />
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-xpm.c" />
-    <ClCompile Include="..\gtk2\gdk-pixbuf\pixops\pixops.c" />
     <ClCompile Include="..\gtk2\gdk-pixbuf\io-gdip-animation.c" />
     <ClCompile Include="..\gtk2\gdk-pixbuf\io-gdip-bmp.c" />
     <ClCompile Include="..\gtk2\gdk-pixbuf\io-gdip-emf.c" />
@@ -187,42 +176,18 @@
     <ClCompile Include="..\gtk2\gdk-pixbuf\io-gdip-tiff.c" />
     <ClCompile Include="..\gtk2\gdk-pixbuf\io-gdip-utils.c" />
     <ClCompile Include="..\gtk2\gdk-pixbuf\io-gdip-wmf.c" />
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-bmp.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-gif.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-ico.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-jasper.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-jpeg.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-tiff.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="..\gtk2\gdk-pixbuf\io-icns.c" />
+    <ClCompile Include="..\gtk2\gdk-pixbuf\io-pcx.c" />
+    <ClCompile Include="..\gtk2\gdk-pixbuf\io-pixdata.c" />
+    <ClCompile Include="..\gtk2\gdk-pixbuf\io-png.c" />
+    <ClCompile Include="..\gtk2\gdk-pixbuf\io-pnm.c" />
+    <ClCompile Include="..\gtk2\gdk-pixbuf\io-qtif.c" />
+    <ClCompile Include="..\gtk2\gdk-pixbuf\io-ras.c" />
+    <ClCompile Include="..\gtk2\gdk-pixbuf\io-tga.c" />
+    <ClCompile Include="..\gtk2\gdk-pixbuf\io-wbmp.c" />
+    <ClCompile Include="..\gtk2\gdk-pixbuf\io-xbm.c" />
+    <ClCompile Include="..\gtk2\gdk-pixbuf\io-xpm.c" />
+    <ClCompile Include="..\gtk2\gdk-pixbuf\pixops\pixops.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\gtk2\gdk-pixbuf\gdk_pixbuf.rc" />

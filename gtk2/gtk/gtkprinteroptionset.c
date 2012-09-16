@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -24,7 +22,6 @@
 #include <gmodule.h>
 
 #include "gtkprinteroptionset.h"
-#include "gtkalias.h"
 
 /*****************************************
  *         GtkPrinterOptionSet    *
@@ -192,7 +189,3 @@ gtk_printer_option_set_foreach (GtkPrinterOptionSet *set,
 {
   gtk_printer_option_set_foreach_in_group (set, NULL, func, user_data);
 }
-
-
-#define __GTK_PRINTER_OPTION_SET_C__
-#include "gtkaliasdef.c"

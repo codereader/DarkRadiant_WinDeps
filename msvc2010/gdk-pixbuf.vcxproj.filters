@@ -21,81 +21,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-animation.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-data.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-io.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-loader.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-scale.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-simple-anim.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-scaled-anim.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-util.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixdata.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-enum-types.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-ani-animation.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-ani.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-gif-animation.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-icns.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-pcx.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-png.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-pnm.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-qtif.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-ras.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-tga.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-wbmp.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-xbm.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-xpm.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\pixops\pixops.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\gtk2\gdk-pixbuf\io-gdip-animation.c">
       <Filter>Source Files\Native</Filter>
     </ClCompile>
@@ -123,22 +48,82 @@
     <ClCompile Include="..\gtk2\gdk-pixbuf\io-gdip-wmf.c">
       <Filter>Source Files\Native</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-bmp.c">
+    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-loader.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-scale.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-animation.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-csource.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-data.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-enum-types.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-io.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-simple-anim.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-util.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixdata.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gdk-pixbuf\gdk-pixbuf-scaled-anim.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gdk-pixbuf\pixops\pixops.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gdk-pixbuf\io-icns.c">
       <Filter>Source Files\Non-Native</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-gif.c">
+    <ClCompile Include="..\gtk2\gdk-pixbuf\io-pcx.c">
       <Filter>Source Files\Non-Native</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-ico.c">
+    <ClCompile Include="..\gtk2\gdk-pixbuf\io-pixdata.c">
       <Filter>Source Files\Non-Native</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-jpeg.c">
+    <ClCompile Include="..\gtk2\gdk-pixbuf\io-png.c">
       <Filter>Source Files\Non-Native</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-jasper.c">
+    <ClCompile Include="..\gtk2\gdk-pixbuf\io-pnm.c">
       <Filter>Source Files\Non-Native</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtk2\gdk-pixbuf\io-tiff.c">
+    <ClCompile Include="..\gtk2\gdk-pixbuf\io-qtif.c">
+      <Filter>Source Files\Non-Native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gdk-pixbuf\io-ras.c">
+      <Filter>Source Files\Non-Native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gdk-pixbuf\io-tga.c">
+      <Filter>Source Files\Non-Native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gdk-pixbuf\io-wbmp.c">
+      <Filter>Source Files\Non-Native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gdk-pixbuf\io-xbm.c">
+      <Filter>Source Files\Non-Native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gdk-pixbuf\io-xpm.c">
+      <Filter>Source Files\Non-Native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gdk-pixbuf\io-ani.c">
+      <Filter>Source Files\Non-Native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gdk-pixbuf\io-ani-animation.c">
       <Filter>Source Files\Non-Native</Filter>
     </ClCompile>
   </ItemGroup>

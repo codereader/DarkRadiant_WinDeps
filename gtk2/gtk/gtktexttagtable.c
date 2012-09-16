@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -25,14 +23,17 @@
  */
 
 #include "config.h"
+
 #include "gtktexttagtable.h"
+
 #include "gtkbuildable.h"
+#include "gtktexttagprivate.h"
 #include "gtkmarshalers.h"
 #include "gtktextbuffer.h" /* just for the lame notify_will_remove_tag hack */
 #include "gtkintl.h"
-#include "gtkalias.h"
 
 #include <stdlib.h>
+
 
 /**
  * SECTION:gtktexttagtable
@@ -40,8 +41,8 @@
  * @Title: GtkTextTagTable
  *
  * You may wish to begin by reading the <link linkend="TextWidget">text widget
- * conceptual overview</link> which gives an overview of all the objects and data
- * types related to the text widget and how they work together.
+ * conceptual overview</link> which gives an overview of all the objects and
+ * data types related to the text widget and how they work together.
  *
  * <refsect2 id="GtkTextTagTable-BUILDER-UI">
  * <title>GtkTextTagTables as GtkBuildable</title>
@@ -49,7 +50,7 @@
  * The GtkTextTagTable implementation of the GtkBuildable interface
  * supports adding tags by specifying "tag" as the "type"
  * attribute of a &lt;child&gt; element.
- * </para>
+ *
  * <example>
  * <title>A UI definition fragment specifying tags</title>
  * <programlisting><![CDATA[
@@ -60,8 +61,19 @@
  * </object>
  * ]]></programlisting>
  * </example>
+ * </para>
  * </refsect2>
  */
+
+struct _GtkTextTagTablePrivate
+{
+  GHashTable *hash;
+  GSList     *anonymous;
+  GSList     *buffers;
+
+  gint anon_count;
+};
+
 
 enum {
   TAG_CHANGED,
@@ -105,7 +117,13 @@ gtk_text_tag_table_class_init (GtkTextTagTableClass *klass)
   object_class->get_property = gtk_text_tag_table_get_property;
   
   object_class->finalize = gtk_text_tag_table_finalize;
-  
+
+  /**
+   * GtkTextTagTable::tag-changed:
+   * @texttagtable: the object which received the signal.
+   * @tag: the changed tag.
+   * @size_changed: whether the size has been changed.
+   */
   signals[TAG_CHANGED] =
     g_signal_new (I_("tag-changed"),
                   G_OBJECT_CLASS_TYPE (object_class),
@@ -118,6 +136,11 @@ gtk_text_tag_table_class_init (GtkTextTagTableClass *klass)
                   GTK_TYPE_TEXT_TAG,
                   G_TYPE_BOOLEAN);  
 
+  /**
+   * GtkTextTagTable::tag-added:
+   * @texttagtable: the object which received the signal.
+   * @tag: the added tag.
+   */
   signals[TAG_ADDED] =
     g_signal_new (I_("tag-added"),
                   G_OBJECT_CLASS_TYPE (object_class),
@@ -129,6 +152,11 @@ gtk_text_tag_table_class_init (GtkTextTagTableClass *klass)
                   1,
                   GTK_TYPE_TEXT_TAG);
 
+  /**
+   * GtkTextTagTable::tag-removed:
+   * @texttagtable: the object which received the signal.
+   * @tag: the removed tag.
+   */
   signals[TAG_REMOVED] =
     g_signal_new (I_("tag-removed"),  
                   G_OBJECT_CLASS_TYPE (object_class),
@@ -139,12 +167,21 @@ gtk_text_tag_table_class_init (GtkTextTagTableClass *klass)
                   G_TYPE_NONE,
                   1,
                   GTK_TYPE_TEXT_TAG);
+
+  g_type_class_add_private (klass, sizeof (GtkTextTagTablePrivate));
 }
 
 static void
 gtk_text_tag_table_init (GtkTextTagTable *table)
 {
-  table->hash = g_hash_table_new (g_str_hash, g_str_equal);
+  GtkTextTagTablePrivate *priv;
+
+  table->priv = G_TYPE_INSTANCE_GET_PRIVATE (table,
+                                             GTK_TYPE_TEXT_TAG_TABLE,
+                                             GtkTextTagTablePrivate);
+  priv = table->priv;
+
+  priv->hash = g_hash_table_new (g_str_hash, g_str_equal);
 }
 
 /**
@@ -168,13 +205,15 @@ gtk_text_tag_table_new (void)
 static void
 foreach_unref (GtkTextTag *tag, gpointer data)
 {
+  GtkTextTagTable *table = GTK_TEXT_TAG_TABLE (tag->priv->table);
+  GtkTextTagTablePrivate *priv = table->priv;
   GSList *tmp;
   
   /* We don't want to emit the remove signal here; so we just unparent
    * and unref the tag.
    */
 
-  tmp = tag->table->buffers;
+  tmp = priv->buffers;
   while (tmp != NULL)
     {
       _gtk_text_buffer_notify_will_remove_tag (GTK_TEXT_BUFFER (tmp->data),
@@ -183,23 +222,22 @@ foreach_unref (GtkTextTag *tag, gpointer data)
       tmp = tmp->next;
     }
   
-  tag->table = NULL;
+  tag->priv->table = NULL;
   g_object_unref (tag);
 }
 
 static void
 gtk_text_tag_table_finalize (GObject *object)
 {
-  GtkTextTagTable *table;
+  GtkTextTagTable *table = GTK_TEXT_TAG_TABLE (object);
+  GtkTextTagTablePrivate *priv = table->priv;
 
-  table = GTK_TEXT_TAG_TABLE (object);
-  
   gtk_text_tag_table_foreach (table, foreach_unref, NULL);
 
-  g_hash_table_destroy (table->hash);
-  g_slist_free (table->anonymous);
+  g_hash_table_destroy (priv->hash);
+  g_slist_free (priv->anonymous);
 
-  g_slist_free (table->buffers);
+  g_slist_free (priv->buffers);
 
   G_OBJECT_CLASS (gtk_text_tag_table_parent_class)->finalize (object);
 }
@@ -266,37 +304,40 @@ void
 gtk_text_tag_table_add (GtkTextTagTable *table,
                         GtkTextTag      *tag)
 {
+  GtkTextTagTablePrivate *priv;
   guint size;
 
   g_return_if_fail (GTK_IS_TEXT_TAG_TABLE (table));
   g_return_if_fail (GTK_IS_TEXT_TAG (tag));
-  g_return_if_fail (tag->table == NULL);
+  g_return_if_fail (tag->priv->table == NULL);
 
-  if (tag->name && g_hash_table_lookup (table->hash, tag->name))
+  priv = table->priv;
+
+  if (tag->priv->name && g_hash_table_lookup (priv->hash, tag->priv->name))
     {
       g_warning ("A tag named '%s' is already in the tag table.",
-                 tag->name);
+                 tag->priv->name);
       return;
     }
   
   g_object_ref (tag);
 
-  if (tag->name)
-    g_hash_table_insert (table->hash, tag->name, tag);
+  if (tag->priv->name)
+    g_hash_table_insert (priv->hash, tag->priv->name, tag);
   else
     {
-      table->anonymous = g_slist_prepend (table->anonymous, tag);
-      table->anon_count += 1;
+      priv->anonymous = g_slist_prepend (priv->anonymous, tag);
+      priv->anon_count += 1;
     }
 
-  tag->table = table;
+  tag->priv->table = table;
 
   /* We get the highest tag priority, as the most-recently-added
      tag. Note that we do NOT use gtk_text_tag_set_priority,
      as it assumes the tag is already in the table. */
   size = gtk_text_tag_table_get_size (table);
   g_assert (size > 0);
-  tag->priority = size - 1;
+  tag->priv->priority = size - 1;
 
   g_signal_emit (table, signals[TAG_ADDED], 0, tag);
 }
@@ -314,10 +355,14 @@ GtkTextTag*
 gtk_text_tag_table_lookup (GtkTextTagTable *table,
                            const gchar     *name)
 {
+  GtkTextTagTablePrivate *priv;
+
   g_return_val_if_fail (GTK_IS_TEXT_TAG_TABLE (table), NULL);
   g_return_val_if_fail (name != NULL, NULL);
 
-  return g_hash_table_lookup (table->hash, name);
+  priv = table->priv;
+
+  return g_hash_table_lookup (priv->hash, name);
 }
 
 /**
@@ -333,16 +378,19 @@ void
 gtk_text_tag_table_remove (GtkTextTagTable *table,
                            GtkTextTag      *tag)
 {
+  GtkTextTagTablePrivate *priv;
   GSList *tmp;
   
   g_return_if_fail (GTK_IS_TEXT_TAG_TABLE (table));
   g_return_if_fail (GTK_IS_TEXT_TAG (tag));
-  g_return_if_fail (tag->table == table);
+  g_return_if_fail (tag->priv->table == table);
+
+  priv = table->priv;
 
   /* Our little bad hack to be sure buffers don't still have the tag
    * applied to text in the buffer
    */
-  tmp = table->buffers;
+  tmp = priv->buffers;
   while (tmp != NULL)
     {
       _gtk_text_buffer_notify_will_remove_tag (GTK_TEXT_BUFFER (tmp->data),
@@ -356,14 +404,14 @@ gtk_text_tag_table_remove (GtkTextTagTable *table,
      priorities of the tags in the table. */
   gtk_text_tag_set_priority (tag, gtk_text_tag_table_get_size (table) - 1);
 
-  tag->table = NULL;
+  tag->priv->table = NULL;
 
-  if (tag->name)
-    g_hash_table_remove (table->hash, tag->name);
+  if (tag->priv->name)
+    g_hash_table_remove (priv->hash, tag->priv->name);
   else
     {
-      table->anonymous = g_slist_remove (table->anonymous, tag);
-      table->anon_count -= 1;
+      priv->anonymous = g_slist_remove (priv->anonymous, tag);
+      priv->anon_count -= 1;
     }
 
   g_signal_emit (table, signals[TAG_REMOVED], 0, tag);
@@ -412,16 +460,19 @@ gtk_text_tag_table_foreach (GtkTextTagTable       *table,
                             GtkTextTagTableForeach func,
                             gpointer               data)
 {
+  GtkTextTagTablePrivate *priv;
   struct ForeachData d;
 
   g_return_if_fail (GTK_IS_TEXT_TAG_TABLE (table));
   g_return_if_fail (func != NULL);
 
+  priv = table->priv;
+
   d.func = func;
   d.data = data;
 
-  g_hash_table_foreach (table->hash, hash_foreach, &d);
-  g_slist_foreach (table->anonymous, list_foreach, &d);
+  g_hash_table_foreach (priv->hash, hash_foreach, &d);
+  g_slist_foreach (priv->anonymous, list_foreach, &d);
 }
 
 /**
@@ -435,18 +486,22 @@ gtk_text_tag_table_foreach (GtkTextTagTable       *table,
 gint
 gtk_text_tag_table_get_size (GtkTextTagTable *table)
 {
+  GtkTextTagTablePrivate *priv;
+
   g_return_val_if_fail (GTK_IS_TEXT_TAG_TABLE (table), 0);
 
-  return g_hash_table_size (table->hash) + table->anon_count;
+  priv = table->priv;
+
+  return g_hash_table_size (priv->hash) + priv->anon_count;
 }
 
 void
 _gtk_text_tag_table_add_buffer (GtkTextTagTable *table,
                                 gpointer         buffer)
 {
-  g_return_if_fail (GTK_IS_TEXT_TAG_TABLE (table));
+  GtkTextTagTablePrivate *priv = table->priv;
 
-  table->buffers = g_slist_prepend (table->buffers, buffer);
+  priv->buffers = g_slist_prepend (priv->buffers, buffer);
 }
 
 static void
@@ -463,12 +518,9 @@ void
 _gtk_text_tag_table_remove_buffer (GtkTextTagTable *table,
                                    gpointer         buffer)
 {
-  g_return_if_fail (GTK_IS_TEXT_TAG_TABLE (table));
+  GtkTextTagTablePrivate *priv = table->priv;
 
   gtk_text_tag_table_foreach (table, foreach_remove_tag, buffer);
-  
-  table->buffers = g_slist_remove (table->buffers, buffer);
-}
 
-#define __GTK_TEXT_TAG_TABLE_C__
-#include "gtkaliasdef.c"
+  priv->buffers = g_slist_remove (priv->buffers, buffer);
+}

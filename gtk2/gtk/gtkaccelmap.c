@@ -12,19 +12,16 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
 
-#include "gtkaccelmap.h"
+#include "gtkaccelmapprivate.h"
 
 #include "gtkmarshalers.h"
-#include "gtkwindow.h"  /* in lack of GtkAcceleratable */
-#include "gtkintl.h" 
-#include "gtkalias.h"
+#include "gtkwindowprivate.h"
+#include "gtkintl.h"
 
 #include <glib/gstdio.h>
 
@@ -37,6 +34,76 @@
 #ifdef G_OS_WIN32
 #include <io.h>
 #endif
+
+
+/**
+ * SECTION:gtkaccelmap
+ * @Short_description: Loadable keyboard accelerator specifications
+ * @Title: Accelerator Maps
+ * @See_also: #GtkAccelGroup, #GtkAccelKey, #GtkUIManager, gtk_widget_set_accel_path(), gtk_menu_item_set_accel_path(), #GtkSettings:gtk-can-change-accels
+ *
+ * Accelerator maps are used to define runtime configurable accelerators.
+ * Functions for manipulating them are are usually used by higher level
+ * convenience mechanisms like #GtkUIManager and are thus considered
+ * "low-level". You'll want to use them if you're manually creating menus that
+ * should have user-configurable accelerators.
+ *
+ * Accelerator is uniquely defined by:
+ *
+ * <itemizedlist>
+ *   <listitem><para>accelerator path</para></listitem>
+ *   <listitem><para>accelerator key</para></listitem>
+ *   <listitem><para>accelerator modifiers</para></listitem>
+ * </itemizedlist>
+ *
+ * The accelerator path must consist of
+ * "&lt;WINDOWTYPE&gt;/Category1/Category2/.../Action", where WINDOWTYPE
+ * should be a unique application-specific identifier that corresponds to the
+ * kind of window the accelerator is being used in, e.g. "Gimp-Image",
+ * "Abiword-Document" or "Gnumeric-Settings".
+ * The "Category1/.../Action" portion is most appropriately chosen by the action
+ * the accelerator triggers, i.e. for accelerators on menu items, choose the
+ * item's menu path, e.g. "File/Save As", "Image/View/Zoom" or
+ * "Edit/Select All". So a full valid accelerator path may look like:
+ * "&lt;Gimp-Toolbox&gt;/File/Dialogs/Tool Options...".
+ *
+ * All accelerators are stored inside one global #GtkAccelMap that can be
+ * obtained using gtk_accel_map_get(). See <link
+ * linkend="monitoring-changes">Monitoring changes</link> for additional
+ * details.
+ *
+ * <refsect2 id="manipulating-accelerators">
+ * <title>Manipulating accelerators</title>
+ * <para>
+ * New accelerators can be added using gtk_accel_map_add_entry(). To search for
+ * specific accelerator, use gtk_accel_map_lookup_entry(). Modifications of
+ * existing accelerators should be done using gtk_accel_map_change_entry().
+ *
+ * In order to avoid having some accelerators changed, they can be locked using
+ * gtk_accel_map_lock_path(). Unlocking is done using
+ * gtk_accel_map_unlock_path().
+ * </para>
+ * </refsect2>
+ * <refsect2 id="saving-and-loading">
+ * <title>Saving and loading accelerator maps</title>
+ * <para>
+ * Accelerator maps can be saved to and loaded from some external resource. For
+ * simple saving and loading from file, gtk_accel_map_save() and
+ * gtk_accel_map_load() are provided. Saving and loading can also be done by
+ * providing file descriptor to gtk_accel_map_save_fd() and
+ * gtk_accel_map_load_fd().
+ * </para>
+ * </refsect2>
+ * <refsect2 id="monitoring-changes">
+ * <title>Monitoring changes</title>
+ * <para>
+ * #GtkAccelMap object is only useful for monitoring changes of accelerators. By
+ * connecting to #GtkAccelMap::changed signal, one can monitor changes of all
+ * accelerators. It is also possible to monitor only single accelerator path by
+ * using it as a detail of the #GtkAccelMap::changed signal.
+ * </para>
+ * </refsect2>
+ */
 
 
 /* --- structures --- */
@@ -110,9 +177,8 @@ accel_path_lookup (const gchar *accel_path)
 void
 _gtk_accel_map_init (void)
 {
-  g_assert (accel_entry_ht == NULL);
-
-  accel_entry_ht = g_hash_table_new (accel_entry_hash, accel_entry_equal);
+  if (accel_entry_ht == NULL)
+    accel_entry_ht = g_hash_table_new (accel_entry_hash, accel_entry_equal);
 }
 
 gboolean
@@ -140,16 +206,10 @@ _gtk_accel_path_is_valid (const gchar *accel_path)
  * with the canonical @accel_key and @accel_mods for this path.
  * To change the accelerator during runtime programatically, use
  * gtk_accel_map_change_entry().
- * The accelerator path must consist of "&lt;WINDOWTYPE&gt;/Category1/Category2/.../Action",
- * where &lt;WINDOWTYPE&gt; should be a unique application-specific identifier, that
- * corresponds to the kind of window the accelerator is being used in, e.g. "Gimp-Image",
- * "Abiword-Document" or "Gnumeric-Settings".
- * The Category1/.../Action portion is most appropriately chosen by the action the
- * accelerator triggers, i.e. for accelerators on menu items, choose the item's menu path,
- * e.g. "File/Save As", "Image/View/Zoom" or "Edit/Select All".
- * So a full valid accelerator path may look like:
- * "&lt;Gimp-Toolbox&gt;/File/Dialogs/Tool Options...".
  * 
+ * Set @accel_key and @accel_mods to 0 to request a removal of
+ * the accelerator.
+ *
  * Note that @accel_path string will be stored in a #GQuark. Therefore, if you
  * pass a static string, you can save some memory by interning it first with 
  * g_intern_static_string().
@@ -198,11 +258,12 @@ gtk_accel_map_add_entry (const gchar    *accel_path,
 
 /**
  * gtk_accel_map_lookup_entry:
- * @accel_path:  a valid accelerator path
- * @key:         the accelerator key to be filled in (optional)
- * @returns:     %TRUE if @accel_path is known, %FALSE otherwise
+ * @accel_path: a valid accelerator path
+ * @key: (allow-none) (out): the accelerator key to be filled in (optional)
  *
  * Looks up the accelerator entry for @accel_path and fills in @key.
+ *
+ * Returns: %TRUE if @accel_path is known, %FALSE otherwise
  */
 gboolean
 gtk_accel_map_lookup_entry (const gchar *accel_path,
@@ -319,7 +380,7 @@ internal_change_entry (const gchar    *accel_path,
     {
       GtkAccelGroup *group = slist->data;
 
-      for (node = group->acceleratables; node; node = node->next)
+      for (node = _gtk_accel_group_get_accelerables (group); node; node = node->next)
 	g_hash_table_insert (window_hm, node->data, node->data);
     }
   g_slist_free (group_list);
@@ -367,7 +428,7 @@ internal_change_entry (const gchar    *accel_path,
 	for (i = 0; i < n; i++)
 	  {
 	    seen_accel = TRUE;
-	    removable = !group->lock_count && !(ag_entry[i].key.accel_flags & GTK_ACCEL_LOCKED);
+	    removable = !gtk_accel_group_get_is_locked (group) && !(ag_entry[i].key.accel_flags & GTK_ACCEL_LOCKED);
 	    if (!removable)
 	      goto break_loop_step5;
 	    if (ag_entry[i].accel_path_quark)
@@ -425,7 +486,6 @@ internal_change_entry (const gchar    *accel_path,
  * @accel_key:   the new accelerator key
  * @accel_mods:  the new accelerator modifiers
  * @replace:     %TRUE if other accelerators may be deleted upon conflicts
- * @returns:     %TRUE if the accelerator could be changed, %FALSE otherwise
  *
  * Changes the @accel_key and @accel_mods currently associated with @accel_path.
  * Due to conflicts with other accelerators, a change may not always be possible,
@@ -433,10 +493,12 @@ internal_change_entry (const gchar    *accel_path,
  * conflicts. A change will only occur if all conflicts could be resolved (which
  * might not be the case if conflicting accelerators are locked). Successful
  * changes are indicated by a %TRUE return value.
- * 
+ *
  * Note that @accel_path string will be stored in a #GQuark. Therefore, if you
- * pass a static string, you can save some memory by interning it first with 
+ * pass a static string, you can save some memory by interning it first with
  * g_intern_static_string().
+ *
+ * Returns: %TRUE if the accelerator could be changed, %FALSE otherwise
  */
 gboolean
 gtk_accel_map_change_entry (const gchar    *accel_path,
@@ -609,7 +671,7 @@ gtk_accel_map_load_fd (gint fd)
 
 /**
  * gtk_accel_map_load:
- * @file_name: a file containing accelerator specifications,
+ * @file_name: (type filename): a file containing accelerator specifications,
  *   in the GLib file name encoding
  *
  * Parses a file previously saved with gtk_accel_map_save() for
@@ -720,8 +782,8 @@ gtk_accel_map_save_fd (gint fd)
 
 /**
  * gtk_accel_map_save:
- * @file_name: the name of the file to contain accelerator specifications,
- *   in the GLib file name encoding
+ * @file_name: (type filename): the name of the file to contain
+ *   accelerator specifications, in the GLib file name encoding
  *
  * Saves current accelerator specifications (accelerator path, key
  * and modifiers) to @file_name.
@@ -746,9 +808,9 @@ gtk_accel_map_save (const gchar *file_name)
 
 /**
  * gtk_accel_map_foreach:
- * @data:         data to be passed into @foreach_func
- * @foreach_func: function to be executed for each accel map entry which
- *                is not filtered out
+ * @data: (allow-none): data to be passed into @foreach_func
+ * @foreach_func: (scope call): function to be executed for each accel
+ *                map entry which is not filtered out
  *
  * Loops over the entries in the accelerator map whose accel path 
  * doesn't match any of the filters added with gtk_accel_map_add_filter(), 
@@ -784,7 +846,8 @@ gtk_accel_map_foreach (gpointer           data,
 /**
  * gtk_accel_map_foreach_unfiltered:
  * @data:         data to be passed into @foreach_func
- * @foreach_func: function to be executed for each accel map entry
+ * @foreach_func: (scope call): function to be executed for each accel
+ *                map entry
  *
  * Loops over all entries in the accelerator map, and execute
  * @foreach_func on each. The signature of @foreach_func is that of
@@ -980,7 +1043,7 @@ gtk_accel_map_init (GtkAccelMap *accel_map)
  * map via the ::changed signal; it isn't a parameter to the
  * other accelerator map functions.
  * 
- * Return value: the global #GtkAccelMap object
+ * Return value: (transfer none): the global #GtkAccelMap object
  *
  * Since: 2.4
  **/
@@ -1005,33 +1068,19 @@ do_accel_map_changed (AccelEntry *entry)
 		   entry->accel_mods);
 }
 
-#if defined (G_OS_WIN32) && !defined (_WIN64)
-
-#undef gtk_accel_map_load
-
-void
-gtk_accel_map_load (const gchar *file_name)
+gchar *
+_gtk_accel_path_for_action (const gchar *action_name,
+                            GVariant    *parameter)
 {
-  gchar *utf8_file_name = g_locale_to_utf8 (file_name, -1, NULL, NULL, NULL);
+  GString *s;
 
-  gtk_accel_map_load_utf8 (utf8_file_name);
-
-  g_free (utf8_file_name);
+  s = g_string_new ("<GAction>/");
+  g_string_append (s, action_name);
+  if (parameter)
+    {
+      g_string_append_c (s, '/');
+      g_variant_print_string (parameter, s, FALSE);
+    }
+  return g_string_free (s, FALSE);
 }
 
-#undef gtk_accel_map_save
-
-void
-gtk_accel_map_save (const gchar *file_name)
-{
-  gchar *utf8_file_name = g_locale_to_utf8 (file_name, -1, NULL, NULL, NULL);
-
-  gtk_accel_map_save_utf8 (utf8_file_name);
-
-  g_free (utf8_file_name);
-}
-
-#endif
-
-#define __GTK_ACCEL_MAP_C__
-#include "gtkaliasdef.c"

@@ -14,9 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -31,8 +29,9 @@
 #include "gtkmarshalers.h"
 #include "gtkintl.h"
 #include "gtktextbuffer.h"
+#include "gtkselectionprivate.h"
 #include "gtkquartz.h"
-#include "gtkalias.h"
+
 
 enum {
   OWNER_CHANGE,
@@ -253,7 +252,7 @@ gtk_clipboard_get_for_display (GdkDisplay *display,
 			       GdkAtom     selection)
 {
   g_return_val_if_fail (GDK_IS_DISPLAY (display), NULL);
-  g_return_val_if_fail (!display->closed, NULL);
+  g_return_val_if_fail (!gdk_display_is_closed (display), NULL);
 
   return clipboard_peek (display, selection, FALSE);
 }
@@ -1012,6 +1011,3 @@ _gtk_clipboard_store_all (void)
 {
   /* FIXME: Implement */
 }
-
-#define __GTK_CLIPBOARD_C__
-#include "gtkaliasdef.c"

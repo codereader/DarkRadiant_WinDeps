@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -27,13 +25,17 @@
 #ifndef __GDK_WINDOW_X11_H__
 #define __GDK_WINDOW_X11_H__
 
-#include <gdk/x11/gdkdrawable-x11.h>
+#include "gdk/x11/gdkprivate-x11.h"
+#include "gdk/gdkwindowimpl.h"
+
+#include <X11/Xlib.h>
 
 #ifdef HAVE_XDAMAGE
 #include <X11/extensions/Xdamage.h>
 #endif
 
 #ifdef HAVE_XSYNC
+#include <X11/Xlib.h>
 #include <X11/extensions/sync.h>
 #endif
 
@@ -56,15 +58,23 @@ typedef struct _GdkXPositionInfo GdkXPositionInfo;
 
 struct _GdkWindowImplX11
 {
-  GdkDrawableImplX11 parent_instance;
+  GdkWindowImpl parent_instance;
+
+  GdkWindow *wrapper;
+
+  Window xid;
 
   GdkToplevelX11 *toplevel;	/* Toplevel-specific information */
   GdkCursor *cursor;
+  GHashTable *device_cursor;
+
   gint8 toplevel_window_type;
-  guint no_bg : 1;	        /* Set when the window background is temporarily
-				 * unset during resizing and scaling */
+  guint no_bg : 1;        /* Set when the window background is temporarily
+                           * unset during resizing and scaling */
   guint override_redirect : 1;
   guint use_synchronized_configure : 1;
+
+  cairo_surface_t *cairo_surface;
 
 #if defined (HAVE_XCOMPOSITE) && defined(HAVE_XDAMAGE) && defined (HAVE_XFIXES)
   Damage damage;
@@ -73,7 +83,7 @@ struct _GdkWindowImplX11
  
 struct _GdkWindowImplX11Class 
 {
-  GdkDrawableImplX11Class parent_class;
+  GdkWindowImplClass parent_class;
 };
 
 struct _GdkToplevelX11
@@ -109,14 +119,18 @@ struct _GdkToplevelX11
   guint have_maxvert : 1;       /* _NET_WM_STATE_MAXIMIZED_VERT */
   guint have_maxhorz : 1;       /* _NET_WM_STATE_MAXIMIZED_HORZ */
   guint have_fullscreen : 1;    /* _NET_WM_STATE_FULLSCREEN */
+  guint have_hidden : 1;	/* _NET_WM_STATE_HIDDEN */
 
   guint is_leader : 1;
+
+  /* Set if the WM is presenting us as focused, i.e. with active decorations
+   */
+  guint have_focused : 1;
   
   gulong map_serial;	/* Serial of last transition from unmapped */
   
-  GdkPixmap *icon_pixmap;
-  GdkPixmap *icon_mask;
-  GdkPixmap *icon_window;
+  cairo_surface_t *icon_pixmap;
+  cairo_surface_t *icon_mask;
   GdkWindow *group_leader;
 
   /* Time of most recent user interaction. */
@@ -151,10 +165,9 @@ void            _gdk_x11_window_tmp_reset_bg        (GdkWindow *window,
 void            _gdk_x11_window_tmp_unset_parent_bg (GdkWindow *window);
 void            _gdk_x11_window_tmp_reset_parent_bg (GdkWindow *window);
 
-GdkCursor      *_gdk_x11_window_get_cursor    (GdkWindow *window);
-void            _gdk_x11_window_get_offsets   (GdkWindow *window,
-                                               gint      *x_offset,
-                                               gint      *y_offset);
+GdkCursor      *_gdk_x11_window_get_cursor          (GdkWindow *window);
+
+void            _gdk_x11_window_update_size         (GdkWindowImplX11 *impl);
 
 G_END_DECLS
 

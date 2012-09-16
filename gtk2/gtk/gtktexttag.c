@@ -47,18 +47,39 @@
  *
  */
 
+/**
+ * SECTION:gtktexttag
+ * @Title: GtkTextTag
+ * @Short_description: A tag that can be applied to text in a GtkTextBuffer
+ *
+ * You may wish to begin by reading the <link linkend="TextWidget">text widget
+ * conceptual overview</link> which gives an overview of all the objects and
+ * data types related to the text widget and how they work together.
+ *
+ * Tags should be in the #GtkTextTagTable for a given #GtkTextBuffer
+ * before using them with that buffer.
+ *
+ * gtk_text_buffer_create_tag() is the best way to create tags.
+ * See <application>gtk3-demo</application> for numerous examples.
+ *
+ * For each property of #GtkTextTag, there is a "set" property, e.g.
+ * "font-set" corresponds to "font". These "set" properties reflect
+ * whether a property has been set or not.
+ * You should not set them independently.
+ */
+
 #include "config.h"
-#include "gtkmain.h"
+
+#include <stdlib.h>
+#include <string.h>
+
 #include "gtktexttag.h"
 #include "gtktexttypes.h"
 #include "gtktexttagtable.h"
 #include "gtkintl.h"
 #include "gtkmarshalers.h"
 #include "gtkprivate.h"
-#include "gtkalias.h"
-
-#include <stdlib.h>
-#include <string.h>
+#include "gtktypebuiltins.h"
 
 enum {
   EVENT,
@@ -75,8 +96,8 @@ enum {
   PROP_FOREGROUND,
   PROP_BACKGROUND_GDK,
   PROP_FOREGROUND_GDK,
-  PROP_BACKGROUND_STIPPLE,
-  PROP_FOREGROUND_STIPPLE,
+  PROP_BACKGROUND_RGBA,
+  PROP_FOREGROUND_RGBA,
   PROP_FONT,
   PROP_FONT_DESC,
   PROP_FAMILY,
@@ -106,6 +127,7 @@ enum {
   PROP_INVISIBLE,
   PROP_PARAGRAPH_BACKGROUND,
   PROP_PARAGRAPH_BACKGROUND_GDK,
+  PROP_PARAGRAPH_BACKGROUND_RGBA,
 
   /* Behavior args */
   PROP_ACCUMULATIVE_MARGIN,
@@ -113,8 +135,6 @@ enum {
   /* Whether-a-style-arg-is-set args */
   PROP_BACKGROUND_SET,
   PROP_FOREGROUND_SET,
-  PROP_BACKGROUND_STIPPLE_SET,
-  PROP_FOREGROUND_STIPPLE_SET,
   PROP_FAMILY_SET,
   PROP_STYLE_SET,
   PROP_VARIANT_SET,
@@ -185,12 +205,34 @@ gtk_text_tag_class_init (GtkTextTagClass *klass)
                                                         NULL,
                                                         GTK_PARAM_WRITABLE));
 
+  /**
+   * GtkTextTag:background-gdk:
+   *
+   * Background color as a #GdkColor.
+   *
+   * Deprecated: 3.4: Use #GtkTextTag:background-rgba instead.
+   */
   g_object_class_install_property (object_class,
                                    PROP_BACKGROUND_GDK,
                                    g_param_spec_boxed ("background-gdk",
                                                        P_("Background color"),
-                                                       P_("Background color as a (possibly unallocated) GdkColor"),
+                                                       P_("Background color as a GdkColor"),
                                                        GDK_TYPE_COLOR,
+                                                       GTK_PARAM_READWRITE | G_PARAM_DEPRECATED));
+
+  /**
+   * GtkTextTag:background-rgba:
+   *
+   * Background color as a #GdkRGBA.
+   *
+   * Since: 3.2
+   */
+  g_object_class_install_property (object_class,
+                                   PROP_BACKGROUND_RGBA,
+                                   g_param_spec_boxed ("background-rgba",
+                                                       P_("Background RGBA"),
+                                                       P_("Background color as a GdkRGBA"),
+                                                       GDK_TYPE_RGBA,
                                                        GTK_PARAM_READWRITE));
 
   g_object_class_install_property (object_class,
@@ -200,17 +242,7 @@ gtk_text_tag_class_init (GtkTextTagClass *klass)
                                                          P_("Whether the background color fills the entire line height or only the height of the tagged characters"),
                                                          FALSE,
                                                          GTK_PARAM_READWRITE));
-
   
-  g_object_class_install_property (object_class,
-                                   PROP_BACKGROUND_STIPPLE,
-                                   g_param_spec_object ("background-stipple",
-                                                        P_("Background stipple mask"),
-                                                        P_("Bitmap to use as a mask when drawing the text background"),
-                                                        GDK_TYPE_PIXMAP,
-                                                        GTK_PARAM_READWRITE));  
-
-
   g_object_class_install_property (object_class,
                                    PROP_FOREGROUND,
                                    g_param_spec_string ("foreground",
@@ -219,23 +251,36 @@ gtk_text_tag_class_init (GtkTextTagClass *klass)
                                                         NULL,
                                                         GTK_PARAM_WRITABLE));
 
+  /**
+   * GtkTextTag:foreground-gdk:
+   *
+   * Foreground color as a #GdkColor.
+   *
+   * Deprecated: 3.4: Use #GtkTextTag:foreground-rgba instead.
+   */
   g_object_class_install_property (object_class,
                                    PROP_FOREGROUND_GDK,
                                    g_param_spec_boxed ("foreground-gdk",
                                                        P_("Foreground color"),
-                                                       P_("Foreground color as a (possibly unallocated) GdkColor"),
+                                                       P_("Foreground color as a GdkColor"),
                                                        GDK_TYPE_COLOR,
+                                                       GTK_PARAM_READWRITE | G_PARAM_DEPRECATED));
+
+  /**
+   * GtkTextTag:foreground-rgba:
+   *
+   * Foreground color as a #GdkRGBA.
+   *
+   * Since: 3.2
+   */
+  g_object_class_install_property (object_class,
+                                   PROP_FOREGROUND_RGBA,
+                                   g_param_spec_boxed ("foreground-rgba",
+                                                       P_("Foreground RGBA"),
+                                                       P_("Foreground color as a GdkRGBA"),
+                                                       GDK_TYPE_RGBA,
                                                        GTK_PARAM_READWRITE));
 
-  
-  g_object_class_install_property (object_class,
-                                   PROP_FOREGROUND_STIPPLE,
-                                   g_param_spec_object ("foreground-stipple",
-                                                        P_("Foreground stipple mask"),
-                                                        P_("Bitmap to use as a mask when drawing the text foreground"),
-                                                        GDK_TYPE_PIXMAP,
-                                                        GTK_PARAM_READWRITE));  
-  
   g_object_class_install_property (object_class,
                                    PROP_DIRECTION,
                                    g_param_spec_enum ("direction",
@@ -524,17 +569,33 @@ gtk_text_tag_class_init (GtkTextTagClass *klass)
   /**
    * GtkTextTag:paragraph-background-gdk:
    *
-   * The paragraph background color as a as a (possibly unallocated) 
-   * #GdkColor.
+   * The paragraph background color as a as a #GdkColor.
    *
    * Since: 2.8
+   *
+   * Deprecated: 3.4: Use #GtkTextTag:paragraph-background-rgba instead.
    */
   g_object_class_install_property (object_class,
                                    PROP_PARAGRAPH_BACKGROUND_GDK,
                                    g_param_spec_boxed ("paragraph-background-gdk",
                                                        P_("Paragraph background color"),
-                                                       P_("Paragraph background color as a (possibly unallocated) GdkColor"),
+                                                       P_("Paragraph background color as a GdkColor"),
                                                        GDK_TYPE_COLOR,
+                                                       GTK_PARAM_READWRITE | G_PARAM_DEPRECATED));
+
+  /**
+   * GtkTextTag:paragraph-background-rgba:
+   *
+   * The paragraph background color as a as a #GdkRGBA.
+   *
+   * Since: 3.2
+   */
+  g_object_class_install_property (object_class,
+                                   PROP_PARAGRAPH_BACKGROUND_RGBA,
+                                   g_param_spec_boxed ("paragraph-background-rgba",
+                                                       P_("Paragraph background RGBA"),
+                                                       P_("Paragraph background RGBA as a GdkRGBA"),
+                                                       GDK_TYPE_RGBA,
                                                        GTK_PARAM_READWRITE));
 
   /**
@@ -568,18 +629,10 @@ gtk_text_tag_class_init (GtkTextTagClass *klass)
                 P_("Background full height set"),
                 P_("Whether this tag affects background height"));
 
-  ADD_SET_PROP ("background-stipple-set", PROP_BACKGROUND_STIPPLE_SET,
-                P_("Background stipple set"),
-                P_("Whether this tag affects the background stipple"));  
-
   ADD_SET_PROP ("foreground-set", PROP_FOREGROUND_SET,
                 P_("Foreground set"),
                 P_("Whether this tag affects the foreground color"));
 
-  ADD_SET_PROP ("foreground-stipple-set", PROP_FOREGROUND_STIPPLE_SET,
-                P_("Foreground stipple set"),
-                P_("Whether this tag affects the foreground stipple"));
-  
   ADD_SET_PROP ("editable-set", PROP_EDITABLE_SET,
                 P_("Editability set"),
                 P_("Whether this tag affects text editability"));
@@ -697,12 +750,21 @@ gtk_text_tag_class_init (GtkTextTagClass *klass)
                   G_TYPE_OBJECT,
                   GDK_TYPE_EVENT | G_SIGNAL_TYPE_STATIC_SCOPE,
                   GTK_TYPE_TEXT_ITER);
+
+  g_type_class_add_private (klass, sizeof (GtkTextTagPrivate));
 }
 
 static void
 gtk_text_tag_init (GtkTextTag *text_tag)
 {
-  text_tag->values = gtk_text_attributes_new ();
+  GtkTextTagPrivate *priv;
+
+  text_tag->priv = G_TYPE_INSTANCE_GET_PRIVATE (text_tag,
+                                                GTK_TYPE_TEXT_TAG,
+                                                GtkTextTagPrivate);
+  priv = text_tag->priv;
+
+  priv->values = gtk_text_attributes_new ();
 }
 
 /**
@@ -727,47 +789,158 @@ gtk_text_tag_new (const gchar *name)
 static void
 gtk_text_tag_finalize (GObject *object)
 {
-  GtkTextTag *text_tag;
+  GtkTextTag *text_tag = GTK_TEXT_TAG (object);
+  GtkTextTagPrivate *priv = text_tag->priv;
 
-  text_tag = GTK_TEXT_TAG (object);
+  if (priv->table)
+    gtk_text_tag_table_remove (priv->table, text_tag);
 
-  g_assert (!text_tag->values->realized);
+  g_assert (priv->table == NULL);
 
-  if (text_tag->table)
-    gtk_text_tag_table_remove (text_tag->table, text_tag);
+  gtk_text_attributes_unref (priv->values);
+  priv->values = NULL;
 
-  g_assert (text_tag->table == NULL);
-
-  gtk_text_attributes_unref (text_tag->values);
-  text_tag->values = NULL;
-  
-  g_free (text_tag->name);
-  text_tag->name = NULL;
+  g_free (priv->name);
+  priv->name = NULL;
 
   G_OBJECT_CLASS (gtk_text_tag_parent_class)->finalize (object);
 }
+
+static void
+copy_rgba_to_gdk_color (GdkRGBA  *src,
+			GdkColor *dest)
+{
+  dest->red   = CLAMP (src->red,   0.0, 1.0) * 65535.0;
+  dest->green = CLAMP (src->green, 0.0, 1.0) * 65535.0;
+  dest->blue  = CLAMP (src->blue,  0.0, 1.0) * 65535.0;
+}
+
+static void
+copy_gdk_color_to_rgba (GdkColor *src,
+			GdkRGBA  *dest)
+{
+  dest->red   = src->red / 65535.;
+  dest->green = src->green / 65535.;
+  dest->blue  = src->blue / 65535.;
+  dest->alpha = 1;
+}
+
+static void
+set_bg_rgba (GtkTextTag *tag, GdkRGBA *rgba)
+{
+  GtkTextTagPrivate *priv = tag->priv;
+
+  if (priv->values->appearance.rgba[0])
+    gdk_rgba_free (priv->values->appearance.rgba[0]);
+
+  priv->values->appearance.rgba[0] = NULL;
+
+  if (rgba)
+    {
+      if (!priv->bg_color_set)
+        {
+          priv->bg_color_set = TRUE;
+          g_object_notify (G_OBJECT (tag), "background-set");
+        }
+
+      priv->values->appearance.rgba[0] = gdk_rgba_copy (rgba);
+
+      copy_rgba_to_gdk_color (rgba, &priv->values->appearance.bg_color);
+    }
+  else
+    {
+      if (priv->bg_color_set)
+        {
+          priv->bg_color_set = FALSE;
+          g_object_notify (G_OBJECT (tag), "background-set");
+        }
+    }
+}
+
+static void
+set_fg_rgba (GtkTextTag *tag, GdkRGBA *rgba)
+{
+  GtkTextTagPrivate *priv = tag->priv;
+
+  if (priv->values->appearance.rgba[1])
+    gdk_rgba_free (priv->values->appearance.rgba[1]);
+
+  priv->values->appearance.rgba[1] = NULL;
+
+  if (rgba)
+    {
+      if (!priv->fg_color_set)
+        {
+          priv->fg_color_set = TRUE;
+          g_object_notify (G_OBJECT (tag), "foreground-set");
+        }
+
+      priv->values->appearance.rgba[1] = gdk_rgba_copy (rgba);
+
+      copy_rgba_to_gdk_color (rgba, &priv->values->appearance.fg_color);
+    }
+  else
+    {
+      if (priv->fg_color_set)
+        {
+          priv->fg_color_set = FALSE;
+          g_object_notify (G_OBJECT (tag), "foreground-set");
+        }
+    }
+}
+
+static void
+set_pg_bg_rgba (GtkTextTag *tag, GdkRGBA *rgba)
+{
+  GtkTextTagPrivate *priv = tag->priv;
+
+  if (priv->values->pg_bg_rgba)
+    gdk_rgba_free (priv->values->pg_bg_rgba);
+
+  if (priv->values->pg_bg_color)
+    gdk_color_free (priv->values->pg_bg_color);
+
+  priv->values->pg_bg_rgba = NULL;
+  priv->values->pg_bg_color = NULL;
+
+  if (rgba)
+    {
+      GdkColor color = { 0, };
+
+      if (!priv->pg_bg_color_set)
+        {
+          priv->pg_bg_color_set = TRUE;
+          g_object_notify (G_OBJECT (tag), "paragraph-background-set");
+        }
+
+      priv->values->pg_bg_rgba = gdk_rgba_copy (rgba);
+
+      copy_rgba_to_gdk_color (rgba, &color);
+      priv->values->pg_bg_color = gdk_color_copy (&color);
+    }
+  else
+    {
+      if (priv->pg_bg_color_set)
+        {
+          priv->pg_bg_color_set = FALSE;
+          g_object_notify (G_OBJECT (tag), "paragraph-background-set");
+        }
+    }
+}
+
 
 static void
 set_bg_color (GtkTextTag *tag, GdkColor *color)
 {
   if (color)
     {
-      if (!tag->bg_color_set)
-        {
-          tag->bg_color_set = TRUE;
-          g_object_notify (G_OBJECT (tag), "background-set");
-        }
-      
-      tag->values->appearance.bg_color = *color;
+      GdkRGBA rgba;
+
+      copy_gdk_color_to_rgba (color, &rgba);
+      set_bg_rgba (tag, &rgba);
     }
   else
-    {
-      if (tag->bg_color_set)
-        {
-          tag->bg_color_set = FALSE;
-          g_object_notify (G_OBJECT (tag), "background-set");
-        }
-    }
+    set_bg_rgba (tag, NULL);
 }
 
 static void
@@ -775,21 +948,13 @@ set_fg_color (GtkTextTag *tag, GdkColor *color)
 {
   if (color)
     {
-      if (!tag->fg_color_set)
-        {
-          tag->fg_color_set = TRUE;
-          g_object_notify (G_OBJECT (tag), "foreground-set");
-        }
-      tag->values->appearance.fg_color = *color;
+      GdkRGBA rgba;
+
+      copy_gdk_color_to_rgba (color, &rgba);
+      set_fg_rgba (tag, &rgba);
     }
   else
-    {
-      if (tag->fg_color_set)
-        {
-          tag->fg_color_set = FALSE;
-          g_object_notify (G_OBJECT (tag), "foreground-set");
-        }
-    }
+    set_fg_rgba (tag, NULL);
 }
 
 static void
@@ -797,27 +962,13 @@ set_pg_bg_color (GtkTextTag *tag, GdkColor *color)
 {
   if (color)
     {
-      if (!tag->pg_bg_color_set)
-        {
-          tag->pg_bg_color_set = TRUE;
-          g_object_notify (G_OBJECT (tag), "paragraph-background-set");
-        }
-      else
-	gdk_color_free (tag->values->pg_bg_color);
+      GdkRGBA rgba;
 
-      tag->values->pg_bg_color = gdk_color_copy (color);
+      copy_gdk_color_to_rgba (color, &rgba);
+      set_pg_bg_rgba (tag, &rgba);
     }
   else
-    {
-      if (tag->pg_bg_color_set)
-        {
-          tag->pg_bg_color_set = FALSE;
-          g_object_notify (G_OBJECT (tag), "paragraph-background-set");
-	  gdk_color_free (tag->values->pg_bg_color);
-        }
-
-      tag->values->pg_bg_color = NULL;
-    }
+    set_pg_bg_rgba (tag, NULL);
 }
 
 static PangoFontMask
@@ -922,6 +1073,7 @@ static void
 set_font_description (GtkTextTag           *text_tag,
                       PangoFontDescription *font_desc)
 {
+  GtkTextTagPrivate *priv = text_tag->priv;
   GObject *object = G_OBJECT (text_tag);
   PangoFontDescription *new_font_desc;
   PangoFontMask old_mask, new_mask, changed_mask, set_changed_mask;
@@ -931,8 +1083,8 @@ set_font_description (GtkTextTag           *text_tag,
   else
     new_font_desc = pango_font_description_new ();
 
-  if (text_tag->values->font)
-    old_mask = pango_font_description_get_set_fields (text_tag->values->font);
+  if (priv->values->font)
+    old_mask = pango_font_description_get_set_fields (priv->values->font);
   else
     old_mask = 0;
   
@@ -941,10 +1093,10 @@ set_font_description (GtkTextTag           *text_tag,
   changed_mask = old_mask | new_mask;
   set_changed_mask = old_mask ^ new_mask;
 
-  if (text_tag->values->font)
-    pango_font_description_free (text_tag->values->font);
-  text_tag->values->font = new_font_desc;
-  
+  if (priv->values->font)
+    pango_font_description_free (priv->values->font);
+  priv->values->font = new_font_desc;
+
   g_object_freeze_notify (object);
 
   g_object_notify (object, "font-desc");
@@ -974,8 +1126,10 @@ set_font_description (GtkTextTag           *text_tag,
 static void
 gtk_text_tag_ensure_font (GtkTextTag *text_tag)
 {
-  if (!text_tag->values->font)
-    text_tag->values->font = pango_font_description_new ();
+  GtkTextTagPrivate *priv = text_tag->priv;
+
+  if (!priv->values->font)
+    priv->values->font = pango_font_description_new ();
 }
 
 static void
@@ -984,28 +1138,25 @@ gtk_text_tag_set_property (GObject      *object,
                            const GValue *value,
                            GParamSpec   *pspec)
 {
-  GtkTextTag *text_tag;
+  GtkTextTag *text_tag = GTK_TEXT_TAG (object);
+  GtkTextTagPrivate *priv = text_tag->priv;
   gboolean size_changed = FALSE;
-
-  text_tag = GTK_TEXT_TAG (object);
-
-  g_return_if_fail (!text_tag->values->realized);
 
   switch (prop_id)
     {
     case PROP_NAME:
-      g_return_if_fail (text_tag->name == NULL);
-      text_tag->name = g_value_dup_string (value);
+      g_return_if_fail (priv->name == NULL);
+      priv->name = g_value_dup_string (value);
       break;
 
     case PROP_BACKGROUND:
       {
-        GdkColor color;
+        GdkRGBA rgba;
 
         if (!g_value_get_string (value))
-          set_bg_color (text_tag, NULL);       /* reset to background_set to FALSE */
-        else if (gdk_color_parse (g_value_get_string (value), &color))
-          set_bg_color (text_tag, &color);
+          set_bg_rgba (text_tag, NULL);       /* reset background_set to FALSE */
+        else if (gdk_rgba_parse (&rgba, g_value_get_string (value)))
+          set_bg_rgba (text_tag, &rgba);
         else
           g_warning ("Don't know color `%s'", g_value_get_string (value));
 
@@ -1015,12 +1166,12 @@ gtk_text_tag_set_property (GObject      *object,
 
     case PROP_FOREGROUND:
       {
-        GdkColor color;
+        GdkRGBA rgba;
 
         if (!g_value_get_string (value))
-          set_fg_color (text_tag, NULL);       /* reset to foreground_set to FALSE */
-        else if (gdk_color_parse (g_value_get_string (value), &color))
-          set_fg_color (text_tag, &color);
+          set_fg_rgba (text_tag, NULL);       /* reset to foreground_set to FALSE */
+        else if (gdk_rgba_parse (&rgba, g_value_get_string (value)))
+          set_fg_rgba (text_tag, &rgba);
         else
           g_warning ("Don't know color `%s'", g_value_get_string (value));
 
@@ -1044,43 +1195,19 @@ gtk_text_tag_set_property (GObject      *object,
       }
       break;
 
-    case PROP_BACKGROUND_STIPPLE:
+    case PROP_BACKGROUND_RGBA:
       {
-        GdkBitmap *bitmap = g_value_get_object (value);
+        GdkRGBA *color = g_value_get_boxed (value);
 
-        text_tag->bg_stipple_set = TRUE;
-        g_object_notify (object, "background-stipple-set");
-        
-        if (text_tag->values->appearance.bg_stipple != bitmap)
-          {
-            if (bitmap != NULL)
-              g_object_ref (bitmap);
-
-            if (text_tag->values->appearance.bg_stipple)
-              g_object_unref (text_tag->values->appearance.bg_stipple);
-
-            text_tag->values->appearance.bg_stipple = bitmap;
-          }
+        set_bg_rgba (text_tag, color);
       }
       break;
 
-    case PROP_FOREGROUND_STIPPLE:
+    case PROP_FOREGROUND_RGBA:
       {
-        GdkBitmap *bitmap = g_value_get_object (value);
+        GdkRGBA *color = g_value_get_boxed (value);
 
-        text_tag->fg_stipple_set = TRUE;
-        g_object_notify (object, "foreground-stipple-set");
-
-        if (text_tag->values->appearance.fg_stipple != bitmap)
-          {
-            if (bitmap != NULL)
-              g_object_ref (bitmap);
-
-            if (text_tag->values->appearance.fg_stipple)
-              g_object_unref (text_tag->values->appearance.fg_stipple);
-
-            text_tag->values->appearance.fg_stipple = bitmap;
-          }
+        set_fg_rgba (text_tag, color);
       }
       break;
 
@@ -1125,44 +1252,44 @@ gtk_text_tag_set_property (GObject      *object,
 	PangoFontMask old_set_mask;
 
 	gtk_text_tag_ensure_font (text_tag);
-	old_set_mask = pango_font_description_get_set_fields (text_tag->values->font);
+	old_set_mask = pango_font_description_get_set_fields (priv->values->font);
  
 	switch (prop_id)
 	  {
 	  case PROP_FAMILY:
-	    pango_font_description_set_family (text_tag->values->font,
+	    pango_font_description_set_family (priv->values->font,
 					       g_value_get_string (value));
 	    break;
 	  case PROP_STYLE:
-	    pango_font_description_set_style (text_tag->values->font,
+	    pango_font_description_set_style (priv->values->font,
 					      g_value_get_enum (value));
 	    break;
 	  case PROP_VARIANT:
-	    pango_font_description_set_variant (text_tag->values->font,
+	    pango_font_description_set_variant (priv->values->font,
 						g_value_get_enum (value));
 	    break;
 	  case PROP_WEIGHT:
-	    pango_font_description_set_weight (text_tag->values->font,
+	    pango_font_description_set_weight (priv->values->font,
 					       g_value_get_int (value));
 	    break;
 	  case PROP_STRETCH:
-	    pango_font_description_set_stretch (text_tag->values->font,
+	    pango_font_description_set_stretch (priv->values->font,
 						g_value_get_enum (value));
 	    break;
 	  case PROP_SIZE:
-	    pango_font_description_set_size (text_tag->values->font,
+	    pango_font_description_set_size (priv->values->font,
 					     g_value_get_int (value));
 	    g_object_notify (object, "size-points");
 	    break;
 	  case PROP_SIZE_POINTS:
-	    pango_font_description_set_size (text_tag->values->font,
+	    pango_font_description_set_size (priv->values->font,
 					     g_value_get_double (value) * PANGO_SCALE);
 	    g_object_notify (object, "size");
 	    break;
 	  }
 
 	size_changed = TRUE;
-	notify_set_changed (object, old_set_mask & pango_font_description_get_set_fields (text_tag->values->font));
+	notify_set_changed (object, old_set_mask & pango_font_description_get_set_fields (priv->values->font));
 	g_object_notify (object, "font-desc");
 	g_object_notify (object, "font");
 
@@ -1170,117 +1297,117 @@ gtk_text_tag_set_property (GObject      *object,
       }
       
     case PROP_SCALE:
-      text_tag->values->font_scale = g_value_get_double (value);
-      text_tag->scale_set = TRUE;
+      priv->values->font_scale = g_value_get_double (value);
+      priv->scale_set = TRUE;
       g_object_notify (object, "scale-set");
       size_changed = TRUE;
       break;
       
     case PROP_PIXELS_ABOVE_LINES:
-      text_tag->pixels_above_lines_set = TRUE;
-      text_tag->values->pixels_above_lines = g_value_get_int (value);
+      priv->pixels_above_lines_set = TRUE;
+      priv->values->pixels_above_lines = g_value_get_int (value);
       g_object_notify (object, "pixels-above-lines-set");
       size_changed = TRUE;
       break;
 
     case PROP_PIXELS_BELOW_LINES:
-      text_tag->pixels_below_lines_set = TRUE;
-      text_tag->values->pixels_below_lines = g_value_get_int (value);
+      priv->pixels_below_lines_set = TRUE;
+      priv->values->pixels_below_lines = g_value_get_int (value);
       g_object_notify (object, "pixels-below-lines-set");
       size_changed = TRUE;
       break;
 
     case PROP_PIXELS_INSIDE_WRAP:
-      text_tag->pixels_inside_wrap_set = TRUE;
-      text_tag->values->pixels_inside_wrap = g_value_get_int (value);
+      priv->pixels_inside_wrap_set = TRUE;
+      priv->values->pixels_inside_wrap = g_value_get_int (value);
       g_object_notify (object, "pixels-inside-wrap-set");
       size_changed = TRUE;
       break;
 
     case PROP_EDITABLE:
-      text_tag->editable_set = TRUE;
-      text_tag->values->editable = g_value_get_boolean (value);
+      priv->editable_set = TRUE;
+      priv->values->editable = g_value_get_boolean (value);
       g_object_notify (object, "editable-set");
       break;
 
     case PROP_WRAP_MODE:
-      text_tag->wrap_mode_set = TRUE;
-      text_tag->values->wrap_mode = g_value_get_enum (value);
+      priv->wrap_mode_set = TRUE;
+      priv->values->wrap_mode = g_value_get_enum (value);
       g_object_notify (object, "wrap-mode-set");
       size_changed = TRUE;
       break;
 
     case PROP_JUSTIFICATION:
-      text_tag->justification_set = TRUE;
-      text_tag->values->justification = g_value_get_enum (value);
+      priv->justification_set = TRUE;
+      priv->values->justification = g_value_get_enum (value);
       g_object_notify (object, "justification-set");
       size_changed = TRUE;
       break;
 
     case PROP_DIRECTION:
-      text_tag->values->direction = g_value_get_enum (value);
+      priv->values->direction = g_value_get_enum (value);
       break;
 
     case PROP_LEFT_MARGIN:
-      text_tag->left_margin_set = TRUE;
-      text_tag->values->left_margin = g_value_get_int (value);
+      priv->left_margin_set = TRUE;
+      priv->values->left_margin = g_value_get_int (value);
       g_object_notify (object, "left-margin-set");
       size_changed = TRUE;
       break;
 
     case PROP_INDENT:
-      text_tag->indent_set = TRUE;
-      text_tag->values->indent = g_value_get_int (value);
+      priv->indent_set = TRUE;
+      priv->values->indent = g_value_get_int (value);
       g_object_notify (object, "indent-set");
       size_changed = TRUE;
       break;
 
     case PROP_STRIKETHROUGH:
-      text_tag->strikethrough_set = TRUE;
-      text_tag->values->appearance.strikethrough = g_value_get_boolean (value);
+      priv->strikethrough_set = TRUE;
+      priv->values->appearance.strikethrough = g_value_get_boolean (value);
       g_object_notify (object, "strikethrough-set");
       break;
 
     case PROP_RIGHT_MARGIN:
-      text_tag->right_margin_set = TRUE;
-      text_tag->values->right_margin = g_value_get_int (value);
+      priv->right_margin_set = TRUE;
+      priv->values->right_margin = g_value_get_int (value);
       g_object_notify (object, "right-margin-set");
       size_changed = TRUE;
       break;
 
     case PROP_UNDERLINE:
-      text_tag->underline_set = TRUE;
-      text_tag->values->appearance.underline = g_value_get_enum (value);
+      priv->underline_set = TRUE;
+      priv->values->appearance.underline = g_value_get_enum (value);
       g_object_notify (object, "underline-set");
       break;
 
     case PROP_RISE:
-      text_tag->rise_set = TRUE;
-      text_tag->values->appearance.rise = g_value_get_int (value);
+      priv->rise_set = TRUE;
+      priv->values->appearance.rise = g_value_get_int (value);
       g_object_notify (object, "rise-set");
       size_changed = TRUE;      
       break;
 
     case PROP_BACKGROUND_FULL_HEIGHT:
-      text_tag->bg_full_height_set = TRUE;
-      text_tag->values->bg_full_height = g_value_get_boolean (value);
+      priv->bg_full_height_set = TRUE;
+      priv->values->bg_full_height = g_value_get_boolean (value);
       g_object_notify (object, "background-full-height-set");
       break;
 
     case PROP_LANGUAGE:
-      text_tag->language_set = TRUE;
-      text_tag->values->language = pango_language_from_string (g_value_get_string (value));
+      priv->language_set = TRUE;
+      priv->values->language = pango_language_from_string (g_value_get_string (value));
       g_object_notify (object, "language-set");
       break;
 
     case PROP_TABS:
-      text_tag->tabs_set = TRUE;
+      priv->tabs_set = TRUE;
 
-      if (text_tag->values->tabs)
-        pango_tab_array_free (text_tag->values->tabs);
+      if (priv->values->tabs)
+        pango_tab_array_free (priv->values->tabs);
 
       /* FIXME I'm not sure if this is a memleak or not */
-      text_tag->values->tabs =
+      priv->values->tabs =
         pango_tab_array_copy (g_value_get_boxed (value));
 
       g_object_notify (object, "tabs-set");
@@ -1289,20 +1416,20 @@ gtk_text_tag_set_property (GObject      *object,
       break;
 
     case PROP_INVISIBLE:
-      text_tag->invisible_set = TRUE;
-      text_tag->values->invisible = g_value_get_boolean (value);
+      priv->invisible_set = TRUE;
+      priv->values->invisible = g_value_get_boolean (value);
       g_object_notify (object, "invisible-set");
       size_changed = TRUE;
       break;
       
     case PROP_PARAGRAPH_BACKGROUND:
       {
-        GdkColor color;
+        GdkRGBA rgba;
 
         if (!g_value_get_string (value))
-          set_pg_bg_color (text_tag, NULL);       /* reset to paragraph_background_set to FALSE */
-        else if (gdk_color_parse (g_value_get_string (value), &color))
-          set_pg_bg_color (text_tag, &color);
+          set_pg_bg_rgba (text_tag, NULL);       /* reset paragraph_background_set to FALSE */
+        else if (gdk_rgba_parse (&rgba, g_value_get_string (value)))
+          set_pg_bg_rgba (text_tag, &rgba);
         else
           g_warning ("Don't know color `%s'", g_value_get_string (value));
 
@@ -1318,8 +1445,16 @@ gtk_text_tag_set_property (GObject      *object,
       }
       break;
 
+    case PROP_PARAGRAPH_BACKGROUND_RGBA:
+      {
+        GdkRGBA *color = g_value_get_boxed (value);
+
+        set_pg_bg_rgba (text_tag, color);
+      }
+      break;
+
     case PROP_ACCUMULATIVE_MARGIN:
-      text_tag->accumulative_margin = g_value_get_boolean (value);
+      priv->accumulative_margin = g_value_get_boolean (value);
       g_object_notify (object, "accumulative-margin");
       size_changed = TRUE;
       break;
@@ -1327,31 +1462,11 @@ gtk_text_tag_set_property (GObject      *object,
       /* Whether the value should be used... */
 
     case PROP_BACKGROUND_SET:
-      text_tag->bg_color_set = g_value_get_boolean (value);
+      priv->bg_color_set = g_value_get_boolean (value);
       break;
 
     case PROP_FOREGROUND_SET:
-      text_tag->fg_color_set = g_value_get_boolean (value);
-      break;
-
-    case PROP_BACKGROUND_STIPPLE_SET:
-      text_tag->bg_stipple_set = g_value_get_boolean (value);
-      if (!text_tag->bg_stipple_set &&
-          text_tag->values->appearance.bg_stipple)
-        {
-          g_object_unref (text_tag->values->appearance.bg_stipple);
-          text_tag->values->appearance.bg_stipple = NULL;
-        }
-      break;
-
-    case PROP_FOREGROUND_STIPPLE_SET:
-      text_tag->fg_stipple_set = g_value_get_boolean (value);
-      if (!text_tag->fg_stipple_set &&
-          text_tag->values->appearance.fg_stipple)
-        {
-          g_object_unref (text_tag->values->appearance.fg_stipple);
-          text_tag->values->appearance.fg_stipple = NULL;
-        }
+      priv->fg_color_set = g_value_get_boolean (value);
       break;
 
     case PROP_FAMILY_SET:
@@ -1362,8 +1477,8 @@ gtk_text_tag_set_property (GObject      *object,
     case PROP_SIZE_SET:
       if (!g_value_get_boolean (value))
 	{
-	  if (text_tag->values->font)
-	    pango_font_description_unset_fields (text_tag->values->font,
+	  if (priv->values->font)
+	    pango_font_description_unset_fields (priv->values->font,
 						 get_property_font_set_mask (prop_id));
 	}
       else
@@ -1371,95 +1486,95 @@ gtk_text_tag_set_property (GObject      *object,
 	  PangoFontMask changed_mask;
 	  
 	  gtk_text_tag_ensure_font (text_tag);
-	  changed_mask = set_font_desc_fields (text_tag->values->font,
+	  changed_mask = set_font_desc_fields (priv->values->font,
 					       get_property_font_set_mask (prop_id));
 	  notify_fields_changed (G_OBJECT (text_tag), changed_mask);
 	}
       break;
 
     case PROP_SCALE_SET:
-      text_tag->scale_set = g_value_get_boolean (value);
+      priv->scale_set = g_value_get_boolean (value);
       size_changed = TRUE;
       break;
       
     case PROP_PIXELS_ABOVE_LINES_SET:
-      text_tag->pixels_above_lines_set = g_value_get_boolean (value);
+      priv->pixels_above_lines_set = g_value_get_boolean (value);
       size_changed = TRUE;
       break;
 
     case PROP_PIXELS_BELOW_LINES_SET:
-      text_tag->pixels_below_lines_set = g_value_get_boolean (value);
+      priv->pixels_below_lines_set = g_value_get_boolean (value);
       size_changed = TRUE;
       break;
 
     case PROP_PIXELS_INSIDE_WRAP_SET:
-      text_tag->pixels_inside_wrap_set = g_value_get_boolean (value);
+      priv->pixels_inside_wrap_set = g_value_get_boolean (value);
       size_changed = TRUE;
       break;
 
     case PROP_EDITABLE_SET:
-      text_tag->editable_set = g_value_get_boolean (value);
+      priv->editable_set = g_value_get_boolean (value);
       break;
 
     case PROP_WRAP_MODE_SET:
-      text_tag->wrap_mode_set = g_value_get_boolean (value);
+      priv->wrap_mode_set = g_value_get_boolean (value);
       size_changed = TRUE;
       break;
 
     case PROP_JUSTIFICATION_SET:
-      text_tag->justification_set = g_value_get_boolean (value);
+      priv->justification_set = g_value_get_boolean (value);
       size_changed = TRUE;
       break;
       
     case PROP_LEFT_MARGIN_SET:
-      text_tag->left_margin_set = g_value_get_boolean (value);
+      priv->left_margin_set = g_value_get_boolean (value);
       size_changed = TRUE;
       break;
 
     case PROP_INDENT_SET:
-      text_tag->indent_set = g_value_get_boolean (value);
+      priv->indent_set = g_value_get_boolean (value);
       size_changed = TRUE;
       break;
 
     case PROP_STRIKETHROUGH_SET:
-      text_tag->strikethrough_set = g_value_get_boolean (value);
+      priv->strikethrough_set = g_value_get_boolean (value);
       break;
 
     case PROP_RIGHT_MARGIN_SET:
-      text_tag->right_margin_set = g_value_get_boolean (value);
+      priv->right_margin_set = g_value_get_boolean (value);
       size_changed = TRUE;
       break;
 
     case PROP_UNDERLINE_SET:
-      text_tag->underline_set = g_value_get_boolean (value);
+      priv->underline_set = g_value_get_boolean (value);
       break;
 
     case PROP_RISE_SET:
-      text_tag->rise_set = g_value_get_boolean (value);
+      priv->rise_set = g_value_get_boolean (value);
       size_changed = TRUE;
       break;
 
     case PROP_BACKGROUND_FULL_HEIGHT_SET:
-      text_tag->bg_full_height_set = g_value_get_boolean (value);
+      priv->bg_full_height_set = g_value_get_boolean (value);
       break;
 
     case PROP_LANGUAGE_SET:
-      text_tag->language_set = g_value_get_boolean (value);
+      priv->language_set = g_value_get_boolean (value);
       size_changed = TRUE;
       break;
 
     case PROP_TABS_SET:
-      text_tag->tabs_set = g_value_get_boolean (value);
+      priv->tabs_set = g_value_get_boolean (value);
       size_changed = TRUE;
       break;
 
     case PROP_INVISIBLE_SET:
-      text_tag->invisible_set = g_value_get_boolean (value);
+      priv->invisible_set = g_value_get_boolean (value);
       size_changed = TRUE;
       break;
       
     case PROP_PARAGRAPH_BACKGROUND_SET:
-      text_tag->pg_bg_color_set = g_value_get_boolean (value);
+      priv->pg_bg_color_set = g_value_get_boolean (value);
       break;
 
     default:
@@ -1477,8 +1592,8 @@ gtk_text_tag_set_property (GObject      *object,
    * signal here, but the two objects are already tightly bound.
    */
 
-  if (text_tag->table)
-    g_signal_emit_by_name (text_tag->table,
+  if (priv->table)
+    g_signal_emit_by_name (priv->table,
                            "tag_changed",
                            text_tag, size_changed);
 }
@@ -1489,32 +1604,29 @@ gtk_text_tag_get_property (GObject      *object,
                            GValue       *value,
                            GParamSpec   *pspec)
 {
-  GtkTextTag *tag;
-
-  tag = GTK_TEXT_TAG (object);
+  GtkTextTag *tag = GTK_TEXT_TAG (object);
+  GtkTextTagPrivate *priv = tag->priv;
 
   switch (prop_id)
     {
     case PROP_NAME:
-      g_value_set_string (value, tag->name);
+      g_value_set_string (value, priv->name);
       break;
 
     case PROP_BACKGROUND_GDK:
-      g_value_set_boxed (value, &tag->values->appearance.bg_color);
+      g_value_set_boxed (value, &priv->values->appearance.bg_color);
+      break;
+
+    case PROP_BACKGROUND_RGBA:
+      g_value_set_boxed (value, priv->values->appearance.rgba[0]);
       break;
 
     case PROP_FOREGROUND_GDK:
-      g_value_set_boxed (value, &tag->values->appearance.fg_color);
+      g_value_set_boxed (value, &priv->values->appearance.fg_color);
       break;
 
-    case PROP_BACKGROUND_STIPPLE:
-      if (tag->bg_stipple_set)
-        g_value_set_object (value, tag->values->appearance.bg_stipple);
-      break;
-
-    case PROP_FOREGROUND_STIPPLE:
-      if (tag->fg_stipple_set)
-        g_value_set_object (value, tag->values->appearance.fg_stipple);
+    case PROP_FOREGROUND_RGBA:
+      g_value_set_boxed (value, priv->values->appearance.rgba[1]);
       break;
 
     case PROP_FONT:
@@ -1522,15 +1634,15 @@ gtk_text_tag_get_property (GObject      *object,
           gchar *str;
 
 	  gtk_text_tag_ensure_font (tag);
-	  
-	  str = pango_font_description_to_string (tag->values->font);
+
+	  str = pango_font_description_to_string (priv->values->font);
           g_value_take_string (value, str);
         }
       break;
 
     case PROP_FONT_DESC:
       gtk_text_tag_ensure_font (tag);
-      g_value_set_boxed (value, tag->values->font);
+      g_value_set_boxed (value, priv->values->font);
       break;
 
     case PROP_FAMILY:
@@ -1544,130 +1656,126 @@ gtk_text_tag_get_property (GObject      *object,
       switch (prop_id)
 	{
 	case PROP_FAMILY:
-	  g_value_set_string (value, pango_font_description_get_family (tag->values->font));
+	  g_value_set_string (value, pango_font_description_get_family (priv->values->font));
 	  break;
 	  
 	case PROP_STYLE:
-	  g_value_set_enum (value, pango_font_description_get_style (tag->values->font));
+	  g_value_set_enum (value, pango_font_description_get_style (priv->values->font));
 	  break;
 	  
 	case PROP_VARIANT:
-	  g_value_set_enum (value, pango_font_description_get_variant (tag->values->font));
+	  g_value_set_enum (value, pango_font_description_get_variant (priv->values->font));
 	  break;
 	  
 	case PROP_WEIGHT:
-	  g_value_set_int (value, pango_font_description_get_weight (tag->values->font));
+	  g_value_set_int (value, pango_font_description_get_weight (priv->values->font));
 	  break;
 	  
 	case PROP_STRETCH:
-	  g_value_set_enum (value, pango_font_description_get_stretch (tag->values->font));
+	  g_value_set_enum (value, pango_font_description_get_stretch (priv->values->font));
 	  break;
 	  
 	case PROP_SIZE:
-	  g_value_set_int (value, pango_font_description_get_size (tag->values->font));
+	  g_value_set_int (value, pango_font_description_get_size (priv->values->font));
 	  break;
 	  
 	case PROP_SIZE_POINTS:
-	  g_value_set_double (value, ((double)pango_font_description_get_size (tag->values->font)) / (double)PANGO_SCALE);
+	  g_value_set_double (value, ((double)pango_font_description_get_size (priv->values->font)) / (double)PANGO_SCALE);
 	  break;
 	}
       break;
       
     case PROP_SCALE:
-      g_value_set_double (value, tag->values->font_scale);
+      g_value_set_double (value, priv->values->font_scale);
       break;
       
     case PROP_PIXELS_ABOVE_LINES:
-      g_value_set_int (value,  tag->values->pixels_above_lines);
+      g_value_set_int (value,  priv->values->pixels_above_lines);
       break;
 
     case PROP_PIXELS_BELOW_LINES:
-      g_value_set_int (value,  tag->values->pixels_below_lines);
+      g_value_set_int (value,  priv->values->pixels_below_lines);
       break;
 
     case PROP_PIXELS_INSIDE_WRAP:
-      g_value_set_int (value,  tag->values->pixels_inside_wrap);
+      g_value_set_int (value,  priv->values->pixels_inside_wrap);
       break;
 
     case PROP_EDITABLE:
-      g_value_set_boolean (value, tag->values->editable);
+      g_value_set_boolean (value, priv->values->editable);
       break;
 
     case PROP_WRAP_MODE:
-      g_value_set_enum (value, tag->values->wrap_mode);
+      g_value_set_enum (value, priv->values->wrap_mode);
       break;
 
     case PROP_JUSTIFICATION:
-      g_value_set_enum (value, tag->values->justification);
+      g_value_set_enum (value, priv->values->justification);
       break;
 
     case PROP_DIRECTION:
-      g_value_set_enum (value, tag->values->direction);
+      g_value_set_enum (value, priv->values->direction);
       break;
       
     case PROP_LEFT_MARGIN:
-      g_value_set_int (value,  tag->values->left_margin);
+      g_value_set_int (value,  priv->values->left_margin);
       break;
 
     case PROP_INDENT:
-      g_value_set_int (value,  tag->values->indent);
+      g_value_set_int (value,  priv->values->indent);
       break;
 
     case PROP_STRIKETHROUGH:
-      g_value_set_boolean (value, tag->values->appearance.strikethrough);
+      g_value_set_boolean (value, priv->values->appearance.strikethrough);
       break;
 
     case PROP_RIGHT_MARGIN:
-      g_value_set_int (value, tag->values->right_margin);
+      g_value_set_int (value, priv->values->right_margin);
       break;
 
     case PROP_UNDERLINE:
-      g_value_set_enum (value, tag->values->appearance.underline);
+      g_value_set_enum (value, priv->values->appearance.underline);
       break;
 
     case PROP_RISE:
-      g_value_set_int (value, tag->values->appearance.rise);
+      g_value_set_int (value, priv->values->appearance.rise);
       break;
 
     case PROP_BACKGROUND_FULL_HEIGHT:
-      g_value_set_boolean (value, tag->values->bg_full_height);
+      g_value_set_boolean (value, priv->values->bg_full_height);
       break;
 
     case PROP_LANGUAGE:
-      g_value_set_string (value, pango_language_to_string (tag->values->language));
+      g_value_set_string (value, pango_language_to_string (priv->values->language));
       break;
 
     case PROP_TABS:
-      if (tag->values->tabs)
-        g_value_set_boxed (value, tag->values->tabs);
+      if (priv->values->tabs)
+        g_value_set_boxed (value, priv->values->tabs);
       break;
 
     case PROP_INVISIBLE:
-      g_value_set_boolean (value, tag->values->invisible);
+      g_value_set_boolean (value, priv->values->invisible);
       break;
       
     case PROP_PARAGRAPH_BACKGROUND_GDK:
-      g_value_set_boxed (value, tag->values->pg_bg_color);
+      g_value_set_boxed (value, priv->values->pg_bg_color);
+      break;
+
+    case PROP_PARAGRAPH_BACKGROUND_RGBA:
+      g_value_set_boxed (value, priv->values->pg_bg_rgba);
       break;
 
     case PROP_ACCUMULATIVE_MARGIN:
-      g_value_set_boolean (value, tag->accumulative_margin);
+      g_value_set_boolean (value, priv->accumulative_margin);
       break;
 
     case PROP_BACKGROUND_SET:
-      g_value_set_boolean (value, tag->bg_color_set);
+      g_value_set_boolean (value, priv->bg_color_set);
       break;
 
     case PROP_FOREGROUND_SET:
-      g_value_set_boolean (value, tag->fg_color_set);
-      break;
-
-    case PROP_BACKGROUND_STIPPLE_SET:
-      g_value_set_boolean (value, tag->bg_stipple_set);
-      break;
-
-    case PROP_FOREGROUND_STIPPLE_SET:
-      g_value_set_boolean (value, tag->fg_stipple_set);
+      g_value_set_boolean (value, priv->fg_color_set);
       break;
 
     case PROP_FAMILY_SET:
@@ -1677,7 +1785,7 @@ gtk_text_tag_get_property (GObject      *object,
     case PROP_STRETCH_SET:
     case PROP_SIZE_SET:
       {
-	PangoFontMask set_mask = tag->values->font ? pango_font_description_get_set_fields (tag->values->font) : 0;
+	PangoFontMask set_mask = priv->values->font ? pango_font_description_get_set_fields (priv->values->font) : 0;
 	PangoFontMask test_mask = get_property_font_set_mask (prop_id);
 	g_value_set_boolean (value, (set_mask & test_mask) != 0);
 
@@ -1685,81 +1793,82 @@ gtk_text_tag_get_property (GObject      *object,
       }
 
     case PROP_SCALE_SET:
-      g_value_set_boolean (value, tag->scale_set);
+      g_value_set_boolean (value, priv->scale_set);
       break;
       
     case PROP_PIXELS_ABOVE_LINES_SET:
-      g_value_set_boolean (value, tag->pixels_above_lines_set);
+      g_value_set_boolean (value, priv->pixels_above_lines_set);
       break;
 
     case PROP_PIXELS_BELOW_LINES_SET:
-      g_value_set_boolean (value, tag->pixels_below_lines_set);
+      g_value_set_boolean (value, priv->pixels_below_lines_set);
       break;
 
     case PROP_PIXELS_INSIDE_WRAP_SET:
-      g_value_set_boolean (value, tag->pixels_inside_wrap_set);
+      g_value_set_boolean (value, priv->pixels_inside_wrap_set);
       break;
 
     case PROP_EDITABLE_SET:
-      g_value_set_boolean (value, tag->editable_set);
+      g_value_set_boolean (value, priv->editable_set);
       break;
 
     case PROP_WRAP_MODE_SET:
-      g_value_set_boolean (value, tag->wrap_mode_set);
+      g_value_set_boolean (value, priv->wrap_mode_set);
       break;
 
     case PROP_JUSTIFICATION_SET:
-      g_value_set_boolean (value, tag->justification_set);
+      g_value_set_boolean (value, priv->justification_set);
       break;
       
     case PROP_LEFT_MARGIN_SET:
-      g_value_set_boolean (value, tag->left_margin_set);
+      g_value_set_boolean (value, priv->left_margin_set);
       break;
 
     case PROP_INDENT_SET:
-      g_value_set_boolean (value, tag->indent_set);
+      g_value_set_boolean (value, priv->indent_set);
       break;
 
     case PROP_STRIKETHROUGH_SET:
-      g_value_set_boolean (value, tag->strikethrough_set);
+      g_value_set_boolean (value, priv->strikethrough_set);
       break;
 
     case PROP_RIGHT_MARGIN_SET:
-      g_value_set_boolean (value, tag->right_margin_set);
+      g_value_set_boolean (value, priv->right_margin_set);
       break;
 
     case PROP_UNDERLINE_SET:
-      g_value_set_boolean (value, tag->underline_set);
+      g_value_set_boolean (value, priv->underline_set);
       break;
 
     case PROP_RISE_SET:
-      g_value_set_boolean (value, tag->rise_set);
+      g_value_set_boolean (value, priv->rise_set);
       break;
 
     case PROP_BACKGROUND_FULL_HEIGHT_SET:
-      g_value_set_boolean (value, tag->bg_full_height_set);
+      g_value_set_boolean (value, priv->bg_full_height_set);
       break;
 
     case PROP_LANGUAGE_SET:
-      g_value_set_boolean (value, tag->language_set);
+      g_value_set_boolean (value, priv->language_set);
       break;
 
     case PROP_TABS_SET:
-      g_value_set_boolean (value, tag->tabs_set);
+      g_value_set_boolean (value, priv->tabs_set);
       break;
 
     case PROP_INVISIBLE_SET:
-      g_value_set_boolean (value, tag->invisible_set);
+      g_value_set_boolean (value, priv->invisible_set);
       break;
       
     case PROP_PARAGRAPH_BACKGROUND_SET:
-      g_value_set_boolean (value, tag->pg_bg_color_set);
+      g_value_set_boolean (value, priv->pg_bg_color_set);
       break;
 
     case PROP_BACKGROUND:
     case PROP_FOREGROUND:
     case PROP_PARAGRAPH_BACKGROUND:
       g_warning ("'foreground', 'background' and 'paragraph_background' properties are not readable, use 'foreground_gdk', 'background_gdk' and 'paragraph_background_gdk'");
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -1779,10 +1888,11 @@ typedef struct {
 static void
 delta_priority_foreach (GtkTextTag *tag, gpointer user_data)
 {
+  GtkTextTagPrivate *priv = tag->priv;
   DeltaData *dd = user_data;
 
-  if (tag->priority >= dd->low && tag->priority <= dd->high)
-    tag->priority += dd->delta;
+  if (priv->priority >= dd->low && priv->priority <= dd->high)
+    priv->priority += dd->delta;
 }
 
 /**
@@ -1798,7 +1908,7 @@ gtk_text_tag_get_priority (GtkTextTag *tag)
 {
   g_return_val_if_fail (GTK_IS_TEXT_TAG (tag), 0);
 
-  return tag->priority;
+  return tag->priv->priority;
 }
 
 /**
@@ -1822,34 +1932,38 @@ void
 gtk_text_tag_set_priority (GtkTextTag *tag,
                            gint        priority)
 {
+  GtkTextTagPrivate *priv;
   DeltaData dd;
 
   g_return_if_fail (GTK_IS_TEXT_TAG (tag));
-  g_return_if_fail (tag->table != NULL);
-  g_return_if_fail (priority >= 0);
-  g_return_if_fail (priority < gtk_text_tag_table_get_size (tag->table));
 
-  if (priority == tag->priority)
+  priv = tag->priv;
+
+  g_return_if_fail (priv->table != NULL);
+  g_return_if_fail (priority >= 0);
+  g_return_if_fail (priority < gtk_text_tag_table_get_size (priv->table));
+
+  if (priority == priv->priority)
     return;
 
-  if (priority < tag->priority)
+  if (priority < priv->priority)
     {
       dd.low = priority;
-      dd.high = tag->priority - 1;
+      dd.high = priv->priority - 1;
       dd.delta = 1;
     }
   else
     {
-      dd.low = tag->priority + 1;
+      dd.low = priv->priority + 1;
       dd.high = priority;
       dd.delta = -1;
     }
 
-  gtk_text_tag_table_foreach (tag->table,
+  gtk_text_tag_table_foreach (priv->table,
                               delta_priority_foreach,
                               &dd);
 
-  tag->priority = priority;
+  priv->priority = priority;
 }
 
 /**
@@ -1893,7 +2007,7 @@ tag_sort_func (gconstpointer first, gconstpointer second)
 
   tag1 = * (GtkTextTag **) first;
   tag2 = * (GtkTextTag **) second;
-  return tag1->priority - tag2->priority;
+  return tag1->priv->priority - tag2->priv->priority;
 }
 
 void
@@ -1915,10 +2029,10 @@ _gtk_text_tag_array_sort (GtkTextTag** tag_array_p,
 
     for (i = len-1; i > 0; i--, iter++) {
       maxPtrPtr = tag = iter;
-      prio = tag[0]->priority;
+      prio = tag[0]->priv->priority;
       for (j = i, tag++; j > 0; j--, tag++) {
-        if (tag[0]->priority < prio) {
-          prio = tag[0]->priority;
+        if (tag[0]->priv->priority < prio) {
+          prio = tag[0]->priv->priority;
           maxPtrPtr = tag;
         }
       }
@@ -1946,412 +2060,3 @@ _gtk_text_tag_array_sort (GtkTextTag** tag_array_p,
 #endif
 }
 
-/*
- * Attributes
- */
-
-/**
- * gtk_text_attributes_new:
- * 
- * Creates a #GtkTextAttributes, which describes
- * a set of properties on some text.
- * 
- * Return value: a new #GtkTextAttributes
- **/
-GtkTextAttributes*
-gtk_text_attributes_new (void)
-{
-  GtkTextAttributes *values;
-
-  values = g_new0 (GtkTextAttributes, 1);
-
-  /* 0 is a valid value for most of the struct */
-
-  values->refcount = 1;
-
-  values->language = gtk_get_default_language ();
-
-  values->font_scale = 1.0;
-
-  values->editable = TRUE;
-      
-  return values;
-}
-
-/**
- * gtk_text_attributes_copy:
- * @src: a #GtkTextAttributes to be copied
- * 
- * Copies @src and returns a new #GtkTextAttributes.
- * 
- * Return value: a copy of @src
- **/
-GtkTextAttributes*
-gtk_text_attributes_copy (GtkTextAttributes *src)
-{
-  GtkTextAttributes *dest;
-
-  dest = gtk_text_attributes_new ();
-  gtk_text_attributes_copy_values (src, dest);
-
-  return dest;
-}
-
-GType
-gtk_text_attributes_get_type (void)
-{
-  static GType our_type = 0;
-  
-  if (our_type == 0)
-    our_type = g_boxed_type_register_static (I_("GtkTextAttributes"),
-					     (GBoxedCopyFunc) gtk_text_attributes_ref,
-					     (GBoxedFreeFunc) gtk_text_attributes_unref);
-
-  return our_type;
-}
-
-/**
- * gtk_text_attributes_copy_values:
- * @src: a #GtkTextAttributes
- * @dest: another #GtkTextAttributes
- * 
- * Copies the values from @src to @dest so that @dest has the same values
- * as @src. Frees existing values in @dest.
- **/
-void
-gtk_text_attributes_copy_values (GtkTextAttributes *src,
-                                 GtkTextAttributes *dest)
-{
-  guint orig_refcount;
-
-  g_return_if_fail (!dest->realized);
-
-  if (src == dest)
-    return;
-
-  /* Add refs */
-
-  if (src->appearance.bg_stipple)
-    g_object_ref (src->appearance.bg_stipple);
-
-  if (src->appearance.fg_stipple)
-    g_object_ref (src->appearance.fg_stipple);
-
-  /* Remove refs */
-
-  if (dest->appearance.bg_stipple)
-    g_object_unref (dest->appearance.bg_stipple);
-
-  if (dest->appearance.fg_stipple)
-    g_object_unref (dest->appearance.fg_stipple);
-
-  if (dest->font)
-    pango_font_description_free (dest->font);
-  
-  /* Copy */
-  orig_refcount = dest->refcount;
-
-  *dest = *src;
-
-  if (src->tabs)
-    dest->tabs = pango_tab_array_copy (src->tabs);
-
-  dest->language = src->language;
-
-  if (dest->font)
-    dest->font = pango_font_description_copy (src->font);
-  
-  if (src->pg_bg_color)
-    dest->pg_bg_color = gdk_color_copy (src->pg_bg_color);
-
-  dest->refcount = orig_refcount;
-  dest->realized = FALSE;
-}
-
-/**
- * gtk_text_attributes_ref:
- * @values: a #GtkTextAttributes
- * 
- * Increments the reference count on @values.
- *
- * Returns: the #GtkTextAttributes that were passed in
- **/
-GtkTextAttributes *
-gtk_text_attributes_ref (GtkTextAttributes *values)
-{
-  g_return_val_if_fail (values != NULL, NULL);
-
-  values->refcount += 1;
-
-  return values;
-}
-
-/**
- * gtk_text_attributes_unref:
- * @values: a #GtkTextAttributes
- * 
- * Decrements the reference count on @values, freeing the structure
- * if the reference count reaches 0.
- **/
-void
-gtk_text_attributes_unref (GtkTextAttributes *values)
-{
-  g_return_if_fail (values != NULL);
-  g_return_if_fail (values->refcount > 0);
-
-  values->refcount -= 1;
-
-  if (values->refcount == 0)
-    {
-      g_assert (!values->realized);
-
-      if (values->appearance.bg_stipple)
-        g_object_unref (values->appearance.bg_stipple);
-
-      if (values->appearance.fg_stipple)
-        g_object_unref (values->appearance.fg_stipple);
-
-      if (values->tabs)
-        pango_tab_array_free (values->tabs);
-
-      if (values->font)
-	pango_font_description_free (values->font);
-
-      if (values->pg_bg_color)
-	gdk_color_free (values->pg_bg_color);
-
-      g_free (values);
-    }
-}
-
-void
-_gtk_text_attributes_realize (GtkTextAttributes *values,
-                              GdkColormap *cmap,
-                              GdkVisual *visual)
-{
-  g_return_if_fail (values != NULL);
-  g_return_if_fail (values->refcount > 0);
-  g_return_if_fail (!values->realized);
-
-  /* It is wrong to use this colormap, FIXME */
-  gdk_colormap_alloc_color (cmap,
-                            &values->appearance.fg_color,
-                            FALSE, TRUE);
-
-  gdk_colormap_alloc_color (cmap,
-                            &values->appearance.bg_color,
-                            FALSE, TRUE);
-
-  if (values->pg_bg_color)
-    gdk_colormap_alloc_color (cmap,
-			      values->pg_bg_color,
-			      FALSE, TRUE);
-
-  values->realized = TRUE;
-}
-
-void
-_gtk_text_attributes_unrealize (GtkTextAttributes *values,
-                                GdkColormap *cmap,
-                                GdkVisual *visual)
-{
-  g_return_if_fail (values != NULL);
-  g_return_if_fail (values->refcount > 0);
-  g_return_if_fail (values->realized);
-
-  gdk_colormap_free_colors (cmap,
-                            &values->appearance.fg_color, 1);
-
-
-  gdk_colormap_free_colors (cmap,
-                            &values->appearance.bg_color, 1);
-
-  values->appearance.fg_color.pixel = 0;
-  values->appearance.bg_color.pixel = 0;
-
-  if (values->pg_bg_color)
-    {
-      gdk_colormap_free_colors (cmap, values->pg_bg_color, 1);
-      
-      values->pg_bg_color->pixel = 0;
-    }
-
-  values->realized = FALSE;
-}
-
-void
-_gtk_text_attributes_fill_from_tags (GtkTextAttributes *dest,
-                                     GtkTextTag**       tags,
-                                     guint              n_tags)
-{
-  guint n = 0;
-
-  guint left_margin_accumulative = 0;
-  guint right_margin_accumulative = 0;
-
-  g_return_if_fail (!dest->realized);
-
-  while (n < n_tags)
-    {
-      GtkTextTag *tag = tags[n];
-      GtkTextAttributes *vals = tag->values;
-
-      g_assert (tag->table != NULL);
-      if (n > 0)
-        g_assert (tags[n]->priority > tags[n-1]->priority);
-
-      if (tag->bg_color_set)
-        {
-          dest->appearance.bg_color = vals->appearance.bg_color;
-
-          dest->appearance.draw_bg = TRUE;
-        }
-      if (tag->fg_color_set)
-        dest->appearance.fg_color = vals->appearance.fg_color;
-      
-      if (tag->pg_bg_color_set)
-        {
-          dest->pg_bg_color = gdk_color_copy (vals->pg_bg_color);
-        }
-
-      if (tag->bg_stipple_set)
-        {
-          g_object_ref (vals->appearance.bg_stipple);
-          if (dest->appearance.bg_stipple)
-            g_object_unref (dest->appearance.bg_stipple);
-          dest->appearance.bg_stipple = vals->appearance.bg_stipple;
-
-          dest->appearance.draw_bg = TRUE;
-        }
-
-      if (tag->fg_stipple_set)
-        {
-          g_object_ref (vals->appearance.fg_stipple);
-          if (dest->appearance.fg_stipple)
-            g_object_unref (dest->appearance.fg_stipple);
-          dest->appearance.fg_stipple = vals->appearance.fg_stipple;
-        }
-
-      if (vals->font)
-	{
-	  if (dest->font)
-	    pango_font_description_merge (dest->font, vals->font, TRUE);
-	  else
-	    dest->font = pango_font_description_copy (vals->font);
-	}
-
-      /* multiply all the scales together to get a composite */
-      if (tag->scale_set)
-        dest->font_scale *= vals->font_scale;
-      
-      if (tag->justification_set)
-        dest->justification = vals->justification;
-
-      if (vals->direction != GTK_TEXT_DIR_NONE)
-        dest->direction = vals->direction;
-
-      if (tag->left_margin_set) 
-        {
-          if (tag->accumulative_margin)
-            left_margin_accumulative += vals->left_margin;
-          else
-            dest->left_margin = vals->left_margin;
-        }
-
-      if (tag->indent_set)
-        dest->indent = vals->indent;
-
-      if (tag->rise_set)
-        dest->appearance.rise = vals->appearance.rise;
-
-      if (tag->right_margin_set) 
-        {
-          if (tag->accumulative_margin)
-            right_margin_accumulative += vals->right_margin;
-          else
-            dest->right_margin = vals->right_margin;
-        }
-
-      if (tag->pixels_above_lines_set)
-        dest->pixels_above_lines = vals->pixels_above_lines;
-
-      if (tag->pixels_below_lines_set)
-        dest->pixels_below_lines = vals->pixels_below_lines;
-
-      if (tag->pixels_inside_wrap_set)
-        dest->pixels_inside_wrap = vals->pixels_inside_wrap;
-
-      if (tag->tabs_set)
-        {
-          if (dest->tabs)
-            pango_tab_array_free (dest->tabs);
-          dest->tabs = pango_tab_array_copy (vals->tabs);
-        }
-
-      if (tag->wrap_mode_set)
-        dest->wrap_mode = vals->wrap_mode;
-
-      if (tag->underline_set)
-        dest->appearance.underline = vals->appearance.underline;
-
-      if (tag->strikethrough_set)
-        dest->appearance.strikethrough = vals->appearance.strikethrough;
-
-      if (tag->invisible_set)
-        dest->invisible = vals->invisible;
-
-      if (tag->editable_set)
-        dest->editable = vals->editable;
-
-      if (tag->bg_full_height_set)
-        dest->bg_full_height = vals->bg_full_height;
-
-      if (tag->language_set)
-	dest->language = vals->language;
-
-      ++n;
-    }
-
-  dest->left_margin += left_margin_accumulative;
-  dest->right_margin += right_margin_accumulative;
-}
-
-gboolean
-_gtk_text_tag_affects_size (GtkTextTag *tag)
-{
-  g_return_val_if_fail (GTK_IS_TEXT_TAG (tag), FALSE);
-
-  return
-    (tag->values->font && pango_font_description_get_set_fields (tag->values->font) != 0) ||
-    tag->scale_set ||
-    tag->justification_set ||
-    tag->left_margin_set ||
-    tag->indent_set ||
-    tag->rise_set ||
-    tag->right_margin_set ||
-    tag->pixels_above_lines_set ||
-    tag->pixels_below_lines_set ||
-    tag->pixels_inside_wrap_set ||
-    tag->tabs_set ||
-    tag->underline_set ||
-    tag->wrap_mode_set ||
-    tag->invisible_set;
-}
-
-gboolean
-_gtk_text_tag_affects_nonsize_appearance (GtkTextTag *tag)
-{
-  g_return_val_if_fail (GTK_IS_TEXT_TAG (tag), FALSE);
-
-  return
-    tag->bg_color_set ||
-    tag->bg_stipple_set ||
-    tag->fg_color_set ||
-    tag->fg_stipple_set ||
-    tag->strikethrough_set ||
-    tag->bg_full_height_set ||
-    tag->pg_bg_color_set;
-}
-
-#define __GTK_TEXT_TAG_C__
-#include "gtkaliasdef.c"

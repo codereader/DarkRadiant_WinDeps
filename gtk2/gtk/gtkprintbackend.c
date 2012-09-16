@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -25,13 +23,11 @@
 
 #include "gtkintl.h"
 #include "gtkmodules.h"
+#include "gtkmodulesprivate.h"
 #include "gtkmarshalers.h"
 #include "gtkprivate.h"
 #include "gtkprintbackend.h"
-#include "gtkalias.h"
 
-#define GTK_PRINT_BACKEND_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), GTK_TYPE_PRINT_BACKEND, GtkPrintBackendPrivate))
 
 static void gtk_print_backend_dispose      (GObject      *object);
 static void gtk_print_backend_set_property (GObject      *object,
@@ -198,9 +194,7 @@ gtk_print_backend_set_property (GObject      *object,
                                 GParamSpec   *pspec)
 {
   GtkPrintBackend *backend = GTK_PRINT_BACKEND (object);
-  GtkPrintBackendPrivate *priv;
-
-  priv = backend->priv = GTK_PRINT_BACKEND_GET_PRIVATE (backend); 
+  GtkPrintBackendPrivate *priv = backend->priv;
 
   switch (prop_id)
     {
@@ -220,9 +214,7 @@ gtk_print_backend_get_property (GObject    *object,
                                 GParamSpec *pspec)
 {
   GtkPrintBackend *backend = GTK_PRINT_BACKEND (object);
-  GtkPrintBackendPrivate *priv;
-
-  priv = backend->priv = GTK_PRINT_BACKEND_GET_PRIVATE (backend); 
+  GtkPrintBackendPrivate *priv = backend->priv;
 
   switch (prop_id)
     {
@@ -304,7 +296,7 @@ _gtk_print_backend_create (const gchar *backend_name)
 }
 
 /**
- * gtk_printer_backend_load_modules:
+ * gtk_print_backend_load_modules:
  *
  * Return value: (element-type GtkPrintBackend) (transfer container):
  */
@@ -455,7 +447,9 @@ gtk_print_backend_init (GtkPrintBackend *backend)
 {
   GtkPrintBackendPrivate *priv;
 
-  priv = backend->priv = GTK_PRINT_BACKEND_GET_PRIVATE (backend); 
+  priv = backend->priv = G_TYPE_INSTANCE_GET_PRIVATE (backend,
+                                                      GTK_TYPE_PRINT_BACKEND,
+                                                      GtkPrintBackendPrivate);
 
   priv->printers = g_hash_table_new_full (g_str_hash, g_str_equal, 
 					  (GDestroyNotify) g_free,
@@ -594,7 +588,11 @@ gtk_print_backend_set_list_done (GtkPrintBackend *backend)
 /**
  * gtk_print_backend_get_printer_list:
  *
+ * Returns the current list of printers.
+ *
  * Return value: (element-type GtkPrinter) (transfer container):
+ *   A list of #GtkPrinter objects. The list should be freed
+ *   with g_list_free().
  */
 GList *
 gtk_print_backend_get_printer_list (GtkPrintBackend *backend)
@@ -734,6 +732,7 @@ request_password (GtkPrintBackend  *backend,
   GtkPrintBackendPrivate *priv = backend->priv;
   GtkWidget *dialog, *box, *main_box, *label, *icon, *vbox, *entry;
   GtkWidget *focus = NULL;
+  GtkWidget *content_area;
   gchar     *markup;
   gint       length;
   gint       i;
@@ -752,18 +751,17 @@ request_password (GtkPrintBackend  *backend,
                                          NULL);
 
   gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
-  gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 
-  main_box = gtk_hbox_new (FALSE, 0);
+  main_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 
   /* Left */
   icon = gtk_image_new_from_stock (GTK_STOCK_DIALOG_AUTHENTICATION, GTK_ICON_SIZE_DIALOG);
-  gtk_misc_set_alignment (GTK_MISC (icon), 0.5, 0.0);
-  gtk_misc_set_padding (GTK_MISC (icon), 6, 6);
-
+  gtk_widget_set_halign (icon, GTK_ALIGN_CENTER);
+  gtk_widget_set_valign (icon, GTK_ALIGN_START);
+  g_object_set (icon, "margin", 6, NULL);
 
   /* Right */
-  vbox = gtk_vbox_new (FALSE, 0);
+  vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
   gtk_widget_set_size_request (GTK_WIDGET (vbox), 320, -1);
 
   /* Right - 1. */
@@ -776,7 +774,8 @@ request_password (GtkPrintBackend  *backend,
 
 
   /* Packing */
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), main_box, TRUE, FALSE, 0);
+  content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+  gtk_box_pack_start (GTK_BOX (content_area), main_box, TRUE, FALSE, 0);
 
   gtk_box_pack_start (GTK_BOX (main_box), icon, FALSE, FALSE, 6);
   gtk_box_pack_start (GTK_BOX (main_box), vbox, FALSE, FALSE, 6);
@@ -789,10 +788,12 @@ request_password (GtkPrintBackend  *backend,
       priv->auth_info[i] = g_strdup (ai_default[i]);
       if (ai_display[i] != NULL)
         {
-          box = gtk_hbox_new (TRUE, 0);
+          box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+          gtk_box_set_homogeneous (GTK_BOX (box), TRUE);
 
           label = gtk_label_new (ai_display[i]);
-          gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+          gtk_widget_set_halign (label, GTK_ALIGN_START);
+          gtk_widget_set_valign (label, GTK_ALIGN_CENTER);
 
           entry = gtk_entry_new ();
           focus = entry;
@@ -837,7 +838,3 @@ gtk_print_backend_destroy (GtkPrintBackend *print_backend)
    */
   g_object_run_dispose (G_OBJECT (print_backend));
 }
-
-
-#define __GTK_PRINT_BACKEND_C__
-#include "gtkaliasdef.c"

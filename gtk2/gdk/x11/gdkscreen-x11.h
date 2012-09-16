@@ -1,7 +1,7 @@
 /*
  * gdkscreen-x11.h
- * 
- * Copyright 2001 Sun Microsystems Inc. 
+ *
+ * Copyright 2001 Sun Microsystems Inc.
  *
  * Erwann Chenede <erwann.chenede@sun.com>
  *
@@ -16,50 +16,51 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __GDK_SCREEN_X11_H__
-#define __GDK_SCREEN_X11_H__
+#ifndef __GDK_X11_SCREEN__
+#define __GDK_X11_SCREEN__
 
-#include "gdkprivate-x11.h"
+#include "gdkscreenprivate.h"
+#include "gdkx11screen.h"
+#include "gdkvisual.h"
 #include "xsettings-client.h"
-#include <gdk/gdkscreen.h>
-#include <gdk/gdkvisual.h>
 #include <X11/X.h>
 #include <X11/Xlib.h>
 
 G_BEGIN_DECLS
   
-typedef struct _GdkScreenX11 GdkScreenX11;
-typedef struct _GdkScreenX11Class GdkScreenX11Class;
-
-#define GDK_TYPE_SCREEN_X11              (_gdk_screen_x11_get_type ())
-#define GDK_SCREEN_X11(object)           (G_TYPE_CHECK_INSTANCE_CAST ((object), GDK_TYPE_SCREEN_X11, GdkScreenX11))
-#define GDK_SCREEN_X11_CLASS(klass)      (G_TYPE_CHECK_CLASS_CAST ((klass), GDK_TYPE_SCREEN_X11, GdkScreenX11Class))
-#define GDK_IS_SCREEN_X11(object)        (G_TYPE_CHECK_INSTANCE_TYPE ((object), GDK_TYPE_SCREEN_X11))
-#define GDK_IS_SCREEN_X11_CLASS(klass)   (G_TYPE_CHECK_CLASS_TYPE ((klass), GDK_TYPE_SCREEN_X11))
-#define GDK_SCREEN_X11_GET_CLASS(obj)    (G_TYPE_INSTANCE_GET_CLASS ((obj), GDK_TYPE_SCREEN_X11, GdkScreenX11Class))
-
 typedef struct _GdkX11Monitor GdkX11Monitor;
 
-struct _GdkScreenX11
+struct _GdkX11Screen
 {
   GdkScreen parent_instance;
-  
+
   GdkDisplay *display;
   Display *xdisplay;
   Screen *xscreen;
-  gint screen_num;
   Window xroot_window;
   GdkWindow *root_window;
+  gint screen_num;
+  /* Xinerama/RandR 1.2 */
+  gint  n_monitors;
+  GdkX11Monitor *monitors;
+  gint primary_monitor;
+
+  /* Xft resources for the display, used for default values for
+   * the Xft/ XSETTINGS
+   */
+  gint xft_hintstyle;
+  gint xft_rgba;
+  gint xft_dpi;
 
   /* Window manager */
+  GdkAtom cm_selection_atom;
   long last_wmspec_check_time;
   Window wmspec_check_window;
   char *window_manager_name;
+
   /* TRUE if wmspec_check_window has changed since last
    * fetch of _NET_SUPPORTED
    */
@@ -68,58 +69,38 @@ struct _GdkScreenX11
    * fetch of window manager name
    */
   guint need_refetch_wm_name : 1;
-  
+  guint xsettings_in_init : 1;
+  guint is_composited : 1;
+  guint xft_init : 1; /* Whether we've intialized these values yet */
+  guint xft_antialias : 1;
+  guint xft_hinting : 1;
+
   /* Visual Part */
-  GdkVisualPrivate *system_visual;
-  GdkVisualPrivate **visuals;
   gint nvisuals;
+  GdkVisual **visuals;
+  GdkVisual *system_visual;
   gint available_depths[7];
-  gint navailable_depths;
   GdkVisualType available_types[6];
-  gint navailable_types;
+  gint16 navailable_depths;
+  gint16 navailable_types;
   GHashTable *visual_hash;
-  GHashTable *colormap_hash;
   GdkVisual *rgba_visual;
-  
-  /* Colormap Part */
-  GdkColormap *default_colormap;
-  GdkColormap *system_colormap;
-  GdkColormap *rgba_colormap;
 
   /* X settings */
   XSettingsClient *xsettings_client;
-  guint xsettings_in_init : 1;
-  
-  /* Xinerama/RandR 1.2 */
-  gint		 n_monitors;
-  GdkX11Monitor	*monitors;
-  gint           primary_monitor;
 
-  /* Pango renderer object singleton */
-  PangoRenderer *renderer;
-
-  /* Xft resources for the display, used for default values for
-   * the Xft/ XSETTINGS
-   */
-  gboolean xft_init;		/* Whether we've intialized these values yet */
-  gboolean xft_antialias;
-  gboolean xft_hinting;
-  gint xft_hintstyle;
-  gint xft_rgba;
-  gint xft_dpi;
-
-  GdkAtom cm_selection_atom;
-  gboolean is_composited;
+  /* cache for window->translate vfunc */
+  GC subwindow_gcs[32];
 };
-  
-struct _GdkScreenX11Class
+
+struct _GdkX11ScreenClass
 {
   GdkScreenClass parent_class;
 
-  void (* window_manager_changed) (GdkScreenX11 *screen_x11);
+  void (* window_manager_changed) (GdkX11Screen *x11_screen);
 };
 
-GType       _gdk_screen_x11_get_type (void);
+GType       _gdk_x11_screen_get_type (void);
 GdkScreen * _gdk_x11_screen_new      (GdkDisplay *display,
 				      gint	  screen_number);
 
@@ -132,4 +113,4 @@ void _gdk_x11_screen_process_owner_change   (GdkScreen *screen,
 
 G_END_DECLS
 
-#endif /* __GDK_SCREEN_X11_H__ */
+#endif /* __GDK_X11_SCREEN__ */

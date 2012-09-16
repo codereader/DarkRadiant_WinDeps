@@ -15,9 +15,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -26,14 +24,12 @@
 
 #include "gtkshow.h"
 
-#include "gtkalias.h"
-
-
 /**
  * gtk_show_uri:
- * @screen: (allow-none): screen to show the uri on or %NULL for the default screen
+ * @screen: (allow-none): screen to show the uri on
+ *     or %NULL for the default screen
  * @uri: the uri to show
- * @timestamp: a timestamp to prevent focus stealing.
+ * @timestamp: a timestamp to prevent focus stealing
  * @error: a #GError that is returned in case of errors
  *
  * This is a convenience function for launching the default application
@@ -53,7 +49,7 @@
  * This function can be used as a replacement for gnome_vfs_url_show()
  * and gnome_url_show().
  *
- * Returns: %TRUE on success, %FALSE on error.
+ * Returns: %TRUE on success, %FALSE on error
  *
  * Since: 2.14
  */
@@ -65,10 +61,16 @@ gtk_show_uri (GdkScreen    *screen,
 {
   GdkAppLaunchContext *context;
   gboolean ret;
+  GdkDisplay *display;
 
   g_return_val_if_fail (uri != NULL, FALSE);
 
-  context = gdk_app_launch_context_new ();
+  if (screen != NULL)
+    display = gdk_screen_get_display (screen);
+  else
+    display = gdk_display_get_default ();
+
+  context = gdk_display_get_app_launch_context (display);
   gdk_app_launch_context_set_screen (context, screen);
   gdk_app_launch_context_set_timestamp (context, timestamp);
 
@@ -77,7 +79,3 @@ gtk_show_uri (GdkScreen    *screen,
 
   return ret;
 }
-
-
-#define __GTK_SHOW_C__
-#include "gtkaliasdef.c"

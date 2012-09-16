@@ -12,9 +12,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  *
  * Written by Owen Taylor <otaylor@redhat.com>, based on code by
  * Carsten Haitzler <raster@rasterman.com>
@@ -25,7 +23,7 @@
 #include "pixbuf.h"
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
-static GCache *pixbuf_cache = NULL;
+static GHashTable *pixbuf_cache = NULL;
 
 static GdkPixbuf *
 bilinear_gradient (GdkPixbuf    *src,
@@ -352,9 +350,7 @@ replicate_cols (GdkPixbuf    *src,
 static void
 pixbuf_render (GdkPixbuf    *src,
 	       guint         hints,
-	       GdkWindow    *window,
-	       GdkBitmap    *mask,
-	       GdkRectangle *clip_rect,
+               cairo_t      *cr,
 	       gint          src_x,
 	       gint          src_y,
 	       gint          src_width,
@@ -381,17 +377,6 @@ pixbuf_render (GdkPixbuf    *src,
 
   if (hints & THEME_MISSING)
     return;
-
-  /* FIXME: Because we use the mask to shape windows, we don't use
-   * clip_rect to clip what we draw to the mask, only to clip
-   * what we actually draw. But this leads to the horrible ineffiency
-   * of scale the whole image to get a little bit of it.
-   */
-  if (!mask && clip_rect)
-    {
-      if (!gdk_rectangle_intersect (clip_rect, &rect, &rect))
-	return;
-    }
 
   if (dest_width == src_width && dest_height == src_height)
     {
@@ -477,22 +462,6 @@ pixbuf_render (GdkPixbuf    *src,
 
   if (tmp_pixbuf)
     {
-      cairo_t *cr;
-      
-      if (mask)
-	{
-          cr = gdk_cairo_create (mask);
-
-          gdk_cairo_set_source_pixbuf (cr, tmp_pixbuf,
-                                       -x_offset + rect.x, 
-                                       -y_offset + rect.y);
-          gdk_cairo_rectangle (cr, &rect);
-          cairo_fill (cr);
-
-          cairo_destroy (cr);
-	}
-
-      cr = gdk_cairo_create (window);
       gdk_cairo_set_source_pixbuf (cr, 
                                    tmp_pixbuf,
                                    -x_offset + rect.x, 
@@ -500,7 +469,6 @@ pixbuf_render (GdkPixbuf    *src,
       gdk_cairo_rectangle (cr, &rect);
       cairo_fill (cr);
 
-      cairo_destroy (cr);
       g_object_unref (tmp_pixbuf);
     }
 }
@@ -534,7 +502,7 @@ theme_pixbuf_set_filename (ThemePixbuf *theme_pb,
 {
   if (theme_pb->pixbuf)
     {
-      g_cache_remove (pixbuf_cache, theme_pb->pixbuf);
+      g_object_unref (theme_pb->pixbuf);
       theme_pb->pixbuf = NULL;
     }
 
@@ -708,20 +676,11 @@ theme_pixbuf_set_stretch (ThemePixbuf *theme_pb,
     theme_pixbuf_compute_hints (theme_pb);
 }
 
-static GdkPixbuf *
-pixbuf_cache_value_new (gchar *filename)
+void
+theme_pixbuf_uncache (gpointer  data,
+                      GObject  *where_the_object_was)
 {
-  GError *err = NULL;
-    
-  GdkPixbuf *result = gdk_pixbuf_new_from_file (filename, &err);
-  if (!result)
-    {
-      g_warning ("Pixbuf theme: Cannot load pixmap file %s: %s\n",
-		 filename, err->message);
-      g_error_free (err);
-    }
-
-  return result;
+  g_hash_table_remove (pixbuf_cache, data);
 }
 
 GdkPixbuf *
@@ -729,14 +688,46 @@ theme_pixbuf_get_pixbuf (ThemePixbuf *theme_pb)
 {
   if (!theme_pb->pixbuf)
     {
+      gpointer pixbuf;
+
       if (!pixbuf_cache)
-	pixbuf_cache = g_cache_new ((GCacheNewFunc)pixbuf_cache_value_new,
-				    (GCacheDestroyFunc)g_object_unref,
-				    (GCacheDupFunc)g_strdup,
-				    (GCacheDestroyFunc)g_free,
-				    g_str_hash, g_direct_hash, g_str_equal);
-      
-      theme_pb->pixbuf = g_cache_insert (pixbuf_cache, theme_pb->filename);
+        /* Hash table does not hold its own reference to the GdkPixbuf */
+        pixbuf_cache = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                              g_free, NULL);
+
+      /* Do an extended lookup because we store NULL in the hash table
+       * (below) to indicate that we failed to load the given filename.
+       */
+      if (!g_hash_table_lookup_extended (pixbuf_cache, theme_pb->filename,
+                                         NULL, &pixbuf))
+        /* Not in the cache.  Add it and take the first ref. */
+        {
+          gchar *key = g_strdup (theme_pb->filename);
+          GError *error = NULL;
+
+          pixbuf = gdk_pixbuf_new_from_file (key, &error);
+
+          if (pixbuf != NULL)
+            {
+              /* Drop the pixbuf from the cache when we lose the last ref. */
+              g_object_weak_ref (G_OBJECT (pixbuf), theme_pixbuf_uncache, key);
+            }
+          else
+            {
+              /* Never drop a negative from the cache. */
+              g_warning ("Pixbuf theme: Cannot load pixmap file %s: %s\n",
+                         theme_pb->filename, error->message);
+              g_error_free (error);
+            }
+
+          /* Always insert, even if we failed to create the pixbuf. */
+          g_hash_table_insert (pixbuf_cache, key, pixbuf);
+          theme_pb->pixbuf = pixbuf;
+        }
+
+      else
+        /* In the cache.  Take an additional ref. */
+        theme_pb->pixbuf = g_object_ref (pixbuf);
 
       if (theme_pb->stretch)
 	theme_pixbuf_compute_hints (theme_pb);
@@ -747,9 +738,7 @@ theme_pixbuf_get_pixbuf (ThemePixbuf *theme_pb)
 
 void
 theme_pixbuf_render (ThemePixbuf  *theme_pb,
-		     GdkWindow    *window,
-		     GdkBitmap    *mask,
-		     GdkRectangle *clip_rect,
+                     cairo_t      *cr,
 		     guint         component_mask,
 		     gboolean      center,
 		     gint          x,
@@ -804,11 +793,11 @@ theme_pixbuf_render (ThemePixbuf  *theme_pb,
 
 
 
-#define RENDER_COMPONENT(X1,X2,Y1,Y2)					         \
-        pixbuf_render (pixbuf, theme_pb->hints[Y1][X1], window, mask, clip_rect, \
-	 	       src_x[X1], src_y[Y1],				         \
-		       src_x[X2] - src_x[X1], src_y[Y2] - src_y[Y1],	         \
-		       dest_x[X1], dest_y[Y1],				         \
+#define RENDER_COMPONENT(X1,X2,Y1,Y2)					   \
+        pixbuf_render (pixbuf, theme_pb->hints[Y1][X1], cr,                \
+	 	       src_x[X1], src_y[Y1],				   \
+		       src_x[X2] - src_x[X1], src_y[Y2] - src_y[Y1],	   \
+		       dest_x[X1], dest_y[Y1],				   \
 		       dest_x[X2] - dest_x[X1], dest_y[Y2] - dest_y[Y1]);
       
       if (component_mask & COMPONENT_NORTH_WEST)
@@ -845,7 +834,7 @@ theme_pixbuf_render (ThemePixbuf  *theme_pb,
 	  x += (width - pixbuf_width) / 2;
 	  y += (height - pixbuf_height) / 2;
 	  
-	  pixbuf_render (pixbuf, 0, window, NULL, clip_rect,
+	  pixbuf_render (pixbuf, 0, cr,
 			 0, 0,
 			 pixbuf_width, pixbuf_height,
 			 x, y,
@@ -853,19 +842,12 @@ theme_pixbuf_render (ThemePixbuf  *theme_pb,
 	}
       else
 	{
-          cairo_t *cr = gdk_cairo_create (window);
-
           gdk_cairo_set_source_pixbuf (cr, pixbuf, 0, 0);
           cairo_pattern_set_extend (cairo_get_source (cr), CAIRO_EXTEND_REPEAT);
 
-	  if (clip_rect)
-	    gdk_cairo_rectangle (cr, clip_rect);
-	  else
-	    cairo_rectangle (cr, x, y, width, height);
+	  cairo_rectangle (cr, x, y, width, height);
 	  
           cairo_fill (cr);
-
-          cairo_destroy (cr);
 	}
     }
 }

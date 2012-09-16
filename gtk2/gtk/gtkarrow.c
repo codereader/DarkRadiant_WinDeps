@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -28,7 +26,7 @@
  * SECTION:gtkarrow
  * @Short_description: Displays an arrow
  * @Title: GtkArrow
- * @See_also: gtk_paint_arrow()
+ * @See_also: gtk_render_arrow()
  *
  * GtkArrow should be used to draw simple arrows that need to point in
  * one of the four cardinal directions (up, down, left, or right).  The
@@ -47,11 +45,20 @@
 #include "config.h"
 #include <math.h>
 #include "gtkarrow.h"
+#include "gtksizerequest.h"
+#include "gtktypebuiltins.h"
 #include "gtkprivate.h"
 #include "gtkintl.h"
-#include "gtkalias.h"
+
+#include "a11y/gtkarrowaccessible.h"
 
 #define MIN_ARROW_SIZE  15
+
+struct _GtkArrowPrivate
+{
+  gint16 arrow_type;
+  gint16 shadow_type;
+};
 
 enum {
   PROP_0,
@@ -68,9 +75,15 @@ static void     gtk_arrow_get_property (GObject        *object,
                                         guint           prop_id,
                                         GValue         *value,
                                         GParamSpec     *pspec);
-static gboolean gtk_arrow_expose       (GtkWidget      *widget,
-                                        GdkEventExpose *event);
+static gboolean gtk_arrow_draw         (GtkWidget      *widget,
+                                        cairo_t        *cr);
 
+static void     gtk_arrow_get_preferred_width         (GtkWidget           *widget,
+                                                       gint                *minimum_size,
+                                                       gint                *natural_size);
+static void     gtk_arrow_get_preferred_height        (GtkWidget           *widget,
+                                                       gint                *minimum_size,
+                                                       gint                *natural_size);
 
 G_DEFINE_TYPE (GtkArrow, gtk_arrow, GTK_TYPE_MISC)
 
@@ -87,7 +100,9 @@ gtk_arrow_class_init (GtkArrowClass *class)
   gobject_class->set_property = gtk_arrow_set_property;
   gobject_class->get_property = gtk_arrow_get_property;
 
-  widget_class->expose_event = gtk_arrow_expose;
+  widget_class->draw = gtk_arrow_draw;
+  widget_class->get_preferred_width  = gtk_arrow_get_preferred_width;
+  widget_class->get_preferred_height = gtk_arrow_get_preferred_height;
 
   g_object_class_install_property (gobject_class,
                                    PROP_ARROW_TYPE,
@@ -113,6 +128,10 @@ gtk_arrow_class_init (GtkArrowClass *class)
                                                                P_("Amount of space used up by arrow"),
                                                                0.0, 1.0, 0.7,
                                                                GTK_PARAM_READABLE));
+
+  g_type_class_add_private (class, sizeof (GtkArrowPrivate));
+
+  gtk_widget_class_set_accessible_type (widget_class, GTK_TYPE_ARROW_ACCESSIBLE);
 }
 
 static void
@@ -122,17 +141,18 @@ gtk_arrow_set_property (GObject         *object,
 			GParamSpec      *pspec)
 {
   GtkArrow *arrow = GTK_ARROW (object);
+  GtkArrowPrivate *priv = arrow->priv;
 
   switch (prop_id)
     {
     case PROP_ARROW_TYPE:
       gtk_arrow_set (arrow,
 		     g_value_get_enum (value),
-		     arrow->shadow_type);
+		     priv->shadow_type);
       break;
     case PROP_SHADOW_TYPE:
       gtk_arrow_set (arrow,
-		     arrow->arrow_type,
+		     priv->arrow_type,
 		     g_value_get_enum (value));
       break;
     default:
@@ -148,14 +168,15 @@ gtk_arrow_get_property (GObject         *object,
 			GParamSpec      *pspec)
 {
   GtkArrow *arrow = GTK_ARROW (object);
+  GtkArrowPrivate *priv = arrow->priv;
 
   switch (prop_id)
     {
     case PROP_ARROW_TYPE:
-      g_value_set_enum (value, arrow->arrow_type);
+      g_value_set_enum (value, priv->arrow_type);
       break;
     case PROP_SHADOW_TYPE:
-      g_value_set_enum (value, arrow->shadow_type);
+      g_value_set_enum (value, priv->shadow_type);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -166,13 +187,49 @@ gtk_arrow_get_property (GObject         *object,
 static void
 gtk_arrow_init (GtkArrow *arrow)
 {
+  GtkArrowPrivate *priv;
+
+  arrow->priv = G_TYPE_INSTANCE_GET_PRIVATE (arrow,
+                                             GTK_TYPE_ARROW,
+                                             GtkArrowPrivate);
+  priv = arrow->priv;
+
   gtk_widget_set_has_window (GTK_WIDGET (arrow), FALSE);
 
-  GTK_WIDGET (arrow)->requisition.width = MIN_ARROW_SIZE + GTK_MISC (arrow)->xpad * 2;
-  GTK_WIDGET (arrow)->requisition.height = MIN_ARROW_SIZE + GTK_MISC (arrow)->ypad * 2;
+  priv->arrow_type = GTK_ARROW_RIGHT;
+  priv->shadow_type = GTK_SHADOW_OUT;
+}
 
-  arrow->arrow_type = GTK_ARROW_RIGHT;
-  arrow->shadow_type = GTK_SHADOW_OUT;
+static void
+gtk_arrow_get_preferred_width (GtkWidget *widget,
+                               gint      *minimum_size,
+                               gint      *natural_size)
+{
+  GtkBorder border;
+
+  _gtk_misc_get_padding_and_border (GTK_MISC (widget), &border);
+
+  if (minimum_size)
+    *minimum_size = MIN_ARROW_SIZE + border.left + border.right;
+
+  if (natural_size)
+    *natural_size = MIN_ARROW_SIZE + border.left + border.right;
+}
+
+static void
+gtk_arrow_get_preferred_height (GtkWidget *widget,
+                                gint      *minimum_size,
+                                gint      *natural_size)
+{
+  GtkBorder border;
+
+  _gtk_misc_get_padding_and_border (GTK_MISC (widget), &border);
+
+  if (minimum_size)
+    *minimum_size = MIN_ARROW_SIZE + border.top + border.bottom;
+
+  if (natural_size)
+    *natural_size = MIN_ARROW_SIZE + border.top + border.bottom;
 }
 
 /**
@@ -188,12 +245,15 @@ GtkWidget*
 gtk_arrow_new (GtkArrowType  arrow_type,
 	       GtkShadowType shadow_type)
 {
+  GtkArrowPrivate *priv;
   GtkArrow *arrow;
 
   arrow = g_object_new (GTK_TYPE_ARROW, NULL);
 
-  arrow->arrow_type = arrow_type;
-  arrow->shadow_type = shadow_type;
+  priv = arrow->priv;
+
+  priv->arrow_type = arrow_type;
+  priv->shadow_type = shadow_type;
 
   return GTK_WIDGET (arrow);
 }
@@ -211,24 +271,27 @@ gtk_arrow_set (GtkArrow      *arrow,
 	       GtkArrowType   arrow_type,
 	       GtkShadowType  shadow_type)
 {
+  GtkArrowPrivate *priv;
   GtkWidget *widget;
 
   g_return_if_fail (GTK_IS_ARROW (arrow));
 
-  if (   ((GtkArrowType) arrow->arrow_type != arrow_type)
-      || ((GtkShadowType) arrow->shadow_type != shadow_type))
+  priv = arrow->priv;
+
+  if (priv->arrow_type != arrow_type
+      || priv->shadow_type != shadow_type)
     {
       g_object_freeze_notify (G_OBJECT (arrow));
 
-      if ((GtkArrowType) arrow->arrow_type != arrow_type)
+      if ((GtkArrowType) priv->arrow_type != arrow_type)
         {
-          arrow->arrow_type = arrow_type;
+          priv->arrow_type = arrow_type;
           g_object_notify (G_OBJECT (arrow), "arrow-type");
         }
 
-      if ((GtkShadowType) arrow->shadow_type != shadow_type)
+      if (priv->shadow_type != shadow_type)
         {
-          arrow->shadow_type = shadow_type;
+          priv->shadow_type = shadow_type;
           g_object_notify (G_OBJECT (arrow), "shadow-type");
         }
 
@@ -240,69 +303,67 @@ gtk_arrow_set (GtkArrow      *arrow,
     }
 }
 
-
 static gboolean
-gtk_arrow_expose (GtkWidget      *widget,
-		  GdkEventExpose *event)
+gtk_arrow_draw (GtkWidget *widget,
+                cairo_t   *cr)
 {
-  if (gtk_widget_is_drawable (widget))
+  GtkArrow *arrow = GTK_ARROW (widget);
+  GtkArrowPrivate *priv = arrow->priv;
+  GtkStyleContext *context;
+  gdouble x, y;
+  gint width, height;
+  gint extent;
+  GtkBorder border;
+  gfloat xalign, yalign;
+  GtkArrowType effective_arrow_type;
+  gfloat arrow_scaling;
+  gdouble angle;
+
+  if (priv->arrow_type == GTK_ARROW_NONE)
+    return FALSE;
+
+  context = gtk_widget_get_style_context (widget);
+  gtk_widget_style_get (widget, "arrow-scaling", &arrow_scaling, NULL);
+
+  _gtk_misc_get_padding_and_border (GTK_MISC (widget), &border);
+  gtk_misc_get_alignment (GTK_MISC (widget), &xalign, &yalign);
+
+  width = gtk_widget_get_allocated_width (widget) - border.left - border.right;
+  height = gtk_widget_get_allocated_height (widget) - border.top - border.bottom;
+
+  extent = MIN (width, height) * arrow_scaling;
+  effective_arrow_type = priv->arrow_type;
+
+  if (gtk_widget_get_direction (widget) != GTK_TEXT_DIR_LTR)
     {
-      GtkArrow *arrow = GTK_ARROW (widget);
-      GtkMisc *misc = GTK_MISC (widget);
-      GtkShadowType shadow_type;
-      gint width, height;
-      gint x, y;
-      gint extent;
-      gfloat xalign;
-      GtkArrowType effective_arrow_type;
-      gfloat arrow_scaling;
-
-      gtk_widget_style_get (widget, "arrow-scaling", &arrow_scaling, NULL);
-
-      width = widget->allocation.width - misc->xpad * 2;
-      height = widget->allocation.height - misc->ypad * 2;
-      extent = MIN (width, height) * arrow_scaling;
-      effective_arrow_type = arrow->arrow_type;
-
-      if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_LTR)
-	xalign = misc->xalign;
-      else
-	{
-	  xalign = 1.0 - misc->xalign;
-	  if (arrow->arrow_type == GTK_ARROW_LEFT)
-	    effective_arrow_type = GTK_ARROW_RIGHT;
-	  else if (arrow->arrow_type == GTK_ARROW_RIGHT)
-	    effective_arrow_type = GTK_ARROW_LEFT;
-	}
-
-      x = floor (widget->allocation.x + misc->xpad
-		 + ((widget->allocation.width - extent) * xalign));
-      y = floor (widget->allocation.y + misc->ypad
-		 + ((widget->allocation.height - extent) * misc->yalign));
-
-      shadow_type = arrow->shadow_type;
-
-      if (widget->state == GTK_STATE_ACTIVE)
-	{
-          if (shadow_type == GTK_SHADOW_IN)
-            shadow_type = GTK_SHADOW_OUT;
-          else if (shadow_type == GTK_SHADOW_OUT)
-            shadow_type = GTK_SHADOW_IN;
-          else if (shadow_type == GTK_SHADOW_ETCHED_IN)
-            shadow_type = GTK_SHADOW_ETCHED_OUT;
-          else if (shadow_type == GTK_SHADOW_ETCHED_OUT)
-            shadow_type = GTK_SHADOW_ETCHED_IN;
-	}
-
-      gtk_paint_arrow (widget->style, widget->window,
-		       widget->state, shadow_type,
-		       &event->area, widget, "arrow",
-		       effective_arrow_type, TRUE,
-		       x, y, extent, extent);
+      xalign = 1.0 - xalign;
+      if (priv->arrow_type == GTK_ARROW_LEFT)
+        effective_arrow_type = GTK_ARROW_RIGHT;
+      else if (priv->arrow_type == GTK_ARROW_RIGHT)
+        effective_arrow_type = GTK_ARROW_LEFT;
     }
+
+  x = border.left + ((width - extent) * xalign);
+  y = border.top + ((height - extent) * yalign);
+
+  switch (effective_arrow_type)
+    {
+    case GTK_ARROW_UP:
+      angle = 0;
+      break;
+    case GTK_ARROW_RIGHT:
+      angle = G_PI / 2;
+      break;
+    case GTK_ARROW_DOWN:
+      angle = G_PI;
+      break;
+    case GTK_ARROW_LEFT:
+    default:
+      angle = (3 * G_PI) / 2;
+      break;
+    }
+
+  gtk_render_arrow (context, cr, angle, x, y, extent);
 
   return FALSE;
 }
-
-#define __GTK_ARROW_C__
-#include "gtkaliasdef.c"

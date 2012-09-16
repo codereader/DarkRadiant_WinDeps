@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -25,23 +23,131 @@
  */
 
 #include "config.h"
+
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+
 #include "gtkiconfactory.h"
 #include "gtkiconcache.h"
 #include "gtkdebug.h"
 #include "gtkicontheme.h"
-#include "gtksettings.h"
+#include "gtksettingsprivate.h"
 #include "gtkstock.h"
 #include "gtkwidget.h"
 #include "gtkintl.h"
 #include "gtkbuildable.h"
 #include "gtkbuilderprivate.h"
-#include "gtkalias.h"
+#include "gtktypebuiltins.h"
+#include "deprecated/gtkstyle.h"
+
+
+/**
+ * SECTION:gtkiconfactory
+ * @Short_description: Manipulating stock icons
+ * @Title: Themeable Stock Images
+ *
+ * Browse the available stock icons in the list of stock IDs found <link
+ * linkend="gtk-Stock-Items">here</link>. You can also use
+ * the <application>gtk-demo</application> application for this purpose.
+ *
+ * An icon factory manages a collection of #GtkIconSet; a #GtkIconSet manages a
+ * set of variants of a particular icon (i.e. a #GtkIconSet contains variants for
+ * different sizes and widget states). Icons in an icon factory are named by a
+ * stock ID, which is a simple string identifying the icon. Each #GtkStyle has a
+ * list of #GtkIconFactory derived from the current theme; those icon factories
+ * are consulted first when searching for an icon. If the theme doesn't set a
+ * particular icon, GTK+ looks for the icon in a list of default icon factories,
+ * maintained by gtk_icon_factory_add_default() and
+ * gtk_icon_factory_remove_default(). Applications with icons should add a default
+ * icon factory with their icons, which will allow themes to override the icons
+ * for the application.
+ *
+ * To display an icon, always use gtk_style_lookup_icon_set() on the widget that
+ * will display the icon, or the convenience function
+ * gtk_widget_render_icon(). These functions take the theme into account when
+ * looking up the icon to use for a given stock ID.
+ *
+ * <refsect2 id="GtkIconFactory-BUILDER-UI">
+ * <title>GtkIconFactory as GtkBuildable</title>
+ * <para>
+ * GtkIconFactory supports a custom &lt;sources&gt; element, which can contain
+ * multiple &lt;source&gt; elements.
+ * The following attributes are allowed:
+ * <variablelist>
+ * <varlistentry>
+ * <term>stock-id</term>
+ * <listitem><para>
+ * The stock id of the source, a string.
+ * This attribute is mandatory
+ * </para></listitem>
+ * </varlistentry>
+ * <varlistentry>
+ * <term>filename</term>
+ * <listitem><para>
+ * The filename of the source, a string.
+ * This attribute is optional
+ * </para></listitem>
+ * </varlistentry>
+ * <varlistentry>
+ * <term>icon-name</term>
+ * <listitem><para>
+ * The icon name for the source, a string.
+ * This attribute is optional.
+ * </para></listitem>
+ * </varlistentry>
+ * <varlistentry>
+ * <term>size</term>
+ * <listitem><para>
+ * Size of the icon, a #GtkIconSize enum value.
+ * This attribute is optional.
+ * </para></listitem>
+ * </varlistentry>
+ * <varlistentry>
+ * <term>direction</term>
+ * <listitem><para>
+ * Direction of the source, a #GtkTextDirection enum value.
+ * This attribute is optional.
+ * </para></listitem>
+ * </varlistentry>
+ * <varlistentry>
+ * <term>state</term>
+ * <listitem><para>
+ * State of the source, a #GtkStateType enum value.
+ * This attribute is optional.
+ * </para></listitem>
+ * </varlistentry>
+ * </variablelist>
+ * <example>
+ * <title>A #GtkIconFactory UI definition fragment.</title>
+ * <programlisting><![CDATA[
+ * <object class="GtkIconFactory" id="iconfactory1">
+ *   <sources>
+ *     <source stock-id="apple-red" filename="apple-red.png"/>
+ *   </sources>
+ * </object>
+ * <object class="GtkWindow" id="window1">
+ *   <child>
+ *     <object class="GtkButton" id="apple_button">
+ *       <property name="label">apple-red</property>
+ *       <property name="use-stock">True</property>
+ *     </object>
+ *   </child>
+ * </object>
+ * ]]>
+ * </programlisting>
+ * </example>
+ * </para>
+ * </refsect2>
+ */
 
 
 static GSList *all_icon_factories = NULL;
+
+struct _GtkIconFactoryPrivate
+{
+  GHashTable *icons;
+};
 
 typedef enum {
   GTK_ICON_SOURCE_EMPTY,
@@ -74,13 +180,6 @@ struct _GtkIconSource
   guint any_direction : 1;
   guint any_state : 1;
   guint any_size : 1;
-
-#if defined (G_OS_WIN32) && !defined (_WIN64)
-  /* System codepage version of filename, for DLL ABI backward
-   * compatibility functions.
-   */
-  gchar *cp_filename;
-#endif
 };
 
 
@@ -118,7 +217,14 @@ G_DEFINE_TYPE_WITH_CODE (GtkIconFactory, gtk_icon_factory, G_TYPE_OBJECT,
 static void
 gtk_icon_factory_init (GtkIconFactory *factory)
 {
-  factory->icons = g_hash_table_new (g_str_hash, g_str_equal);
+  GtkIconFactoryPrivate *priv;
+
+  factory->priv = G_TYPE_INSTANCE_GET_PRIVATE (factory,
+                                               GTK_TYPE_ICON_FACTORY,
+                                               GtkIconFactoryPrivate);
+  priv = factory->priv;
+
+  priv->icons = g_hash_table_new (g_str_hash, g_str_equal);
   all_icon_factories = g_slist_prepend (all_icon_factories, factory);
 }
 
@@ -128,6 +234,8 @@ gtk_icon_factory_class_init (GtkIconFactoryClass *klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
   object_class->finalize = gtk_icon_factory_finalize;
+
+  g_type_class_add_private (klass, sizeof (GtkIconFactoryPrivate));
 }
 
 static void
@@ -148,12 +256,13 @@ static void
 gtk_icon_factory_finalize (GObject *object)
 {
   GtkIconFactory *factory = GTK_ICON_FACTORY (object);
+  GtkIconFactoryPrivate *priv = factory->priv;
 
   all_icon_factories = g_slist_remove (all_icon_factories, factory);
 
-  g_hash_table_foreach (factory->icons, free_icon_set, NULL);
+  g_hash_table_foreach (priv->icons, free_icon_set, NULL);
 
-  g_hash_table_destroy (factory->icons);
+  g_hash_table_destroy (priv->icons);
 
   G_OBJECT_CLASS (gtk_icon_factory_parent_class)->finalize (object);
 }
@@ -205,6 +314,7 @@ gtk_icon_factory_add (GtkIconFactory *factory,
                       const gchar    *stock_id,
                       GtkIconSet     *icon_set)
 {
+  GtkIconFactoryPrivate *priv = factory->priv;
   gpointer old_key = NULL;
   gpointer old_value = NULL;
 
@@ -212,7 +322,7 @@ gtk_icon_factory_add (GtkIconFactory *factory,
   g_return_if_fail (stock_id != NULL);
   g_return_if_fail (icon_set != NULL);
 
-  g_hash_table_lookup_extended (factory->icons, stock_id,
+  g_hash_table_lookup_extended (priv->icons, stock_id,
                                 &old_key, &old_value);
 
   if (old_value == icon_set)
@@ -222,9 +332,9 @@ gtk_icon_factory_add (GtkIconFactory *factory,
 
   /* GHashTable key memory management is so fantastically broken. */
   if (old_key)
-    g_hash_table_insert (factory->icons, old_key, icon_set);
+    g_hash_table_insert (priv->icons, old_key, icon_set);
   else
-    g_hash_table_insert (factory->icons, g_strdup (stock_id), icon_set);
+    g_hash_table_insert (priv->icons, g_strdup (stock_id), icon_set);
 
   if (old_value)
     gtk_icon_set_unref (old_value);
@@ -247,10 +357,14 @@ GtkIconSet *
 gtk_icon_factory_lookup (GtkIconFactory *factory,
                          const gchar    *stock_id)
 {
+  GtkIconFactoryPrivate *priv;
+
   g_return_val_if_fail (GTK_IS_ICON_FACTORY (factory), NULL);
   g_return_val_if_fail (stock_id != NULL, NULL);
 
-  return g_hash_table_lookup (factory->icons, stock_id);
+  priv = factory->priv;
+
+  return g_hash_table_lookup (priv->icons, stock_id);
 }
 
 static GtkIconFactory *gtk_default_icons = NULL;
@@ -784,7 +898,7 @@ icon_size_settings_changed (GtkSettings  *settings,
 {
   icon_size_set_all_from_settings (settings);
 
-  gtk_rc_reset_styles (settings);
+  gtk_style_context_reset_widgets (_gtk_settings_get_screen (settings));
 }
 
 static void
@@ -860,7 +974,7 @@ icon_size_lookup_intern (GtkSettings *settings,
  * modified by user preferences for a particular
  * #GtkSettings. Normally @size would be
  * #GTK_ICON_SIZE_MENU, #GTK_ICON_SIZE_BUTTON, etc.  This function
- * isn't normally needed, gtk_widget_render_icon() is the usual
+ * isn't normally needed, gtk_widget_render_icon_pixbuf() is the usual
  * way to get an icon for rendering, then just look at the size of
  * the rendered pixbuf. The rendered pixbuf may not even correspond to
  * the width/height returned by gtk_icon_size_lookup(), because themes
@@ -893,7 +1007,7 @@ gtk_icon_size_lookup_for_settings (GtkSettings *settings,
  * (See gtk_icon_size_lookup_for_settings().)
  * Normally @size would be
  * #GTK_ICON_SIZE_MENU, #GTK_ICON_SIZE_BUTTON, etc.  This function
- * isn't normally needed, gtk_widget_render_icon() is the usual
+ * isn't normally needed, gtk_widget_render_icon_pixbuf() is the usual
  * way to get an icon for rendering, then just look at the size of
  * the rendered pixbuf. The rendered pixbuf may not even correspond to
  * the width/height returned by gtk_icon_size_lookup(), because themes
@@ -1028,7 +1142,6 @@ gtk_icon_size_register_alias (const gchar *alias,
 /**
  * gtk_icon_size_from_name:
  * @name: the name to look up.
- * @returns: the icon size with the given name.
  *
  * Looks up the icon size associated with @name.
  *
@@ -1052,10 +1165,11 @@ gtk_icon_size_from_name (const gchar *name)
 /**
  * gtk_icon_size_get_name:
  * @size: (type int): a #GtkIconSize.
- * @returns: the name of the given icon size.
  *
  * Gets the canonical name of the given icon size. The returned string
  * is statically allocated and should not be freed.
+ *
+ * Returns: the name of the given icon size.
  */
 const gchar*
 gtk_icon_size_get_name (GtkIconSize  size)
@@ -1072,12 +1186,12 @@ gtk_icon_size_get_name (GtkIconSize  size)
 
 
 static GdkPixbuf *find_in_cache     (GtkIconSet       *icon_set,
-                                     GtkStyle         *style,
+                                     GtkStyleContext  *style_context,
                                      GtkTextDirection  direction,
                                      GtkStateType      state,
                                      GtkIconSize       size);
 static void       add_to_cache      (GtkIconSet       *icon_set,
-                                     GtkStyle         *style,
+                                     GtkStyleContext  *style_context,
                                      GtkTextDirection  direction,
                                      GtkStateType      state,
                                      GtkIconSize       size,
@@ -1091,9 +1205,9 @@ static void       clear_cache       (GtkIconSet       *icon_set,
 static GSList*    copy_cache        (GtkIconSet       *icon_set,
                                      GtkIconSet       *copy_recipient);
 static void       attach_to_style   (GtkIconSet       *icon_set,
-                                     GtkStyle         *style);
+                                     GtkStyleContext  *style_context);
 static void       detach_from_style (GtkIconSet       *icon_set,
-                                     GtkStyle         *style);
+                                     GtkStyleContext  *style_context);
 static void       style_dnotify     (gpointer          data);
 
 struct _GtkIconSet
@@ -1120,7 +1234,7 @@ static guint cache_serial = 0;
  * for a given size and state on request, and automatically caches
  * some of the rendered #GdkPixbuf objects.
  *
- * Normally you would use gtk_widget_render_icon() instead of
+ * Normally you would use gtk_widget_render_icon_pixbuf() instead of
  * using #GtkIconSet directly. The one case where you'd use
  * #GtkIconSet is to create application-specific icon sets to place in
  * a #GtkIconFactory.
@@ -1225,18 +1339,9 @@ gtk_icon_set_unref (GtkIconSet *icon_set)
     }
 }
 
-GType
-gtk_icon_set_get_type (void)
-{
-  static GType our_type = 0;
-
-  if (our_type == 0)
-    our_type = g_boxed_type_register_static (I_("GtkIconSet"),
-					     (GBoxedCopyFunc) gtk_icon_set_ref,
-					     (GBoxedFreeFunc) gtk_icon_set_unref);
-
-  return our_type;
-}
+G_DEFINE_BOXED_TYPE (GtkIconSet, gtk_icon_set,
+                     gtk_icon_set_ref,
+                     gtk_icon_set_unref)
 
 /**
  * gtk_icon_set_copy:
@@ -1351,7 +1456,7 @@ ensure_filename_pixbuf (GtkIconSet    *icon_set,
 	  /* Remove this icon source so we don't keep trying to
 	   * load it.
 	   */
-	  g_warning (_("Error loading icon: %s"), error->message);
+	  g_warning ("Error loading icon: %s", error->message);
 	  g_error_free (error);
 
 	  icon_set->sources = g_slist_remove (icon_set->sources, source);
@@ -1367,12 +1472,8 @@ ensure_filename_pixbuf (GtkIconSet    *icon_set,
 
 static GdkPixbuf *
 render_icon_name_pixbuf (GtkIconSource    *icon_source,
-			 GtkStyle         *style,
-			 GtkTextDirection  direction,
-			 GtkStateType      state,
-			 GtkIconSize       size,
-			 GtkWidget        *widget,
-			 const char       *detail)
+			 GtkStyleContext  *context,
+			 GtkIconSize       size)
 {
   GdkPixbuf *pixbuf;
   GdkPixbuf *tmp_pixbuf;
@@ -1384,17 +1485,7 @@ render_icon_name_pixbuf (GtkIconSource    *icon_source,
   gint *sizes, *s, dist;
   GError *error = NULL;
 
-  if (widget && gtk_widget_has_screen (widget))
-    screen = gtk_widget_get_screen (widget);
-  else if (style && style->colormap)
-    screen = gdk_colormap_get_screen (style->colormap);
-  else
-    {
-      screen = gdk_screen_get_default ();
-      GTK_NOTE (MULTIHEAD,
-		g_warning ("Using the default screen for gtk_icon_source_render_icon()"));
-    }
-
+  screen = gtk_style_context_get_screen (context);
   icon_theme = gtk_icon_theme_get_for_screen (screen);
   settings = gtk_settings_get_for_screen (screen);
 
@@ -1445,24 +1536,24 @@ render_icon_name_pixbuf (GtkIconSource    *icon_source,
   if (icon_source->direction != GTK_TEXT_DIR_NONE)
     {
       gchar *suffix[3] = { NULL, "-ltr", "-rtl" };
-      const gchar *names[3];
-      gchar *name_with_dir;
+      gchar *names[3];
       GtkIconInfo *info;
 
-      name_with_dir = g_strconcat (icon_source->source.icon_name, suffix[icon_source->direction], NULL);
-      names[0] = name_with_dir;
+      names[0] = g_strconcat (icon_source->source.icon_name, suffix[icon_source->direction], NULL);
       names[1] = icon_source->source.icon_name;
       names[2] = NULL;
 
       info = gtk_icon_theme_choose_icon (icon_theme,
-                                         names,
+                                         (const char **) names,
                                          pixel_size, GTK_ICON_LOOKUP_USE_BUILTIN);
-      g_free (name_with_dir);
+      g_free (names[0]);
       if (info)
         {
           tmp_pixbuf = gtk_icon_info_load_icon (info, &error);
           gtk_icon_info_free (info);
         }
+      else
+        tmp_pixbuf = NULL;
     }
   else
     {
@@ -1485,9 +1576,7 @@ render_icon_name_pixbuf (GtkIconSource    *icon_source,
   tmp_source.type = GTK_ICON_SOURCE_PIXBUF;
   tmp_source.source.pixbuf = tmp_pixbuf;
 
-  pixbuf = gtk_style_render_icon (style, &tmp_source,
-				  direction, state, -1,
-				  widget, detail);
+  pixbuf = gtk_render_icon_pixbuf (context, &tmp_source, -1);
 
   if (!pixbuf)
     g_warning ("Failed to render icon");
@@ -1499,12 +1588,10 @@ render_icon_name_pixbuf (GtkIconSource    *icon_source,
 
 static GdkPixbuf *
 find_and_render_icon_source (GtkIconSet       *icon_set,
-			     GtkStyle         *style,
+			     GtkStyleContext  *context,
 			     GtkTextDirection  direction,
 			     GtkStateType      state,
-			     GtkIconSize       size,
-			     GtkWidget         *widget,
-			     const char        *detail)
+			     GtkIconSize       size)
 {
   GSList *failed = NULL;
   GdkPixbuf *pixbuf = NULL;
@@ -1533,9 +1620,7 @@ find_and_render_icon_source (GtkIconSet       *icon_set,
 	    break;
 	  /* Fall through */
 	case GTK_ICON_SOURCE_PIXBUF:
-	  pixbuf = gtk_style_render_icon (style, source,
-					  direction, state, size,
-					  widget, detail);
+          pixbuf = gtk_render_icon_pixbuf (context, source, size);
 	  if (!pixbuf)
 	    {
 	      g_warning ("Failed to render icon");
@@ -1544,9 +1629,7 @@ find_and_render_icon_source (GtkIconSet       *icon_set,
 	  break;
 	case GTK_ICON_SOURCE_ICON_NAME:
 	case GTK_ICON_SOURCE_STATIC_ICON_NAME:
-	  pixbuf = render_icon_name_pixbuf (source, style,
-					    direction, state, size,
-					    widget, detail);
+          pixbuf = render_icon_name_pixbuf (source, context, size);
 	  if (!pixbuf)
 	    failed = g_slist_prepend (failed, source);
 	  break;
@@ -1563,12 +1646,10 @@ find_and_render_icon_source (GtkIconSet       *icon_set,
 extern GtkIconCache *_builtin_cache;
 
 static GdkPixbuf*
-render_fallback_image (GtkStyle          *style,
+render_fallback_image (GtkStyleContext   *context,
                        GtkTextDirection   direction,
                        GtkStateType       state,
-                       GtkIconSize        size,
-                       GtkWidget         *widget,
-                       const char        *detail)
+                       GtkIconSize        size)
 {
   /* This icon can be used for any direction/state/size */
   static GtkIconSource fallback_source = GTK_ICON_SOURCE_INIT (TRUE, TRUE, TRUE);
@@ -1581,20 +1662,77 @@ render_fallback_image (GtkStyle          *style,
       _gtk_icon_theme_ensure_builtin_cache ();
 
       index = _gtk_icon_cache_get_directory_index (_builtin_cache, "24");
-      pixbuf = _gtk_icon_cache_get_icon (_builtin_cache,
-					 GTK_STOCK_MISSING_IMAGE,
-					 index);
+      pixbuf = _gtk_icon_cache_get_icon (_builtin_cache, "image-missing", index);
+
+      g_return_val_if_fail(pixbuf != NULL, NULL);
+
       gtk_icon_source_set_pixbuf (&fallback_source, pixbuf);
       g_object_unref (pixbuf);
     }
 
-  return gtk_style_render_icon (style,
-                                &fallback_source,
-                                direction,
-                                state,
-                                size,
-                                widget,
-                                detail);
+  return gtk_render_icon_pixbuf (context, &fallback_source, size);
+}
+
+/**
+ * gtk_icon_set_render_icon_pixbuf:
+ * @icon_set: a #GtkIconSet
+ * @context: a #GtkStyleContext
+ * @size: (type int): icon size. A size of (GtkIconSize)-1
+ *        means render at the size of the source and don't scale.
+ *
+ * Renders an icon using gtk_render_icon_pixbuf(). In most cases,
+ * gtk_widget_render_icon_pixbuf() is better, since it automatically provides
+ * most of the arguments from the current widget settings.  This
+ * function never returns %NULL; if the icon can't be rendered
+ * (perhaps because an image file fails to load), a default "missing
+ * image" icon will be returned instead.
+ *
+ * Return value: (transfer full): a #GdkPixbuf to be displayed
+ *
+ * Since: 3.0
+ */
+GdkPixbuf *
+gtk_icon_set_render_icon_pixbuf (GtkIconSet        *icon_set,
+                                 GtkStyleContext   *context,
+                                 GtkIconSize        size)
+{
+  GdkPixbuf *icon = NULL;
+  GtkStateFlags flags = 0;
+  GtkStateType state;
+  GtkTextDirection direction;
+
+  g_return_val_if_fail (icon_set != NULL, NULL);
+  g_return_val_if_fail (GTK_IS_STYLE_CONTEXT (context), NULL);
+
+  flags = gtk_style_context_get_state (context);
+  if (flags & GTK_STATE_FLAG_INSENSITIVE)
+    state = GTK_STATE_INSENSITIVE;
+  else if (flags & GTK_STATE_FLAG_PRELIGHT)
+    state = GTK_STATE_PRELIGHT;
+  else
+    state = GTK_STATE_NORMAL;
+
+  direction = gtk_style_context_get_direction (context);
+
+  if (icon_set->sources)
+    {
+      icon = find_in_cache (icon_set, context, direction, state, size);
+      if (icon)
+        {
+          g_object_ref (icon);
+          return icon;
+        }
+    }
+
+  if (icon_set->sources)
+    icon = find_and_render_icon_source (icon_set, context, direction, state, size);
+
+  if (icon == NULL)
+    icon = render_fallback_image (context, direction, state, size);
+
+  add_to_cache (icon_set, context, direction, state, size, icon);
+
+  return icon;
 }
 
 /**
@@ -1620,6 +1758,8 @@ render_fallback_image (GtkStyle          *style,
  * image" icon will be returned instead.
  *
  * Return value: (transfer full): a #GdkPixbuf to be displayed
+ *
+ * Deprecated: 3.0: Use gtk_icon_set_render_icon_pixbuf() instead
  */
 GdkPixbuf*
 gtk_icon_set_render_icon (GtkIconSet        *icon_set,
@@ -1631,34 +1771,47 @@ gtk_icon_set_render_icon (GtkIconSet        *icon_set,
                           const char        *detail)
 {
   GdkPixbuf *icon;
+  GtkStyleContext *context = NULL;
+  GtkStateFlags flags = 0;
 
   g_return_val_if_fail (icon_set != NULL, NULL);
   g_return_val_if_fail (style == NULL || GTK_IS_STYLE (style), NULL);
 
-  if (icon_set->sources == NULL)
-    return render_fallback_image (style, direction, state, size, widget, detail);
-
-  if (detail == NULL)
+  if (style && gtk_style_has_context (style))
     {
-      icon = find_in_cache (icon_set, style, direction,
-                        state, size);
-
-      if (icon)
-	{
-	  g_object_ref (icon);
-	  return icon;
-	}
+      g_object_get (style, "context", &context, NULL);
+      /* g_object_get returns a refed object */
+      if (context)
+        g_object_unref (context);
+    }
+  else if (widget)
+    {
+      context = gtk_widget_get_style_context (widget);
     }
 
+  if (!context)
+    return render_fallback_image (context, direction, state, size);
 
-  icon = find_and_render_icon_source (icon_set, style, direction, state, size,
-				      widget, detail);
+  gtk_style_context_save (context);
 
-  if (icon == NULL)
-    icon = render_fallback_image (style, direction, state, size, widget, detail);
+  switch (state)
+    {
+    case GTK_STATE_PRELIGHT:
+      flags |= GTK_STATE_FLAG_PRELIGHT;
+      break;
+    case GTK_STATE_INSENSITIVE:
+      flags |= GTK_STATE_FLAG_INSENSITIVE;
+      break;
+    default:
+      break;
+    }
 
-  if (detail == NULL)
-    add_to_cache (icon_set, style, direction, state, size, icon);
+  gtk_style_context_set_state (context, flags);
+  gtk_style_context_set_direction (context, direction);
+
+  icon = gtk_icon_set_render_icon_pixbuf (icon_set, context, size);
+
+  gtk_style_context_restore (context);
 
   return icon;
 }
@@ -1900,9 +2053,6 @@ gtk_icon_source_copy (const GtkIconSource *source)
       break;
     case GTK_ICON_SOURCE_FILENAME:
       copy->source.filename = g_strdup (copy->source.filename);
-#if defined (G_OS_WIN32) && !defined (_WIN64)
-      copy->cp_filename = g_strdup (copy->cp_filename);
-#endif
       if (copy->filename_pixbuf)
 	g_object_ref (copy->filename_pixbuf);
       break;
@@ -1932,18 +2082,9 @@ gtk_icon_source_free (GtkIconSource *source)
   g_free (source);
 }
 
-GType
-gtk_icon_source_get_type (void)
-{
-  static GType our_type = 0;
-
-  if (our_type == 0)
-    our_type = g_boxed_type_register_static (I_("GtkIconSource"),
-					     (GBoxedCopyFunc) gtk_icon_source_copy,
-					     (GBoxedFreeFunc) gtk_icon_source_free);
-
-  return our_type;
-}
+G_DEFINE_BOXED_TYPE (GtkIconSource, gtk_icon_source,
+                     gtk_icon_source_copy,
+                     gtk_icon_source_free)
 
 static void
 icon_source_clear (GtkIconSource *source)
@@ -1961,10 +2102,6 @@ icon_source_clear (GtkIconSource *source)
     case GTK_ICON_SOURCE_FILENAME:
       g_free (source->source.filename);
       source->source.filename = NULL;
-#if defined (G_OS_WIN32) && !defined (_WIN64)
-      g_free (source->cp_filename);
-      source->cp_filename = NULL;
-#endif
       if (source->filename_pixbuf) 
 	g_object_unref (source->filename_pixbuf);
       source->filename_pixbuf = NULL;
@@ -1983,7 +2120,7 @@ icon_source_clear (GtkIconSource *source)
 /**
  * gtk_icon_source_set_filename:
  * @source: a #GtkIconSource
- * @filename: image file to use
+ * @filename: (type filename): image file to use
  *
  * Sets the name of an image file to use as a base image when creating
  * icon variants for #GtkIconSet. The filename must be absolute.
@@ -2005,14 +2142,11 @@ gtk_icon_source_set_filename (GtkIconSource *source,
     {
       source->type = GTK_ICON_SOURCE_FILENAME;
       source->source.filename = g_strdup (filename);
-#if defined (G_OS_WIN32) && !defined (_WIN64)
-      source->cp_filename = g_locale_from_utf8 (filename, -1, NULL, NULL, NULL);
-#endif
     }
 }
 
 /**
- * gtk_icon_source_set_icon_name
+ * gtk_icon_source_set_icon_name:
  * @source: a #GtkIconSource
  * @icon_name: (allow-none): name of icon to use
  *
@@ -2074,8 +2208,8 @@ gtk_icon_source_set_pixbuf (GtkIconSource *source,
  * filename is not a copy, and should not be modified or expected to
  * persist beyond the lifetime of the icon source.
  *
- * Return value: image filename. This string must not be modified
- * or freed.
+ * Return value: (type filename): image filename. This string must not
+ * be modified or freed.
  */
 const gchar*
 gtk_icon_source_get_filename (const GtkIconSource *source)
@@ -2393,7 +2527,7 @@ struct _CachedIcon
   /* These must all match to use the cached pixbuf.
    * If any don't match, we must re-render the pixbuf.
    */
-  GtkStyle *style;
+  GtkStyleContext *style;
   GtkTextDirection direction;
   GtkStateType state;
   GtkIconSize size;
@@ -2415,16 +2549,14 @@ static void
 cached_icon_free (CachedIcon *icon)
 {
   g_object_unref (icon->pixbuf);
-
-  if (icon->style)
-    g_object_unref (icon->style);
+  g_object_unref (icon->style);
 
   g_free (icon);
 }
 
 static GdkPixbuf *
 find_in_cache (GtkIconSet      *icon_set,
-               GtkStyle        *style,
+               GtkStyleContext *style_context,
                GtkTextDirection direction,
                GtkStateType     state,
                GtkIconSize      size)
@@ -2440,7 +2572,7 @@ find_in_cache (GtkIconSet      *icon_set,
     {
       CachedIcon *icon = tmp_list->data;
 
-      if (icon->style == style &&
+      if (icon->style == style_context &&
           icon->direction == direction &&
           icon->state == state &&
           (size == (GtkIconSize)-1 || icon->size == size))
@@ -2465,7 +2597,7 @@ find_in_cache (GtkIconSet      *icon_set,
 
 static void
 add_to_cache (GtkIconSet      *icon_set,
-              GtkStyle        *style,
+              GtkStyleContext *style_context,
               GtkTextDirection direction,
               GtkStateType     state,
               GtkIconSize      size,
@@ -2477,26 +2609,16 @@ add_to_cache (GtkIconSet      *icon_set,
 
   g_object_ref (pixbuf);
 
-  /* We have to ref the style, since if the style was finalized
-   * its address could be reused by another style, creating a
-   * really weird bug
-   */
-
-  if (style)
-    g_object_ref (style);
-
   icon = g_new (CachedIcon, 1);
   icon_set->cache = g_slist_prepend (icon_set->cache, icon);
   icon_set->cache_size++;
 
-  icon->style = style;
+  icon->style = g_object_ref (style_context);
   icon->direction = direction;
   icon->state = state;
   icon->size = size;
   icon->pixbuf = pixbuf;
-
-  if (icon->style)
-    attach_to_style (icon_set, icon->style);
+  attach_to_style (icon_set, icon->style);
 
   if (icon_set->cache_size >= NUM_CACHED_ICONS)
     {
@@ -2529,7 +2651,7 @@ clear_cache (GtkIconSet *icon_set,
              gboolean    style_detach)
 {
   GSList *cache, *tmp_list;
-  GtkStyle *last_style = NULL;
+  GtkStyleContext *last_style = NULL;
 
   cache = icon_set->cache;
   icon_set->cache = NULL;
@@ -2578,11 +2700,8 @@ copy_cache (GtkIconSet *icon_set,
 
       *icon_copy = *icon;
 
-      if (icon_copy->style)
-	{
-	  attach_to_style (copy_recipient, icon_copy->style);
-	  g_object_ref (icon_copy->style);
-	}
+      attach_to_style (copy_recipient, icon_copy->style);
+      g_object_ref (icon_copy->style);
 
       g_object_ref (icon_copy->pixbuf);
 
@@ -2597,18 +2716,18 @@ copy_cache (GtkIconSet *icon_set,
 }
 
 static void
-attach_to_style (GtkIconSet *icon_set,
-                 GtkStyle   *style)
+attach_to_style (GtkIconSet      *icon_set,
+                 GtkStyleContext *style_context)
 {
   GHashTable *table;
 
-  table = g_object_get_qdata (G_OBJECT (style),
+  table = g_object_get_qdata (G_OBJECT (style_context),
                               g_quark_try_string ("gtk-style-icon-sets"));
 
   if (table == NULL)
     {
       table = g_hash_table_new (NULL, NULL);
-      g_object_set_qdata_full (G_OBJECT (style),
+      g_object_set_qdata_full (G_OBJECT (style_context),
                                g_quark_from_static_string ("gtk-style-icon-sets"),
                                table,
                                style_dnotify);
@@ -2618,12 +2737,12 @@ attach_to_style (GtkIconSet *icon_set,
 }
 
 static void
-detach_from_style (GtkIconSet *icon_set,
-                   GtkStyle   *style)
+detach_from_style (GtkIconSet       *icon_set,
+                   GtkStyleContext  *style_context)
 {
   GHashTable *table;
 
-  table = g_object_get_qdata (G_OBJECT (style),
+  table = g_object_get_qdata (G_OBJECT (style_context),
                               g_quark_try_string ("gtk-style-icon-sets"));
 
   if (table != NULL)
@@ -2687,10 +2806,10 @@ _gtk_icon_factory_list_ids (void)
   while (tmp_list != NULL)
     {
       GList *these_ids;
-
       GtkIconFactory *factory = GTK_ICON_FACTORY (tmp_list->data);
+      GtkIconFactoryPrivate *priv = factory->priv;
 
-      these_ids = g_hash_table_get_keys (factory->icons);
+      these_ids = g_hash_table_get_keys (priv->icons);
 
       ids = g_list_concat (ids, these_ids);
 
@@ -2716,12 +2835,12 @@ typedef struct {
 } IconSourceParserData;
 
 static void
-icon_source_start_element (GMarkupParseContext *context,
-			   const gchar         *element_name,
-			   const gchar        **names,
-			   const gchar        **values,
-			   gpointer             user_data,
-			   GError             **error)
+icon_source_start_element (GMarkupParseContext  *context,
+                           const gchar          *element_name,
+                           const gchar         **names,
+                           const gchar         **values,
+                           gpointer              user_data,
+                           GError              **error)
 {
   gint i;
   gchar *stock_id = NULL;
@@ -2740,63 +2859,63 @@ icon_source_start_element (GMarkupParseContext *context,
   if (!parser_data->in_source)
     {
       if (strcmp (element_name, "sources") != 0)
-	{
-	  error_msg = g_strdup_printf ("Unexpected element %s, expected <sources>", element_name);
-	  error_domain = GTK_BUILDER_ERROR_INVALID_TAG;
-	  goto error;
-	}
+        {
+          error_msg = g_strdup_printf ("Unexpected element %s, expected <sources>", element_name);
+          error_domain = GTK_BUILDER_ERROR_INVALID_TAG;
+          goto error;
+        }
       parser_data->in_source = TRUE;
       return;
     }
   else
     {
       if (strcmp (element_name, "source") != 0)
-	{
-	  error_msg = g_strdup_printf ("Unexpected element %s, expected <source>", element_name);
-	  error_domain = GTK_BUILDER_ERROR_INVALID_TAG;
-	  goto error;
-	}
+        {
+          error_msg = g_strdup_printf ("Unexpected element %s, expected <source>", element_name);
+          error_domain = GTK_BUILDER_ERROR_INVALID_TAG;
+          goto error;
+        }
     }
 
   for (i = 0; names[i]; i++)
     {
       if (strcmp (names[i], "stock-id") == 0)
-	stock_id = g_strdup (values[i]);
+        stock_id = g_strdup (values[i]);
       else if (strcmp (names[i], "filename") == 0)
-	filename = g_strdup (values[i]);
+        filename = g_strdup (values[i]);
       else if (strcmp (names[i], "icon-name") == 0)
-	icon_name = g_strdup (values[i]);
+        icon_name = g_strdup (values[i]);
       else if (strcmp (names[i], "size") == 0)
-	{
+        {
           if (!_gtk_builder_enum_from_string (GTK_TYPE_ICON_SIZE,
                                               values[i],
                                               &size,
                                               error))
-	      return;
-	}
+            return;
+        }
       else if (strcmp (names[i], "direction") == 0)
-	{
+        {
           if (!_gtk_builder_enum_from_string (GTK_TYPE_TEXT_DIRECTION,
                                               values[i],
                                               &direction,
                                               error))
-	      return;
-	}
+            return;
+        }
       else if (strcmp (names[i], "state") == 0)
-	{
+        {
           if (!_gtk_builder_enum_from_string (GTK_TYPE_STATE_TYPE,
                                               values[i],
                                               &state,
                                               error))
-	      return;
-	}
+            return;
+        }
       else
-	{
-	  error_msg = g_strdup_printf ("'%s' is not a valid attribute of <%s>",
-				       names[i], "source");
-	  error_domain = GTK_BUILDER_ERROR_INVALID_ATTRIBUTE;
-	  goto error;
-	}
+        {
+          error_msg = g_strdup_printf ("'%s' is not a valid attribute of <%s>",
+                                       names[i], "source");
+          error_domain = GTK_BUILDER_ERROR_INVALID_ATTRIBUTE;
+          goto error;
+        }
     }
 
   if (!stock_id)
@@ -2822,20 +2941,11 @@ icon_source_start_element (GMarkupParseContext *context,
     gchar *tmp;
     gint line_number, char_number;
 
-    g_markup_parse_context_get_position (context,
-					 &line_number,
-					 &char_number);
+    g_markup_parse_context_get_position (context, &line_number, &char_number);
 
     tmp = g_strdup_printf ("%s:%d:%d %s", "input",
-			   line_number, char_number, error_msg);
-#if 0
-    g_set_error_literal (error,
-		 GTK_BUILDER_ERROR,
-		 error_domain,
-		 tmp);
-#else
-    g_warning ("%s", tmp);
-#endif
+                           line_number, char_number, error_msg);
+    g_set_error_literal (error, GTK_BUILDER_ERROR, error_domain, tmp);
     g_free (tmp);
     g_free (stock_id);
     g_free (filename);
@@ -2950,38 +3060,3 @@ gtk_icon_factory_buildable_custom_tag_end (GtkBuildable *buildable,
       gtk_icon_factory_add_default (icon_factory);
     }
 }
-
-#if defined (G_OS_WIN32) && !defined (_WIN64)
-
-/* DLL ABI stability backward compatibility versions */
-
-#undef gtk_icon_source_set_filename
-
-void
-gtk_icon_source_set_filename (GtkIconSource *source,
-			      const gchar   *filename)
-{
-  gchar *utf8_filename = g_locale_to_utf8 (filename, -1, NULL, NULL, NULL);
-
-  gtk_icon_source_set_filename_utf8 (source, utf8_filename);
-
-  g_free (utf8_filename);
-}
-
-#undef gtk_icon_source_get_filename
-
-const gchar*
-gtk_icon_source_get_filename (const GtkIconSource *source)
-{
-  g_return_val_if_fail (source != NULL, NULL);
-
-  if (source->type == GTK_ICON_SOURCE_FILENAME)
-    return source->cp_filename;
-  else
-    return NULL;
-}
-
-#endif
-
-#define __GTK_ICON_FACTORY_C__
-#include "gtkaliasdef.c"

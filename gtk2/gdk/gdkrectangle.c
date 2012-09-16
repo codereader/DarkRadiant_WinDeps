@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -25,8 +23,29 @@
  */
 
 #include "config.h"
-#include <gdk/gdk.h>
-#include "gdkalias.h"
+
+#include "gdkrectangle.h"
+
+
+/**
+ * SECTION:regions
+ * @Short_description: Simple graphical data types
+ * @Title: Points and Rectangles
+ *
+ * GDK provides the #GdkPoint and #GdkRectangle data types for representing pixels
+ * and sets of pixels on the screen. Together with Cairo's #cairo_region_t data
+ * type, they make up the central types for representing graphical data.
+ *
+ * #GdkPoint is a simple structure containing an x and y coordinate of a point.
+ *
+ * #GdkRectangle is a structure holding the position and size of a rectangle.
+ * The intersection of two rectangles can be computed with
+ * gdk_rectangle_intersect(). To find the union of two rectangles use
+ * gdk_rectangle_union().
+ *
+ * #cairo_region_t is usually used for managing clipping of graphical operations.
+ */
+
 
 /**
  * gdk_rectangle_union:
@@ -122,18 +141,6 @@ gdk_rectangle_copy (const GdkRectangle *rectangle)
   return result;
 }
 
-GType
-gdk_rectangle_get_type (void)
-{
-  static GType our_type = 0;
-  
-  if (our_type == 0)
-    our_type = g_boxed_type_register_static (g_intern_static_string ("GdkRectangle"),
-					     (GBoxedCopyFunc)gdk_rectangle_copy,
-					     (GBoxedFreeFunc)g_free);
-  return our_type;
-}
-
-
-#define __GDK_RECTANGLE_C__
-#include "gdkaliasdef.c"
+G_DEFINE_BOXED_TYPE (GdkRectangle, gdk_rectangle,
+                     gdk_rectangle_copy,
+                     g_free)

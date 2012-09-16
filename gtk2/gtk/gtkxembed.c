@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -23,7 +21,8 @@
 #include "gtkmain.h"
 #include "gtkprivate.h"
 #include "gtkxembed.h"
-#include "gtkalias.h"
+#include "gtkdebug.h"
+
 
 typedef struct _GtkXEmbedMessage GtkXEmbedMessage;
 
@@ -152,7 +151,7 @@ _gtk_xembed_send_message (GdkWindow        *recipient,
 	    g_message ("Sending %s", _gtk_xembed_message_name (message)));
 
   memset (&xclient, 0, sizeof (xclient));
-  xclient.window = GDK_WINDOW_XWINDOW (recipient);
+  xclient.window = GDK_WINDOW_XID (recipient);
   xclient.type = ClientMessage;
   xclient.message_type = gdk_x11_get_xatom_by_name_for_display (display, "_XEMBED");
   xclient.format = 32;
@@ -164,10 +163,9 @@ _gtk_xembed_send_message (GdkWindow        *recipient,
 
   gdk_error_trap_push ();
   XSendEvent (GDK_WINDOW_XDISPLAY(recipient),
-	      GDK_WINDOW_XWINDOW (recipient),
+	      GDK_WINDOW_XID (recipient),
 	      False, NoEventMask, (XEvent *)&xclient);
-  gdk_display_sync (display);
-  gdk_error_trap_pop ();
+  gdk_error_trap_pop_ignored ();
 }
 
 /**

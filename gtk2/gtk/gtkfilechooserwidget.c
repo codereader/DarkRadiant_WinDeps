@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -26,8 +24,27 @@
 #include "gtkfilechooserutils.h"
 #include "gtktypebuiltins.h"
 #include "gtkfilechooserembed.h"
+#include "gtkorientable.h"
 #include "gtkintl.h"
-#include "gtkalias.h"
+
+
+/**
+ * SECTION:gtkfilechooserwidget
+ * @Short_description: File chooser widget that can be embedded in other widgets
+ * @Title: GtkFileChooserWidget
+ * @See_also: #GtkFileChooser, #GtkFileChooserDialog
+ *
+ * #GtkFileChooserWidget is a widget suitable for selecting files.
+ * It is the main building block of a #GtkFileChooserDialog.  Most
+ * applications will only need to use the latter; you can use
+ * #GtkFileChooserWidget as part of a larger window if you have
+ * special needs.
+ *
+ * Note that #GtkFileChooserWidget does not have any methods of its
+ * own.  Instead, you should use the functions that work on a
+ * #GtkFileChooser.
+ */
+
 
 #define GTK_FILE_CHOOSER_WIDGET_GET_PRIVATE(o)  (GTK_FILE_CHOOSER_WIDGET (o)->priv)
 
@@ -45,7 +62,7 @@ static void     gtk_file_chooser_widget_get_property (GObject               *obj
 						      GValue                *value,
 						      GParamSpec            *pspec);
 
-G_DEFINE_TYPE_WITH_CODE (GtkFileChooserWidget, gtk_file_chooser_widget, GTK_TYPE_VBOX,
+G_DEFINE_TYPE_WITH_CODE (GtkFileChooserWidget, gtk_file_chooser_widget, GTK_TYPE_BOX,
 			 G_IMPLEMENT_INTERFACE (GTK_TYPE_FILE_CHOOSER,
 						_gtk_file_chooser_delegate_iface_init)
 			 G_IMPLEMENT_INTERFACE (GTK_TYPE_FILE_CHOOSER_EMBED,
@@ -73,6 +90,8 @@ gtk_file_chooser_widget_init (GtkFileChooserWidget *chooser_widget)
 								   GTK_TYPE_FILE_CHOOSER_WIDGET,
 								   GtkFileChooserWidgetPrivate);
   chooser_widget->priv = priv;
+  gtk_orientable_set_orientation (GTK_ORIENTABLE (chooser_widget),
+                                  GTK_ORIENTATION_VERTICAL);
 }
 
 static void
@@ -126,10 +145,6 @@ gtk_file_chooser_widget_set_property (GObject         *object,
 
   switch (prop_id)
     {
-    case GTK_FILE_CHOOSER_PROP_FILE_SYSTEM_BACKEND:
-      g_free (priv->file_system);
-      priv->file_system = g_value_dup_string (value);
-      break;
     default:
       g_object_set_property (G_OBJECT (priv->impl), pspec->name, value);
       break;
@@ -166,31 +181,3 @@ gtk_file_chooser_widget_new (GtkFileChooserAction action)
 		       "action", action,
 		       NULL);
 }
-
-/**
- * gtk_file_chooser_widget_new_with_backend:
- * @action: Open or save mode for the widget
- * @backend: The name of the specific filesystem backend to use.
- * 
- * Creates a new #GtkFileChooserWidget with a specified backend.  This is
- * especially useful if you use gtk_file_chooser_set_local_only() to allow
- * non-local files.  This is a file chooser widget that can be embedded in
- * custom windows and it is the same widget that is used by
- * #GtkFileChooserDialog.
- * 
- * Return value: a new #GtkFileChooserWidget
- *
- * Since: 2.4
- * Deprecated: 2.14: Use gtk_file_chooser_widget_new() instead.
- **/
-GtkWidget *
-gtk_file_chooser_widget_new_with_backend (GtkFileChooserAction  action,
-					  const gchar          *backend)
-{
-  return g_object_new (GTK_TYPE_FILE_CHOOSER_WIDGET,
-		       "action", action,
-		       NULL);
-}
-
-#define __GTK_FILE_CHOOSER_WIDGET_C__
-#include "gtkaliasdef.c"

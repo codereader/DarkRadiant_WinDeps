@@ -53,7 +53,6 @@
 #include "gtktextbtree.h"
 #include "gtktextlayout.h"
 #include "gtkintl.h"
-#include "gtkalias.h"
 
 #define CHECK_IN_BUFFER(anchor)                                         \
   G_STMT_START {                                                        \
@@ -135,9 +134,10 @@ _gtk_pixbuf_segment_new (GdkPixbuf *pixbuf)
 
   seg->next = NULL;
 
-  seg->byte_count = 3; /* We convert to the 0xFFFC "unknown character",
-                        * a 3-byte sequence in UTF-8
-                        */
+  /* We convert to the 0xFFFC "unknown character",
+   * a 3-byte sequence in UTF-8.
+   */
+  seg->byte_count = GTK_TEXT_UNKNOWN_CHAR_UTF8_LEN;
   seg->char_count = 1;
 
   seg->body.pixbuf.pixbuf = pixbuf;
@@ -510,6 +510,3 @@ gtk_text_anchored_child_set_layout (GtkWidget     *child,
   
   _gtk_anchored_child_set_layout (child, layout);
 }
-
-#define __GTK_TEXT_CHILD_C__
-#include "gtkaliasdef.c"

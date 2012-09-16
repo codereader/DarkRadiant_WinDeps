@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Header Files">
@@ -13,282 +13,1115 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Source Files\deprecated">
+      <UniqueIdentifier>{30f32932-d25b-4cb7-b1fa-86ef417a9889}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\a11y">
+      <UniqueIdentifier>{e12cc16a-f72d-4228-92d2-0c2fd7c0add3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\modules">
+      <UniqueIdentifier>{91721a6d-3763-4032-b6e6-13ea80393bc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\modules\input">
+      <UniqueIdentifier>{03089f8e-6498-4540-9407-8cdeb68b1d0a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\gtk2\gtk\gtk-win32.rc"><Filter>Resource Files</Filter></ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-   <ClCompile Include="..\gtk2\gtk\gtkquery.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtksearchengine.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtksearchenginesimple.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\fnmatch.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkaboutdialog.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkaccelgroup.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkaccellabel.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkaccelmap.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkaccessible.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkaction.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkactiongroup.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkactivatable.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkadjustment.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkalignment.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkarrow.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkaspectframe.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkassistant.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkbbox.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkbin.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkbindings.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkbox.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkbuildable.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkbuilder.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkbuilderparser.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkbutton.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkcalendar.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkcelleditable.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkcelllayout.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkcellrenderer.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkcellrendereraccel.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkcellrenderercombo.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkcellrendererpixbuf.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkcellrendererprogress.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkcellrendererspin.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkcellrendererspinner.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkcellrenderertext.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkcellrenderertoggle.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkcellview.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkcheckbutton.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkcheckmenuitem.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkcolorbutton.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkcolorsel.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkcolorseldialog.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkcombobox.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkcomboboxentry.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkcomboboxtext.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkcontainer.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkdialog.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkdrawingarea.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkeditable.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkentry.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkentrybuffer.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkentrycompletion.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkeventbox.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkexpander.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkfilechooser.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkfilechooserbutton.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkfilechooserdefault.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkfilechooserdialog.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkfilechooserembed.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkfilechooserentry.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkfilechoosersettings.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkfilechooserutils.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkfilechooserwidget.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkfilefilter.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkfilesystem.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkfilesystemmodel.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkfixed.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkfontbutton.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkfontsel.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkframe.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkgc.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkhandlebox.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkhbbox.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkhbox.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkhpaned.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkhruler.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkhscale.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkhscrollbar.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkhseparator.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkhsv.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkiconcache.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkiconcachevalidator.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkiconfactory.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkicontheme.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkiconview.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkimage.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkimagemenuitem.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkimcontext.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkimcontextsimple.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkimmodule.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkimmulticontext.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkinfobar.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkinputdialog.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkinvisible.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkitem.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkkeyhash.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtklabel.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtklayout.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtklinkbutton.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkliststore.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkmain.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkmarshal.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkmarshalers.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkmenu.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkmenubar.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkmenuitem.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkmenushell.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkmenutoolbutton.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkmessagedialog.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkmisc.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkmnemonichash.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkmodules.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkmountoperation.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtknotebook.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkobject.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkoffscreenwindow.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkorientable.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkpagesetup.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkpaned.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkpango.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkpapersize.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkpathbar.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkplug.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkprintcontext.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkprintoperation.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkprintoperationpreview.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkprintsettings.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkprintutils.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkprogressbar.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkradioaction.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkradiobutton.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkradiomenuitem.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkradiotoolbutton.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkrange.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkrbtree.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkrc.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkrecentaction.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkrecentchooserdefault.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkrecentchooserdialog.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkrecentchoosermenu.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkrecentchooserwidget.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkrecentchooserutils.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkrecentchooser.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkrecentfilter.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkrecentmanager.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkruler.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkscale.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkscalebutton.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkscrollbar.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkscrolledwindow.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkselection.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkseparator.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkseparatormenuitem.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkseparatortoolitem.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtksettings.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtksizegroup.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkshow.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtksocket.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkspinbutton.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkspinner.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkstatusbar.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkstatusicon.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkstock.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkstyle.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktable.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktearoffmenuitem.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktestutils.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktextbtree.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktextbuffer.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktextbufferrichtext.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktextbufferserialize.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktextchild.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktextdisplay.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktextiter.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktextlayout.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktextmark.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktextsegment.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktexttag.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktexttagtable.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktexttypes.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktextutil.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktextview.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkthemes.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktoggleaction.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktogglebutton.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktoggletoolbutton.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktoolbar.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktoolbutton.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktoolitem.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktoolitemgroup.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktoolpalette.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktoolshell.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktooltip.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktreedatalist.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktreednd.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktreemodel.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktreemodelfilter.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktreemodelsort.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktreeselection.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktreesortable.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktreestore.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktreeview.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktreeviewcolumn.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktypebuiltins.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktypeutils.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkuimanager.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkvbbox.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkvbox.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkvolumebutton.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkviewport.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkvpaned.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkvruler.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkvscale.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkvscrollbar.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkvseparator.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkwidget.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkwindow-decorate.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkwindow.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkclipboard.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkdnd.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktext.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktree.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktreeitem.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkclist.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkcombo.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkctree.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkcurve.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkfilesel.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkgamma.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkitemfactory.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtklist.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtklistitem.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkoldeditable.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkoptionmenu.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkpixmap.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkpreview.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkprogress.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtksignal.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktipsquery.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtktooltips.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkprint-win32.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkprintoperation-win32.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkplug-win32.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtksocket-win32.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkwin32embed.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkwin32embedwidget.c"><Filter>Source Files</Filter></ClCompile>
-   <ClCompile Include="..\gtk2\gtk\gtkmountoperation-stub.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\gtk\modules\input\gtkimcontextime.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\gtk\modules\input\gtkimcontextmultipress.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\gtk\modules\input\gtkimcontextthai.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\gtk\modules\input\imam-et.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\gtk\modules\input\imcedilla.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\gtk\modules\input\imcyrillic-translit.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\gtk\modules\input\imime.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\gtk\modules\input\iminuktitut.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\gtk\modules\input\imipa.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\gtk\modules\input\immultipress.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\gtk\modules\input\imthai.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\gtk\modules\input\imti-er.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\gtk\modules\input\imti-et.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\gtk\modules\input\imviqr.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\gtk\modules\input\thai-charprop.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\gtk\modules\engines\ms-windows\msw_rc_style.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\gtk\modules\engines\ms-windows\msw_style.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\gtk\modules\engines\ms-windows\msw_theme_main.c"><Filter>Source Files</Filter></ClCompile>
-    <ClCompile Include="..\gtk2\gtk\modules\engines\ms-windows\xp_theme.c"><Filter>Source Files</Filter></ClCompile>
+    <ResourceCompile Include="..\gtk2\gtk\gtk-win32.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\gtk2\gtk\gtk.symbols">
       <Filter>Resource Files</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\gtk2\gtk\gtkwin32embed.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkwin32embedwidget.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkwin32theme.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkwindow.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gen-paper-names.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gsimpleactionobserver.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkaboutdialog.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkaccelgroup.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkaccellabel.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkaccelmap.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkaccessible.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkaction.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkactionable.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkactiongroup.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkactivatable.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkadjustment.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkalignment.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkallocatedbitmask.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkanimationdescription.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkappchooser.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkappchooserbutton.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkappchooserdialog.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkappchoosermodule.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkappchooseronline.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkappchooseronlinepk.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkappchooserwidget.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkapplication.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkapplicationwindow.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkarrow.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkaspectframe.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkassistant.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkbbox.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkbin.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkbindings.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkborder.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkborderimage.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkbox.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkbuildable.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkbuilder.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkbuilder-menus.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkbuilderparser.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkbutton.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcalendar.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcellarea.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcellareabox.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcellareaboxcontext.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcellareacontext.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcelleditable.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcelllayout.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcellrenderer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcellrendereraccel.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcellrenderercombo.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcellrendererpixbuf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcellrendererprogress.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcellrendererspin.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcellrendererspinner.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcellrenderertext.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcellrenderertoggle.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcellview.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcheckbutton.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcheckmenuitem.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkclipboard.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcolorbutton.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcolorchooser.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcolorchooserdialog.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcolorchooserwidget.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcoloreditor.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcolorplane.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcolorscale.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcolorswatch.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcolorutils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcombobox.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcomboboxtext.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcontainer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcsscomputedvalues.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcsscustomproperty.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcssimage.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcssimagegradient.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcssimagelinear.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcssimageurl.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcssimagewin32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcsslookup.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcssparser.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcssprovider.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcsssection.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcssselector.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcssshorthandproperty.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcssshorthandpropertyimpl.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcssstylefuncs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcssstyleproperty.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcssstylepropertyimpl.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcsstypes.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkcssvalue.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkdialog.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkdnd.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkdrawingarea.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkeditable.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkentry.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkentrybuffer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkentrycompletion.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkeventbox.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkexpander.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkfilechooser.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkfilechooserbutton.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkfilechooserdefault.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkfilechooserdialog.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkfilechooserembed.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkfilechooserentry.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkfilechooserutils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkfilechooserwidget.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkfilefilter.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkfilesystem.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkfilesystemmodel.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkfixed.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkfontbutton.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkfontchooser.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkfontchooserdialog.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkfontchooserutils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkfontchooserwidget.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkframe.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkgradient.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkgrid.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkiconcache.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkiconcachevalidator.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkiconfactory.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkiconhelper.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkicontheme.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkiconview.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkimage.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkimagemenuitem.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkimcontext.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkimcontextsimple.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkimmodule.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkimmulticontext.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkinfobar.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkinvisible.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkkeyhash.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtklabel.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtklayout.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtklinkbutton.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkliststore.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtklockbutton.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkmain.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkmarshalers.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkmenu.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkmenubar.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkmenuitem.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkmenushell.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkmenutoolbutton.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkmessagedialog.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkmisc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkmnemonichash.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkmodelmenu.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkmodelmenuitem.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkmodifierstyle.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkmodules.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkmountoperation.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkmountoperation-stub.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtknotebook.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtknumerableicon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkoffscreenwindow.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkorientable.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkoverlay.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkpagesetup.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkpaned.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkpango.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkpapersize.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkpathbar.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkpressandhold.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkprintcontext.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkprintoperation.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkprintoperationpreview.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkprintoperation-win32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkprintsettings.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkprintutils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkprint-win32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkprivate.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkprivatetypebuiltins.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkprogressbar.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkquery.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkradioaction.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkradiobutton.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkradiomenuitem.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkradiotoolbutton.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkrange.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkrbtree.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkrecentaction.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkrecentchooser.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkrecentchooserdefault.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkrecentchooserdialog.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkrecentchoosermenu.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkrecentchooserutils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkrecentchooserwidget.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkrecentfilter.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkrecentmanager.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkresources.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkroundedbox.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkscale.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkscalebutton.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkscrollable.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkscrollbar.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkscrolledwindow.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtksearchengine.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtksearchenginesimple.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtksearchenginetracker.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkselection.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkseparator.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkseparatormenuitem.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkseparatortoolitem.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtksettings.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkshadow.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkshow.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtksizegroup.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtksizerequest.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkspinbutton.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkspinner.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkstatusbar.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkstatusicon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkstock.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkstylecontext.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkstyleproperties.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkstyleproperty.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkstyleprovider.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkstyleproviderprivate.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkswitch.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtksymboliccolor.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktestutils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktextattributes.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktextbtree.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktextbuffer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktextbufferrichtext.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktextbufferserialize.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktextchild.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktextdisplay.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktextiter.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktextlayout.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktextmark.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktextsegment.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktexttag.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktexttagtable.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktexttypes.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktextutil.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktextview.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkthemingbackground.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkthemingengine.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktimeline.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktoggleaction.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktogglebutton.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktoggletoolbutton.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktoolbar.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktoolbutton.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktoolitem.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktoolitemgroup.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktoolpalette.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktoolshell.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktooltip.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktreedatalist.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktreednd.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktreemenu.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktreemodel.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktreemodelfilter.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktreemodelsort.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktreeselection.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktreesortable.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktreestore.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktreeview.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktreeviewcolumn.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtktypebuiltins.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkuimanager.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkviewport.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkvolumebutton.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkwidget.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkwidgetpath.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gtkwin32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\fnmatch.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gactionmuxer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gactionobservable.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\gactionobserver.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gail.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gailmisc.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gailutil.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkarrowaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkbooleancellaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkboxaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkbuttonaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkcellaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkcellaccessibleparent.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkcheckmenuitemaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkcolorswatchaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkcomboboxaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkcontaineraccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkcontainercellaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkentryaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkexpanderaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkframeaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkiconviewaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkimageaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkimagecellaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtklabelaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtklinkbuttonaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkmenuaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkmenuitemaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkmenushellaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtknotebookaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtknotebookpageaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkpanedaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkprogressbaraccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkradiobuttonaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkradiomenuitemaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkrangeaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkrenderercellaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkscaleaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkscalebuttonaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkscrollbaraccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkscrolledwindowaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkspinbuttonaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkspinneraccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkstatusbaraccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkswitchaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtktextcellaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtktextviewaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtktogglebuttonaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtktoplevelaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtktreeviewaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkwidgetaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\a11y\gtkwindowaccessible.c">
+      <Filter>Source Files\a11y</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\deprecated\gtkcolorsel.c">
+      <Filter>Source Files\deprecated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\deprecated\gtkcolorseldialog.c">
+      <Filter>Source Files\deprecated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\deprecated\gtkfontsel.c">
+      <Filter>Source Files\deprecated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\deprecated\gtkhandlebox.c">
+      <Filter>Source Files\deprecated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\deprecated\gtkhbbox.c">
+      <Filter>Source Files\deprecated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\deprecated\gtkhbox.c">
+      <Filter>Source Files\deprecated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\deprecated\gtkhpaned.c">
+      <Filter>Source Files\deprecated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\deprecated\gtkhscale.c">
+      <Filter>Source Files\deprecated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\deprecated\gtkhscrollbar.c">
+      <Filter>Source Files\deprecated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\deprecated\gtkhseparator.c">
+      <Filter>Source Files\deprecated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\deprecated\gtkhsv.c">
+      <Filter>Source Files\deprecated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\deprecated\gtkrc.c">
+      <Filter>Source Files\deprecated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\deprecated\gtkstyle.c">
+      <Filter>Source Files\deprecated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\deprecated\gtktable.c">
+      <Filter>Source Files\deprecated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\deprecated\gtktearoffmenuitem.c">
+      <Filter>Source Files\deprecated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\deprecated\gtkvbbox.c">
+      <Filter>Source Files\deprecated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\deprecated\gtkvbox.c">
+      <Filter>Source Files\deprecated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\deprecated\gtkvpaned.c">
+      <Filter>Source Files\deprecated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\deprecated\gtkvscale.c">
+      <Filter>Source Files\deprecated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\deprecated\gtkvscrollbar.c">
+      <Filter>Source Files\deprecated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\deprecated\gtkvseparator.c">
+      <Filter>Source Files\deprecated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\modules\input\gtkimcontextime.c">
+      <Filter>Source Files\modules\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\modules\input\gtkimcontextmultipress.c">
+      <Filter>Source Files\modules\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\modules\input\gtkimcontextthai.c">
+      <Filter>Source Files\modules\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\modules\input\imam-et.c">
+      <Filter>Source Files\modules\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\modules\input\imcedilla.c">
+      <Filter>Source Files\modules\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\modules\input\imcyrillic-translit.c">
+      <Filter>Source Files\modules\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\modules\input\imime.c">
+      <Filter>Source Files\modules\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\modules\input\iminuktitut.c">
+      <Filter>Source Files\modules\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\modules\input\imipa.c">
+      <Filter>Source Files\modules\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\modules\input\immultipress.c">
+      <Filter>Source Files\modules\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\modules\input\imthai.c">
+      <Filter>Source Files\modules\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\modules\input\imti-er.c">
+      <Filter>Source Files\modules\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\modules\input\imti-et.c">
+      <Filter>Source Files\modules\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\modules\input\imviqr.c">
+      <Filter>Source Files\modules\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtk2\gtk\modules\input\thai-charprop.c">
+      <Filter>Source Files\modules\input</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

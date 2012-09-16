@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -29,8 +27,40 @@
 #include "gtkmisc.h"
 #include "gtkintl.h"
 #include "gtkprivate.h"
-#include "gtkalias.h"
 
+
+/**
+ * SECTION:gtkmisc
+ * @Short_description: Base class for widgets with alignments and padding
+ * @Title: GtkMisc
+ *
+ * The #GtkMisc widget is an abstract widget which is not useful itself, but
+ * is used to derive subclasses which have alignment and padding attributes.
+ *
+ * The horizontal and vertical padding attributes allows extra space to be
+ * added around the widget.
+ *
+ * The horizontal and vertical alignment attributes enable the widget to be
+ * positioned within its allocated area. Note that if the widget is added to
+ * a container in such a way that it expands automatically to fill its
+ * allocated area, the alignment settings will not alter the widgets position.
+ *
+ * <note>
+ * Note that the desired effect can in most cases be achieved by using the
+ * #GtkWidget:halign, #GtkWidget:valign and #GtkWidget:margin properties
+ * on the child widget, so GtkMisc should not be used in new code.
+ * </note>
+ */
+
+
+struct _GtkMiscPrivate
+{
+  gfloat        xalign;
+  gfloat        yalign;
+
+  guint16       xpad;
+  guint16       ypad;
+};
 
 enum {
   PROP_0,
@@ -106,15 +136,24 @@ gtk_misc_class_init (GtkMiscClass *class)
 						     G_MAXINT,
 						     0,
 						     GTK_PARAM_READWRITE));
+
+  g_type_class_add_private (class, sizeof (GtkMiscPrivate));
 }
 
 static void
 gtk_misc_init (GtkMisc *misc)
 {
-  misc->xalign = 0.5;
-  misc->yalign = 0.5;
-  misc->xpad = 0;
-  misc->ypad = 0;
+  GtkMiscPrivate *priv;
+
+  misc->priv = G_TYPE_INSTANCE_GET_PRIVATE (misc,
+                                            GTK_TYPE_MISC,
+                                            GtkMiscPrivate);
+  priv = misc->priv;
+
+  priv->xalign = 0.5;
+  priv->yalign = 0.5;
+  priv->xpad = 0;
+  priv->ypad = 0;
 }
 
 static void
@@ -123,23 +162,22 @@ gtk_misc_set_property (GObject      *object,
 		       const GValue *value,
 		       GParamSpec   *pspec)
 {
-  GtkMisc *misc;
-
-  misc = GTK_MISC (object);
+  GtkMisc *misc = GTK_MISC (object);
+  GtkMiscPrivate *priv = misc->priv;
 
   switch (prop_id)
     {
     case PROP_XALIGN:
-      gtk_misc_set_alignment (misc, g_value_get_float (value), misc->yalign);
+      gtk_misc_set_alignment (misc, g_value_get_float (value), priv->yalign);
       break;
     case PROP_YALIGN:
-      gtk_misc_set_alignment (misc, misc->xalign, g_value_get_float (value));
+      gtk_misc_set_alignment (misc, priv->xalign, g_value_get_float (value));
       break;
     case PROP_XPAD:
-      gtk_misc_set_padding (misc, g_value_get_int (value), misc->ypad);
+      gtk_misc_set_padding (misc, g_value_get_int (value), priv->ypad);
       break;
     case PROP_YPAD:
-      gtk_misc_set_padding (misc, misc->xpad, g_value_get_int (value));
+      gtk_misc_set_padding (misc, priv->xpad, g_value_get_int (value));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -153,23 +191,22 @@ gtk_misc_get_property (GObject      *object,
 		       GValue       *value,
 		       GParamSpec   *pspec)
 {
-  GtkMisc *misc;
-
-  misc = GTK_MISC (object);
+  GtkMisc *misc = GTK_MISC (object);
+  GtkMiscPrivate *priv = misc->priv;
 
   switch (prop_id)
     {
     case PROP_XALIGN:
-      g_value_set_float (value, misc->xalign);
+      g_value_set_float (value, priv->xalign);
       break;
     case PROP_YALIGN:
-      g_value_set_float (value, misc->yalign);
+      g_value_set_float (value, priv->yalign);
       break;
     case PROP_XPAD:
-      g_value_set_int (value, misc->xpad);
+      g_value_set_int (value, priv->xpad);
       break;
     case PROP_YPAD:
-      g_value_set_int (value, misc->ypad);
+      g_value_set_int (value, priv->ypad);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -177,14 +214,25 @@ gtk_misc_get_property (GObject      *object,
     }
 }
 
+/**
+ * gtk_misc_set_alignment:
+ * @misc: a #GtkMisc.
+ * @xalign: the horizontal alignment, from 0 (left) to 1 (right).
+ * @yalign: the vertical alignment, from 0 (top) to 1 (bottom).
+ *
+ * Sets the alignment of the widget.
+ */
 void
 gtk_misc_set_alignment (GtkMisc *misc,
 			gfloat   xalign,
 			gfloat   yalign)
 {
+  GtkMiscPrivate *priv;
   GtkWidget *widget;
 
   g_return_if_fail (GTK_IS_MISC (misc));
+
+  priv = misc->priv;
 
   if (xalign < 0.0)
     xalign = 0.0;
@@ -196,17 +244,17 @@ gtk_misc_set_alignment (GtkMisc *misc,
   else if (yalign > 1.0)
     yalign = 1.0;
 
-  if ((xalign != misc->xalign) || (yalign != misc->yalign))
+  if ((xalign != priv->xalign) || (yalign != priv->yalign))
     {
       g_object_freeze_notify (G_OBJECT (misc));
-      if (xalign != misc->xalign)
+      if (xalign != priv->xalign)
 	g_object_notify (G_OBJECT (misc), "xalign");
 
-      if (yalign != misc->yalign)
+      if (yalign != priv->yalign)
 	g_object_notify (G_OBJECT (misc), "yalign");
 
-      misc->xalign = xalign;
-      misc->yalign = yalign;
+      priv->xalign = xalign;
+      priv->yalign = yalign;
       
       /* clear the area that was allocated before the change
        */
@@ -232,47 +280,56 @@ gtk_misc_get_alignment (GtkMisc *misc,
 		        gfloat  *xalign,
 			gfloat  *yalign)
 {
+  GtkMiscPrivate *priv;
+
   g_return_if_fail (GTK_IS_MISC (misc));
 
+  priv = misc->priv;
+
   if (xalign)
-    *xalign = misc->xalign;
+    *xalign = priv->xalign;
   if (yalign)
-    *yalign = misc->yalign;
+    *yalign = priv->yalign;
 }
 
+/**
+ * gtk_misc_set_padding:
+ * @misc: a #GtkMisc.
+ * @xpad: the amount of space to add on the left and right of the widget,
+ *   in pixels.
+ * @ypad: the amount of space to add on the top and bottom of the widget,
+ *   in pixels.
+ *
+ * Sets the amount of space to add around the widget.
+ */
 void
 gtk_misc_set_padding (GtkMisc *misc,
 		      gint     xpad,
 		      gint     ypad)
 {
-  GtkRequisition *requisition;
-  
+  GtkMiscPrivate *priv;
+
   g_return_if_fail (GTK_IS_MISC (misc));
-  
+
+  priv = misc->priv;
+
   if (xpad < 0)
     xpad = 0;
   if (ypad < 0)
     ypad = 0;
-  
-  if ((xpad != misc->xpad) || (ypad != misc->ypad))
+
+  if ((xpad != priv->xpad) || (ypad != priv->ypad))
     {
       g_object_freeze_notify (G_OBJECT (misc));
-      if (xpad != misc->xpad)
+      if (xpad != priv->xpad)
 	g_object_notify (G_OBJECT (misc), "xpad");
 
-      if (ypad != misc->ypad)
+      if (ypad != priv->ypad)
 	g_object_notify (G_OBJECT (misc), "ypad");
 
-      requisition = &(GTK_WIDGET (misc)->requisition);
-      requisition->width -= misc->xpad * 2;
-      requisition->height -= misc->ypad * 2;
-      
-      misc->xpad = xpad;
-      misc->ypad = ypad;
-      
-      requisition->width += misc->xpad * 2;
-      requisition->height += misc->ypad * 2;
-      
+      priv->xpad = xpad;
+      priv->ypad = ypad;
+
       if (gtk_widget_is_drawable (GTK_WIDGET (misc)))
 	gtk_widget_queue_resize (GTK_WIDGET (misc));
 
@@ -296,17 +353,23 @@ gtk_misc_get_padding (GtkMisc *misc,
 		      gint    *xpad,
 		      gint    *ypad)
 {
+  GtkMiscPrivate *priv;
+
   g_return_if_fail (GTK_IS_MISC (misc));
 
+  priv = misc->priv;
+
   if (xpad)
-    *xpad = misc->xpad;
+    *xpad = priv->xpad;
   if (ypad)
-    *ypad = misc->ypad;
+    *ypad = priv->ypad;
 }
 
 static void
 gtk_misc_realize (GtkWidget *widget)
 {
+  GtkAllocation allocation;
+  GdkWindow *window;
   GdkWindowAttr attributes;
   gint attributes_mask;
 
@@ -314,30 +377,61 @@ gtk_misc_realize (GtkWidget *widget)
 
   if (!gtk_widget_get_has_window (widget))
     {
-      widget->window = gtk_widget_get_parent_window (widget);
-      g_object_ref (widget->window);
-      widget->style = gtk_style_attach (widget->style, widget->window);
+      window = gtk_widget_get_parent_window (widget);
+      gtk_widget_set_window (widget, window);
+      g_object_ref (window);
     }
   else
     {
+      gtk_widget_get_allocation (widget, &allocation);
+
       attributes.window_type = GDK_WINDOW_CHILD;
-      attributes.x = widget->allocation.x;
-      attributes.y = widget->allocation.y;
-      attributes.width = widget->allocation.width;
-      attributes.height = widget->allocation.height;
+      attributes.x = allocation.x;
+      attributes.y = allocation.y;
+      attributes.width = allocation.width;
+      attributes.height = allocation.height;
       attributes.wclass = GDK_INPUT_OUTPUT;
       attributes.visual = gtk_widget_get_visual (widget);
-      attributes.colormap = gtk_widget_get_colormap (widget);
       attributes.event_mask = gtk_widget_get_events (widget) | GDK_EXPOSURE_MASK;
-      attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
+      attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL;
 
-      widget->window = gdk_window_new (gtk_widget_get_parent_window (widget), &attributes, attributes_mask);
-      gdk_window_set_user_data (widget->window, widget);
-
-      widget->style = gtk_style_attach (widget->style, widget->window);
-      gdk_window_set_back_pixmap (widget->window, NULL, TRUE);
+      window = gdk_window_new (gtk_widget_get_parent_window (widget), &attributes, attributes_mask);
+      gtk_widget_set_window (widget, window);
+      gdk_window_set_user_data (window, widget);
+      gdk_window_set_background_pattern (window, NULL);
     }
 }
 
-#define __GTK_MISC_C__
-#include "gtkaliasdef.c"
+/* Semi-private function used by gtk widgets inheriting from
+ * GtkMisc that takes into account both css padding and border
+ * and the padding specified with the GtkMisc properties.
+ */
+void
+_gtk_misc_get_padding_and_border (GtkMisc   *misc,
+                                  GtkBorder *border)
+{
+  GtkStyleContext *context;
+  GtkStateFlags state;
+  GtkBorder tmp;
+  gint xpad, ypad;
+
+  g_return_if_fail (GTK_IS_MISC (misc));
+
+  context = gtk_widget_get_style_context (GTK_WIDGET (misc));
+  state = gtk_widget_get_state_flags (GTK_WIDGET (misc));
+
+  gtk_style_context_get_padding (context, state, border);
+
+  gtk_misc_get_padding (misc, &xpad, &ypad);
+  border->top += ypad;
+  border->left += xpad;
+  border->bottom += ypad;
+  border->right += xpad;
+
+  gtk_style_context_get_border (context, state, &tmp);
+  border->top += tmp.top;
+  border->right += tmp.right;
+  border->bottom += tmp.bottom;
+  border->left += tmp.left;
+}
+

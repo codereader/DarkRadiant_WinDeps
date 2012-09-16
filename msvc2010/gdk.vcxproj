@@ -155,45 +155,40 @@
     <ResourceCompile Include="..\gtk2\gdk\win32\rc\gdk.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="gdk-win32.vcxproj">
+      <Project>{fc5aadb5-95cd-4bf0-ba8b-0c16fe7073fa}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="..\gtk2\gdk\gdk.c" />
     <ClCompile Include="..\gtk2\gdk\gdkapplaunchcontext.c" />
     <ClCompile Include="..\gtk2\gdk\gdkcairo.c" />
     <ClCompile Include="..\gtk2\gdk\gdkcolor.c" />
     <ClCompile Include="..\gtk2\gdk\gdkcursor.c" />
+    <ClCompile Include="..\gtk2\gdk\gdkdeprecated.c" />
+    <ClCompile Include="..\gtk2\gdk\gdkdevice.c" />
+    <ClCompile Include="..\gtk2\gdk\gdkdevicemanager.c" />
     <ClCompile Include="..\gtk2\gdk\gdkdisplay.c" />
     <ClCompile Include="..\gtk2\gdk\gdkdisplaymanager.c" />
     <ClCompile Include="..\gtk2\gdk\gdkdnd.c" />
-    <ClCompile Include="..\gtk2\gdk\gdkdraw.c" />
+    <ClCompile Include="..\gtk2\gdk\gdkenumtypes.c" />
     <ClCompile Include="..\gtk2\gdk\gdkevents.c" />
-    <ClCompile Include="..\gtk2\gdk\gdkfont.c" />
-    <ClCompile Include="..\gtk2\gdk\gdkgc.c" />
     <ClCompile Include="..\gtk2\gdk\gdkglobals.c" />
-    <ClCompile Include="..\gtk2\gdk\gdkimage.c" />
+    <ClCompile Include="..\gtk2\gdk\gdkkeynames.c" />
     <ClCompile Include="..\gtk2\gdk\gdkkeys.c" />
     <ClCompile Include="..\gtk2\gdk\gdkkeyuni.c" />
+    <ClCompile Include="..\gtk2\gdk\gdkmarshalers.c" />
     <ClCompile Include="..\gtk2\gdk\gdkoffscreenwindow.c" />
     <ClCompile Include="..\gtk2\gdk\gdkpango.c" />
     <ClCompile Include="..\gtk2\gdk\gdkpixbuf-drawable.c" />
-    <ClCompile Include="..\gtk2\gdk\gdkpixbuf-render.c" />
-    <ClCompile Include="..\gtk2\gdk\gdkpixmap.c" />
-    <ClCompile Include="..\gtk2\gdk\gdkpolyreg-generic.c" />
     <ClCompile Include="..\gtk2\gdk\gdkrectangle.c" />
-    <ClCompile Include="..\gtk2\gdk\gdkregion-generic.c" />
-    <ClCompile Include="..\gtk2\gdk\gdkrgb.c" />
+    <ClCompile Include="..\gtk2\gdk\gdkrgba.c" />
     <ClCompile Include="..\gtk2\gdk\gdkscreen.c" />
     <ClCompile Include="..\gtk2\gdk\gdkselection.c" />
     <ClCompile Include="..\gtk2\gdk\gdkvisual.c" />
     <ClCompile Include="..\gtk2\gdk\gdkwindow.c" />
     <ClCompile Include="..\gtk2\gdk\gdkwindowimpl.c" />
-    <ClCompile Include="..\gtk2\gdk\gdkenumtypes.c" />
-    <ClCompile Include="..\gtk2\gdk\gdkmarshalers.c" />
-    <ClCompile Include="..\gtk2\gdk\gdkkeynames.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="gdk-win32.vcxproj">
-      <Project>{fc5aadb5-95cd-4bf0-ba8b-0c16fe7073fa}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
