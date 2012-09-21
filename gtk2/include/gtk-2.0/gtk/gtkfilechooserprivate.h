@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef __GTK_FILE_CHOOSER_PRIVATE_H__
@@ -32,7 +30,7 @@
 #include "gtktreemodelsort.h"
 #include "gtktreestore.h"
 #include "gtktreeview.h"
-#include "gtkvbox.h"
+#include "gtkbox.h"
 
 G_BEGIN_DECLS
 
@@ -154,7 +152,7 @@ typedef enum {
 
 struct _GtkFileChooserDefault
 {
-  GtkVBox parent_instance;
+  GtkBox parent_instance;
 
   GtkFileChooserAction action;
 
@@ -180,6 +178,8 @@ struct _GtkFileChooserDefault
   GtkWidget *browse_files_popup_menu_add_shortcut_item;
   GtkWidget *browse_files_popup_menu_hidden_files_item;
   GtkWidget *browse_files_popup_menu_size_column_item;
+  GtkWidget *browse_files_popup_menu_copy_file_location_item;
+  GtkWidget *browse_files_popup_menu_visit_file_item;
   GtkWidget *browse_new_folder_button;
   GtkWidget *browse_path_bar_hbox;
   GtkSizeGroup *browse_path_bar_size_group;
@@ -278,6 +278,8 @@ struct _GtkFileChooserDefault
 
   gint sort_column;
   GtkSortType sort_order;
+
+  GSettings *settings;
 
 #if 0
   GdkDragContext *shortcuts_drag_context;

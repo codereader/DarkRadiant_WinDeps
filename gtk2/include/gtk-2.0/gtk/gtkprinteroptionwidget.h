@@ -12,15 +12,13 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 #ifndef __GTK_PRINTER_OPTION_WIDGET_H__
 #define __GTK_PRINTER_OPTION_WIDGET_H__
 
 #include "gtkprinteroption.h"
-#include "gtkhbox.h"
+#include "gtkbox.h"
 
 G_BEGIN_DECLS
 
@@ -38,16 +36,22 @@ typedef struct GtkPrinterOptionWidgetPrivate   GtkPrinterOptionWidgetPrivate;
 
 struct _GtkPrinterOptionWidget
 {
-  GtkHBox parent_instance;
+  GtkBox parent_instance;
 
   GtkPrinterOptionWidgetPrivate *priv;
 };
 
 struct _GtkPrinterOptionWidgetClass
 {
-  GtkHBoxClass parent_class;
+  GtkBoxClass parent_class;
 
   void (*changed) (GtkPrinterOptionWidget *widget);
+
+  /* Padding for future expansion */
+  void (*_gtk_reserved1) (void);
+  void (*_gtk_reserved2) (void);
+  void (*_gtk_reserved3) (void);
+  void (*_gtk_reserved4) (void);
 };
 
 GType	     gtk_printer_option_widget_get_type           (void) G_GNUC_CONST;

@@ -36,7 +36,15 @@ extern void _gdk_marshal_OBJECT__DOUBLE_DOUBLE (GClosure     *closure,
                                                 gpointer      invocation_hint,
                                                 gpointer      marshal_data);
 
-/* VOID:DOUBLE,DOUBLE,POINTER,POINTER (./gdkmarshalers.list:6) */
+/* BOXED:INT,INT (./gdkmarshalers.list:6) */
+extern void _gdk_marshal_BOXED__INT_INT (GClosure     *closure,
+                                         GValue       *return_value,
+                                         guint         n_param_values,
+                                         const GValue *param_values,
+                                         gpointer      invocation_hint,
+                                         gpointer      marshal_data);
+
+/* VOID:DOUBLE,DOUBLE,POINTER,POINTER (./gdkmarshalers.list:7) */
 extern void _gdk_marshal_VOID__DOUBLE_DOUBLE_POINTER_POINTER (GClosure     *closure,
                                                               GValue       *return_value,
                                                               guint         n_param_values,

@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef __GTK_TRAY_ICON_H__
@@ -46,12 +44,11 @@ struct _GtkTrayIconClass
 {
   GtkPlugClass parent_class;
 
-  void (*__gtk_reserved1);
-  void (*__gtk_reserved2);
-  void (*__gtk_reserved3);
-  void (*__gtk_reserved4);
-  void (*__gtk_reserved5);
-  void (*__gtk_reserved6);
+  /* Padding for future expansion */
+  void (*_gtk_reserved1);
+  void (*_gtk_reserved2);
+  void (*_gtk_reserved3);
+  void (*_gtk_reserved4);
 };
 
 GType          gtk_tray_icon_get_type         (void) G_GNUC_CONST;
@@ -69,7 +66,9 @@ void           _gtk_tray_icon_cancel_message  (GtkTrayIcon *icon,
 					       guint        id);
 
 GtkOrientation _gtk_tray_icon_get_orientation (GtkTrayIcon *icon);
-					    
+gint           _gtk_tray_icon_get_padding     (GtkTrayIcon *icon);
+gint           _gtk_tray_icon_get_icon_size   (GtkTrayIcon *icon);
+
 G_END_DECLS
 
 #endif /* __GTK_TRAY_ICON_H__ */

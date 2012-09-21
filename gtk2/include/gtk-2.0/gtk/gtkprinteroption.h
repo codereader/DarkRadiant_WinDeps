@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef __GTK_PRINTER_OPTION_H__
@@ -53,7 +51,8 @@ typedef enum {
   GTK_PRINTER_OPTION_TYPE_PICKONE_STRING,
   GTK_PRINTER_OPTION_TYPE_ALTERNATIVE,
   GTK_PRINTER_OPTION_TYPE_STRING,
-  GTK_PRINTER_OPTION_TYPE_FILESAVE
+  GTK_PRINTER_OPTION_TYPE_FILESAVE,
+  GTK_PRINTER_OPTION_TYPE_INFO
 } GtkPrinterOptionType;
 
 struct _GtkPrinterOption
@@ -87,9 +86,6 @@ struct _GtkPrinterOptionClass
   void (*_gtk_reserved2) (void);
   void (*_gtk_reserved3) (void);
   void (*_gtk_reserved4) (void);
-  void (*_gtk_reserved5) (void);
-  void (*_gtk_reserved6) (void);
-  void (*_gtk_reserved7) (void);
 };
 
 GType   gtk_printer_option_get_type       (void) G_GNUC_CONST;

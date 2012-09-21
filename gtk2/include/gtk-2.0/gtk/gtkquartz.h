@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef __GTK_QUARTZ_H__
@@ -39,9 +37,9 @@ GtkSelectionData *_gtk_quartz_get_selection_data_from_pasteboard (NSPasteboard *
 
 void _gtk_quartz_set_selection_data_for_pasteboard (NSPasteboard *pasteboard,
 						    GtkSelectionData *selection_data);
-			
+
 NSImage *_gtk_quartz_create_image_from_pixbuf (GdkPixbuf *pixbuf);
-			    
+
 G_END_DECLS
 
 #endif /* __GTK_QUARTZ_H__ */

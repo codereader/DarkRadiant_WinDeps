@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef __GTK_FILE_SYSTEM_H__
@@ -33,19 +31,21 @@ G_BEGIN_DECLS
 #define GTK_IS_FILE_SYSTEM_CLASS(c)  (G_TYPE_CHECK_CLASS_TYPE    ((c), GTK_TYPE_FILE_SYSTEM))
 #define GTK_FILE_SYSTEM_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS  ((o), GTK_TYPE_FILE_SYSTEM, GtkFileSystemClass))
 
-#define GTK_TYPE_FOLDER         (_gtk_folder_get_type ())
-#define GTK_FOLDER(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GTK_TYPE_FOLDER, GtkFolder))
-#define GTK_FOLDER_CLASS(c)     (G_TYPE_CHECK_CLASS_CAST    ((c), GTK_TYPE_FOLDER, GtkFolderClass))
-#define GTK_IS_FOLDER(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GTK_TYPE_FOLDER))
-#define GTK_IS_FOLDER_CLASS(c)  (G_TYPE_CHECK_CLASS_TYPE    ((c), GTK_TYPE_FOLDER))
-#define GTK_FOLDER_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS  ((o), GTK_TYPE_FOLDER, GtkFolderClass))
+typedef struct GtkFileSystem          GtkFileSystem;
+typedef struct GtkFileSystemPrivate      GtkFileSystemPrivate;
+typedef struct GtkFileSystemClass     GtkFileSystemClass;
 
-typedef struct GtkFileSystemClass GtkFileSystemClass;
-typedef struct GtkFileSystem GtkFileSystem;
-typedef struct GtkFolderClass GtkFolderClass;
-typedef struct GtkFolder GtkFolder;
+
 typedef struct GtkFileSystemVolume GtkFileSystemVolume; /* opaque struct */
 typedef struct GtkFileSystemBookmark GtkFileSystemBookmark; /* opaque struct */
+
+
+struct GtkFileSystem
+{
+  GObject parent_object;
+
+  GtkFileSystemPrivate *priv;
+};
 
 struct GtkFileSystemClass
 {
@@ -55,34 +55,7 @@ struct GtkFileSystemClass
   void (*volumes_changed)   (GtkFileSystem *file_system);
 };
 
-struct GtkFileSystem
-{
-  GObject parent_object;
-};
 
-struct GtkFolderClass
-{
-  GObjectClass parent_class;
-
-  void (*files_added)      (GtkFolder *folder,
-			    GList     *paths);
-  void (*files_removed)    (GtkFolder *folder,
-			    GList     *paths);
-  void (*files_changed)    (GtkFolder *folder,
-			    GList     *paths);
-  void (*finished_loading) (GtkFolder *folder);
-  void (*deleted)          (GtkFolder *folder);
-};
-
-struct GtkFolder
-{
-  GObject parent_object;
-};
-
-typedef void (* GtkFileSystemGetFolderCallback)    (GCancellable        *cancellable,
-						    GtkFolder           *folder,
-						    const GError        *error,
-						    gpointer             data);
 typedef void (* GtkFileSystemGetInfoCallback)      (GCancellable        *cancellable,
 						    GFileInfo           *file_info,
 						    const GError        *error,
@@ -100,18 +73,6 @@ GtkFileSystem * _gtk_file_system_new          (void);
 GSList *        _gtk_file_system_list_volumes   (GtkFileSystem *file_system);
 GSList *        _gtk_file_system_list_bookmarks (GtkFileSystem *file_system);
 
-gboolean        _gtk_file_system_parse          (GtkFileSystem     *file_system,
-						 GFile             *base_file,
-						 const gchar       *str,
-						 GFile            **folder,
-						 gchar            **file_part,
-						 GError           **error);
-
-GCancellable *  _gtk_file_system_get_folder             (GtkFileSystem                     *file_system,
-						 	 GFile                             *file,
-							 const gchar                       *attributes,
-							 GtkFileSystemGetFolderCallback     callback,
-							 gpointer                           data);
 GCancellable *  _gtk_file_system_get_info               (GtkFileSystem                     *file_system,
 							 GFile                             *file,
 							 const gchar                       *attributes,
@@ -144,14 +105,6 @@ void            _gtk_file_system_set_bookmark_label (GtkFileSystem *file_system,
 
 GtkFileSystemVolume * _gtk_file_system_get_volume_for_file (GtkFileSystem       *file_system,
 							    GFile               *file);
-
-/* GtkFolder functions */
-GSList *     _gtk_folder_list_children (GtkFolder  *folder);
-GFileInfo *  _gtk_folder_get_info      (GtkFolder  *folder,
-				        GFile      *file);
-
-gboolean     _gtk_folder_is_finished_loading (GtkFolder *folder);
-
 
 /* GtkFileSystemVolume methods */
 gchar *               _gtk_file_system_volume_get_display_name (GtkFileSystemVolume *volume);

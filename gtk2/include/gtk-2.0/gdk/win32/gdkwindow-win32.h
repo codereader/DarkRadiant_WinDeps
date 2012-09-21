@@ -12,9 +12,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -27,31 +25,13 @@
 #ifndef __GDK_WINDOW_WIN32_H__
 #define __GDK_WINDOW_WIN32_H__
 
-#include <gdk/win32/gdkdrawable-win32.h>
+#include "gdk/win32/gdkprivate-win32.h"
+#include "gdk/gdkwindowimpl.h"
+#include "gdk/gdkcursor.h"
+
+#include <windows.h>
 
 G_BEGIN_DECLS
-
-typedef struct _GdkWin32PositionInfo    GdkWin32PositionInfo;
-
-#if 0
-struct _GdkWin32PositionInfo
-{
-  gint x;
-  gint y;
-  gint width;
-  gint height;
-  gint x_offset;		/* Offsets to add to Win32 coordinates */
-  gint y_offset;		/* within window to get GDK coodinates */
-  guint big : 1;
-  guint mapped : 1;
-  guint no_bg : 1;	        /* Set when the window background
-				 * is temporarily unset during resizing
-				 * and scaling
-				 */
-  GdkRectangle clip_rect;	/* visible rectangle of window */
-};
-#endif
-
 
 /* Window implementation for Win32
  */
@@ -68,7 +48,10 @@ typedef struct _GdkWindowImplWin32Class GdkWindowImplWin32Class;
 
 struct _GdkWindowImplWin32
 {
-  GdkDrawableImplWin32 parent_instance;
+  GdkWindowImpl parent_instance;
+
+  GdkWindow *wrapper;
+  HANDLE handle;
 
   gint8 toplevel_window_type;
 
@@ -84,8 +67,6 @@ struct _GdkWindowImplWin32
 
   GdkWindowTypeHint type_hint;
 
-  GdkEventMask extension_events_mask;
-
   GdkWindow *transient_owner;
   GSList    *transient_children;
   gint       num_transients;
@@ -97,11 +78,16 @@ struct _GdkWindowImplWin32
   guint no_bg : 1;
   guint inhibit_configure : 1;
   guint override_redirect : 1;
+
+  cairo_surface_t *cairo_surface;
+  HDC              hdc;
+  int              hdc_count;
+  HBITMAP          saved_dc_bitmap; /* Original bitmap for dc */
 };
  
 struct _GdkWindowImplWin32Class 
 {
-  GdkDrawableImplWin32Class parent_class;
+  GdkWindowImplClass parent_class;
 };
 
 GType _gdk_window_impl_win32_get_type (void);

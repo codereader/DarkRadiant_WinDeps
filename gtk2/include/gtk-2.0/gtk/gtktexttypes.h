@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -42,35 +40,27 @@ typedef struct _GtkTextMarkBody GtkTextMarkBody;
  * Declarations for variables shared among the text-related files:
  */
 
-#ifdef G_OS_WIN32
-#ifdef GTK_COMPILATION
-#define VARIABLE __declspec(dllexport)
-#else
-#define VARIABLE extern __declspec(dllimport)
-#endif
-#else
-#define VARIABLE extern
-#endif
-
 /* In gtktextbtree.c */
-extern const GtkTextLineSegmentClass gtk_text_char_type;
-extern const GtkTextLineSegmentClass gtk_text_toggle_on_type;
-extern const GtkTextLineSegmentClass gtk_text_toggle_off_type;
+extern G_GNUC_INTERNAL const GtkTextLineSegmentClass gtk_text_char_type;
+extern G_GNUC_INTERNAL const GtkTextLineSegmentClass gtk_text_toggle_on_type;
+extern G_GNUC_INTERNAL const GtkTextLineSegmentClass gtk_text_toggle_off_type;
 
 /* In gtktextmark.c */
-extern const GtkTextLineSegmentClass gtk_text_left_mark_type;
-extern const GtkTextLineSegmentClass gtk_text_right_mark_type;
+extern G_GNUC_INTERNAL const GtkTextLineSegmentClass gtk_text_left_mark_type;
+extern G_GNUC_INTERNAL const GtkTextLineSegmentClass gtk_text_right_mark_type;
 
 /* In gtktextchild.c */
-extern const GtkTextLineSegmentClass gtk_text_pixbuf_type;
-extern const GtkTextLineSegmentClass gtk_text_child_type;
+extern G_GNUC_INTERNAL const GtkTextLineSegmentClass gtk_text_pixbuf_type;
+extern G_GNUC_INTERNAL const GtkTextLineSegmentClass gtk_text_child_type;
 
 /*
  * UTF 8 Stubs
  */
 
 #define GTK_TEXT_UNKNOWN_CHAR 0xFFFC
-VARIABLE const gchar gtk_text_unknown_char_utf8[];
+#define GTK_TEXT_UNKNOWN_CHAR_UTF8_LEN 3
+const gchar *gtk_text_unknown_char_utf8_gtk_tests_only (void);
+extern const gchar _gtk_text_unknown_char_utf8[GTK_TEXT_UNKNOWN_CHAR_UTF8_LEN+1];
 
 gboolean gtk_text_byte_begins_utf8_char (const gchar *byte);
 

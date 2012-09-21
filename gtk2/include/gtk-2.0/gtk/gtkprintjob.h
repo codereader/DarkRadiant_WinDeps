@@ -12,12 +12,10 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if defined(GTK_DISABLE_SINGLE_INCLUDES) && !defined (__GTK_UNIX_PRINT_H_INSIDE__) && !defined (GTK_COMPILATION)
+#if !defined (__GTK_UNIX_PRINT_H_INSIDE__) && !defined (GTK_COMPILATION)
 #error "Only <gtk/gtkunixprint.h> can be included directly."
 #endif
 
@@ -42,9 +40,19 @@ typedef struct _GtkPrintJob          GtkPrintJob;
 typedef struct _GtkPrintJobClass     GtkPrintJobClass;
 typedef struct _GtkPrintJobPrivate   GtkPrintJobPrivate;
 
-typedef void (*GtkPrintJobCompleteFunc) (GtkPrintJob *print_job,
-                                         gpointer     user_data,
-                                         GError      *error);
+/**
+ * GtkPrintJobCompleteFunc:
+ * @print_job: the #GtkPrintJob
+ * @user_data: user data that has been passed to gtk_print_job_send()
+ * @error: a #GError that contains error information if the sending
+ *     of the print job failed, otherwise %NULL
+ *
+ * The type of callback that is passed to gtk_print_job_send().
+ * It is called when the print job has been completely sent.
+ */
+typedef void (*GtkPrintJobCompleteFunc) (GtkPrintJob  *print_job,
+                                         gpointer      user_data,
+                                         const GError *error);
 
 struct _GtkPrinter;
 
@@ -52,22 +60,7 @@ struct _GtkPrintJob
 {
   GObject parent_instance;
 
-  GtkPrintJobPrivate *GSEAL (priv);
-
-  /* Settings the client has to implement:
-   * (These are read-only, set at initialization)
-   */
-  GtkPrintPages GSEAL (print_pages);
-  GtkPageRange *GSEAL (page_ranges);
-  gint GSEAL (num_page_ranges);
-  GtkPageSet GSEAL (page_set);
-  gint GSEAL (num_copies);
-  gdouble GSEAL (scale);
-  guint GSEAL (rotate_to_orientation) : 1;
-  guint GSEAL (collate)               : 1;
-  guint GSEAL (reverse)               : 1;
-  guint GSEAL (number_up);
-  GtkNumberUpLayout GSEAL (number_up_layout);
+  GtkPrintJobPrivate *priv;
 };
 
 struct _GtkPrintJobClass
@@ -81,9 +74,6 @@ struct _GtkPrintJobClass
   void (*_gtk_reserved2) (void);
   void (*_gtk_reserved3) (void);
   void (*_gtk_reserved4) (void);
-  void (*_gtk_reserved5) (void);
-  void (*_gtk_reserved6) (void);
-  void (*_gtk_reserved7) (void);
 };
 
 GType                    gtk_print_job_get_type               (void) G_GNUC_CONST;
@@ -107,6 +97,39 @@ void                     gtk_print_job_send                   (GtkPrintJob      
 							       GtkPrintJobCompleteFunc   callback,
 							       gpointer                  user_data,
 							       GDestroyNotify            dnotify);
+
+GtkPrintPages     gtk_print_job_get_pages       (GtkPrintJob       *job);
+void              gtk_print_job_set_pages       (GtkPrintJob       *job,
+                                                 GtkPrintPages      pages);
+GtkPageRange *    gtk_print_job_get_page_ranges (GtkPrintJob       *job,
+                                                 gint              *n_ranges);
+void              gtk_print_job_set_page_ranges (GtkPrintJob       *job,
+                                                 GtkPageRange      *ranges,
+                                                 gint               n_ranges);
+GtkPageSet        gtk_print_job_get_page_set    (GtkPrintJob       *job);
+void              gtk_print_job_set_page_set    (GtkPrintJob       *job,
+                                                 GtkPageSet         page_set);
+gint              gtk_print_job_get_num_copies  (GtkPrintJob       *job);
+void              gtk_print_job_set_num_copies  (GtkPrintJob       *job,
+                                                 gint               num_copies);
+gdouble           gtk_print_job_get_scale       (GtkPrintJob       *job);
+void              gtk_print_job_set_scale       (GtkPrintJob       *job,
+                                                 gdouble            scale);
+guint             gtk_print_job_get_n_up        (GtkPrintJob       *job);
+void              gtk_print_job_set_n_up        (GtkPrintJob       *job,
+                                                 guint              n_up);
+GtkNumberUpLayout gtk_print_job_get_n_up_layout (GtkPrintJob       *job);
+void              gtk_print_job_set_n_up_layout (GtkPrintJob       *job,
+                                                 GtkNumberUpLayout  layout);
+gboolean          gtk_print_job_get_rotate      (GtkPrintJob       *job);
+void              gtk_print_job_set_rotate      (GtkPrintJob       *job,
+                                                 gboolean           rotate);
+gboolean          gtk_print_job_get_collate     (GtkPrintJob       *job);
+void              gtk_print_job_set_collate     (GtkPrintJob       *job,
+                                                 gboolean           collate);
+gboolean          gtk_print_job_get_reverse     (GtkPrintJob       *job);
+void              gtk_print_job_set_reverse     (GtkPrintJob       *job,
+                                                 gboolean           reverse);
 
 G_END_DECLS
 

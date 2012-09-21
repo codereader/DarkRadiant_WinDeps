@@ -12,8 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -66,7 +65,7 @@ struct _GtkWin32EmbedWidgetClass
 
 
 GType      gtk_win32_embed_widget_get_type (void) G_GNUC_CONST;
-GtkWidget* _gtk_win32_embed_widget_new              (GdkNativeWindow  parent_id);
+GtkWidget* _gtk_win32_embed_widget_new              (HWND parent);
 BOOL       _gtk_win32_embed_widget_dialog_procedure (GtkWin32EmbedWidget *embed_widget,
 						     HWND wnd, UINT message, WPARAM wparam, LPARAM lparam);
 
