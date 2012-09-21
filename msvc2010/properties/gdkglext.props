@@ -13,7 +13,7 @@
       <ImportLibrary>$(OutputBase)/gtkglext/lib/$(ProjectName)$(LibSuffix)-vc$(PlatformToolsetVersion).lib</ImportLibrary>
     </Link>
     <ClCompile>
-      <PreprocessorDefinitions>GDK_GL_COMPILATION;PANGO_DISABLE_DEPRECATED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GDK_GL_COMPILATION;PANGO_DISABLE_DEPRECATED;GDKGLEXT_WINDOWING_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
       <CompileAs>CompileAsC</CompileAs>
       <AdditionalIncludeDirectories>$(W32DepsDir)gtkglext\include;$(W32DepsDir)gtkglext\include\gdk;$(W32DepsDir)gtkglext\include\gdk\win32;$(W32DepsDir)gtk2\include\gtk-2.0;$(W32DepsDir)gtk2\include\gtk-2.0\gdk;$(W32DepsDir)gtk2\include\glib-2.0\glib;$(W32DepsDir)gtk2\include\glib-2.0;$(W32DepsDir)gtk2\include\pango-1.0;$(W32DepsDir)gtk2\include\cairo;$(W32DepsDir)gtk2\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

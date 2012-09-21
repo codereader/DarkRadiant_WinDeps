@@ -128,6 +128,7 @@
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkgldebug.h" />
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkgldefs.h" />
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkgldrawable.h" />
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglext-config.h" />
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglinit.h" />
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglprivate.h" />
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglquery.h" />

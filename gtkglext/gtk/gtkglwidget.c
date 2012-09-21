@@ -16,10 +16,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
  */
 
-#include <gtk/gtkmain.h>
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H */
 
 #include "gtkglprivate.h"
 #include "gtkglwidget.h"
+
+#include <windows.h> 
+#include <GL/gl.h>
 
 typedef struct
 {
@@ -39,7 +44,7 @@ typedef struct
 static const gchar quark_gl_private_string[] = "gtk-gl-widget-private";
 static GQuark quark_gl_private = 0;
 
-gboolean _gtk_gl_widget_install_toplevel_cmap = FALSE;
+gboolean _gtk_gl_widget_install_toplevel_visual = FALSE;
 
 static void     gtk_gl_widget_realize            (GtkWidget         *widget,
                                                   GLWidgetPrivate   *private);
@@ -52,15 +57,15 @@ static void     gtk_gl_widget_size_allocate      (GtkWidget         *widget,
 static void     gtk_gl_widget_unrealize          (GtkWidget         *widget,
                                                   GLWidgetPrivate   *private);
 static void     gtk_gl_widget_parent_set         (GtkWidget         *widget,
-                                                  GtkObject         *old_parent,
-                                                  GdkColormap       *colormap);
+                                                  GObject           *old_parent,
+                                                  GdkVisual         *visual);
 static void     gtk_gl_widget_style_set          (GtkWidget         *widget,
                                                   GtkStyle          *previous_style,
                                                   gpointer           user_data);
 
 static void     gl_widget_private_destroy        (GLWidgetPrivate   *private);
 
-/* 
+/*
  * Signal handlers.
  */
 
@@ -68,6 +73,7 @@ static void
 gtk_gl_widget_realize (GtkWidget       *widget,
                        GLWidgetPrivate *private)
 {
+  GdkWindow *window;
   GdkGLWindow *glwindow;
 
   GTK_GL_NOTE_FUNC_PRIVATE ();
@@ -77,9 +83,10 @@ gtk_gl_widget_realize (GtkWidget       *widget,
    * handlers.
    */
 
-  if (!gdk_window_is_gl_capable (widget->window))
+  window = gtk_widget_get_window (widget);
+  if (!gdk_window_is_gl_capable (window))
     {
-      glwindow = gdk_window_set_gl_capability (widget->window,
+      glwindow = gdk_window_set_gl_capability (window,
                                                private->glconfig,
                                                NULL);
       if (glwindow == NULL)
@@ -127,9 +134,9 @@ gtk_gl_widget_size_allocate (GtkWidget       *widget,
    * Synchronize OpenGL and window resizing request streams.
    */
 
-  if (GTK_WIDGET_REALIZED (widget) && private->is_realized)
+  if (gtk_widget_get_realized (widget) && private->is_realized)
     {
-      gldrawable = gdk_window_get_gl_drawable (widget->window);
+      gldrawable = gdk_window_get_gl_drawable (gtk_widget_get_window (widget));
       gdk_gl_drawable_wait_gdk (gldrawable);
     }
 }
@@ -146,7 +153,7 @@ gtk_gl_widget_unrealize (GtkWidget       *widget,
 
   if (private->glcontext != NULL)
     {
-      gdk_gl_context_destroy (private->glcontext);
+      g_object_unref (private->glcontext);
       private->glcontext = NULL;
     }
 
@@ -154,32 +161,32 @@ gtk_gl_widget_unrealize (GtkWidget       *widget,
    * Remove OpenGL-capability from widget->window.
    */
 
-  if (GTK_WIDGET_REALIZED (widget))
-    gdk_window_unset_gl_capability (widget->window);
+  if (gtk_widget_get_realized (widget))
+    gdk_window_unset_gl_capability (gtk_widget_get_window (widget));
 
   private->is_realized = FALSE;
 }
 
 static void
-gtk_gl_widget_parent_set (GtkWidget   *widget,
-                          GtkObject   *old_parent,
-                          GdkColormap *colormap)
+gtk_gl_widget_parent_set (GtkWidget *widget,
+                          GObject   *old_parent,
+                          GdkVisual *visual)
 {
   GtkWidget *toplevel;
 
   GTK_GL_NOTE_FUNC_PRIVATE ();
 
   /*
-   * Try to install colormap to the top-level window.
+   * Try to install visual to the top-level window.
    */
 
   toplevel = gtk_widget_get_toplevel (widget);
-  if (GTK_WIDGET_TOPLEVEL (toplevel) && !GTK_WIDGET_REALIZED (toplevel))
+  if (gtk_widget_is_toplevel (toplevel) && !gtk_widget_get_realized (toplevel))
     {
       GTK_GL_NOTE (MISC,
-        g_message (" - Install colormap to the top-level window."));
+        g_message (" - Install visual to the top-level window."));
 
-      gtk_widget_set_colormap (toplevel, colormap);
+      gtk_widget_set_visual (toplevel, visual);
     }
 }
 
@@ -188,23 +195,27 @@ gtk_gl_widget_style_set (GtkWidget *widget,
                          GtkStyle  *previous_style,
                          gpointer   user_data)
 {
+  GdkWindow *window;
+
   GTK_GL_NOTE_FUNC_PRIVATE ();
 
-  /* 
+  /*
    * Set a background of "None" on window to avoid AIX X server crash.
    */
 
-  if (GTK_WIDGET_REALIZED (widget))
+  if (gtk_widget_get_realized (widget))
     {
-      GTK_GL_NOTE (MISC,
-        g_message (" - window->bg_pixmap = %p",
-                   ((GdkWindowObject *) (widget->window))->bg_pixmap));
-
-      gdk_window_set_back_pixmap (widget->window, NULL, FALSE);
+      window = gtk_widget_get_window (widget);
 
       GTK_GL_NOTE (MISC,
         g_message (" - window->bg_pixmap = %p",
-                   ((GdkWindowObject *) (widget->window))->bg_pixmap));
+                   (void*)gdk_window_get_background_pattern(window)));
+
+      gdk_window_set_background_pattern (window, NULL);
+
+      GTK_GL_NOTE (MISC,
+        g_message (" - window->bg_pixmap = %p",
+                   (void*)gdk_window_get_background_pattern(window)));
     }
 }
 
@@ -225,12 +236,11 @@ gl_widget_private_destroy (GLWidgetPrivate *private)
  * gtk_widget_set_gl_capability:
  * @widget: the #GtkWidget to be used as the rendering area.
  * @glconfig: a #GdkGLConfig.
- * @share_list: the #GdkGLContext with which to share display lists and texture
+ * @share_list: (allow-none): the #GdkGLContext with which to share display lists and texture
  *              objects. NULL indicates that no sharing is to take place.
  * @direct: whether rendering is to be done with a direct connection to
  *          the graphics system.
- * @render_type: GDK_GL_RGBA_TYPE or GDK_GL_COLOR_INDEX_TYPE (currently not
- *               used).
+ * @render_type: GDK_GL_RGBA_TYPE.
  *
  * Set the OpenGL-capability to the @widget.
  * This function prepares the widget for its use with OpenGL.
@@ -244,17 +254,17 @@ gtk_widget_set_gl_capability (GtkWidget    *widget,
                               gboolean      direct,
                               int           render_type)
 {
-  GdkColormap *colormap;
+  GdkVisual *visual;
   GLWidgetPrivate *private;
 
   GTK_GL_NOTE_FUNC ();
 
   g_return_val_if_fail (GTK_IS_WIDGET (widget), FALSE);
-  g_return_val_if_fail (!GTK_WIDGET_NO_WINDOW (widget), FALSE);
-  g_return_val_if_fail (!GTK_WIDGET_REALIZED (widget), FALSE);
+  g_return_val_if_fail (gtk_widget_get_has_window (widget), FALSE);
+  g_return_val_if_fail (!gtk_widget_get_realized (widget), FALSE);
   g_return_val_if_fail (GDK_IS_GL_CONFIG (glconfig), FALSE);
 
-  /* 
+  /*
    * Init quark.
    */
 
@@ -272,27 +282,28 @@ gtk_widget_set_gl_capability (GtkWidget    *widget,
    * Set OpenGL-capable colormap.
    */
 
-  colormap = gdk_gl_config_get_colormap (glconfig);
+  visual = gdk_gl_config_get_visual (glconfig);
 
-  gtk_widget_set_colormap (widget, colormap);
+  gtk_widget_set_visual (widget, visual);
 
-  /* Install colormap to the top-level window. */
-  if (_gtk_gl_widget_install_toplevel_cmap)
+  /* Install visual to the top-level window. */
+  if (_gtk_gl_widget_install_toplevel_visual)
     {
       /*
        * If window manager doesn't watch the WM_COLORMAP_WINDOWS property on
        * the top-level window, we have to set OpenGL window's colormap to the
        * top-level window, especially in color index mode (color index mode
-       * uses own private colormap).
+       * uses own private colormap). This is achieved by setting the window's
+       * visual.
        */
 
       /* Signal handler to set colormap to the top-level window. */
       g_signal_connect (G_OBJECT (widget), "parent_set",
                         G_CALLBACK (gtk_gl_widget_parent_set),
-                        colormap);
+                        visual);
 
-      /* If given widget has the top-level window, colormap is set here. */
-      gtk_gl_widget_parent_set (widget, NULL, colormap);
+      /* If given widget has the top-level window, visual is set here. */
+      gtk_gl_widget_parent_set (widget, NULL, visual);
     }
 
   /*
@@ -301,7 +312,7 @@ gtk_widget_set_gl_capability (GtkWidget    *widget,
 
   gtk_widget_set_double_buffered (widget, FALSE);
 
-  /* 
+  /*
    * "style_set" signal handler to set a background of "None" on window.
    * (relates AIX X server crash)
    */
@@ -407,12 +418,11 @@ gtk_widget_get_gl_config (GtkWidget *widget)
 /**
  * gtk_widget_create_gl_context:
  * @widget: a #GtkWidget.
- * @share_list: the #GdkGLContext with which to share display lists and texture
+ * @share_list: (allow-none): the #GdkGLContext with which to share display lists and texture
  *              objects. NULL indicates that no sharing is to take place.
  * @direct: whether rendering is to be done with a direct connection to
  *          the graphics system.
- * @render_type: GDK_GL_RGBA_TYPE or GDK_GL_COLOR_INDEX_TYPE (currently not
- *               used).
+ * @render_type: GDK_GL_RGBA_TYPE.
  *
  * Creates a new #GdkGLContext with the appropriate #GdkGLDrawable
  * for this widget. The GL context must be freed when you're
@@ -432,9 +442,9 @@ gtk_widget_create_gl_context (GtkWidget    *widget,
   GTK_GL_NOTE_FUNC ();
 
   g_return_val_if_fail (GTK_IS_WIDGET (widget), NULL);
-  g_return_val_if_fail (GTK_WIDGET_REALIZED (widget), NULL);
+  g_return_val_if_fail (gtk_widget_get_realized (widget), NULL);
 
-  gldrawable = gdk_window_get_gl_drawable (widget->window);
+  gldrawable = gdk_window_get_gl_drawable (gtk_widget_get_window (widget));
   if (gldrawable == NULL)
     return NULL;
 
@@ -474,7 +484,7 @@ gtk_widget_get_gl_context (GtkWidget *widget)
   GLWidgetPrivate *private;
 
   g_return_val_if_fail (GTK_IS_WIDGET (widget), NULL);
-  g_return_val_if_fail (GTK_WIDGET_REALIZED (widget), NULL);
+  g_return_val_if_fail (gtk_widget_get_realized (widget), NULL);
 
   private = g_object_get_qdata (G_OBJECT (widget), quark_gl_private);
   if (private == NULL)
@@ -501,7 +511,41 @@ GdkGLWindow *
 gtk_widget_get_gl_window (GtkWidget *widget)
 {
   g_return_val_if_fail (GTK_IS_WIDGET (widget), NULL);
-  g_return_val_if_fail (GTK_WIDGET_REALIZED (widget), NULL);
+  g_return_val_if_fail (gtk_widget_get_realized (widget), NULL);
 
-  return gdk_window_get_gl_window (widget->window);
+  return gdk_window_get_gl_window (gtk_widget_get_window (widget));
+}
+
+gboolean
+gtk_widget_begin_gl(GtkWidget *widget)
+{
+  GdkGLContext *glcontext;
+  GdkGLWindow  *glwindow;
+
+  g_return_val_if_fail (GTK_IS_WIDGET (widget), FALSE);
+
+  glcontext = gtk_widget_get_gl_context (widget);
+  glwindow  = gtk_widget_get_gl_window (widget);
+
+  return gdk_gl_context_make_current(glcontext, GDK_GL_DRAWABLE (glwindow), GDK_GL_DRAWABLE (glwindow));
+}
+
+void
+gtk_widget_end_gl(GtkWidget *widget, gboolean do_swap)
+{
+  GdkGLDrawable *gldrawable;
+
+  g_return_if_fail (GTK_IS_WIDGET (widget));
+
+  gldrawable = GDK_GL_DRAWABLE (gtk_widget_get_gl_window (widget));
+
+  if (do_swap)
+    {
+      if (gdk_gl_drawable_is_double_buffered (gldrawable))
+        gdk_gl_drawable_swap_buffers (gldrawable);
+      else
+        glFlush ();
+    }
+
+  gdk_gl_context_release_current();
 }

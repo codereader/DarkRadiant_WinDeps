@@ -143,7 +143,7 @@ gdk_gl_context_impl_win32_class_init (GdkGLContextImplWin32Class *klass)
   klass->parent_class.is_direct       = _gdk_win32_gl_context_impl_is_direct;
   klass->parent_class.get_render_type = _gdk_win32_gl_context_impl_get_render_type;
   klass->parent_class.make_current    = _gdk_win32_gl_context_impl_make_current;
-  klass->parent_class.make_uncurrent  = _gdk_win32_gl_context_impl_make_uncurrent;
+  klass->parent_class.make_uncurrent  = NULL; //_gdk_win32_gl_context_impl_make_uncurrent;
 
   object_class->finalize = gdk_gl_context_impl_win32_finalize;
 }
@@ -464,6 +464,7 @@ _gdk_win32_gl_context_impl_make_current (GdkGLContext *glcontext,
   return TRUE;
 }
 
+#if 0
 static void
 _gdk_win32_gl_context_impl_make_uncurrent (GdkGLContext *glcontext)
 {
@@ -471,18 +472,12 @@ _gdk_win32_gl_context_impl_make_uncurrent (GdkGLContext *glcontext)
 
   g_return_if_fail(gldrawable != NULL);
 
-  //GdkGLWindowImplWin32 *impl = GDK_GL_WINDOW_IMPL_WIN32 ( );
-
-  GType type = gdk_gl_window_impl_win32_get_type();
-
-  GdkGLWindowImplWin32 *impl = 
-	  (GdkGLWindowImplWin32*) g_type_check_instance_cast((GTypeInstance*) GDK_GL_WINDOW(gldrawable)->impl, type);
-
-  //(G_TYPE_CHECK_INSTANCE_CAST((), , GdkGLWindowImplWin32))
+  GdkGLWindowImplWin32 *impl = GDK_GL_WINDOW_IMPL_WIN32 ( GDK_GL_WINDOW (gldrawable)->impl);
 
   /* Release DC. */
   GDK_GL_WINDOW_IMPL_WIN32_HDC_RELEASE (impl);
 }
+#endif
 
 GdkGLContext *
 _gdk_win32_gl_context_impl_get_current (void)

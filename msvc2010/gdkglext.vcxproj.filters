@@ -93,6 +93,9 @@
     <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkgl.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkglext\include\gdk\gdkglext-config.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\gtkglext\gdk\win32\gdkglconfig-win32.c">
