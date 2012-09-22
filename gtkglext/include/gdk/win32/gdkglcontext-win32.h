@@ -19,8 +19,10 @@
 #ifndef __GDK_GL_CONTEXT_WIN32_H__
 #define __GDK_GL_CONTEXT_WIN32_H__
 
+#include <gdk/win32/gdkwin32.h>
+
 #include <gdk/gdkglcontext.h>
-#include <gdk/win32/gdkglwin32.h>
+#include <gdk/gdkglcontextimpl.h>
 
 G_BEGIN_DECLS
 
@@ -36,7 +38,7 @@ typedef struct _GdkGLContextImplWin32Class GdkGLContextImplWin32Class;
 
 struct _GdkGLContextImplWin32
 {
-  GdkGLContext parent_instance;
+  GdkGLContextImpl parent_instance;
 
   HGLRC hglrc;
   GdkGLContext *share_list;
@@ -53,10 +55,27 @@ struct _GdkGLContextImplWin32
 
 struct _GdkGLContextImplWin32Class
 {
-  GdkGLContextClass parent_class;
+  GdkGLContextImplClass parent_class;
+
+  HGLRC (*get_hglrc)  (GdkGLContext  *glcontext);
 };
 
 GType gdk_gl_context_impl_win32_get_type (void);
+
+GdkGLContextImpl *_gdk_win32_gl_context_impl_new (GdkGLContext  *glcontext,
+                                                  GdkGLDrawable *gldrawable,
+                                                  GdkGLContext  *share_list,
+                                                  gboolean       direct,
+                                                  int            render_type);
+
+GdkGLContextImpl  *_gdk_win32_gl_context_impl_new_from_hglrc (GdkGLContext *glcontext,
+                                                              GdkGLConfig  *glconfig,
+                                                              GdkGLContext *share_list,
+                                                              HGLRC         hglrc);
+GdkGLContext      *_gdk_win32_gl_context_impl_get_current    (void);
+
+void               _gdk_win32_gl_context_impl_set_gl_drawable (GdkGLContext  *glcontext,
+                                                               GdkGLDrawable *gldrawable);
 
 G_END_DECLS
 

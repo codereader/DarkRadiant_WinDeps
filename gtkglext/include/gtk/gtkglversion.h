@@ -16,6 +16,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
  */
 
+#if !defined (__GTKGL_H_INSIDE__) && !defined (GTK_GL_COMPILATION)
+#error "Only <gtk/gtkgl.h> can be included directly."
+#endif
+
 #ifndef __GTK_GL_VERSION_H__
 #define __GTK_GL_VERSION_H__
 
@@ -28,11 +32,11 @@ G_BEGIN_DECLS
 /*
  * Compile time version.
  */
-#define GTKGLEXT_MAJOR_VERSION (1)
-#define GTKGLEXT_MINOR_VERSION (2)
-#define GTKGLEXT_MICRO_VERSION (0)
-#define GTKGLEXT_INTERFACE_AGE (0)
-#define GTKGLEXT_BINARY_AGE    (0)
+#define GTKGLEXT_MAJOR_VERSION 2
+#define GTKGLEXT_MINOR_VERSION 99
+#define GTKGLEXT_MICRO_VERSION 0
+#define GTKGLEXT_INTERFACE_AGE 9900
+#define GTKGLEXT_BINARY_AGE    0
 
 /*
  * Check whether a GtkGLExt version equal to or greater than

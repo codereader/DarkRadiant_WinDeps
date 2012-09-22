@@ -1,4 +1,4 @@
-/* GtkGLExt - OpenGL Extension to GTK+
+/* GdkGLExt - OpenGL Extension to GDK
  * Copyright (C) 2002-2004  Naofumi Yasufuku
  *
  * This library is free software; you can redistribute it and/or
@@ -16,18 +16,21 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
  */
 
-#ifndef __GTK_GL_H__
-#define __GTK_GL_H__
+#if !defined (__GDKGLWIN32_H_INSIDE__) && !defined (GDK_GL_COMPILATION)
+#error "Only <gdk/gdkglwin32.h> can be included directly."
+#endif
 
+#ifndef __GDK_WIN32_GL_QUERY_H__
+#define __GDK_WIN32_GL_QUERY_H__
+
+#include <gdk/win32/gdkwin32.h>
 #include <gdk/gdkgl.h>
 
-#define __GTKGL_H_INSIDE__
+G_BEGIN_DECLS
 
-#include "gtkgldefs.h"
-#include "gtkglversion.h"
-#include "gtkglinit.h"
-#include "gtkglwidget.h"
+gboolean  gdk_win32_gl_query_wgl_extension  (GdkGLConfig   *glconfig,
+                                             const char    *extension);
 
-#undef __GTKGL_H_INSIDE__
+G_END_DECLS
 
-#endif /* __GTK_GL_H__ */
+#endif /* __GDK_WIN32_GL_QUERY_H__ */

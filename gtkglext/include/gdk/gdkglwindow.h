@@ -16,16 +16,21 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
  */
 
+#if !defined (__GDKGL_H_INSIDE__) && !defined (GDK_GL_COMPILATION)
+#error "Only <gdk/gdkgl.h> can be included directly."
+#endif
+
 #ifndef __GDK_GL_WINDOW_H__
 #define __GDK_GL_WINDOW_H__
 
 #include <gdk/gdkgldefs.h>
 #include <gdk/gdkgltypes.h>
 
-#include <gdk/gdkwindow.h>
+#include <gdk/gdk.h>
 
 G_BEGIN_DECLS
 
+struct _GdkGLWindowImpl;
 typedef struct _GdkGLWindowClass GdkGLWindowClass;
 
 #define GDK_TYPE_GL_WINDOW              (gdk_gl_window_get_type ())
@@ -37,14 +42,16 @@ typedef struct _GdkGLWindowClass GdkGLWindowClass;
 
 struct _GdkGLWindow
 {
-  GdkDrawable parent_instance;
+  GObject parent_instance;
 
-  GdkDrawable *drawable;        /* Associated GdkWindow */
+  struct _GdkGLWindowImpl *impl;
+
+  GdkWindow *window;        /* Associated GdkWindow */
 };
 
 struct _GdkGLWindowClass
 {
-  GdkDrawableClass parent_class;
+  GObjectClass parent_class;
 };
 
 GType        gdk_gl_window_get_type         (void);
@@ -56,8 +63,6 @@ GType        gdk_gl_window_get_type         (void);
 GdkGLWindow *gdk_gl_window_new              (GdkGLConfig *glconfig,
                                              GdkWindow   *window,
                                              const int   *attrib_list);
-
-void         gdk_gl_window_destroy          (GdkGLWindow *glwindow);
 
 GdkWindow   *gdk_gl_window_get_window       (GdkGLWindow *glwindow);
 

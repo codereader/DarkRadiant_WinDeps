@@ -16,6 +16,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
  */
 
+#if !defined (__GDKGL_H_INSIDE__) && !defined (GDK_GL_COMPILATION)
+#error "Only <gdk/gdkgl.h> can be included directly."
+#endif
+
 #ifndef __GDK_GL_DRAWABLE_H__
 #define __GDK_GL_DRAWABLE_H__
 
@@ -37,35 +41,19 @@ struct _GdkGLDrawableClass
 {
   GTypeInterface base_iface;
 
-  GdkGLContext* (*create_new_context)   (GdkGLDrawable *gldrawable,
-                                         GdkGLContext  *share_list,
-                                         gboolean       direct,
-                                         int            render_type);
+  GdkGLContext* (*create_gl_context) (GdkGLDrawable *gldrawable,
+                                      GdkGLContext  *share_list,
+                                      gboolean       direct,
+                                      int            render_type);
 
-  gboolean      (*make_context_current) (GdkGLDrawable *draw,
-                                         GdkGLDrawable *read,
-                                         GdkGLContext  *glcontext);
   gboolean      (*is_double_buffered)   (GdkGLDrawable *gldrawable);
   void          (*swap_buffers)         (GdkGLDrawable *gldrawable);
   void          (*wait_gl)              (GdkGLDrawable *gldrawable);
   void          (*wait_gdk)             (GdkGLDrawable *gldrawable);
-
-  gboolean      (*gl_begin)             (GdkGLDrawable *draw,
-                                         GdkGLDrawable *read,
-                                         GdkGLContext  *glcontext);
-  void          (*gl_end)               (GdkGLDrawable *gldrawable);
-
   GdkGLConfig*  (*get_gl_config)        (GdkGLDrawable *gldrawable);
-
-  void          (*get_size)             (GdkGLDrawable *gldrawable,
-                                         gint          *width,
-                                         gint          *height);
 };
 
 GType          gdk_gl_drawable_get_type           (void);
-
-gboolean       gdk_gl_drawable_make_current       (GdkGLDrawable *gldrawable,
-                                                   GdkGLContext  *glcontext);
 
 gboolean       gdk_gl_drawable_is_double_buffered (GdkGLDrawable *gldrawable);
 
@@ -75,18 +63,7 @@ void           gdk_gl_drawable_wait_gl            (GdkGLDrawable *gldrawable);
 
 void           gdk_gl_drawable_wait_gdk           (GdkGLDrawable *gldrawable);
 
-gboolean       gdk_gl_drawable_gl_begin           (GdkGLDrawable *gldrawable,
-                                                   GdkGLContext  *glcontext);
-
-void           gdk_gl_drawable_gl_end             (GdkGLDrawable *gldrawable);
-
 GdkGLConfig   *gdk_gl_drawable_get_gl_config      (GdkGLDrawable *gldrawable);
-
-void           gdk_gl_drawable_get_size           (GdkGLDrawable *gldrawable,
-                                                   gint          *width,
-                                                   gint          *height);
-
-GdkGLDrawable *gdk_gl_drawable_get_current        (void);
 
 G_END_DECLS
 

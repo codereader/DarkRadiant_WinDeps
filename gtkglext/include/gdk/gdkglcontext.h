@@ -16,6 +16,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
  */
 
+#if !defined (__GDKGL_H_INSIDE__) && !defined (GDK_GL_COMPILATION)
+#error "Only <gdk/gdkgl.h> can be included directly."
+#endif
+
 #ifndef __GDK_GL_CONTEXT_H__
 #define __GDK_GL_CONTEXT_H__
 
@@ -24,6 +28,7 @@
 
 G_BEGIN_DECLS
 
+struct _GdkGLContextImpl;
 typedef struct _GdkGLContextClass GdkGLContextClass;
 
 #define GDK_TYPE_GL_CONTEXT              (gdk_gl_context_get_type ())
@@ -36,6 +41,8 @@ typedef struct _GdkGLContextClass GdkGLContextClass;
 struct _GdkGLContext
 {
   GObject parent_instance;
+
+  struct _GdkGLContextImpl *impl;
 };
 
 struct _GdkGLContextClass
@@ -50,8 +57,6 @@ GdkGLContext  *gdk_gl_context_new             (GdkGLDrawable *gldrawable,
                                                gboolean       direct,
                                                int            render_type);
 
-void           gdk_gl_context_destroy         (GdkGLContext  *glcontext);
-
 gboolean       gdk_gl_context_copy            (GdkGLContext  *glcontext,
                                                GdkGLContext  *src,
                                                unsigned long  mask);
@@ -65,6 +70,12 @@ GdkGLContext  *gdk_gl_context_get_share_list  (GdkGLContext  *glcontext);
 gboolean       gdk_gl_context_is_direct       (GdkGLContext  *glcontext);
 
 int            gdk_gl_context_get_render_type (GdkGLContext  *glcontext);
+
+gboolean       gdk_gl_context_make_current    (GdkGLContext  *glcontext,
+                                               GdkGLDrawable *draw,
+                                               GdkGLDrawable *read);
+
+void           gdk_gl_context_release_current (void);
 
 GdkGLContext  *gdk_gl_context_get_current     (void);
 

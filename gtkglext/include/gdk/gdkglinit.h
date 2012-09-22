@@ -16,6 +16,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
  */
 
+#if !defined (__GDKGL_H_INSIDE__) && !defined (GDK_GL_COMPILATION)
+#error "Only <gdk/gdkgl.h> can be included directly."
+#endif
+
 #ifndef __GDK_GL_INIT_H__
 #define __GDK_GL_INIT_H__
 
@@ -27,9 +31,6 @@ G_BEGIN_DECLS
 /*
  * Initialization routines.
  */
-
-gboolean gdk_gl_parse_args (int    *argc,
-                            char ***argv);
 
 gboolean gdk_gl_init_check (int    *argc,
                             char ***argv);

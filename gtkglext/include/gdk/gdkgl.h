@@ -19,21 +19,22 @@
 #ifndef __GDK_GL_H__
 #define __GDK_GL_H__
 
-#include <gdkglext-config.h>
+#define __GDKGL_H_INSIDE__
 
-#include <gdk/gdkgldefs.h>
-#include <gdk/gdkglversion.h>
-#include <gdk/gdkgltokens.h>
-#include <gdk/gdkgltypes.h>
-#include <gdk/gdkglenumtypes.h>
-#include <gdk/gdkglinit.h>
-#include <gdk/gdkglquery.h>
-#include <gdk/gdkglconfig.h>
-#include <gdk/gdkglcontext.h>
-#include <gdk/gdkgldrawable.h>
-#include <gdk/gdkglpixmap.h>
-#include <gdk/gdkglwindow.h>
-#include <gdk/gdkglfont.h>
-#include <gdk/gdkglshapes.h>
+#include "gdkglext-config.h"
+
+#include "gdkgldefs.h"
+#include "gdkglversion.h"
+#include "gdkgltokens.h"
+#include "gdkgltypes.h"
+#include "gdkglenumtypes.h"
+#include "gdkglinit.h"
+#include "gdkglquery.h"
+#include "gdkglconfig.h"
+#include "gdkglcontext.h"
+#include "gdkgldrawable.h"
+#include "gdkglwindow.h"
+
+#undef __GDKGL_H_INSIDE__
 
 #endif /* __GDK_GL_H__ */

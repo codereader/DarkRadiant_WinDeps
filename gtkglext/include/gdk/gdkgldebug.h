@@ -66,7 +66,7 @@ typedef enum {
 
 #endif /* G_ENABLE_DEBUG */
 
-GDK_GL_VAR guint gdk_gl_debug_flags;
+//GDK_GL_VAR guint gdk_gl_debug_flags;
 
 G_END_DECLS
 

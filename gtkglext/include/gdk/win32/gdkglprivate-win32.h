@@ -22,23 +22,15 @@
 #include <gdk/gdkprivate.h>
 
 #include <gdk/gdkglprivate.h>
-#include <gdk/win32/gdkglwin32.h>
 
 G_BEGIN_DECLS
 
-int _gdk_win32_gl_config_find_pixel_format (HDC                          hdc,
-					    CONST PIXELFORMATDESCRIPTOR* req_pfd,
-					    PIXELFORMATDESCRIPTOR*       found_pfd);
+int _gdk_win32_gl_config_impl_find_pixel_format (HDC                          hdc,
+                                                 CONST PIXELFORMATDESCRIPTOR* req_pfd,
+                                                 PIXELFORMATDESCRIPTOR*       found_pfd);
 
 void _gdk_win32_gl_print_pfd (PIXELFORMATDESCRIPTOR *pfd);
 
-GdkGLContext *_gdk_win32_gl_context_new (GdkGLDrawable *gldrawable,
-					 GdkGLContext  *share_list,
-					 gboolean       direct,
-					 int            render_type);
-
-void _gdk_gl_context_set_gl_drawable      (GdkGLContext  *glcontext,
-                                           GdkGLDrawable *gldrawable);
 /* currently unused. */
 /*
 void _gdk_gl_context_set_gl_drawable_read (GdkGLContext  *glcontext,
@@ -46,13 +38,10 @@ void _gdk_gl_context_set_gl_drawable_read (GdkGLContext  *glcontext,
 */
 
 #define GDK_GL_CONTEXT_IS_DESTROYED(glcontext) \
-  ( ((GdkGLContextImplWin32 *) (glcontext))->is_destroyed )
-
-#define GDK_GL_PIXMAP_IS_DESTROYED(glpixmap) \
-  ( ((GdkGLPixmapImplWin32 *) (glpixmap))->is_destroyed )
+  ( ((GdkGLContextImplWin32 *) (glcontext->impl))->is_destroyed )
 
 #define GDK_GL_WINDOW_IS_DESTROYED(glwindow) \
-  ( ((GdkGLWindowImplWin32 *) (glwindow))->is_destroyed )
+  ( ((GdkGLWindowImplWin32 *) (glwindow->impl))->is_destroyed )
 
 G_END_DECLS
 

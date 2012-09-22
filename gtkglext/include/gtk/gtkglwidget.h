@@ -16,14 +16,16 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
  */
 
+#if !defined (__GTKGL_H_INSIDE__) && !defined (GTK_GL_COMPILATION)
+#error "Only <gtk/gtkgl.h> can be included directly."
+#endif
+
 #ifndef __GTK_GL_WIDGET_H__
 #define __GTK_GL_WIDGET_H__
 
 #include <gdk/gdk.h>
-
 #include <gdk/gdkgl.h>
-
-#include <gtk/gtkwidget.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 
@@ -49,6 +51,10 @@ GdkGLWindow  *gtk_widget_get_gl_window     (GtkWidget    *widget);
 
 #define       gtk_widget_get_gl_drawable(widget)        \
   GDK_GL_DRAWABLE (gtk_widget_get_gl_window (widget))
+
+gboolean      gtk_widget_begin_gl(GtkWidget *widget);
+
+void          gtk_widget_end_gl(GtkWidget *widget, gboolean do_swap);
 
 G_END_DECLS
 

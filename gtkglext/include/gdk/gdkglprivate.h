@@ -29,16 +29,8 @@ G_BEGIN_DECLS
 
 #define _GDK_GL_CONCAT(x, y) x##y
 
-#define _GDK_GL_CONFIG_AS_SINGLE_MODE(glconfig) ((glconfig)->as_single_mode)
+#define _GDK_GL_CONFIG_AS_SINGLE_MODE(glconfig) ((glconfig->impl)->as_single_mode)
 
-void _gdk_gl_context_destroy (GdkGLContext  *glcontext);
-
-void _gdk_gl_pixmap_destroy  (GdkGLPixmap   *glpixmap);
-void _gdk_gl_pixmap_get_size (GdkGLDrawable *gldrawable,
-                              gint          *width,
-                              gint          *height);
-
-void _gdk_gl_window_destroy  (GdkGLWindow   *glwindow);
 void _gdk_gl_window_get_size (GdkGLDrawable *gldrawable,
                               gint          *width,
                               gint          *height);
@@ -46,8 +38,6 @@ void _gdk_gl_window_get_size (GdkGLDrawable *gldrawable,
 void _gdk_gl_print_gl_info (void);
 
 /* Internal globals */
-
-extern gboolean _gdk_gl_config_no_standard_colormap;
 
 extern gboolean _gdk_gl_context_force_indirect;
 

@@ -16,6 +16,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA.
  */
 
+#if !defined (__GDKGL_H_INSIDE__) && !defined (GDK_GL_COMPILATION)
+#error "Only <gdk/gdkgl.h> can be included directly."
+#endif
+
 #ifndef __GDK_GL_VERSION_H__
 #define __GDK_GL_VERSION_H__
 
@@ -28,11 +32,11 @@ G_BEGIN_DECLS
 /*
  * Compile time version.
  */
-#define GDKGLEXT_MAJOR_VERSION (1)
-#define GDKGLEXT_MINOR_VERSION (2)
-#define GDKGLEXT_MICRO_VERSION (0)
-#define GDKGLEXT_INTERFACE_AGE (0)
-#define GDKGLEXT_BINARY_AGE    (0)
+#define GDKGLEXT_MAJOR_VERSION 2
+#define GDKGLEXT_MINOR_VERSION 99
+#define GDKGLEXT_MICRO_VERSION 0
+#define GDKGLEXT_INTERFACE_AGE 0
+#define GDKGLEXT_BINARY_AGE    9900
 
 /*
  * Check whether a GdkGLExt version equal to or greater than
@@ -44,14 +48,20 @@ G_BEGIN_DECLS
   (GDKGLEXT_MAJOR_VERSION == (major) && GDKGLEXT_MINOR_VERSION == (minor) && \
    GDKGLEXT_MICRO_VERSION >= (micro)))
 
-/*
- * Library version.
- */
-GDK_GL_VAR const guint gdkglext_major_version;
-GDK_GL_VAR const guint gdkglext_minor_version;
-GDK_GL_VAR const guint gdkglext_micro_version;
-GDK_GL_VAR const guint gdkglext_interface_age;
-GDK_GL_VAR const guint gdkglext_binary_age;
+int
+gdk_gl_get_major_version (void);
+
+int
+gdk_gl_get_minor_version (void);
+
+int
+gdk_gl_get_micro_version (void);
+
+int
+gdk_gl_get_interface_age (void);
+
+int
+gdk_gl_get_binary_age (void);
 
 G_END_DECLS
 
