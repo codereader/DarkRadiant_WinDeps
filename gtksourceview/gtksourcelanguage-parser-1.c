@@ -1,22 +1,23 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8; coding: utf-8 -*-
- *  gtksourcelanguage-parser-ver1.c
- *  Language specification parser for 1.0 version .lang files
+ * gtksourcelanguage-parser-ver1.c
+ * Language specification parser for 1.0 version .lang files
+ * This file is part of GtkSourceView
  *
- *  Copyright (C) 2003 - Paolo Maggi <paolo.maggi@polito.it>
+ * Copyright (C) 2003 - Paolo Maggi <paolo.maggi@polito.it>
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU Library General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * GtkSourceView is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Library General Public License for more details.
+ * GtkSourceView is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- *  You should have received a copy of the GNU Library General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #ifdef HAVE_CONFIG_H
@@ -97,7 +98,7 @@ ctx_data_add_simple_pattern (GtkSourceContextData *ctx_data,
 	result = _gtk_source_context_data_define_context (ctx_data, real_id,
 							  root_id,
 							  fixed, NULL, NULL,
-							  style,
+							  style, NULL,
 							  GTK_SOURCE_CONTEXT_EXTEND_PARENT |
 								GTK_SOURCE_CONTEXT_END_AT_LINE_END,
 							  &error);
@@ -145,6 +146,7 @@ ctx_data_add_syntax_pattern (GtkSourceContextData *ctx_data,
 							  pattern_start,
 							  pattern_end,
 							  style,
+							  NULL,
 							  flags,
 							  &error);
 
@@ -485,8 +487,7 @@ parseKeywordList (xmlNodePtr            cur,
 	g_free (beginning_regex),
 	g_free (end_regex);
 
-	g_slist_foreach (list, (GFunc) xmlFree, NULL);
-	g_slist_free (list);
+	g_slist_free_full (list, (GDestroyNotify)xmlFree);
 
 	ctx_data_add_simple_pattern (ctx_data, language, id, (gchar*) style, regex);
 
@@ -658,7 +659,7 @@ define_root_context (GtkSourceContextData *ctx_data,
 	id = g_strdup_printf ("%s:%s", language->priv->id, language->priv->id);
 	result = _gtk_source_context_data_define_context (ctx_data, id,
 							  NULL, NULL, NULL, NULL,
-							  NULL,
+							  NULL, NULL,
 							  GTK_SOURCE_CONTEXT_EXTEND_PARENT,
 							  &error);
 
@@ -694,8 +695,11 @@ _gtk_source_language_file_parse_version1 (GtkSourceLanguage    *language,
 	{
 		doc = xmlParseMemory (g_mapped_file_get_contents (mf),
 				      g_mapped_file_get_length (mf));
-
+#if GLIB_CHECK_VERSION(2,22,0)
+		g_mapped_file_unref (mf);
+#else
 		g_mapped_file_free (mf);
+#endif
 	}
 
 	if (doc == NULL)

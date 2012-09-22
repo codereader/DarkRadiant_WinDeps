@@ -14,7 +14,7 @@
     </Link>
     <ClCompile>
       <AdditionalIncludeDirectories>$(W32DepsDir)gtksourceview-2.0\include;$(W32DepsDir)\gtksourceview-2.0\include\gtksourceview;$(W32DepsDir)gtk2\include;$(W32DepsDir)gtk2\include\atk;$(W32DepsDir)gtk2\include\cairo;$(W32DepsDir)gtk2\include\gtk-2.0;$(W32DepsDir)gtk2\include\gtk-2.0\gdk;$(W32DepsDir)gtk2\include\glib-2.0;$(W32DepsDir)gtk2\include\glib-2.0\glib;$(W32DepsDir)gtk2\include\pango-1.0;$(W32DepsDir)libxml2\include;$(W32DepsDir)win_iconv\include;$(W32DepsDir)gettext\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DR_GTK_SOURCEVIEW_DLL;PANGO_DISABLE_DEPRECATED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DR_GTK_SOURCEVIEW_DLL;PANGO_DISABLE_DEPRECATED;HAVE_CONFIG_H;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
       <CompileAs>CompileAsC</CompileAs>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>

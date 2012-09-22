@@ -1,39 +1,39 @@
 /* -*- mode: c; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8; coding: utf-8 -*-
- *  gtksourcecontextengine.c
+ * gtksourcecontextengine.c
+ * This file is part of GtkSourceView
  *
- *  Copyright (C) 2003 - Gustavo Giráldez <gustavo.giraldez@gmx.net>
- *  Copyright (C) 2005, 2006 - Marco Barisione, Emanuele Aina
+ * Copyright (C) 2003 - Gustavo Giráldez <gustavo.giraldez@gmx.net>
+ * Copyright (C) 2005, 2006 - Marco Barisione, Emanuele Aina
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU Library General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * GtkSourceView is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Library General Public License for more details.
+ * GtkSourceView is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- *  You should have received a copy of the GNU Library General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <string.h>
+#include <glib.h>
 #include "gtksourceview-i18n.h"
 #include "gtksourcecontextengine.h"
 #include "gtktextregion.h"
 #include "gtksourcelanguage-private.h"
 #include "gtksourcebuffer.h"
+#include "gtksourceregex.h"
 #include "gtksourcestyle-private.h"
-#include <glib/gregex.h>
-#include <errno.h>
-#include <string.h>
+#include "gtksourceview-utils.h"
 
 #undef ENABLE_DEBUG
 #undef ENABLE_PROFILE
 #undef ENABLE_CHECK_TREE
-#undef ENABLE_MEMORY_DEBUG /* define it to make it print memory usage information */
-			   /* it won't work with GRegex */
 
 #ifdef ENABLE_DEBUG
 #define DEBUG(x) (x)
@@ -52,15 +52,13 @@
 #define NEED_DEBUG_ID
 #endif
 
-/* Regex used to match "\%{...@start}". */
-#define START_REF_REGEX "(?<!\\\\)(\\\\\\\\)*\\\\%\\{(.*?)@start\\}"
-
 /* Priority of one-time idle which is installed after buffer is modified. */
 #define FIRST_UPDATE_PRIORITY		G_PRIORITY_HIGH_IDLE
 /* Maximal amount of time allowed to spent in this first idle. Should be
  * small enough, since in worst case we block ui for this time after each keypress.
  */
 #define FIRST_UPDATE_TIME_SLICE		10
+
 /* Priority of long running idle which is used to analyze whole buffer, if
  * the engine wasn't quick enough to analyze it in one shot. */
 /* FIXME this priority is low, since we don't want to block other gui stuff.
@@ -68,6 +66,7 @@
  * to analyze quickly. Perhaps we want to reinstall first_update in case
  * of expose events or something. */
 #define INCREMENTAL_UPDATE_PRIORITY	G_PRIORITY_LOW
+
 /* Maximal amount of time allowed to spent in one cycle of background idle. */
 #define INCREMENTAL_UPDATE_TIME_SLICE	30
 
@@ -76,10 +75,6 @@
 #define MAX_TIME_FOR_ONE_LINE		2000
 
 #define GTK_SOURCE_CONTEXT_ENGINE_ERROR (gtk_source_context_engine_error_quark ())
-
-/* Returns the definition corrsponding to the specified id. */
-#define LOOKUP_DEFINITION(ctx_data, id) \
-	(g_hash_table_lookup ((ctx_data)->definitions, (id)))
 
 #define HAS_OPTION(def,opt) (((def)->flags & GTK_SOURCE_CONTEXT_##opt) != 0)
 
@@ -113,12 +108,8 @@
 #define SEGMENT_IS_SIMPLE(s) CONTEXT_IS_SIMPLE ((s)->context)
 #define SEGMENT_IS_CONTAINER(s) CONTEXT_IS_CONTAINER ((s)->context)
 
-#define ENGINE_ID(ce) ((ce)->priv->ctx_data->lang->priv->id)
-#define ENGINE_STYLES_MAP(ce) ((ce)->priv->ctx_data->lang->priv->styles)
+#define TAG_CONTEXT_CLASS_NAME "GtkSourceViewTagContextClassName"
 
-typedef struct _RegexInfo RegexInfo;
-typedef struct _RegexAndMatch RegexAndMatch;
-typedef struct _Regex Regex;
 typedef struct _SubPatternDefinition SubPatternDefinition;
 typedef struct _SubPattern SubPattern;
 typedef struct _Segment Segment;
@@ -129,6 +120,7 @@ typedef struct _DefinitionChild DefinitionChild;
 typedef struct _DefinitionsIter DefinitionsIter;
 typedef struct _LineInfo LineInfo;
 typedef struct _InvalidRegion InvalidRegion;
+typedef struct _ContextClassTag ContextClassTag;
 
 typedef enum {
 	GTK_SOURCE_CONTEXT_ENGINE_ERROR_DUPLICATED_ID = 0,
@@ -153,30 +145,6 @@ typedef enum {
 	SUB_PATTERN_WHERE_END
 } SubPatternWhere;
 
-struct _RegexInfo
-{
-	gchar			*pattern;
-	GRegexCompileFlags	 flags;
-};
-
-/* glib has now so fscking nice API! */
-struct _RegexAndMatch
-{
-	GRegex			*regex;
-	GMatchInfo		*match;
-};
-
-/* We do not use directly GRegex to allow the use of "\%{...@start}". */
-struct _Regex
-{
-	union {
-		RegexAndMatch	 regex;
-		RegexInfo	 info;
-	} u;
-	guint			 ref_count;
-	guint			 resolved : 1;
-};
-
 struct _ContextDefinition
 {
 	gchar			*id;
@@ -184,11 +152,11 @@ struct _ContextDefinition
 	ContextType		 type;
 	union
 	{
-		Regex		*match;
+		GtkSourceRegex *match;
 		struct {
-			Regex	*start;
-			Regex	*end;
-		}		 start_end;
+			GtkSourceRegex *start;
+			GtkSourceRegex *end;
+		} start_end;
 	} u;
 
 	/* Name of the style used for contexts of this type. */
@@ -201,12 +169,15 @@ struct _ContextDefinition
 	GSList			*sub_patterns;
 	guint			 n_sub_patterns;
 
+	/* List of class definitions */
+	GSList			*context_classes;
+
 	/* Union of every regular expression we can find from this
 	 * context. */
-	Regex			*reg_all;
+	GtkSourceRegex		*reg_all;
 
-	guint                    flags : 8;
-	guint                    ref_count : 24;
+	guint			flags : 8;
+	guint			ref_count : 24;
 };
 
 struct _SubPatternDefinition
@@ -217,6 +188,9 @@ struct _SubPatternDefinition
 #endif
 	gchar			*style;
 	SubPatternWhere		 where;
+
+	/* List of class definitions */
+	GSList                  *context_classes;
 
 	/* index in the ContextDefinition's list */
 	guint			 index;
@@ -266,15 +240,21 @@ struct _Context
 
 	/* This is the regex returned by regex_resolve() called on
 	 * definition->start_end.end. */
-	Regex			*end;
+	GtkSourceRegex		*end;
 	/* The regular expression containing every regular expression that
 	 * could be matched in this context. */
-	Regex			*reg_all;
+	GtkSourceRegex		*reg_all;
 
 	/* Either definition->default_style or child_def->style, not copied. */
 	const gchar		*style;
 	GtkTextTag		*tag;
 	GtkTextTag	       **subpattern_tags;
+
+	/* Cache for generated list of class tags */
+	GSList                  *context_classes;
+
+	/* Cache for generated list of subpattern class tags */
+	GSList                 **subpattern_context_classes;
 
 	guint			 ref_count;
 	/* see context_freeze() */
@@ -383,6 +363,18 @@ struct _InvalidRegion
 	gint			 delta;
 };
 
+struct _GtkSourceContextClass
+{
+	gchar    *name;
+	gboolean  enabled;
+};
+
+struct _ContextClassTag
+{
+	GtkTextTag *tag;
+	gboolean enabled;
+};
+
 struct _GtkSourceContextData
 {
 	guint			 ref_count;
@@ -406,10 +398,12 @@ struct _GtkSourceContextEnginePrivate
 	 * tag priorities */
 	guint			 n_tags;
 
+	GHashTable		*context_classes;
+
 	/* Whether or not to actually highlight the buffer. */
 	gboolean		 highlight;
 
-	/* Whether highlighting was disabled because of errors. */
+	/* Whether syntax analysis was disabled because of errors. */
 	gboolean		 disabled;
 
 	/* Region covering the unhighlighted text. */
@@ -418,23 +412,16 @@ struct _GtkSourceContextEnginePrivate
 	/* Tree of contexts. */
 	Context			*root_context;
 	Segment			*root_segment;
-        Segment                 *hint;
-        Segment                 *hint2;
+	Segment			*hint;
+	Segment			*hint2;
+
 	/* list of Segment* */
 	GSList			*invalid;
 	InvalidRegion		 invalid_region;
 
 	guint			 first_update;
 	guint			 incremental_update;
-
-	/* Views highlight requests. */
-	GtkTextRegion		*highlight_requests;
-
-#ifdef ENABLE_MEMORY_DEBUG
-	guint			 mem_usage_timeout;
-#endif
 };
-
 
 #ifdef ENABLE_CHECK_TREE
 static void check_tree (GtkSourceContextEngine *ce);
@@ -448,7 +435,6 @@ static void check_segment_children (Segment *segment);
 #define CHECK_SEGMENT_LIST(s)
 #define CHECK_SEGMENT_CHILDREN(s)
 #endif
-
 
 static GQuark		gtk_source_context_engine_error_quark (void) G_GNUC_CONST;
 
@@ -507,12 +493,71 @@ static void		update_syntax		(GtkSourceContextEngine	*ce,
 static void		install_idle_worker	(GtkSourceContextEngine	*ce);
 static void		install_first_update	(GtkSourceContextEngine	*ce);
 
-#ifdef ENABLE_MEMORY_DEBUG
-static gboolean		mem_usage_timeout	(GtkSourceContextEngine *ce);
-#endif
+static ContextDefinition *
+gtk_source_context_data_lookup (GtkSourceContextData *ctx_data, const char *id)
+{
+	return g_hash_table_lookup (ctx_data->definitions, id);
+}
 
+static ContextDefinition *
+gtk_source_context_data_lookup_root (GtkSourceContextData *ctx_data)
+{
+	const gchar *lang_id;
+	gchar *root_id;
+	ContextDefinition *root_definition;
+
+	lang_id = gtk_source_language_get_id (ctx_data->lang);
+	root_id = g_strdup_printf ("%s:%s", lang_id, lang_id);
+	root_definition = gtk_source_context_data_lookup (ctx_data, root_id);
+	g_free (root_id);
+
+	return root_definition;
+}
 
 /* TAGS AND STUFF -------------------------------------------------------------- */
+
+GtkSourceContextClass *
+gtk_source_context_class_new (gchar const *name,
+                              gboolean     enabled)
+{
+	GtkSourceContextClass *def = g_slice_new (GtkSourceContextClass);
+
+	def->name = g_strdup (name);
+	def->enabled = enabled;
+
+	return def;
+}
+
+static GtkSourceContextClass *
+gtk_source_context_class_copy (GtkSourceContextClass *cclass)
+{
+	return gtk_source_context_class_new (cclass->name, cclass->enabled);
+}
+
+void
+gtk_source_context_class_free (GtkSourceContextClass *cclass)
+{
+	g_free (cclass->name);
+	g_slice_free (GtkSourceContextClass, cclass);
+}
+
+static ContextClassTag *
+context_class_tag_new (GtkTextTag *tag,
+                       gboolean    enabled)
+{
+	ContextClassTag *attrtag = g_slice_new (ContextClassTag);
+
+	attrtag->tag = tag;
+	attrtag->enabled = enabled;
+
+	return attrtag;
+}
+
+static void
+context_class_tag_free (ContextClassTag *attrtag)
+{
+	g_slice_free (ContextClassTag, attrtag);
+}
 
 struct BufAndIters {
 	GtkTextBuffer *buffer;
@@ -561,9 +606,7 @@ set_tag_style (GtkSourceContextEngine *ce,
 	       const gchar            *style_id)
 {
 	GtkSourceStyle *style;
-
-	const char *map_to = style_id;
-
+	const char *map_to;
 	int guard = 0;
 
 	g_return_if_fail (GTK_IS_TEXT_TAG (tag));
@@ -574,12 +617,11 @@ set_tag_style (GtkSourceContextEngine *ce,
 	if (ce->priv->style_scheme == NULL)
 		return;
 
+	map_to = style_id;
 	style = gtk_source_style_scheme_get_style (ce->priv->style_scheme, style_id);
 
 	while (style == NULL)
 	{
-		GtkSourceStyleInfo *info;
-
 		if (guard > MAX_STYLE_DEPENDENCY_DEPTH)
 		{
 			g_warning ("Potential circular dependency between styles detected for style '%s'", style_id);
@@ -590,11 +632,8 @@ set_tag_style (GtkSourceContextEngine *ce,
 
 		/* FIXME Style references really must be fixed, both parser for
 		 * sane use in lang files, and engine for safe use. */
-		info = g_hash_table_lookup (ENGINE_STYLES_MAP(ce), map_to);
-
-		map_to = (info != NULL) ? info->map_to : NULL;
-
-		if (!map_to)
+		map_to = gtk_source_language_get_style_fallback (ce->priv->ctx_data->lang, map_to);
+		if (map_to == NULL)
 			break;
 
 		style = gtk_source_style_scheme_get_style (ce->priv->style_scheme, map_to);
@@ -610,12 +649,9 @@ static GtkTextTag *
 create_tag (GtkSourceContextEngine *ce,
 	    const gchar            *style_id)
 {
-	GSList *tags;
 	GtkTextTag *new_tag;
 
 	g_assert (style_id != NULL);
-
-	tags = g_hash_table_lookup (ce->priv->tags, style_id);
 
 	new_tag = gtk_text_buffer_create_tag (ce->priv->buffer, NULL, NULL);
 	/* It must have priority lower than user tags but still
@@ -623,9 +659,6 @@ create_tag (GtkSourceContextEngine *ce,
 	gtk_text_tag_set_priority (new_tag, ce->priv->n_tags);
 	set_tag_style (ce, new_tag, style_id);
 	ce->priv->n_tags += 1;
-
-	tags = g_slist_prepend (tags, g_object_ref (new_tag));
-	g_hash_table_insert (ce->priv->tags, g_strdup (style_id), tags);
 
 	return new_tag;
 }
@@ -686,6 +719,9 @@ get_tag_for_parent (GtkSourceContextEngine *ce,
 	else
 	{
 		tag = create_tag (ce, style);
+
+		tags = g_slist_prepend (tags, g_object_ref (tag));
+		g_hash_table_insert (ce->priv->tags, g_strdup (style), tags);
 
 #ifdef ENABLE_DEBUG
 		{
@@ -801,12 +837,13 @@ apply_tags (GtkSourceContextEngine *ce,
 	{
 		if (sp->start_at >= start_offset && sp->end_at <= end_offset)
 		{
+			gint start = MAX (start_offset, sp->start_at);
+			gint end = MIN (end_offset, sp->end_at);
+
 			tag = get_subpattern_tag (ce, segment->context, sp->definition);
 
 			if (tag != NULL)
 			{
-				gint start = MAX (start_offset, sp->start_at);
-				gint end = MIN (end_offset, sp->end_at);
 				gtk_text_buffer_get_iter_at_offset (buffer, &start_iter, start);
 				end_iter = start_iter;
 				gtk_text_iter_forward_chars (&end_iter, end - start);
@@ -824,15 +861,6 @@ apply_tags (GtkSourceContextEngine *ce,
 	}
 }
 
-/**
- * highlight_region:
- *
- * @ce: a #GtkSourceContextEngine.
- * @start: the beginning of the region to highlight.
- * @end: the end of the region to highlight.
- *
- * Highlights the specified region.
- */
 static void
 highlight_region (GtkSourceContextEngine *ce,
 		  GtkTextIter            *start,
@@ -912,7 +940,258 @@ ensure_highlighted (GtkSourceContextEngine *ce,
 	gtk_text_region_subtract (ce->priv->refresh_region, start, end);
 }
 
-/**
+static GtkTextTag *
+get_context_class_tag (GtkSourceContextEngine *ce,
+		       gchar const            *name)
+{
+	GtkTextTag *ret;
+
+	ret = g_hash_table_lookup (ce->priv->context_classes, name);
+
+	if (ret == NULL)
+	{
+		ret = gtk_text_buffer_create_tag (ce->priv->buffer, NULL, NULL);
+		g_object_set_data_full (G_OBJECT (ret),
+		                        TAG_CONTEXT_CLASS_NAME,
+		                        g_strdup (name),
+		                        (GDestroyNotify)g_free);
+
+		g_hash_table_insert (ce->priv->context_classes,
+		                     g_strdup (name),
+		                     ret);
+	}
+
+	return ret;
+}
+
+static GSList *
+extend_context_classes (GtkSourceContextEngine *ce,
+                        GSList                 *definitions)
+{
+	GSList *item;
+	GSList *ret = NULL;
+
+	for (item = definitions; item != NULL; item = g_slist_next (item))
+	{
+		GtkSourceContextClass *cclass = item->data;
+		ContextClassTag *attrtag = context_class_tag_new (get_context_class_tag (ce, cclass->name),
+		                                                  cclass->enabled);
+
+		ret = g_slist_prepend (ret, attrtag);
+	}
+
+	return g_slist_reverse (ret);
+}
+
+static GSList *
+get_subpattern_context_classes (GtkSourceContextEngine *ce,
+                                Context                *context,
+                                SubPatternDefinition   *sp_def)
+{
+	g_assert (sp_def->index < context->definition->n_sub_patterns);
+
+	if (context->subpattern_context_classes == NULL)
+		context->subpattern_context_classes = g_new0 (GSList *, context->definition->n_sub_patterns);
+
+	if (context->subpattern_context_classes[sp_def->index] == NULL)
+	{
+		context->subpattern_context_classes[sp_def->index] =
+				extend_context_classes (ce,
+		                                        sp_def->context_classes);
+	}
+
+	return context->subpattern_context_classes[sp_def->index];
+}
+
+static GSList *
+get_context_classes (GtkSourceContextEngine *ce,
+                     Context                *context)
+{
+	if (context->context_classes == NULL)
+	{
+		context->context_classes =
+				extend_context_classes (ce,
+		                                        context->definition->context_classes);
+	}
+
+	return context->context_classes;
+}
+
+static void
+apply_context_classes (GtkSourceContextEngine *ce,
+                       GSList                 *context_classes,
+                       gint                    start,
+                       gint                    end)
+{
+	GtkTextIter start_iter;
+	GtkTextIter end_iter;
+	GSList *item;
+
+	gtk_text_buffer_get_iter_at_offset (ce->priv->buffer, &start_iter, start);
+	end_iter = start_iter;
+	gtk_text_iter_forward_chars (&end_iter, end - start);
+
+	for (item = context_classes; item != NULL; item = g_slist_next (item))
+	{
+		ContextClassTag *attrtag = item->data;
+
+		if (attrtag->enabled)
+		{
+			gtk_text_buffer_apply_tag (ce->priv->buffer,
+			                           attrtag->tag,
+			                           &start_iter,
+			                           &end_iter);
+		}
+		else
+		{
+			gtk_text_buffer_remove_tag (ce->priv->buffer,
+			                            attrtag->tag,
+			                            &start_iter,
+			                            &end_iter);
+		}
+	}
+}
+
+static void
+add_region_context_classes (GtkSourceContextEngine *ce,
+                            Segment                *segment,
+                            gint                    start_offset,
+                            gint                    end_offset)
+{
+	SubPattern *sp;
+	Segment *child;
+	GSList *context_classes;
+
+	g_assert (segment != NULL);
+
+	if (SEGMENT_IS_INVALID (segment))
+	{
+		return;
+	}
+
+	if (segment->start_at >= end_offset || segment->end_at <= start_offset)
+	{
+		return;
+	}
+
+	start_offset = MAX (start_offset, segment->start_at);
+	end_offset = MIN (end_offset, segment->end_at);
+
+	context_classes = get_context_classes (ce, segment->context);
+
+	if (context_classes != NULL)
+	{
+		apply_context_classes (ce,
+		                       context_classes,
+		                       start_offset,
+		                       end_offset);
+	}
+
+	for (sp = segment->sub_patterns; sp != NULL; sp = sp->next)
+	{
+		if (sp->start_at >= start_offset && sp->end_at <= end_offset)
+		{
+			gint start = MAX (start_offset, sp->start_at);
+			gint end = MIN (end_offset, sp->end_at);
+
+			context_classes = get_subpattern_context_classes (ce,
+			                                                  segment->context,
+			                                                  sp->definition);
+
+			if (context_classes != NULL)
+			{
+				apply_context_classes (ce,
+				                       context_classes,
+				                       start,
+				                       end);
+			}
+		}
+	}
+
+	for (child = segment->children;
+	     child != NULL && child->start_at < end_offset;
+	     child = child->next)
+	{
+		if (child->end_at > start_offset)
+		{
+			add_region_context_classes (ce, child, start_offset, end_offset);
+		}
+	}
+}
+
+static void
+remove_region_context_class_cb (G_GNUC_UNUSED gpointer class,
+                                GtkTextTag             *tag,
+                                gpointer                user_data)
+{
+	struct BufAndIters *data = user_data;
+	gtk_text_buffer_remove_tag (data->buffer,
+	                            tag,
+	                            data->start,
+	                            data->end);
+}
+
+static void
+remove_region_context_classes (GtkSourceContextEngine *ce,
+                               const GtkTextIter      *start,
+                               const GtkTextIter      *end)
+{
+	struct BufAndIters data;
+
+	data.buffer = ce->priv->buffer;
+	data.start = start;
+	data.end = end;
+
+	if (gtk_text_iter_equal (start, end))
+		return;
+
+	g_hash_table_foreach (ce->priv->context_classes,
+	                      (GHFunc) remove_region_context_class_cb,
+	                      &data);
+}
+
+static void
+refresh_context_classes (GtkSourceContextEngine *ce,
+                         const GtkTextIter      *start,
+                         const GtkTextIter      *end)
+{
+#ifdef ENABLE_PROFILE
+	GTimer *timer;
+#endif
+	GtkTextIter realend = *end;
+
+	if (gtk_text_iter_starts_line (&realend))
+	{
+		gtk_text_iter_backward_char (&realend);
+	}
+
+	if (gtk_text_iter_compare (start, &realend) >= 0)
+	{
+		return;
+	}
+
+#ifdef ENABLE_PROFILE
+	timer = g_timer_new ();
+#endif
+
+	/* First we need to delete tags in the regions. */
+	remove_region_context_classes (ce, start, &realend);
+
+	add_region_context_classes (ce,
+	                            ce->priv->root_segment,
+	                            gtk_text_iter_get_offset (start),
+	                            gtk_text_iter_get_offset (&realend));
+
+#ifdef ENABLE_PROFILE
+	g_print ("applied context classes (from %d to %d), %g ms elapsed\n",
+		 gtk_text_iter_get_offset (start),
+		 gtk_text_iter_get_offset (&realend),
+		 g_timer_elapsed (timer, NULL) * 1000);
+	g_timer_destroy (timer);
+#endif
+}
+
+/*
  * refresh_range:
  *
  * @ce: a #GtkSourceContextEngine.
@@ -921,32 +1200,29 @@ ensure_highlighted (GtkSourceContextEngine *ce,
  * @modify_refresh_region: whether updated area should be added to
  * refresh_region.
  *
- * Marks the area as updated - notifies view about it, and adds it to
- * refresh_region if @modify_refresh_region is %TRUE (update_syntax may
- * process huge area though actually updated is couple of lines, so in
- * that case update_syntax() takes care of refresh_region, and this
- * function only notifies the view).
+ * Marks the area as updated and notifies view about it.
  */
 static void
 refresh_range (GtkSourceContextEngine *ce,
 	       const GtkTextIter      *start,
-	       const GtkTextIter      *end,
-	       gboolean                modify_refresh_region)
+	       const GtkTextIter      *end)
 {
 	GtkTextIter real_end;
 
 	if (gtk_text_iter_equal (start, end))
 		return;
 
-	if (modify_refresh_region)
-		gtk_text_region_add (ce->priv->refresh_region, start, end);
+	/* Refresh the contex classes here */
+	refresh_context_classes (ce, start, end);
 
 	/* Here we need to make sure we do not make it redraw next line */
 	real_end = *end;
 	if (gtk_text_iter_starts_line (&real_end))
+	{
 		/* I don't quite like this here, but at least it won't jump into
 		 * the middle of \r\n  */
 		gtk_text_iter_backward_cursor_position (&real_end);
+	}
 
 	g_signal_emit_by_name (ce->priv->buffer,
 			       "highlight_updated",
@@ -1026,7 +1302,9 @@ static void
 remove_invalid (GtkSourceContextEngine *ce,
 		Segment                *segment)
 {
+#ifdef ENABLE_CHECK_TREE
 	g_assert (g_slist_find (ce->priv->invalid, segment) != NULL);
+#endif
 	ce->priv->invalid = g_slist_remove (ce->priv->invalid, segment);
 }
 
@@ -1341,7 +1619,7 @@ sub_pattern_new (Segment              *segment,
 {
 	SubPattern *sp;
 
-	sp = g_slice_new0 (SubPattern);
+	sp = g_slice_new (SubPattern);
 	sp->start_at = start_at;
 	sp->end_at = end_at;
 	sp->definition = sp_def;
@@ -1673,20 +1951,23 @@ gtk_source_context_engine_text_inserted (GtkSourceEngine *engine,
 	GtkTextIter iter;
 	GtkSourceContextEngine *ce = GTK_SOURCE_CONTEXT_ENGINE (engine);
 
-	g_return_if_fail (start_offset < end_offset);
-
-	invalidate_region (ce, start_offset, end_offset - start_offset);
-
-	/* If end_offset is at the start of a line (enter key pressed) then
-	 * we need to invalidate the whole new line, otherwise it may not be
-	 * highlighted because the engine analyzes the previous line, end
-	 * context there is none, start context at this line is none too,
-	 * and the engine stops. */
-	gtk_text_buffer_get_iter_at_offset (ce->priv->buffer, &iter, end_offset);
-	if (gtk_text_iter_starts_line (&iter) && !gtk_text_iter_ends_line (&iter))
+	if (!ce->priv->disabled)
 	{
-		gtk_text_iter_forward_to_line_end (&iter);
-		invalidate_region (ce, gtk_text_iter_get_offset (&iter), 0);
+		g_return_if_fail (start_offset < end_offset);
+
+		invalidate_region (ce, start_offset, end_offset - start_offset);
+
+		/* If end_offset is at the start of a line (enter key pressed) then
+		 * we need to invalidate the whole new line, otherwise it may not be
+		 * highlighted because the engine analyzes the previous line, end
+		 * context there is none, start context at this line is none too,
+		 * and the engine stops. */
+		gtk_text_buffer_get_iter_at_offset (ce->priv->buffer, &iter, end_offset);
+		if (gtk_text_iter_starts_line (&iter) && !gtk_text_iter_ends_line (&iter))
+		{
+			gtk_text_iter_forward_to_line_end (&iter);
+			invalidate_region (ce, gtk_text_iter_get_offset (&iter), 0);
+		}
 	}
 }
 
@@ -1811,10 +2092,14 @@ gtk_source_context_engine_text_deleted (GtkSourceEngine *engine,
 					gint             offset,
 					gint             length)
 {
+	GtkSourceContextEngine *ce = GTK_SOURCE_CONTEXT_ENGINE (engine);
+
 	g_return_if_fail (length > 0);
-	invalidate_region (GTK_SOURCE_CONTEXT_ENGINE (engine),
-			   offset,
-			   - length);
+
+	if (!ce->priv->disabled)
+	{
+		invalidate_region (ce, offset, - length);
+	}
 }
 
 /**
@@ -1945,7 +2230,7 @@ update_tree (GtkSourceContextEngine *ce)
  *
  * GtkSourceEngine::update_highlight method.
  *
- * Makes sure the area is analyzed and highlighted. If @asynchronous
+ * Makes sure the area is analyzed and highlighted. If @synchronous
  * is %FALSE, then it queues idle worker.
  */
 static void
@@ -1979,16 +2264,12 @@ gtk_source_context_engine_update_highlight (GtkSourceEngine   *engine,
 	}
 	else
 	{
-		if (gtk_text_iter_get_line (start) >= invalid_line)
-		{
-			gtk_text_region_add (ce->priv->highlight_requests, start, end);
-		}
-		else
+		if (gtk_text_iter_get_line (start) < invalid_line)
 		{
 			GtkTextIter valid_end = *start;
+
 			gtk_text_iter_set_line (&valid_end, invalid_line);
 			ensure_highlighted (ce, start, &valid_end);
-			gtk_text_region_add (ce->priv->highlight_requests, &valid_end, end);
 		}
 
 		install_first_update (ce);
@@ -2019,15 +2300,22 @@ enable_highlight (GtkSourceContextEngine *ce,
 				    &start, &end);
 
 	if (enable)
-		refresh_range (ce, &start, &end, TRUE);
+	{
+		gtk_text_region_add (ce->priv->refresh_region, &start, &end);
+
+		refresh_range (ce, &start, &end);
+	}
 	else
+	{
 		unhighlight_region (ce, &start, &end);
+	}
 }
 
 static void
 buffer_notify_highlight_syntax_cb (GtkSourceContextEngine *ce)
 {
 	gboolean highlight;
+
 	g_object_get (ce->priv->buffer, "highlight-syntax", &highlight, NULL);
 	enable_highlight (ce, highlight);
 }
@@ -2063,8 +2351,6 @@ idle_worker (GtkSourceContextEngine *ce)
 
 	g_return_val_if_fail (ce->priv->buffer != NULL, FALSE);
 
-	gdk_threads_enter ();
-
 	/* analyze batch of text */
 	update_syntax (ce, NULL, INCREMENTAL_UPDATE_TIME_SLICE);
 	CHECK_TREE (ce);
@@ -2074,8 +2360,6 @@ idle_worker (GtkSourceContextEngine *ce)
 		ce->priv->incremental_update = 0;
 		retval = FALSE;
 	}
-
-	gdk_threads_leave ();
 
 	return retval;
 }
@@ -2093,8 +2377,6 @@ first_update_callback (GtkSourceContextEngine *ce)
 {
 	g_return_val_if_fail (ce->priv->buffer != NULL, FALSE);
 
-	gdk_threads_enter ();
-
 	/* analyze batch of text */
 	update_syntax (ce, NULL, FIRST_UPDATE_TIME_SLICE);
 	CHECK_TREE (ce);
@@ -2103,8 +2385,6 @@ first_update_callback (GtkSourceContextEngine *ce)
 
 	if (!all_analyzed (ce))
 		install_idle_worker (ce);
-
-	gdk_threads_leave ();
 
 	return FALSE;
 }
@@ -2122,8 +2402,8 @@ install_idle_worker (GtkSourceContextEngine *ce)
 {
 	if (ce->priv->first_update == 0 && ce->priv->incremental_update == 0)
 		ce->priv->incremental_update =
-			g_idle_add_full (INCREMENTAL_UPDATE_PRIORITY,
-					 (GSourceFunc) idle_worker, ce, NULL);
+			gdk_threads_add_idle_full (INCREMENTAL_UPDATE_PRIORITY,
+			                           (GSourceFunc) idle_worker, ce, NULL);
 }
 
 /**
@@ -2146,15 +2426,15 @@ install_first_update (GtkSourceContextEngine *ce)
 		}
 
 		ce->priv->first_update =
-			g_idle_add_full (FIRST_UPDATE_PRIORITY,
-					 (GSourceFunc) first_update_callback,
-					 ce, NULL);
+			gdk_threads_add_idle_full (FIRST_UPDATE_PRIORITY,
+			                           (GSourceFunc) first_update_callback,
+			                           ce, NULL);
 	}
 }
 
 /* GtkSourceContextEngine class ------------------------------------------- */
 
-G_DEFINE_TYPE (GtkSourceContextEngine, _gtk_source_context_engine, GTK_TYPE_SOURCE_ENGINE)
+G_DEFINE_TYPE (GtkSourceContextEngine, _gtk_source_context_engine, GTK_SOURCE_TYPE_ENGINE)
 
 static GQuark
 gtk_source_context_engine_error_quark (void)
@@ -2182,6 +2462,14 @@ remove_tags_hash_cb (G_GNUC_UNUSED gpointer style,
 	g_slist_free (tags);
 }
 
+static void
+remove_context_classes_hash_cb (G_GNUC_UNUSED gpointer class,
+                                GtkTextTag             *tag,
+                                GtkTextTagTable        *table)
+{
+	gtk_text_tag_table_remove (table, tag);
+}
+
 /**
  * destroy_tags_hash:
  *
@@ -2196,6 +2484,15 @@ destroy_tags_hash (GtkSourceContextEngine *ce)
                               gtk_text_buffer_get_tag_table (ce->priv->buffer));
 	g_hash_table_destroy (ce->priv->tags);
 	ce->priv->tags = NULL;
+}
+
+static void
+destroy_context_classes_hash (GtkSourceContextEngine *ce)
+{
+	g_hash_table_foreach (ce->priv->context_classes, (GHFunc) remove_context_classes_hash_cb,
+	                      gtk_text_buffer_get_tag_table (ce->priv->buffer));
+	g_hash_table_destroy (ce->priv->context_classes);
+	ce->priv->context_classes = NULL;
 }
 
 /**
@@ -2260,26 +2557,21 @@ gtk_source_context_engine_attach_buffer (GtkSourceEngine *engine,
 		destroy_tags_hash (ce);
 		ce->priv->n_tags = 0;
 
+		destroy_context_classes_hash (ce);
+
 		if (ce->priv->refresh_region != NULL)
 			gtk_text_region_destroy (ce->priv->refresh_region, FALSE);
-		if (ce->priv->highlight_requests != NULL)
-			gtk_text_region_destroy (ce->priv->highlight_requests, FALSE);
 		ce->priv->refresh_region = NULL;
-		ce->priv->highlight_requests = NULL;
 	}
 
 	ce->priv->buffer = buffer;
 
 	if (buffer != NULL)
 	{
-		gchar *root_id;
 		ContextDefinition *main_definition;
 		GtkTextIter start, end;
 
-		/* Create the root context. */
-		root_id = g_strdup_printf ("%s:%s", ENGINE_ID (ce), ENGINE_ID (ce));
-		main_definition = LOOKUP_DEFINITION (ce->priv->ctx_data, root_id);
-		g_free (root_id);
+		main_definition = gtk_source_context_data_lookup_root (ce->priv->ctx_data);
 
 		/* If we don't abort here, we will crash later (#485661). But it should
 		 * never happen, _gtk_source_context_data_finish_parse checks main context. */
@@ -2289,6 +2581,7 @@ gtk_source_context_engine_attach_buffer (GtkSourceEngine *engine,
 		ce->priv->root_segment = create_segment (ce, NULL, ce->priv->root_context, 0, 0, TRUE, NULL);
 
 		ce->priv->tags = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+		ce->priv->context_classes = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
 		gtk_text_buffer_get_bounds (buffer, &start, &end);
 		ce->priv->invalid_region.start = gtk_text_buffer_create_mark (buffer, NULL,
@@ -2307,9 +2600,8 @@ gtk_source_context_engine_attach_buffer (GtkSourceEngine *engine,
 			ce->priv->invalid_region.delta = 0;
 		}
 
-		g_object_get (ce->priv->buffer, "highlight-syntax", &ce->priv->highlight, NULL);
+		g_object_get (buffer, "highlight-syntax", &ce->priv->highlight, NULL);
 		ce->priv->refresh_region = gtk_text_region_new (buffer);
-		ce->priv->highlight_requests = gtk_text_region_new (buffer);
 
 		g_signal_connect_swapped (buffer,
 					  "notify::highlight-syntax",
@@ -2321,7 +2613,7 @@ gtk_source_context_engine_attach_buffer (GtkSourceEngine *engine,
 }
 
 /**
- * disable_highlighting:
+ * disable_syntax_analysis:
  *
  * @ce: #GtkSourceContextEngine.
  *
@@ -2330,7 +2622,7 @@ gtk_source_context_engine_attach_buffer (GtkSourceEngine *engine,
  * text editor).
  */
 static void
-disable_highlighting (GtkSourceContextEngine *ce)
+disable_syntax_analysis (GtkSourceContextEngine *ce)
 {
 	if (!ce->priv->disabled)
 	{
@@ -2367,8 +2659,8 @@ gtk_source_context_engine_set_style_scheme (GtkSourceEngine      *engine,
 {
 	GtkSourceContextEngine *ce;
 
-	g_return_if_fail (GTK_IS_SOURCE_CONTEXT_ENGINE (engine));
-	g_return_if_fail (GTK_IS_SOURCE_STYLE_SCHEME (scheme));
+	g_return_if_fail (GTK_SOURCE_IS_CONTEXT_ENGINE (engine));
+	g_return_if_fail (GTK_SOURCE_IS_STYLE_SCHEME (scheme) || scheme == NULL);
 
 	ce = GTK_SOURCE_CONTEXT_ENGINE (engine);
 
@@ -2378,7 +2670,7 @@ gtk_source_context_engine_set_style_scheme (GtkSourceEngine      *engine,
 	if (ce->priv->style_scheme != NULL)
 		g_object_unref (ce->priv->style_scheme);
 
-	ce->priv->style_scheme = g_object_ref (scheme);
+	ce->priv->style_scheme = scheme ? g_object_ref (scheme) : NULL;
 	g_hash_table_foreach (ce->priv->tags, (GHFunc) set_tag_style_hash_cb, ce);
 }
 
@@ -2395,11 +2687,6 @@ gtk_source_context_engine_finalize (GObject *object)
 		gtk_source_context_engine_attach_buffer (GTK_SOURCE_ENGINE (ce), NULL);
 	}
 
-#ifdef ENABLE_MEMORY_DEBUG
-	if (ce->priv->mem_usage_timeout)
-		g_source_remove (ce->priv->mem_usage_timeout);
-#endif
-
 	g_assert (!ce->priv->tags);
 	g_assert (!ce->priv->root_context);
 	g_assert (!ce->priv->root_segment);
@@ -2412,6 +2699,22 @@ gtk_source_context_engine_finalize (GObject *object)
 		g_object_unref (ce->priv->style_scheme);
 
 	G_OBJECT_CLASS (_gtk_source_context_engine_parent_class)->finalize (object);
+}
+
+static GtkTextTag *
+gtk_source_context_engine_get_context_class_tag (GtkSourceEngine *engine,
+						 const gchar     *context_class)
+{
+	GHashTable *hash_table = GTK_SOURCE_CONTEXT_ENGINE (engine)->priv->context_classes;
+
+	if (hash_table == NULL)
+	{
+		/* This happens when highlighting is disabled */
+		return NULL;
+	}
+
+	return g_hash_table_lookup (hash_table,
+				    context_class);
 }
 
 static void
@@ -2427,6 +2730,7 @@ _gtk_source_context_engine_class_init (GtkSourceContextEngineClass *klass)
 	engine_class->text_deleted = gtk_source_context_engine_text_deleted;
 	engine_class->update_highlight = gtk_source_context_engine_update_highlight;
 	engine_class->set_style_scheme = gtk_source_context_engine_set_style_scheme;
+	engine_class->get_context_class_tag = gtk_source_context_engine_get_context_class_tag;
 
 	g_type_class_add_private (object_class, sizeof (GtkSourceContextEnginePrivate));
 }
@@ -2434,7 +2738,7 @@ _gtk_source_context_engine_class_init (GtkSourceContextEngineClass *klass)
 static void
 _gtk_source_context_engine_init (GtkSourceContextEngine *ce)
 {
-	ce->priv = G_TYPE_INSTANCE_GET_PRIVATE (ce, GTK_TYPE_SOURCE_CONTEXT_ENGINE,
+	ce->priv = G_TYPE_INSTANCE_GET_PRIVATE (ce, GTK_SOURCE_TYPE_CONTEXT_ENGINE,
 						GtkSourceContextEnginePrivate);
 }
 
@@ -2446,13 +2750,8 @@ _gtk_source_context_engine_new (GtkSourceContextData *ctx_data)
 	g_return_val_if_fail (ctx_data != NULL, NULL);
 	g_return_val_if_fail (ctx_data->lang != NULL, NULL);
 
-	ce = g_object_new (GTK_TYPE_SOURCE_CONTEXT_ENGINE, NULL);
+	ce = g_object_new (GTK_SOURCE_TYPE_CONTEXT_ENGINE, NULL);
 	ce->priv->ctx_data = _gtk_source_context_data_ref (ctx_data);
-
-#ifdef ENABLE_MEMORY_DEBUG
-	ce->priv->mem_usage_timeout =
-		g_timeout_add (5000, (GSourceFunc) mem_usage_timeout, ce);
-#endif
 
 	return ce;
 }
@@ -2470,9 +2769,9 @@ _gtk_source_context_data_new (GtkSourceLanguage *lang)
 {
 	GtkSourceContextData *ctx_data;
 
-	g_return_val_if_fail (GTK_IS_SOURCE_LANGUAGE (lang), NULL);
+	g_return_val_if_fail (GTK_SOURCE_IS_LANGUAGE (lang), NULL);
 
-	ctx_data = g_slice_new0 (GtkSourceContextData);
+	ctx_data = g_slice_new (GtkSourceContextData);
 	ctx_data->ref_count = 1;
 	ctx_data->lang = lang;
 	ctx_data->definitions = g_hash_table_new_full (g_str_hash, g_str_equal, g_free,
@@ -2513,380 +2812,6 @@ _gtk_source_context_data_unref (GtkSourceContextData *ctx_data)
 	}
 }
 
-/* REGEX HANDLING --------------------------------------------------------- */
-
-static Regex *
-regex_ref (Regex *regex)
-{
-	if (regex != NULL)
-		regex->ref_count++;
-	return regex;
-}
-
-static void
-regex_unref (Regex *regex)
-{
-	if (regex != NULL && --regex->ref_count == 0)
-	{
-		if (regex->resolved)
-		{
-			g_regex_unref (regex->u.regex.regex);
-			if (regex->u.regex.match)
-				g_match_info_free (regex->u.regex.match);
-		}
-		else
-			g_free (regex->u.info.pattern);
-		g_slice_free (Regex, regex);
-	}
-}
-
-/**
- * find_single_byte_escape:
- *
- * @string: the pattern.
- *
- * Checks whether pattern contains \C escape sequence,
- * which means "single byte" in pcre and naturally leads
- * to crash if used for highlighting.
- */
-static gboolean
-find_single_byte_escape (const gchar *string)
-{
-	const char *p = string;
-
-	while ((p = strstr (p, "\\C")))
-	{
-		const char *slash;
-		gboolean found;
-
-		if (p == string)
-			return TRUE;
-
-		found = TRUE;
-		slash = p - 1;
-
-		while (slash >= string && *slash == '\\')
-		{
-			found = !found;
-			slash--;
-		}
-
-		if (found)
-			return TRUE;
-
-		p += 2;
-	}
-
-	return FALSE;
-}
-
-/**
- * regex_new:
- *
- * @pattern: the regular expression.
- * @flags: compile options for @pattern.
- * @error: location to store the error occuring, or %NULL to ignore errors.
- *
- * Creates a new regex.
- *
- * Returns: a newly-allocated #Regex.
- */
-static Regex *
-regex_new (const gchar           *pattern,
-	   GRegexCompileFlags     flags,
-	   GError               **error)
-{
-	Regex *regex;
-	static GRegex *start_ref_re = NULL;
-
-	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
-
-	if (find_single_byte_escape (pattern))
-	{
-		g_set_error (error, GTK_SOURCE_CONTEXT_ENGINE_ERROR,
-			     GTK_SOURCE_CONTEXT_ENGINE_ERROR_INVALID_REGEX,
-			     _("using \\C is not supported in language definitions"));
-		return NULL;
-	}
-
-	regex = g_slice_new0 (Regex);
-	regex->ref_count = 1;
-
-	if (start_ref_re == NULL)
-		start_ref_re = g_regex_new (START_REF_REGEX,
-					    /* http://bugzilla.gnome.org/show_bug.cgi?id=455640
-					     * we don't care about line ends anyway */
-					    G_REGEX_OPTIMIZE | G_REGEX_NEWLINE_LF,
-					    0,
-					    NULL);
-
-	if (g_regex_match (start_ref_re, pattern, 0, NULL))
-	{
-		regex->resolved = FALSE;
-		regex->u.info.pattern = g_strdup (pattern);
-		regex->u.info.flags = flags;
-	}
-	else
-	{
-		regex->resolved = TRUE;
-		regex->u.regex.regex = g_regex_new (pattern,
-						    flags | G_REGEX_OPTIMIZE | G_REGEX_NEWLINE_LF, 0,
-						    error);
-
-		if (regex->u.regex.regex == NULL)
-		{
-			g_slice_free (Regex, regex);
-			regex = NULL;
-		}
-	}
-
-	return regex;
-}
-
-/**
- * sub_pattern_to_int:
- *
- * @name: the string from lang file.
- *
- * Tries to convert @name to a number and assumes
- * it's a name if that fails. Used for references in
- * subpattern contexts (e.g. \%{1@start} or \%{blah@start}).
- */
-static gint
-sub_pattern_to_int (const gchar *name)
-{
-	guint64 number;
-	gchar *end_name;
-
-	if (*name == 0)
-		return -1;
-
-	errno = 0;
-	number = g_ascii_strtoull (name, &end_name, 10);
-
-	if (errno !=0 || number > G_MAXINT || *end_name != 0)
-		return -1;
-
-	return number;
-}
-
-struct RegexResolveData {
-	Regex       *start_regex;
-	const gchar *matched_text;
-};
-
-static gboolean
-replace_start_regex (const GMatchInfo *match_info,
-		     GString          *expanded_regex,
-		     gpointer          user_data)
-{
-	gchar *num_string, *subst, *subst_escaped, *escapes;
-	gint num;
-	struct RegexResolveData *data = user_data;
-
-	escapes = g_match_info_fetch (match_info, 1);
-	num_string = g_match_info_fetch (match_info, 2);
-	num = sub_pattern_to_int (num_string);
-
-	if (num < 0)
-		subst = g_match_info_fetch_named (data->start_regex->u.regex.match,
-						  num_string);
-	else
-		subst = g_match_info_fetch (data->start_regex->u.regex.match,
-					    num);
-
-	if (subst != NULL)
-	{
-		subst_escaped = g_regex_escape_string (subst, -1);
-	}
-	else
-	{
-		g_warning ("Invalid group: %s", num_string);
-		subst_escaped = g_strdup ("");
-	}
-
-	g_string_append (expanded_regex, escapes);
-	g_string_append (expanded_regex, subst_escaped);
-
-	g_free (escapes);
-	g_free (num_string);
-	g_free (subst);
-	g_free (subst_escaped);
-
-	return FALSE;
-}
-
-/**
- * regex_resolve:
- *
- * @regex: a #Regex.
- * @start_regex: a #Regex.
- * @matched_text: the text matched against @start_regex.
- *
- * If the regular expression does not contain references to the start
- * regular expression, the functions increases the reference count
- * of @regex and returns it.
- *
- * If the regular expression contains references to the start regular
- * expression in the form "\%{start_sub_pattern@start}", it replaces
- * them (they are extracted from @start_regex and @matched_text) and
- * returns the new regular expression.
- *
- * Returns: a #Regex.
- */
-static Regex *
-regex_resolve (Regex       *regex,
-	       Regex       *start_regex,
-	       const gchar *matched_text)
-{
-	GRegex *start_ref;
-	gchar *expanded_regex;
-	Regex *new_regex;
-	struct RegexResolveData data;
-
-	if (regex == NULL || regex->resolved)
-		return regex_ref (regex);
-
-	start_ref = g_regex_new (START_REF_REGEX, G_REGEX_NEWLINE_LF, 0, NULL);
-	data.start_regex = start_regex;
-	data.matched_text = matched_text;
-	expanded_regex = g_regex_replace_eval (start_ref,
-					       regex->u.info.pattern,
-					       -1, 0, 0,
-					       replace_start_regex,
-					       &data, NULL);
-	new_regex = regex_new (expanded_regex, regex->u.info.flags, NULL);
-
-	if (new_regex == NULL || !new_regex->resolved)
-	{
-		regex_unref (new_regex);
-		g_warning ("Regular expression %s cannot be expanded.",
-			   regex->u.info.pattern);
-		/* Returns a regex that nevers matches. */
-		new_regex = regex_new ("$never-match^", 0, NULL);
-	}
-
-	g_free (expanded_regex);
-	g_regex_unref (start_ref);
-	return new_regex;
-}
-
-static gboolean
-regex_match (Regex       *regex,
-	     const gchar *line,
-	     gint         byte_length,
-	     gint         byte_pos)
-{
-	gboolean result;
-
-	g_assert (regex->resolved);
-
-	if (regex->u.regex.match)
-	{
-		g_match_info_free (regex->u.regex.match);
-		regex->u.regex.match = NULL;
-	}
-
-	result = g_regex_match_full (regex->u.regex.regex, line,
-				     byte_length, byte_pos,
-				     0, &regex->u.regex.match,
-				     NULL);
-
-	return result;
-}
-
-static gchar *
-regex_fetch (Regex       *regex,
-	     gint         num)
-{
-	g_assert (regex->resolved);
-	return g_match_info_fetch (regex->u.regex.match, num);
-}
-
-static void
-regex_fetch_pos (Regex       *regex,
-		 const gchar *text,
-		 gint         num,
-		 gint        *start_pos, /* character offsets */
-		 gint        *end_pos)   /* character offsets */
-{
-	gint byte_start_pos, byte_end_pos;
-
-	g_assert (regex->resolved);
-
-	if (!g_match_info_fetch_pos (regex->u.regex.match, num, &byte_start_pos, &byte_end_pos))
-	{
-		if (start_pos != NULL)
-			*start_pos = -1;
-		if (end_pos != NULL)
-			*end_pos = -1;
-	}
-	else
-	{
-		if (start_pos != NULL)
-			*start_pos = g_utf8_pointer_to_offset (text, text + byte_start_pos);
-		if (end_pos != NULL)
-			*end_pos = g_utf8_pointer_to_offset (text, text + byte_end_pos);
-	}
-}
-
-static void
-regex_fetch_pos_bytes (Regex *regex,
-		       gint   num,
-		       gint  *start_pos_p, /* byte offsets */
-		       gint  *end_pos_p)   /* byte offsets */
-{
-	gint start_pos;
-	gint end_pos;
-
-	g_assert (regex->resolved);
-
-	if (!g_match_info_fetch_pos (regex->u.regex.match, num, &start_pos, &end_pos))
-	{
-		start_pos = -1;
-		end_pos = -1;
-	}
-
-	if (start_pos_p != NULL)
-		*start_pos_p = start_pos;
-	if (end_pos_p != NULL)
-		*end_pos_p = end_pos;
-}
-
-static void
-regex_fetch_named_pos (Regex       *regex,
-		       const gchar *text,
-		       const gchar *name,
-		       gint        *start_pos, /* character offsets */
-		       gint        *end_pos)   /* character offsets */
-{
-	gint byte_start_pos, byte_end_pos;
-
-	g_assert (regex->resolved);
-
-	if (!g_match_info_fetch_named_pos (regex->u.regex.match, name, &byte_start_pos, &byte_end_pos))
-	{
-		if (start_pos != NULL)
-			*start_pos = -1;
-		if (end_pos != NULL)
-			*end_pos = -1;
-	}
-	else
-	{
-		if (start_pos != NULL)
-			*start_pos = g_utf8_pointer_to_offset (text, text + byte_start_pos);
-		if (end_pos != NULL)
-			*end_pos = g_utf8_pointer_to_offset (text, text + byte_end_pos);
-	}
-}
-
-static const gchar *
-regex_get_pattern (Regex *regex)
-{
-	g_return_val_if_fail (regex && regex->resolved, "");
-	return g_regex_get_pattern (regex->u.regex.regex);
-}
-
 /* SYNTAX TREE ------------------------------------------------------------ */
 
 /**
@@ -2905,7 +2830,7 @@ regex_get_pattern (Regex *regex)
 static void
 apply_sub_patterns (Segment         *state,
 		    LineInfo        *line,
-		    Regex           *regex,
+		    GtkSourceRegex  *regex,
 		    SubPatternWhere  where)
 {
 	GSList *sub_pattern_list = state->context->definition->sub_patterns;
@@ -2915,7 +2840,7 @@ apply_sub_patterns (Segment         *state,
 		gint start_pos;
 		gint end_pos;
 
-		regex_fetch_pos (regex, line->text, 0, &start_pos, &end_pos);
+		_gtk_source_regex_fetch_pos (regex, line->text, 0, &start_pos, &end_pos);
 
 		if (where == SUB_PATTERN_WHERE_START)
 		{
@@ -2947,17 +2872,21 @@ apply_sub_patterns (Segment         *state,
 			gint end_pos;
 
 			if (sp_def->is_named)
-				regex_fetch_named_pos (regex,
-						       line->text,
-						       sp_def->u.name,
-						       &start_pos,
-						       &end_pos);
+			{
+				_gtk_source_regex_fetch_named_pos (regex,
+								   line->text,
+								   sp_def->u.name,
+								   &start_pos,
+								   &end_pos);
+			}
 			else
-				regex_fetch_pos (regex,
-						 line->text,
-						 sp_def->u.num,
-						 &start_pos,
-						 &end_pos);
+			{
+				_gtk_source_regex_fetch_pos (regex,
+							     line->text,
+							     sp_def->u.num,
+							     &start_pos,
+							     &end_pos);
+			}
 
 			if (start_pos >= 0 && start_pos != end_pos)
 			{
@@ -2987,19 +2916,20 @@ apply_sub_patterns (Segment         *state,
  * Returns: %TRUE if the match can be applied.
  */
 static gboolean
-can_apply_match (Context  *state,
-		 LineInfo *line,
-		 gint      match_start,
-		 gint     *match_end,
-		 Regex    *regex)
+can_apply_match (Context        *state,
+		 LineInfo       *line,
+		 gint            match_start,
+		 gint           *match_end,
+		 GtkSourceRegex *regex)
 {
 	gint end_match_pos;
 	gboolean ancestor_ends;
 	gint pos;
 
 	ancestor_ends = FALSE;
+
 	/* end_match_pos is the position of the end of the matched regex. */
-	regex_fetch_pos_bytes (regex, 0, NULL, &end_match_pos);
+	_gtk_source_regex_fetch_pos_bytes (regex, 0, NULL, &end_match_pos);
 
 	g_assert (end_match_pos <= line->byte_length);
 
@@ -3033,7 +2963,7 @@ can_apply_match (Context  *state,
 		 * the end of the ancestor.
 		 * For instance in C a net-address context matches even if
 		 * it contains the end of a multi-line comment. */
-		if (!regex_match (regex, line->text, pos, match_start))
+		if (!_gtk_source_regex_match (regex, line->text, pos, match_start))
 		{
 			/* This match is not valid, so we can try to match
 			 * the next definition, so the position should not
@@ -3078,7 +3008,7 @@ static gboolean
 apply_match (Segment         *state,
 	     LineInfo        *line,
 	     gint            *line_pos,
-	     Regex           *regex,
+	     GtkSourceRegex  *regex,
 	     SubPatternWhere  where)
 {
 	gint match_end;
@@ -3113,14 +3043,14 @@ apply_match (Segment         *state,
  *
  * Returns: resulting regex or %NULL when pcre failed to compile the regex.
  */
-static Regex *
+static GtkSourceRegex *
 create_reg_all (Context           *context,
 		ContextDefinition *definition)
 {
 	DefinitionsIter iter;
 	DefinitionChild *child_def;
 	GString *all;
-	Regex *regex;
+	GtkSourceRegex *regex;
 	GError *error = NULL;
 
 	g_return_val_if_fail ((context == NULL && definition != NULL) ||
@@ -3135,9 +3065,9 @@ create_reg_all (Context           *context,
 	if (definition->type == CONTEXT_TYPE_CONTAINER &&
 	    definition->u.start_end.end != NULL)
 	{
-		Regex *end;
+		GtkSourceRegex *end;
 
-		if (definition->u.start_end.end->resolved)
+		if (_gtk_source_regex_is_resolved (definition->u.start_end.end))
 		{
 			end = definition->u.start_end.end;
 		}
@@ -3147,7 +3077,7 @@ create_reg_all (Context           *context,
 			end = context->end;
 		}
 
-		g_string_append (all, regex_get_pattern (end));
+		g_string_append (all, _gtk_source_regex_get_pattern (end));
 		g_string_append (all, "|");
 	}
 
@@ -3166,7 +3096,7 @@ create_reg_all (Context           *context,
 				 * Remove FIXME's below if everything is fine. */
 
 				if (tmp->parent->end != NULL)
-					g_string_append (all, regex_get_pattern (tmp->parent->end));
+					g_string_append (all, _gtk_source_regex_get_pattern (tmp->parent->end));
 				/* FIXME ?
 				 * The old code insisted on having tmp->parent->end != NULL here,
 				 * though e.g. in case line-comment -> email-address it's not the case.
@@ -3193,7 +3123,7 @@ create_reg_all (Context           *context,
 	definition_iter_init (&iter, definition);
 	while ((child_def = definition_iter_next (&iter)) != NULL)
 	{
-		Regex *child_regex = NULL;
+		GtkSourceRegex *child_regex = NULL;
 
 		g_return_val_if_fail (child_def->resolved, NULL);
 
@@ -3211,7 +3141,7 @@ create_reg_all (Context           *context,
 
 		if (child_regex != NULL)
 		{
-			g_string_append (all, regex_get_pattern (child_regex));
+			g_string_append (all, _gtk_source_regex_get_pattern (child_regex));
 			g_string_append (all, "|");
 		}
 	}
@@ -3221,7 +3151,7 @@ create_reg_all (Context           *context,
 		g_string_truncate (all, all->len - 1);
 	g_string_append (all, ")");
 
-	regex = regex_new (all->str, 0, &error);
+	regex = _gtk_source_regex_new (all->str, 0, &error);
 
 	if (regex == NULL)
 	{
@@ -3280,9 +3210,9 @@ context_new (Context           *parent,
 	    definition->type == CONTEXT_TYPE_CONTAINER &&
 	    definition->u.start_end.end)
 	{
-		context->end = regex_resolve (definition->u.start_end.end,
-					      definition->u.start_end.start,
-					      line_text);
+		context->end = _gtk_source_regex_resolve (definition->u.start_end.end,
+							  definition->u.start_end.start,
+							  line_text);
 	}
 
 	/* Create reg_all. If it is possibile we share the same reg_all
@@ -3290,7 +3220,7 @@ context_new (Context           *parent,
 	if (ANCESTOR_CAN_END_CONTEXT (context) ||
 	    (definition->type == CONTEXT_TYPE_CONTAINER &&
 	     definition->u.start_end.end != NULL &&
-	     !definition->u.start_end.end->resolved))
+	     !_gtk_source_regex_is_resolved (definition->u.start_end.end)))
 	{
 		context->reg_all = create_reg_all (context, NULL);
 	}
@@ -3298,7 +3228,7 @@ context_new (Context           *parent,
 	{
 		if (!definition->reg_all)
 			definition->reg_all = create_reg_all (NULL, definition);
-		context->reg_all = regex_ref (definition->reg_all);
+		context->reg_all = _gtk_source_regex_ref (definition->reg_all);
 	}
 
 #ifdef ENABLE_DEBUG
@@ -3344,7 +3274,7 @@ context_remove_child (Context *parent,
 
 	g_assert (context->parent == parent);
 
-	for (ptr = context->parent->children; ptr; ptr = ptr->next)
+	for (ptr = parent->children; ptr; ptr = ptr->next)
 	{
 		if (ptr->definition == context->definition)
 			break;
@@ -3368,7 +3298,7 @@ context_remove_child (Context *parent,
 		if (prev != NULL)
 			prev->next = ptr->next;
 		else
-			context->parent->children = ptr->next;
+			parent->children = ptr->next;
 
 		if (!ptr->fixed)
 			g_hash_table_destroy (ptr->u.hash);
@@ -3393,6 +3323,7 @@ static void
 context_unref (Context *context)
 {
 	ContextPtr *children;
+	gint i;
 
 	if (context == NULL || --context->ref_count != 0)
 		return;
@@ -3431,9 +3362,23 @@ context_unref (Context *context)
 	if (context->parent != NULL)
 		context_remove_child (context->parent, context);
 
-	regex_unref (context->end);
-	regex_unref (context->reg_all);
+	_gtk_source_regex_unref (context->end);
+	_gtk_source_regex_unref (context->reg_all);
+
+	if (context->subpattern_context_classes != NULL)
+	{
+		for (i = 0; i < context->definition->n_sub_patterns; ++i)
+		{
+			g_slist_free_full (context->subpattern_context_classes[i],
+			                   (GDestroyNotify)context_class_tag_free);
+		}
+	}
+
+	g_slist_free_full (context->context_classes, (GDestroyNotify)context_class_tag_free);
+
+	g_free (context->subpattern_context_classes);
 	g_free (context->subpattern_tags);
+
 	g_slice_free (Context, context);
 }
 
@@ -3522,9 +3467,11 @@ context_thaw (Context *ctx)
 		else
 		{
 			GSList *children = NULL;
+
 			g_hash_table_foreach (ptr->u.hash,
 					      (GHFunc) get_child_contexts_hash_cb,
 					      &children);
+
 			g_slist_foreach (children, (GFunc) context_thaw, NULL);
 			g_slist_free (children);
 		}
@@ -3561,7 +3508,7 @@ create_child_context (Context           *parent,
 
 		if (definition->type != CONTEXT_TYPE_CONTAINER ||
 		    !definition->u.start_end.end ||
-		    definition->u.start_end.end->resolved)
+		    _gtk_source_regex_is_resolved (definition->u.start_end.end))
 		{
 			ptr->fixed = TRUE;
 		}
@@ -3576,7 +3523,7 @@ create_child_context (Context           *parent,
 	}
 	else
 	{
-		match = regex_fetch (definition->u.start_end.start, 0);
+		match = _gtk_source_regex_fetch (definition->u.start_end.start, 0);
 		g_return_val_if_fail (match != NULL, NULL);
 		context = g_hash_table_lookup (ptr->u.hash, match);
 	}
@@ -3950,8 +3897,8 @@ container_context_starts_here (GtkSourceContextEngine  *ce,
 	if (definition->u.start_end.start == NULL)
 		return FALSE;
 
-	if (!regex_match (definition->u.start_end.start,
-			  line->text, line->byte_length, *line_pos))
+	if (!_gtk_source_regex_match (definition->u.start_end.start,
+				      line->text, line->byte_length, *line_pos))
 	{
 		return FALSE;
 	}
@@ -4022,8 +3969,13 @@ simple_context_starts_here (GtkSourceContextEngine *ce,
 
 	g_assert (*line_pos <= line->byte_length);
 
-	if (!regex_match (definition->u.match, line->text, line->byte_length, *line_pos))
+	if (!_gtk_source_regex_match (definition->u.match,
+				      line->text,
+				      line->byte_length,
+				      *line_pos))
+	{
 		return FALSE;
+	}
 
 	new_context = create_child_context (state->context, child_def, line->text);
 	g_return_val_if_fail (new_context != NULL, FALSE);
@@ -4147,10 +4099,10 @@ segment_ends_here (Segment  *state,
 	g_assert (SEGMENT_IS_CONTAINER (state));
 
 	return state->context->definition->u.start_end.end &&
-		regex_match (state->context->end,
-			     line->text,
-			     line->byte_length,
-			     pos);
+		_gtk_source_regex_match (state->context->end,
+					 line->text,
+					 line->byte_length,
+					 pos);
 }
 
 /**
@@ -4198,11 +4150,11 @@ ancestor_context_ends_here (Context                *state,
 		current_context = current_context_list->data;
 
 		if (current_context->end &&
-		    current_context->end->u.regex.regex &&
-		    regex_match (current_context->end,
-				 line->text,
-				 line->byte_length,
-				 line_pos))
+		    _gtk_source_regex_is_resolved (current_context->end) &&
+		    _gtk_source_regex_match (current_context->end,
+					     line->text,
+					     line->byte_length,
+					     line_pos))
 		{
 			terminating_context = current_context;
 			break;
@@ -4292,16 +4244,16 @@ next_segment (GtkSourceContextEngine  *ce,
 
 		if (state->context->reg_all)
 		{
-			if (!regex_match (state->context->reg_all,
-					  line->text,
-					  line->byte_length,
-					  pos))
+			if (!_gtk_source_regex_match (state->context->reg_all,
+						      line->text,
+						      line->byte_length,
+						      pos))
 			{
 				return FALSE;
 			}
 
-			regex_fetch_pos_bytes (state->context->reg_all,
-					       0, &pos, NULL);
+			_gtk_source_regex_fetch_pos_bytes (state->context->reg_all,
+							   0, &pos, NULL);
 		}
 
 		/* Does an ancestor end here? */
@@ -4544,9 +4496,10 @@ analyze_line (GtkSourceContextEngine *ce,
 
 		if (g_timer_elapsed (timer, NULL) * 1000 > MAX_TIME_FOR_ONE_LINE)
 		{
-			g_critical (_("Highlighting a single line took too much time, "
+			g_critical ("%s",
+			            _("Highlighting a single line took too much time, "
 				      "syntax highlighting will be disabled"));
-			disable_highlighting (ce);
+			disable_syntax_analysis (ce);
 			break;
 		}
 
@@ -4604,7 +4557,7 @@ analyze_line (GtkSourceContextEngine *ce,
  *
  * @buffer: #GtkTextBuffer.
  * @line_start: iterator pointing to the beginning of line.
- * @line_start: iterator pointing to the beginning of next line or to the end
+ * @line_end: iterator pointing to the beginning of next line or to the end
  * of this line if it's the last line in @buffer.
  * @line: #LineInfo structure to be filled.
  *
@@ -5379,6 +5332,8 @@ erase_segments (GtkSourceContextEngine *ce,
 	CHECK_TREE (ce);
 }
 
+#define IS_BOM(c) (c == 0xFEFF)
+
 /**
  * update_syntax:
  *
@@ -5401,15 +5356,20 @@ update_syntax (GtkSourceContextEngine *ce,
 	       const GtkTextIter      *end,
 	       gint                    time)
 {
-	Segment *invalid;
+	GtkTextBuffer *buffer;
 	GtkTextIter start_iter, end_iter;
 	GtkTextIter line_start, line_end;
+	Segment *state;
+	Segment *invalid;
 	gint start_offset, end_offset;
 	gint line_start_offset, line_end_offset;
-        gint analyzed_end;
-	GtkTextBuffer *buffer = ce->priv->buffer;
-	Segment *state = ce->priv->root_segment;
+	gint analyzed_end;
+	gboolean first_line = FALSE;
 	GTimer *timer;
+	gunichar c;
+
+	buffer = ce->priv->buffer;
+	state = ce->priv->root_segment;
 
 	context_freeze (ce->priv->root_context);
 	update_tree (ce);
@@ -5454,6 +5414,20 @@ update_syntax (GtkSourceContextEngine *ce,
 		end_offset = gtk_text_iter_get_offset (&end_iter);
 	}
 
+	if (0 == start_offset)
+	{
+		first_line = TRUE;
+
+		/* If it is the first line and it starts with BOM, skip it
+		 * since regexes in lang files do not take it into account */
+		c = gtk_text_iter_get_char (&start_iter);
+		if (IS_BOM (c))
+		{
+			gtk_text_iter_forward_char (&start_iter);
+			start_offset = gtk_text_iter_get_offset (&start_iter);
+		}
+	}
+
 	/* This happens after deleting all text on last line. */
 	if (start_offset == end_offset)
 	{
@@ -5491,7 +5465,7 @@ update_syntax (GtkSourceContextEngine *ce,
 
 		/* Analyze the line */
 		erase_segments (ce, line_start_offset, line_end_offset, ce->priv->hint);
-                get_line_info (buffer, &line_start, &line_end, &line);
+		get_line_info (buffer, &line_start, &line_end, &line);
 
 #ifdef ENABLE_CHECK_TREE
 		{
@@ -5500,12 +5474,17 @@ update_syntax (GtkSourceContextEngine *ce,
 		}
 #endif
 
-		if (line_start_offset == 0)
+		if (first_line)
+		{
 			state = ce->priv->root_segment;
+		}
 		else
+		{
 			state = get_segment_at_offset (ce,
 						       ce->priv->hint ? ce->priv->hint : state,
 						       line_start_offset - 1);
+		}
+
 		g_assert (state->context != NULL);
 
 		ce->priv->hint2 = ce->priv->hint;
@@ -5599,6 +5578,8 @@ update_syntax (GtkSourceContextEngine *ce,
 			gtk_text_iter_forward_line (&line_end);
 			line_end_offset = gtk_text_iter_get_offset (&line_end);
 		}
+
+		first_line = (0 == line_start_offset);
 	}
 
 	if (analyzed_end == gtk_text_buffer_get_char_count (buffer))
@@ -5617,7 +5598,8 @@ update_syntax (GtkSourceContextEngine *ce,
 		install_idle_worker (ce);
 
 	gtk_text_iter_set_offset (&end_iter, analyzed_end);
-	refresh_range (ce, &start_iter, &end_iter, FALSE);
+
+	refresh_range (ce, &start_iter, &end_iter);
 
 	PROFILE (g_print ("analyzed %d chars from %d to %d in %fms\n",
 			  analyzed_end - start_offset, start_offset, analyzed_end,
@@ -5645,7 +5627,7 @@ definition_child_new (ContextDefinition *definition,
 
 	g_return_val_if_fail (child_id != NULL, NULL);
 
-	ch = g_slice_new0 (DefinitionChild);
+	ch = g_slice_new (DefinitionChild);
 
 	if (original_ref)
 		ch->u.id = g_strdup_printf ("@%s", child_id);
@@ -5677,6 +5659,20 @@ definition_child_free (DefinitionChild *ch)
 #endif
 }
 
+static GSList *
+copy_context_classes (GSList *context_classes)
+{
+	GSList *ret = NULL;
+
+	while (context_classes)
+	{
+		ret = g_slist_prepend (ret, gtk_source_context_class_copy (context_classes->data));
+		context_classes = g_slist_next (context_classes);
+	}
+
+	return g_slist_reverse (ret);
+}
+
 static ContextDefinition *
 context_definition_new (const gchar        *id,
 			ContextType         type,
@@ -5684,6 +5680,7 @@ context_definition_new (const gchar        *id,
 			const gchar        *start,
 			const gchar        *end,
 			const gchar        *style,
+			GSList             *context_classes,
 			GtkSourceContextFlags flags,
 			GError            **error)
 {
@@ -5709,41 +5706,41 @@ context_definition_new (const gchar        *id,
 
 	if (match != NULL)
 	{
-		definition->u.match = regex_new (match, G_REGEX_ANCHORED, error);
+		definition->u.match = _gtk_source_regex_new (match, G_REGEX_ANCHORED, error);
 
 		if (definition->u.match == NULL)
 		{
 			regex_error = TRUE;
 		}
-		else if (!definition->u.match->resolved)
+		else if (!_gtk_source_regex_is_resolved (definition->u.match))
 		{
 			regex_error = TRUE;
 			unresolved_error = TRUE;
-			regex_unref (definition->u.match);
+			_gtk_source_regex_unref (definition->u.match);
 			definition->u.match = NULL;
 		}
 	}
 
 	if (start != NULL)
 	{
-		definition->u.start_end.start = regex_new (start, G_REGEX_ANCHORED, error);
+		definition->u.start_end.start = _gtk_source_regex_new (start, G_REGEX_ANCHORED, error);
 
 		if (definition->u.start_end.start == NULL)
 		{
 			regex_error = TRUE;
 		}
-		else if (!definition->u.start_end.start->resolved)
+		else if (!_gtk_source_regex_is_resolved (definition->u.start_end.start))
 		{
 			regex_error = TRUE;
 			unresolved_error = TRUE;
-			regex_unref (definition->u.start_end.start);
+			_gtk_source_regex_unref (definition->u.start_end.start);
 			definition->u.start_end.start = NULL;
 		}
 	}
 
 	if (end != NULL && !regex_error)
 	{
-		definition->u.start_end.end = regex_new (end, G_REGEX_ANCHORED, error);
+		definition->u.start_end.end = _gtk_source_regex_new (end, G_REGEX_ANCHORED, error);
 
 		if (definition->u.start_end.end == NULL)
 			regex_error = TRUE;
@@ -5774,6 +5771,8 @@ context_definition_new (const gchar        *id,
 	definition->sub_patterns = NULL;
 	definition->n_sub_patterns = 0;
 
+	definition->context_classes = copy_context_classes (context_classes);
+
 	return definition;
 }
 
@@ -5796,11 +5795,11 @@ context_definition_unref (ContextDefinition *definition)
 	switch (definition->type)
 	{
 		case CONTEXT_TYPE_SIMPLE:
-			regex_unref (definition->u.match);
+			_gtk_source_regex_unref (definition->u.match);
 			break;
 		case CONTEXT_TYPE_CONTAINER:
-			regex_unref (definition->u.start_end.start);
-			regex_unref (definition->u.start_end.end);
+			_gtk_source_regex_unref (definition->u.start_end.start);
+			_gtk_source_regex_unref (definition->u.start_end.end);
 			break;
 	}
 
@@ -5814,6 +5813,10 @@ context_definition_unref (ContextDefinition *definition)
 		g_free (sp_def->style);
 		if (sp_def->is_named)
 			g_free (sp_def->u.name);
+
+		g_slist_free_full (sp_def->context_classes,
+		                   (GDestroyNotify)gtk_source_context_class_free);
+
 		g_slice_free (SubPatternDefinition, sp_def);
 		sub_pattern_list = sub_pattern_list->next;
 	}
@@ -5821,10 +5824,12 @@ context_definition_unref (ContextDefinition *definition)
 
 	g_free (definition->id);
 	g_free (definition->default_style);
-	regex_unref (definition->reg_all);
+	_gtk_source_regex_unref (definition->reg_all);
 
-	g_slist_foreach (definition->children, (GFunc) definition_child_free, NULL);
-	g_slist_free (definition->children);
+	g_slist_free_full (definition->context_classes,
+	                   (GDestroyNotify)gtk_source_context_class_free);
+
+	g_slist_free_full (definition->children, (GDestroyNotify)definition_child_free);
 	g_slice_free (ContextDefinition, definition);
 }
 
@@ -5887,6 +5892,7 @@ _gtk_source_context_data_define_context (GtkSourceContextData *ctx_data,
 					 const gchar          *start_regex,
 					 const gchar          *end_regex,
 					 const gchar          *style,
+					 GSList               *context_classes,
 					 GtkSourceContextFlags flags,
 					 GError              **error)
 {
@@ -5901,7 +5907,7 @@ _gtk_source_context_data_define_context (GtkSourceContextData *ctx_data,
 	/* If the id is already present in the hashtable it is a duplicate,
 	 * so we report the error (probably there is a duplicate id in the
 	 * XML lang file) */
-	if (LOOKUP_DEFINITION (ctx_data, id) != NULL)
+	if (gtk_source_context_data_lookup (ctx_data, id) != NULL)
 	{
 		g_set_error (error,
 			     GTK_SOURCE_CONTEXT_ENGINE_ERROR,
@@ -5945,12 +5951,13 @@ _gtk_source_context_data_define_context (GtkSourceContextData *ctx_data,
 	}
 	else
 	{
-		parent = LOOKUP_DEFINITION (ctx_data, parent_id);
+		parent = gtk_source_context_data_lookup (ctx_data, parent_id);
 		g_return_val_if_fail (parent != NULL, FALSE);
 	}
 
 	definition = context_definition_new (id, type, match_regex,
 					     start_regex, end_regex, style,
+					     context_classes,
 					     flags, error);
 	if (definition == NULL)
 		return FALSE;
@@ -5973,6 +5980,7 @@ _gtk_source_context_data_add_sub_pattern (GtkSourceContextData *ctx_data,
 					  const gchar          *name,
 					  const gchar          *where,
 					  const gchar          *style,
+					  GSList               *context_classes,
 					  GError              **error)
 {
 	ContextDefinition *parent;
@@ -5988,7 +5996,7 @@ _gtk_source_context_data_add_sub_pattern (GtkSourceContextData *ctx_data,
 	/* If the id is already present in the hashtable it is a duplicate,
 	 * so we report the error (probably there is a duplicate id in the
 	 * XML lang file) */
-	if (LOOKUP_DEFINITION (ctx_data, id) != NULL)
+	if (gtk_source_context_data_lookup (ctx_data, id) != NULL)
 	{
 		g_set_error (error,
 			     GTK_SOURCE_CONTEXT_ENGINE_ERROR,
@@ -5997,7 +6005,7 @@ _gtk_source_context_data_add_sub_pattern (GtkSourceContextData *ctx_data,
 		return FALSE;
 	}
 
-	parent = LOOKUP_DEFINITION (ctx_data, parent_id);
+	parent = gtk_source_context_data_lookup (ctx_data, parent_id);
 	g_return_val_if_fail (parent != NULL, FALSE);
 
 	if (!where || !where[0] || !strcmp (where, "default"))
@@ -6026,13 +6034,13 @@ _gtk_source_context_data_add_sub_pattern (GtkSourceContextData *ctx_data,
 		return FALSE;
 	}
 
-	sp_def = g_slice_new0 (SubPatternDefinition);
+	sp_def = g_slice_new (SubPatternDefinition);
 #ifdef NEED_DEBUG_ID
 	sp_def->id = g_strdup (id);
 #endif
 	sp_def->style = g_strdup (style);
 	sp_def->where = where_num;
-	number = sub_pattern_to_int (name);
+	number = _gtk_source_string_to_int (name);
 
 	if (number < 0)
 	{
@@ -6047,6 +6055,8 @@ _gtk_source_context_data_add_sub_pattern (GtkSourceContextData *ctx_data,
 
 	parent->sub_patterns = g_slist_append (parent->sub_patterns, sp_def);
 	sp_def->index = parent->n_sub_patterns++;
+
+	sp_def->context_classes = copy_context_classes (context_classes);
 
 	return TRUE;
 }
@@ -6084,8 +6094,8 @@ _gtk_source_context_data_add_ref (GtkSourceContextData *ctx_data,
 	g_return_val_if_fail (ref_id != NULL, FALSE);
 	g_return_val_if_fail (ctx_data != NULL, FALSE);
 
-	ref = LOOKUP_DEFINITION (ctx_data, ref_id);
-	parent = LOOKUP_DEFINITION (ctx_data, parent_id);
+	ref = gtk_source_context_data_lookup (ctx_data, ref_id);
+	parent = gtk_source_context_data_lookup (ctx_data, parent_id);
 	g_return_val_if_fail (parent != NULL, FALSE);
 
 	if (parent->type != CONTEXT_TYPE_CONTAINER)
@@ -6152,7 +6162,7 @@ resolve_reference (G_GNUC_UNUSED const gchar *id,
 		if (child_def->resolved)
 			continue;
 
-		ref = LOOKUP_DEFINITION (data->ctx_data, child_def->u.id);
+		ref = gtk_source_context_data_lookup (data->ctx_data, child_def->u.id);
 
 		if (ref != NULL)
 		{
@@ -6193,7 +6203,7 @@ process_replace (GtkSourceContextData *ctx_data,
 {
 	ContextDefinition *to_replace, *new;
 
-	to_replace = LOOKUP_DEFINITION (ctx_data, id);
+	to_replace = gtk_source_context_data_lookup (ctx_data, id);
 
 	if (to_replace == NULL)
 	{
@@ -6203,7 +6213,7 @@ process_replace (GtkSourceContextData *ctx_data,
 		return FALSE;
 	}
 
-	new = LOOKUP_DEFINITION (ctx_data, replace_with);
+	new = gtk_source_context_data_lookup (ctx_data, replace_with);
 
 	if (new == NULL)
 	{
@@ -6302,7 +6312,7 @@ _gtk_source_context_data_finish_parse (GtkSourceContextData *ctx_data,
 
 	/* Sanity check: user may have screwed up the files by now (#485661) */
 	root_id = g_strdup_printf ("%s:%s", ctx_data->lang->priv->id, ctx_data->lang->priv->id);
-	main_definition = LOOKUP_DEFINITION (ctx_data, root_id);
+	main_definition = gtk_source_context_data_lookup (ctx_data, root_id);
 	g_free (root_id);
 
 	if (main_definition == NULL)
@@ -6384,7 +6394,7 @@ _gtk_source_context_data_set_escape_char (GtkSourceContextData *ctx_data,
 	definitions = g_slist_reverse (definitions);
 
 	if (!_gtk_source_context_data_define_context (ctx_data, "gtk-source-context-engine-escape",
-						      NULL, pattern, NULL, NULL, NULL,
+						      NULL, pattern, NULL, NULL, NULL, NULL,
 						      GTK_SOURCE_CONTEXT_EXTEND_PARENT,
 						      &error))
 		goto out;
@@ -6393,7 +6403,7 @@ _gtk_source_context_data_set_escape_char (GtkSourceContextData *ctx_data,
 	pattern = g_strdup_printf ("%s$", escaped);
 
 	if (!_gtk_source_context_data_define_context (ctx_data, "gtk-source-context-engine-line-escape",
-						      NULL, NULL, pattern, "^", NULL,
+						      NULL, NULL, pattern, "^", NULL, NULL,
 						      GTK_SOURCE_CONTEXT_EXTEND_PARENT,
 						      &error))
 		goto out;
@@ -6489,24 +6499,6 @@ check_context (Context *context)
 }
 
 static void
-check_regex (void)
-{
-	static gboolean done;
-
-	if (!done)
-	{
-		g_assert (!find_single_byte_escape ("gfregerg"));
-		g_assert (!find_single_byte_escape ("\\\\C"));
-		g_assert (find_single_byte_escape ("\\C"));
-		g_assert (find_single_byte_escape ("ewfwefwefwef\\Cwefwefwefwe"));
-		g_assert (find_single_byte_escape ("ewfwefwefwef\\\\Cwefw\\Cefwefwe"));
-		g_assert (!find_single_byte_escape ("ewfwefwefwef\\\\Cwefw\\\\Cefwefwe"));
-
-		done = TRUE;
-	}
-}
-
-static void
 check_tree (GtkSourceContextEngine *ce)
 {
 	Segment *root = ce->priv->root_segment;
@@ -6563,224 +6555,5 @@ check_segment_list (Segment *segment)
 		g_assert (ch->next || ch == segment->last_child);
 	}
 }
+
 #endif /* ENABLE_CHECK_TREE */
-
-
-#ifdef ENABLE_MEMORY_DEBUG
-typedef struct {
-	GSList *def_regexes;
-	GSList *ctx_regexes;
-	gsize def_mem;
-	gsize ctx_mem;
-	guint n_ctx;
-} MemInfo;
-
-typedef struct
-{
-  gpointer   key;
-  gpointer   value;
-  gpointer   next;
-} HashNodeStruct;
-
-typedef struct
-{
-  gint             size;
-  gint             nnodes;
-  HashNodeStruct **nodes;
-  GHashFunc        hash_func;
-  GEqualFunc       key_equal_func;
-  volatile guint   ref_count;
-  GDestroyNotify   key_destroy_func;
-  GDestroyNotify   value_destroy_func;
-} HashTableStruct;
-
-static gsize
-get_hash_table_mem (GHashTable *ht)
-{
-	return sizeof (HashTableStruct) +
-		sizeof (HashNodeStruct) * g_hash_table_size (ht);
-}
-
-static void
-add_regex_mem (MemInfo *info,
-	       Regex   *regex,
-	       gboolean def)
-{
-	if (!regex)
-		return;
-
-	if (def)
-	{
-		if (!g_slist_find (info->def_regexes, regex))
-			info->def_regexes = g_slist_prepend (info->def_regexes, regex);
-	}
-	else
-	{
-		if (!g_slist_find (info->def_regexes, regex) &&
-		    !g_slist_find (info->ctx_regexes, regex))
-			info->ctx_regexes = g_slist_prepend (info->ctx_regexes, regex);
-	}
-}
-
-static gsize
-get_str_mem (const gchar *string)
-{
-	return string ? strlen (string) + 1 : 0;
-}
-
-static void
-get_def_mem (ContextDefinition *def,
-	     MemInfo           *info)
-{
-	GSList *l;
-
-	info->def_mem += sizeof (ContextDefinition);
-	info->def_mem += get_str_mem (def->id);
-	info->def_mem += get_str_mem (def->default_style);
-
-	if (def->type == CONTEXT_TYPE_CONTAINER)
-	{
-		add_regex_mem (info, def->u.start_end.start, TRUE);
-		add_regex_mem (info, def->u.start_end.end, TRUE);
-	}
-	else
-	{
-		add_regex_mem (info, def->u.match, TRUE);
-	}
-
-	for (l = def->children; l != NULL; l = l->next)
-	{
-		DefinitionChild *child_def = l->data;
-
-		info->def_mem += sizeof (DefinitionChild);
-		info->def_mem += get_str_mem (child_def->style);
-
-		if (child_def->resolved)
-			info->def_mem += get_str_mem (child_def->u.id);
-	}
-
-	for (l = def->sub_patterns; l != NULL; l = l->next)
-	{
-		SubPatternDefinition *sp_def = l->data;
-
-		info->def_mem += sizeof (SubPatternDefinition);
-		info->def_mem += get_str_mem (sp_def->style);
-#ifdef NEED_DEBUG_ID
-		info->def_mem += get_str_mem (sp_def->id);
-#endif
-
-		if (sp_def->is_named)
-			info->def_mem += get_str_mem (sp_def->u.name);
-	}
-
-	add_regex_mem (info, def->reg_all, TRUE);
-}
-
-static void get_context_mem (Context *ctx, MemInfo *info);
-
-static void
-get_context_mem_cb (const char *id,
-		    Context    *ctx,
-		    MemInfo    *info)
-{
-	info->ctx_mem += get_str_mem (id);
-	get_context_mem (ctx, info);
-}
-
-static void
-get_context_ptr_mem (ContextPtr *ptr,
-		     MemInfo    *info)
-{
-	if (ptr)
-	{
-		info->ctx_mem += sizeof (ContextPtr);
-
-		if (ptr->fixed)
-			get_context_mem (ptr->u.context, info);
-		else
-		{
-			info->ctx_mem += get_hash_table_mem (ptr->u.hash);
-			g_hash_table_foreach (ptr->u.hash, (GHFunc) get_context_mem_cb, info);
-		}
-
-		get_context_ptr_mem (ptr->next, info);
-	}
-}
-
-static void
-get_context_mem (Context *ctx,
-		 MemInfo *info)
-{
-	if (ctx)
-	{
-		info->ctx_mem += sizeof (Context);
-		add_regex_mem (info, ctx->end, FALSE);
-		add_regex_mem (info, ctx->reg_all, FALSE);
-		get_context_ptr_mem (ctx->children, info);
-		info->ctx_mem += ctx->definition->n_sub_patterns * sizeof (GtkTextTag*);
-		info->n_ctx += 1;
-	}
-}
-
-static void
-get_def_mem_cb (const char        *id,
-		ContextDefinition *def,
-		MemInfo           *info)
-{
-	info->def_mem += get_str_mem (id);
-	get_def_mem (def, info);
-}
-
-static void
-get_definitions_mem (GtkSourceContextEngine *ce,
-		     MemInfo                *info)
-{
-	info->def_mem += sizeof (GtkSourceContextData);
-	info->def_mem += get_hash_table_mem (ce->priv->ctx_data->definitions);
-	g_hash_table_foreach (ce->priv->ctx_data->definitions,
-			      (GHFunc) get_def_mem_cb,
-			      info);
-}
-
-static gsize
-get_regex_mem (Regex *regex)
-{
-	gsize mem = 0;
-
-	if (!regex)
-		return 0;
-
-	mem += sizeof (Regex);
-
-	if (regex->resolved)
-		mem += _egg_regex_get_memory (regex->u.regex.regex);
-	else
-		mem += get_str_mem (regex->u.info.pattern);
-
-	return mem;
-}
-
-static gboolean
-mem_usage_timeout (GtkSourceContextEngine *ce)
-{
-	GSList *l;
-	MemInfo info = {NULL, NULL, 0, 0, 0};
-
-	get_definitions_mem (ce, &info);
-	get_context_mem (ce->priv->root_context, &info);
-
-	for (l = info.def_regexes; l != NULL; l = l->next)
-		info.def_mem += get_regex_mem (l->data);
-
-	for (l = info.ctx_regexes; l != NULL; l = l->next)
-		info.ctx_mem += get_regex_mem (l->data);
-
-	g_print ("%s: definitions: %d bytes, contexts: %d bytes in %d contexts\n",
-		 ENGINE_ID (ce), info.def_mem, info.ctx_mem, info.n_ctx);
-
-	g_slist_free (info.def_regexes);
-	g_slist_free (info.ctx_regexes);
-
-	return TRUE;
-}
-#endif /* ENABLE_MEMORY_DEBUG */

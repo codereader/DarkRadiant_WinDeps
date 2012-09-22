@@ -1,23 +1,24 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8; coding: utf-8 -*-
- *  gtksourcelanguage-parser-2.c
- *  Language specification parser for 2.0 version .lang files
+ * gtksourcelanguage-parser-2.c
+ * Language specification parser for 2.0 version .lang files
+ * This file is part of GtkSourceView
  *
- *  Copyright (C) 2003 - Gustavo Giráldez <gustavo.giraldez@gmx.net>
- *  Copyright (C) 2005, 2006 - Emanuele Aina, Marco Barisione
+ * Copyright (C) 2003 - Gustavo Giráldez <gustavo.giraldez@gmx.net>
+ * Copyright (C) 2005, 2006 - Emanuele Aina, Marco Barisione
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU Library General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * GtkSourceView is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Library General Public License for more details.
+ * GtkSourceView is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- *  You should have received a copy of the GNU Library General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #ifdef HAVE_CONFIG_H
@@ -32,6 +33,15 @@
 #define DEBUG(x)
 #endif
 
+#include "gtksourceview-i18n.h"
+#include "gtksourcebuffer.h"
+#include "gtksourcelanguage.h"
+#include "gtksourcelanguage-private.h"
+#include "gtksourcecontextengine.h"
+
+#include <glib.h>
+#include <glib/gstdio.h>
+
 #include <string.h>
 #include <fcntl.h>
 #ifdef HAVE_UNISTD_H
@@ -41,13 +51,6 @@
 #include <io.h>
 #endif
 #include <libxml/xmlreader.h>
-#include <glib/gstdio.h>
-#include "gtksourceview-i18n.h"
-#include "gtksourcebuffer.h"
-#include "gtksourcelanguage.h"
-#include "gtksourcelanguage-private.h"
-#include "gtksourcecontextengine.h"
-#include <glib/gregex.h>
 
 #define PARSER_ERROR (parser_error_quark ())
 #define ATTR_NO_STYLE ""
@@ -153,6 +156,7 @@ static gboolean   create_definition            (ParserState *parser_state,
                                                 gchar *id,
                                                 gchar *parent_id,
                                                 gchar *style,
+                                                GSList *context_classes,
 						GError **error);
 
 static void       handle_context_element       (ParserState *parser_state);
@@ -251,14 +255,14 @@ static GRegexCompileFlags
 get_regex_flags (xmlNode             *node,
 		 GRegexCompileFlags flags)
 {
-	xmlAttr *attribute;
+	xmlAttr *attr;
 
-	for (attribute = node->properties; attribute != NULL; attribute = attribute->next)
+	for (attr = node->properties; attr != NULL; attr = attr->next)
 	{
-		g_return_val_if_fail (attribute->children != NULL, flags);
+		g_return_val_if_fail (attr->children != NULL, flags);
 
-		flags = update_regex_flags (flags, attribute->name,
-					    attribute->children->content);
+		flags = update_regex_flags (flags, attr->name,
+					    attr->children->content);
 	}
 
 	return flags;
@@ -303,11 +307,56 @@ get_context_flags (ParserState *parser_state)
 	return flags;
 }
 
+static GSList *
+add_classes (GSList      *list,
+             gchar const *classes,
+             gboolean     enabled)
+{
+	gchar **parts;
+	gchar **ptr;
+	GSList *newlist = NULL;
+
+	if (classes == NULL)
+	{
+		return list;
+	}
+
+	parts = ptr = g_strsplit (classes, " ", -1);
+
+	while (*ptr)
+	{
+		GtkSourceContextClass *ctx = gtk_source_context_class_new (*ptr, enabled);
+		newlist = g_slist_prepend (newlist, ctx);
+
+		++ptr;
+	}
+
+	g_strfreev (parts);
+	return g_slist_concat (list, g_slist_reverse (newlist));
+}
+
+static GSList *
+parse_classes (ParserState *parser_state)
+{
+	GSList *ret = NULL;
+	xmlChar *en = xmlTextReaderGetAttribute (parser_state->reader, BAD_CAST "class");
+	xmlChar *dis = xmlTextReaderGetAttribute (parser_state->reader, BAD_CAST "class-disabled");
+
+	ret = add_classes (ret, (gchar const *)en, TRUE);
+	ret = add_classes (ret, (gchar const *)dis, FALSE);
+
+	xmlFree (en);
+	xmlFree (dis);
+
+	return ret;
+}
+
 static gboolean
 create_definition (ParserState *parser_state,
 		   gchar       *id,
 		   gchar       *parent_id,
 		   gchar       *style,
+		   GSList      *context_classes,
 		   GError     **error)
 {
 	gchar *match = NULL, *start = NULL, *end = NULL;
@@ -339,7 +388,7 @@ create_definition (ParserState *parser_state,
 
 	for (child = context_node->children; child != NULL; child = child->next)
 	{
-		if (child->type != XML_READER_TYPE_ELEMENT)
+		if (child->type != XML_ELEMENT_NODE)
 			continue;
 
 		/* FIXME: add PCRE_EXTRA support in EggRegex
@@ -468,6 +517,7 @@ create_definition (ParserState *parser_state,
 	}
 
 	if (tmp_error == NULL)
+	{
 		_gtk_source_context_data_define_context (parser_state->ctx_data,
 							 id,
 							 parent_id,
@@ -475,8 +525,10 @@ create_definition (ParserState *parser_state,
 							 start,
 							 end,
 							 style,
+							 context_classes,
 							 flags,
 							 &tmp_error);
+	}
 
 	g_free (match);
 	g_free (start);
@@ -608,11 +660,12 @@ add_ref (ParserState               *parser_state,
 }
 
 static gboolean
-create_sub_pattern (ParserState *parser_state,
-                    gchar *id,
-                    gchar *sub_pattern,
-                    gchar *style,
-                    GError **error)
+create_sub_pattern (ParserState  *parser_state,
+                    gchar        *id,
+                    gchar        *sub_pattern,
+                    gchar        *style,
+                    GSList       *context_classes,
+                    GError      **error)
 {
 	gchar *container_id;
 	xmlChar *where;
@@ -634,6 +687,7 @@ create_sub_pattern (ParserState *parser_state,
 						  sub_pattern,
 						  (gchar*) where,
 						  style,
+						  context_classes,
 						  &tmp_error);
 
 	xmlFree (where);
@@ -656,6 +710,7 @@ handle_context_element (ParserState *parser_state)
 	gboolean success;
 	gboolean ignore_style = FALSE;
 	GtkSourceContextRefOptions options = 0;
+	GSList *context_classes;
 
 	GError *tmp_error = NULL;
 
@@ -706,6 +761,8 @@ handle_context_element (ParserState *parser_state)
 		g_warning ("in file %s: style '%s' not defined", parser_state->filename, style_ref);
 	}
 
+	context_classes = parse_classes (parser_state);
+
 	if (ref != NULL)
 	{
 		tmp = xmlTextReaderGetAttribute (parser_state->reader, BAD_CAST "original");
@@ -716,7 +773,11 @@ handle_context_element (ParserState *parser_state)
 		if (style_ref != NULL)
 			options |= GTK_SOURCE_CONTEXT_OVERRIDE_STYLE;
 
-		add_ref (parser_state, (gchar*) ref, options, style_ref, &tmp_error);
+		add_ref (parser_state,
+		         (gchar*) ref,
+		         options,
+		         style_ref,
+		         &tmp_error);
 	}
 	else
 	{
@@ -741,9 +802,12 @@ handle_context_element (ParserState *parser_state)
 		{
 			if (sub_pattern != NULL)
 			{
-				create_sub_pattern (parser_state, id,
-						(gchar *)sub_pattern, style_ref,
-						&tmp_error);
+				create_sub_pattern (parser_state,
+				                    id,
+				                    (gchar *)sub_pattern,
+				                    style_ref,
+				                    context_classes,
+				                    &tmp_error);
 			}
 			else
 			{
@@ -761,11 +825,16 @@ handle_context_element (ParserState *parser_state)
 											   NULL,
 											   NULL,
 											   NULL,
+											   NULL,
 											   0,
 											   &tmp_error);
 				else
-					success = create_definition (parser_state, id, parent_id,
-								     style_ref, &tmp_error);
+					success = create_definition (parser_state,
+					                             id,
+					                             parent_id,
+					                             style_ref,
+					                             context_classes,
+					                             &tmp_error);
 
 				if (success && !is_empty)
 				{
@@ -780,6 +849,8 @@ handle_context_element (ParserState *parser_state)
 
 		g_free (id);
 	}
+
+	g_slist_free_full (context_classes, (GDestroyNotify)gtk_source_context_class_free);
 
 	g_free (style_ref);
 	xmlFree (sub_pattern);
@@ -1530,8 +1601,7 @@ file_parse (gchar                     *filename,
 {
 	ParserState *parser_state;
 	xmlTextReader *reader = NULL;
-	int ret;
-	//int fd = -1;
+	int fd = -1;
 	GError *tmp_error = NULL;
 	GtkSourceLanguageManager *lm;
 	const gchar *rng_lang_schema;
@@ -1543,12 +1613,10 @@ file_parse (gchar                     *filename,
 	/*
 	 * Use fd instead of filename so that it's utf8 safe on w32.
 	 */
-	//fd = g_open (filename, O_RDONLY, 0);
+	fd = g_open (filename, O_RDONLY, 0);
 
-	//if (fd != -1)
-	//	reader = xmlReaderForFd (fd, filename, NULL, 0);
-
-	reader = xmlReaderForFile(filename, NULL, 0);
+	if (fd != -1)
+		reader = xmlReaderForFd (fd, filename, NULL, 0);
 
 	if (reader == NULL)
 	{
@@ -1589,8 +1657,8 @@ file_parse (gchar                     *filename,
 						(xmlStructuredErrorFunc) text_reader_structured_error_func,
 						parser_state);
 
-	while (parser_state->error == NULL &&
-	       (ret = xmlTextReaderRead (parser_state->reader)) == 1)
+	while ((parser_state->error == NULL) &&
+	        (1 == xmlTextReaderRead (parser_state->reader)))
 	{
 		int type;
 
@@ -1624,13 +1692,13 @@ file_parse (gchar                     *filename,
 	if (tmp_error != NULL)
 		goto error;
 
-	//close (fd);
+	close (fd);
 
 	return TRUE;
 
 error:
-	//if (fd != -1)
-	//	close (fd);
+	if (fd != -1)
+		close (fd);
 	g_propagate_error (error, tmp_error);
 	return FALSE;
 }

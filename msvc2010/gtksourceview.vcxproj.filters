@@ -6,10 +6,76 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\config.h">
+    <ClCompile Include="..\gtksourceview\gtksourcelanguage.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcelanguagemanager.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcelanguage-parser-1.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcelanguage-parser-2.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcemark.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcemarkattributes.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcepixbufhelper.c" />
+    <ClCompile Include="..\gtksourceview\gtksourceprintcompositor.c" />
+    <ClCompile Include="..\gtksourceview\gtksourceregex.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcestyle.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcestylescheme.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcestyleschememanager.c" />
+    <ClCompile Include="..\gtksourceview\gtksourceundomanager.c" />
+    <ClCompile Include="..\gtksourceview\gtksourceundomanagerdefault.c" />
+    <ClCompile Include="..\gtksourceview\gtksourceview.c" />
+    <ClCompile Include="..\gtksourceview\gtksourceview-i18n.c" />
+    <ClCompile Include="..\gtksourceview\gtksourceview-utils.c" />
+    <ClCompile Include="..\gtksourceview\gtktextregion.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcebuffer.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcecompletion.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcecompletioncontext.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcecompletioninfo.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcecompletionitem.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcecompletionmodel.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcecompletionproposal.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcecompletionprovider.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcecompletionutils.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcecontextengine.c" />
+    <ClCompile Include="..\gtksourceview\gtksourceengine.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcegutter.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcegutterrenderer.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcegutterrendererlines.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcegutterrenderermarks.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcegutterrendererpixbuf.c" />
+    <ClCompile Include="..\gtksourceview\gtksourcegutterrenderertext.c" />
+    <ClCompile Include="..\gtksourceview\gtksourceview-marshal.c" />
+    <ClCompile Include="..\gtksourceview\gtksourceview-typebuiltins.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksource.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcebuffer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcecompletion.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcecompletioncontext.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcecompletioninfo.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcecompletionitem.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcecompletionmodel.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcecompletion-private.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcecompletionproposal.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcecompletionprovider.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcecompletionutils.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcecontextengine.h">
@@ -18,10 +84,28 @@
     <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourceengine.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourceiter.h">
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcegutter.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcelanguage-private.h">
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcegutter-private.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcegutterrenderer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcegutterrendererlines.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcegutterrenderermarks.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcegutterrendererpixbuf.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcegutterrenderer-private.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcegutterrenderertext.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcelanguage.h">
@@ -30,16 +114,28 @@
     <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcelanguagemanager.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcelanguage-private.h">
+      <Filter>include</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcemark.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcemarkattributes.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcepixbufhelper.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourceprintcompositor.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcestyle-private.h">
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourceregex.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcestyle.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcestyle-private.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcestylescheme.h">
@@ -51,10 +147,13 @@
     <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourceundomanager.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourceview-i18n.h">
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourceundomanagerdefault.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourceview-marshal.h">
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourceview.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourceview-i18n.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourceview-typebuiltins.h">
@@ -63,33 +162,14 @@
     <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourceview-utils.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourceview.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtktextregion.h">
       <Filter>include</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\gtksourceview\gtksourcebuffer.c" />
-    <ClCompile Include="..\gtksourceview\gtksourcecontextengine.c" />
-    <ClCompile Include="..\gtksourceview\gtksourceengine.c" />
-    <ClCompile Include="..\gtksourceview\gtksourceiter.c" />
-    <ClCompile Include="..\gtksourceview\gtksourcelanguage-parser-1.c" />
-    <ClCompile Include="..\gtksourceview\gtksourcelanguage-parser-2.c" />
-    <ClCompile Include="..\gtksourceview\gtksourcelanguage.c" />
-    <ClCompile Include="..\gtksourceview\gtksourcelanguagemanager.c" />
-    <ClCompile Include="..\gtksourceview\gtksourcemark.c" />
-    <ClCompile Include="..\gtksourceview\gtksourceprintcompositor.c" />
-    <ClCompile Include="..\gtksourceview\gtksourcestyle.c" />
-    <ClCompile Include="..\gtksourceview\gtksourcestylescheme.c" />
-    <ClCompile Include="..\gtksourceview\gtksourcestyleschememanager.c" />
-    <ClCompile Include="..\gtksourceview\gtksourceundomanager.c" />
-    <ClCompile Include="..\gtksourceview\gtksourceview-i18n.c" />
-    <ClCompile Include="..\gtksourceview\gtksourceview-marshal.c" />
-    <ClCompile Include="..\gtksourceview\gtksourceview-typebuiltins.c" />
-    <ClCompile Include="..\gtksourceview\gtksourceview-utils.c" />
-    <ClCompile Include="..\gtksourceview\gtksourceview.c" />
-    <ClCompile Include="..\gtksourceview\gtktextregion.c" />
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\config.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourceview-marshal.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

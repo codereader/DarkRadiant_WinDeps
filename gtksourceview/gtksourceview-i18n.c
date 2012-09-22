@@ -1,8 +1,8 @@
-/*
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8; coding: utf-8 -*- *
  * Copyright (C) 1997, 1998, 1999, 2000 Free Software Foundation
  * All rights reserved.
  *
- * This file is part of the GtkSourceView widget.
+ * This file is part of GtkSourceView
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,17 +23,49 @@
 #include <config.h>
 #endif
 
-#include "gtksourceview-i18n.h"
+#ifdef OS_OSX
+#include <gtkosxapplication.h>
+#endif
+
 #include <string.h>
 
-#define GETTEXT_PACKAGE "gtksourceview-2.0"
+#include "gtksourceview-i18n.h"
+
+static gchar *
+get_locale_dir (void)
+{
+	gchar *locale_dir;
+
+#ifdef G_OS_WIN32
+	gchar *win32_dir;
+
+	win32_dir = g_win32_get_package_installation_directory_of_module (NULL);
+
+	locale_dir = g_build_filename (win32_dir, "share", "locale", NULL);
+
+	g_free (win32_dir);
+#elif defined (OS_OSX)
+	if (quartz_application_get_bundle_id () != NULL)
+	{
+		locale_dir = g_build_filename (quartz_application_get_resource_path (), "share", "locale", NULL);
+	}
+	else
+	{
+		locale_dir = g_build_filename (DATADIR, "locale", NULL);
+	}
+#else
+	locale_dir = g_build_filename (DATADIR, "locale", NULL);
+#endif
+
+	return locale_dir;
+}
 
 /*
  * Small hack since we don't have a proper place where
  * do gettext initialization.
  */
-char *
-_gtksourceview_gettext (const char *msgid)
+const gchar *
+_gtksourceview_gettext (const gchar *msgid)
 {
 	static gboolean initialized = FALSE;
 
@@ -42,12 +74,18 @@ _gtksourceview_gettext (const char *msgid)
 
 	if (G_UNLIKELY (!initialized))
 	{
-		bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+		gchar *locale_dir;
+
+		locale_dir = get_locale_dir ();
+
+		bindtextdomain (GETTEXT_PACKAGE, locale_dir);
+		g_free (locale_dir);
+
 		bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 		initialized = TRUE;
 	}
 
-	return dgettext (GETTEXT_PACKAGE, msgid);
+	return g_dgettext (GETTEXT_PACKAGE, msgid);
 }
 
 /**

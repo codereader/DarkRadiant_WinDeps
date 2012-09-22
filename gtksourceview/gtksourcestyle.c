@@ -1,26 +1,36 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8; coding: utf-8 -*-
- *  gtksourcestyle.c
+ * gtksourcestyle.c
+ * This file is part of GtkSourceView
  *
- *  Copyright (C) 2003 - Paolo Maggi <paolo.maggi@polito.it>
+ * Copyright (C) 2003 - Paolo Maggi <paolo.maggi@polito.it>
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU Library General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * GtkSourceView is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Library General Public License for more details.
+ * GtkSourceView is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- *  You should have received a copy of the GNU Library General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include "gtksourcestyle-private.h"
 #include "gtksourceview-i18n.h"
 
+/**
+ * SECTION:style
+ * @Short_description: Object representyng a style
+ * @Title: GtkSourceStyle
+ * @See_also: #GtkSourceStyleScheme, #GtkSourceStyleSchemeManager
+ *
+ * The #GtkSourceStyle structure is used to describe text attributes
+ * which are set when given style is used.
+ */
 
 static void	gtk_source_style_set_property	(GObject      *object,
 						 guint         prop_id,
@@ -365,7 +375,8 @@ gtk_source_style_get_property (GObject      *object,
  * Creates a copy of @style, that is a new #GtkSourceStyle instance which
  * has the same attributes set.
  *
- * Returns: copy of @style, call g_object_unref() when you are done with it.
+ * Returns: (transfer full): copy of @style, call g_object_unref()
+ * when you are done with it.
  *
  * Since: 2.0
  */
@@ -376,7 +387,7 @@ gtk_source_style_copy (const GtkSourceStyle *style)
 
 	g_return_val_if_fail (style != NULL, NULL);
 
-	copy = g_object_new (GTK_TYPE_SOURCE_STYLE, NULL);
+	copy = g_object_new (GTK_SOURCE_TYPE_STYLE, NULL);
 
 	copy->foreground = style->foreground;
 	copy->background = style->background;
@@ -392,7 +403,7 @@ gtk_source_style_copy (const GtkSourceStyle *style)
 
 /**
  * _gtk_source_style_apply:
- * @style: a #GtkSourceStyle to apply.
+ * @style: (allow-none): a #GtkSourceStyle to apply.
  * @tag: a #GtkTextTag to apply styles to.
  *
  * Applies text styles set in @style if it's not %NULL, or
@@ -414,21 +425,38 @@ _gtk_source_style_apply (const GtkSourceStyle *style,
 
 		if (style->mask & GTK_SOURCE_STYLE_USE_BACKGROUND)
 			g_object_set (tag, "background", style->background, NULL);
+		else
+			g_object_set (tag, "background-set", FALSE, NULL);
 
 		if (style->mask & GTK_SOURCE_STYLE_USE_FOREGROUND)
 			g_object_set (tag, "foreground", style->foreground, NULL);
+		else
+			g_object_set (tag, "foreground-set", FALSE, NULL);
 
 		if (style->mask & GTK_SOURCE_STYLE_USE_LINE_BACKGROUND)
 			g_object_set (tag, "paragraph-background", style->line_background, NULL);
+		else
+			g_object_set (tag, "paragraph-background-set", FALSE, NULL);
 
 		if (style->mask & GTK_SOURCE_STYLE_USE_ITALIC)
 			g_object_set (tag, "style", style->italic ? PANGO_STYLE_ITALIC : PANGO_STYLE_NORMAL, NULL);
+		else
+			g_object_set (tag, "style-set", FALSE, NULL);
+
 		if (style->mask & GTK_SOURCE_STYLE_USE_BOLD)
 			g_object_set (tag, "weight", style->bold ? PANGO_WEIGHT_BOLD : PANGO_WEIGHT_NORMAL, NULL);
+		else
+			g_object_set (tag, "weight-set", FALSE, NULL);
+
 		if (style->mask & GTK_SOURCE_STYLE_USE_UNDERLINE)
 			g_object_set (tag, "underline", style->underline ? PANGO_UNDERLINE_SINGLE : PANGO_UNDERLINE_NONE, NULL);
+		else
+			g_object_set (tag, "underline-set", FALSE, NULL);
+
 		if (style->mask & GTK_SOURCE_STYLE_USE_STRIKETHROUGH)
 			g_object_set (tag, "strikethrough", style->strikethrough != 0, NULL);
+		else
+			g_object_set (tag, "strikethrough-set", FALSE, NULL);
 
 		g_object_thaw_notify (G_OBJECT (tag));
 	}
