@@ -4,8 +4,5 @@
 #define _GIOMM_DBUSERROR_P_H
 
 
-#include <glibmm/private/interface_p.h>
-
-
 #endif /* _GIOMM_DBUSERROR_P_H */
 

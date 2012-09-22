@@ -36,7 +36,6 @@ protected:
   //Callbacks (default signal handlers):
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
-  static void accel_changed_callback(GtkAccelGroup* self, guint p0, GdkModifierType p1, GClosure* p2);
 
   //Callbacks (virtual functions):
 };

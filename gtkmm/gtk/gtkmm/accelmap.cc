@@ -14,8 +14,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/accelmap.h>
@@ -66,13 +66,13 @@ void unlock_path(const std::string& accel_path)
 
 bool lookup_entry(const Glib::ustring& accel_path, Gtk::AccelKey& key)
 {
-  GtkAccelKey gkey = {GDK_VoidSymbol, GdkModifierType (0), 0};
+  GtkAccelKey gkey = {GDK_KEY_VoidSymbol, GdkModifierType (0), 0};
   const bool known = gtk_accel_map_lookup_entry(accel_path.c_str(), &gkey);
 
   if(known)
     key = AccelKey(gkey.accel_key, Gdk::ModifierType (gkey.accel_mods));
   else
-    key = AccelKey(GDK_VoidSymbol, Gdk::ModifierType (0));
+    key = AccelKey(GDK_KEY_VoidSymbol, Gdk::ModifierType (0));
 
   return known;
 }

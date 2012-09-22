@@ -39,7 +39,7 @@ protected:
   static void toggled_callback(GtkCheckMenuItem* self);
 
   //Callbacks (virtual functions):
-  static void draw_indicator_vfunc_callback(GtkCheckMenuItem* self, GdkRectangle* area);
+  static void draw_indicator_vfunc_callback(GtkCheckMenuItem* self, cairo_t* cr);
 };
 
 

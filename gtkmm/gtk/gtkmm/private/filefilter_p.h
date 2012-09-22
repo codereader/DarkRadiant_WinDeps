@@ -4,7 +4,7 @@
 #define _GTKMM_FILEFILTER_P_H
 
 
-#include <gtkmm/private/object_p.h>
+#include <glibmm/private/object_p.h>
 
 #include <glibmm/class.h>
 
@@ -18,8 +18,8 @@ public:
   typedef FileFilter CppObjectType;
   typedef GtkFileFilter BaseObjectType;
   typedef GtkFileFilterClass BaseClassType;
-  typedef Gtk::Object_Class CppClassParent;
-  typedef GtkObjectClass BaseClassParent;
+  typedef Glib::Object_Class CppClassParent;
+  typedef GObjectClass BaseClassParent;
 
   friend class FileFilter;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */

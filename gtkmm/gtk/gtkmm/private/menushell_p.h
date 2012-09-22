@@ -41,6 +41,7 @@ protected:
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
   static void deactivate_callback(GtkMenuShell* self);
   static void selection_done_callback(GtkMenuShell* self);
+  static gboolean move_selected_callback(GtkMenuShell* self, gint p0);
 
   //Callbacks (virtual functions):
     static void insert_vfunc_callback(GtkMenuShell* self, GtkWidget* child, int position);

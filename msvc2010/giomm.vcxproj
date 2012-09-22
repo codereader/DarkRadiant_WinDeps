@@ -136,7 +136,13 @@
     <ClCompile />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\gtkmm\gio\giomm\action.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\actiongroup.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\actionmap.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\appinfo.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\applaunchcontext.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\application.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\applicationcommandline.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\asyncinitable.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\asyncresult.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\bufferedinputstream.cc" />
@@ -146,15 +152,19 @@
     <ClCompile Include="..\gtkmm\gio\giomm\credentials.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\datainputstream.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\dataoutputstream.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusactiongroup.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\dbusaddress.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\dbusauthobserver.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\dbusconnection.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\dbuserror.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\dbuserrorutils.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusinterface.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\dbusinterfacevtable.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\dbusintrospection.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusmenumodel.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\dbusmessage.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\dbusmethodinvocation.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusobject.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\dbusownname.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\dbusproxy.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\dbusserver.cc" />
@@ -195,6 +205,11 @@
     <ClCompile Include="..\gtkmm\gio\giomm\loadableicon.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\memoryinputstream.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\memoryoutputstream.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\menu.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\menuattributeiter.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\menuitem.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\menulinkiter.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\menumodel.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\mount.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\mountoperation.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\networkaddress.cc" />
@@ -203,9 +218,12 @@
     <ClCompile Include="..\gtkmm\gio\giomm\proxy.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\proxyaddress.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\proxyresolver.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\remoteactiongroup.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\resolver.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\seekable.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\settings.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\simpleaction.cc" />
+    <ClCompile Include="..\gtkmm\gio\giomm\simpleactiongroup.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\slot_async.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\socket.cc" />
     <ClCompile Include="..\gtkmm\gio\giomm\socketaddress.cc" />
@@ -267,7 +285,13 @@
     <ClCompile Include="..\gtkmm\gio\giomm\wrap_init.cc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\action.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\actiongroup.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\actionmap.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\appinfo.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\applaunchcontext.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\application.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\applicationcommandline.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\asyncinitable.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\asyncresult.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\bufferedinputstream.h" />
@@ -277,15 +301,19 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\credentials.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\datainputstream.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dataoutputstream.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusactiongroup.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusaddress.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusauthobserver.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusconnection.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbuserror.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbuserrorutils.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusinterface.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusinterfacevtable.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusintrospection.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusmenumodel.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusmessage.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusmethodinvocation.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusobject.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusownname.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusproxy.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusserver.h" />
@@ -321,6 +349,11 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\loadableicon.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\memoryinputstream.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\memoryoutputstream.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\menu.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\menuattributeiter.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\menuitem.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\menulinkiter.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\menumodel.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\mount.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\mountoperation.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\networkaddress.h" />
@@ -329,9 +362,12 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\proxy.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\proxyaddress.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\proxyresolver.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\remoteactiongroup.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\resolver.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\seekable.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\settings.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\simpleaction.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\simpleactiongroup.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\slot_async.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socket.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketaddress.h" />

@@ -4,7 +4,7 @@
 #define _GTKMM_FILECHOOSERBUTTON_P_H
 
 
-#include <gtkmm/private/box_p.h>
+#include <gtkmm/private/hvbox_p.h>
 
 #include <glibmm/class.h>
 
@@ -36,6 +36,7 @@ protected:
   //Callbacks (default signal handlers):
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
+  static void file_set_callback(GtkFileChooserButton* self);
 
   //Callbacks (virtual functions):
 };

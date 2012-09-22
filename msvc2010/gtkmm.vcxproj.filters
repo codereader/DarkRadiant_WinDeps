@@ -14,379 +14,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\toolshell.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\tooltip.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\tooltips.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\treedragdest.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\treedragsource.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\treeiter.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\treemodel.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\treemodelcolumn.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\treemodelfilter.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\treemodelsort.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\treepath.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\treerowreference.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\treeselection.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\treesortable.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\treestore.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\treeview.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\treeview_private.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\treeviewcolumn.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\uimanager.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\viewport.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\volumebutton.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\widget.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\window.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\wrap_init.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\aboutdialog.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\accelgroup.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\accelkey.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\accellabel.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\accelmap.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\action.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\actiongroup.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\activatable.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\adjustment.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\alignment.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\arrow.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\aspectframe.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\assistant.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\bin.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\box.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\builder.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\button.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\buttonbox.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\calendar.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\celleditable.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\celllayout.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrenderer.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrenderer_generation.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrendereraccel.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrenderercombo.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrendererpixbuf.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrendererprogress.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrendererspin.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrendererspinner.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrenderertext.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrenderertoggle.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellview.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\checkbutton.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\checkmenuitem.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\clipboard.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\colorbutton.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\colorselection.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\combo.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\combobox.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\comboboxentry.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\comboboxentrytext.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\comboboxtext.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\container.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\curve.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\dialog.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\drawingarea.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\editable.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\entry.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\entrybuffer.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\entrycompletion.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\enums.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\eventbox.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\expander.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\filechooser.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\filechooserbutton.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\filechooserdialog.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\filechooserwidget.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\filefilter.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\fileselection.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\fixed.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\fontbutton.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\fontselection.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\frame.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\handlebox.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\iconfactory.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\iconinfo.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\iconset.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\iconsource.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\icontheme.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\iconview.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\image.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\imagemenuitem.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\infobar.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\inputdialog.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\invisible.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\item.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\label.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\layout.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\linkbutton.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\liststore.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\listviewtext.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\main.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\menu.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\menu_elems.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\menubar.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\menuitem.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\menushell.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\menutoolbutton.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\messagedialog.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\misc.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\notebook.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\object.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\offscreenwindow.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\optionmenu.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\orientable.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\pagesetup.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\gtkmm\gtk\gtkmm\pagesetupunixdialog.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\paned.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\papersize.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\plug.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\printcontext.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtkmm\gtk\gtkmm\printer.cc">
@@ -395,16 +23,13 @@
     <ClCompile Include="..\gtkmm\gtk\gtkmm\printjob.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\printoperation.cc">
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\printunixdialog.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtkmm\gtk\gtkmm\printoperationpreview.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtkmm\gtk\gtkmm\printsettings.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\printunixdialog.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtkmm\gtk\gtkmm\progressbar.cc">
@@ -426,9 +51,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtkmm\gtk\gtkmm\range.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\rc.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtkmm\gtk\gtkmm\recentaction.cc">
@@ -455,13 +77,16 @@
     <ClCompile Include="..\gtkmm\gtk\gtkmm\recentmanager.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\ruler.cc">
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\requisition.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtkmm\gtk\gtkmm\scale.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtkmm\gtk\gtkmm\scalebutton.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\scrollable.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtkmm\gtk\gtkmm\scrollbar.cc">
@@ -515,7 +140,13 @@
     <ClCompile Include="..\gtkmm\gtk\gtkmm\stockitem.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\style.cc">
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\stylecontext.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\styleprovider.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\switch.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtkmm\gtk\gtkmm\table.cc">
@@ -578,6 +209,432 @@
     <ClCompile Include="..\gtkmm\gtk\gtkmm\toolpalette.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\toolshell.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\tooltip.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treedragdest.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treedragsource.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treeiter.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treemodel.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treemodelcolumn.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treemodelfilter.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treemodelsort.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treepath.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treerowreference.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treeselection.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treesortable.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treestore.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treeview.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treeview_private.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\treeviewcolumn.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\uimanager.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\viewport.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\volumebutton.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\widget.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\widgetpath.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\window.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\wrap_init.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\aboutdialog.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\accelgroup.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\accelkey.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\accellabel.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\accelmap.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\action.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\actionable.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\actiongroup.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\activatable.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\adjustment.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\alignment.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\appchooser.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\appchooserbutton.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\appchooserdialog.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\appchooserwidget.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\application.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\applicationwindow.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\arrow.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\aspectframe.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\assistant.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\bin.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\border.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\box.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\buildable.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\builder.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\button.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\buttonbox.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\calendar.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellarea.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellareabox.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellareacontext.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\celleditable.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\celllayout.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrenderer.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrenderer_generation.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrendereraccel.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrenderercombo.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrendererpixbuf.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrendererprogress.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrendererspin.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrendererspinner.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrenderertext.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrenderertoggle.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellview.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\checkbutton.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\checkmenuitem.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\clipboard.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\colorbutton.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\colorchooser.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\colorchooserdialog.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\colorselection.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\combobox.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\comboboxtext.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\container.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cssprovider.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\dialog.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\drawingarea.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\editable.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\entry.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\entrybuffer.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\entrycompletion.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\enums.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\eventbox.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\expander.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\filechooser.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\filechooserbutton.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\filechooserdialog.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\filechooserwidget.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\filefilter.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\fixed.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\fontbutton.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\fontchooser.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\fontchooserdialog.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\fontchooserwidget.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\fontselection.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\frame.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\grid.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\handlebox.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\hvbox.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\hvbuttonbox.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\hvpaned.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\hvscale.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\hvscrollbar.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\hvseparator.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\iconfactory.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\iconinfo.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\iconset.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\iconsource.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\icontheme.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\iconview.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\image.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\imagemenuitem.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\infobar.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\invisible.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\label.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\layout.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\linkbutton.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\liststore.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\listviewtext.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\main.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\menu.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\menubar.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\menuitem.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\menushell.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\menutoolbutton.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\messagedialog.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\misc.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\notebook.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\numerableicon.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\object.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\offscreenwindow.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\orientable.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\pagesetup.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\paned.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\papersize.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\plug.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\printcontext.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\printoperation.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\gtkmm\gtk\gtkmm.rc">
@@ -585,7 +642,13 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\accelmap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\action.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\actionable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\actiongroup.h">
@@ -598,6 +661,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\alignment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\appchooser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\appchooserbutton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\appchooserdialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\appchooserwidget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\application.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\applicationwindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\arrow.h">
@@ -621,6 +702,9 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\box.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\buildable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\builder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -631,6 +715,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\calendar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\cellarea.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\cellareabox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\cellareacontext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\celleditable.h">
@@ -684,19 +777,16 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\colorbutton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\colorchooser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\colorchooserdialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\colorselection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\combo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\combobox.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\comboboxentry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\comboboxentrytext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\comboboxtext.h">
@@ -705,7 +795,7 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\container.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\curve.h">
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\cssprovider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\dialog.h">
@@ -750,13 +840,19 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\filefilter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\fileselection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\fixed.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\fontbutton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\fontchooser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\fontchooserdialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\fontchooserwidget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\fontselection.h">
@@ -765,7 +861,28 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\frame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\grid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\handlebox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\hvbox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\hvbuttonbox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\hvpaned.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\hvscale.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\hvscrollbar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\hvseparator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\iconfactory.h">
@@ -795,13 +912,7 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\infobar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\inputdialog.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\invisible.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\item.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\label.h">
@@ -825,9 +936,6 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\menu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\menu_elems.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\menubar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -849,13 +957,13 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\notebook.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\numerableicon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\offscreenwindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\optionmenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\orientable.h">
@@ -918,9 +1026,6 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\range.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\rc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\recentaction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -945,13 +1050,16 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\recentmanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\ruler.h">
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\requisition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\scale.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\scalebutton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\scrollable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\scrollbar.h">
@@ -1005,7 +1113,13 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\stockitem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\style.h">
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\stylecontext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\styleprovider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\switch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\table.h">
@@ -1074,9 +1188,6 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\tooltip.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\tooltips.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\treedragdest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1134,6 +1245,9 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\widget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\widgetpath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1150,9 +1264,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\accellabel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\accelmap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

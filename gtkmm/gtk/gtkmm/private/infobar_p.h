@@ -4,7 +4,7 @@
 #define _GTKMM_INFOBAR_P_H
 
 
-#include <gtkmm/private/box_p.h>
+#include <gtkmm/private/hvbox_p.h>
 
 #include <glibmm/class.h>
 

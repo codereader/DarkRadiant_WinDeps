@@ -39,6 +39,7 @@ protected:
   static void area_prepared_callback(GdkPixbufLoader* self);
   static void area_updated_callback(GdkPixbufLoader* self, gint p0, gint p1, gint p2, gint p3);
   static void closed_callback(GdkPixbufLoader* self);
+  static void size_prepared_callback(GdkPixbufLoader* self, gint p0, gint p1);
 
   //Callbacks (virtual functions):
 };

@@ -18,8 +18,8 @@ public:
   typedef Widget CppObjectType;
   typedef GtkWidget BaseObjectType;
   typedef GtkWidgetClass BaseClassType;
-  typedef Gtk::Object_Class CppClassParent;
-  typedef GtkObjectClass BaseClassParent;
+  typedef Object_Class CppClassParent;
+  typedef GObjectClass BaseClassParent;
 
   friend class Widget;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
@@ -42,12 +42,15 @@ protected:
   static void unmap_callback(GtkWidget* self);
   static void realize_callback(GtkWidget* self);
   static void unrealize_callback(GtkWidget* self);
-  static void size_request_callback(GtkWidget* self, GtkRequisition* p0);
-  static void size_allocate_callback(GtkWidget* self, GtkAllocation* p0);
+  static void size_allocate_callback(GtkWidget* self, GdkRectangle* p0);
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   static void state_changed_callback(GtkWidget* self, GtkStateType p0);
+#endif // GTKMM_DISABLE_DEPRECATED
+
   static void parent_set_callback(GtkWidget* self, GtkWidget* p0);
   static void hierarchy_changed_callback(GtkWidget* self, GtkWidget* p0);
-  static void style_set_callback(GtkWidget* self, GtkStyle* p0);
+  static void style_updated_callback(GtkWidget* self);
   static void direction_changed_callback(GtkWidget* self, GtkTextDirection p0);
   static void grab_notify_callback(GtkWidget* self, gboolean p0);
   static void child_notify_callback(GtkWidget* self, GParamSpec* p0);
@@ -60,7 +63,7 @@ protected:
   static gboolean scroll_event_callback(GtkWidget* self, GdkEventScroll* p0);
   static gboolean motion_notify_event_callback(GtkWidget* self, GdkEventMotion* p0);
   static gboolean delete_event_callback(GtkWidget* self, GdkEventAny* p0);
-  static gboolean expose_event_callback(GtkWidget* self, GdkEventExpose* p0);
+  static gboolean draw_callback(GtkWidget* self, cairo_t* p0);
   static gboolean key_press_event_callback(GtkWidget* self, GdkEventKey* p0);
   static gboolean key_release_event_callback(GtkWidget* self, GdkEventKey* p0);
   static gboolean enter_notify_event_callback(GtkWidget* self, GdkEventCrossing* p0);
@@ -77,8 +80,6 @@ protected:
   static gboolean proximity_in_event_callback(GtkWidget* self, GdkEventProximity* p0);
   static gboolean proximity_out_event_callback(GtkWidget* self, GdkEventProximity* p0);
   static gboolean visibility_notify_event_callback(GtkWidget* self, GdkEventVisibility* p0);
-  static gboolean client_event_callback(GtkWidget* self, GdkEventClient* p0);
-  static gboolean no_expose_event_callback(GtkWidget* self, GdkEventAny* p0);
   static gboolean window_state_event_callback(GtkWidget* self, GdkEventWindowState* p0);
   static void selection_get_callback(GtkWidget* self, GtkSelectionData* p0, guint p1, guint p2);
   static void selection_received_callback(GtkWidget* self, GtkSelectionData* p0, guint p1);
@@ -90,9 +91,6 @@ protected:
   static gboolean drag_motion_callback(GtkWidget* self, GdkDragContext* p0, gint p1, gint p2, guint p3);
   static gboolean drag_drop_callback(GtkWidget* self, GdkDragContext* p0, gint p1, gint p2, guint p3);
   static void drag_data_received_callback(GtkWidget* self, GdkDragContext* p0, gint p1, gint p2, GtkSelectionData* p3, guint p4, guint p5);
-#ifdef GTKMM_ATKMM_ENABLED
-  static AtkObject* get_accessible_callback(GtkWidget* self);
-#endif // GTKMM_ATKMM_ENABLED
   static void screen_changed_callback(GtkWidget* self, GdkScreen* p0);
     static void hierarchy_changed_callback_custom(GtkWidget* self, GtkWidget* p0);
       static void parent_set_callback_custom(GtkWidget* self, GtkWidget* p0);
@@ -101,10 +99,14 @@ protected:
     static void dispose_vfunc_callback(GObject* self);
     static void dispatch_child_properties_changed_vfunc_callback(GtkWidget* self, guint n_pspecs, GParamSpec** pspecs);
   static void show_all_vfunc_callback(GtkWidget* self);
-  static void hide_all_vfunc_callback(GtkWidget* self);
 #ifdef GTKMM_ATKMM_ENABLED
   static AtkObject* get_accessible_vfunc_callback(GtkWidget* self);
 #endif // GTKMM_ATKMM_ENABLED
+  static GtkSizeRequestMode get_request_mode_vfunc_callback(GtkWidget* self);
+  static void get_preferred_width_vfunc_callback(GtkWidget* self, gint* minimum_width, gint* natural_width);
+  static void get_preferred_height_for_width_vfunc_callback(GtkWidget* self, gint width, gint* minimum_height, gint* natural_height);
+  static void get_preferred_height_vfunc_callback(GtkWidget* self, gint* minimum_height, gint* natural_height);
+  static void get_preferred_width_for_height_vfunc_callback(GtkWidget* self, gint height, gint* minimum_width, gint* natural_width);
 };
 
 

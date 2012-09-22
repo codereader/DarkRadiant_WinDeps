@@ -4,7 +4,7 @@
 #define _GTKMM_SPINNER_P_H
 
 
-#include <gtkmm/private/drawingarea_p.h>
+#include <gtkmm/private/widget_p.h>
 
 #include <glibmm/class.h>
 
@@ -18,8 +18,8 @@ public:
   typedef Spinner CppObjectType;
   typedef GtkSpinner BaseObjectType;
   typedef GtkSpinnerClass BaseClassType;
-  typedef Gtk::DrawingArea_Class CppClassParent;
-  typedef GtkDrawingAreaClass BaseClassParent;
+  typedef Gtk::Widget_Class CppClassParent;
+  typedef GtkWidgetClass BaseClassParent;
 
   friend class Spinner;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */

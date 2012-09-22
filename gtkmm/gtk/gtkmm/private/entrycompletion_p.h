@@ -38,7 +38,8 @@ protected:
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
   static void action_activated_callback(GtkEntryCompletion* self, gint p0);
     static gboolean match_selected_callback_custom(GtkEntryCompletion* self, GtkTreeModel* c_model, GtkTreeIter* c_iter);
-  
+    static gboolean insert_prefix_callback(GtkEntryCompletion* self, const gchar* p0);
+
   //Callbacks (virtual functions):
 };
 

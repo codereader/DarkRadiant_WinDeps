@@ -40,7 +40,6 @@ protected:
   static void remove_callback(GtkContainer* self, GtkWidget* p0);
   static void check_resize_callback(GtkContainer* self);
   static void set_focus_child_callback(GtkContainer* self, GtkWidget* p0);
-    static void destroy_callback(GtkObject* self);
     static void remove_callback_normal(GtkContainer* self, GtkWidget* p0);
   
   //Callbacks (virtual functions):

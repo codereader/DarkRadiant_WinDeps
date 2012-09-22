@@ -48,6 +48,7 @@ protected:
   static void remove_tag_callback(GtkTextBuffer* self, GtkTextTag* p0, const GtkTextIter* p1, const GtkTextIter* p2);
   static void begin_user_action_callback(GtkTextBuffer* self);
   static void end_user_action_callback(GtkTextBuffer* self);
+  static void paste_done_callback(GtkTextBuffer* self, GtkClipboard* p0);
 
   //Callbacks (virtual functions):
 };

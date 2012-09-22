@@ -154,19 +154,31 @@
     <ClCompile Include="..\gtkmm\gtk\gtkmm\accellabel.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\accelmap.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\action.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\actionable.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\actiongroup.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\activatable.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\adjustment.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\alignment.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\appchooser.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\appchooserbutton.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\appchooserdialog.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\appchooserwidget.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\application.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\applicationwindow.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\arrow.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\aspectframe.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\assistant.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\bin.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\border.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\box.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\buildable.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\builder.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\button.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\buttonbox.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\calendar.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellarea.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellareabox.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cellareacontext.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\celleditable.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\celllayout.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\cellrenderer.cc" />
@@ -184,14 +196,13 @@
     <ClCompile Include="..\gtkmm\gtk\gtkmm\checkmenuitem.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\clipboard.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\colorbutton.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\colorchooser.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\colorchooserdialog.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\colorselection.cc" />
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\combo.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\combobox.cc" />
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\comboboxentry.cc" />
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\comboboxentrytext.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\comboboxtext.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\container.cc" />
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\curve.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\cssprovider.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\dialog.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\drawingarea.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\editable.cc" />
@@ -206,12 +217,21 @@
     <ClCompile Include="..\gtkmm\gtk\gtkmm\filechooserdialog.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\filechooserwidget.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\filefilter.cc" />
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\fileselection.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\fixed.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\fontbutton.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\fontchooser.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\fontchooserdialog.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\fontchooserwidget.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\fontselection.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\frame.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\grid.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\handlebox.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\hvbox.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\hvbuttonbox.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\hvpaned.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\hvscale.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\hvscrollbar.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\hvseparator.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\iconfactory.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\iconinfo.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\iconset.cc" />
@@ -221,9 +241,7 @@
     <ClCompile Include="..\gtkmm\gtk\gtkmm\image.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\imagemenuitem.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\infobar.cc" />
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\inputdialog.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\invisible.cc" />
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\item.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\label.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\layout.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\linkbutton.cc" />
@@ -235,13 +253,12 @@
     <ClCompile Include="..\gtkmm\gtk\gtkmm\menuitem.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\menushell.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\menutoolbutton.cc" />
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\menu_elems.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\messagedialog.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\misc.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\notebook.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\numerableicon.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\object.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\offscreenwindow.cc" />
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\optionmenu.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\orientable.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\pagesetup.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\pagesetupunixdialog.cc">
@@ -252,7 +269,12 @@
     </ClCompile>
     <ClCompile Include="..\gtkmm\gtk\gtkmm\paned.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\papersize.cc" />
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\plug.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\plug.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\gtkmm\gtk\gtkmm\printcontext.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\printer.cc">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -282,7 +304,6 @@
     <ClCompile Include="..\gtkmm\gtk\gtkmm\radiomenuitem.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\radiotoolbutton.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\range.cc" />
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\rc.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\recentaction.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\recentchooser.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\recentchooserdialog.cc" />
@@ -291,9 +312,10 @@
     <ClCompile Include="..\gtkmm\gtk\gtkmm\recentfilter.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\recentinfo.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\recentmanager.cc" />
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\ruler.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\requisition.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\scale.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\scalebutton.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\scrollable.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\scrollbar.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\scrolledwindow.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\selectiondata.cc" />
@@ -303,7 +325,12 @@
     <ClCompile Include="..\gtkmm\gtk\gtkmm\separatortoolitem.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\settings.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\sizegroup.cc" />
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\socket.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\socket.cc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\gtkmm\gtk\gtkmm\spinbutton.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\spinner.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\statusbar.cc" />
@@ -311,7 +338,9 @@
     <ClCompile Include="..\gtkmm\gtk\gtkmm\stock.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\stockid.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\stockitem.cc" />
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\style.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\stylecontext.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\styleprovider.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\switch.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\table.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\targetentry.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\targetlist.cc" />
@@ -334,7 +363,6 @@
     <ClCompile Include="..\gtkmm\gtk\gtkmm\toolpalette.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\toolshell.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\tooltip.cc" />
-    <ClCompile Include="..\gtkmm\gtk\gtkmm\tooltips.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\treedragdest.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\treedragsource.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\treeiter.cc" />
@@ -354,6 +382,7 @@
     <ClCompile Include="..\gtkmm\gtk\gtkmm\viewport.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\volumebutton.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\widget.cc" />
+    <ClCompile Include="..\gtkmm\gtk\gtkmm\widgetpath.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\window.cc" />
     <ClCompile Include="..\gtkmm\gtk\gtkmm\wrap_init.cc" />
   </ItemGroup>
@@ -367,10 +396,17 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\accellabel.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\accelmap.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\action.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\actionable.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\actiongroup.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\activatable.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\adjustment.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\alignment.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\appchooser.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\appchooserbutton.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\appchooserdialog.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\appchooserwidget.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\application.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\applicationwindow.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\arrow.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\aspectframe.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\assistant.h" />
@@ -378,10 +414,14 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\bin.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\border.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\box.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\buildable.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\builder.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\button.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\buttonbox.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\calendar.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\cellarea.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\cellareabox.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\cellareacontext.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\celleditable.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\celllayout.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\cellrenderer.h" />
@@ -399,14 +439,13 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\checkmenuitem.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\clipboard.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\colorbutton.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\colorchooser.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\colorchooserdialog.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\colorselection.h" />
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\combo.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\combobox.h" />
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\comboboxentry.h" />
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\comboboxentrytext.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\comboboxtext.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\container.h" />
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\curve.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\cssprovider.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\dialog.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\drawingarea.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\editable.h" />
@@ -421,12 +460,21 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\filechooserdialog.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\filechooserwidget.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\filefilter.h" />
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\fileselection.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\fixed.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\fontbutton.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\fontchooser.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\fontchooserdialog.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\fontchooserwidget.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\fontselection.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\frame.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\grid.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\handlebox.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\hvbox.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\hvbuttonbox.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\hvpaned.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\hvscale.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\hvscrollbar.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\hvseparator.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\iconfactory.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\iconinfo.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\iconset.h" />
@@ -436,9 +484,7 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\image.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\imagemenuitem.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\infobar.h" />
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\inputdialog.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\invisible.h" />
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\item.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\label.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\layout.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\linkbutton.h" />
@@ -450,13 +496,12 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\menuitem.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\menushell.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\menutoolbutton.h" />
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\menu_elems.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\messagedialog.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\misc.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\notebook.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\numerableicon.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\object.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\offscreenwindow.h" />
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\optionmenu.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\orientable.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\pagesetup.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\pagesetupunixdialog.h" />
@@ -477,7 +522,6 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\radiomenuitem.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\radiotoolbutton.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\range.h" />
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\rc.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\recentaction.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\recentchooser.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\recentchooserdialog.h" />
@@ -486,9 +530,10 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\recentfilter.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\recentinfo.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\recentmanager.h" />
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\ruler.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\requisition.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\scale.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\scalebutton.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\scrollable.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\scrollbar.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\scrolledwindow.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\selectiondata.h" />
@@ -506,7 +551,9 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\stock.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\stockid.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\stockitem.h" />
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\style.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\stylecontext.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\styleprovider.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\switch.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\table.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\targetentry.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\targetlist.h" />
@@ -529,7 +576,6 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\toolpalette.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\toolshell.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\tooltip.h" />
-    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\tooltips.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\treedragdest.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\treedragsource.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\treeiter.h" />
@@ -549,6 +595,7 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\viewport.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\volumebutton.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\widget.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\widgetpath.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\window.h" />
     <ClInclude Include="..\..\w32deps\gtkmm\include\gtkmm\wrap_init.h" />
   </ItemGroup>

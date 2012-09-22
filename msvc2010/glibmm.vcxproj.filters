@@ -15,6 +15,39 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\gtkmm\glib\glibmm\stringutils.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\glib\glibmm\thread.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\glib\glibmm\threadpool.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\glib\glibmm\threads.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\glib\glibmm\timer.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\glib\glibmm\timeval.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\glib\glibmm\timezone.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\glib\glibmm\unicode.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\glib\glibmm\uriutils.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\glib\glibmm\ustring.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\glib\glibmm\utility.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\gtkmm\glib\glibmm\value.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -67,6 +100,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtkmm\glib\glibmm\date.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\glib\glibmm\datetime.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtkmm\glib\glibmm\debug.cc">
@@ -168,35 +204,14 @@
     <ClCompile Include="..\gtkmm\glib\glibmm\streamiochannel.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtkmm\glib\glibmm\stringutils.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\glib\glibmm\thread.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\glib\glibmm\threadpool.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\glib\glibmm\timer.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\glib\glibmm\timeval.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\glib\glibmm\unicode.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\glib\glibmm\uriutils.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\glib\glibmm\ustring.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\glib\glibmm\utility.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\arrayhandle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\balancedtree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\checksum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -213,6 +228,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\date.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\datetime.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\debug.h">
@@ -344,10 +362,16 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\threadpool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\threads.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\timeval.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\timezone.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\unicode.h">
@@ -393,12 +417,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\wrap_init.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\arrayhandle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\glibmm\balancedtree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -15,21 +15,82 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\gtkmm\gdk\gdkmm\bitmap.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gdk\gdkmm\color.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gdk\gdkmm\colormap.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gdk\gdkmm\cursor.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gdk\gdkmm\device.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ResourceCompile Include="..\gtkmm\gdk\gdkmm.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\display.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\displaymanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\dragcontext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\event.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\general.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\pixbuf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\pixbufanimation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\pixbufanimationiter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\pixbufformat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\pixbufloader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\rectangle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\rgba.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\screen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\timecoord.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\visual.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\wrap_init.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\applaunchcontext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\color.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\cursor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\device.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\devicemanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="..\gtkmm\gdk\gdkmm\display.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -39,19 +100,10 @@
     <ClCompile Include="..\gtkmm\gdk\gdkmm\dragcontext.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtkmm\gdk\gdkmm\drawable.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\gtkmm\gdk\gdkmm\event.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtkmm\gdk\gdkmm\gc.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\gtkmm\gdk\gdkmm\general.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gdk\gdkmm\image.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtkmm\gdk\gdkmm\pixbuf.cc">
@@ -69,22 +121,16 @@
     <ClCompile Include="..\gtkmm\gdk\gdkmm\pixbufloader.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtkmm\gdk\gdkmm\pixmap.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\gtkmm\gdk\gdkmm\rectangle.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtkmm\gdk\gdkmm\region.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gdk\gdkmm\rgb.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gdk\gdkmm\rgbcmap.cc">
+    <ClCompile Include="..\gtkmm\gdk\gdkmm\rgba.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtkmm\gdk\gdkmm\screen.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gdk\gdkmm\timecoord.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtkmm\gdk\gdkmm\types.cc">
@@ -99,10 +145,20 @@
     <ClCompile Include="..\gtkmm\gdk\gdkmm\wrap_init.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="..\gtkmm\gdk\gdkmm.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
+    <ClCompile Include="..\gtkmm\gdk\gdkmm\applaunchcontext.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gdk\gdkmm\color.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gdk\gdkmm\cursor.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gdk\gdkmm\device.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gdk\gdkmm\devicemanager.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

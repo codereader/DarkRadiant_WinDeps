@@ -16,8 +16,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/stockid.h>
@@ -59,11 +59,11 @@ StockID& StockID::operator=(const StockID& other)
   return *this;
 }
 
-StockID::operator bool() const
+StockID::operator const void*() const
 {
-  return !(id_.empty());
+  return !(id_.empty()) ? GINT_TO_POINTER(1) : 0 ;
 }
-  
+
 bool StockID::equal(const StockID& rhs) const
 {
   // Do an exact per-byte comparison:
@@ -82,4 +82,3 @@ const char* StockID::get_c_str() const
 }
 
 } // namespace Gtk
-

@@ -16,8 +16,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/accelkey.h>
@@ -27,7 +27,7 @@ namespace Gtk
 {
 
 AccelKey::AccelKey()
-: key_(GDK_VoidSymbol),
+: key_(GDK_KEY_VoidSymbol),
   mod_((Gdk::ModifierType)0)
 {
 }
@@ -80,7 +80,7 @@ Glib::ustring AccelKey::get_path() const
 
 bool AccelKey::is_null() const
 {
-  return ( (key_ == GDK_VoidSymbol) || !(get_key() > 0) ); //both seem to be invalid.
+  return ( (key_ == GDK_KEY_VoidSymbol) || !(get_key() > 0) ); //both seem to be invalid.
 }
 
 Glib::ustring AccelKey::get_abbrev() const

@@ -38,7 +38,7 @@ protected:
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
 
   //Callbacks (virtual functions):
-  static void draw_indicator_vfunc_callback(GtkCheckButton* self, GdkRectangle* area);
+  static void draw_indicator_vfunc_callback(GtkCheckButton* self, cairo_t* cr);
 };
 
 

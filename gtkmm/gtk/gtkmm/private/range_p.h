@@ -39,6 +39,7 @@ protected:
   static void value_changed_callback(GtkRange* self);
   static void adjust_bounds_callback(GtkRange* self, gdouble p0);
   static void move_slider_callback(GtkRange* self, GtkScrollType p0);
+  static gboolean change_value_callback(GtkRange* self, GtkScrollType p0, gdouble p1);
 
   //Callbacks (virtual functions):
   static void get_range_border_vfunc_callback(GtkRange* self, GtkBorder* border);

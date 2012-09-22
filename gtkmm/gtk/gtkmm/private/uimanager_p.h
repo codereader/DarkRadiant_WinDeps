@@ -38,6 +38,10 @@ protected:
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
   static void add_widget_callback(GtkUIManager* self, GtkWidget* p0);
   static void actions_changed_callback(GtkUIManager* self);
+  static void connect_proxy_callback(GtkUIManager* self, GtkAction* p0, GtkWidget* p1);
+  static void disconnect_proxy_callback(GtkUIManager* self, GtkAction* p0, GtkWidget* p1);
+  static void pre_activate_callback(GtkUIManager* self, GtkAction* p0);
+  static void post_activate_callback(GtkUIManager* self, GtkAction* p0);
 
   //Callbacks (virtual functions):
 };

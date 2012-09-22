@@ -37,6 +37,12 @@ protected:
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
   static gboolean size_changed_callback(GtkStatusIcon* self, gint p0);
+  static void activate_callback(GtkStatusIcon* self);
+  static void popup_menu_callback(GtkStatusIcon* self, guint p0, guint32 p1);
+  static gboolean button_press_event_callback(GtkStatusIcon* self, GdkEventButton* p0);
+  static gboolean button_release_event_callback(GtkStatusIcon* self, GdkEventButton* p0);
+  static gboolean scroll_event_callback(GtkStatusIcon* self, GdkEventScroll* p0);
+  static gboolean query_tooltip_callback(GtkStatusIcon* self, gint p0, gint p1, gboolean p2, GtkTooltip* p3);
 
   //Callbacks (virtual functions):
 };

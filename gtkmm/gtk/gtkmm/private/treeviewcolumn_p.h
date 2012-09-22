@@ -18,8 +18,8 @@ public:
   typedef TreeViewColumn CppObjectType;
   typedef GtkTreeViewColumn BaseObjectType;
   typedef GtkTreeViewColumnClass BaseClassType;
-  typedef Gtk::Object_Class CppClassParent;
-  typedef GtkObjectClass BaseClassParent;
+  typedef Object_Class CppClassParent;
+  typedef GObjectClass BaseClassParent;
 
   friend class TreeViewColumn;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */

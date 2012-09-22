@@ -4,7 +4,7 @@
 #define _GDKMM_WINDOW_P_H
 
 
-#include <gdkmm/private/drawable_p.h>
+#include <glibmm/private/object_p.h>
 
 #include <glibmm/class.h>
 
@@ -16,10 +16,10 @@ class Window_Class : public Glib::Class
 public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   typedef Window CppObjectType;
-  typedef GdkWindowObject BaseObjectType;
-  typedef GdkWindowObjectClass BaseClassType;
-  typedef Gdk::Drawable_Class CppClassParent;
-  typedef GdkDrawableClass BaseClassParent;
+  typedef GdkWindow BaseObjectType;
+  typedef GdkWindowClass BaseClassType;
+  typedef Glib::Object_Class CppClassParent;
+  typedef GObjectClass BaseClassParent;
 
   friend class Window;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */

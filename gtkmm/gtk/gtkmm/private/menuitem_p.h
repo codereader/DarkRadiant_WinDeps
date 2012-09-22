@@ -4,7 +4,7 @@
 #define _GTKMM_MENUITEM_P_H
 
 
-#include <gtkmm/private/item_p.h>
+#include <gtkmm/private/bin_p.h>
 
 #include <glibmm/class.h>
 
@@ -18,8 +18,8 @@ public:
   typedef MenuItem CppObjectType;
   typedef GtkMenuItem BaseObjectType;
   typedef GtkMenuItemClass BaseClassType;
-  typedef Gtk::Item_Class CppClassParent;
-  typedef GtkItemClass BaseClassParent;
+  typedef Gtk::Bin_Class CppClassParent;
+  typedef GtkBinClass BaseClassParent;
 
   friend class MenuItem;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */

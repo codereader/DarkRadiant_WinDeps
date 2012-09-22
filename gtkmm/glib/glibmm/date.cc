@@ -2,10 +2,14 @@
 
 /* So we can use deprecated functions in our deprecated methods */
 #undef G_DISABLE_DEPRECATED
+#define GLIB_DISABLE_DEPRECATION_WARNINGS 1
  
+
+#include <glibmm.h>
 
 #include <glibmm/date.h>
 #include <glibmm/private/date_p.h>
+
 
 // -*- c++ -*-
 /* $Id: date.ccg,v 1.7 2006/07/16 13:54:02 jjongsma Exp $ */
@@ -97,7 +101,7 @@ void Date::set_parse(const Glib::ustring& str)
 void Date::set_time(GTime time)
 {
   //This method, and the C function that it wraps, are deprecated.
-  g_date_set_time(&gobject_, time);
+  g_date_set_time_t(&gobject_, static_cast<time_t>(time));
 }
 #endif //GLIBMM_HAVE_C_STD_TIME_T_IS_NOT_INT32
 

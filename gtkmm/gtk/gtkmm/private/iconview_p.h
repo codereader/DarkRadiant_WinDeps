@@ -36,7 +36,6 @@ protected:
   //Callbacks (default signal handlers):
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
-  static void set_scroll_adjustments_callback(GtkIconView* self, GtkAdjustment* p0, GtkAdjustment* p1);
   static void item_activated_callback(GtkIconView* self, GtkTreePath* p0);
   static void selection_changed_callback(GtkIconView* self);
 

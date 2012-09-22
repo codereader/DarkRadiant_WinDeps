@@ -140,37 +140,57 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\gtkmm\gdk\gdkmm\bitmap.cc" />
+    <ResourceCompile Include="..\gtkmm\gdk\gdkmm.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\applaunchcontext.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\color.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\cursor.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\device.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\devicemanager.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\display.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\displaymanager.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\dragcontext.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\event.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\general.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\pixbuf.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\pixbufanimation.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\pixbufanimationiter.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\pixbufformat.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\pixbufloader.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\rectangle.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\rgba.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\screen.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\timecoord.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\types.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\visual.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\window.h" />
+    <ClInclude Include="..\..\w32deps\gtkmm\include\gdkmm\wrap_init.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\gtkmm\gdk\gdkmm\applaunchcontext.cc" />
     <ClCompile Include="..\gtkmm\gdk\gdkmm\color.cc" />
-    <ClCompile Include="..\gtkmm\gdk\gdkmm\colormap.cc" />
     <ClCompile Include="..\gtkmm\gdk\gdkmm\cursor.cc" />
     <ClCompile Include="..\gtkmm\gdk\gdkmm\device.cc" />
+    <ClCompile Include="..\gtkmm\gdk\gdkmm\devicemanager.cc" />
     <ClCompile Include="..\gtkmm\gdk\gdkmm\display.cc" />
     <ClCompile Include="..\gtkmm\gdk\gdkmm\displaymanager.cc" />
     <ClCompile Include="..\gtkmm\gdk\gdkmm\dragcontext.cc" />
-    <ClCompile Include="..\gtkmm\gdk\gdkmm\drawable.cc" />
     <ClCompile Include="..\gtkmm\gdk\gdkmm\event.cc" />
-    <ClCompile Include="..\gtkmm\gdk\gdkmm\gc.cc" />
     <ClCompile Include="..\gtkmm\gdk\gdkmm\general.cc" />
-    <ClCompile Include="..\gtkmm\gdk\gdkmm\image.cc" />
     <ClCompile Include="..\gtkmm\gdk\gdkmm\pixbuf.cc" />
     <ClCompile Include="..\gtkmm\gdk\gdkmm\pixbufanimation.cc" />
     <ClCompile Include="..\gtkmm\gdk\gdkmm\pixbufanimationiter.cc" />
     <ClCompile Include="..\gtkmm\gdk\gdkmm\pixbufformat.cc" />
     <ClCompile Include="..\gtkmm\gdk\gdkmm\pixbufloader.cc" />
-    <ClCompile Include="..\gtkmm\gdk\gdkmm\pixmap.cc" />
     <ClCompile Include="..\gtkmm\gdk\gdkmm\rectangle.cc" />
-    <ClCompile Include="..\gtkmm\gdk\gdkmm\region.cc" />
-    <ClCompile Include="..\gtkmm\gdk\gdkmm\rgb.cc" />
-    <ClCompile Include="..\gtkmm\gdk\gdkmm\rgbcmap.cc" />
+    <ClCompile Include="..\gtkmm\gdk\gdkmm\rgba.cc" />
     <ClCompile Include="..\gtkmm\gdk\gdkmm\screen.cc" />
+    <ClCompile Include="..\gtkmm\gdk\gdkmm\timecoord.cc" />
     <ClCompile Include="..\gtkmm\gdk\gdkmm\types.cc" />
     <ClCompile Include="..\gtkmm\gdk\gdkmm\visual.cc" />
     <ClCompile Include="..\gtkmm\gdk\gdkmm\window.cc" />
     <ClCompile Include="..\gtkmm\gdk\gdkmm\wrap_init.cc" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="..\gtkmm\gdk\gdkmm.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

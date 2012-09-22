@@ -32,6 +32,8 @@ protected:
   //Callbacks (default signal handlers):
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
+  static void selection_changed_callback(GtkRecentChooser* self);
+  static void item_activated_callback(GtkRecentChooser* self);
 
   //Callbacks (virtual functions):
   static gchar* get_current_uri_vfunc_callback(GtkRecentChooser* self);

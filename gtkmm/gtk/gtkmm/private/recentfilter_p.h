@@ -4,7 +4,7 @@
 #define _GTKMM_RECENTFILTER_P_H
 
 
-#include <gtkmm/private/object_p.h>
+#include <glibmm/private/object_p.h>
 
 #include <glibmm/class.h>
 
@@ -18,8 +18,8 @@ public:
   typedef RecentFilter CppObjectType;
   typedef GtkRecentFilter BaseObjectType;
   typedef GtkRecentFilterClass BaseClassType;
-  typedef Gtk::Object_Class CppClassParent;
-  typedef GtkObjectClass BaseClassParent;
+  typedef Glib::Object_Class CppClassParent;
+  typedef GObjectClass BaseClassParent;
 
   friend class RecentFilter;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */

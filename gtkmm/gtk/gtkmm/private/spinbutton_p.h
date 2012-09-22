@@ -38,6 +38,7 @@ protected:
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
   static gint input_callback(GtkSpinButton* self, double* p0);
   static gboolean output_callback(GtkSpinButton* self);
+  static void wrapped_callback(GtkSpinButton* self);
   static void value_changed_callback(GtkSpinButton* self);
 
   //Callbacks (virtual functions):

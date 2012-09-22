@@ -15,42 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\gtkmm\gio\giomm\socketaddress.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\socketaddressenumerator.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\socketclient.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\socketconnectable.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\socketconnection.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\socketcontrolmessage.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\socketlistener.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\socketservice.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\srvtarget.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\tcpconnection.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\themedicon.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\threadedsocketservice.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\gtkmm\gio\giomm\unixconnection.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -72,85 +36,7 @@
     <ClCompile Include="..\gtkmm\gio\giomm\unixsocketaddress.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\volume.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\volumemonitor.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\wrap_init.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\appinfo.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\asyncinitable.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\asyncresult.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\bufferedinputstream.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\bufferedoutputstream.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\cancellable.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\contenttype.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\credentials.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\datainputstream.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\dataoutputstream.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\dbusaddress.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\dbusauthobserver.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\dbusconnection.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\dbuserror.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\dbuserrorutils.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\dbusinterfacevtable.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\dbusintrospection.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\dbusmessage.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\dbusmethodinvocation.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\dbusownname.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\dbusproxy.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\dbusserver.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\dbussubtreevtable.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\dbusutils.cc">
+    <ClCompile Include="..\gtkmm\gio\giomm\desktopappinfo.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtkmm\gio\giomm\dbuswatchname.cc">
@@ -240,6 +126,21 @@
     <ClCompile Include="..\gtkmm\gio\giomm\memoryoutputstream.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\menu.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\menuattributeiter.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\menuitem.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\menulinkiter.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\menumodel.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\gtkmm\gio\giomm\mount.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -264,6 +165,9 @@
     <ClCompile Include="..\gtkmm\gio\giomm\proxyresolver.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\remoteactiongroup.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\gtkmm\gio\giomm\resolver.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -273,17 +177,266 @@
     <ClCompile Include="..\gtkmm\gio\giomm\settings.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\simpleaction.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\simpleactiongroup.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\gtkmm\gio\giomm\slot_async.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\gtkmm\gio\giomm\socket.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\gtkmm\gio\giomm\desktopappinfo.cc">
+    <ClCompile Include="..\gtkmm\gio\giomm\socketaddress.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\socketaddressenumerator.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\socketclient.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\socketconnectable.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\socketconnection.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\socketcontrolmessage.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\socketlistener.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\socketservice.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\srvtarget.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\tcpconnection.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\themedicon.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\threadedsocketservice.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\volume.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\volumemonitor.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\wrap_init.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\action.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\actiongroup.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\actionmap.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\appinfo.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\applaunchcontext.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\application.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\applicationcommandline.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\asyncinitable.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\asyncresult.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\bufferedinputstream.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\bufferedoutputstream.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\cancellable.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\contenttype.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\credentials.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\datainputstream.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\dataoutputstream.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusactiongroup.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusaddress.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusauthobserver.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusconnection.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\dbuserror.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\dbuserrorutils.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusinterface.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusinterfacevtable.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusintrospection.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusmenumodel.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusmessage.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusmethodinvocation.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusobject.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusownname.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusproxy.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusserver.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\dbussubtreevtable.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtkmm\gio\giomm\dbusutils.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socket.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketaddress.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketaddressenumerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketclient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketconnectable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketconnection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketcontrolmessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketlistener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketservice.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\srvtarget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\tcpconnection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\themedicon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\threadedsocketservice.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\unixconnection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\unixcredentialsmessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\unixfdlist.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\unixfdmessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\unixinputstream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\unixoutputstream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\unixsocketaddress.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\volume.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\volumemonitor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\wrap_init.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\action.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\actiongroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\actionmap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\appinfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\applaunchcontext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\application.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\applicationcommandline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\asyncinitable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\asyncresult.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\bufferedinputstream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\bufferedoutputstream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -302,6 +455,9 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dataoutputstream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusactiongroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusaddress.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -317,16 +473,25 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbuserrorutils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusinterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusinterfacevtable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusintrospection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusmenumodel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusmessage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusmethodinvocation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusobject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\dbusownname.h">
@@ -434,6 +599,21 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\memoryoutputstream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\menuattributeiter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\menuitem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\menulinkiter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\menumodel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\mount.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -458,6 +638,9 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\proxyresolver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\remoteactiongroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\resolver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -467,88 +650,13 @@
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\settings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\simpleaction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\simpleactiongroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\slot_async.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socket.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketaddress.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketaddressenumerator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketclient.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketconnectable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketconnection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketcontrolmessage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketlistener.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\socketservice.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\srvtarget.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\tcpconnection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\themedicon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\threadedsocketservice.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\unixconnection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\unixcredentialsmessage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\unixfdlist.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\unixfdmessage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\unixinputstream.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\unixoutputstream.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\unixsocketaddress.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\volume.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\volumemonitor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\wrap_init.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\appinfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\asyncinitable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\asyncresult.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\w32deps\gtkmm\include\giomm\bufferedinputstream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

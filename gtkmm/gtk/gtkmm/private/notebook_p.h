@@ -36,7 +36,7 @@ protected:
   //Callbacks (default signal handlers):
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
-  static void switch_page_callback(GtkNotebook* self, GtkNotebookPage* p0, guint p1);
+  static void switch_page_callback(GtkNotebook* self, GtkWidget* p0, guint p1);
 
   //Callbacks (virtual functions):
 };

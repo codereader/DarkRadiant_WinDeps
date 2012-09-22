@@ -14,12 +14,19 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+//Allow use of deprecated API,
+//in the API that we also deprecate, but cannot remove yet:
+#undef GDK_DISABLE_DEPRECATED
+#define GDK_DISABLE_DEPRECATION_WARNINGS 1
+
 #include <gdkmm/general.h>
+#include <gdkmm/color.h>
 #include <gdk/gdk.h>
+
 
 namespace Gdk
 {
@@ -54,66 +61,35 @@ namespace Cairo
 {
 
 #ifndef GDKMM_DISABLE_DEPRECATED
-void set_source_color(::Cairo::RefPtr< ::Cairo::Context >& context, const Gdk::Color& color)
-{
-  gdk_cairo_set_source_color(context->cobj(), const_cast<GdkColor*>(color.gobj()));
-}
-#endif
 
 void set_source_color(const ::Cairo::RefPtr< ::Cairo::Context >& context, const Gdk::Color& color)
 {
   gdk_cairo_set_source_color(context->cobj(), const_cast<GdkColor*>(color.gobj()));
 }
 
-#ifndef GDKMM_DISABLE_DEPRECATED
-void set_source_pixbuf(::Cairo::RefPtr< ::Cairo::Context >& context, const Glib::RefPtr<Gdk::Pixbuf>& pixbuf, double pixbuf_x, double pixbuf_y)
+#endif //GDKMM_DISABLE_DEPRECATED
+
+void set_source_rgba(const ::Cairo::RefPtr< ::Cairo::Context >& context, const Gdk::RGBA& color)
 {
-  gdk_cairo_set_source_pixbuf(context->cobj(), pixbuf->gobj(), pixbuf_x, pixbuf_y);
+  gdk_cairo_set_source_rgba(context->cobj(), const_cast<GdkRGBA*>(color.gobj()));
 }
-#endif
 
 void set_source_pixbuf(const ::Cairo::RefPtr< ::Cairo::Context >& context, const Glib::RefPtr<Gdk::Pixbuf>& pixbuf, double pixbuf_x, double pixbuf_y)
 {
   gdk_cairo_set_source_pixbuf(context->cobj(), pixbuf->gobj(), pixbuf_x, pixbuf_y);
 }
 
-#ifndef GDKMM_DISABLE_DEPRECATED
-void set_source_pixmap(::Cairo::RefPtr< ::Cairo::Context >& context, const Glib::RefPtr<Gdk::Pixmap>& pixmap, double pixmap_x, double pixmap_y)
-{
-  gdk_cairo_set_source_pixmap(context->cobj(), pixmap->gobj(), pixmap_x, pixmap_y);
-}
-#endif
-
-void set_source_pixmap(const ::Cairo::RefPtr< ::Cairo::Context >& context, const Glib::RefPtr<Gdk::Pixmap>& pixmap, double pixmap_x, double pixmap_y)
-{
-  gdk_cairo_set_source_pixmap(context->cobj(), pixmap->gobj(), pixmap_x, pixmap_y);
-}
-
-#ifndef GDKMM_DISABLE_DEPRECATED
-void rectangle(::Cairo::RefPtr< ::Cairo::Context >& context, const Gdk::Rectangle& rectangle)
-{
-  gdk_cairo_rectangle(context->cobj(), const_cast<GdkRectangle*>(rectangle.gobj()));
-}
-#endif
 
 void add_rectangle_to_path(const ::Cairo::RefPtr< ::Cairo::Context >& context, const Gdk::Rectangle& rectangle)
 {
   gdk_cairo_rectangle(context->cobj(), const_cast<GdkRectangle*>(rectangle.gobj()));
 }
 
-#ifndef GDKMM_DISABLE_DEPRECATED
-void region(::Cairo::RefPtr< ::Cairo::Context >& context, const Gdk::Region& region)
+void add_region_to_path(const ::Cairo::RefPtr< ::Cairo::Context >& context, const ::Cairo::RefPtr< ::Cairo::Region>& region)
 {
-  gdk_cairo_region(context->cobj(), const_cast<GdkRegion*>(region.gobj()));
-}
-#endif
-
-void add_region_to_path(const ::Cairo::RefPtr< ::Cairo::Context >& context, const Gdk::Region& region)
-{
-  gdk_cairo_region(context->cobj(), const_cast<GdkRegion*>(region.gobj()));
+  gdk_cairo_region(context->cobj(), (region ? region->cobj() : 0));
 }
 
 } //namespace Cairo
 
 } //namespace Gdk
-

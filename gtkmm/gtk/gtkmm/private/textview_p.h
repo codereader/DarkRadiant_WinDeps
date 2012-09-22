@@ -36,7 +36,6 @@ protected:
   //Callbacks (default signal handlers):
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
-  static void set_scroll_adjustments_callback(GtkTextView* self, GtkAdjustment* p0, GtkAdjustment* p1);
   static void populate_popup_callback(GtkTextView* self, GtkMenu* p0);
   static void set_anchor_callback(GtkTextView* self);
   static void insert_at_cursor_callback(GtkTextView* self, const gchar* p0);

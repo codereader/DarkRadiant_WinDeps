@@ -75,7 +75,6 @@ protected:
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
   static void set_focus_callback(GtkWindow* self, GtkWidget* p0);
-  static gboolean frame_event_callback(GtkWindow* self, GdkEvent* p0);
 
   //Callbacks (virtual functions):
     static void dispose_vfunc_callback(GObject* self);

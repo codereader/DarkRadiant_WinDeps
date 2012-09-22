@@ -38,7 +38,11 @@ protected:
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
   static void populate_popup_callback(GtkEntry* self, GtkMenu* p0);
   static void insert_at_cursor_callback(GtkEntry* self, const gchar* p0);
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   static void activate_callback(GtkEntry* self);
+#endif // GTKMM_DISABLE_DEPRECATED
+
 
   //Callbacks (virtual functions):
 };

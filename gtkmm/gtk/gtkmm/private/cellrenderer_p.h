@@ -20,7 +20,7 @@ public:
   typedef GtkCellRenderer BaseObjectType;
   typedef GtkCellRendererClass BaseClassType;
   typedef Gtk::Object_Class CppClassParent;
-  typedef GtkObjectClass BaseClassParent;
+  typedef GObjectClass BaseClassParent;
 
   friend class CellRenderer;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
@@ -38,12 +38,17 @@ protected:
   //These will call the *_impl member methods, which will then call the existing default signal callbacks, if any.
   //You could prevent the original default signal handlers being called by overriding the *_impl method.
   static void editing_canceled_callback(GtkCellRenderer* self);
+  static void editing_started_callback(GtkCellRenderer* self, GtkCellEditable* p0, const gchar* p1);
 
   //Callbacks (virtual functions):
-  static void get_size_vfunc_callback(GtkCellRenderer* self, GtkWidget* widget, GdkRectangle* cell_area, gint* x_offset, gint* y_offset, gint* width, gint* height);
-  static void render_vfunc_callback(GtkCellRenderer* self, GdkDrawable* window, GtkWidget* widget, GdkRectangle* background_area, GdkRectangle* cell_area, GdkRectangle* expose_area, GtkCellRendererState flags);
-  static gboolean activate_vfunc_callback(GtkCellRenderer* self, GdkEvent* event, GtkWidget* widget, const gchar* path, GdkRectangle* background_area, GdkRectangle* cell_area, GtkCellRendererState flags);
-  static GtkCellEditable* start_editing_vfunc_callback(GtkCellRenderer* self, GdkEvent* event, GtkWidget* widget, const gchar* path, GdkRectangle* background_area, GdkRectangle* cell_area, GtkCellRendererState flags);
+  static GtkSizeRequestMode get_request_mode_vfunc_callback(GtkCellRenderer* self);
+  static void get_preferred_width_vfunc_callback(GtkCellRenderer* self, GtkWidget* widget, gint* minimum_width, gint* natural_width);
+  static void get_preferred_height_for_width_vfunc_callback(GtkCellRenderer* self, GtkWidget* widget, gint width, gint* minimum_height, gint* natural_height);
+  static void get_preferred_height_vfunc_callback(GtkCellRenderer* self, GtkWidget* widget, gint* minimum_height, gint* natural_height);
+  static void get_preferred_width_for_height_vfunc_callback(GtkCellRenderer* self, GtkWidget* widget, gint height, gint* minimum_width, gint* natural_width);
+  static void render_vfunc_callback(GtkCellRenderer* self, cairo_t* cr, GtkWidget* widget, const GdkRectangle* background_area, const GdkRectangle* cell_area, GtkCellRendererState flags);
+  static gboolean activate_vfunc_callback(GtkCellRenderer* self, GdkEvent* event, GtkWidget* widget, const gchar* path, const GdkRectangle* background_area, const GdkRectangle* cell_area, GtkCellRendererState flags);
+  static GtkCellEditable* start_editing_vfunc_callback(GtkCellRenderer* self, GdkEvent* event, GtkWidget* widget, const gchar* path, const GdkRectangle* background_area, const GdkRectangle* cell_area, GtkCellRendererState flags);
 };
 
 

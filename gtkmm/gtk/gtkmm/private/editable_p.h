@@ -16,7 +16,7 @@ class Editable_Class : public Glib::Interface_Class
 public:
   typedef Editable CppObjectType;
   typedef GtkEditable BaseObjectType;
-  typedef GtkEditableClass BaseClassType;
+  typedef GtkEditableInterface BaseClassType;
   typedef Glib::Interface_Class CppClassParent;
 
   friend class Editable;

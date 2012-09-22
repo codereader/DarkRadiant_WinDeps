@@ -14,11 +14,13 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/stock.h>
+#include <gtkmm/stockitem.h>
+#include <glibmm/vectorutils.h>
 #include <gtk/gtk.h>
 
 // Get rid of macro DELETE (from winnt.h).  We have some macro
@@ -149,10 +151,10 @@ bool lookup(const Gtk::StockID& stock_id, Gtk::StockItem& item)
   return Gtk::StockItem::lookup(stock_id, item);
 }
 
-bool lookup(const Gtk::StockID& stock_id, Gtk::IconSet& iconset)
+bool lookup(const Gtk::StockID& stock_id, Glib::RefPtr<IconSet>& iconset)
 {
-  iconset = Gtk::IconSet::lookup_default(stock_id);
-  return (iconset.gobj() != 0);
+  iconset = IconSet::lookup_default(stock_id);
+  return (iconset && (iconset->gobj() != 0));
 }
 
 bool lookup(const Gtk::StockID& stock_id, Gtk::IconSize size, Gtk::Image& image)
@@ -161,12 +163,13 @@ bool lookup(const Gtk::StockID& stock_id, Gtk::IconSize size, Gtk::Image& image)
   return (image.gobj() != 0);
 }
 
-Glib::SListHandle<Gtk::StockID,Gtk::StockID_Traits> get_ids()
+std::vector<Gtk::StockID> get_ids()
 {
-  return Glib::SListHandle<Gtk::StockID,Gtk::StockID_Traits>(
+  return Glib::SListHandler<Gtk::StockID,Gtk::StockIDTraits>::slist_to_vector(
       gtk_stock_list_ids(), Glib::OWNERSHIP_DEEP);
 }
 
 } // namespace Stock
 
 } // namespace Gtk
+

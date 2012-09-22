@@ -5,7 +5,7 @@
 
 
 #include <gtkmm/private/widget_p.h>
-#include <gtk/gtkprogress.h>
+#include <gtk/gtk.h>
 
 #include <glibmm/class.h>
 
@@ -20,7 +20,7 @@ public:
   typedef GtkProgressBar BaseObjectType;
   typedef GtkProgressBarClass BaseClassType;
   typedef Gtk::Widget_Class CppClassParent;
-  typedef GtkProgressClass BaseClassParent;
+  typedef GtkWidgetClass BaseClassParent;
 
   friend class ProgressBar;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */

@@ -11,8 +11,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/listviewtext.h>
@@ -87,23 +87,6 @@ Glib::ustring ListViewText::get_column_title(guint column) const
 
   return get_column(column)->get_title();
 }
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-guint ListViewText::append_text(const Glib::ustring& column_one_value)
-{
-  return append(column_one_value);
-}
-
-void ListViewText::prepend_text(const Glib::ustring& column_one_value)
-{
-  prepend(column_one_value);
-}
-
-void ListViewText::insert_text(guint row, const Glib::ustring& column_one_value)
-{
-  insert(row, column_one_value);
-}
-#endif //GTKMM_DISABLE_DEPRECATED  
 
 guint ListViewText::append(const Glib::ustring& column_one_value)
 {
@@ -180,7 +163,7 @@ guint ListViewText::get_num_columns() const
 ListViewText::SelectionList ListViewText::get_selected()
 {
   Glib::RefPtr<Gtk::TreeSelection> selected = get_selection();
-  Gtk::TreeSelection::ListHandle_Path selectedRows = selected->get_selected_rows();
+  std::vector<TreeModel::Path> selectedRows = selected->get_selected_rows();
 
   // Reserve space
   SelectionList selectionList;
@@ -188,7 +171,7 @@ ListViewText::SelectionList ListViewText::get_selected()
 
   // Save selected rows
 
-  for(Gtk::TreeSelection::ListHandle_Path::const_iterator iter = selectedRows.begin(); iter != selectedRows.end(); ++iter)
+  for (std::vector<TreeModel::Path>::const_iterator iter = selectedRows.begin(); iter != selectedRows.end(); ++iter)
   {
     selectionList.push_back( *((*iter).begin()) );
   }
