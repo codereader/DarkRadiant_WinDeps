@@ -1,8 +1,8 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8; coding: utf-8 -*-
- * gtksourcestyle.h
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8; coding: utf-8 -*- *
+ * gtksourcegutter.h
  * This file is part of GtkSourceView
  *
- * Copyright (C) 2003 - Paolo Maggi <paolo.maggi@polito.it>
+ * Copyright (C) 2009 - Jesse van den Kieboom
  *
  * GtkSourceView is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -19,24 +19,20 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __GTK_SOURCE_STYLE_H__
-#define __GTK_SOURCE_STYLE_H__
+#ifndef __GTK_SOURCE_GUTTER_PRIVATE_H__
+#define __GTK_SOURCE_GUTTER_PRIVATE_H__
 
-#include <glib-object.h>
+#include "gtksourcegutter.h"
 
 G_BEGIN_DECLS
 
-#define GTK_SOURCE_TYPE_STYLE		(gtk_source_style_get_type ())
-#define GTK_SOURCE_STYLE(obj)		(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_SOURCE_TYPE_STYLE, GtkSourceStyle))
-#define GTK_SOURCE_IS_STYLE(obj)	(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_SOURCE_TYPE_STYLE))
+struct _GtkSourceView;
 
-typedef struct _GtkSourceStyle GtkSourceStyle;
-
-GType		 gtk_source_style_get_type	(void) G_GNUC_CONST;
-
-GtkSourceStyle	*gtk_source_style_copy		(const GtkSourceStyle *style);
-
+GtkSourceGutter *gtk_source_gutter_new (struct _GtkSourceView *view,
+                                        GtkTextWindowType      type);
 
 G_END_DECLS
 
-#endif  /* __GTK_SOURCE_STYLE_H__ */
+#endif /* __GTK_SOURCE_GUTTER_PRIVATE_H__ */
+
+/* vi:ts=8 */

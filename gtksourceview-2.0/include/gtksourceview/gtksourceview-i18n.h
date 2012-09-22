@@ -1,8 +1,8 @@
-/*
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8; coding: utf-8 -*- *
  * Copyright (C) 1997, 1998, 1999, 2000 Free Software Foundation
  * All rights reserved.
  *
- * This file is part of the GtkSourceView widget.
+ * This file is part of GtkSourceView
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,10 +18,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-/*
-  @NOTATION@
- */
-
 /*
  * Handles all of the internationalization configuration options.
  * Author: Tom Tromey <tromey@creche.cygnus.com>
@@ -42,6 +38,7 @@ G_BEGIN_DECLS
 #    include <libintl.h>
 #    undef _
 #    define _(String) _gtksourceview_gettext (String)
+#    undef N_
 #    ifdef gettext_noop
 #        define N_(String) gettext_noop (String)
 #    else
@@ -71,9 +68,9 @@ G_BEGIN_DECLS
 #    define GD_(Domain,String) (g_strdup (String))
 #endif
 
-char *_gtksourceview_gettext (const char *msgid);
+const gchar *_gtksourceview_gettext (const char *msgid) G_GNUC_FORMAT(1);
 /* NOTE: it returns duplicated string */
-char *_gtksourceview_dgettext (const char *domain, const char *msgid);
+gchar *_gtksourceview_dgettext (const char *domain, const char *msgid) G_GNUC_FORMAT(2);
 
 G_END_DECLS
 

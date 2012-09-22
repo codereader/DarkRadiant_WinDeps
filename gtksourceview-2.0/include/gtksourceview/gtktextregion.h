@@ -1,8 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
- *
  * gtktextregion.h - GtkTextMark based region utility functions
- *
- * This file is part of the GtkSourceView widget
+ * This file is part of GtkSourceView
  *
  * Copyright (C) 2002 Gustavo Giráldez <gustavo.giraldez@gmx.net>
  *
@@ -24,7 +22,7 @@
 #ifndef __GTK_TEXT_REGION_H__
 #define __GTK_TEXT_REGION_H__
 
-#include <gtk/gtktextbuffer.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 

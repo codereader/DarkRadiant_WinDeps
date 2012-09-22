@@ -1,7 +1,8 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8; coding: utf-8 -*-
- *  gtksourceviewutils.h
+ * gtksourceviewutils.h
+ * This file is part of GtkSourceView
  *
- *  Copyright (C) 2007 - Gustavo Giráldez and Paolo Maggi
+ * Copyright (C) 2007 - Gustavo Giráldez and Paolo Maggi
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,6 +32,8 @@ gchar 	**_gtk_source_view_get_default_dirs (const gchar  *basename,
 GSList 	 *_gtk_source_view_get_file_list    (gchar       **path,
 					     const gchar  *suffix,
 					     gboolean      only_dirs);
+
+gint	 _gtk_source_string_to_int	    (const gchar *str);
 
 G_END_DECLS
 
