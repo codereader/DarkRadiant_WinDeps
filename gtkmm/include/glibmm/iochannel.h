@@ -26,11 +26,11 @@
 
 
 #include <glibmmconfig.h>
+#include <glib.h> //For the GIOChannel enum values.
 #include <glibmm/error.h>
-#include <glibmm/main.h>
 #include <glibmm/refptr.h>
 #include <glibmm/ustring.h>
-#include <glib.h>
+#include <sigc++/sigc++.h>
 #include <string>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -85,6 +85,7 @@ enum IOFlags
   IO_FLAG_NONBLOCK = 1 << 1,
   IO_FLAG_IS_READABLE = 1 << 2,
   IO_FLAG_IS_WRITEABLE = 1 << 3,
+  IO_FLAG_IS_WRITABLE = 1 << 3,
   IO_FLAG_IS_SEEKABLE = 1 << 4,
   IO_FLAG_MASK = (1 << 5) - 1,
   IO_FLAG_GET_MASK = 0x1F,
@@ -118,6 +119,64 @@ inline IOFlags& operator&=(IOFlags& lhs, IOFlags rhs)
 /** @ingroup glibmmEnums */
 inline IOFlags& operator^=(IOFlags& lhs, IOFlags rhs)
   { return (lhs = static_cast<IOFlags>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs))); }
+
+
+/** A bitwise combination representing an I/O condition to watch for on an
+ * event source.
+ * The flags correspond to those used by the <tt>%poll()</tt> system call
+ * on UNIX (see <tt>man 2 poll</tt>).  To test for individual flags, do
+ * something like this:
+ * @code
+ * if((condition & Glib::IO_OUT) != 0)
+ *   do_some_output();
+ * @endcode
+ * @ingroup glibmmEnums
+ * @par Bitwise operators:
+ * <tt>%IOCondition operator|(IOCondition, IOCondition)</tt><br>
+ * <tt>%IOCondition operator&(IOCondition, IOCondition)</tt><br>
+ * <tt>%IOCondition operator^(IOCondition, IOCondition)</tt><br>
+ * <tt>%IOCondition operator~(IOCondition)</tt><br>
+ * <tt>%IOCondition& operator|=(IOCondition&, IOCondition)</tt><br>
+ * <tt>%IOCondition& operator&=(IOCondition&, IOCondition)</tt><br>
+ * <tt>%IOCondition& operator^=(IOCondition&, IOCondition)</tt><br>
+ */
+enum IOCondition
+{
+  IO_IN = G_IO_IN,
+  IO_OUT = G_IO_OUT,
+  IO_PRI = G_IO_PRI,
+  IO_ERR = G_IO_ERR,
+  IO_HUP = G_IO_HUP,
+  IO_NVAL = G_IO_NVAL
+};
+
+/** @ingroup glibmmEnums */
+inline IOCondition operator|(IOCondition lhs, IOCondition rhs)
+  { return static_cast<IOCondition>(static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs)); }
+
+/** @ingroup glibmmEnums */
+inline IOCondition operator&(IOCondition lhs, IOCondition rhs)
+  { return static_cast<IOCondition>(static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs)); }
+
+/** @ingroup glibmmEnums */
+inline IOCondition operator^(IOCondition lhs, IOCondition rhs)
+  { return static_cast<IOCondition>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs)); }
+
+/** @ingroup glibmmEnums */
+inline IOCondition operator~(IOCondition flags)
+  { return static_cast<IOCondition>(~static_cast<unsigned>(flags)); }
+
+/** @ingroup glibmmEnums */
+inline IOCondition& operator|=(IOCondition& lhs, IOCondition rhs)
+  { return (lhs = static_cast<IOCondition>(static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs))); }
+
+/** @ingroup glibmmEnums */
+inline IOCondition& operator&=(IOCondition& lhs, IOCondition rhs)
+  { return (lhs = static_cast<IOCondition>(static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs))); }
+
+/** @ingroup glibmmEnums */
+inline IOCondition& operator^=(IOCondition& lhs, IOCondition rhs)
+  { return (lhs = static_cast<IOCondition>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs))); }
 
 
 /** Exception class for IOChannel errors.

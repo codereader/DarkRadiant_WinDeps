@@ -4,7 +4,8 @@
 #define _GTKMM_TEXTMARK_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: textmark.hg,v 1.3 2006/04/12 11:11:25 murrayc Exp $ */
 
@@ -23,12 +24,12 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 
-#include <gtkmm/object.h>
+#include <glibmm/object.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -101,8 +102,11 @@ protected:
 public:
   virtual ~TextMark();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -244,7 +248,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_name() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_name() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -255,7 +259,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_left_gravity() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_left_gravity() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

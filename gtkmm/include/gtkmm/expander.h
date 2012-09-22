@@ -4,7 +4,8 @@
 #define _GTKMM_EXPANDER_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: expander.hg,v 1.9 2006/04/12 11:11:25 murrayc Exp $ */
 
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/bin.h>
@@ -97,8 +98,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -168,8 +173,8 @@ public:
   bool get_expanded() const;
 
   
-  /** Sets the spacing field of @a expander, which is the number of pixels to
-   * place between expander and the child.
+  /** Sets the spacing field of @a expander, which is the number of
+   * pixels to place between expander and the child.
    * 
    * @newin{2,4}
    * @param spacing Distance between the expander and child in pixels.
@@ -220,17 +225,18 @@ public:
    */
   void set_use_underline(bool use_underline =  true);
   
-  /** Returns whether an embedded underline in the expander label indicates a
-   * mnemonic. See set_use_underline().
+  /** Returns whether an embedded underline in the expander label
+   * indicates a mnemonic. See set_use_underline().
    * 
    * @newin{2,4}
-   * @return <tt>true</tt> if an embedded underline in the expander label
-   * indicates the mnemonic accelerator keys.
+   * @return <tt>true</tt> if an embedded underline in the expander
+   * label indicates the mnemonic accelerator keys.
    */
   bool get_use_underline() const;
 
   
-  /** Sets whether the text of the label contains markup in . See Gtk::Label::set_markup().
+  /** Sets whether the text of the label contains markup in Pango's text markup
+   * language. See Gtk::Label::set_markup().
    * 
    * @newin{2,4}
    * @param use_markup <tt>true</tt> if the label's text should be parsed for markup.
@@ -238,7 +244,8 @@ public:
   void set_use_markup(bool use_markup =  true);
   
   /** Returns whether the label's text is interpreted as marked up with
-   * the . See set_use_markup().
+   * the Pango text markup
+   * language. See set_use_markup().
    * 
    * @newin{2,4}
    * @return <tt>true</tt> if the label's text will be parsed for markup.
@@ -273,23 +280,40 @@ public:
   const Widget* get_label_widget() const;
 
   
-  /** Sets whether the label widget should fill all available horizontal space
-   * allocated to @a expander.
+  /** Sets whether the label widget should fill all available
+   * horizontal space allocated to @a expander.
    * 
    * @newin{2,22}
-   * @param label_fill <tt>true</tt> if the label should should fill all available horizontal
-   * space.
+   * @param label_fill <tt>true</tt> if the label should should fill
+   * all available horizontal space.
    */
   void set_label_fill(bool label_fill =  true);
   
-  /** Returns whether the label widget will fill all available horizontal
-   * space allocated to @a expander.
+  /** Returns whether the label widget will fill all available
+   * horizontal space allocated to @a expander.
    * 
    * @newin{2,22}
-   * @return <tt>true</tt> if the label widget will fill all available horizontal
-   * space.
+   * @return <tt>true</tt> if the label widget will fill all
+   * available horizontal space.
    */
   bool get_label_fill() const;
+  
+  
+  /** Sets whether the expander will resize the toplevel widget
+   * containing the expander upon resizing and collpasing.
+   * 
+   * @newin{3,2}
+   * @param resize_toplevel Whether to resize the toplevel.
+   */
+  void set_resize_toplevel(bool resize_toplevel =  true);
+  
+  /** Returns whether the expander will resize the toplevel widget
+   * containing the expander upon resizing and collpasing.
+   * 
+   * @newin{3,2}
+   * @return The "resize toplevel" setting.
+   */
+  bool get_resize_toplevel() const;
 
    //keybinding
 
@@ -300,7 +324,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_expanded() ;
+  Glib::PropertyProxy< bool > property_expanded() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -310,7 +334,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_expanded() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_expanded() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -320,7 +344,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_label() ;
+  Glib::PropertyProxy< Glib::ustring > property_label() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -330,7 +354,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_label() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_label() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -340,7 +364,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_use_underline() ;
+  Glib::PropertyProxy< bool > property_use_underline() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -350,7 +374,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_use_underline() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_use_underline() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -360,7 +384,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_use_markup() ;
+  Glib::PropertyProxy< bool > property_use_markup() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -370,7 +394,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_use_markup() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_use_markup() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -380,7 +404,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_spacing() ;
+  Glib::PropertyProxy< int > property_spacing() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -390,7 +414,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_spacing() const;
+  Glib::PropertyProxy_ReadOnly< int > property_spacing() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -400,7 +424,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Widget*> property_label_widget() ;
+  Glib::PropertyProxy< Widget* > property_label_widget() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -410,7 +434,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Widget*> property_label_widget() const;
+  Glib::PropertyProxy_ReadOnly< Widget* > property_label_widget() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -420,7 +444,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_label_fill() ;
+  Glib::PropertyProxy< bool > property_label_fill() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -430,7 +454,27 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_label_fill() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_label_fill() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the expander will resize the toplevel window upon expanding and collapsing.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< bool > property_resize_toplevel() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the expander will resize the toplevel window upon expanding and collapsing.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< bool > property_resize_toplevel() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

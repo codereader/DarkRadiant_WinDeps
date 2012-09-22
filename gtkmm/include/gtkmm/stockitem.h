@@ -4,7 +4,8 @@
 #define _GTKMM_STOCKITEM_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: stockitem.hg,v 1.2 2004/04/11 21:00:53 murrayc Exp $ */
 
@@ -21,12 +22,12 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library, ) if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library, ) if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <gtkmm/stockid.h>
 #include <gdkmm/types.h>
+#include <gtkmm/stockid.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS

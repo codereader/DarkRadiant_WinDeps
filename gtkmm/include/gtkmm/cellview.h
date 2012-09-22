@@ -6,7 +6,8 @@
 #include <gtkmmconfig.h>
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /*
  * Copyright (C) 2004 The gtkmm Development Team
@@ -22,17 +23,21 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- 
+
 #include <gtkmm/widget.h>
 #include <gtkmm/celllayout.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treepath.h>
 #include <gtkmm/cellrenderer.h>
+#include <gtkmm/cellarea.h>
+#include <gtkmm/cellareacontext.h>
+#include <gtkmm/orientable.h>
 #include <gdkmm/pixbuf.h>
+#include <gdkmm/rgba.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -55,7 +60,8 @@ namespace Gtk
 
 class CellView :
   public Widget,
-  public CellLayout
+  public CellLayout,
+  public Orientable
 {
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -84,8 +90,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -188,55 +198,71 @@ public:
    * @return The currently displayed row or <tt>0</tt>.
    */
   TreeModel::Path get_displayed_row() const;
-  
-  /** Sets @a requisition to the size needed by @a cell_view to display 
-   * the model row pointed to by @a path.
-   * 
-   * @newin{2,6}
-   * @param path A Gtk::TreePath.
-   * @param requisition Return location for the size.
-   * @return <tt>true</tt>.
-   */
-  bool get_size_of_row(const TreeModel::Path& path, Requisition& requisition) const;
+   //deprecated
 
   
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   /** Sets the background color of @a view.
    * 
    * @newin{2,6}
+   * 
+   * Deprecated: 3.4: Use set_background_rgba() instead.
+   * @deprecated Use set_background_rgba instead.
    * @param color The new background color.
    */
   void set_background_color(const Gdk::Color& color);
+#endif // GTKMM_DISABLE_DEPRECATED
 
+
+  /** Sets the background color of @a cell_view.
+   * 
+   * @newin{3,0}
+   * @param rgba The new background color.
+   */
+  void set_background_rgba(const Gdk::RGBA& rgba);
   
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Returns the cell renderers which have been added to @a cell_view.
+  
+  /** Gets whether @a cell_view is configured to draw all of its
+   * cells in a sensitive state.
    * 
-   * @newin{2,6}
-   * 
-   * Deprecated: 2.18: use Gtk::CellLayout::get_cells() instead.
-   * @return A list of cell renderers. The list, but not the
-   * renderers has been newly allocated and should be freed with
-   * Glib::list_free() when no longer needed.
+   * @newin{3,0}
+   * @return Whether @a cell_view draws all of its
+   * cells in a sensitive state.
    */
-  Glib::ListHandle<CellRenderer*> get_cell_renderers();
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Returns the cell renderers which have been added to @a cell_view.
+  bool get_draw_sensitive() const;
+  
+  /** Sets whether @a cell_view should draw all of its
+   * cells in a sensitive state, this is used by Gtk::ComboBox menus
+   * to ensure that rows with insensitive cells that contain
+   * children appear sensitive in the parent menu item.
    * 
-   * @newin{2,6}
-   * 
-   * Deprecated: 2.18: use Gtk::CellLayout::get_cells() instead.
-   * @return A list of cell renderers. The list, but not the
-   * renderers has been newly allocated and should be freed with
-   * Glib::list_free() when no longer needed.
+   * @newin{3,0}
+   * @param draw_sensitive Whether to draw all cells in a sensitive state.
    */
-  Glib::ListHandle<const CellRenderer*> get_cell_renderers() const;
-#endif // GTKMM_DISABLE_DEPRECATED
+  void set_draw_sensitive(bool draw_sensitive =  true);
+  
+  /** Gets whether @a cell_view is configured to request space
+   * to fit the entire Gtk::TreeModel.
+   * 
+   * @newin{3,0}
+   * @return Whether @a cell_view requests space to fit
+   * the entire Gtk::TreeModel.
+   */
+  bool get_fit_model() const;
+  
+  /** Sets whether @a cell_view should request space to fit the entire Gtk::TreeModel.
+   * 
+   * This is used by Gtk::ComboBox to ensure that the cell view displayed on
+   * the combo box's button always gets enough space and does not resize
+   * when selection changes.
+   * 
+   * @newin{3,0}
+   * @param fit_model Whether @a cell_view should request space for the whole model.
+   */
+  void set_fit_model(bool fit_model =  true);
 
+   //deprecated
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** Background color as a string.
@@ -245,7 +271,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_WriteOnly<Glib::ustring> property_background() ;
+  Glib::PropertyProxy_WriteOnly< Glib::ustring > property_background() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -256,7 +282,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Gdk::Color> property_background_gdk() ;
+  Glib::PropertyProxy< Gdk::Color > property_background_gdk() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -266,7 +292,27 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Gdk::Color> property_background_gdk() const;
+  Glib::PropertyProxy_ReadOnly< Gdk::Color > property_background_gdk() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+ //TODO: Deprecate this.
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Background color as a GdkRGBA.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< Gdk::RGBA > property_background_rgba() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Background color as a GdkRGBA.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< Gdk::RGBA > property_background_rgba() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -276,7 +322,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_background_set() ;
+  Glib::PropertyProxy< bool > property_background_set() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -286,7 +332,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_background_set() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_background_set() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -309,6 +355,68 @@ public:
   Glib::PropertyProxy_ReadOnly< Glib::RefPtr<TreeModel> > property_model() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The GtkCellArea used to layout cells.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< Glib::RefPtr<CellArea> > property_cell_area() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The GtkCellAreaContext used to compute the geometry of the cell view.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< Glib::RefPtr<CellAreaContext> > property_cell_area_context() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether to force cells to be drawn in a sensitive state.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< bool > property_draw_sensitive() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether to force cells to be drawn in a sensitive state.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< bool > property_draw_sensitive() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether to request enough space for every row in the model.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< bool > property_fit_model() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether to request enough space for every row in the model.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< bool > property_fit_model() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+ 
 
 };
 

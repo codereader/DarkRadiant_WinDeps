@@ -4,7 +4,8 @@
 #define _GIOMM_UNIXFDLIST_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -26,6 +27,7 @@
  */
 
 #include <glibmm/object.h>
+#include <glibmm/arrayhandle.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS

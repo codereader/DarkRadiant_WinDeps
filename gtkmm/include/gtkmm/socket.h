@@ -4,7 +4,8 @@
 #define _GTKMM_SOCKET_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: socket.hg,v 1.2 2004/02/10 17:35:13 mxpxpod Exp $ */
 
@@ -21,12 +22,13 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/container.h>
 #include <gdkmm/types.h>
+#include <gtk/gtkx.h> //Necessary for the X11 Window type.
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -40,6 +42,10 @@ namespace Gtk
 namespace Gtk
 {
 
+//Note that Window is the (awfully named) type from the X11 header.
+//gtkx.h (needed to get GtkPlug and GtkSocket) pulls this in,
+//assuming that you will be careful when doing so.
+  
 /** Container for widgets from other processes.
  * Together with Gtk::Plug, Gtk::Socket provides the ability to embed
  * widgets from one process into another process in a fashion that is
@@ -116,8 +122,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -137,21 +147,23 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_plug_added().
   virtual void on_plug_added();
+  /// This is a default handler for the signal signal_plug_removed().
   virtual bool on_plug_removed();
 
 
 private:
 
   
-  //This is not available in on Win32.
-//This source file will not be compiled,
-//and the class will not be registered in wrap_init.h or wrap_init.cc
+  //This is not available on Win32.
+//This source file will not be compiled on Win32,
+//and no class defined in it will be registered by wrap_init().
 
 public:
   Socket();
   
-
+ 
   /** Adds an XEMBED client, such as a Gtk::Plug, to the Gtk::Socket.  The
    * client may be in the same process or in a different process. 
    * 
@@ -164,9 +176,9 @@ public:
    * 
    * The Gtk::Socket must have already be added into a toplevel window
    * before you can make this call.
-   * @param window_id The window ID of a client participating in the XEMBED protocol.
+   * @param window The Window of a client participating in the XEMBED protocol.
    */
-  void add_id(Gdk::NativeWindow window_id);
+  void add_id(::Window window_id);
   
   /** Gets the window ID of a Gtk::Socket widget, which can then
    * be used to create a client embedded inside the socket, for
@@ -176,7 +188,7 @@ public:
    * before you can make this call.
    * @return The window ID for the socket.
    */
-  Gdk::NativeWindow get_id() const;
+  ::Window get_id() const;
 
   
   /** Retrieves the window of the plug. Use this to check if the plug has
@@ -196,17 +208,25 @@ public:
   Glib::RefPtr<const Gdk::Window> get_plug_window() const;
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%plug_added()</tt>
+   *
+   * This signal is emitted when a client is successfully
+   * added to the socket.
    */
 
   Glib::SignalProxy0< void > signal_plug_added();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>bool on_my_%plug_removed()</tt>
+   *
+   * This signal is emitted when a client is removed from the socket. 
+   * The default action is to destroy the Gtk::Socket widget, so if you 
+   * want to reuse it you must add a signal handler that returns <tt>true</tt>.
+   * @return <tt>true</tt> to stop other handlers from being invoked.
    */
 
   Glib::SignalProxy0< bool > signal_plug_removed();

@@ -4,7 +4,8 @@
 #define _GTKMM_PRINTUNIXDIALOG_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 2006 The gtkmm Development Team
  *
@@ -19,8 +20,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/dialog.h>
@@ -90,8 +91,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -116,9 +121,9 @@ protected:
 private:
 
   
-  //This is not available in on Win32.
-//This source file will not be compiled,
-//and the class will not be registered in wrap_init.h or wrap_init.cc
+  //This is not available on Win32.
+//This source file will not be compiled on Win32,
+//and no class defined in it will be registered by wrap_init().
 
 
 public:
@@ -229,7 +234,7 @@ public:
    */
   void set_manual_capabilities(PrintCapabilities capabilities);
   
-  /** Gets the value of Gtk::PrintUnixDialog::manual-capabilities property.
+  /** Gets the value of Gtk::PrintUnixDialog::property_manual_capabilities() property.
    * 
    * @newin{2,18}
    * @return The printing capabilities.
@@ -244,7 +249,7 @@ public:
    */
   void get_support_selection(bool support_selection =  true);
   
-  /** Gets the value of Gtk::PrintUnixDialog::support-selection property.
+  /** Gets the value of Gtk::PrintUnixDialog::property_support_selection() property.
    * 
    * @newin{2,18}
    * @return Whether the application supports print of selection.
@@ -258,7 +263,7 @@ public:
    */
   void set_has_selection(bool has_selection =  true);
   
-  /** Gets the value of Gtk::PrintUnixDialog::has-selection property.
+  /** Gets the value of Gtk::PrintUnixDialog::property_has_selection() property.
    * 
    * @newin{2,18}
    * @return Whether there is a selection.
@@ -272,7 +277,7 @@ public:
    */
   void set_embed_page_setup(bool embed =  true);
   
-  /** Gets the value of Gtk::PrintUnixDialog::embed-page-setup property.
+  /** Gets the value of Gtk::PrintUnixDialog::property_embed_page_setup() property.
    * 
    * @newin{2,18}
    * @return Whether there is a selection.
@@ -313,7 +318,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_current_page() ;
+  Glib::PropertyProxy< int > property_current_page() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -323,7 +328,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_current_page() const;
+  Glib::PropertyProxy_ReadOnly< int > property_current_page() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -364,7 +369,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_manual_capabilities() ;
+  Glib::PropertyProxy< bool > property_manual_capabilities() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -374,7 +379,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_manual_capabilities() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_manual_capabilities() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -384,7 +389,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_support_selection() ;
+  Glib::PropertyProxy< bool > property_support_selection() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -394,7 +399,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_support_selection() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_support_selection() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -404,7 +409,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_has_selection() ;
+  Glib::PropertyProxy< bool > property_has_selection() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -414,7 +419,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_has_selection() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_has_selection() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -424,7 +429,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_embed_page_setup() ;
+  Glib::PropertyProxy< bool > property_embed_page_setup() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -434,7 +439,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_embed_page_setup() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_embed_page_setup() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

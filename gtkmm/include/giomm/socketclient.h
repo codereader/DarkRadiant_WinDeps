@@ -4,7 +4,8 @@
 #define _GIOMM_SOCKETCLIENT_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -189,7 +190,7 @@ public:
    * See g_socket_client_set_local_address() for details.
    * 
    * @newin{2,22}
-   * @return A SocketAddres or <tt>0</tt>. don't free.
+   * @return A SocketAddress or <tt>0</tt>. Do not free.
    */
   Glib::RefPtr<SocketAddress> get_local_address();
   
@@ -198,7 +199,7 @@ public:
    * See g_socket_client_set_local_address() for details.
    * 
    * @newin{2,22}
-   * @return A SocketAddres or <tt>0</tt>. don't free.
+   * @return A SocketAddress or <tt>0</tt>. Do not free.
    */
   Glib::RefPtr<const SocketAddress> get_local_address() const;
   
@@ -206,7 +207,7 @@ public:
    * The sockets created by this object will bound to the
    * specified address (if not <tt>0</tt>) before connecting.
    * 
-   * This is useful if you want to ensure the the local
+   * This is useful if you want to ensure that the local
    * side of the connection is on a specific port, or on
    * a specific interface.
    * 
@@ -216,7 +217,7 @@ public:
   void set_local_address(const Glib::RefPtr<SocketAddress>& address);
 
   
-  /** Tries to resolve the @a connectable and make a network connection to it..
+  /** Tries to resolve the @a connectable and make a network connection to it.
    * 
    * Upon a successful connection, a new SocketConnection is constructed
    * and returned.  The caller owns this new object and must drop their
@@ -226,7 +227,7 @@ public:
    * the underlying socket that is used. For instance, for a TCP/IP connection
    * it will be a TcpConnection.
    * 
-   * The socket created will be the same family as the the address that the
+   * The socket created will be the same family as the address that the
    *  @a connectable resolves to, unless family is set with g_socket_client_set_family()
    * or indirectly via g_socket_client_set_local_address(). The socket type
    * defaults to SOCKET_TYPE_STREAM but can be set with
@@ -248,7 +249,7 @@ Glib::RefPtr<SocketConnection> connect(const Glib::RefPtr<SocketConnectable>& co
    * 
    * Attempts to create a TCP connection to the named host.
    * 
-   *  @a host_and_port may be in any of a number of recognised formats; an IPv6
+   *  @a host_and_port may be in any of a number of recognized formats; an IPv6
    * address, an IPv4 address, or a domain name (in which case a DNS
    * lookup is performed).  Quoting with [] is supported for all address
    * types.  A port override may be specified in the usual way with a
@@ -259,7 +260,7 @@ Glib::RefPtr<SocketConnection> connect(const Glib::RefPtr<SocketConnectable>& co
    * used as the port number to connect to.
    * 
    * In general, @a host_and_port is expected to be provided by the user (allowing
-   * them to give the hostname, and a port overide if necessary) and
+   * them to give the hostname, and a port override if necessary) and
    *  @a default_port is expected to be provided by the application.
    * 
    * In the case that an IP address is given, a single connection
@@ -333,7 +334,7 @@ Glib::RefPtr<SocketConnection> connect_to_service(const Glib::ustring& domain, c
    * 
    *  @a uri may be any valid URI containing an "authority" (hostname/port)
    * component. If a port is not specified in the URI, @a default_port
-   * will be used. TLS will be negotiated if SocketClient:tls is <tt>true</tt>.
+   * will be used. TLS will be negotiated if SocketClient::property_tls() is <tt>true</tt>.
    * (SocketClient does not know to automatically assume TLS for
    * certain URI schemes.)
    * 
@@ -550,7 +551,7 @@ Glib::RefPtr<SocketConnection> connect_to_service(const Glib::ustring& domain, c
   /** Enable proxy protocols to be handled by the application. When the
    * indicated proxy protocol is returned by the ProxyResolver,
    * SocketClient will consider this protocol as supported but will
-   * not try find a Proxy instance to handle handshaking. The
+   * not try to find a Proxy instance to handle handshaking. The
    * application must check for this case by calling
    * g_socket_connection_get_remote_address() on the returned
    * SocketConnection, and seeing if it's a ProxyAddress of the
@@ -562,6 +563,10 @@ Glib::RefPtr<SocketConnection> connect_to_service(const Glib::ustring& domain, c
    * proxy protocols that are reused between protocols. A good example
    * is HTTP. It can be used to proxy HTTP, FTP and Gopher and can also
    * be use as generic socket proxy through the HTTP CONNECT method.
+   * 
+   * When the proxy is detected as being an application proxy, TLS handshake
+   * will be skipped. This is required to let the application do the proxy
+   * specific handshake.
    * @param protocol The proxy protocol.
    */
   void add_application_proxy(const Glib::ustring& protocol);
@@ -574,7 +579,7 @@ Glib::RefPtr<SocketConnection> connect_to_service(const Glib::ustring& domain, c
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<SocketFamily> property_family() ;
+  Glib::PropertyProxy< SocketFamily > property_family() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -584,7 +589,7 @@ Glib::RefPtr<SocketConnection> connect_to_service(const Glib::ustring& domain, c
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<SocketFamily> property_family() const;
+  Glib::PropertyProxy_ReadOnly< SocketFamily > property_family() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -614,7 +619,7 @@ Glib::RefPtr<SocketConnection> connect_to_service(const Glib::ustring& domain, c
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<SocketProtocol> property_protocol() ;
+  Glib::PropertyProxy< SocketProtocol > property_protocol() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -624,7 +629,7 @@ Glib::RefPtr<SocketConnection> connect_to_service(const Glib::ustring& domain, c
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<SocketProtocol> property_protocol() const;
+  Glib::PropertyProxy_ReadOnly< SocketProtocol > property_protocol() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -634,7 +639,7 @@ Glib::RefPtr<SocketConnection> connect_to_service(const Glib::ustring& domain, c
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<SocketType> property_type() ;
+  Glib::PropertyProxy< SocketType > property_type() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -644,7 +649,7 @@ Glib::RefPtr<SocketConnection> connect_to_service(const Glib::ustring& domain, c
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<SocketType> property_type() const;
+  Glib::PropertyProxy_ReadOnly< SocketType > property_type() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

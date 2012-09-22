@@ -4,7 +4,8 @@
 #define _GIOMM_SOCKETSERVICE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -131,8 +132,8 @@ public:
   /** Starts the service, i.e.\ start accepting connections
    * from the added sockets when the mainloop runs.
    * 
-   * This call is threadsafe, so it may be called from a thread
-   * handling an incomming client request.
+   * This call is thread-safe, so it may be called from a thread
+   * handling an incoming client request.
    * 
    * @newin{2,22}
    */
@@ -141,8 +142,8 @@ public:
   /** Stops the service, i.e.\ stops accepting connections
    * from the added sockets when the mainloop runs.
    * 
-   * This call is threadsafe, so it may be called from a thread
-   * handling an incomming client request.
+   * This call is thread-safe, so it may be called from a thread
+   * handling an incoming client request.
    * 
    * @newin{2,22}
    */
@@ -159,9 +160,23 @@ public:
   bool is_active();
 
  
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>bool on_my_%incoming(const Glib::RefPtr<SocketConnection>& connection, const Glib::RefPtr<Glib::Object>& source_object)</tt>
+   *
+   * The signal_incoming() signal is emitted when a new incoming connection
+   * to @a service needs to be handled. The handler must initiate the
+   * handling of @a connection, but may not block; in essence,
+   * asynchronous operations must be used.
+   * 
+   *  @a connection will be unreffed once the signal handler returns,
+   * so you need to ref it yourself if you are planning to use it.
+   * 
+   * @newin{2,22}
+   * @param connection A new SocketConnection object.
+   * @param source_object The source_object passed to
+   * g_socket_listener_add_address().
+   * @return <tt>true</tt> to stop other handlers from being called.
    */
 
   Glib::SignalProxy2< bool,const Glib::RefPtr<SocketConnection>&,const Glib::RefPtr<Glib::Object>& > signal_incoming();
@@ -176,6 +191,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_incoming().
   virtual bool on_incoming(const Glib::RefPtr<SocketConnection>& connection, const Glib::RefPtr<Glib::Object>& source_object);
 
 

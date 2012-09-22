@@ -4,12 +4,13 @@
 #define _GTKMM_MAIN_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: main.hg,v 1.9 2005/02/13 20:48:35 murrayc Exp $ */
 
 /* main.h
- *
+ * 
  * Copyright (C) 1998-2003 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -23,24 +24,23 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 
+#include <gtk/gtk.h>
+
 #include <sigc++/sigc++.h>
-#include <gdkmm/types.h> //For GdkEventKey
+#include <gdkmm/types.h>
+#include <glibmm/optioncontext.h>
 
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-extern "C"
-{
-typedef struct _GtkWidget GtkWidget;
-}
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 namespace Gtk
 {
+
+#ifndef GTKMM_DISABLE_DEPRECATED
+
 
 class Widget;
 class Window;
@@ -49,37 +49,6 @@ class Window;
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 //Actually, I'd like to just keep these out of the alphabetical list. murrayc.
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-/* Run Signal Class (internal)
- * @deprecated This was removed in gtkmm-3.0 because it is not useful.
- */
-class RunSig
-{
-public:
-  typedef sigc::slot<void> SlotType;
-
-  sigc::connection connect(const SlotType& slot);
-
-protected:
-  static gboolean gtk_callback(gpointer data);
-};
-
-/** Quit Signal Class (internal)
- * @deprecated This was removed in gtkmm-3.0 because it is not useful.
- */
-class QuitSig
-{
-public:
-  typedef sigc::slot<bool> SlotType;
-
-  sigc::connection connect(const SlotType& slot, guint main_level = 0);
-
-protected:
-  static gboolean gtk_callback(gpointer data); //gtk+ calls this, which then calls our slot.
-};
-#endif // GTKMM_DISABLE_DEPRECATED
 
 
 /// KeySnooper Signal Class (internal)
@@ -96,56 +65,63 @@ protected:
 
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
+#endif // GTKMM_DISABLE_DEPRECATED
+
 
 //**********************************************************************
 
-/** Main application class
+/** Main application class.
  * Every application must have one of these objects.
- * It may not be global and must be the first Gtk object created.
+ * It may not be global and must be the first gtkmm object created.
  * It is a singleton so declaring more than one will simply access the first
  * created.
  *
- * Normal use of this class is in the main() function to give argc and argv
- * to the gtk initialization. Widgets can use Gtk::Main::quit()
- * to exit from the application.
+ * You would normally use this class in your main() function to initialize gtkmm 
+ * and optionally to give argc and argv to the GTK+ initialization. 
+ * After calling Gtk::Main::run(), you may use Gtk::Main::quit() to exit from 
+ * the application, or just pass your main window to run(), to make run() 
+ * return when that window closes.
  *
- * The internals of the widget have been disguised as signals
- * so that the user can easily connect using the same methods
- * used throughout the widget interface.
- *
- * Minimal gtkmm application is something like this:
+ * A minimal gtkmm application would be something like this:
  * @code
- * int main(int argc, char *argv[]) {
- *     Gtk::Main kit(argc, argv);
- *     ... create some widgets ...
- *     kit.run();
+ * int main(int argc, char *argv[])
+ * {
+ *   Gtk::Main kit(argc, argv);
+ *   ... create some widgets and windows...
+ *   kit.run(window);
  * }
  * @endcode
+ *
+ * @deprecated Use Gtk::Application instead.
  */
 class Main : public sigc::trackable
 {
 public:
 
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   //This offers the same functionality as gtk_init_with_args():
   /** Scans the argument vector, and strips off all parameters parsed by GTK+ or your @a option_context.
-   * Add a Glib::OptionGroup to the Glib::OptionContext to parse your own command-line arguments.
+   * Add a Glib::OptionGroup to the Glib::OptionContext to parse your own command-line arguments.  
    *
    * Note:  The argument strings themself won't be modified, although the
    * pointers to them might change.  This makes it possible to create your
    * own argv of string literals, which have the type 'const char[]' in
    * standard C++.  (You might need to use const_cast<>, though.)
    *
-   * This function automatically generates nicely formatted
+   * This function automatically generates nicely formatted 
    * <option>--help</option> output. Note that your program will
    * be terminated after writing out the help output.
    *
    * @param argc a reference to the number of command line arguments.
    * @param argv a reference to the array of command line arguments.
-   * @parameter_string a string which is displayed in the first line of <option>--help</option> output,
+   * @parameter_string a string which is displayed in the first line of <option>--help</option> output, 
    * after <literal><replaceable>programname</replaceable> [OPTION...]</literal>
-   * @param option_context A Glib::OptionContext containing Glib::OptionGroups which described the command-line arguments taken by your program.
+   * @param option_context A Glib::OptionContext containing Glib::OptionGroups which described the command-line arguments taken by your program. 
    *
    * @throw Glib::OptionError
+   *
+   * @deprecated Use Gtk::Application instead.
    */
   Main(int& argc, char**& argv, Glib::OptionContext& option_context);
 
@@ -156,22 +132,60 @@ public:
    * pointers to them might change.  This makes it possible to create your
    * own argv of string literals, which have the type 'const char[]' in
    * standard C++.  (You might need to use const_cast<>, though.)
+   *
+   * @param argc a pointer to the number of command line arguments.
+   * @param argv a pointer to the array of command line arguments.
+   * @param set_locale Passing false prevents GTK+ from automatically calling 
+   * setlocale(LC_ALL, ""). You would want to pass false if you wanted to set 
+   * the locale for your program to something other than the user's locale, or 
+   * if you wanted to set different values for different locale categories.
+   *
+   * @deprecated Use Gtk::Application instead.
    */
   Main(int* argc, char*** argv, bool set_locale = true);
 
-  /// See Main(int* argc, char*** argv, bool set_locale).
+  /** Scans the argument vector, and strips off all parameters known to GTK+.
+   * Your application may then handle the remaining arguments.
+   *
+   * @param argc a reference to the number of command line arguments.
+   * @param argv a reference to the array of command line arguments.
+   * @param set_locale Passing false prevents GTK+ from automatically calling 
+   * setlocale(LC_ALL, ""). You would want to pass false if you wanted to set 
+   * the locale for your program to something other than the user's locale, or 
+   * if you wanted to set different values for different locale categories.
+   *
+   * @deprecated Use Gtk::Application instead.
+   */
   Main(int& argc, char**& argv, bool set_locale = true);
+  
+  /** Initialization without command-line arguments.
+   *
+   * @param set_locale Passing false prevents GTK+ from automatically calling 
+   * setlocale(LC_ALL, ""). You would want to pass false if you wanted to set 
+   * the locale for your program to something other than the user's locale, or 
+   * if you wanted to set different values for different locale categories.
+   *
+   * @deprecated Use Gtk::Application instead.
+   */
+  explicit Main(bool set_locale = true);
 
-
+  /**
+   * @deprecated Use Gtk::Application instead. 
+   */
   virtual ~Main();
 
-  /// Access to the one global instance of Gtk::Main.
+  /** Access to the one global instance of Gtk::Main.
+   *
+   * @deprecated Use Gtk::Application instead.
+   */
   static Gtk::Main* instance();
 
   /** Start the event loop.
    * This begins the event loop which handles events.  No
    * events propagate until this has been called.  It may be
    * called recursively to popup dialogs
+   *
+   * @deprecated Use Gtk::Application instead.
    */
   static void run();
 
@@ -180,27 +194,39 @@ public:
    * the application, but just call hide() on your Window class.
    *
    * @param window The window to show. This method will return when the window is hidden.
+   *
+   * @deprecated Use Gtk::Application instead.
    */
   static void run(Window& window);
 
   /** Makes the innermost invocation of the main loop return when it regains control.
+   *
+   * @deprecated Use Gtk::Application instead.
    */
   static void quit();
 
+  /**
+   * @deprecated Use Gtk::Application instead.
+   */
   static guint level();
 
   //This attempts to provide the same functionality as gtk_get_option_group():
   /** Add a Glib::OptionGroup, for the commandline arguments recognized
-   * by GTK+ and GDK, to a Glib::OptionContext, so that these commandline arguments will
+   * by GTK+ and GDK, to a Glib::OptionContext, so that these commandline arguments will 
    * be processed in addition to the existing commandline arguments specified by the Glib::OptionContext.
    *
-   * You do not need to use this method if you pass your Glib::OptionContext to the Main constructor, because
+   * You do not need to use this method if you pass your Glib::OptionContext to the Main constructor, because 
    * it adds the gtk option group automatically.
    *
    * @param option_context Option Context to which the group will be added.
    * @param open_default_display Whether to open the default display when parsing the commandline arguments.
+   *
+   * @deprecated Use Gtk::Application instead.
    */
   static void add_gtk_option_group(Glib::OptionContext& option_context, bool open_default_display = true);
+
+#endif // GTKMM_DISABLE_DEPRECATED
+
 
   /** Runs a single iteration of the main loop.
    * If no events are waiting to be processed GTK+ will block until the next event is noticed.
@@ -229,30 +255,6 @@ public:
 
 #ifndef GTKMM_DISABLE_DEPRECATED
 
-  /** Run signal
-   * @return void
-   */
-  static RunSig& signal_run();
-
-  /** Quit signal
-   * You can connect signal handlers to invoke actions when Gtk::Main::quit()
-   * has been called.  Note that main loops can be nested by calling
-   * Gtk::Main::run() recursively, therefore receiving this signal doesn't
-   * necessarily mean the application is about to be terminated.  If you want
-   * to receive a signal only when the last main loop quits, call connect()
-   * with <tt>main_level&nbsp;=&nbsp;1</tt>.
-   * @code
-   * bool thisclass::mymethod() { return false; }
-   * Gtk::Main::signal_quit().connect(sigc::mem_fun(this, &thisclass::mymethod));
-   * @endcode
-   * @return bool - @c false means callback is removed, @c true means
-   * it'll be called again the next the main loop quits.
-   *
-   * @deprecated This was removed in gtkmm-3.0 because it is not useful.
-   */
-  static QuitSig& signal_quit();
-#endif // GTKMM_DISABLE_DEPRECATED
-
 
   /** KeySnooper signal
    * Allows you to channel keypresses to a signal handler
@@ -263,19 +265,26 @@ public:
    * It is the responsibility of the snooper to pass the keypress
    * to the widget, however, care must be taken that the keypress is
    * not passed twice.
+   *
+   * @deprecated Key snooping should not be done. Events should be handled by widgets.
    */
   static KeySnooperSig& signal_key_snooper();
+#endif // GTKMM_DISABLE_DEPRECATED
 
-  // Initialize table of wrap_new functions.
-  // Doesn't need an instance of Gtk::Main.
+
+  /** Initialize the table of wrap_new functions.
+   * This doesn't need an instance of Gtk::Main.
+   * This would usually only be used by the init() methods of libraries that depend on gtkmm.
+   */
   static void init_gtkmm_internals();
 
 protected:
-  Main();
+
+#ifndef GTKMM_DISABLE_DEPRECATED
 
   void init(int* argc, char*** argv, bool set_locale);
   // TODO: implement this to use the new Glib::OptionEntry argument parsing classes.
-  //void init(int* argc, char*** argv, const std::string& parameter_string, const Glib::ArrayHandle<const Glib::OptionEntry&>& entries, const std::string& translation_domain);
+  //void init(int* argc, char*** argv, const std::string& parameter_string, const std::vector<const Glib::OptionEntry&>& entries, const std::string& translation_domain);
 
   virtual void run_impl();
   virtual void quit_impl();
@@ -287,17 +296,12 @@ protected:
   virtual void on_window_hide();
 
   // Signal proxies:
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  static RunSig         signal_run_;
-  static QuitSig        signal_quit_;
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-  static KeySnooperSig  signal_key_snooper_;
+  static KeySnooperSig signal_key_snooper_;
 
 private:
   static Main* instance_;
+#endif // GTKMM_DISABLE_DEPRECATED
+
 };
 
 } // namespace Gtk

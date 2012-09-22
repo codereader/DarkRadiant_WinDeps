@@ -4,7 +4,8 @@
 #define _GTKMM_PAGESETUPUNIXDIALOG_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 2006 The gtkmm Development Team
  *
@@ -19,8 +20,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/dialog.h>
@@ -79,8 +80,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -105,9 +110,9 @@ protected:
 private:
 
   
-  //This is not available in on Win32.
-//This source file will not be compiled,
-//and the class will not be registered in wrap_init.h or wrap_init.cc
+  //This is not available on Win32.
+//This source file will not be compiled on Win32,
+//and no class defined in it will be registered by wrap_init().
 
 
 public:
@@ -123,14 +128,14 @@ public:
    */
   void set_page_setup(const Glib::RefPtr<PageSetup>& page_setup);
   
-  /** Gets the currently selected page setup from the dialog. 
+  /** Gets the currently selected page setup from the dialog.
    * 
    * @newin{2,10}
    * @return The current page setup.
    */
   Glib::RefPtr<PageSetup> get_page_setup();
   
-  /** Gets the currently selected page setup from the dialog. 
+  /** Gets the currently selected page setup from the dialog.
    * 
    * @newin{2,10}
    * @return The current page setup.

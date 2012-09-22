@@ -4,7 +4,8 @@
 #define _GDKMM_DRAGCONTEXT_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: dragcontext.hg,v 1.11 2006/03/22 16:53:21 murrayc Exp $ */
 
@@ -23,16 +24,18 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <vector>
 
-#include <glibmm/object.h>
+#include <gdkmm/color.h>
 #include <gdkmm/pixbuf.h>
-//#include <gdkmm/bitmap.h>
-#include <gdkmm/colormap.h>
-#include <glibmm/listhandle.h>
+#include <gdkmm/device.h>
+#include <glibmm/object.h>
+#include <cairomm/surface.h>
+#include <gdk/gdk.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -123,9 +126,10 @@ namespace Gdk
  */
 enum DragProtocol
 {
+  DRAG_PROTO_NONE,
   DRAG_PROTO_MOTIF,
   DRAG_PROTO_XDND,
-  DRAG_PROTO_NONE,
+  DRAG_PROTO_ROOTWIN,
   DRAG_PROTO_WIN32_DROPFILES,
   DRAG_PROTO_OLE2,
   DRAG_PROTO_LOCAL
@@ -184,8 +188,11 @@ protected:
 public:
   virtual ~DragContext();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -205,25 +212,9 @@ private:
   
 protected:
 
-  #ifndef GDKMM_DISABLE_DEPRECATED
-
-  /** @deprecated This method is not useful, you always obtain drag contexts by Gdk::Window::drag_begin() or similar.
-   */
-  DragContext();
-  #endif // GDKMM_DISABLE_DEPRECATED
-
-
 public:
-  #ifndef GDKMM_DISABLE_DEPRECATED
 
-  /** @deprecated This method is not useful, you always obtain drag contexts by Gdk::Window::drag_begin() or similar.
-   */
   
-  static Glib::RefPtr<DragContext> create();
-
-  #endif // GDKMM_DISABLE_DEPRECATED
-
-
   /** Selects one of the actions offered by the drag source.
    * 
    * This function is called by the drag destination in response to
@@ -245,11 +236,11 @@ public:
    //gdk_drag_motion is only used in GDK internally.
 
   
-  /** Accepts or rejects a drop. 
+  /** Accepts or rejects a drop.
    * 
    * This function is called by the drag destination in response
    * to a drop initiated by the drag source.
-   * @param ok <tt>true</tt> if the drop is accepted.
+   * @param accepted <tt>true</tt> if the drop is accepted.
    * @param time The timestamp for this operation.
    */
   void drop_reply(bool ok, guint32 time);
@@ -263,7 +254,7 @@ public:
   void drop_finish(bool success, guint32 time);
   
   /** Returns the selection atom for the current source window.
-   * @return The selection atom.
+   * @return The selection atom, or Gdk::NONE.
    */
   Glib::ustring get_selection() const;
 
@@ -278,8 +269,10 @@ public:
   //Gtk::Widget* get_source_widget() - see Gtk::Widget::drag_get_source_widget()
 
   // void set_icon(Gtk::Widget* widget, int hot_x, int hot_y) - see Gtk::Widget::set_as_icon().
-  
-  void set_icon(const Glib::RefPtr<Gdk::Colormap>& colormap, const Glib::RefPtr<Gdk::Pixmap>& pixmap, const Glib::RefPtr<Gdk::Bitmap>& mask, int hot_x, int hot_y);
+
+   
+  void set_icon(const ::Cairo::RefPtr< ::Cairo::Surface>& surface);
+
   
   void set_icon(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf, int hot_x, int hot_y);
 
@@ -288,6 +281,7 @@ public:
   // See http://bugzilla.gnome.org/show_bug.cgi?id=79124 for details
   
   void set_icon(const Glib::ustring& stock_id, int hot_x, int hot_y);
+
   
   void set_icon_name(const Glib::ustring& name, int hot_x, int hot_y);
   
@@ -307,28 +301,53 @@ public:
    * @return A Gdk::Window.
    */
   Glib::RefPtr<const Window> get_source_window() const;
+  
+  /** Returns the destination windw for the DND operation.
+   * 
+   * @newin{3,0}
+   * @return A Gdk::Window.
+   */
+  Glib::RefPtr<Window> get_dest_window();
+  
+  /** Returns the destination windw for the DND operation.
+   * 
+   * @newin{3,0}
+   * @return A Gdk::Window.
+   */
+  Glib::RefPtr<const Window> get_dest_window() const;
+  
+  /** Returns the drag protocol thats used by this context.
+   * 
+   * @newin{3,0}
+   * @return The drag protocol.
+   */
+  DragProtocol get_protocol() const;
 
-  //gtkmmproc error: gdk_drag_context_get_destination_window : method defs lookup failed (1)
-  //gtkmmproc error: gdk_drag_context_get_destination_window : method defs lookup failed (1)
+
+  /** Associates a Gdk::Device to @a context, so all Drag and Drop events
+   * for @a context are emitted as if they came from this device.
+   * @param device A Gdk::Device.
+   */
+  void set_device(const Glib::RefPtr<Device>& device);
+  
+  /** Returns the Gdk::Device associated to the drag context.
+   * @return The Gdk::Device associated to @a context.
+   */
+  Glib::RefPtr<Device> get_device();
+  
+  /** Returns the Gdk::Device associated to the drag context.
+   * @return The Gdk::Device associated to @a context.
+   */
+  Glib::RefPtr<const Device> get_device() const;
 
   /** Get a list of targets offered by the source.
    * @result a list of targets offered by the source.
    */
-  Gdk::ListHandle_AtomString get_targets() const;
-
-  /** Get the DND protocol which governs this drag.
-   * @result the DND protocol which governs this drag.
-   */
-   DragProtocol get_protocol() const;
- 
-  /** Discover whether the context is used on the source side.
-   * @result true if the context is used on the source side.
-   */
-   bool get_is_source() const;
- 
+  std::vector<std::string> list_targets() const;
   
+
   /** Determines the bitmask of actions proposed by the source if
-   * gdk_drag_context_suggested_action() returns GDK_ACTION_ASK.
+   * get_suggested_action() returns GDK_ACTION_ASK.
    * 
    * @newin{2,22}
    * @return The Gdk::DragAction flags.
@@ -341,20 +360,7 @@ public:
    * @return A Gdk::DragAction value.
    */
   DragAction get_suggested_action() const;
-
   
-#ifndef GDKMM_DISABLE_DEPRECATED
-
-  /** Determines the action chosen by the drag destination.
-   * 
-   * @newin{2,22}
-   * @deprecated Use get_selected_action()
-   * @return A Gdk::DragAction value.
-   */
-  DragAction get_action() const;
-#endif // GDKMM_DISABLE_DEPRECATED
-
-
   /** Determines the action chosen by the drag destination.
    * 
    * @newin{2,22}
@@ -362,16 +368,11 @@ public:
    */
   DragAction get_selected_action() const;
 
-  /** Get a timestamp recording the start time of this drag.
-   * @result a timestamp recording the start time of this drag.
-   */
-   guint32 get_start_time() const;
- 
   
   /** Finds the destination window and DND protocol to use at the
    * given pointer position.
    * 
-   * This function is called by the drag source to obtain the 
+   * This function is called by the drag source to obtain the
    *  @a dest_window and @a protocol parameters for gdk_drag_motion().
    * 
    * @newin{2,2}
@@ -384,7 +385,7 @@ public:
    * @param protocol Location to store the DND protocol in.
    */
 
-  void find_window_for_screen(const Glib::RefPtr<Window>& drag_window, const Glib::RefPtr<Screen>& screen, int x_root, int y_root, Glib::RefPtr<Window>& dest_window, DragProtocol* protocol) const;
+  void find_window_for_screen(const Glib::RefPtr<Window>& drag_window, const Glib::RefPtr<Screen>& screen, int x_root, int y_root, Glib::RefPtr<Window>& dest_window, DragProtocol& protocol) const;
   
 
 public:

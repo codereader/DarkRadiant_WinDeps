@@ -4,7 +4,8 @@
 #define _GTKMM_VOLUMEBUTTON_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: volumebutton.hg,v 1.5 2005/11/30 14:10:49 murrayc Exp $ */
 
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/scalebutton.h>
@@ -80,8 +81,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -107,7 +112,7 @@ private:
 
 public:
 
-  /** Creates a olumeButton, with a range between 0 and 100, with
+  /** Creates a VolumeButton, with a range between 0 and 100, with
    * a stepping of 2. Volume values can be obtained and modified using
    * the methods from the ScaleButton base class.
    */

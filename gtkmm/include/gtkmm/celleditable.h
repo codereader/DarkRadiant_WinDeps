@@ -4,7 +4,8 @@
 #define _GTKMM_CELLEDITABLE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: celleditable.hg,v 1.2 2005/01/10 10:49:23 murrayc Exp $ */
 
@@ -21,8 +22,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <glibmm/interface.h>
@@ -71,9 +72,14 @@ private:
   CellEditable(const CellEditable&);
   CellEditable& operator=(const CellEditable&);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 protected:
-  CellEditable(); // you must derive from this class
-
+  /**
+   * You should derive from this class to use it.
+   */
+  CellEditable();
+  
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /** Called by constructors of derived classes. Provide the result of 
    * the Class init() function to ensure that it is properly 
    * initialized.
@@ -96,8 +102,11 @@ public:
 
   static void add_interface(GType gtype_implementer);
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -119,26 +128,48 @@ public:
    */
   void start_editing(GdkEvent* event);
   
-  /** Emits the Gtk::CellEditable::editing-done signal.
+  /** Emits the Gtk::CellEditable::signal_editing_done() signal.
    */
   void editing_done();
   
-  /** Emits the Gtk::CellEditable::remove-widget signal.
+  /** Emits the Gtk::CellEditable::signal_remove_widget() signal.
    */
   void remove_widget();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%editing_done()</tt>
+   *
+   * This signal is a sign for the cell renderer to update its
+   * value from the @a cell_editable.
+   * 
+   * Implementations of Gtk::CellEditable are responsible for
+   * emitting this signal when they are done editing, e.g.
+   * Gtk::Entry is emitting it when the user presses Enter.
+   * 
+   * Gtk::CellEditable::editing_done() is a convenience method
+   * for emitting Gtk::CellEditable::signal_editing_done().
    */
 
   Glib::SignalProxy0< void > signal_editing_done();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%remove_widget()</tt>
+   *
+   * This signal is meant to indicate that the cell is finished
+   * editing, and the widget may now be destroyed.
+   * 
+   * Implementations of Gtk::CellEditable are responsible for
+   * emitting this signal when they are done editing. It must
+   * be emitted after the Gtk::CellEditable::signal_editing_done() signal,
+   * to give the cell renderer a chance to update the cell's value
+   * before the widget is removed.
+   * 
+   * Gtk::CellEditable::remove_widget() is a convenience method
+   * for emitting Gtk::CellEditable::signal_remove_widget().
    */
 
   Glib::SignalProxy0< void > signal_remove_widget();
@@ -151,7 +182,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_editing_canceled() ;
+  Glib::PropertyProxy< bool > property_editing_canceled() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -161,7 +192,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_editing_canceled() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_editing_canceled() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -178,7 +209,9 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_editing_done().
   virtual void on_editing_done();
+  /// This is a default handler for the signal signal_remove_widget().
   virtual void on_remove_widget();
 
 

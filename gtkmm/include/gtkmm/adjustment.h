@@ -4,12 +4,13 @@
 #define _GTKMM_ADJUSTMENT_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: adjustment.hg,v 1.5 2006/11/08 21:51:35 murrayc Exp $ */
 
 /* adjustment.h
- * 
+ *
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -23,11 +24,11 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <gtkmm/object.h>
+#include <glibmm/object.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -54,28 +55,25 @@ namespace Gtk
  *
  * The owner of the Gtk::Adjustment typically calls the value_changed() and
  * changed() functions after changing the value and its bounds. This results
- * in the emission of the "value_changed" or "changed" signal respectively. 
+ * in the emission of the "value_changed" or "changed" signal respectively.
  *
  */
 
-class Adjustment : public Object
+class Adjustment : public Glib::Object
 {
-  public:
+  
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+public:
   typedef Adjustment CppObjectType;
   typedef Adjustment_Class CppClassType;
   typedef GtkAdjustment BaseObjectType;
   typedef GtkAdjustmentClass BaseClassType;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-  virtual ~Adjustment();
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
-private:
-  friend class Adjustment_Class;
+private:  friend class Adjustment_Class;
   static CppClassType adjustment_class_;
 
+private:
   // noncopyable
   Adjustment(const Adjustment&);
   Adjustment& operator=(const Adjustment&);
@@ -87,39 +85,37 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  virtual ~Adjustment();
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
-  ///Provides access to the underlying C GtkObject.
+  ///Provides access to the underlying C GObject.
   GtkAdjustment*       gobj()       { return reinterpret_cast<GtkAdjustment*>(gobject_); }
 
-  ///Provides access to the underlying C GtkObject.
+  ///Provides access to the underlying C GObject.
   const GtkAdjustment* gobj() const { return reinterpret_cast<GtkAdjustment*>(gobject_); }
 
-
-public:
-  //C++ methods used to invoke GTK+ virtual functions:
-
-protected:
-  //GTK+ Virtual Functions (override these to change behaviour):
-
-  //Default Signal Handlers::
-  virtual void on_changed();
-  virtual void on_value_changed();
-
+  ///Provides access to the underlying C instance. The caller is responsible for unrefing it. Use when directly setting fields in structs.
+  GtkAdjustment* gobj_copy();
 
 private:
 
+  
 public:
 
   friend class Range;
   friend class HScrollbar;
   friend class VScrollbar;
 
+protected:
   /** Constructor to create an Adjustment object.
    * @param value The initial value
    * @param lower The minimum value
@@ -129,8 +125,12 @@ public:
    * @param page_size The page size
    */
   Adjustment(double value, double lower, double upper, double step_increment = 1, double page_increment = 10, double page_size = 0);
+
+public:
   
-  
+  static Glib::RefPtr<Adjustment> create(double value, double lower, double upper, double step_increment =  1, double page_increment =  10, double page_size =  0);
+
+
   /** Emits a "changed" signal from the Adjustment.  This is typically called by the owner of the Adjustment after it has changed any of the Adjustment fields other than the value.
    */
   void changed();
@@ -184,7 +184,7 @@ public:
    * @return The current minimum value of the adjustment.
    */
   double get_lower() const;
-  
+
   
   /** Sets the maximum value of the adjustment.
    * 
@@ -281,24 +281,37 @@ public:
    * @param page_size The new page size.
    */
   void configure(double value, double lower, double upper, double step_increment, double page_increment, double page_size);
+  
+  
+  /** Gets the smaller of step increment and page increment.
+   * 
+   * @newin{3,2}
+   * @return The minimum increment of @a adjustment.
+   */
+  double get_minimum_increment() const;
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%changed()</tt>
+   *
+   * Emitted when one or more of the Gtk::Adjustment fields have been changed,
+   * other than the value field.
    */
 
   Glib::SignalProxy0< void > signal_changed();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%value_changed()</tt>
+   *
+   * Emitted when the Gtk::Adjustment value field has been changed.
    */
 
   Glib::SignalProxy0< void > signal_value_changed();
 
-  
+
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The value of the adjustment.
    *
@@ -306,7 +319,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<double> property_value() ;
+  Glib::PropertyProxy< double > property_value() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -316,7 +329,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<double> property_value() const;
+  Glib::PropertyProxy_ReadOnly< double > property_value() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -326,7 +339,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<double> property_lower() ;
+  Glib::PropertyProxy< double > property_lower() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -336,7 +349,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<double> property_lower() const;
+  Glib::PropertyProxy_ReadOnly< double > property_lower() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -346,7 +359,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<double> property_upper() ;
+  Glib::PropertyProxy< double > property_upper() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -356,7 +369,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<double> property_upper() const;
+  Glib::PropertyProxy_ReadOnly< double > property_upper() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -366,7 +379,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<double> property_step_increment() ;
+  Glib::PropertyProxy< double > property_step_increment() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -376,7 +389,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<double> property_step_increment() const;
+  Glib::PropertyProxy_ReadOnly< double > property_step_increment() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -386,7 +399,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<double> property_page_increment() ;
+  Glib::PropertyProxy< double > property_page_increment() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -396,7 +409,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<double> property_page_increment() const;
+  Glib::PropertyProxy_ReadOnly< double > property_page_increment() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -406,7 +419,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<double> property_page_size() ;
+  Glib::PropertyProxy< double > property_page_size() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -416,8 +429,23 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<double> property_page_size() const;
+  Glib::PropertyProxy_ReadOnly< double > property_page_size() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+public:
+
+public:
+  //C++ methods used to invoke GTK+ virtual functions:
+
+protected:
+  //GTK+ Virtual Functions (override these to change behaviour):
+
+  //Default Signal Handlers::
+  /// This is a default handler for the signal signal_changed().
+  virtual void on_changed();
+  /// This is a default handler for the signal signal_value_changed().
+  virtual void on_value_changed();
 
 
 };
@@ -435,8 +463,8 @@ namespace Glib
    *
    * @relates Gtk::Adjustment
    */
-  Gtk::Adjustment* wrap(GtkAdjustment* object, bool take_copy = false);
-} //namespace Glib
+  Glib::RefPtr<Gtk::Adjustment> wrap(GtkAdjustment* object, bool take_copy = false);
+}
 
 
 #endif /* _GTKMM_ADJUSTMENT_H */

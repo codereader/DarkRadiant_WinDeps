@@ -4,7 +4,8 @@
 #define _GIOMM_MOUNT_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -179,9 +180,14 @@ private:
   Mount(const Mount&);
   Mount& operator=(const Mount&);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 protected:
-  Mount(); // you must derive from this class
-
+  /**
+   * You should derive from this class to use it.
+   */
+  Mount();
+  
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /** Called by constructors of derived classes. Provide the result of 
    * the Class init() function to ensure that it is properly 
    * initialized.
@@ -452,7 +458,7 @@ public:
 
   //TODO: Correct the documentation:
   
-  /** Finishes guessing content types of @a mount. If any errors occured
+  /** Finishes guessing content types of @a mount. If any errors occurred
    * during the operation, @a error will be set to contain the errors and
    * <tt>false</tt> will be returned. In particular, you may get an 
    * IO_ERROR_NOT_SUPPORTED if the mount does not support content 
@@ -498,7 +504,7 @@ public:
   /** Increments the shadow count on @a mount. Usually used by
    * VolumeMonitor implementations when creating a shadow mount for
    *  @a mount, see g_mount_is_shadowed() for more information. The caller
-   * will need to emit the Mount::changed signal on @a mount manually.
+   * will need to emit the Mount::signal_changed() signal on @a mount manually.
    * 
    * @newin{2,20}
    */
@@ -507,7 +513,7 @@ public:
   /** Decrements the shadow count on @a mount. Usually used by
    * VolumeMonitor implementations when destroying a shadow mount for
    *  @a mount, see g_mount_is_shadowed() for more information. The caller
-   * will need to emit the Mount::changed signal on @a mount manually.
+   * will need to emit the Mount::signal_changed() signal on @a mount manually.
    * 
    * @newin{2,20}
    */
@@ -523,26 +529,46 @@ public:
    */
   Glib::RefPtr<File> get_default_location() const;
 
+  
+  /** Gets the sort key for @a mount, if any.
+   * 
+   * @newin{2,32}
+   * @return Sorting key for @a mount or <tt>0</tt> if no such key is available.
+   */
+  Glib::ustring get_sort_key() const;
 
-  /**
-   * @par Prototype:
+  
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%changed()</tt>
+   *
+   * Emitted when the mount has been changed.
    */
 
   Glib::SignalProxy0< void > signal_changed();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%unmounted()</tt>
+   *
+   * This signal is emitted when the Mount have been
+   * unmounted. If the recipient is holding references to the
+   * object they should release them so the object can be
+   * finalized.
    */
 
   Glib::SignalProxy0< void > signal_unmounted();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%pre_unmount()</tt>
+   *
+   * This signal is emitted when the Mount is about to be
+   * unmounted.
+   * 
+   * @newin{2,22}
    */
 
   Glib::SignalProxy0< void > signal_pre_unmount();
@@ -560,7 +586,9 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_changed().
   virtual void on_changed();
+  /// This is a default handler for the signal signal_unmounted().
   virtual void on_unmounted();
 
 

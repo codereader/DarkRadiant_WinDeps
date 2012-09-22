@@ -195,6 +195,27 @@ public:
   // TODO: add an override which doesn't take a directory
   // TODO: check what happens when directory is ""
   
+  /** A portable way to build the filename of a module. The platform-specific
+   * prefix and suffix are added to the filename, if needed, and the result
+   * is added to the directory, using the correct separator character.
+   * 
+   * The directory should specify the directory where the module can be found.
+   * It can be <tt>0</tt> or an empty string to indicate that the module is in a
+   * standard platform-specific directory, though this is not recommended
+   * since the wrong module may be found.
+   * 
+   * For example, calling g_module_build_path() on a Linux system with a
+   *  @a directory of <filename>/lib</filename> and a @a module_name of "mylibrary"
+   * will return <filename>/lib/libmylibrary.so</filename>. On a Windows system,
+   * using <filename>\Windows</filename> as the directory it will return
+   * <filename>\Windows\mylibrary.dll</filename>.
+   * @param directory The directory where the module is. This can be <tt>0</tt>
+   * or the empty string to indicate that the standard platform-specific
+   * directories will be used, though that is not recommended.
+   * @param module_name The name of the module.
+   * @return The complete path of the module, including the standard library
+   * prefix and suffix. This should be freed when no longer needed.
+   */
   static std::string build_path(const std::string& directory, const std::string& module_name);
 
   GModule*       gobj()       { return gobject_; }

@@ -6,7 +6,8 @@
 #include <gtkmmconfig.h>
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /*
  * Copyright (C) 2004 The gtkmm Development Team
@@ -22,13 +23,14 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- 
+
+#include <vector>
+
 #include <gtkmm/dialog.h>
-//#include <glibmm/listhandle.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -42,14 +44,54 @@ namespace Gtk
 namespace Gtk
 {
 
+/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
+
+/**
+ * @ingroup gtkmmEnums
+ */
+enum License
+{
+  LICENSE_UNKNOWN,
+  LICENSE_CUSTOM,
+  LICENSE_GPL_2_0,
+  LICENSE_GPL_3_0,
+  LICENSE_LGPL_2_1,
+  LICENSE_LGPL_3_0,
+  LICENSE_BSD,
+  LICENSE_MIT_X11,
+  LICENSE_ARTISTIC
+};
+
+} // namespace Gtk
+
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+namespace Glib
+{
+
+template <>
+class Value<Gtk::License> : public Glib::Value_Enum<Gtk::License>
+{
+public:
+  static GType value_type() G_GNUC_CONST;
+};
+
+} // namespace Glib
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+
+namespace Gtk
+{
+
+
 /** The AboutDialog offers a simple way to display information about a program like its logo, name, copyright,
  * website and license. It is also possible to give credits to the authors, documenters, translators and artists
  * who have worked on the program. An about dialog is typically opened when the user selects the About option
  * from the Help menu. All parts of the dialog are optional.
  *
- * About dialogs often contain links and email addresses. Gtk::AboutDialog supports this by offering global
- * hooks, which are called when the user clicks on a link or email address, see set_email_hook() and
- * set_url_hook(). Email addresses in the authors, documenters and artists properties are recognized by looking
+ * About dialogs often contain links and email addresses. Gtk::AboutDialog displays these as clickable links.
+ * By default, it calls gtk_show_uri() when a user clicks one. The behaviour can be overridden with the activate_link signal.
+ * Email addresses in the authors, documenters and artists properties are recognized by looking
  * for <user@host>, URLs are recognized by looking for http://url, with the URL extending to the next space,
  * tab or line break.
  *
@@ -88,8 +130,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -109,6 +155,8 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_activate_link().
+  virtual bool on_activate_link(const std::string& uri);
 
 
 private:
@@ -117,35 +165,8 @@ private:
 public:
   AboutDialog();
 
+   //deprecated
   
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Returns the program name displayed in the about dialog.
-   * 
-   * @newin{2,6}
-   * 
-   * Deprecated: 2.12: Use get_program_name() instead.
-   * @return The program name. The string is owned by the about
-   * dialog and must not be modified.
-   */
-  Glib::ustring get_name() const;
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Sets the name to display in the about dialog.
-   * If this is not set, it defaults to Glib::get_application_name().
-   * 
-   * @newin{2,6}
-   * 
-   * Deprecated: 2.12: Use set_program_name() instead.
-   * @param name The program name.
-   */
-  void set_name(const Glib::ustring& name);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
   /** Return value: The program name.
    * @return The program name.
    * 
@@ -225,6 +246,30 @@ public:
    * @param license The license information or <tt>0</tt>.
    */
   void set_license(const Glib::ustring& license);
+
+  /** Hides the license button.
+   * 
+   * @newin{3,4}
+   */
+  void unset_license();
+  
+  /** Retrieves the license set using set_license_type()
+   * 
+   * @newin{3,0}
+   * @return A Gtk::License value.
+   */
+  License get_license_type() const;
+  
+  /** Sets the license of the application showing the @a about dialog from a
+   * list of known licenses.
+   * 
+   * This function overrides the license set using
+   * set_license().
+   * 
+   * @newin{3,0}
+   * @param license_type The type of license.
+   */
+  void set_license_type(License license_type);
   
   /** Returns the website URL.
    * 
@@ -235,9 +280,6 @@ public:
   Glib::ustring get_website() const;
   
   /** Sets the URL to use for the website link.
-   * 
-   * Note that that the hook functions need to be set up
-   * before calling this function.
    * 
    * @newin{2,6}
    * @param website A URL string starting with "http://".
@@ -252,62 +294,61 @@ public:
   Glib::ustring get_website_label() const;
   
   /** Sets the label to be used for the website link.
-   * It defaults to the website URL.
    * 
    * @newin{2,6}
    * @param website_label The label used for the website link.
    */
   void set_website_label(const Glib::ustring& website_label);
 
-   
+ 
   /** Returns the string which are displayed in the authors tab
    * of the secondary credits dialog.
    * 
    * @newin{2,6}
-   * @return A <tt>0</tt>-terminated string array containing
-   * the authors. The array is owned by the about dialog
-   * and must not be modified.
+   * @return A
+   * <tt>0</tt>-terminated string array containing the authors. The array is
+   * owned by the about dialog and must not be modified.
    */
-  Glib::StringArrayHandle get_authors() const;
+  std::vector<Glib::ustring> get_authors() const;
 
-  
+ 
   /** Sets the strings which are displayed in the authors tab
    * of the secondary credits dialog.
    * 
    * @newin{2,6}
    * @param authors A <tt>0</tt>-terminated array of strings.
    */
-  void set_authors(const Glib::StringArrayHandle& authors) const;
+  void set_authors(const std::vector<Glib::ustring>& authors) const;
 
   
   /** Returns the string which are displayed in the documenters
    * tab of the secondary credits dialog.
    * 
    * @newin{2,6}
-   * @return A <tt>0</tt>-terminated string array containing
-   * the documenters. The array is owned by the about dialog
-   * and must not be modified.
+   * @return A
+   * <tt>0</tt>-terminated string array containing the documenters. The
+   * array is owned by the about dialog and must not be modified.
    */
-  Glib::StringArrayHandle get_documenters() const;
+  std::vector<Glib::ustring> get_documenters() const;
 
-   
+  
   /** Sets the strings which are displayed in the documenters tab
    * of the secondary credits dialog.
    * 
    * @newin{2,6}
    * @param documenters A <tt>0</tt>-terminated array of strings.
    */
-  void set_documenters(const Glib::StringArrayHandle& documenters);
+  void set_documenters(const std::vector<Glib::ustring>& documenters);
   
   /** Returns the string which are displayed in the artists tab
    * of the secondary credits dialog.
    * 
    * @newin{2,6}
-   * @return A <tt>0</tt>-terminated string array containing
-   * the artists. The array is owned by the about dialog
-   * and must not be modified.
+   * @return A
+   * <tt>0</tt>-terminated string array containing the artists. The array is
+   * owned by the about dialog and must not be modified.
    */
-  Glib::StringArrayHandle get_artists() const;
+  std::vector<Glib::ustring> get_artists() const;
   
   /** Sets the strings which are displayed in the artists tab
    * of the secondary credits dialog.
@@ -315,7 +356,7 @@ public:
    * @newin{2,6}
    * @param artists A <tt>0</tt>-terminated array of strings.
    */
-  void set_artists(const Glib::StringArrayHandle& artists);
+  void set_artists(const std::vector<Glib::ustring>& artists);
   
   /** Returns the translator credits string which is displayed
    * in the translators tab of the secondary credits dialog.
@@ -333,9 +374,8 @@ public:
    * of the language which is currently used in the user interface.
    * Using gettext(), a simple way to achieve that is to mark the
    * string for translation:
-   * |[
-   * gtk_about_dialog_set_translator_credits (about, _("translator-credits"));
-   * ]|
+   * 
+   * [C example ellipted]
    * It is a good idea to use the customary msgid "translator-credits" for this
    * purpose, since translators will already know the purpose of that msgid, and
    * since Gtk::AboutDialog will detect if "translator-credits" is untranslated
@@ -375,6 +415,14 @@ public:
    */
   void set_logo(const Glib::RefPtr<Gdk::Pixbuf>& logo);
 
+  /** Sets the pixbuf to be displayed as logo in the about dialog.
+   * The logo is set to the default window icon set with
+   * Gtk::Window::set_default_icon() or Gtk::Window::set_default_icon_list().
+   * 
+   * @newin{3,4}
+   */
+  void set_logo_default();
+
   
   /** Returns the icon name displayed as logo in the about dialog.
    * 
@@ -411,57 +459,14 @@ public:
    */
   void set_wrap_license(bool wrap_license);
 
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** For instance,
-   * void on_activate_link_url(AboutDialog& about_dialog, const Glib::ustring& link);
-   *
-   * @deprecated Use signal_activate_link() instead.
-   */
-  typedef sigc::slot<void, AboutDialog& /* about_dialog */, const Glib::ustring& /* link */> SlotActivateLink;
-
-  /** Installs a global callback to be called whenever the user activates an email link in an about dialog.
-   * @param slot A function or method to call when an email link is activated.
-   *
-   * @deprecated Use signal_activate_link() instead.
-   */
-  static void set_email_hook(const SlotActivateLink& slot);
   
-
-  /** Installs a global callback to be called whenever the user activates a URL link in an about dialog.
-   * @param slot A function or method to call when a URL link is activated.
-   *
-   * @deprecated Use signal_activate_link() instead.
+  /** Creates a new section in the Credits page.
+   * 
+   * @newin{3,4}
+   * @param section_name The name of the section.
+   * @param people The people who belong to that section.
    */
-  static void set_url_hook(const SlotActivateLink& slot);
-  
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-  //gtkmmproc error: activate-link :  signal defs lookup failed
-
-//TODO: Deprecate this, because it conflicts with the property in GtkWidget, and has been removed in GTK+ 2.12.
-//If this could not have been used without an error, then remove it:
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The name of the widget.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<Glib::ustring> property_name() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** The name of the widget.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_name() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
+  void add_credit_section(const Glib::ustring& section_name, const std::vector<Glib::ustring>& people);
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The name of the program. If this is not set, it defaults to g_get_application_name().
@@ -470,7 +475,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_program_name() ;
+  Glib::PropertyProxy< Glib::ustring > property_program_name() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -480,7 +485,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_program_name() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_program_name() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -491,7 +496,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_version() ;
+  Glib::PropertyProxy< Glib::ustring > property_version() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -501,7 +506,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_version() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_version() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -511,7 +516,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_copyright() ;
+  Glib::PropertyProxy< Glib::ustring > property_copyright() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -521,7 +526,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_copyright() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_copyright() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -531,7 +536,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_comments() ;
+  Glib::PropertyProxy< Glib::ustring > property_comments() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -541,7 +546,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_comments() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_comments() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -551,7 +556,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_website() ;
+  Glib::PropertyProxy< Glib::ustring > property_website() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -561,27 +566,27 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_website() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_website() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The label for the link to the website of the program. If this is not set, it defaults to the URL.
+/** The label for the link to the website of the program.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_website_label() ;
+  Glib::PropertyProxy< Glib::ustring > property_website_label() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The label for the link to the website of the program. If this is not set, it defaults to the URL.
+/** The label for the link to the website of the program.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_website_label() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_website_label() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -591,7 +596,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_license() ;
+  Glib::PropertyProxy< Glib::ustring > property_license() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -601,7 +606,27 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_license() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_license() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The license type of the program.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< License > property_license_type() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The license type of the program.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< License > property_license_type() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -611,7 +636,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::StringArrayHandle> property_authors() ;
+  Glib::PropertyProxy< std::vector<Glib::ustring> > property_authors() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -621,7 +646,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::StringArrayHandle> property_authors() const;
+  Glib::PropertyProxy_ReadOnly< std::vector<Glib::ustring> > property_authors() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -631,7 +656,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::StringArrayHandle> property_documenters() ;
+  Glib::PropertyProxy< std::vector<Glib::ustring> > property_documenters() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -641,7 +666,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::StringArrayHandle> property_documenters() const;
+  Glib::PropertyProxy_ReadOnly< std::vector<Glib::ustring> > property_documenters() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -651,7 +676,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::StringArrayHandle> property_translator_credits() ;
+  Glib::PropertyProxy< std::vector<Glib::ustring> > property_translator_credits() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -661,7 +686,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::StringArrayHandle> property_translator_credits() const;
+  Glib::PropertyProxy_ReadOnly< std::vector<Glib::ustring> > property_translator_credits() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -671,7 +696,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::StringArrayHandle> property_artists() ;
+  Glib::PropertyProxy< std::vector<Glib::ustring> > property_artists() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -681,7 +706,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::StringArrayHandle> property_artists() const;
+  Glib::PropertyProxy_ReadOnly< std::vector<Glib::ustring> > property_artists() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -711,7 +736,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_logo_icon_name() ;
+  Glib::PropertyProxy< Glib::ustring > property_logo_icon_name() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -721,7 +746,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_logo_icon_name() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_logo_icon_name() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -731,7 +756,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_wrap_license() ;
+  Glib::PropertyProxy< bool > property_wrap_license() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -741,8 +766,24 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_wrap_license() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_wrap_license() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+/**
+   * @par Slot Prototype:
+   * <tt>bool on_my_%activate_link(const std::string& uri)</tt>
+   *
+   * The signal which gets emitted to activate a URI.
+   * Applications may connect to it to override the default behaviour,
+   * which is to call gtk_show_uri().
+   * 
+   * @newin{2,24}
+   * @param uri The URI that is activated.
+   * @return <tt>true</tt> if the link has been activated.
+   */
+
+  Glib::SignalProxy1< bool,const std::string& > signal_activate_link();
 
 
 };

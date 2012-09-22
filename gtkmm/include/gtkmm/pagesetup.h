@@ -4,7 +4,8 @@
 #define _GTKMM_PAGESETUP_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 2006 The gtkmm Development Team
  *
@@ -19,8 +20,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <glibmm/object.h>
@@ -83,8 +84,11 @@ protected:
 public:
   virtual ~PageSetup();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -368,19 +372,6 @@ public:
   bool save_to_file(const std::string& file_name) const;
 
    
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** This function adds the page setup from @a setup to @a key_file.
-   * 
-   * @newin{2,12}
-   * @deprecated Use the const version.
-   * @param key_file The Glib::KeyFile to save the page setup to.
-   * @param group_name The group to add the settings to in @a key_file.
-   */
-  void save_to_key_file(Glib::KeyFile& key_file, const Glib::ustring& group_name);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
   /** This function adds the page setup from @a setup to @a key_file.
    * 
    * @newin{2,12}
@@ -388,18 +379,6 @@ public:
    * @param group_name The group to add the settings to in @a key_file.
    */
   void save_to_key_file(Glib::KeyFile& key_file, const Glib::ustring& group_name) const;
-
-  #ifndef GTKMM_DISABLE_DEPRECATED
-  /** This function adds the page setup from @a setup to @a key_file,
-   * in the group "Page Setup"
-   * 
-   * @newin{2,12}
-   * @param key_file The G::KeyFile to save the page setup to.
-   * 
-   * @deprecated Use the const version.
-   */
-  void save_to_key_file(Glib::KeyFile& key_file);
-  #endif //GTKMM_DISABLE_DEPRECATED
 
   /** This function adds the page setup from @a setup to @a key_file,
    * in the group "Page Setup"

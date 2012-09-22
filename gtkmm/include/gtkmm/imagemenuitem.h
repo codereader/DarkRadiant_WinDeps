@@ -4,7 +4,8 @@
 #define _GTKMM_IMAGEMENUITEM_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: imagemenuitem.hg,v 1.3 2006/04/12 11:11:25 murrayc Exp $ */
 
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/menuitem.h>
@@ -81,8 +82,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -115,18 +120,18 @@ public:
   explicit ImageMenuItem(const StockID& id);  
   
   
-  /** If <tt>true</tt>, the menu item will ignore the Gtk::Settings:gtk-menu-images 
+  /** If <tt>true</tt>, the menu item will ignore the Gtk::Settings::property_gtk_menu_images()
    * setting and always show the image, if available.
    * 
    * Use this property if the menuitem would be useless or hard to use
-   * without the image. 
+   * without the image.
    * 
    * @newin{2,16}
    * @param always_show <tt>true</tt> if the menuitem should always show the image.
    */
   void set_always_show_image(bool always_show =  true);
   
-  /** Returns whether the menu item will ignore the Gtk::Settings:gtk-menu-images
+  /** Returns whether the menu item will ignore the Gtk::Settings::property_gtk_menu_images()
    * setting and always show the image, if available.
    * 
    * @newin{2,16}
@@ -192,7 +197,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Widget*> property_image() ;
+  Glib::PropertyProxy< Widget* > property_image() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -202,7 +207,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Widget*> property_image() const;
+  Glib::PropertyProxy_ReadOnly< Widget* > property_image() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -212,7 +217,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_use_stock() ;
+  Glib::PropertyProxy< bool > property_use_stock() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -222,7 +227,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_use_stock() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_use_stock() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -243,7 +248,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_always_show_image() ;
+  Glib::PropertyProxy< bool > property_always_show_image() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -253,7 +258,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_always_show_image() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_always_show_image() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

@@ -4,7 +4,8 @@
 #define _GIOMM_FILE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -298,9 +299,14 @@ private:
   File(const File&);
   File& operator=(const File&);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 protected:
-  File(); // you must derive from this class
-
+  /**
+   * You should derive from this class to use it.
+   */
+  File();
+  
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /** Called by constructors of derived classes. Provide the result of 
    * the Class init() function to ensure that it is properly 
    * initialized.
@@ -549,7 +555,7 @@ public:
 
   
   /** Checks whether @a file has the prefix specified by @a prefix. In other word, 
-   * if the names of inital elements of @a file<!-- -->s pathname match @a prefix.
+   * if the names of initial elements of @a file<!-- -->s pathname match @a prefix.
    * Only full pathname elements are matched, so a path like /foo is not
    * considered a prefix of /foobar, only of /foo/bar.
    * 
@@ -1930,7 +1936,9 @@ public:
 
   /** Creates a directory and any parent directories that may not exist similar to
    * 'mkdir -p'. If the file system does not support creating directories, this
-   * function will fail, setting @a error to IO_ERROR_NOT_SUPPORTED.
+   * function will fail, setting @a error to IO_ERROR_NOT_SUPPORTED. If the
+   * directory itself already exists, this function will fail setting @a error
+   * to IO_ERROR_EXISTS, unlike the similar Glib::mkdir_with_parents().
    * 
    * For a local File the newly created directories will have the default
    * (current) ownership and permissions of the current process.
@@ -3139,7 +3147,8 @@ public:
   void replace_contents_finish(const Glib::RefPtr<AsyncResult>& result);
   
 
-  /** Checks if @a file supports . If this returns <tt>false</tt>, you cannot perform
+  /** Checks if @a file supports thread-default
+   * contexts. If this returns <tt>false</tt>, you cannot perform
    * asynchronous operations on @a file in a thread that has a
    * thread-default context.
    * 

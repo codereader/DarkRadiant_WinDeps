@@ -4,7 +4,8 @@
 #define _GTKMM_TEXTATTRIBUTES_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: textattributes.hg,v 1.1 2003/01/21 13:40:41 murrayc Exp $ */
 
@@ -23,10 +24,12 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library, ) if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library, ) if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+
+#include <glibmm/value.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 extern "C" { typedef struct _GtkTextAttributes GtkTextAttributes; }
@@ -44,9 +47,11 @@ class TextAttributes
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   typedef TextAttributes CppObjectType;
   typedef GtkTextAttributes BaseObjectType;
-
-  static GType get_type() G_GNUC_CONST;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
+  static GType get_type() G_GNUC_CONST;
 
   TextAttributes();
 

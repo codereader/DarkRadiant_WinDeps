@@ -4,7 +4,8 @@
 #define _GTKMM_TREESTORE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: treestore.hg,v 1.5 2004/04/03 12:53:49 murrayc Exp $ */
 
@@ -21,18 +22,20 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-// We couldn't include it in treemodel.h, but doing it here makes it easier for people.
-#include <gtkmm/treepath.h>
+#include <vector>
 
 #include <gtkmm/treeiter.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treesortable.h>
 #include <gtkmm/treedragdest.h>
 #include <gtkmm/treedragsource.h>
+#include <gtkmm/buildable.h>
+// We couldn't include it in treemodel.h, but doing it here makes it easier for people.
+#include <gtkmm/treepath.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -55,7 +58,8 @@ class TreeStore :
   public Gtk::TreeModel,
   public TreeSortable,
   public TreeDragSource,
-  public TreeDragDest
+  public TreeDragDest,
+  public Buildable
 {
   
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -83,8 +87,11 @@ protected:
 public:
   virtual ~TreeStore();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -110,7 +117,7 @@ protected:
    * constructor should only be used by derived classes.
    */
   TreeStore();
-
+  
   explicit TreeStore(const TreeModelColumnRecord& columns);
 
 public:
@@ -187,7 +194,7 @@ public:
    *
    * @param node The list of the parent row's children, as returned by Gtk::TreeModel::iterator::children().
    * @result An iterator to the new row.
-   */
+   */  
   iterator append(const TreeNodeChildren& node);
 
   
@@ -211,7 +218,7 @@ public:
   /** Reorders the children of @a node to follow the order indicated by @a new_order.
    * Note that this function only works with unsorted stores.
    */
-  void reorder(const TreeNodeChildren& node, const Glib::ArrayHandle<int>& new_order);
+  void reorder(const TreeNodeChildren& node, const std::vector<int>& new_order);
 
   
   /** Removes all rows from @a tree_store

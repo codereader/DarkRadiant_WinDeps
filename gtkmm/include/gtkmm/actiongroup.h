@@ -4,7 +4,8 @@
 #define _GTKMM_ACTIONGROUP_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: actiongroup.hg,v 1.17 2006/04/12 11:11:25 murrayc Exp $ */
 
@@ -21,9 +22,11 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+#include <vector>
 
 #include <gtkmm/widget.h>
 #include <gtkmm/action.h>
@@ -42,7 +45,9 @@ namespace Gtk
 {
   
 
-class ActionGroup : public Glib::Object
+class ActionGroup
+  : public Glib::Object,
+    public Buildable
 {
   
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -70,8 +75,11 @@ protected:
 public:
   virtual ~ActionGroup();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -88,7 +96,7 @@ public:
 
 private:
 
-
+  
 protected:
     explicit ActionGroup(const Glib::ustring& name =  Glib::ustring());
 
@@ -157,20 +165,21 @@ public:
    */
   Glib::RefPtr<const Action> get_action(const Glib::ustring& action_name) const;
 
-  
+ 
   /** Lists the actions in the action group.
    * 
    * @newin{2,4}
    * @return An allocated list of the action objects in the action group.
    */
-  Glib::ListHandle< Glib::RefPtr<Action> > get_actions();
-  
+  std::vector< Glib::RefPtr<Action> > get_actions();
+ 
+
   /** Lists the actions in the action group.
    * 
    * @newin{2,4}
    * @return An allocated list of the action objects in the action group.
    */
-  Glib::ListHandle< Glib::RefPtr<const Action> > get_actions() const;
+  std::vector< Glib::RefPtr<const Action> > get_actions() const;
     
   void add(const Glib::RefPtr<Action>& action);
   
@@ -211,70 +220,78 @@ public:
   //These are also just C convenience methods that are useless unless you are using the other convenience methods:
   
 
-  /** The connect_proxy signal is emitted after connecting a proxy to 
+/**
+   * @par Slot Prototype:
+   * <tt>void on_my_%connect_proxy(const Glib::RefPtr<Action>& action, Widget* proxy)</tt>
+   *
+   * The signal_connect_proxy() signal is emitted after connecting a proxy to 
    * an action in the group. Note that the proxy may have been connected 
    * to a different action before.
-   *
+   * 
    * This is intended for simple customizations for which a custom action
    * class would be too clumsy, e.g. showing tooltips for menuitems in the
    * statusbar.
-   *
-   * UIManager proxies the signal and provides global notification 
+   * 
+   * Gtk::UIManager proxies the signal and provides global notification 
    * just before any action is connected to a proxy, which is probably more
    * convenient to use.
-   *
-   * @param action the action
-   * @param proxy the proxy
-   *
-   * @par Prototype:
-   * <tt>void on_my_%connect_proxy(const Glib::RefPtr<Action>& action, Widget* proxy)</tt>
+   * 
+   * @newin{2,4}
+   * @param action The action.
+   * @param proxy The proxy.
    */
 
   Glib::SignalProxy2< void,const Glib::RefPtr<Action>&,Widget* > signal_connect_proxy();
 
   
-  /** The disconnect_proxy signal is emitted after disconnecting a proxy 
-   * from an action in the group. 
+/**
+   * @par Slot Prototype:
+   * <tt>void on_my_%disconnect_proxy(const Glib::RefPtr<Action>& action, Widget* proxy)</tt>
    *
-   * UIManager proxies the signal and provides global notification 
+   * The signal_disconnect_proxy() signal is emitted after disconnecting a proxy 
+   * from an action in the group. 
+   * 
+   * Gtk::UIManager proxies the signal and provides global notification 
    * just before any action is connected to a proxy, which is probably more
    * convenient to use.
-   *
-   * @param action the action
-   * @param proxy the proxy
-   *
-   * @par Prototype:
-   * <tt>void on_my_%disconnect_proxy(const Glib::RefPtr<Action>& action, Widget* proxy)</tt>
+   * 
+   * @newin{2,4}
+   * @param action The action.
+   * @param proxy The proxy.
    */
 
   Glib::SignalProxy2< void,const Glib::RefPtr<Action>&,Widget* > signal_disconnect_proxy();
 
   
-  /** The pre_activate signal is emitted just before the @action in the
-   * action_group is activated
-   *
-   * This is intended for UIManager to proxy the signal and provide global
-   * notification just before any action is activated.
-   *
-   * @action the action
-   *
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%pre_activate(const Glib::RefPtr<Action>& action)</tt>
+   *
+   * The signal_pre_activate() signal is emitted just before the @a action in the
+   *  @a action_group is activated
+   * 
+   * This is intended for Gtk::UIManager to proxy the signal and provide global
+   * notification just before any action is activated.
+   * 
+   * @newin{2,4}
+   * @param action The action.
    */
 
   Glib::SignalProxy1< void,const Glib::RefPtr<Action>& > signal_pre_activate();
 
   
-  /** The post_activate signal is emitted just after the @action in the
-   * @action_group is activated
-   *
-   * This is intended for UIManager to proxy the signal and provide global
-   * notification just after any action is activated.
-   *
-   * @param action the action
-   *
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%post_activate(const Glib::RefPtr<Action>& action)</tt>
+   *
+   * The signal_post_activate() signal is emitted just after the @a action in the
+   *  @a action_group is activated
+   * 
+   * This is intended for Gtk::UIManager to proxy the signal and provide global
+   * notification just after any action is activated.
+   * 
+   * @newin{2,4}
+   * @param action The action.
    */
 
   Glib::SignalProxy1< void,const Glib::RefPtr<Action>& > signal_post_activate();
@@ -287,7 +304,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_name() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_name() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -298,7 +315,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_sensitive() ;
+  Glib::PropertyProxy< bool > property_sensitive() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -308,7 +325,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_sensitive() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_sensitive() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -318,7 +335,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_visible() ;
+  Glib::PropertyProxy< bool > property_visible() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -328,7 +345,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_visible() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_visible() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

@@ -4,12 +4,13 @@
 #define _GTKMM_FILECHOOSERBUTTON_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: filechooserbutton.hg,v 1.7 2005/12/12 08:14:21 murrayc Exp $ */
 
 /* filechooserbutton.h
- * 
+ *
  * Copyright (C) 2003 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/box.h>
@@ -43,15 +44,15 @@ namespace Gtk
 {
 
 /** A button to launch a file chooser dialog.
- * 
- * This widget lets the user select a file. It implements the FileChooser interface. Visually, it is a file name with a 
- * button to bring up a FileChooserDialog. The user can then use that dialog to change the file associated with that 
+ *
+ * This widget lets the user select a file. It implements the FileChooser interface. Visually, it is a file name with a
+ * button to bring up a FileChooserDialog. The user can then use that dialog to change the file associated with that
  * button. This widget does not support setting the "select_multiple" property to true.
  *
  * The FileChooserButton supports the FileChooserActions FILE_CHOOSER_ACTION_OPEN and FILE_CHOOSER_ACTION_SELECT_FOLDER.
  *
- * The FileChooserButton will ellipsize the label, and will thus request little horizontal space. To give the button more 
- * space, you should call size_request(), set_width_chars(), or pack the button in such a way that other interface 
+ * The FileChooserButton will ellipsize the label, and will thus request little horizontal space. To give the button more
+ * space, you should call size_request(), set_width_chars(), or pack the button in such a way that other interface
  * elements give space to the widget.
  *
  * The FileChooserButton widget looks like this:
@@ -61,7 +62,7 @@ namespace Gtk
  */
 
 class FileChooserButton
-  : public HBox,
+  : public HBox, //Note: The C object really derives from this convenience type.
     public FileChooser
 {
   public:
@@ -91,8 +92,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -112,6 +117,8 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_file_set().
+  virtual void on_file_set();
 
 
 private:
@@ -122,10 +129,9 @@ public:
   /** Creates a new file-selecting button widget with the default title.
    * @param title The title of the browse dialog.
    * @param action The open mode for the widget.
-   * @param backend The name of the Gtk::FileSystem backend to use.
    */
   explicit FileChooserButton(FileChooserAction action = FILE_CHOOSER_ACTION_OPEN);
-  
+
   /** Creates a new file-selecting button widget.
    *
    * @param title The title of the browse dialog.
@@ -133,23 +139,14 @@ public:
    */
     explicit FileChooserButton(const Glib::ustring& title, FileChooserAction action =  FILE_CHOOSER_ACTION_OPEN);
 
-  
-  /** Creates a new file-selecting button widget using backend.
-   *
-   * @param title The title of the browse dialog.
-   * @param action The open mode for the widget.
-   * @param backend The name of the Gtk::FileSystem backend to use.
-   */ 
-    explicit FileChooserButton(const Glib::ustring& title, FileChooserAction action, const Glib::ustring& backend);
 
-  
   /** Creates a new file-selecting button widget which uses dialog as its file-picking window.
    *
    * @param dialog The dialog to use.
    */
     explicit FileChooserButton(FileChooserDialog& dialog);
 
-  
+
   /** Retrieves the title of the browse dialog used by @a button. The returned value
    * should not be modified or freed.
    * 
@@ -164,7 +161,7 @@ public:
    * @param title The new browse dialog title.
    */
   void set_title(const Glib::ustring& title);
- 
+
   
   /** Retrieves the width in characters of the @a button widget's entry and/or label.
    * 
@@ -198,21 +195,27 @@ public:
    * @newin{2,10}
    * @param focus_on_click Whether the button grabs focus when clicked with the mouse.
    */
-  void set_focus_on_click(gboolean focus_on_click =  true);   
+  void set_focus_on_click(gboolean focus_on_click =  true);
 
-  //TODO: Remove no_default_handler when we can break ABI.
   //This is a G_SIGNAL_ACTION signal, but it seems to be public API for applications.
   //See http://bugzilla.gnome.org/show_bug.cgi?id=353196
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%file_set()</tt>
+   *
+   * The signal_file_set() signal is emitted when the user selects a file.
+   * 
+   * Note that this signal is only emitted when the <em>user</em>
+   * changes the file.
+   * 
+   * @newin{2,12}
    */
 
   Glib::SignalProxy0< void > signal_file_set();
 
 
-  //gtkmmproc error: dialog : attempt to wrap write-only and construct-only property.
+  //_WRAP_PROPERTY("dialog", FileChooserDialog*) //construct-only
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** Whether the button grabs focus when it is clicked with the mouse.
    *
@@ -220,7 +223,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_focus_on_click() ;
+  Glib::PropertyProxy< bool > property_focus_on_click() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -230,7 +233,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_focus_on_click() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_focus_on_click() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -240,7 +243,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_title() ;
+  Glib::PropertyProxy< Glib::ustring > property_title() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -250,9 +253,9 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_title() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_title() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
-                                          
+
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The desired width of the button widget, in characters.
    *
@@ -260,7 +263,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_width_chars() ;
+  Glib::PropertyProxy< int > property_width_chars() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -270,9 +273,9 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_width_chars() const;
+  Glib::PropertyProxy_ReadOnly< int > property_width_chars() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
-    
+
 
 };
 

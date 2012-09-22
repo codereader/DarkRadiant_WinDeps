@@ -4,7 +4,8 @@
 #define _GTKMM_BUILDER_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: builder.hg,v 1.19 2006/05/10 20:59:27 murrayc Exp $ */
 
@@ -21,9 +22,11 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+#include <vector>
 
 #include <gtkmm/widget.h>
 
@@ -130,8 +133,11 @@ protected:
 public:
   virtual ~Builder();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -185,7 +191,7 @@ public:
    */
   static Glib::RefPtr<Builder> create_from_file(const std::string& filename, const Glib::ustring& object_id);
   //This is just to avoid the ambiguous call when using a string literal, 
-  //caused by the overload that takes a StringArrayHandle.
+  //caused by the overload that takes a std::vector<Glib::ustring>.
   /** Parses a file containing a GtkBuilder UI definition, building only the requested object.
    *
    * If you are adding an object that depends on an object that is not
@@ -213,7 +219,7 @@ public:
    *
    * @newin{2,14}
    */
-  static Glib::RefPtr<Builder> create_from_file(const std::string& filename, const Glib::StringArrayHandle& object_ids);
+  static Glib::RefPtr<Builder> create_from_file(const std::string& filename, const std::vector<Glib::ustring>& object_ids);
 
   /** Parses a string containing a GtkBuilder UI definition.
    *
@@ -225,7 +231,7 @@ public:
    */
   static Glib::RefPtr<Builder> create_from_string(const Glib::ustring& buffer);
   //This is just to avoid the ambiguous call when using a string literal, 
-  //caused by the overload that takes a StringArrayHandle.
+  //caused by the overload that takes a std::vector<Glib::ustring>.
   /** Parses a string containing a GtkBuilder UI definition building only the requested object.
    *
    * @param buffer The string to parse.
@@ -261,7 +267,7 @@ public:
    *
    * @newin{2,14}
    */
-  static Glib::RefPtr<Builder> create_from_string(const Glib::ustring& buffer, const Glib::StringArrayHandle& object_ids);
+  static Glib::RefPtr<Builder> create_from_string(const Glib::ustring& buffer, const std::vector<Glib::ustring>& object_ids);
   
 
   /** Parses a file containing a GtkBuilder UI definition, 
@@ -276,7 +282,7 @@ public:
   bool add_from_file(const std::string& filename);
 
   //This is just to avoid the ambiguous call when using a string literal, 
-  //caused by the overload that takes a StringArrayHandle.
+  //caused by the overload that takes a std::vector<Glib::ustring>.
   /** Parses a file containing a GtkBuilder UI definition, 
    * building only the requested object, 
    * and merges it with the current contents of the builder.
@@ -312,17 +318,29 @@ public:
   bool add_from_file(const std::string& filename, const Glib::ustring& object_id);
 
  
-  /** Parses a file containing a 
+  /** Parses a file containing a GtkBuilder 
+   * UI definition building only the requested objects and merges
+   * them with the current contents of @a builder. 
+   * 
+   * Upon errors 0 will be returned and @a error will be assigned a
+   * Error from the Gtk::BUILDER_ERROR, MARKUP_ERROR or FILE_ERROR 
+   * domain.
+   * 
+   * <note>
+   * If you are adding an object that depends on an object that is not 
+   * its child (for instance a Gtk::TreeView that depends on its
+   * Gtk::TreeModel), you have to explicitely list all of them in @a object_ids. 
+   * </note>
    * 
    * @newin{2,14}
    * @param filename The name of the file to parse.
    * @param object_ids Nul-terminated array of objects to build.
    * @return A positive value on success, 0 if an error occurred.
    */
-  bool add_from_file(const std::string& filename, const Glib::StringArrayHandle& object_ids);
+  bool add_from_file(const std::string& filename, const std::vector<Glib::ustring>& object_ids);
 
   //This is just to avoid the ambiguous call when using a string literal, 
-  //caused by the overload that takes a StringArrayHandle.
+  //caused by the overload that takes a std::vector<Glib::ustring>.
   /** Parses a string containing a GtkBuilder UI definition 
    * and merges it with the current contents of the builder.
    *
@@ -371,7 +389,7 @@ public:
    *
    * @newin{2,14}
    */
-  bool add_from_string(const Glib::ustring& buffer, const Glib::StringArrayHandle& object_ids);
+  bool add_from_string(const Glib::ustring& buffer, const std::vector<Glib::ustring>& object_ids);
   
 
   /** Parses a string containing a GtkBuilder UI definition 
@@ -387,6 +405,7 @@ public:
   bool add_from_string(const char* buffer, gsize length);
 
   //TODO: Custom-implement this and prevent it from being used with GTK_WIDGET-derived types?
+  //TODO: Make this return a Glib::RefPtr<Gtk::Buildable>? Check what the C API really does - and document that if so.
   
   /** Gets the object named @a name. Note that this function does not
    * increment the reference count of the returned object. 
@@ -492,7 +511,7 @@ public:
   //_WRAP_METHOD(void connect_signals_full(GtkBuilderConnectFunc func, gpointer       user_data), gtk_builder_connect_signals_full)
   
   /** Sets the translation domain of @a builder. 
-   * See Gtk::Builder:translation-domain.
+   * See Gtk::Builder::property_translation_domain().
    * 
    * @newin{2,12}
    * @param domain The translation domain or <tt>0</tt>.
@@ -517,7 +536,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_translation_domain() ;
+  Glib::PropertyProxy< Glib::ustring > property_translation_domain() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -527,7 +546,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_translation_domain() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_translation_domain() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

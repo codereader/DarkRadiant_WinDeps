@@ -4,7 +4,8 @@
 #define _GIOMM_ASYNCINITABLE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -26,6 +27,7 @@
  */
 
 #include <glibmm/interface.h>
+#include <glibmm/priorities.h>
 #include <giomm/asyncresult.h>
 
 
@@ -80,9 +82,14 @@ private:
   AsyncInitable(const AsyncInitable&);
   AsyncInitable& operator=(const AsyncInitable&);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 protected:
-  AsyncInitable(); // you must derive from this class
-
+  /**
+   * You should derive from this class to use it.
+   */
+  AsyncInitable();
+  
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /** Called by constructors of derived classes. Provide the result of 
    * the Class init() function to ensure that it is properly 
    * initialized.
@@ -177,13 +184,13 @@ protected:
   bool init_finish(const Glib::RefPtr<AsyncResult>& result);
 
   
-  /** Finishes the async construction for the various g_async_initable_new calls,
-   * returning the created object or <tt>0</tt> on error.
+  /** Finishes the async construction for the various g_async_initable_new
+   * calls, returning the created object or <tt>0</tt> on error.
    * 
    * @newin{2,22}
-   * @param res The AsyncResult.from the callback.
-   * @return A newly created Object, or <tt>0</tt> on error. Free with
-   * Glib::object_unref().
+   * @param res The AsyncResult from the callback.
+   * @return A newly created Object, or <tt>0</tt> on error.
+   * Free with Glib::object_unref().
    */
   Glib::RefPtr<Glib::Object> create_finish(const Glib::RefPtr<AsyncResult>& res);
 

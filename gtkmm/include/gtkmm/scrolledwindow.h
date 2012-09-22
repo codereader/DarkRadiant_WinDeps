@@ -4,7 +4,8 @@
 #define _GTKMM_SCROLLEDWINDOW_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: scrolledwindow.hg,v 1.7 2006/08/17 18:03:34 murrayc Exp $ */
 
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/bin.h>
@@ -42,8 +43,7 @@ namespace Gtk
 {
 
 class Adjustment;
-class HScrollbar;
-class VScrollbar;
+class Scrollbar;
 
 /** Adds scrollbars to its child widget.
  *
@@ -92,8 +92,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -120,28 +124,20 @@ private:
 
 public:
   ScrolledWindow();
-    explicit ScrolledWindow(Adjustment& hadjustment, Adjustment& vadjustment);
+    explicit ScrolledWindow(const Glib::RefPtr<Adjustment>& hadjustment, const Glib::RefPtr<Adjustment>& vadjustment);
 
 
-  /** Sets the Gtk::Adjustment for the horizontal scrollbar.
-   * @param hadjustment Horizontal scroll adjustment.
-   */
-  void set_hadjustment(Gtk::Adjustment* hadjustment =  0);
-  
-  /** Sets the Gtk::Adjustment for the vertical scrollbar.
-   * @param vadjustment Vertical scroll adjustment.
-   */
-  void set_vadjustment(Gtk::Adjustment* vadjustment =  0);
+  //TODO: Add unset_*adjustment().
   
   /** Sets the Gtk::Adjustment for the horizontal scrollbar.
    * @param hadjustment Horizontal scroll adjustment.
    */
-  void set_hadjustment(Gtk::Adjustment& hadjustment);
+  void set_hadjustment(const Glib::RefPtr<Adjustment>& hadjustment);
   
   /** Sets the Gtk::Adjustment for the vertical scrollbar.
    * @param vadjustment Vertical scroll adjustment.
    */
-  void set_vadjustment(Gtk::Adjustment& vadjustment);
+  void set_vadjustment(const Glib::RefPtr<Adjustment>& vadjustment);
 
   
   /** Returns the horizontal scrollbar's adjustment, used to connect the
@@ -149,26 +145,26 @@ public:
    * functionality.
    * @return The horizontal Gtk::Adjustment.
    */
-  Gtk::Adjustment* get_hadjustment();
+  Glib::RefPtr<Adjustment> get_hadjustment();
   
   /** Returns the horizontal scrollbar's adjustment, used to connect the
    * horizontal scrollbar to the child widget's horizontal scroll
    * functionality.
    * @return The horizontal Gtk::Adjustment.
    */
-  const Gtk::Adjustment* get_hadjustment() const;
+  Glib::RefPtr<const Adjustment> get_hadjustment() const;
   
   /** Returns the vertical scrollbar's adjustment, used to connect the
    * vertical scrollbar to the child widget's vertical scroll functionality.
    * @return The vertical Gtk::Adjustment.
    */
-  Gtk::Adjustment* get_vadjustment();
+  Glib::RefPtr<Adjustment> get_vadjustment();
   
   /** Returns the vertical scrollbar's adjustment, used to connect the
    * vertical scrollbar to the child widget's vertical scroll functionality.
    * @return The vertical Gtk::Adjustment.
    */
-  const Gtk::Adjustment* get_vadjustment() const;
+  Glib::RefPtr<const Adjustment> get_vadjustment() const;
 
   
   /** Sets the scrollbar policy for the horizontal and vertical scrollbars.
@@ -186,10 +182,10 @@ public:
   
   /** Retrieves the current policy values for the horizontal and vertical
    * scrollbars. See set_policy().
-   * @param hscrollbar_policy Location to store the policy for the horizontal 
-   * scrollbar, or <tt>0</tt>.
-   * @param vscrollbar_policy Location to store the policy for the vertical
-   * scrollbar, or <tt>0</tt>.
+   * @param hscrollbar_policy Location to store the policy 
+   * for the horizontal scrollbar, or <tt>0</tt>.
+   * @param vscrollbar_policy Location to store the policy
+   * for the vertical scrollbar, or <tt>0</tt>.
    */
   void get_policy(PolicyType& hscrollbar_policy, PolicyType& vscrollbar_policy) const;
 
@@ -251,7 +247,7 @@ public:
    * @return The vertical scrollbar of the scrolled window,
    * or <tt>0</tt> if it does not have one.
    */
-  VScrollbar* get_vscrollbar();
+  Scrollbar* get_vscrollbar();
   
   /** Returns the vertical scrollbar of @a scrolled_window.
    * 
@@ -259,7 +255,7 @@ public:
    * @return The vertical scrollbar of the scrolled window,
    * or <tt>0</tt> if it does not have one.
    */
-  const VScrollbar* get_vscrollbar() const;
+  const Scrollbar* get_vscrollbar() const;
 
   
   /** Returns the horizontal scrollbar of @a scrolled_window.
@@ -268,7 +264,7 @@ public:
    * @return The horizontal scrollbar of the scrolled window,
    * or <tt>0</tt> if it does not have one.
    */
-  HScrollbar* get_hscrollbar();
+  Scrollbar* get_hscrollbar();
   
   /** Returns the horizontal scrollbar of @a scrolled_window.
    * 
@@ -276,19 +272,83 @@ public:
    * @return The horizontal scrollbar of the scrolled window,
    * or <tt>0</tt> if it does not have one.
    */
-  const HScrollbar* get_hscrollbar() const;
+  const Scrollbar* get_hscrollbar() const;
 
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** @deprecated You should not need to call this method.
+  
+  /** Gets the minimum content width of @a scrolled_window, or -1 if not set.
+   * 
+   * @newin{3,0}
+   * @return The minimum content width.
    */
-   bool get_vscrollbar_visible() const;
- 
-  /** @deprecated You should not need to call this method.
+  int get_min_content_width() const;
+  
+  /** Sets the minimum width that @a scrolled_window should keep visible.
+   * Note that this can and (usually will) be smaller than the minimum
+   * size of the content.
+   * 
+   * @newin{3,0}
+   * @param width The minimal content width.
    */
-   bool get_hscrollbar_visible() const;
- #endif // GTKMM_DISABLE_DEPRECATED
+  void set_min_content_width(int width);
+  
+  /** Gets the minimal content height of @a scrolled_window, or -1 if not set.
+   * 
+   * @newin{3,0}
+   * @return The minimal content height.
+   */
+  int get_min_content_height() const;
+  
+  /** Sets the minimum height that @a scrolled_window should keep visible.
+   * Note that this can and (usually will) be smaller than the minimum
+   * size of the content.
+   * 
+   * @newin{3,0}
+   * @param height The minimal content height.
+   */
+  void set_min_content_height(int height);
 
+  
+  /** Turns kinetic scrolling on or off.
+   * Kinetic scrolling only applies to devices with source
+   * Gdk::SOURCE_TOUCHSCREEN.
+   * 
+   * @newin{3,4}
+   * @param kinetic_scrolling <tt>true</tt> to enable kinetic scrolling.
+   */
+  void set_kinetic_scrolling(bool kinetic_scrolling =  true);
+  
+  /** Returns the specified kinetic scrolling behavior.
+   * 
+   * @newin{3,4}
+   * @return The scrolling behavior flags.
+   */
+  bool get_kinetic_scrolling() const;
+
+  
+  /** Changes the behaviour of @a scrolled_window wrt. to the initial
+   * event that possibly starts kinetic scrolling. When @a capture_button_press
+   * is set to <tt>true</tt>, the event is captured by the scrolled window, and
+   * then later replayed if it is meant to go to the child widget.
+   * 
+   * This should be enabled if any child widgets perform non-reversible
+   * actions on Gtk::Widget::signal_button_press_event(). If they don't, and handle
+   * additionally handle Gtk::Widget::signal_grab_broken_event(), it might be better
+   * to set @a capture_button_press to <tt>false</tt>.
+   * 
+   * This setting only has an effect if kinetic scrolling is enabled.
+   * 
+   * @newin{3,4}
+   * @param capture_button_press <tt>true</tt> to capture button presses.
+   */
+  void set_capture_button_press(bool capture_button_press);
+  
+  /** Return whether button presses are captured during kinetic
+   * scrolling. See set_capture_button_press().
+   * 
+   * @newin{3,4}
+   * @return <tt>true</tt> if button presses are captured during kinetic scrolling.
+   */
+  bool get_capture_button_press() const;
 
   //Keybinding signals:
   
@@ -300,7 +360,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Gtk::Adjustment*> property_hadjustment() ;
+  Glib::PropertyProxy< Glib::RefPtr<Adjustment> > property_hadjustment() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -310,7 +370,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Gtk::Adjustment*> property_hadjustment() const;
+  Glib::PropertyProxy_ReadOnly< Glib::RefPtr<Adjustment> > property_hadjustment() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -320,7 +380,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Gtk::Adjustment*> property_vadjustment() ;
+  Glib::PropertyProxy< Glib::RefPtr<Adjustment> > property_vadjustment() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -330,7 +390,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Gtk::Adjustment*> property_vadjustment() const;
+  Glib::PropertyProxy_ReadOnly< Glib::RefPtr<Adjustment> > property_vadjustment() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -340,7 +400,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<PolicyType> property_hscrollbar_policy() ;
+  Glib::PropertyProxy< PolicyType > property_hscrollbar_policy() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -350,7 +410,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<PolicyType> property_hscrollbar_policy() const;
+  Glib::PropertyProxy_ReadOnly< PolicyType > property_hscrollbar_policy() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -360,7 +420,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<PolicyType> property_vscrollbar_policy() ;
+  Glib::PropertyProxy< PolicyType > property_vscrollbar_policy() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -370,7 +430,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<PolicyType> property_vscrollbar_policy() const;
+  Glib::PropertyProxy_ReadOnly< PolicyType > property_vscrollbar_policy() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -380,7 +440,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<CornerType> property_window_placement() ;
+  Glib::PropertyProxy< CornerType > property_window_placement() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -390,7 +450,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<CornerType> property_window_placement() const;
+  Glib::PropertyProxy_ReadOnly< CornerType > property_window_placement() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -400,7 +460,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_window_placement_set() ;
+  Glib::PropertyProxy< bool > property_window_placement_set() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -410,7 +470,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_window_placement_set() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_window_placement_set() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -420,7 +480,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<ShadowType> property_shadow_type() ;
+  Glib::PropertyProxy< ShadowType > property_shadow_type() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -430,7 +490,67 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<ShadowType> property_shadow_type() const;
+  Glib::PropertyProxy_ReadOnly< ShadowType > property_shadow_type() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The minimum width that the scrolled window will allocate to its content.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< int > property_min_content_width() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The minimum width that the scrolled window will allocate to its content.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< int > property_min_content_width() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The minimum height that the scrolled window will allocate to its content.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< int > property_min_content_height() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The minimum height that the scrolled window will allocate to its content.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< int > property_min_content_height() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Kinetic scrolling mode.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< bool > property_kinetic_scrolling() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Kinetic scrolling mode.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< bool > property_kinetic_scrolling() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

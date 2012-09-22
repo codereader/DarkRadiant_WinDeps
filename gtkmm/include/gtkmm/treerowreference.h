@@ -4,7 +4,8 @@
 #define _GTKMM_TREEROWREFERENCE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: treerowreference.hg,v 1.7 2006/04/12 11:11:25 murrayc Exp $ */
 
@@ -21,13 +22,14 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 
-#include <gtkmm/treepath.h>
 #include <gtkmm/treemodel.h>
+#include <gtkmm/treepath.h>
+
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 extern "C" { typedef struct _GtkTreeRowReference GtkTreeRowReference; }
@@ -48,9 +50,11 @@ class TreeRowReference
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   typedef TreeRowReference CppObjectType;
   typedef GtkTreeRowReference BaseObjectType;
-
-  static GType get_type() G_GNUC_CONST;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
+  static GType get_type() G_GNUC_CONST;
 
   TreeRowReference();
 
@@ -81,12 +85,23 @@ private:
 public:
   TreeRowReference(const Glib::RefPtr<TreeModel>& model, const TreeModel::Path& path);
 
-  ///The same as is_valid().
-  operator bool() const;
+  /** This typedef is just to make it more obvious that 
+   * our operator const void* should be used like operator bool().
+   */ 
+  typedef const void* BoolExpr;
+
+  /** The same as is_valid().
+   * For instance,
+   * @code
+   * if(treerowreference)
+   *   do_something()
+   * @endcode
+   */
+  operator BoolExpr() const;
 
   
-  /** Returns a path that the row reference currently points to, or <tt>0</tt> if the
-   * path pointed to is no longer valid.
+  /** Returns a path that the row reference currently points to,
+   * or <tt>0</tt> if the path pointed to is no longer valid.
    * @return A current path, or <tt>0</tt>.
    */
   TreeModel::Path get_path() const;
@@ -107,8 +122,8 @@ public:
   Glib::RefPtr<const TreeModel> get_model() const;
 
   
-  /** Returns <tt>true</tt> if the @a reference is non-<tt>0</tt> and refers to a current valid
-   * path.
+  /** Returns <tt>true</tt> if the @a reference is non-<tt>0</tt> and refers to
+   * a current valid path.
    * @return <tt>true</tt> if @a reference points to a valid path.
    */
   bool is_valid() const;

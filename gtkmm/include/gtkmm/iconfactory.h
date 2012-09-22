@@ -4,7 +4,8 @@
 #define _GTKMM_ICONFACTORY_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: iconfactory.hg,v 1.1 2003/01/21 13:40:26 murrayc Exp $ */
 
@@ -21,13 +22,13 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 
 #include <gtkmm/enums.h>
-#include <gtkmm/object.h>
+#include <glibmm/object.h>
 #include <gtkmm/enums.h>
 #include <gtkmm/iconset.h>
 #include <gtkmm/stockid.h>
@@ -73,8 +74,11 @@ protected:
 public:
   virtual ~IconFactory();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -114,7 +118,7 @@ public:
    * @param stock_id Icon name.
    * @param icon_set Icon set.
    */
-  void add(const Gtk::StockID& stock_id, const IconSet& icon_set);
+  void add(const Gtk::StockID& stock_id, const Glib::RefPtr<IconSet>& icon_set);
   
   /** Adds an icon factory to the list of icon factories searched by
    *     Gtk::Style::lookup_icon_set(). This means that, for example,

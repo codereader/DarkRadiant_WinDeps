@@ -4,7 +4,8 @@
 #define _GTKMM_SPINBUTTON_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: spinbutton.hg,v 1.4 2006/07/19 15:35:02 murrayc Exp $ */
 
@@ -21,8 +22,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/entry.h>
@@ -152,8 +153,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -173,8 +178,13 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_input().
   virtual int on_input(double* new_value);
+  /// This is a default handler for the signal signal_output().
   virtual bool on_output();
+  /// This is a default handler for the signal signal_wrapped().
+  virtual void on_wrapped();
+  /// This is a default handler for the signal signal_value_changed().
   virtual void on_value_changed();
 
 
@@ -183,38 +193,40 @@ private:
   
 public:
 
+  //TODO: This constructor should be implicit
   //: create instance
   // adjustment: see Gtk::Adjustment
   // climb_rate:
   // digits: number of decimal digits (has to be < 6)
   SpinButton(double climb_rate = 0.0, guint digits = 0);
-    explicit SpinButton(Adjustment& adjustment, double climb_rate =  0.0, guint digits =  0);
+    explicit SpinButton(const Glib::RefPtr<Adjustment>& adjustment, double climb_rate =  0.0, guint digits =  0);
 
 
-  /** Changes the properties of an existing spin button. The adjustment, climb rate,
-   * and number of decimal places are all changed accordingly, after this function call.
+  /** Changes the properties of an existing spin button. The adjustment,
+   * climb rate, and number of decimal places are all changed accordingly,
+   * after this function call.
    * @param adjustment A Gtk::Adjustment.
    * @param climb_rate The new climb rate.
    * @param digits The number of decimal places to display in the spin button.
    */
-  void configure(Adjustment& adjustment, double climb_rate, guint digits);
+  void configure(const Glib::RefPtr<Adjustment>& adjustment, double climb_rate, guint digits);
 
   
   /** Replaces the Gtk::Adjustment associated with @a spin_button.
    * @param adjustment A Gtk::Adjustment to replace the existing adjustment.
    */
-  void set_adjustment(Adjustment& adjustment);
+  void set_adjustment(const Glib::RefPtr<Adjustment>& adjustment);
   void unset_adjustment();
   
   /** Get the adjustment associated with a Gtk::SpinButton
    * @return The Gtk::Adjustment of @a spin_button.
    */
-  Gtk::Adjustment* get_adjustment();
+  Glib::RefPtr<Adjustment> get_adjustment();
   
   /** Get the adjustment associated with a Gtk::SpinButton
    * @return The Gtk::Adjustment of @a spin_button.
    */
-  const Gtk::Adjustment* get_adjustment() const;
+  Glib::RefPtr<const Adjustment> get_adjustment() const;
 
   
   /** Set the precision to be displayed by @a spin_button. Up to 20 digit precision
@@ -229,7 +241,7 @@ public:
   guint get_digits() const;
 
   
-  /** Sets the step and page increments for spin_button.  This affects how 
+  /** Sets the step and page increments for spin_button.  This affects how
    * quickly the value changes when the spin button's arrows are activated.
    * @param step Increment applied for a button 1 press.
    * @param page Increment applied for a button 2 press.
@@ -244,14 +256,17 @@ public:
   void get_increments(double& step, double& page) const;
 
   
-  /** Sets the minimum and maximum allowable values for @a spin_button
+  /** Sets the minimum and maximum allowable values for @a spin_button.
+   * 
+   * If the current value is outside this range, it will be adjusted
+   * to fit within the range, otherwise it will remain unchanged.
    * @param min Minimum allowable value.
    * @param max Maximum allowable value.
    */
   void set_range(double min, double max);
   
-  /** Gets the range allowed for @a spin_button. See
-   * set_range().
+  /** Gets the range allowed for @a spin_button.
+   * See set_range().
    * @param min Location to store minimum allowed value, or <tt>0</tt>.
    * @param max Location to store maximum allowed value, or <tt>0</tt>.
    */
@@ -268,27 +283,28 @@ public:
    */
   int get_value_as_int() const;
   
-  /** Set the value of @a spin_button.
+  /** Sets the value of @a spin_button.
    * @param value The new value.
    */
   void set_value(double value);
 
   
-  /** Sets the update behavior of a spin button. This determines whether the
-   * spin button is always updated or only when a valid value is set.
+  /** Sets the update behavior of a spin button.
+   * This determines wether the spin button is always updated
+   * or only when a valid value is set.
    * @param policy A Gtk::SpinButtonUpdatePolicy value.
    */
   void set_update_policy(SpinButtonUpdatePolicy policy);
   
-  /** Gets the update behavior of a spin button. See
-   * set_update_policy().
+  /** Gets the update behavior of a spin button.
+   * See set_update_policy().
    * @return The current update policy.
    */
   SpinButtonUpdatePolicy get_update_policy() const;
 
   
-  /** Sets the flag that determines if non-numeric text can be typed into
-   * the spin button.
+  /** Sets the flag that determines if non-numeric text can be typed
+   * into the spin button.
    * @param numeric Flag indicating if only numeric entry is allowed.
    */
   void set_numeric(bool numeric =  true);
@@ -300,16 +316,17 @@ public:
   bool get_numeric() const;
 
   
-  /** Increment or decrement a spin button's value in a specified direction
-   * by a specified amount.
+  /** Increment or decrement a spin button's value in a specified
+   * direction by a specified amount.
    * @param direction A Gtk::SpinType indicating the direction to spin.
    * @param increment Step increment to apply in the specified direction.
    */
   void spin(SpinType direction, double increment);
 
   
-  /** Sets the flag that determines if a spin button value wraps around to the
-   * opposite limit when the upper or lower limit of the range is exceeded.
+  /** Sets the flag that determines if a spin button value wraps
+   * around to the opposite limit when the upper or lower limit
+   * of the range is exceeded.
    * @param wrap A flag indicating if wrapping behavior is performed.
    */
   void set_wrap(bool wrap =  true);
@@ -322,14 +339,15 @@ public:
   bool get_wrap() const;
 
   
-  /** Sets the policy as to whether values are corrected to the nearest step 
-   * increment when a spin button is activated after providing an invalid value.
+  /** Sets the policy as to whether values are corrected to the
+   * nearest step increment when a spin button is activated after
+   * providing an invalid value.
    * @param snap_to_ticks A flag indicating if invalid values should be corrected.
    */
   void set_snap_to_ticks(bool snap_to_ticks =  true);
   
-  /** Returns whether the values are corrected to the nearest step. See
-   * set_snap_to_ticks().
+  /** Returns whether the values are corrected to the nearest step.
+   * See set_snap_to_ticks().
    * @return <tt>true</tt> if values are snapped to the nearest step.
    */
   bool get_snap_to_ticks() const;
@@ -339,44 +357,56 @@ public:
    */
   void update();
 
-  /** Convert the Entry text to a number.
-   * The computed number should be written to <tt>*new_value</tt>.
-   * @return
-   * @li <tt>false</tt>: No conversion done, continue with default handler.
-   * @li <tt>true</tt>: Conversion successful, don't call default handler.
-   * @li <tt>Gtk::INPUT_ERROR</tt>: Conversion failed, don't call default handler.
-   *
-   * @par Prototype:
+  
+/**
+   * @par Slot Prototype:
    * <tt>int on_my_%input(double* new_value)</tt>
+   *
+   * The signal_input() signal can be used to influence the conversion of
+   * the users input into a double value. The signal handler is
+   * expected to use Gtk::Entry::get_text() to retrieve the text of
+   * the entry and set @a new_value to the new value.
+   * 
+   * The default conversion uses Glib::strtod().
+   * @param new_value Return location for the new value.
+   * @return <tt>true</tt> for a successful conversion, <tt>false</tt> if the input
+   * was not handled, and Gtk::INPUT_ERROR if the conversion failed.
    */
 
   Glib::SignalProxy1< int,double* > signal_input();
 
-
-  /** Convert the Adjustment position to text.
-   * The computed text should be written via Gtk::Entry::set_text().
-   * @return
-   * @li <tt>false</tt>: No conversion done, continue with default handler.
-   * @li <tt>true</tt>: Conversion successful, don't call default handler.
-   *
-   * @par Prototype:
+  
+/**
+   * @par Slot Prototype:
    * <tt>bool on_my_%output()</tt>
+   *
+   * The signal_output() signal can be used to change to formatting
+   * of the value that is displayed in the spin buttons entry.
+   * 
+   * [C example ellipted]
+   * @return <tt>true</tt> if the value has been displayed.
    */
 
   Glib::SignalProxy0< bool > signal_output();
 
-
-  /**
-   * @par Prototype:
-   * <tt>bool on_my_%wrapped()</tt>
+  
+/**
+   * @par Slot Prototype:
+   * <tt>void on_my_%wrapped()</tt>
+   *
+   * The wrapped signal is emitted right after the spinbutton wraps
+   * from its maximum to minimum value or vice-versa.
+   * 
+   * @newin{2,10}
    */
 
-  Glib::SignalProxy0< bool > signal_wrapped();
+  Glib::SignalProxy0< void > signal_wrapped();
 
-
-  /**
-   * @par Prototype:
+  
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%value_changed()</tt>
+   *
    */
 
   Glib::SignalProxy0< void > signal_value_changed();
@@ -386,23 +416,23 @@ public:
   
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The adjustment that holds the value of the spinbutton.
+/** The adjustment that holds the value of the spin button.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Gtk::Adjustment*> property_adjustment() ;
+  Glib::PropertyProxy< Glib::RefPtr<Adjustment> > property_adjustment() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The adjustment that holds the value of the spinbutton.
+/** The adjustment that holds the value of the spin button.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Gtk::Adjustment*> property_adjustment() const;
+  Glib::PropertyProxy_ReadOnly< Glib::RefPtr<Adjustment> > property_adjustment() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -412,7 +442,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<double> property_climb_rate() ;
+  Glib::PropertyProxy< double > property_climb_rate() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -422,7 +452,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<double> property_climb_rate() const;
+  Glib::PropertyProxy_ReadOnly< double > property_climb_rate() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -432,7 +462,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<guint> property_digits() ;
+  Glib::PropertyProxy< guint > property_digits() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -442,7 +472,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<guint> property_digits() const;
+  Glib::PropertyProxy_ReadOnly< guint > property_digits() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -452,7 +482,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_snap_to_ticks() ;
+  Glib::PropertyProxy< bool > property_snap_to_ticks() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -462,7 +492,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_snap_to_ticks() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_snap_to_ticks() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -472,7 +502,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_numeric() ;
+  Glib::PropertyProxy< bool > property_numeric() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -482,7 +512,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_numeric() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_numeric() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -492,7 +522,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_wrap() ;
+  Glib::PropertyProxy< bool > property_wrap() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -502,7 +532,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_wrap() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_wrap() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -512,7 +542,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<SpinButtonUpdatePolicy> property_update_policy() ;
+  Glib::PropertyProxy< SpinButtonUpdatePolicy > property_update_policy() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -522,7 +552,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<SpinButtonUpdatePolicy> property_update_policy() const;
+  Glib::PropertyProxy_ReadOnly< SpinButtonUpdatePolicy > property_update_policy() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -532,7 +562,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<double> property_value() ;
+  Glib::PropertyProxy< double > property_value() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -542,7 +572,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<double> property_value() const;
+  Glib::PropertyProxy_ReadOnly< double > property_value() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

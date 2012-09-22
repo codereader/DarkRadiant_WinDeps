@@ -4,7 +4,8 @@
 #define _GTKMM_TOGGLETOOLBUTTON_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: toggletoolbutton.hg,v 1.5 2004/03/07 14:35:47 murrayc Exp $ */
 
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/toolbutton.h>
@@ -80,8 +81,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -101,6 +106,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_toggled().
   virtual void on_toggled();
 
 
@@ -157,32 +163,34 @@ public:
   bool get_active() const;
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%toggled()</tt>
+   *
+   * Emitted whenever the toggle tool button changes state.
    */
 
   Glib::SignalProxy0< void > signal_toggled();
 
   
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If the toggle button should be pressed in or not.
+/** If the toggle button should be pressed in.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_active() ;
+  Glib::PropertyProxy< bool > property_active() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If the toggle button should be pressed in or not.
+/** If the toggle button should be pressed in.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_active() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_active() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

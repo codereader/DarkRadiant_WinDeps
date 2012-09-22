@@ -4,7 +4,8 @@
 #define _GTKMM_FILEFILTER_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: filefilter.hg,v 1.8 2004/11/12 11:51:42 murrayc Exp $ */
 
@@ -21,17 +22,11 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <gtkmm/object.h>
-
-
-//TODO: remove this if we wrap this in a C++ type:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-//typedef struct _GtkFileFilterInfo GtkFileFilterInfo;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+#include <glibmm/object.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -119,37 +114,34 @@ namespace Gtk
 /** A filter for selecting a file subset.
  *
  * A Gtk::FileFilter can be used to restrict the files being shown in a Gtk::FileChooser.
- * Files can be filtered based on their name (with add_pattern()), 
- * on their mime type (with add_mime_type()), or by a custom filter 
+ * Files can be filtered based on their name (with add_pattern()),
+ * on their mime type (with add_mime_type()), or by a custom filter
  * function (with add_custom()).
  *
- * Filtering by mime types handles aliasing and subclassing of mime types; 
- * e.g. a filter for text/plain also matches a file with mime type application/rtf, 
- * since application/rtf is a subclass of text/plain. Note that Gtk::FileFilter 
+ * Filtering by mime types handles aliasing and subclassing of mime types;
+ * e.g. a filter for text/plain also matches a file with mime type application/rtf,
+ * since application/rtf is a subclass of text/plain. Note that Gtk::FileFilter
  * allows wildcards for the subtype of a mime type, so you can e.g. filter for image/ *.
- * 
- * Normally, filters are used by adding them to a Gtk::FileChooser. See Gtk::FileChooser::add_filter(). 
- * But it is also possible to manually use a filter on a file with filter(). 
+ *
+ * Normally, filters are used by adding them to a Gtk::FileChooser. See Gtk::FileChooser::add_filter().
+ * But it is also possible to manually use a filter on a file with filter().
  */
 
-class FileFilter : public Gtk::Object
+class FileFilter : public Glib::Object
 {
-  public:
+  
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+public:
   typedef FileFilter CppObjectType;
   typedef FileFilter_Class CppClassType;
   typedef GtkFileFilter BaseObjectType;
   typedef GtkFileFilterClass BaseClassType;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-  virtual ~FileFilter();
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
-private:
-  friend class FileFilter_Class;
+private:  friend class FileFilter_Class;
   static CppClassType filefilter_class_;
 
+private:
   // noncopyable
   FileFilter(const FileFilter&);
   FileFilter& operator=(const FileFilter&);
@@ -161,35 +153,38 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  virtual ~FileFilter();
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
-  ///Provides access to the underlying C GtkObject.
+  ///Provides access to the underlying C GObject.
   GtkFileFilter*       gobj()       { return reinterpret_cast<GtkFileFilter*>(gobject_); }
 
-  ///Provides access to the underlying C GtkObject.
+  ///Provides access to the underlying C GObject.
   const GtkFileFilter* gobj() const { return reinterpret_cast<GtkFileFilter*>(gobject_); }
 
-
-public:
-  //C++ methods used to invoke GTK+ virtual functions:
-
-protected:
-  //GTK+ Virtual Functions (override these to change behaviour):
-
-  //Default Signal Handlers::
-
+  ///Provides access to the underlying C instance. The caller is responsible for unrefing it. Use when directly setting fields in structs.
+  GtkFileFilter* gobj_copy();
 
 private:
 
-public:
- FileFilter();
-
   
+protected:
+  FileFilter();
+
+public:
+  
+  static Glib::RefPtr<FileFilter> create();
+
+
   /** Sets the human-readable name of the filter; this is the string
    * that will be displayed in the file selector user interface if
    * there is a selectable list of filters.
@@ -243,7 +238,7 @@ public:
 
   /// For instance, bool on_custom(const Gtk::FileFilter::Info& filter_info);
   typedef sigc::slot<bool, const Info&> SlotCustom;
-  
+
   void add_custom(FileFilterFlags needed, const SlotCustom& slot);
   
 
@@ -260,9 +255,20 @@ public:
    */
   FileFilterFlags get_needed() const;
 
-  //TODO: This method is onlyused by FileChooser implementors, so we don't need to wrap it.
+  //TODO: This method is only used by FileChooser implementors, so we don't need to wrap it.
   
   //_WRAP_METHOD(bool filter(const GtkFileFilterInfo* filter_info), gtk_file_filter_filter)
+
+
+public:
+
+public:
+  //C++ methods used to invoke GTK+ virtual functions:
+
+protected:
+  //GTK+ Virtual Functions (override these to change behaviour):
+
+  //Default Signal Handlers::
 
 
 };
@@ -280,8 +286,8 @@ namespace Glib
    *
    * @relates Gtk::FileFilter
    */
-  Gtk::FileFilter* wrap(GtkFileFilter* object, bool take_copy = false);
-} //namespace Glib
+  Glib::RefPtr<Gtk::FileFilter> wrap(GtkFileFilter* object, bool take_copy = false);
+}
 
 
 #endif /* _GTKMM_FILEFILTER_H */

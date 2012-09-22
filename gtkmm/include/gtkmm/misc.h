@@ -4,7 +4,8 @@
 #define _GTKMM_MISC_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: misc.hg,v 1.1 2003/01/21 13:40:31 murrayc Exp $ */
 
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/widget.h>
@@ -81,8 +82,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -111,9 +116,17 @@ protected:
 public:
 
   
+  /** Sets the alignment of the widget.
+   * @param xalign The horizontal alignment, from 0 (left) to 1 (right).
+   * @param yalign The vertical alignment, from 0 (top) to 1 (bottom).
+   */
   void set_alignment(float xalign =  0.0, float yalign =  0.5);
   
-  void set_alignment(AlignmentEnum xalign =  Gtk::ALIGN_START, AlignmentEnum yalign =  Gtk::ALIGN_CENTER);
+  /** Sets the alignment of the widget.
+   * @param xalign The horizontal alignment, from 0 (left) to 1 (right).
+   * @param yalign The vertical alignment, from 0 (top) to 1 (bottom).
+   */
+  void set_alignment(Align xalign =  Gtk::ALIGN_START, Align yalign =  Gtk::ALIGN_CENTER);
 
   
   /** Gets the X and Y alignment of the widget within its allocation. 
@@ -124,12 +137,20 @@ public:
   void get_alignment(float& xalign, float& yalign) const;
 
   
+  /** Sets the amount of space to add around the widget.
+   * @param xpad The amount of space to add on the left and right of the widget,
+   * in pixels.
+   * @param ypad The amount of space to add on the top and bottom of the widget,
+   * in pixels.
+   */
   void set_padding(int xpad, int ypad);
   
   /** Gets the padding in the X and Y directions of the widget. 
    * See set_padding().
-   * @param xpad Location to store padding in the X direction, or <tt>0</tt>.
-   * @param ypad Location to store padding in the Y direction, or <tt>0</tt>.
+   * @param xpad Location to store padding in the X
+   * direction, or <tt>0</tt>.
+   * @param ypad Location to store padding in the Y
+   * direction, or <tt>0</tt>.
    */
   void get_padding(int& xpad, int& ypad) const;
 
@@ -140,7 +161,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<float> property_xalign() ;
+  Glib::PropertyProxy< float > property_xalign() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -150,7 +171,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<float> property_xalign() const;
+  Glib::PropertyProxy_ReadOnly< float > property_xalign() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -160,7 +181,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<float> property_yalign() ;
+  Glib::PropertyProxy< float > property_yalign() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -170,7 +191,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<float> property_yalign() const;
+  Glib::PropertyProxy_ReadOnly< float > property_yalign() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -180,7 +201,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_xpad() ;
+  Glib::PropertyProxy< int > property_xpad() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -190,7 +211,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_xpad() const;
+  Glib::PropertyProxy_ReadOnly< int > property_xpad() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -200,7 +221,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_ypad() ;
+  Glib::PropertyProxy< int > property_ypad() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -210,7 +231,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_ypad() const;
+  Glib::PropertyProxy_ReadOnly< int > property_ypad() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

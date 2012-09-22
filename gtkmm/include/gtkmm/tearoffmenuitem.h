@@ -4,7 +4,11 @@
 #define _GTKMM_TEAROFFMENUITEM_H
 
 
-#include <glibmm.h>
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: tearoffmenuitem.hg,v 1.1 2003/01/21 13:40:40 murrayc Exp $ */
 
@@ -24,8 +28,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/menuitem.h>
@@ -45,6 +49,9 @@ namespace Gtk
 /** A special Gtk::MenuItem which is used to tear off and reattach its menu.
  * When its menu is shown normally, the Gtk::TearoffMenuItem is drawn as a dotted line indicating that the menu can be torn off. Activating it causes its menu to be torn off and displayed in its own window.
  * When its menu is shown as a tearoff menu, the Gtk::TearoffMenuItem is drawn as a dotted line which has a left pointing arrow graphic indicating that the tearoff menu can be reattached. Activating it will erase the tearoff menu window.
+ *
+ * @deprecated Menus are not meant to be torn around. There is no replacement.
+ *
  * @ingroup Widgets
  * @ingroup Menus
  */
@@ -78,8 +85,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -103,15 +114,9 @@ protected:
 
 private:
 
+  
 public:
   TearoffMenuItem();
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** @deprecated This method was apparently not useful and will be removed in a later gtkmm version, due to changes in GTK+.
-   */
-  bool is_torn_off() const;
-#endif // GTKMM_DISABLE_DEPRECATED
 
 
 };
@@ -131,6 +136,9 @@ namespace Glib
    */
   Gtk::TearoffMenuItem* wrap(GtkTearoffMenuItem* object, bool take_copy = false);
 } //namespace Glib
+
+
+#endif // GTKMM_DISABLE_DEPRECATED
 
 
 #endif /* _GTKMM_TEAROFFMENUITEM_H */

@@ -4,7 +4,8 @@
 #define _GIOMM_DBUSERROR_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -25,14 +26,11 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <glibmm/error.h>
+
 
 namespace Gio
 {
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-//Our custom friend declaration (see below) needs this pre-declaration.
-void wrap_init();
-#endif // DOXYGEN_SHOULD_SKIP_THIS
 
 namespace DBus
 {
@@ -99,10 +97,7 @@ private:
 
   friend void wrap_init(); // uses throw_func()
 
-    //This extra line is only necessary because this class is in a sub-namespace, but we want 
-  //it to be used in the wrap_init() of the main namespace. It's an awkward hack.
-  friend void Gio::wrap_init(); // uses throw_func()
- #endif //DOXYGEN_SHOULD_SKIP_THIS
+  #endif //DOXYGEN_SHOULD_SKIP_THIS
 };
 
 

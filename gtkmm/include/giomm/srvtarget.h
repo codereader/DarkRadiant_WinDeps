@@ -4,7 +4,8 @@
 #define _GIOMM_SRVTARGET_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 2009 Jonathon Jongsma
  *

@@ -4,7 +4,8 @@
 #define _GTKMM_PLUG_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: plug.hg,v 1.2 2005/01/25 16:16:33 murrayc Exp $ */
 
@@ -21,11 +22,12 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/window.h>
+#include <gtk/gtkx.h> //Necessary for the X11 Window type.
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -39,6 +41,11 @@ namespace Gtk
 namespace Gtk
 {
 
+//Note that Window (not Gtk::Window) is the (awfully named) type from the X11 header.
+//gtkx.h (needed to get GtkPlug and GtkSocket) pulls this in,
+//assuming that you will be careful when doing so.
+  
+//TODO: Documentation
 
 class Plug : public Window
 {
@@ -69,8 +76,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -90,20 +101,23 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_embedded().
   virtual void on_embedded();
 
 
 private:
 
   
-  //This is not available in on Win32.
-//This source file will not be compiled,
-//and the class will not be registered in wrap_init.h or wrap_init.cc
+  //This is not available on Win32.
+//This source file will not be compiled on Win32,
+//and no class defined in it will be registered by wrap_init().
 
 public:
   Plug();
-  explicit Plug(GdkNativeWindow socket_id);
-  Plug(const Glib::RefPtr<Gdk::Display>& display, GdkNativeWindow socket_id);
+  
+ 
+  explicit Plug(::Window socket_id);
+  Plug(const Glib::RefPtr<Gdk::Display>& display, ::Window socket_id);
 
   
   /** Gets the window ID of a Gtk::Plug widget, which can then
@@ -111,7 +125,7 @@ public:
    * instance with Gtk::Socket::add_id().
    * @return The window ID for the plug.
    */
-  GdkNativeWindow get_id() const;
+  ::Window get_id() const;
 
   
   /** Determines whether the plug is embedded in a socket.
@@ -137,13 +151,13 @@ public:
   Glib::RefPtr<const Gdk::Window> get_socket_window() const;
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether or not the plug is embedded.
+/** Whether the plug is embedded.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_embedded() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_embedded() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -158,9 +172,11 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%embedded()</tt>
+   *
+   * Gets emitted when the plug becomes embedded in a socket.
    */
 
   Glib::SignalProxy0< void > signal_embedded();

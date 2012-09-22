@@ -4,7 +4,8 @@
 #define _GTKMM_SIZEGROUP_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: sizegroup.hg,v 1.5 2006/12/11 18:57:50 murrayc Exp $ */
 
@@ -23,9 +24,11 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+#include <vector>
 
 #include <glibmm/object.h>
 #include <gtkmm/widget.h>
@@ -96,7 +99,9 @@ namespace Gtk
  * that can be reached from the widget by a chain of size groups of type Gtk::SIZE_GROUP_VERTICAL or Gtk::SIZE_GROUP_BOTH.
  */
 
-class SizeGroup : public Glib::Object
+class SizeGroup
+  : public Glib::Object,
+    public Buildable
 {
   
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -124,8 +129,11 @@ protected:
 public:
   virtual ~SizeGroup();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -142,6 +150,7 @@ public:
 
 private:
 
+  
 protected:
   explicit SizeGroup(SizeGroupMode mode);
 
@@ -153,10 +162,10 @@ public:
 
   /** Sets the Gtk::SizeGroupMode of the size group. The mode of the size
    * group determines whether the widgets in the size group should
-   * all have the same horizontal requisition (Gtk::SIZE_GROUP_MODE_HORIZONTAL)
-   * all have the same vertical requisition (Gtk::SIZE_GROUP_MODE_VERTICAL),
+   * all have the same horizontal requisition (Gtk::SIZE_GROUP_HORIZONTAL)
+   * all have the same vertical requisition (Gtk::SIZE_GROUP_VERTICAL),
    * or should all have the same requisition in both directions
-   * (Gtk::SIZE_GROUP_MODE_BOTH).
+   * (Gtk::SIZE_GROUP_BOTH).
    * @param mode The mode to set for the size group.
    */
   void set_mode(SizeGroupMode mode);
@@ -201,22 +210,23 @@ public:
    */
   void remove_widget(Widget& widget);
 
-  
+ 
   /** Returns the list of widgets associated with @a size_group.
    * 
    * @newin{2,10}
    * @return A SList of
    * widgets. The list is owned by GTK+ and should not be modified.
    */
-  Glib::SListHandle<Widget*> get_widgets();
-  
+  std::vector<Widget*> get_widgets();
+ 
+
   /** Returns the list of widgets associated with @a size_group.
    * 
    * @newin{2,10}
    * @return A SList of
    * widgets. The list is owned by GTK+ and should not be modified.
    */
-  Glib::SListHandle<const Widget*> get_widgets() const;
+  std::vector<const Widget*> get_widgets() const;
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The directions in which the size group affects the requested sizes of its component widgets.
@@ -225,7 +235,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<SizeGroupMode> property_mode() ;
+  Glib::PropertyProxy< SizeGroupMode > property_mode() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -235,7 +245,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<SizeGroupMode> property_mode() const;
+  Glib::PropertyProxy_ReadOnly< SizeGroupMode > property_mode() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -245,7 +255,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_ignore_hidden() ;
+  Glib::PropertyProxy< bool > property_ignore_hidden() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -255,7 +265,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_ignore_hidden() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_ignore_hidden() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

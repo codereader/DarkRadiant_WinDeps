@@ -6,7 +6,8 @@
 #include <gtkmmconfig.h>
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 2005 The gtkmm Development Team
  *
@@ -21,17 +22,16 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- 
+
 #include <gtkmm/image.h>
 #include <gtkmm/stockid.h>
 #include <gtkmm/menu.h>
 #include <gdkmm/pixbuf.h>
 #include <gdkmm/types.h>
-#include <gtkmm/object.h>
 #include <gtkmm/tooltip.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -91,8 +91,11 @@ protected:
 public:
   virtual ~StatusIcon();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -313,20 +316,9 @@ public:
    */
   Glib::RefPtr<const Gdk::Screen> get_screen() const;
 
+   //deprecated
+
   
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Sets the tooltip of the status icon.
-   * 
-   * @newin{2,10}
-   * 
-   * Deprecated: 2.16: Use set_tooltip_text() instead.
-   * @param tooltip_text The tooltip text, or <tt>0</tt>.
-   */
-  void set_tooltip(const Glib::ustring& tooltip_text);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
   /** Shows or hides a status icon.
    * 
    * @newin{2,10}
@@ -343,28 +335,6 @@ public:
    * @return <tt>true</tt> if the status icon is visible.
    */
   bool get_visible() const;
-  
-  /** Makes the status icon start or stop blinking. 
-   * Note that blinking user interface elements may be problematic
-   * for some users, and thus may be turned off, in which case
-   * this setting has no effect.
-   * 
-   * @newin{2,10}
-   * 
-   * Deprecated: 2.22: This function will be removed in GTK+ 3
-   * @param blinking <tt>true</tt> to turn blinking on, <tt>false</tt> to turn it off.
-   */
-  void set_blinking(bool blinking =  true);
-  
-  /** Returns whether the icon is blinking, see 
-   * set_blinking().
-   * 
-   * @newin{2,10}
-   * 
-   * Deprecated: 2.22: This function will be removed in GTK+ 3
-   * @return <tt>true</tt> if the icon is blinking.
-   */
-  bool get_blinking() const;
 
   
   /** Returns whether the status icon is embedded in a notification
@@ -420,7 +390,7 @@ public:
   
 
   /** Returns the current value of the has-tooltip property.
-   * See Gtk::StatusIcon:has-tooltip for more information.
+   * See Gtk::StatusIcon::property_has_tooltip() for more information.
    * 
    * @newin{2,16}
    * @return Current value of has-tooltip on @a status_icon.
@@ -428,7 +398,7 @@ public:
   bool get_has_tooltip() const;
   
   /** Sets the has-tooltip property on @a status_icon to @a has_tooltip.
-   * See Gtk::StatusIcon:has-tooltip for more information.
+   * See Gtk::StatusIcon::property_has_tooltip() for more information.
    * 
    * @newin{2,16}
    * @param has_tooltip Whether or not @a status_icon has a tooltip.
@@ -445,11 +415,11 @@ public:
   
   /** Sets @a text as the contents of the tooltip.
    * 
-   * This function will take care of setting Gtk::StatusIcon:has-tooltip to
-   * <tt>true</tt> and of the default handler for the Gtk::StatusIcon::query-tooltip
+   * This function will take care of setting Gtk::StatusIcon::property_has_tooltip() to
+   * <tt>true</tt> and of the default handler for the Gtk::StatusIcon::signal_query_tooltip()
    * signal.
    * 
-   * See also the Gtk::StatusIcon:tooltip-text property and
+   * See also the Gtk::StatusIcon::property_tooltip_text() property and
    * Gtk::Tooltip::set_text().
    * 
    * @newin{2,16}
@@ -466,12 +436,12 @@ public:
   Glib::ustring get_tooltip_markup() const;
   
   /** Sets @a markup as the contents of the tooltip, which is marked up with
-   * the .
+   * the Pango text markup language.
    * 
-   * This function will take care of setting Gtk::StatusIcon:has-tooltip to <tt>true</tt>
-   * and of the default handler for the Gtk::StatusIcon::query-tooltip signal.
+   * This function will take care of setting Gtk::StatusIcon::property_has_tooltip() to <tt>true</tt>
+   * and of the default handler for the Gtk::StatusIcon::signal_query_tooltip() signal.
    * 
-   * See also the Gtk::StatusIcon:tooltip-markup property and
+   * See also the Gtk::StatusIcon::property_tooltip_markup() property and
    * Gtk::Tooltip::set_markup().
    * 
    * @newin{2,16}
@@ -551,7 +521,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_WriteOnly<std::string> property_file() ;
+  Glib::PropertyProxy_WriteOnly< std::string > property_file() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -562,7 +532,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<StockID> property_stock() ;
+  Glib::PropertyProxy< StockID > property_stock() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -572,7 +542,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<StockID> property_stock() const;
+  Glib::PropertyProxy_ReadOnly< StockID > property_stock() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -582,7 +552,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_icon_name() ;
+  Glib::PropertyProxy< Glib::ustring > property_icon_name() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -592,7 +562,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_icon_name() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_icon_name() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -622,7 +592,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<ImageType> property_storage_type() const;
+  Glib::PropertyProxy_ReadOnly< ImageType > property_storage_type() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -633,7 +603,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_size() const;
+  Glib::PropertyProxy_ReadOnly< int > property_size() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -658,53 +628,33 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether or not the status icon is blinking.
+/** Whether the status icon is visible.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_blinking() ;
+  Glib::PropertyProxy< bool > property_visible() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether or not the status icon is blinking.
+/** Whether the status icon is visible.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_blinking() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_visible() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether or not the status icon is visible.
+/** Whether the status icon is embedded.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_visible() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether or not the status icon is visible.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<bool> property_visible() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether or not the status icon is embedded.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<bool> property_embedded() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_embedded() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -715,7 +665,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Orientation> property_orientation() const;
+  Glib::PropertyProxy_ReadOnly< Orientation > property_orientation() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -726,7 +676,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_has_tooltip() ;
+  Glib::PropertyProxy< bool > property_has_tooltip() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -736,7 +686,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_has_tooltip() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_has_tooltip() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -746,7 +696,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_tooltip_text() ;
+  Glib::PropertyProxy< Glib::ustring > property_tooltip_text() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -756,7 +706,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_tooltip_text() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_tooltip_text() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -766,7 +716,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_tooltip_markup() ;
+  Glib::PropertyProxy< Glib::ustring > property_tooltip_markup() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -776,7 +726,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_tooltip_markup() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_tooltip_markup() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -786,7 +736,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_title() ;
+  Glib::PropertyProxy< Glib::ustring > property_title() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -796,63 +746,154 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_title() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_title() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>bool on_my_%size_changed(int size)</tt>
+   *
+   * Gets emitted when the size available for the image
+   * changes, e.g.\ because the notification area got resized.
+   * 
+   * @newin{2,10}
+   * @param size The new size.
+   * @return <tt>true</tt> if the icon was updated for the new
+   * size. Otherwise, GTK+ will scale the icon as necessary.
    */
 
   Glib::SignalProxy1< bool,int > signal_size_changed();
 
 
-  //TODO: Remove no_default_handler when we can break ABI.
-  
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%activate()</tt>
+   *
+   * Gets emitted when the user activates the status icon. 
+   * If and how status icons can activated is platform-dependent.
+   * 
+   * Unlike most G_SIGNAL_ACTION signals, this signal is meant to 
+   * be used by applications and should be wrapped by language bindings.
+   * 
+   * @newin{2,10}
    */
 
   Glib::SignalProxy0< void > signal_activate();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%popup_menu(guint button, guint32 activate_time)</tt>
+   *
+   * Gets emitted when the user brings up the context menu
+   * of the status icon. Whether status icons can have context 
+   * menus and how these are activated is platform-dependent.
+   * 
+   * The @a button and @a activate_time parameters should be 
+   * passed as the last to arguments to Gtk::Menu::popup().
+   * 
+   * Unlike most G_SIGNAL_ACTION signals, this signal is meant to 
+   * be used by applications and should be wrapped by language bindings.
+   * 
+   * @newin{2,10}
+   * @param button The button that was pressed, or 0 if the 
+   * signal is not emitted in response to a button press event.
+   * @param activate_time The timestamp of the event that
+   * triggered the signal emission.
    */
 
   Glib::SignalProxy2< void,guint,guint32 > signal_popup_menu();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>bool on_my_%button_press_event(GdkEventButton* event)</tt>
+   *
+   * The signal_button_press_event() signal will be emitted when a button
+   * (typically from a mouse) is pressed.
+   * 
+   * Whether this event is emitted is platform-dependent.  Use the signal_activate()
+   * and signal_popup_menu() signals in preference.
+   * 
+   * @newin{2,14}
+   * @param event The Gdk::EventButton which triggered 
+   * this signal.
+   * @return <tt>true</tt> to stop other handlers from being invoked
+   * for the event. <tt>false</tt> to propagate the event further.
    */
 
   Glib::SignalProxy1< bool,GdkEventButton* > signal_button_press_event();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>bool on_my_%button_release_event(GdkEventButton* event)</tt>
+   *
+   * The signal_button_release_event() signal will be emitted when a button
+   * (typically from a mouse) is released.
+   * 
+   * Whether this event is emitted is platform-dependent.  Use the signal_activate()
+   * and signal_popup_menu() signals in preference.
+   * 
+   * @newin{2,14}
+   * @param event The Gdk::EventButton which triggered 
+   * this signal.
+   * @return <tt>true</tt> to stop other handlers from being invoked
+   * for the event. <tt>false</tt> to propagate the event further.
    */
 
   Glib::SignalProxy1< bool,GdkEventButton* > signal_button_release_event();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>bool on_my_%scroll_event(GdkEventScroll* event)</tt>
+   *
+   * The signal_scroll_event() signal is emitted when a button in the 4 to 7
+   * range is pressed. Wheel mice are usually configured to generate
+   * button press events for buttons 4 and 5 when the wheel is turned.
+   * 
+   * Whether this event is emitted is platform-dependent.
+   * 
+   * @newin{2,16}
+   * @param event The Gdk::EventScroll which triggered 
+   * this signal.
+   * @return <tt>true</tt> to stop other handlers from being invoked for the event.
+   * <tt>false</tt> to propagate the event further.
    */
 
   Glib::SignalProxy1< bool,GdkEventScroll* > signal_scroll_event();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>bool on_my_%query_tooltip(int x, int y, bool keyboard_mode, const Glib::RefPtr<Tooltip>& tooltip)</tt>
+   *
+   * Emitted when the Gtk::Settings::property_gtk_tooltip_timeout() has expired with the
+   * cursor hovering above @a status_icon; or emitted when @a status_icon got
+   * focus in keyboard mode.
+   * 
+   * Using the given coordinates, the signal handler should determine
+   * whether a tooltip should be shown for @a status_icon. If this is
+   * the case <tt>true</tt> should be returned, <tt>false</tt> otherwise. Note that if
+   *  @a keyboard_mode is <tt>true</tt>, the values of @a x and @a y are undefined and
+   * should not be used.
+   * 
+   * The signal handler is free to manipulate @a tooltip with the therefore
+   * destined function calls.
+   * 
+   * Whether this signal is emitted is platform-dependent.
+   * For plain text tooltips, use Gtk::StatusIcon::property_tooltip_text() in preference.
+   * 
+   * @newin{2,16}
+   * @param x The x coordinate of the cursor position where the request has been
+   * emitted, relative to @a status_icon.
+   * @param y The y coordinate of the cursor position where the request has been
+   * emitted, relative to @a status_icon.
+   * @param keyboard_mode <tt>true</tt> if the tooltip was trigged using the keyboard.
+   * @param tooltip A Gtk::Tooltip.
+   * @return <tt>true</tt> if @a tooltip should be shown right now, <tt>false</tt> otherwise.
    */
 
   Glib::SignalProxy4< bool,int,int,bool,const Glib::RefPtr<Tooltip>& > signal_query_tooltip();
@@ -867,7 +908,20 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_size_changed().
   virtual bool on_size_changed(int size);
+  /// This is a default handler for the signal signal_activate().
+  virtual void on_activate();
+  /// This is a default handler for the signal signal_popup_menu().
+  virtual void on_popup_menu(guint button, guint32 activate_time);
+  /// This is a default handler for the signal signal_button_press_event().
+  virtual bool on_button_press_event(GdkEventButton* event);
+  /// This is a default handler for the signal signal_button_release_event().
+  virtual bool on_button_release_event(GdkEventButton* event);
+  /// This is a default handler for the signal signal_scroll_event().
+  virtual bool on_scroll_event(GdkEventScroll* event);
+  /// This is a default handler for the signal signal_query_tooltip().
+  virtual bool on_query_tooltip(int x, int y, bool keyboard_mode, const Glib::RefPtr<Tooltip>& tooltip);
 
 
 };

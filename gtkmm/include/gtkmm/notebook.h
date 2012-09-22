@@ -6,7 +6,8 @@
 #include <gtkmmconfig.h>
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /*
  * Copyright (C) 1998-2002 The gtkmm Development Team
@@ -22,23 +23,14 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- 
+
 #include <gtkmm/container.h>
 #include <gtkmm/label.h>
-//#include <gtk/gtknotebook.h>
-#include <glibmm/helperlist.h>
 
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-extern "C"
-{
-  typedef struct _GtkNotebookPage GtkNotebookPage;
-}
-#endif //DOXYGEN_SHOULD_SKIP_THIS
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 typedef struct _GtkNotebook GtkNotebook;
@@ -85,268 +77,6 @@ namespace Gtk
 {
 
 
-class Notebook;
-
-/** @deprecated Use Notebook::get_current_page(), Notebook::get_nth_page(), etc. instead.
- */
-namespace Notebook_Helpers
-{
-/*********************************************************************
-***** Elem classes
-*********************************************************************/
-
-class Page;
-
-/* Since the data stored in GtkNotebook's GList is inaccessible
- * the iterator "PageIterator" has to hold a pointer to the Notebook
- * that owns the list. "Page" (the value_type of "PageList")
- * inherits "PageIterator" privately and uses Notebook-API-functions
- * to retrieve and manipulate data.
- *
- * Note that PageIterator uses g_list_* functions just to step through
- * the children and test for iterator equality instead of simply using
- * the child index number. This is done because even if you use a
- * child index number, you would still have to use g_list_length() to
- * retrieve the number of elements.  And using an element index results
- * in iterators not staying valid on insertion/removal. This would only
- * lead to fragile and unexpected behaviour.
- * (Thanks for this explanation, Daniel!)
- */
-/** @deprecated Use Notebook::get_current_page(), Notebook::get_nth_page(), etc. instead.
- */
-class PageIterator
-{
-public:
-  typedef std::bidirectional_iterator_tag iterator_category;
-  typedef size_t size_type;
-  typedef ptrdiff_t difference_type;
-
-  typedef Page        value_type;
-  typedef const Page* pointer;
-  typedef const Page& reference;
-
-  PageIterator(Gtk::Notebook* parent, GList* node) : node_(node), parent_(parent) {}
-  PageIterator()                                   : node_(0),    parent_(0)      {}
-
-  bool equal(const PageIterator& other) const;
-  operator bool() const;
-
-  PageIterator&      operator++();
-  const PageIterator operator++(int);
-
-  PageIterator&      operator--();
-  const PageIterator operator--(int);
-
-  inline reference operator*()  const;
-  inline pointer   operator->() const;
-
-protected:
-  GList*         node_;
-  Gtk::Notebook* parent_;
-
-  friend class Gtk::Notebook_Helpers::Page;
-};
-
-/** @relates Gtk::Notebook_Helpers::PageIterator */
-inline bool operator==(const PageIterator& lhs, const PageIterator& rhs)
-  { return lhs.equal(rhs); }
-
-/** @relates Gtk::Notebook_Helpers::PageIterator */
-inline bool operator!=(const PageIterator& lhs, const PageIterator& rhs)
-  { return !lhs.equal(rhs); }
-
-// Page is the output class
-/** @deprecated Use Notebook::get_current_page(), Notebook::get_nth_page(), etc. instead.
- */
-class Page : public PageIterator
-{
-protected:
-  Page();
-private:
-  Page& operator=(const Page&);
-
-public:
-  #ifndef GTKMM_DISABLE_DEPRECATED
-
-  int get_page_num() const;
-  Widget* get_child() const;
-  Widget* get_tab_label() const;
-  void set_tab_label(Widget& tab_label);
-  void set_tab_label_text(const Glib::ustring& tab_text);
-  Glib::ustring get_tab_label_text() const;
-  Widget* get_menu_label() const;
-  void set_menu_label(Widget& menu_label);
-  void set_menu_label_text(const Glib::ustring& menu_text);
-  Glib::ustring get_menu_label_text() const;
-
-
-  /** @deprecated Query the "tab-expand" and "tab-fill" child properties instead.
-   */
-  void query_tab_label_packing(bool& expand, bool& fill, PackType& pack_type);
-
-  /** @deprecated Modify the "tab-expand" and "tab-fill" child properties instead.
-   */
-  void set_tab_label_packing(bool expand, bool fill, PackType pack_type);
-  #endif // GTKMM_DISABLE_DEPRECATED
-
-};
-
-//We don't put PageList in a deprecation ifdef because it is used by a member variable and we don't want to break ABI.
-
-// Element is the input class
-/** @deprecated Use Notebook::get_current_page(), Notebook::get_nth_page(), etc. instead.
- */
-class PageList;
-
-class Element
-{
-public:
-  Element(Widget* child, Widget* tab, Widget* menu);
-  Element(Widget& child, Widget& tab, Widget& menu);
-  explicit Element(Widget& child);
-
-protected:
-  friend class PageList;
-  Widget* child_;
-  Widget* tab_;
-  Widget* menu_;
-};
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-
-// Just a widget without a tab
-typedef Element WidgetElem;
-
-/** @deprecated Use Notebook::get_current_page(), Notebook::get_nth_page(), etc. instead.
- */
-struct TabElem : public Element
-{
-  TabElem(Widget& child, Widget& tab);
-  TabElem(Widget& child, const Glib::ustring& label, bool mnemonic = false);
-};
-
-/** @deprecated Use Notebook::get_current_page(), Notebook::get_nth_page(), etc. instead.
- */
-struct MenuElem : public Element
-{
-  MenuElem(Widget& child, Widget& menu);
-};
-
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-/*********************************************************************
-***** List properties
-*********************************************************************/
-
-/** An STL-style container for pages in a Gtk::Notebook.
- * @deprecated Use Notebook::get_current_page(), Notebook::get_nth_page(), etc. instead.
- */
-class PageList
-{
-public:
-  PageList();
-  explicit PageList(GtkNotebook* gparent);
-  PageList(const PageList& src);
-
-  PageList& operator=(const PageList& src);
-
-  typedef Page  value_type;
-  typedef Page& reference;
-  typedef const Page& const_reference;
-
-  typedef PageIterator iterator;
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  typedef Glib::List_ConstIterator<iterator> const_iterator;
-  typedef Glib::List_ReverseIterator<iterator> reverse_iterator;
-  typedef Glib::List_ConstIterator<reverse_iterator> const_reverse_iterator;
-
-  typedef const Element element_type;
-
-  typedef size_t difference_type;
-  typedef size_t size_type;
-
-  inline GtkNotebook* gparent()
-    { return gparent_; }
-  inline const GtkNotebook* gparent() const
-    { return gparent_; }
-
-  size_type size() const;
-
-  size_type max_size() const;
-  bool empty() const;
-
-  inline iterator begin()
-    { return begin_(); }
-  inline iterator end()
-    { return end_(); }
-
-  inline const_iterator begin() const
-    { return const_iterator(begin_()); }
-  inline const_iterator end() const
-    { return const_iterator(end_()); }
-
-  inline reverse_iterator rbegin()
-    { return reverse_iterator(end_()); }
-  inline reverse_iterator rend()
-    { return reverse_iterator(begin_()); }
-
-  inline const_reverse_iterator rbegin() const
-    { return const_reverse_iterator(reverse_iterator(end_())); }
-  inline const_reverse_iterator rend() const
-    { return const_reverse_iterator(reverse_iterator(begin_())); }
-
-  value_type front() const;
-  value_type back() const;
-
-  value_type operator[](size_type l) const;
-
-  iterator insert(iterator position, element_type& e); //custom-implemented.
-
-  template <class InputIterator>
-  inline void insert(iterator position, InputIterator first, InputIterator last)
-  {
-    for(;first != last; ++first)
-      position = insert(position, *first);
-  }
-
-  inline void push_front(element_type& e)
-    { insert(begin(), e); }
-  inline void push_back(element_type& e)
-    { insert(end(), e); }
-
-  void erase(iterator start, iterator stop);
-  iterator erase(iterator);
-  void remove(const_reference child);
-  void remove(Widget& w);
-
-  void reorder(iterator loc, iterator page); // Non-standard
-
-  iterator find(int num);
-  iterator find(const_reference c);
-  iterator find(Widget& w);
-  iterator find(GtkNotebookPage* t);
-
-  inline void pop_front()
-    { erase(begin()); }
-  inline void pop_back()
-    { erase(--end()); }
-
-  void clear();
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-protected:
-  iterator begin_() const;
-  iterator end_() const;
-
-  GtkNotebook* gparent_;
-};
-
-} // Notebook_Helpers
-
 /** Container which shows one of its children at a time, in tabbed windows.
  *
  * The Gtk::Notebook widget is a Gtk::Container whose children are pages that
@@ -388,8 +118,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -409,19 +143,14 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
-  virtual void on_switch_page(GtkNotebookPage* page, guint page_num);
+  /// This is a default handler for the signal signal_switch_page().
+  virtual void on_switch_page(Widget* page, guint page_num);
 
 
 private:
 
   
 public:
-
-//We don't put PageList in a deprecation ifdef because it is used by a member variable and we don't want to break ABI.
-  /** @deprecated Use Notebook::get_current_page(), Notebook::get_nth_page(), etc. instead.
-   */
-  typedef Notebook_Helpers::PageList PageList;
-
 
   Notebook();
 
@@ -499,99 +228,14 @@ public:
   /** Removes a page from the notebook given its index
    * in the notebook.
    * @param page_num The index of a notebook page, starting
-   * from 0. If -1, the last page will
-   * be removed.
+   * from 0. If -1, the last page will be removed.
    */
   void remove_page(int page_num =  0);
   void remove_page(Widget& child);
 
-#ifndef GTKMM_DISABLE_DEPRECATED
+   //deprecated
 
-  /** For instance,
-   * Notebook* on_window_creation(Widget* page, int x, int y);
-   */
-  typedef sigc::slot<Notebook*, Widget*, int, int> SlotWindowCreation;
-
-  /** @deprecated Use the GtkNotebook::create-window signal instead.
-   */
-  static void set_window_creation_hook(const SlotWindowCreation& slot);
   
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Sets an group identificator for @a notebook, notebooks sharing
-   * the same group identificator will be able to exchange tabs
-   * via drag and drop. A notebook with group identificator -1 will
-   * not be able to exchange tabs with any other notebook.
-   * 
-   * @newin{2,10}
-   * Deprecated: 2.12: use set_group_name() instead.
-   * @param group_id A group identificator, or -1 to unset it.
-   */
-  void set_group_id(int group_id);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Gets the current group identificator for @a notebook.
-   * 
-   * @newin{2,10}
-   * Deprecated: 2.12: use get_group_name() instead.
-   * @return The group identificator, or -1 if none is set.
-   */
-  int get_group_id() const;
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-  //TODO: Use something nicer than void*/gpointer?
-  
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Sets a group identificator pointer for @a notebook, notebooks sharing
-   * the same group identificator pointer will be able to exchange tabs
-   * via drag and drop. A notebook with a <tt>0</tt> group identificator will
-   * not be able to exchange tabs with any other notebook.
-   * 
-   * @newin{2,12}
-   * 
-   * Deprecated: 2.24: Use set_group_name() instead
-   * @param group A pointer to identify the notebook group, or <tt>0</tt> to unset it.
-   */
-  void set_group(void* group);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Gets the current group identificator pointer for @a notebook.
-   * 
-   * @newin{2,12}
-   * 
-   * Deprecated: 2.24: Use get_group_name() instead
-   * @return The group identificator,
-   * or <tt>0</tt> if none is set.
-   */
-  void* get_group();
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Gets the current group identificator pointer for @a notebook.
-   * 
-   * @newin{2,12}
-   * 
-   * Deprecated: 2.24: Use get_group_name() instead
-   * @return The group identificator,
-   * or <tt>0</tt> if none is set.
-   */
-  const void* get_group() const;
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
   /** Sets a group name for @a notebook.
    * 
    * Notebooks with the same name will be able to exchange tabs
@@ -599,59 +243,43 @@ public:
    * not be able to exchange tabs with any other notebook.
    * 
    * @newin{2,24}
-   * @param name The name of the notebook group, or <tt>0</tt> to unset it.
+   * @param group_name The name of the notebook group,
+   * or <tt>0</tt> to unset it.
    */
   void set_group_name(const Glib::ustring& group_name);
   
   /** Gets the current group name for @a notebook.
    * 
-   * Note that this funtion can emphasis not be used
-   * together with set_group() or
-   * set_group_id().
-   * 
-   *  Return Value: (transfer none): the group name,
-   * or <tt>0</tt> if none is set.
-   * 
    * @newin{2,24}
+   * @return The group name,
+   * or <tt>0</tt> if none is set.
    */
   Glib::ustring get_group_name() const;
-  
+
   
   /** Returns the page number of the current page.
    * @return The index (starting from 0) of the current
-   * page in the notebook. If the notebook has no pages, then
-   * -1 will be returned.
+   * page in the notebook. If the notebook has no pages,
+   * then -1 will be returned.
    */
   int get_current_page() const;
   
   /** Returns the child widget contained in page number @a page_num.
    * @param page_num The index of a page in the notebook, or -1
    * to get the last page.
-   * @return The child widget, or <tt>0</tt> if @a page_num is
-   * out of bounds.
+   * @return The child widget, or <tt>0</tt>
+   * if @a page_num is out of bounds.
    */
   Widget* get_nth_page(int page_num);
   
   /** Returns the child widget contained in page number @a page_num.
    * @param page_num The index of a page in the notebook, or -1
    * to get the last page.
-   * @return The child widget, or <tt>0</tt> if @a page_num is
-   * out of bounds.
+   * @return The child widget, or <tt>0</tt>
+   * if @a page_num is out of bounds.
    */
   const Widget* get_nth_page(int page_num) const;
   
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Gets the number of pages in a notebook.
-   * 
-   * @newin{2,2}
-   * @deprecated Use the const method.
-   * @return The number of pages in the notebook.
-   */
-  int get_n_pages();
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
   /** Gets the number of pages in a notebook.
    * 
    * @newin{2,2}
@@ -660,19 +288,6 @@ public:
   int get_n_pages() const;
   /*Widget* get_current_page();*/ /*inconsistency with set_current_page*/
   
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Finds the index of the page which contains the given child
-   * widget.
-   * @deprecated Use the const method.
-   * @param child A Gtk::Widget.
-   * @return The index of the page containing @a child, or
-   * -1 if @a child is not in the notebook.
-   */
-  int page_num(const Widget& child);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
   /** Finds the index of the page which contains the given child
    * widget.
    * @param child A Gtk::Widget.
@@ -682,10 +297,10 @@ public:
   int page_num(const Widget& child) const;
 
   
-  /** Switches to the page number @a page_num. 
+  /** Switches to the page number @a page_num.
    * 
    * Note that due to historical reasons, GtkNotebook refuses
-   * to switch to a page unless the child widget is visible. 
+   * to switch to a page unless the child widget is visible.
    * Therefore, it is recommended to show child widgets before
    * adding them to a notebook.
    * @param page_num Index of the page to switch to, starting from 0.
@@ -714,8 +329,8 @@ public:
   void set_show_border(bool show_border =  true);
 
   
-  /** Returns whether a bevel will be drawn around the notebook pages. See
-   * set_show_border().
+  /** Returns whether a bevel will be drawn around the notebook pages.
+   * See set_show_border().
    * @return <tt>true</tt> if the bevel is drawn.
    */
   bool get_show_border() const;
@@ -725,8 +340,8 @@ public:
    */
   void set_show_tabs(bool show_tabs =  true);
   
-  /** Returns whether the tabs of the notebook are shown. See
-   * set_show_tabs().
+  /** Returns whether the tabs of the notebook are shown.
+   * See set_show_tabs().
    * @return <tt>true</tt> if the tabs are shown.
    */
   bool get_show_tabs() const;
@@ -745,36 +360,50 @@ public:
   PositionType get_tab_pos() const;
 
   
-  /** Sets whether the tab label area will have arrows for scrolling if
-   * there are too many tabs to fit in the area.
+  /** Sets whether the tab label area will have arrows for
+   * scrolling if there are too many tabs to fit in the area.
    * @param scrollable <tt>true</tt> if scroll arrows should be added.
    */
   void set_scrollable(bool scrollable =  true);
   
-  /** Returns whether the tab label area has arrows for scrolling. See
-   * set_scrollable().
+  /** Returns whether the tab label area has arrows for scrolling.
+   * See set_scrollable().
    * @return <tt>true</tt> if arrows for scrolling are present.
    */
   bool get_scrollable() const;
 
   
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   /** Returns the horizontal width of a tab border.
    * 
    * @newin{2,22}
+   * 
+   * Deprecated: 3.4: this function returns zero
+   * @deprecated This method now returns zero.
    * @return Horizontal width of a tab border.
    */
   guint16 get_tab_hborder() const;
-  
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   /** Returns the vertical width of a tab border.
    * 
    * @newin{2,22}
+   * 
+   * Deprecated: 3.4: this function returns zero
+   * @deprecated This method now returns zero.
    * @return Vertical width of a tab border.
    */
   guint16 get_tab_vborder() const;
+#endif // GTKMM_DISABLE_DEPRECATED
 
-  
-  /** Enables the popup menu: if the user clicks with the right mouse button on
-   * the tab labels, a menu with all the pages will be popped up.
+
+  /** Enables the popup menu: if the user clicks with the right
+   * mouse button on the tab labels, a menu with all the pages
+   * will be popped up.
    */
   void popup_enable();
 
@@ -784,27 +413,28 @@ public:
   void popup_disable();
 
   
-  /** Returns the tab label widget for the page @a child. <tt>0</tt> is returned
-   * if @a child is not in @a notebook or if no tab label has specifically
-   * been set for @a child.
+  /** Returns the tab label widget for the page @a child.
+   * <tt>0</tt> is returned if @a child is not in @a notebook or
+   * if no tab label has specifically been set for @a child.
    * @param child The page.
    * @return The tab label.
    */
   Widget* get_tab_label(Widget& child);
   
-  /** Returns the tab label widget for the page @a child. <tt>0</tt> is returned
-   * if @a child is not in @a notebook or if no tab label has specifically
-   * been set for @a child.
+  /** Returns the tab label widget for the page @a child.
+   * <tt>0</tt> is returned if @a child is not in @a notebook or
+   * if no tab label has specifically been set for @a child.
    * @param child The page.
    * @return The tab label.
    */
   const Widget* get_tab_label(Widget& child) const;
   
-  /** Changes the tab label for @a child. If <tt>0</tt> is specified
-   * for @a tab_label, then the page will have the label 'page N'.
+  /** Changes the tab label for @a child.
+   * If <tt>0</tt> is specified for @a tab_label, then the page will
+   * have the label 'page N'.
    * @param child The page.
-   * @param tab_label The tab label widget to use, or <tt>0</tt> for default tab
-   * label.
+   * @param tab_label The tab label widget to use, or <tt>0</tt>
+   * for default tab label.
    */
   void set_tab_label(Widget& child, Widget& tab_label);
   
@@ -857,34 +487,9 @@ public:
    */
   Glib::ustring get_menu_label_text(Widget& child) const;
 
-  #ifndef GTKMM_DISABLE_DEPRECATED
+   //deprecated
 
-  /** @deprecated Modify the "tab-expand" and "tab-fill" child properties instead.
-   */
-  void query_tab_label_packing(Widget& child, bool& expand, bool& fill, PackType& pack_type);
   
-  #endif // GTKMM_DISABLE_DEPRECATED
-
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Sets the packing parameters for the tab label of the page
-   * containing @a child. See Gtk::Box::pack_start() for the exact meaning
-   * of the parameters.
-   * 
-   * Deprecated: 2.20: Modify the Gtk::Notebook:tab-expand and
-   * Gtk::Notebook:tab-fill child properties instead.
-   * Modifying the packing of the tab label is a deprecated feature and
-   * shouldn't be done anymore.
-   * @param child The child widget.
-   * @param expand Whether to expand the tab label or not.
-   * @param fill Whether the tab label should fill the allocated area or not.
-   * @param pack_type The position of the tab label.
-   */
-  void set_tab_label_packing(Widget& child, bool expand, bool fill, PackType pack_type);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
   /** Reorders the page containing @a child, so that it appears in position
    *  @a position. If @a position is greater than or equal to the number of
    * children in the list or negative, @a child will be moved to the end
@@ -924,7 +529,7 @@ public:
    * notebook or widget.
    * 
    * Note that 2 notebooks must share a common group identificator
-   * (see set_group_id()) to allow automatic tabs
+   * (see set_group_name()) to allow automatic tabs
    * interchange between them.
    * 
    * If you want a widget to interact with a notebook through DnD
@@ -932,27 +537,8 @@ public:
    * destination and accept the target "GTK_NOTEBOOK_TAB". The notebook
    * will fill the selection with a GtkWidget** pointing to the child
    * widget that corresponds to the dropped tab.
-   * |[
-   * static void
-   * on_drop_zone_drag_data_received (GtkWidget        *widget,
-   * GdkDragContext   *context,
-   * <tt>int</tt>              x,
-   * <tt>int</tt>              y,
-   * GtkSelectionData *selection_data,
-   * <tt>unsigned int</tt>             info,
-   * <tt>unsigned int</tt>             time,
-   * gpointer          user_data)
-   * {
-   * GtkWidget *notebook;
-   * GtkWidget **child;
    * 
-   * notebook = gtk_drag_get_source_widget (context);
-   * child = (void*) selection_data->data;
-   * 
-   * process_widget (*child);
-   * gtk_container_remove (GTK_CONTAINER (notebook), *child);
-   * }
-   * ]|
+   * [C example ellipted]
    * 
    * If you want a notebook to accept drags from other widgets,
    * you will have to set your own DnD code to do it.
@@ -986,49 +572,59 @@ public:
    */
   void set_action_widget(Widget* widget, PackType pack_type =  PACK_START);
 
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** @deprecated Use Notebook::get_current_page(), Notebook::get_nth_page(), etc. instead.
-   */
-  PageList::iterator get_current();
-
-  /** @deprecated Use Notebook::get_current_page(), Notebook::get_nth_page(), etc. instead.
-   */
-  PageList& pages();
-
-  /** @deprecated Use Notebook::get_current_page(), Notebook::get_nth_page(), etc. instead.
-   */
-  const PageList& pages() const;
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-  /**
-   * @par Prototype:
-   * <tt>void on_my_%switch_page(GtkNotebookPage* page, guint page_num)</tt>
+  
+/**
+   * @par Slot Prototype:
+   * <tt>void on_my_%switch_page(Widget* page, guint page_num)</tt>
+   *
+   * Emitted when the user or a function changes the current page.
+   * @param page The new current page.
+   * @param page_num The index of the page.
    */
 
-  Glib::SignalProxy2< void,GtkNotebookPage*,guint > signal_switch_page();
+  Glib::SignalProxy2< void,Widget*,guint > signal_switch_page();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%page_reordered(Widget* page, guint page_num)</tt>
+   *
+   * the signal_page_reordered() signal is emitted in the notebook
+   * right after a page has been reordered.
+   * 
+   * @newin{2,10}
+   * @param child The child Gtk::Widget affected.
+   * @param page_num The new page number for @a child.
    */
 
   Glib::SignalProxy2< void,Widget*,guint > signal_page_reordered();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%page_removed(Widget* page, guint page_num)</tt>
+   *
+   * the signal_page_removed() signal is emitted in the notebook
+   * right after a page is removed from the notebook.
+   * 
+   * @newin{2,10}
+   * @param child The child Gtk::Widget affected.
+   * @param page_num The @a child page number.
    */
 
   Glib::SignalProxy2< void,Widget*,guint > signal_page_removed();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%page_added(Widget* page, guint page_num)</tt>
+   *
+   * the signal_page_added() signal is emitted in the notebook
+   * right after a page is added to the notebook.
+   * 
+   * @newin{2,10}
+   * @param child The child Gtk::Widget affected.
+   * @param page_num The new page number for @a child.
    */
 
   Glib::SignalProxy2< void,Widget*,guint > signal_page_added();
@@ -1047,7 +643,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<PositionType> property_tab_pos() ;
+  Glib::PropertyProxy< PositionType > property_tab_pos() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1057,47 +653,47 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<PositionType> property_tab_pos() const;
+  Glib::PropertyProxy_ReadOnly< PositionType > property_tab_pos() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether tabs should be shown or not.
+/** Whether tabs should be shown.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_show_tabs() ;
+  Glib::PropertyProxy< bool > property_show_tabs() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether tabs should be shown or not.
+/** Whether tabs should be shown.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_show_tabs() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_show_tabs() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether the border should be shown or not.
+/** Whether the border should be shown.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_show_border() ;
+  Glib::PropertyProxy< bool > property_show_border() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether the border should be shown or not.
+/** Whether the border should be shown.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_show_border() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_show_border() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1107,7 +703,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_scrollable() ;
+  Glib::PropertyProxy< bool > property_scrollable() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1117,58 +713,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_scrollable() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Width of the border around the tab labels.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_WriteOnly<guint> property_tab_border() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Width of the horizontal border of tab labels.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<guint> property_tab_hborder() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** Width of the horizontal border of tab labels.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<guint> property_tab_hborder() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Width of the vertical border of tab labels.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<guint> property_tab_vborder() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** Width of the vertical border of tab labels.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<guint> property_tab_vborder() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_scrollable() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1178,7 +723,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_page() ;
+  Glib::PropertyProxy< int > property_page() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1188,7 +733,27 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_page() const;
+  Glib::PropertyProxy_ReadOnly< int > property_page() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Group name for tab drag and drop.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< Glib::ustring > property_group_name() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Group name for tab drag and drop.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_group_name() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1198,7 +763,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_enable_popup() ;
+  Glib::PropertyProxy< bool > property_enable_popup() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1208,100 +773,17 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_enable_popup() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_enable_popup() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether tabs should have homogeneous sizes.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<bool> property_homogeneous() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
 
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether tabs should have homogeneous sizes.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<bool> property_homogeneous() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Group ID for tabs drag and drop.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<int> property_group_id() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** Group ID for tabs drag and drop.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<int> property_group_id() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Group for tabs drag and drop.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<void*> property_group() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** Group for tabs drag and drop.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<void*> property_group() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
- //TODO: What is this?
-
-protected:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  /** @deprecated Use Notebook::get_current_page(), Notebook::get_nth_page(), etc. instead.
-   */
-  mutable PageList pages_proxy_;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+  //TODO: Wrap the child properties, such as tab-fill and tab-expand.
 
 
 };
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
-namespace Notebook_Helpers
-{
-
-/**** PageIterator **************************************************/
-
-inline
-PageIterator::reference PageIterator::operator*() const
-{
-  return static_cast<const Page&>(*this);
-}
-
-inline
-PageIterator::pointer PageIterator::operator->() const
-{
-  return static_cast<const Page*>(this);
-}
-
-} // namespace Notebook_Helpers
 
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 

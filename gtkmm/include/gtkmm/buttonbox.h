@@ -4,7 +4,8 @@
 #define _GTKMM_BUTTONBOX_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: buttonbox.hg,v 1.3 2003/10/12 09:38:11 murrayc Exp $ */
 
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/box.h>
@@ -38,40 +39,38 @@ typedef struct _GtkButtonBoxClass GtkButtonBoxClass;
 
 namespace Gtk
 { class ButtonBox_Class; } // namespace Gtk
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-typedef struct _GtkVButtonBox GtkVButtonBox;
-typedef struct _GtkVButtonBoxClass GtkVButtonBoxClass;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-
-namespace Gtk
-{ class VButtonBox_Class; } // namespace Gtk
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-typedef struct _GtkHButtonBox GtkHButtonBox;
-typedef struct _GtkHButtonBoxClass GtkHButtonBoxClass;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-
-namespace Gtk
-{ class HButtonBox_Class; } // namespace Gtk
 namespace Gtk
 {
 
 // This is a #define in GTK+, and unrelated to the GtkButtonBoxStyle enum.
 /** @ingroup gtkmmEnums */
-enum { BUTTONBOX_DEFAULT = -1 };
+enum { BUTTONBOX_DEFAULT_SPACING = -1 };
 
 
-//TODO: Inherit/Implement Orientation when we can break ABI.
-
-/** Base class for Gtk::HButtonBox and Gtk::VButtonBox
+/** A container for arranging buttons.
  *
  * A button box should be used to provide a consistent layout of buttons
- * throughout your application.  There is one default layout and a default
- * spacing value that are persistant across all ButtonBox widgets.
+ * throughout your application. The layout/spacing can be altered by the
+ * programmer, or if desired, by the user to alter the 'feel' of a
+ * program to a small degree.
+ *
+ * get_layout() et_layout() retrieve and
+ * alter the method used to spread the buttons in a button box across the
+ * container, respectively.
+ *
+ * The main purpose of ButtonBox is to make sure the children have all the
+ * same size. ButtonBox gives all children the same size, but it does allow
+ * 'outliers' to keep their own larger size. To force all children to be
+ * strictly the same size without exceptions, you can set the
+ * homogeneous property to true.
+ *
+ * To excempt individual children from homogeneous sizing regardless of their
+ * 'outlier' status, you can set the non-homogeneous child
+ * property.
  */
 
-class ButtonBox : public Box
+class ButtonBox
+  : public Box
 {
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -100,8 +99,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -127,9 +130,18 @@ private:
 
   
 public:
-  
+  //Note that we try to use the same defaul parameter value as the default property value.
+    explicit ButtonBox(Orientation orientation =  ORIENTATION_HORIZONTAL);
+
+
+  /** Retrieves the method being used to arrange the buttons in a button box.
+   * @return The method used to lay out buttons in @a widget.
+   */
   ButtonBoxStyle get_layout() const;
   
+  /** Changes the way buttons are arranged in their container.
+   * @param layout_style The new layout style.
+   */
   void set_layout(ButtonBoxStyle layout_style);
 
   
@@ -158,203 +170,55 @@ public:
    * @return Whether @a child should appear in a secondary group of children.
    */
   bool get_child_secondary(const Gtk::Widget& child) const;
+  
+  
+  /** Returns whether the child is exempted from homogenous
+   * sizing.
+   * 
+   * @newin{3,2}
+   * @param child A child of @a widget.
+   * @return <tt>true</tt> if the child is not subject to homogenous sizing.
+   */
+  bool get_child_non_homogeneous(const Gtk::Widget& child) const;
 
-//TODO: Replace (and deprecate) with use of properties:
-
-
-  int get_child_min_width() const;
-
-  //Note that the const int& is silly, but was once generated and must be kept for ABI.
-  void set_child_min_width(const int& value);
-
-  int get_child_min_height() const;
-
-  //Note that the const int& is silly, but was once generated and must be kept for ABI.
-  void set_child_min_height(const int& value);
-
-  int get_child_ipadding_x() const;
-
-  //Note that the const int& is silly, but was once generated and must be kept for ABI.
-  void set_child_ipadding_x(const int& value);
-
-  int get_child_ipadding_y() const;
-
-  //Note that the const int& is silly, but was once generated and must be kept for ABI.
-  void set_child_ipadding_y(const int& value);
-
+  
+  /** Sets whether the child is exempted from homogeous sizing.
+   * 
+   * @newin{3,2}
+   * @param child A child of @a widget.
+   * @param non_homogeneous The new value.
+   */
+  void set_child_non_homogeneous(Gtk::Widget& child, bool non_homogeneous =  true);
+  
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** How to lay out the buttons in the box. Possible values are: default, spread, edge, start and end.
+/** How to lay out the buttons in the box. Possible values are: spread, edge, start and end.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<ButtonBoxStyle> property_layout_style() ;
+  Glib::PropertyProxy< ButtonBoxStyle > property_layout_style() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** How to lay out the buttons in the box. Possible values are: default, spread, edge, start and end.
+/** How to lay out the buttons in the box. Possible values are: spread, edge, start and end.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<ButtonBoxStyle> property_layout_style() const;
+  Glib::PropertyProxy_ReadOnly< ButtonBoxStyle > property_layout_style() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
-
-
-};
-
-/** A container for arranging buttons vertically.
- *
- * A button box should be used to provide a consistent layout of buttons
- * throughout your application. There is one default layout and a default spacing
- * value that are persistant across all Gtk::VButtonBox widgets.
- *
- * The layout/spacing can then be altered by the programmer, or if desired,
- * by the user to alter the 'feel' of a program to a small degree.
- *
- * @ingroup Widgets
- * @ingroup Containers
- */
-
-class VButtonBox : public ButtonBox
-{
-  public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  typedef VButtonBox CppObjectType;
-  typedef VButtonBox_Class CppClassType;
-  typedef GtkVButtonBox BaseObjectType;
-  typedef GtkVButtonBoxClass BaseClassType;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-  virtual ~VButtonBox();
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
-private:
-  friend class VButtonBox_Class;
-  static CppClassType vbuttonbox_class_;
-
-  // noncopyable
-  VButtonBox(const VButtonBox&);
-  VButtonBox& operator=(const VButtonBox&);
-
-protected:
-  explicit VButtonBox(const Glib::ConstructParams& construct_params);
-  explicit VButtonBox(GtkVButtonBox* castitem);
-
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  static GType get_type()      G_GNUC_CONST;
-
-
-  static GType get_base_type() G_GNUC_CONST;
-#endif
-
-  ///Provides access to the underlying C GtkObject.
-  GtkVButtonBox*       gobj()       { return reinterpret_cast<GtkVButtonBox*>(gobject_); }
-
-  ///Provides access to the underlying C GtkObject.
-  const GtkVButtonBox* gobj() const { return reinterpret_cast<GtkVButtonBox*>(gobject_); }
-
-
-public:
-  //C++ methods used to invoke GTK+ virtual functions:
-
-protected:
-  //GTK+ Virtual Functions (override these to change behaviour):
-
-  //Default Signal Handlers::
-
-
-private:
-
-public:
-  explicit VButtonBox(ButtonBoxStyle layout = BUTTONBOX_DEFAULT_STYLE, int spacing = BUTTONBOX_DEFAULT);
-
-
-};
-
-/** A container for arranging buttons horizontally.
- *
- * A button box should be used to provide a consistent layout of buttons
- * throughout your application. There is one default layout and a default spacing
- * value that are persistant across all Gtk::HButtonBox widgets.
- *
- * The layout/spacing can then be altered by the programmer, or if desired,
- * by the user to alter the 'feel' of a program to a small degree.
- *
- * The HButtonBox widget looks like this:
- * @image html hbuttonbox1.png
- *
- * @ingroup Widgets
- * @ingroup Containers
- */
-
-class HButtonBox : public ButtonBox
-{
-  public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  typedef HButtonBox CppObjectType;
-  typedef HButtonBox_Class CppClassType;
-  typedef GtkHButtonBox BaseObjectType;
-  typedef GtkHButtonBoxClass BaseClassType;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-  virtual ~HButtonBox();
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
-private:
-  friend class HButtonBox_Class;
-  static CppClassType hbuttonbox_class_;
-
-  // noncopyable
-  HButtonBox(const HButtonBox&);
-  HButtonBox& operator=(const HButtonBox&);
-
-protected:
-  explicit HButtonBox(const Glib::ConstructParams& construct_params);
-  explicit HButtonBox(GtkHButtonBox* castitem);
-
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  static GType get_type()      G_GNUC_CONST;
-
-
-  static GType get_base_type() G_GNUC_CONST;
-#endif
-
-  ///Provides access to the underlying C GtkObject.
-  GtkHButtonBox*       gobj()       { return reinterpret_cast<GtkHButtonBox*>(gobject_); }
-
-  ///Provides access to the underlying C GtkObject.
-  const GtkHButtonBox* gobj() const { return reinterpret_cast<GtkHButtonBox*>(gobject_); }
-
-
-public:
-  //C++ methods used to invoke GTK+ virtual functions:
-
-protected:
-  //GTK+ Virtual Functions (override these to change behaviour):
-
-  //Default Signal Handlers::
-
-
-private:
-
-public:
-  explicit HButtonBox(ButtonBoxStyle layout = BUTTONBOX_DEFAULT_STYLE, int spacing = BUTTONBOX_DEFAULT);
 
 
 };
 
 } // namespace Gtk
+
+//Include the deprecated header, 
+//whose classes were previously in this header,
+//to preserve the "API" of the includes.
+#include <gtkmm/hvbuttonbox.h>
 
 
 namespace Glib
@@ -368,34 +232,6 @@ namespace Glib
    * @relates Gtk::ButtonBox
    */
   Gtk::ButtonBox* wrap(GtkButtonBox* object, bool take_copy = false);
-} //namespace Glib
-
-
-namespace Glib
-{
-  /** A Glib::wrap() method for this object.
-   * 
-   * @param object The C instance.
-   * @param take_copy False if the result should take ownership of the C instance. True if it should take a new copy or ref.
-   * @result A C++ instance that wraps this C instance.
-   *
-   * @relates Gtk::VButtonBox
-   */
-  Gtk::VButtonBox* wrap(GtkVButtonBox* object, bool take_copy = false);
-} //namespace Glib
-
-
-namespace Glib
-{
-  /** A Glib::wrap() method for this object.
-   * 
-   * @param object The C instance.
-   * @param take_copy False if the result should take ownership of the C instance. True if it should take a new copy or ref.
-   * @result A C++ instance that wraps this C instance.
-   *
-   * @relates Gtk::HButtonBox
-   */
-  Gtk::HButtonBox* wrap(GtkHButtonBox* object, bool take_copy = false);
 } //namespace Glib
 
 

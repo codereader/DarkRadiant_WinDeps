@@ -4,7 +4,8 @@
 #define _GTKMM_ACCELGROUP_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: accelgroup.hg,v 1.8 2005/04/07 08:46:44 murrayc Exp $ */
 
@@ -21,13 +22,13 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 
 #include <gdkmm/types.h>
-#include <gtkmm/object.h>
+#include <glibmm/object.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -84,8 +85,11 @@ protected:
 public:
   virtual ~AccelGroup();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -152,7 +156,7 @@ public:
    * connect().
    * @param accel_key Key value of the accelerator.
    * @param accel_mods Modifier combination of the accelerator.
-   * @return <tt>true</tt> if there was an accelerator which could be 
+   * @return <tt>true</tt> if there was an accelerator which could be
    * removed, <tt>false</tt> otherwise.
    */
   bool disconnect_key(guint accel_key, Gdk::ModifierType accel_mods);
@@ -179,8 +183,8 @@ public:
   static Glib::ustring name(guint accelerator_key, Gdk::ModifierType accelerator_mods);
 
   
-  /** Converts an accelerator keyval and modifier mask into a string 
-   * which can be used to represent the accelerator to the user. 
+  /** Converts an accelerator keyval and modifier mask into a string
+   * which can be used to represent the accelerator to the user.
    * 
    * @newin{2,6}
    * @param accelerator_key Accelerator keyval.
@@ -206,15 +210,15 @@ public:
 
   //TODO: Add an overload that takes a ustring instead of a GQuark.
   
-  /** Finds the first accelerator in @a accel_group 
-   * that matches @a accel_key and @a accel_mods, and
-   * activates it.
+  /** Finds the first accelerator in @a accel_group that matches
+   *  @a accel_key and @a accel_mods, and activates it.
    * @param accel_quark The quark for the accelerator name.
    * @param acceleratable The Object, usually a Gtk::Window, on which
    * to activate the accelerator.
    * @param accel_key Accelerator keyval from a key event.
    * @param accel_mods Keyboard state mask from a key event.
-   * @return <tt>true</tt> if an accelerator was activated and handled this keypress.
+   * @return <tt>true</tt> if an accelerator was activated and handled
+   * this keypress.
    */
   bool activate(GQuark accel_quark, const Glib::RefPtr<Glib::Object>& acceleratable, guint accel_key, Gdk::ModifierType accel_mods);
 
@@ -222,39 +226,46 @@ public:
   //Let's not wrap this, because the GtkAccelGroupFindFunc callback uses GClosures, and it's not clear that this is useful.
   //AccelKey find(const SlotFind& slot);
   //GtkAccelKey*	gtk_accel_group_find(GtkAccelGroup* accel_group, GtkAccelGroupFindFunc find_func, gpointer data);
-                            
-  
-  /** Finds the first accelerator in any Gtk::AccelGroup attached
-   * to @a object that matches @a accel_key and @a accel_mods, and
-   * activates that accelerator.
-   * @param object The Object, usually a Gtk::Window, on which
-   * to activate the accelerator.
-   * @param accel_key Accelerator keyval from a key event.
-   * @param accel_mods Keyboard state mask from a key event.
-   * @return <tt>true</tt> if an accelerator was activated and handled this keypress.
-   */
-  static bool activate(Gtk::Object& object, guint accel_key, Gdk::ModifierType accel_mods);
+
+  //TODO: _WRAP_METHOD(static bool activate(Object& object, guint accel_key, Gdk::ModifierType accel_mods), gtk_accel_groups_activate)
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>bool on_my_%accel_activate(const Glib::RefPtr<Glib::Object>& acceleratable, guint keyval, Gdk::ModifierType modifier)</tt>
+   *
+   * The accel-activate signal is an implementation detail of
+   * Gtk::AccelGroup and not meant to be used by applications.
+   * @param acceleratable The object on which the accelerator was activated.
+   * @param keyval The accelerator keyval.
+   * @param modifier The modifier combination of the accelerator.
+   * @return <tt>true</tt> if the accelerator was activated.
    */
 
   Glib::SignalProxy3< bool,const Glib::RefPtr<Glib::Object>&,guint,Gdk::ModifierType > signal_accel_activate();
-   
+
 
   //TODO: The C type is unpleasant:
   //This has C docs, but it isn't worth mentioning them for such a useless signal. murrayc.
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%accel_changed(guint keyval, Gdk::ModifierType modifier, GClosure* accel_closure)</tt>
+   *
+   * The accel-changed signal is emitted when a Gtk::AccelGroupEntry
+   * is added to or removed from the accel group.
+   * 
+   * Widgets like Gtk::AccelLabel which display an associated
+   * accelerator should connect to this signal, and rebuild
+   * their visual representation if the @a accel_closure is theirs.
+   * @param keyval The accelerator keyval.
+   * @param modifier The modifier combination of the accelerator.
+   * @param accel_closure The Closure of the accelerator.
    */
 
   Glib::SignalProxy3< void,guint,Gdk::ModifierType,GClosure* > signal_accel_changed();
 
-  
+
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** Is the accel group locked.
    *
@@ -262,7 +273,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_is_locked() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_is_locked() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -273,7 +284,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Gdk::ModifierType> property_modifier_mask() const;
+  Glib::PropertyProxy_ReadOnly< Gdk::ModifierType > property_modifier_mask() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -286,7 +297,6 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
-  virtual void on_accel_changed(guint keyval, Gdk::ModifierType modifier, GClosure* accel_closure);
 
 
 };

@@ -4,7 +4,8 @@
 #define _GTKMM_TREEMODEL_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: treemodel.hg,v 1.25 2006/05/10 20:59:28 murrayc Exp $ */
 
@@ -21,12 +22,16 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <vector>
+
+#include <gtk/gtk.h>
 #include <glibmm/interface.h>
 #include <gtkmm/treeiter.h>
+#include <gtkmm/treemodelcolumn.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -40,6 +45,7 @@ namespace Gtk
 namespace Gtk
 {
 
+class TreeModelFilter;
 class TreeModelSort;
 class TreePath;
 class TreeRowReference;
@@ -177,9 +183,14 @@ private:
   TreeModel(const TreeModel&);
   TreeModel& operator=(const TreeModel&);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 protected:
-  TreeModel(); // you must derive from this class
-
+  /**
+   * You should derive from this class to use it.
+   */
+  TreeModel();
+  
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /** Called by constructors of derived classes. Provide the result of 
    * the Class init() function to ensure that it is properly 
    * initialized.
@@ -202,8 +213,11 @@ public:
 
   static void add_interface(GType gtype_implementer);
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -224,11 +238,11 @@ public:
   typedef Children::reverse_iterator reverse_iterator;
   typedef Children::const_iterator const_iterator;
   typedef Children::const_reverse_iterator const_reverse_iterator;
-
+  
   typedef TreeRow Row;
   typedef TreePath Path;
   typedef TreeRowReference RowReference;
-
+  
 
   //These are part of GtkTreeModelFilter or GtkTreeModelSort, not GtkTreeModel:
   
@@ -301,9 +315,11 @@ public:
   void foreach(const SlotForeachPathAndIter& slot);
 
   
-  /** Returns a set of flags supported by this interface.  The flags are a bitwise
-   * combination of Gtk::TreeModelFlags.  The flags supported should not change
-   * during the lifecycle of the @a tree_model.
+  /** Returns a set of flags supported by this interface.
+   * 
+   * The flags are a bitwise combination of Gtk::TreeModelFlags.
+   * The flags supported should not change during the lifetime
+   * of the @a tree_model.
    * @return The flags supported by this interface.
    */
   TreeModelFlags get_flags() const;
@@ -319,7 +335,7 @@ public:
    */
   GType get_column_type(int index) const;
   //TODO: A C++-type version of get_column_type()?
-
+  
   
   /** Returns a Gtk::TreePath referenced by @a iter.
    * @param iter The Gtk::TreeIter.
@@ -328,45 +344,51 @@ public:
   TreeModel::Path get_path(const iterator& iter) const;
 
   
-  /** Emits the "row-changed" signal on @a tree_model.
+  /** Emits the Gtk::TreeModel::signal_row_changed() signal on @a tree_model.
    * @param path A Gtk::TreePath pointing to the changed row.
    * @param iter A valid Gtk::TreeIter pointing to the changed row.
    */
   void row_changed(const Path& path, const iterator& iter);
   
-  /** Emits the "row-inserted" signal on @a tree_model
+  /** Emits the Gtk::TreeModel::signal_row_inserted() signal on @a tree_model.
    * @param path A Gtk::TreePath pointing to the inserted row.
    * @param iter A valid Gtk::TreeIter pointing to the inserted row.
    */
   void row_inserted(const Path& path, const iterator& iter);
   
-  /** Emits the "row-has-child-toggled" signal on @a tree_model.  This should be
-   * called by models after the child state of a node changes.
+  /** Emits the Gtk::TreeModel::signal_row_has_child_toggled() signal on
+   *  @a tree_model. This should be called by models after the child
+   * state of a node changes.
    * @param path A Gtk::TreePath pointing to the changed row.
    * @param iter A valid Gtk::TreeIter pointing to the changed row.
    */
   void row_has_child_toggled(const Path& path, const iterator& iter);
   
-  /** Emits the "row-deleted" signal on @a tree_model.  This should be called by
-   * models after a row has been removed.  The location pointed to by @a path 
-   * should be the location that the row previously was at.  It may not be a 
-   * valid location anymore.
-   * @param path A Gtk::TreePath pointing to the previous location of the deleted row.
+  /** Emits the Gtk::TreeModel::signal_row_deleted() signal on @a tree_model.
+   * 
+   * This should be called by models after a row has been removed.
+   * The location pointed to by @a path should be the location that
+   * the row previously was at. It may not be a valid location anymore.
+   * 
+   * Nodes that are deleted are not unreffed, this means that any
+   * outstanding references on the deleted node should not be released.
+   * @param path A Gtk::TreePath pointing to the previous location of
+   * the deleted row.
    */
   void row_deleted(const Path& path);
 
  /** Emits the "rows_reordered" signal on the tree model.  This should be called by
-  * custom models when their rows have been reordered.
+  * custom models when their rows have been reordered. 
   *
   * @param path A tree path pointing to the tree node whose children have been reordered.
-  * @param iter A valid iterator pointing to the node whose children have been reordered. See also, rows_reordered(const Path& path, const Glib::ArrayHandle<int>& new_order), if the path has a depth of 0.
+  * @param iter A valid iterator pointing to the node whose children have been reordered. See also, rows_reordered(const Path& path, const std::vector<int>& new_order), if the path has a depth of 0.
   * @param new_order An array of integers mapping the current position of each child
   * to its old position before the re-ordering, i.e. @a new_order<literal>[newpos] = oldpos.
   */
-  void rows_reordered(const Path& path, const iterator& iter, const Glib::ArrayHandle<int>& new_order);
+  void rows_reordered(const Path& path, const iterator& iter, const std::vector<int>& new_order);
 
  /** Emits the "rows_reordered" signal on the tree model.  This should be called by
-  * custom models when their rows have been reordered. This method overload is for nodes whose
+  * custom models when their rows have been reordered. This method overload is for nodes whose 
   * path has a depth of 0.
   * @newin{2,10}
   *
@@ -374,18 +396,20 @@ public:
   * @param new_order An array of integers mapping the current position of each child
   * to its old position before the re-ordering, i.e. @a new_order<literal>[newpos] = oldpos.
   */
-  void rows_reordered(const Path& path, const Glib::ArrayHandle<int>& new_order);
-
+  void rows_reordered(const Path& path, const std::vector<int>& new_order);
   
-  /** Emits the "rows-reordered" signal on @a tree_model.  This should be called by
-   * models when their rows have been reordered.
-   * @param path A Gtk::TreePath pointing to the tree node whose children have been 
+  
+  /** Emits the Gtk::TreeModel::signal_rows_reordered() signal on @a tree_model.
+   * 
+   * This should be called by models when their rows have been
    * reordered.
-   * @param iter A valid Gtk::TreeIter pointing to the node whose children have been 
-   * reordered, or <tt>0</tt> if the depth of @a path is 0.
-   * @param new_order An array of integers mapping the current position of each child
-   * to its old position before the re-ordering,
-   * i.e. @a new_order<tt>[newpos] = oldpos</tt>.
+   * @param path A Gtk::TreePath pointing to the tree node whose children
+   * have been reordered.
+   * @param iter A valid Gtk::TreeIter pointing to the node whose children
+   * have been reordered, or <tt>0</tt> if the depth of @a path is 0.
+   * @param new_order An array of integers mapping the current position of
+   * each child to its old position before the re-ordering,
+   * i.e. new_order<tt>[newpos] = oldpos</tt>.
    */
   void rows_reordered(const Path& path, const iterator& iter, int* new_order);
 
@@ -401,41 +425,82 @@ public:
   Glib::ustring get_string(const iterator& iter) const;
 
  
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%row_changed(const TreeModel::Path& path, const TreeModel::iterator& iter)</tt>
+   *
+   * This signal is emitted when a row in the model has changed.
+   * @param path A Gtk::TreePath identifying the changed row.
+   * @param iter A valid Gtk::TreeIter pointing to the changed row.
    */
 
   Glib::SignalProxy2< void,const TreeModel::Path&,const TreeModel::iterator& > signal_row_changed();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%row_inserted(const TreeModel::Path& path, const TreeModel::iterator& iter)</tt>
+   *
+   * This signal is emitted when a new row has been inserted in
+   * the model.
+   * 
+   * Note that the row may still be empty at this point, since
+   * it is a common pattern to first insert an empty row, and
+   * then fill it with the desired values.
+   * @param path A Gtk::TreePath identifying the new row.
+   * @param iter A valid Gtk::TreeIter pointing to the new row.
    */
 
   Glib::SignalProxy2< void,const TreeModel::Path&,const TreeModel::iterator& > signal_row_inserted();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%row_has_child_toggled(const TreeModel::Path& path, const TreeModel::iterator& iter)</tt>
+   *
+   * This signal is emitted when a row has gotten the first child
+   * row or lost its last child row.
+   * @param path A Gtk::TreePath identifying the row.
+   * @param iter A valid Gtk::TreeIter pointing to the row.
    */
 
   Glib::SignalProxy2< void,const TreeModel::Path&,const TreeModel::iterator& > signal_row_has_child_toggled();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%row_deleted(const TreeModel::Path& path)</tt>
+   *
+   * This signal is emitted when a row has been deleted.
+   * 
+   * Note that no iterator is passed to the signal handler,
+   * since the row is already deleted.
+   * 
+   * This should be called by models after a row has been removed.
+   * The location pointed to by @a path should be the location that
+   * the row previously was at. It may not be a valid location anymore.
+   * @param path A Gtk::TreePath identifying the row.
    */
 
   Glib::SignalProxy1< void,const TreeModel::Path& > signal_row_deleted();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%rows_reordered(const TreeModel::Path& path, const TreeModel::iterator& iter, int* new_order)</tt>
+   *
+   * This signal is emitted when the children of a node in the
+   * Gtk::TreeModel have been reordered.
+   * 
+   * Note that this signal is <em>not</em> emitted
+   * when rows are reordered by DND, since this is implemented
+   * by removing and then reinserting the row.
+   * @param path A Gtk::TreePath identifying the tree node whose children
+   * have been reordered.
+   * @param iter A valid Gtk::TreeIter pointing to the node whose.
+   * @param new_order An array of integers mapping the current position
+   * of each child to its old position before the re-ordering,
+   * i.e. @a new_order<tt>[newpos] = oldpos</tt>.
    */
 
   Glib::SignalProxy3< void,const TreeModel::Path&,const TreeModel::iterator&,int* > signal_rows_reordered();
@@ -479,7 +544,7 @@ protected:
    * @result true if the operation was possible.
    */
   virtual bool iter_children_vfunc(const iterator& parent, iterator& iter) const;
-
+  
   /** Override and implement this in a derived TreeModel class.
    * Sets @a iter to be the parent of @a child. If @a child is at the toplevel, and
    * doesn't have a parent, then @a iter is set to an invalid iterator and false
@@ -516,7 +581,7 @@ protected:
    */
   virtual bool iter_nth_root_child_vfunc(int n, iterator& iter) const;
 
-
+  
   /** Override and implement this in a derived TreeModel class.
    * Returns true if @a iter has children, false otherwise.
    *
@@ -528,7 +593,7 @@ protected:
 
   /** Override and implement this in a derived TreeModel class.
    * Returns the number of children that @a iter has.
-   * See also iter_n_root_children_vfunc().
+   * See also iter_n_root_children_vfunc().  
    *
    * @param iter The iterator to test for children.
    * @result The number of children of @a iter.
@@ -596,24 +661,9 @@ protected:
     virtual void get_value_vfunc(const iterator& iter, int column, Glib::ValueBase& value) const;
 
 
-  //We don't put an deprecation ifdef around this because it would break ABI.
-  /** Override and implement this in a derived TreeModel class.
-   * @note This virtual method is not recommended.  To check
-   * whether an iterator is valid, call TreeStore::iter_is_valid(),
-   * ListStore::iter_is_valid() or TreeModelSort::iter_is_valid() directly
-   * instead.  Because these methods are intended to be used only for debugging
-   * and/or testing purposes, it doesn't make sense to provide an abstract
-   * interface to them.
-   *
-   * @result true if the iterator is valid.
-   *
-   * @deprecated Use iter_is_valid() in the derived class.
-   */
-  virtual bool iter_is_valid(const iterator& iter) const;
-
   //Called by TreeRow, which is a friend class:
   //The comment about set_row_changed() in the documentation is based on my reading of the source of
-  //gtk_list_store_set_value() and gtk_tree_store_set_value().
+  //gtk_list_store_set_value() and gtk_tree_store_set_value().  
   /** Override and implement this in a derived TreeModel class, so that Row::operator() and
    * Row::set_value() work.
    * You can probably just implement this by calling set_value_vfunc().
@@ -624,6 +674,7 @@ protected:
   //This might not need to be virtual, but it's not a big deal. murrayc.
   virtual void get_value_impl(const iterator& row, int column, Glib::ValueBase& value) const;
 
+  friend class Gtk::TreeModelFilter;
   friend class Gtk::TreeModelSort;
   friend class Gtk::TreeRow;
   friend class Gtk::TreeIter;
@@ -638,10 +689,15 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_row_changed().
   virtual void on_row_changed(const TreeModel::Path& path, const TreeModel::iterator& iter);
+  /// This is a default handler for the signal signal_row_inserted().
   virtual void on_row_inserted(const TreeModel::Path& path, const TreeModel::iterator& iter);
+  /// This is a default handler for the signal signal_row_has_child_toggled().
   virtual void on_row_has_child_toggled(const TreeModel::Path& path, const TreeModel::iterator& iter);
+  /// This is a default handler for the signal signal_row_deleted().
   virtual void on_row_deleted(const TreeModel::Path& path);
+  /// This is a default handler for the signal signal_rows_reordered().
   virtual void on_rows_reordered(const TreeModel::Path& path, const TreeModel::iterator& iter, int* new_order);
 
 

@@ -4,7 +4,8 @@
 #define _GDKMM_PIXBUFLOADER_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: pixbufloader.hg,v 1.13 2006/05/18 17:53:14 murrayc Exp $ */
 
@@ -21,8 +22,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <glibmm/object.h>
@@ -71,8 +72,11 @@ protected:
 public:
   virtual ~PixbufLoader();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -197,8 +201,9 @@ public:
    * applications can call get_pixbuf() to fetch 
    * the partially-loaded pixbuf.
    *
-   * @par Prototype:
+* @par Slot Prototype:
    * <tt>void on_my_%area_prepared()</tt>
+   *
    */
 
   Glib::SignalProxy0< void > signal_area_prepared();
@@ -215,8 +220,9 @@ public:
    * @param width Width of updated area.
    * @param height Height of updated area.
    *
-   * @par Prototype:
+* @par Slot Prototype:
    * <tt>void on_my_%area_updated(int x, int y, int width, int height)</tt>
+   *
    */
 
   Glib::SignalProxy4< void,int,int,int,int > signal_area_updated();
@@ -227,15 +233,14 @@ public:
    * notification when an image loader is closed by the code that
    * drives it.
    *
-   * @par Prototype:
+* @par Slot Prototype:
    * <tt>void on_my_%closed()</tt>
+   *
    */
 
   Glib::SignalProxy0< void > signal_closed();
 
 
-  //We use no_default_handler for this, because we can not add a new vfunc to 2.5 without breaking ABI.
-  //TODO: Remove no_default_handler when we do an ABI-break-with-parallel-install.
   /** This signal is emitted when the pixbuf loader has been fed the
    * initial amount of data that is required to figure out the size
    * of the image that it will create.  Applications can call  
@@ -245,8 +250,9 @@ public:
    * @param width The original width of the image.
    * @param height The original height of the image
    *
-   * @par Prototype:
+* @par Slot Prototype:
    * <tt>void on_my_%size_prepared(int width, int height)</tt>
+   *
    */
 
   Glib::SignalProxy2< void,int,int > signal_size_prepared();
@@ -261,9 +267,14 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_area_prepared().
   virtual void on_area_prepared();
+  /// This is a default handler for the signal signal_area_updated().
   virtual void on_area_updated(int x, int y, int width, int height);
+  /// This is a default handler for the signal signal_closed().
   virtual void on_closed();
+  /// This is a default handler for the signal signal_size_prepared().
+  virtual void on_size_prepared(int width, int height);
 
 
 };

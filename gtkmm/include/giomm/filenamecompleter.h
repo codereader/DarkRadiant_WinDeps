@@ -4,7 +4,8 @@
 #define _GIOMM_FILENAMECOMPLETER_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -26,6 +27,7 @@
  */
 
 //#include <giomm/file.h>
+#include <glibmm/arrayhandle.h>
 #include <glibmm/object.h>
 
 
@@ -125,9 +127,11 @@ public:
   void set_dirs_only(bool dirs_only =  true);
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%got_completion_data()</tt>
+   *
+   * Emitted when the file name completion information comes available.
    */
 
   Glib::SignalProxy0< void > signal_got_completion_data();
@@ -142,6 +146,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_got_completion_data().
   virtual void on_got_completion_data();
 
 

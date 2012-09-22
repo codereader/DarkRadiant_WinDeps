@@ -4,7 +4,8 @@
 #define _GTKMM_STATUSBAR_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: statusbar.hg,v 1.2 2003/10/12 09:38:11 murrayc Exp $ */
 
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/box.h>
@@ -56,7 +57,7 @@ namespace Gtk
  * @ingroup Widgets
  */
 
-class Statusbar : public HBox
+class Statusbar : public HBox //Note: The C object really derives from this convenience type.
 {
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -85,8 +86,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -106,7 +111,9 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_text_pushed().
   virtual void on_text_pushed(guint context_id, const Glib::ustring& text);
+  /// This is a default handler for the signal signal_text_popped().
   virtual void on_text_popped(guint context_id, const Glib::ustring& text);
 
 
@@ -145,7 +152,7 @@ public:
    */
   void pop(guint context_id =  0);
 
-  /** Forces the removal of a message from a statusbar's stack. 
+  /** Forces the removal of a message from a statusbar's stack.
    * The exact context_id and message_id must be specified.
    * @param message_id A message identifier, as returned by push().
    * @param context_id A context identifier.
@@ -160,18 +167,6 @@ public:
    * @param context_id A context identifier.
    */
   void remove_all_messages(guint context_id =  0);
-
-  
-  /** Sets whether the statusbar has a resize grip. 
-   * <tt>true</tt> by default.
-   * @param setting <tt>true</tt> to have a resize grip.
-   */
-  void set_has_resize_grip(bool setting =  true);
-  
-  /** Returns whether the statusbar has a resize grip.
-   * @return <tt>true</tt> if the statusbar has a resize grip.
-   */
-  bool get_has_resize_grip() const;
 
   //This actually returns a GtkFrame, though the documentation describes it as "box".
   //I'm not generally happy about API that returns an unknown type. murrayc.
@@ -191,41 +186,28 @@ public:
   const Gtk::Widget* get_message_area() const;
 
  
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%text_pushed(guint context_id, const Glib::ustring& text)</tt>
+   *
+   * Is emitted whenever a new message gets pushed onto a statusbar's stack.
+   * @param context_id The context id of the relevant message/statusbar.
+   * @param text The message that was pushed.
    */
 
   Glib::SignalProxy2< void,guint,const Glib::ustring& > signal_text_pushed();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%text_popped(guint context_id, const Glib::ustring& text)</tt>
+   *
+   * Is emitted whenever a new message is popped off a statusbar's stack.
+   * @param context_id The context id of the relevant message/statusbar.
+   * @param text The message that was just popped.
    */
 
   Glib::SignalProxy2< void,guint,const Glib::ustring& > signal_text_popped();
-
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether the statusbar has a grip for resizing the toplevel.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<bool> property_has_resize_grip() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether the statusbar has a grip for resizing the toplevel.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<bool> property_has_resize_grip() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
 
 
 };

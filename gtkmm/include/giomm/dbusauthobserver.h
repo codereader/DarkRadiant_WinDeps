@@ -4,7 +4,8 @@
 #define _GIOMM_DBUSAUTHOBSERVER_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -51,7 +52,7 @@ namespace DBus
 
 
 //TODO: Add example from the C API docs in class docs.
-/** Ah object used for authenticating connections.
+/** AuthObserver - An object used for authenticating connections.
  * The AuthObserver type provides a mechanism for participating in how a
  * Server (or a Connection) authenticates remote peers.  Simply
  * instantiate an AuthObserver and connect to the signals you are
@@ -117,7 +118,7 @@ public:
   static Glib::RefPtr<AuthObserver> create();
 
 
-  /** Emits the DBusAuthObserver::authorize-authenticated-peer signal on @a observer.
+  /** Emits the DBusAuthObserver::signal_authorize_authenticated_peer() signal on @a observer.
    * 
    * @newin{2,26}
    * @param stream A IOStream for the DBusConnection.
@@ -127,9 +128,17 @@ public:
   bool authorize_authenticated_peer(const Glib::RefPtr<const IOStream>& stream, const Glib::RefPtr<const Credentials>& credentials);
 
  
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>bool on_my_%authorize_authenticated_peer(const Glib::RefPtr<const IOStream>& stream, const Glib::RefPtr<const Credentials>& credentials)</tt>
+   *
+   * Emitted to check if a peer that is successfully authenticated
+   * is authorized.
+   * 
+   * @newin{2,26}
+   * @param stream A IOStream for the DBusConnection.
+   * @param credentials Credentials received from the peer or <tt>0</tt>.
+   * @return <tt>true</tt> if the peer is authorized, <tt>false</tt> if not.
    */
 
   Glib::SignalProxy2< bool,const Glib::RefPtr<const IOStream>&,const Glib::RefPtr<const Credentials>& > signal_authorize_authenticated_peer();

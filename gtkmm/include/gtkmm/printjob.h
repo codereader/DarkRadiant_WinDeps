@@ -4,7 +4,8 @@
 #define _GTKMM_PRINTJOB_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 2006 The gtkmm Development Team
  *
@@ -19,8 +20,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <glibmm/object.h>
@@ -82,8 +83,11 @@ protected:
 public:
   virtual ~PrintJob();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -100,9 +104,9 @@ public:
 
 private:
 
-  //This is not available in on Win32.
-//This source file will not be compiled,
-//and the class will not be registered in wrap_init.h or wrap_init.cc
+  //This is not available on Win32.
+//This source file will not be compiled on Win32,
+//and no class defined in it will be registered by wrap_init().
 
 
 protected:
@@ -210,7 +214,6 @@ public:
    */
   bool get_track_print_status() const;
 
-  
   /** For example, 
    * void on_print_job_complete(const Glib::RefPtr<PrintJob>& job);
    *
@@ -222,11 +225,145 @@ public:
    * @param slot A function to call when the job completes or an error occurs.
    */
   void send(const SlotPrintJobComplete& slot);
-
   
-  /**
-   * @par Prototype:
+  
+  /** Gets the Gtk::PrintPages setting for this job.
+   * 
+   * @newin{3,0}
+   * @return The Gtk::PrintPages setting.
+   */
+  PrintPages get_pages() const;
+  
+  /** Sets the Gtk::PrintPages setting for this job.
+   * 
+   * @newin{3,0}
+   * @param pages The Gtk::PrintPages setting.
+   */
+  void set_pages(PrintPages pages);
+//TODO:  _WRAP_METHOD(PageRange* get_page_ranges(int *n_ranges), gtk_print_job_get_page_ranges)
+//TODO: _WRAP_METHOD(void set_page_ranges(GtkPageRange* ranges, int n_ranges), gtk_print_job_set_page_ranges)
+  
+  /** Gets the Gtk::PageSet setting for this job.
+   * 
+   * @newin{3,0}
+   * @return The Gtk::PageSet setting.
+   */
+  PageSet get_page_set() const;
+  
+  /** Sets the Gtk::PageSet setting for this job.
+   * 
+   * @newin{3,0}
+   * @param page_set A Gtk::PageSet setting.
+   */
+  void set_page_set(PageSet page_set);
+  
+  /** Gets the number of copies of this job.
+   * 
+   * @newin{3,0}
+   * @return The number of copies.
+   */
+  int get_num_copies() const;
+  
+  /** Sets the number of copies for this job.
+   * 
+   * @newin{3,0}
+   * @param num_copies The number of copies.
+   */
+  void set_num_copies(int num_copies);
+  
+  /** Gets the scale for this job (where 1.0 means unscaled).
+   * 
+   * @newin{3,0}
+   * @return The scale.
+   */
+  double get_scale() const;
+  
+  /** Sets the scale for this job (where 1.0 means unscaled).
+   * 
+   * @newin{3,0}
+   * @param scale The scale.
+   */
+  void set_scale(double scale);
+  
+  /** Gets the n-up setting for this job.
+   * 
+   * @newin{3,0}
+   * @return The n-up setting.
+   */
+  guint get_n_up() const;
+  
+  /** Sets the n-up setting for this job.
+   * 
+   * @newin{3,0}
+   * @param n_up The n-up value.
+   */
+  void set_n_up(guint n_up);
+  
+  /** Gets the n-up layout setting for this job.
+   * 
+   * @newin{3,0}
+   * @return The n-up layout.
+   */
+  NumberUpLayout get_n_up_layout() const;
+  
+  /** Sets the n-up layout setting for this job.
+   * 
+   * @newin{3,0}
+   * @param layout The n-up layout setting.
+   */
+  void set_n_up_layout(NumberUpLayout layout);
+  
+  /** Gets whether the job is printed rotated.
+   * 
+   * @newin{3,0}
+   * @return Whether the job is printed rotated.
+   */
+  bool get_rotate() const;
+  
+  /** Sets whether this job is printed rotated.
+   * 
+   * @newin{3,0}
+   * @param rotate Whether to print rotated.
+   */
+  void set_rotate(bool rotate =  true);
+  
+  /** Gets whether this job is printed collated.
+   * 
+   * @newin{3,0}
+   * @return Whether the job is printed collated.
+   */
+  bool get_collate() const;
+  
+  /** Sets whether this job is printed collated.
+   * 
+   * @newin{3,0}
+   * @param collate Whether the job is printed collated.
+   */
+  void set_collate(bool collate =  true);
+  
+  /** Gets whether this job is printed reversed.
+   * 
+   * @newin{3,0}
+   * @return Whether the job is printed reversed.
+   */
+  bool get_reverse() const;
+  
+  /** Sets whether this job is printed reversed.
+   * 
+   * @newin{3,0}
+   * @param reverse Whether the job is printed reversed.
+   */
+  void set_reverse(bool reverse =  true);
+
+
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%status_changed()</tt>
+   *
+   * Gets emitted when the status of a job changes. The signal handler
+   * can use Gtk::PrintJob::get_status() to obtain the new status.
+   * 
+   * @newin{2,10}
    */
 
   Glib::SignalProxy0< void > signal_status_changed();
@@ -239,7 +376,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_title() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_title() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -283,7 +420,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_track_print_status() ;
+  Glib::PropertyProxy< bool > property_track_print_status() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -293,7 +430,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_track_print_status() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_track_print_status() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -306,6 +443,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_status_changed().
   virtual void on_status_changed();
 
 

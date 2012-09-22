@@ -19,13 +19,12 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <glibmm/utility.h>
 #include <glibmm/ustring.h>
-#include <glibmm/arrayhandle.h>
 #include <gtkmm/enums.h>
 #include <gtk/gtk.h> //For GtkTargetEntry.
 
@@ -69,7 +68,7 @@ protected:
 };
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-struct TargetEntry_Traits
+struct TargetEntryTraits
 {
   typedef TargetEntry CppType;
   typedef GtkTargetEntry CType;
@@ -87,8 +86,6 @@ struct TargetEntry_Traits
   static void release_c_type(const CType&) {}
 };
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-typedef Glib::ArrayHandle< TargetEntry, TargetEntry_Traits > ArrayHandle_TargetEntry;
 
 } /* namespace Gtk */
 

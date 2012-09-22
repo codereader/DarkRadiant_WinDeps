@@ -4,7 +4,8 @@
 #define _GTKMM_CELLLAYOUT_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: celllayout.hg,v 1.12 2006/05/10 20:59:27 murrayc Exp $ */
 
@@ -21,11 +22,14 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <vector>
+
 #include <glibmm/interface.h>
+//#include <gtkmm/cellarea.h>
 #include <gtkmm/cellrenderer.h>
 #include <gtkmm/cellrenderer_generation.h>
 #include <gtkmm/treemodel.h>
@@ -49,6 +53,8 @@ namespace Gtk
 { class CellLayout_Class; } // namespace Gtk
 namespace Gtk
 {
+
+class CellArea;
 
 /** An interface for packing cells.
  * CellLayout is an interface to be implemented by all objects which want to provide a TreeView::Column-like API
@@ -74,9 +80,14 @@ private:
   CellLayout(const CellLayout&);
   CellLayout& operator=(const CellLayout&);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 protected:
-  CellLayout(); // you must derive from this class
-
+  /**
+   * You should derive from this class to use it.
+   */
+  CellLayout();
+  
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /** Called by constructors of derived classes. Provide the result of 
    * the Class init() function to ensure that it is properly 
    * initialized.
@@ -99,8 +110,11 @@ public:
 
   static void add_interface(GType gtype_implementer);
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -123,7 +137,7 @@ public:
    * then the @a cell is allocated no more space than it needs. Any unused space
    * is divided evenly between cells for which @a expand is <tt>true</tt>.
    * 
-   * Note that reusing the same cell renderer is not supported. 
+   * Note that reusing the same cell renderer is not supported.
    * 
    * @newin{2,4}
    * @param cell A Gtk::CellRenderer.
@@ -135,7 +149,7 @@ public:
    *  @a cell is allocated no more space than it needs. Any unused space is
    * divided evenly between cells for which @a expand is <tt>true</tt>.
    * 
-   * Note that reusing the same cell renderer is not supported. 
+   * Note that reusing the same cell renderer is not supported.
    * 
    * @newin{2,4}
    * @param cell A Gtk::CellRenderer.
@@ -143,20 +157,32 @@ public:
    */
   void pack_end(CellRenderer& cell, bool expand =  true);
 
-   
+ 
   /** Return value: a list of cell renderers.
    * @return A list of cell renderers.
    * 
    * @newin{2,12}.
    */
-  Glib::ListHandle<CellRenderer*> get_cells();
+  std::vector<CellRenderer*> get_cells();
   
   /** Return value: a list of cell renderers.
    * @return A list of cell renderers.
    * 
    * @newin{2,12}.
    */
-  Glib::ListHandle<const CellRenderer*> get_cells() const;
+  std::vector<const CellRenderer*> get_cells() const;
+
+  /** Gets the CellRenderer for the column.
+    * You should dynamic_cast<> to the expected derived CellRenderer type.
+    * This assumes that the CellLayout contains only one CellRenderer.
+    */
+  CellRenderer* get_first_cell();
+
+  /** Gets the CellRenderer for the column.
+    * You should dynamic_cast<> to the expected derived CellRenderer type.
+    * This assumes that the CellLayout contains only one CellRenderer.
+    */
+  const CellRenderer* get_first_cell() const;
 
   
   /** Unsets all the mappings on all renderers on @a cell_layout and
@@ -169,11 +195,12 @@ public:
    //I think this is just a convenience method, equivalent to clear() and multiple add_attribute()s. murrayc.
 
   
-  /** Adds an attribute mapping to the list in @a cell_layout. The @a column is the
-   * column of the model to get a value from, and the @a attribute is the
-   * parameter on @a cell to be set from the value. So for example if column 2
-   * of the model contains strings, you could have the "text" attribute of a
-   * Gtk::CellRendererText get its values from column 2.
+  /** Adds an attribute mapping to the list in @a cell_layout.
+   * 
+   * The @a column is the column of the model to get a value from, and the
+   *  @a attribute is the parameter on @a cell to be set from the value. So for
+   * example if column 2 of the model contains strings, you could have the
+   * "text" attribute of a Gtk::CellRendererText get its values from column 2.
    * 
    * @newin{2,4}
    * @param cell A Gtk::CellRenderer.
@@ -201,14 +228,35 @@ public:
   void clear_attributes(CellRenderer& cell);
 
   
-  /** Re-inserts @a cell at @a position. Note that @a cell has already to be packed
-   * into @a cell_layout for this to function properly.
+  /** Re-inserts @a cell at @a position.
+   * 
+   * Note that @a cell has already to be packed into @a cell_layout
+   * for this to function properly.
    * 
    * @newin{2,4}
    * @param cell A Gtk::CellRenderer to reorder.
    * @param position New position to insert @a cell at.
    */
   void reorder(CellRenderer& cell, int position);
+
+  
+  /** Returns the underlying Gtk::CellArea which might be @a cell_layout
+   * if called on a Gtk::CellArea or might be <tt>0</tt> if no Gtk::CellArea
+   * is used by @a cell_layout.
+   * 
+   * @newin{3,0}
+   * @return The cell area used by @a cell_layout.
+   */
+  Glib::RefPtr<CellArea> get_area();
+  
+  /** Returns the underlying Gtk::CellArea which might be @a cell_layout
+   * if called on a Gtk::CellArea or might be <tt>0</tt> if no Gtk::CellArea
+   * is used by @a cell_layout.
+   * 
+   * @newin{3,0}
+   * @return The cell area used by @a cell_layout.
+   */
+  Glib::RefPtr<const CellArea> get_area() const;
 
 protected:
     virtual void pack_start_vfunc(CellRenderer* cell, bool expand);

@@ -4,7 +4,8 @@
 #define _GIOMM_INITABLE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -85,9 +86,14 @@ private:
   Initable(const Initable&);
   Initable& operator=(const Initable&);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 protected:
-  Initable(); // you must derive from this class
-
+  /**
+   * You should derive from this class to use it.
+   */
+  Initable();
+  
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /** Called by constructors of derived classes. Provide the result of 
    * the Class init() function to ensure that it is properly 
    * initialized.
@@ -126,8 +132,10 @@ private:
 
 protected:
   
-  /** Initializes the object implementing the interface. This must be
-   * done before any real use of the object after initial construction.
+  /** Initializes the object implementing the interface.
+   * 
+   * The object must be initialized before any real use after initial
+   * construction, either with this function or g_async_initable_init_async().
    * 
    * Implementations may also support cancellation. If @a cancellable is not <tt>0</tt>,
    * then initialization can be cancelled by triggering the cancellable object
@@ -136,14 +144,16 @@ protected:
    * the object doesn't support cancellable initialization the error
    * IO_ERROR_NOT_SUPPORTED will be returned.
    * 
-   * If this function is not called, or returns with an error then all
-   * operations on the object should fail, generally returning the
-   * error IO_ERROR_NOT_INITIALIZED.
+   * If the object is not initialized, or initialization returns with an
+   * error, then all operations on the object except Glib::object_ref() and
+   * Glib::object_unref() are considered to be invalid, and have undefined
+   * behaviour. See the <xref linkend="ginitable"/> section introduction
+   * for more details.
    * 
    * Implementations of this method must be idempotent, i.e. multiple calls
    * to this function with the same argument should return the same results.
    * Only the first call initializes the object, further calls return the result
-   * of the first call. This is so that its safe to implement the singleton
+   * of the first call. This is so that it's safe to implement the singleton
    * pattern in the GObject constructor function.
    * 
    * @newin{2,22}

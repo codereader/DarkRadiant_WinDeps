@@ -6,7 +6,8 @@
 #include <gtkmmconfig.h>
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: treepath.hg,v 1.15 2006/02/25 12:38:11 murrayc Exp $ */
 
@@ -23,16 +24,16 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library, ) if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library, ) if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 // This is for including the config header before any code (such as
 // the #ifndef GTKMM_DISABLE_DEPRECATED in deprecated classes) is generated:
 
 
-#include <gtkmm/selectiondata.h>
 #include <gtkmm/treemodel.h>
+#include <gtkmm/selectiondata.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 extern "C" { typedef struct _GtkTreePath GtkTreePath; }
@@ -58,13 +59,14 @@ class TreePath
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   typedef TreePath CppObjectType;
   typedef GtkTreePath BaseObjectType;
-
-  static GType get_type() G_GNUC_CONST;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
+  static GType get_type() G_GNUC_CONST;
 
   TreePath();
 
-  explicit TreePath(GtkTreePath* gobject, bool make_a_copy = true);
 
   TreePath(const TreePath& other);
   TreePath& operator=(const TreePath& other);
@@ -115,6 +117,8 @@ public:
 
 #endif /* GLIBMM_HAVE_SUN_REVERSE_ITERATOR */
 
+  
+  explicit TreePath(GtkTreePath* gobject, bool make_a_copy = true);
   explicit TreePath(size_type n, value_type value = 0);
   explicit TreePath(const Glib::ustring& path);
   explicit TreePath(const TreeModel::iterator& iter);
@@ -126,23 +130,36 @@ public:
   // I think it's OK for this assignment to be implicit.  It's very useful.
   TreePath& operator=(const TreeModel::iterator& iter);
 
+  /** This typedef is just to make it more obvious that 
+   * our operator const void* should be used like operator bool().
+   */ 
+  typedef const void* BoolExpr;
+
   /** Checks that the path is not empty, by calling empty().
+   * For instance,
+   * @code
+   * if(treepath)
+   *   do_something()
+   * @endcode
+   *
    * @newin{2,16}
    */
-  operator bool() const;
+  operator BoolExpr() const;
 
   template <class In> inline void assign(In pbegin, In pend);
   template <class In>        void append(In pbegin, In pend);
 
   
-  /** Appends a new index to a path.  As a result, the depth of the path is
-   * increased.
+  /** Appends a new index to a path.
+   * 
+   * As a result, the depth of the path is increased.
    * @param index The index.
    */
   void push_back(int index);
   
-  /** Prepends a new index to a path.  As a result, the depth of the path is
-   * increased.
+  /** Prepends a new index to a path.
+   * 
+   * As a result, the depth of the path is increased.
    * @param index The index.
    */
   void push_front(int index);
@@ -153,6 +170,7 @@ public:
   reference       operator[](size_type i);
   const_reference operator[](size_type i) const;
 
+  
   iterator begin();
   iterator end();
   const_iterator begin() const;
@@ -175,9 +193,10 @@ public:
    */
   void next();
   
-  /** Moves the @a path to point to the previous node at the current depth, 
-   * if it exists.
-   * @return <tt>true</tt> if @a path has a previous node, and the move was made.
+  /** Moves the @a path to point to the previous node at the
+   * current depth, if it exists.
+   * @return <tt>true</tt> if @a path has a previous node, and
+   * the move was made.
    */
   bool prev();
   
@@ -211,45 +230,11 @@ public:
   Glib::ustring to_string() const;
 
 
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Appends a new index to a path.  As a result, the depth of the path is
-   * increased.
-   * @deprecated replaced by push_back()
-   * @param index The index.
-   */
-  void append_index(int index);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Prepends a new index to a path.  As a result, the depth of the path is
-   * increased.
-   * @deprecated replaced by push_front().
-   * @param index The index.
-   */
-  void prepend_index(int index);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Returns the current depth of @a path.
-   * @deprecated replaced by size().
-   * @return The depth of @a path.
-   */
-  int get_depth() const;
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /// @deprecated replaced by begin(), end(), and operator[]
-  Glib::ArrayHandle<int> get_indices() const;
-#endif // GTKMM_DISABLE_DEPRECATED
-
+   //replaced by push_back()
+   //replaced by push_front()
+   //replaced by size()
   
+
   /**
    * Obtains a Gtk::TreeModel and Gtk::TreeModel::Path from selection data of target type
    * "GTK_TREE_MODEL_ROW". Normally called from a drag_data_received handler.
@@ -310,10 +295,7 @@ void TreePath::assign(In pbegin, In pend)
   this->swap(temp);
 }
 
-
-/* Traits for use of TreePath in a Glib::ListHandle<>.
- */
-struct TreePath_Traits
+struct TreePathTraits
 {
   typedef TreePath            CppType;
   typedef const GtkTreePath*  CType;

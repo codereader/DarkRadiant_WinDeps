@@ -4,7 +4,8 @@
 #define _GIOMM_UNIXCREDENTIALSMESSAGE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -148,7 +149,7 @@ public:
    */
   Glib::RefPtr<const Credentials> get_credentials() const;
   
-  /** Checks if passing a Credential on a Socket is supported on this platform.
+  /** Checks if passing Credentials on a Socket is supported on this platform.
    * 
    * @newin{2,26}
    * @return <tt>true</tt> if supported, <tt>false</tt> otherwise.

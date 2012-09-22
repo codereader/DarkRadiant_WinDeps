@@ -4,7 +4,8 @@
 #define _GIOMM_SOCKETADDRESS_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -117,7 +118,7 @@ public:
    * sockaddr</type>, which can be passed to low-level functions like
    * connect() or bind().
    * 
-   * If not enough space is availible, a IO_ERROR_NO_SPACE error is
+   * If not enough space is available, a IO_ERROR_NO_SPACE error is
    * returned. If the address type is not known on the system
    * then a IO_ERROR_NOT_SUPPORTED error is returned.
    * 
@@ -139,6 +140,16 @@ public:
    *  @a address represents.
    */
   gssize get_native_size() const;
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The family of the socket address.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< Glib::RefPtr<SocketFamily> > property_family() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
 
 
 public:

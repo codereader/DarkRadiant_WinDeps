@@ -4,12 +4,13 @@
 #define _GTKMM_CHECKMENUITEM_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: checkmenuitem.hg,v 1.3 2004/01/19 19:48:44 murrayc Exp $ */
 
 /* checkmenuitem.h
- * 
+ *
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/menuitem.h>
@@ -77,8 +78,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -98,6 +103,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_toggled().
   virtual void on_toggled();
 
 
@@ -108,8 +114,11 @@ public:
 
   CheckMenuItem();
   explicit CheckMenuItem(const Glib::ustring& label, bool mnemonic = false);
-  
 
+
+  /** Sets the active state of the menu item's check box.
+   * @param is_active Boolean value indicating whether the check box is active.
+   */
   void set_active(bool state =  true);
   
   /** Returns whether the check menu item is active. See
@@ -119,6 +128,8 @@ public:
   bool get_active() const;
 
   
+  /** Emits the Gtk::CheckMenuItem::signal_toggled() signal.
+   */
   void toggled();
 
   
@@ -153,13 +164,16 @@ public:
    * @return Whether @a check_menu_item looks like a Gtk::RadioMenuItem.
    */
   bool get_draw_as_radio() const;
+
   
-  /** Triggered when the item changes state
-   * (Note : changing the item's state with set_active() will also trigger
-   * this signal)
-   *
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%toggled()</tt>
+   *
+   * This signal is emitted when the state of the check box is changed.
+   * 
+   * A signal handler can use Gtk::CheckMenuItem::get_active()
+   * to discover the new state.
    */
 
   Glib::SignalProxy0< void > signal_toggled();
@@ -172,7 +186,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_active() ;
+  Glib::PropertyProxy< bool > property_active() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -182,7 +196,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_active() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_active() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -192,7 +206,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_inconsistent() ;
+  Glib::PropertyProxy< bool > property_inconsistent() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -202,7 +216,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_inconsistent() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_inconsistent() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -212,7 +226,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_draw_as_radio() ;
+  Glib::PropertyProxy< bool > property_draw_as_radio() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -222,18 +236,20 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_draw_as_radio() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_draw_as_radio() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
 protected:
+
+
   /** Triggered when the item is redrawn (e.g.after being toggled)
    * Overload this signal if you want to implement your own check item
    * look. Otherwise, you most likely don't care about it.
    * The GdkRectangle specifies the area of the widget which will get
    * redrawn.
    */
-    virtual void draw_indicator_vfunc(GdkRectangle* area);
+    virtual void draw_indicator_vfunc(const ::Cairo::RefPtr< ::Cairo::Context>& cr);
 
 
 };

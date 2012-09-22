@@ -4,7 +4,8 @@
 #define _GIOMM_SOCKET_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -25,6 +26,7 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <glibmm/iochannel.h>
 #include <glibmm/object.h>
 #include <giomm/initable.h>
 #include <giomm/credentials.h>
@@ -415,7 +417,7 @@ public:
    * If the connect call needs to do network I/O it will block, unless
    * non-blocking I/O is enabled. Then IO_ERROR_PENDING is returned
    * and the user can be notified of the connection finishing by waiting
-   * for the G_IO_OUT condition. The result of the connection can then be
+   * for the G_IO_OUT condition. The result of the connection must then be
    * checked with g_socket_check_connect_result().
    * 
    * @newin{2,22}
@@ -454,10 +456,11 @@ public:
    * received, the additional data will be returned in future calls to
    * g_socket_receive().
    * 
-   * If the socket is in blocking mode the call will block until there is
-   * some data to receive or there is an error. If there is no data available
-   * and the socket is in non-blocking mode, a IO_ERROR_WOULD_BLOCK error
-   * will be returned. To be notified when data is available, wait for the
+   * If the socket is in blocking mode the call will block until there
+   * is some data to receive, the connection is closed, or there is an
+   * error. If there is no data available and the socket is in
+   * non-blocking mode, a IO_ERROR_WOULD_BLOCK error will be
+   * returned. To be notified when data is available, wait for the
    * IO_IN condition.
    * 
    * On error -1 is returned and @a error is set accordingly.
@@ -467,7 +470,8 @@ public:
    * bytes long).
    * @param size The number of bytes you want to read from the socket.
    * @param cancellable A Cancellable or <tt>0</tt>.
-   * @return Number of bytes read, or -1 on error.
+   * @return Number of bytes read, or 0 if the connection was closed by
+   * the peer, or -1 on error.
    */
   gssize receive(char* buffer, gsize size, const Glib::RefPtr<Cancellable>& cancellable);
   gssize receive(char* buffer, gsize size);
@@ -495,7 +499,8 @@ public:
    * On error -1 is returned and @a error is set accordingly.
    * 
    * @newin{2,22}
-   * @param buffer The buffer containing the data to send.
+   * @param buffer The buffer
+   * containing the data to send.
    * @param size The number of bytes to send.
    * @param cancellable A Cancellable or <tt>0</tt>.
    * @return Number of bytes written (which may be less than @a size), or -1
@@ -514,7 +519,8 @@ public:
    * 
    * @newin{2,22}
    * @param address A SocketAddress, or <tt>0</tt>.
-   * @param buffer The buffer containing the data to send.
+   * @param buffer The buffer
+   * containing the data to send.
    * @param size The number of bytes to send.
    * @param cancellable A Cancellable or <tt>0</tt>.
    * @return Number of bytes written (which may be less than @a size), or -1
@@ -569,7 +575,7 @@ public:
   
   /** Shut down part of a full-duplex connection.
    * 
-   * If @a shutdown_read is <tt>true</tt> then the recieving side of the connection
+   * If @a shutdown_read is <tt>true</tt> then the receiving side of the connection
    * is shut down, and further reading is disallowed.
    * 
    * If @a shutdown_write is <tt>true</tt> then the sending side of the connection
@@ -635,6 +641,8 @@ public:
    * met, then <tt>false</tt> is returned and @a error, if non-<tt>0</tt>, is set to
    * the appropriate value (IO_ERROR_CANCELLED or
    * IO_ERROR_TIMED_OUT).
+   * 
+   * See also g_socket_condition_timed_wait().
    * 
    * @newin{2,22}
    * @param condition A IOCondition mask to wait for.
@@ -869,7 +877,8 @@ public:
    * @param size The number of bytes you want to read from the socket.
    * @param blocking Whether to do blocking or non-blocking I/O.
    * @param cancellable A Cancellable or <tt>0</tt>.
-   * @return Number of bytes read, or -1 on error.
+   * @return Number of bytes read, or 0 if the connection was closed by
+   * the peer, or -1 on error.
    */
 
   gssize receive_with_blocking(gchar* buffer, gsize size, bool blocking, const Glib::RefPtr<Cancellable>& cancellable = Glib::RefPtr<Cancellable>());
@@ -880,7 +889,8 @@ public:
    * the @a blocking argument rather than by @a socket's properties.
    * 
    * @newin{2,26}
-   * @param buffer The buffer containing the data to send.
+   * @param buffer The buffer
+   * containing the data to send.
    * @param size The number of bytes to send.
    * @param blocking Whether to do blocking or non-blocking I/O.
    * @param cancellable A Cancellable or <tt>0</tt>.
@@ -897,7 +907,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_blocking() ;
+  Glib::PropertyProxy< bool > property_blocking() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -907,7 +917,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_blocking() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_blocking() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -917,7 +927,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<SocketFamily> property_family() const;
+  Glib::PropertyProxy_ReadOnly< SocketFamily > property_family() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -928,7 +938,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_fd() const;
+  Glib::PropertyProxy_ReadOnly< int > property_fd() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -939,7 +949,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_keepalive() ;
+  Glib::PropertyProxy< bool > property_keepalive() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -949,7 +959,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_keepalive() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_keepalive() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -959,7 +969,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_listen_backlog() ;
+  Glib::PropertyProxy< int > property_listen_backlog() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -969,7 +979,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_listen_backlog() const;
+  Glib::PropertyProxy_ReadOnly< int > property_listen_backlog() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -995,13 +1005,33 @@ public:
 
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The timeout in seconds on socket I/O.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< guint > property_timeout() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The timeout in seconds on socket I/O.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< guint > property_timeout() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The id of the protocol to use, or -1 for unknown.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<SocketProtocol> property_protocol() const;
+  Glib::PropertyProxy_ReadOnly< SocketProtocol > property_protocol() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -1012,7 +1042,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<SocketType> property_type() const;
+  Glib::PropertyProxy_ReadOnly< SocketType > property_type() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

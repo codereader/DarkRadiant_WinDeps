@@ -4,7 +4,8 @@
 #define _GTKMM_RECENTINFO_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 2006 The gtkmm Development Team
  *
@@ -19,11 +20,15 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <vector>
+
 #include <gdkmm/pixbuf.h>
+#include <giomm/icon.h>
+#include <giomm/appinfo.h>
 #include <ctime>
 
 
@@ -38,7 +43,7 @@ void gtk_recent_info_unref(GtkRecentInfo* info);
 namespace Gtk
 {
 
-/** Contains informations found when looking up an entry of the
+/** Contains information found when looking up an entry of the
  * recently used files list.
  *
  * @newin{2,10}
@@ -85,15 +90,6 @@ private:
 
 
 public:
-
-
-//TODO: Deprecate this? Why? Document the deprecation.
-//#ifndef DOXYGEN_SHOULD_SKIP_THIS
-//# if (!defined(GTKMM_DISABLE_DEPRECATED) || defined(GTKMM_COMPILATION))
-  /// Tests whether the RecentInfo is valid.
-  operator bool() const;
-//# endif
-//#endif
 
   
   /** Gets the URI of the resource.
@@ -167,6 +163,17 @@ public:
    */
   bool get_private_hint() const;
 
+   
+  /** Creates a AppInfo for the specified Gtk::RecentInfo
+   * @param app_name The name of the application that should
+   * be mapped to a AppInfo; if <tt>0</tt> is used then the default
+   * application for the MIME type is used.
+   * @return The newly created AppInfo, or <tt>0</tt>.
+   * In case of error, @a error will be set either with a
+   * Gtk::RECENT_MANAGER_ERROR or a IO_ERROR.
+   */
+  Glib::RefPtr<Gio::AppInfo> create_app_info(const Glib::ustring& app_name);
+
   
   /** Gets the data regarding the application that has registered the resource
    * pointed by @a info.
@@ -198,7 +205,7 @@ public:
    * Use Glib::strfreev() to free it.
    */
 
-  Glib::StringArrayHandle get_applications() const;
+  std::vector<Glib::ustring> get_applications() const;
 
   
   /** Gets the name of the last application that have registered the
@@ -229,7 +236,7 @@ public:
    * Use Glib::strfreev() to free it.
    */
 
-  Glib::StringArrayHandle get_groups() const;
+  std::vector<Glib::ustring> get_groups() const;
 
   
   /** Checks whether @a group_name appears inside the groups registered for the
@@ -259,6 +266,23 @@ public:
    * or <tt>0</tt>. Use Glib::object_unref() when finished using the icon.
    */
   Glib::RefPtr<const Gdk::Pixbuf> get_icon(int size) const;
+
+  
+  /** Retrieves the icon associated to the resource MIME type.
+   * 
+   * @newin{2,22}
+   * @return A Icon containing the icon, or <tt>0</tt>. Use
+   * Glib::object_unref() when finished using the icon.
+   */
+  Glib::RefPtr<Gio::Icon> get_gicon();
+  
+  /** Retrieves the icon associated to the resource MIME type.
+   * 
+   * @newin{2,22}
+   * @return A Icon containing the icon, or <tt>0</tt>. Use
+   * Glib::object_unref() when finished using the icon.
+   */
+  Glib::RefPtr<const Gio::Icon> get_gicon() const;
 
   
   /** Computes a valid UTF-8 string that can be used as the name of the item in a

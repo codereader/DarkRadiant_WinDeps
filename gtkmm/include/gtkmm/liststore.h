@@ -4,7 +4,8 @@
 #define _GTKMM_LISTSTORE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: liststore.hg,v 1.4 2004/04/03 12:53:49 murrayc Exp $ */
 
@@ -21,15 +22,18 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <gtkmm/treedragdest.h>
+#include <vector>
+
 #include <gtkmm/treeiter.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treesortable.h>
+#include <gtkmm/treedragdest.h>
 #include <gtkmm/treedragsource.h>
+#include <gtkmm/buildable.h>
 // We couldn't include it in treemodel.h, but doing it here makes it easier for people.
 #include <gtkmm/treepath.h>
 
@@ -57,7 +61,8 @@ class ListStore :
   public TreeModel,
   public TreeSortable,
   public TreeDragSource,
-  public TreeDragDest
+  public TreeDragDest,
+  public Buildable
 {
   
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -85,8 +90,11 @@ protected:
 public:
   virtual ~ListStore();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -112,7 +120,7 @@ protected:
    * constructor should only be used by derived classes.
    */
   ListStore();
-
+  
   explicit ListStore(const TreeModelColumnRecord& columns);
 
 public:
@@ -127,7 +135,7 @@ public:
 
   void set_column_types(const TreeModelColumnRecord& columns);
   
-
+  
   /** Removes the given row from the list store.
    * @param iter The iterator to the row to be removed.
    * @result An iterator to the next row, or end() if there is none.
@@ -142,7 +150,7 @@ public:
    * See also prepend() and append().
    *
    * @param iter An iterator to the row before which the new row will be inserted.
-   * @result An iterator to the new row.
+   * @result An iterator to the new row. 
    */
   iterator insert(const iterator& iter);
   
@@ -158,7 +166,7 @@ public:
    */
   iterator insert_after(const iterator& iter);
   
-
+  
   /** Creates a new row at the start.
    * The row will be empty - to fill in values, you need to dereference the returned iterator and use Row::operator[] or Row::set_value().
    * See also insert() and append().
@@ -195,7 +203,7 @@ public:
   /** Reorders the list store to follow the order indicated by @a new_order.
    * Note that this function only works with unsorted stores.
    */
-  void reorder(const Glib::ArrayHandle<int>& new_order);
+  void reorder(const std::vector<int>& new_order);
 
   
   /** Removes all rows from the list store.

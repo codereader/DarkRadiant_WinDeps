@@ -4,7 +4,8 @@
 #define _GTKMM_TREEMODELSORT_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: treemodelsort.hg,v 1.5 2006/04/12 11:11:25 murrayc Exp $ */
 
@@ -21,17 +22,16 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
-// We couldn't include it in treemodel.h, but doing it here makes it easier for people.
-#include <gtkmm/treepath.h>
 
 #include <gtkmm/treeiter.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treesortable.h>
+// We couldn't include it in treemodel.h, but doing it here makes it easier for people.
+#include <gtkmm/treepath.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -47,13 +47,13 @@ namespace Gtk
 
 /** A wrapper which makes an underlying Gtk::TreeModel sortable.
  *
- * The TreeModelSort is a model which implements the TreeSortable interface.
+ * The TreeModelSort is a model which implements the TreeSortable interface. 
  * It does not hold any data itself, but rather is created with
  * a child model and proxies its data.  It has identical column types to
  * this child model, and the changes in the child are propagated.  The
  * primary purpose of this model is to provide a way to sort a different
  * model without modifying it. Note that the sort function used by
- * TreeModelSort is not guaranteed to be stable.
+ * TreeModelSort is not guaranteed to be stable. 
  *
  * For instance, you might create two TreeView widgets each with a
  * view of the same data.  If the model is wrapped by a
@@ -93,8 +93,11 @@ protected:
 public:
   virtual ~TreeModelSort();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;

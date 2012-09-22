@@ -4,7 +4,8 @@
 #define _GTKMM_PRINTOPERATIONPREVIEW_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 2006 The gtkmm Development Team
  *
@@ -19,8 +20,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <glibmm/interface.h>
@@ -35,7 +36,6 @@ extern "C"
 typedef struct _GtkPrintOperationPreviewIface GtkPrintOperationPreviewIface;
 }
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 typedef struct _GtkPrintOperationPreview GtkPrintOperationPreview;
@@ -75,9 +75,14 @@ private:
   PrintOperationPreview(const PrintOperationPreview&);
   PrintOperationPreview& operator=(const PrintOperationPreview&);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 protected:
-  PrintOperationPreview(); // you must derive from this class
-
+  /**
+   * You should derive from this class to use it.
+   */
+  PrintOperationPreview();
+  
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /** Called by constructors of derived classes. Provide the result of 
    * the Class init() function to ensure that it is properly 
    * initialized.
@@ -100,8 +105,11 @@ public:
 
   static void add_interface(GType gtype_implementer);
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -117,10 +125,10 @@ public:
 
   
   /** Renders a page to the preview, using the print context that
-   * was passed to the Gtk::PrintOperation::preview handler together
+   * was passed to the Gtk::PrintOperation::signal_preview() handler together
    * with @a preview.
    * 
-   * A custom iprint preview should use this function in its ::expose
+   * A custom iprint preview should use this function in its signal_expose()
    * handler to render the currently selected page.
    * 
    * Note that this function requires a suitable cairo context to 
@@ -155,17 +163,32 @@ public:
     virtual bool is_selected_vfunc(int page_nr) const;
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%ready(const Glib::RefPtr<PrintContext>& context)</tt>
+   *
+   * The signal_ready() signal gets emitted once per preview operation,
+   * before the first page is rendered.
+   * 
+   * A handler for this signal can be used for setup tasks.
+   * @param context The current Gtk::PrintContext.
    */
 
   Glib::SignalProxy1< void,const Glib::RefPtr<PrintContext>& > signal_ready();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%got_page_size(const Glib::RefPtr<PrintContext>& context, const Glib::RefPtr<PageSetup>& page_setup)</tt>
+   *
+   * The signal_got_page_size() signal is emitted once for each page
+   * that gets rendered to the preview. 
+   * 
+   * A handler for this signal should update the @a context
+   * according to @a page_setup and set up a suitable cairo
+   * context, using Gtk::PrintContext::set_cairo_context().
+   * @param context The current Gtk::PrintContext.
+   * @param page_setup The Gtk::PageSetup for the current page.
    */
 
   Glib::SignalProxy2< void,const Glib::RefPtr<PrintContext>&,const Glib::RefPtr<PageSetup>& > signal_got_page_size();
@@ -180,7 +203,9 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_ready().
   virtual void on_ready(const Glib::RefPtr<PrintContext>& context);
+  /// This is a default handler for the signal signal_got_page_size().
   virtual void on_got_page_size(const Glib::RefPtr<PrintContext>& context, const Glib::RefPtr<PageSetup>& page_setup);
 
 

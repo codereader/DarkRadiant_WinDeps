@@ -4,13 +4,14 @@
 #define _GTKMM_ENUMS_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: enums.hg,v 1.5 2006/05/09 16:51:34 murrayc Exp $ */
 
 /* enums.h
- * 
- * Copyright (C) 2002 The gtkmm Development Team 
+ *
+ * Copyright (C) 2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,11 +24,12 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <gtkmmconfig.h> //For GTKMM_MAEMO_EXTENSIONS_ENABLED
+#include <glibmm/value.h>
+#include <gtk/gtk.h>
 
 
 namespace Gtk
@@ -103,28 +105,16 @@ public:
 namespace Gtk
 {
 
+
 /**
  * @ingroup gtkmmEnums
  */
-enum AnchorType
+enum Align
 {
-  ANCHOR_CENTER,
-  ANCHOR_NORTH,
-  ANCHOR_NORTH_WEST,
-  ANCHOR_NORTH_EAST,
-  ANCHOR_SOUTH,
-  ANCHOR_SOUTH_WEST,
-  ANCHOR_SOUTH_EAST,
-  ANCHOR_WEST,
-  ANCHOR_EAST,
-  ANCHOR_N = ANCHOR_NORTH,
-  ANCHOR_NW = ANCHOR_NORTH_WEST,
-  ANCHOR_NE = ANCHOR_NORTH_EAST,
-  ANCHOR_S = ANCHOR_SOUTH,
-  ANCHOR_SW = ANCHOR_SOUTH_WEST,
-  ANCHOR_SE = ANCHOR_SOUTH_EAST,
-  ANCHOR_W = ANCHOR_WEST,
-  ANCHOR_E = ANCHOR_EAST
+  ALIGN_FILL,
+  ALIGN_START,
+  ALIGN_END,
+  ALIGN_CENTER
 };
 
 } // namespace Gtk
@@ -135,7 +125,7 @@ namespace Glib
 {
 
 template <>
-class Value<Gtk::AnchorType> : public Glib::Value_Enum<Gtk::AnchorType>
+class Value<Gtk::Align> : public Glib::Value_Enum<Gtk::Align>
 {
 public:
   static GType value_type() G_GNUC_CONST;
@@ -279,8 +269,7 @@ namespace Gtk
  */
 enum ButtonBoxStyle
 {
-  BUTTONBOX_DEFAULT_STYLE,
-  BUTTONBOX_SPREAD,
+  BUTTONBOX_SPREAD = 1,
   BUTTONBOX_EDGE,
   BUTTONBOX_START,
   BUTTONBOX_END,
@@ -311,40 +300,10 @@ namespace Gtk
 /**
  * @ingroup gtkmmEnums
  */
-enum CurveType
-{
-  CURVE_TYPE_LINEAR,
-  CURVE_TYPE_SPLINE,
-  CURVE_TYPE_FREE
-};
-
-} // namespace Gtk
-
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-namespace Glib
-{
-
-template <>
-class Value<Gtk::CurveType> : public Glib::Value_Enum<Gtk::CurveType>
-{
-public:
-  static GType value_type() G_GNUC_CONST;
-};
-
-} // namespace Glib
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-
-namespace Gtk
-{
-
-/**
- * @ingroup gtkmmEnums
- */
 enum DeleteType
 {
   DELETE_CHARS,
+  DELETE_WORD_ENDS,
   DELETE_WORDS,
   DELETE_DISPLAY_LINES,
   DELETE_DISPLAY_LINE_ENDS,
@@ -606,37 +565,6 @@ namespace Gtk
 /**
  * @ingroup gtkmmEnums
  */
-enum MetricType
-{
-  PIXELS,
-  INCHES,
-  CENTIMETERS
-};
-
-} // namespace Gtk
-
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-namespace Glib
-{
-
-template <>
-class Value<Gtk::MetricType> : public Glib::Value_Enum<Gtk::MetricType>
-{
-public:
-  static GType value_type() G_GNUC_CONST;
-};
-
-} // namespace Glib
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-
-namespace Gtk
-{
-
-/**
- * @ingroup gtkmmEnums
- */
 enum MovementStep
 {
   MOVEMENT_LOGICAL_POSITIONS,
@@ -863,38 +791,6 @@ namespace Gtk
 /**
  * @ingroup gtkmmEnums
  */
-enum ProgressBarOrientation
-{
-  PROGRESS_LEFT_TO_RIGHT,
-  PROGRESS_RIGHT_TO_LEFT,
-  PROGRESS_BOTTOM_TO_TOP,
-  PROGRESS_TOP_TO_BOTTOM
-};
-
-} // namespace Gtk
-
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-namespace Glib
-{
-
-template <>
-class Value<Gtk::ProgressBarOrientation> : public Glib::Value_Enum<Gtk::ProgressBarOrientation>
-{
-public:
-  static GType value_type() G_GNUC_CONST;
-};
-
-} // namespace Glib
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-
-namespace Gtk
-{
-
-/**
- * @ingroup gtkmmEnums
- */
 enum PositionType
 {
   POS_LEFT,
@@ -1038,8 +934,7 @@ enum SelectionMode
   SELECTION_NONE,
   SELECTION_SINGLE,
   SELECTION_BROWSE,
-  SELECTION_MULTIPLE,
-  SELECTION_EXTENDED = SELECTION_MULTIPLE
+  SELECTION_MULTIPLE
 };
 
 } // namespace Gtk
@@ -1105,7 +1000,9 @@ enum StateType
   STATE_ACTIVE,
   STATE_PRELIGHT,
   STATE_SELECTED,
-  STATE_INSENSITIVE
+  STATE_INSENSITIVE,
+  STATE_INCONSISTENT,
+  STATE_FOCUSED
 };
 
 } // namespace Gtk
@@ -1217,68 +1114,6 @@ namespace Glib
 
 template <>
 class Value<Gtk::ToolbarStyle> : public Glib::Value_Enum<Gtk::ToolbarStyle>
-{
-public:
-  static GType value_type() G_GNUC_CONST;
-};
-
-} // namespace Glib
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-
-namespace Gtk
-{
-
-/**
- * @ingroup gtkmmEnums
- */
-enum UpdateType
-{
-  UPDATE_CONTINUOUS,
-  UPDATE_DISCONTINUOUS,
-  UPDATE_DELAYED
-};
-
-} // namespace Gtk
-
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-namespace Glib
-{
-
-template <>
-class Value<Gtk::UpdateType> : public Glib::Value_Enum<Gtk::UpdateType>
-{
-public:
-  static GType value_type() G_GNUC_CONST;
-};
-
-} // namespace Glib
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-
-namespace Gtk
-{
-
-/**
- * @ingroup gtkmmEnums
- */
-enum Visibility
-{
-  VISIBILITY_NONE,
-  VISIBILITY_PARTIAL,
-  VISIBILITY_FULL
-};
-
-} // namespace Gtk
-
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-namespace Glib
-{
-
-template <>
-class Value<Gtk::Visibility> : public Glib::Value_Enum<Gtk::Visibility>
 {
 public:
   static GType value_type() G_GNUC_CONST;
@@ -1479,118 +1314,251 @@ public:
 namespace Gtk
 {
 
-
-#ifdef GTKMM_MAEMO_EXTENSIONS_ENABLED
-namespace Hildon
-{
-
- /**
+/**
  * @ingroup gtkmmEnums
- * @par Bitwise operators:
- * <tt>%SizeType operator|(SizeType, SizeType)</tt><br>
- * <tt>%SizeType operator&(SizeType, SizeType)</tt><br>
- * <tt>%SizeType operator^(SizeType, SizeType)</tt><br>
- * <tt>%SizeType operator~(SizeType)</tt><br>
- * <tt>%SizeType& operator|=(SizeType&, SizeType)</tt><br>
- * <tt>%SizeType& operator&=(SizeType&, SizeType)</tt><br>
- * <tt>%SizeType& operator^=(SizeType&, SizeType)</tt><br>
  */
-enum SizeType
+enum SizeRequestMode
 {
-  SIZE_AUTO_WIDTH = 0,
-  SIZE_HALFSCREEN_WIDTH = 1,
-  SIZE_FULLSCREEN_WIDTH = 2,
-  SIZE_AUTO_HEIGHT = 0,
-  SIZE_FINGER_HEIGHT = 4,
-  SIZE_THUMB_HEIGHT = 8,
-  SIZE_AUTO = 0
+  SIZE_REQUEST_HEIGHT_FOR_WIDTH,
+  SIZE_REQUEST_WIDTH_FOR_HEIGHT,
+  SIZE_REQUEST_CONSTANT_SIZE
 };
 
-/** @ingroup gtkmmEnums */
-inline SizeType operator|(SizeType lhs, SizeType rhs)
-  { return static_cast<SizeType>(static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs)); }
+} // namespace Gtk
 
-/** @ingroup gtkmmEnums */
-inline SizeType operator&(SizeType lhs, SizeType rhs)
-  { return static_cast<SizeType>(static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs)); }
 
-/** @ingroup gtkmmEnums */
-inline SizeType operator^(SizeType lhs, SizeType rhs)
-  { return static_cast<SizeType>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs)); }
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+namespace Glib
+{
 
-/** @ingroup gtkmmEnums */
-inline SizeType operator~(SizeType flags)
-  { return static_cast<SizeType>(~static_cast<unsigned>(flags)); }
+template <>
+class Value<Gtk::SizeRequestMode> : public Glib::Value_Enum<Gtk::SizeRequestMode>
+{
+public:
+  static GType value_type() G_GNUC_CONST;
+};
 
-/** @ingroup gtkmmEnums */
-inline SizeType& operator|=(SizeType& lhs, SizeType rhs)
-  { return (lhs = static_cast<SizeType>(static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs))); }
+} // namespace Glib
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-/** @ingroup gtkmmEnums */
-inline SizeType& operator&=(SizeType& lhs, SizeType rhs)
-  { return (lhs = static_cast<SizeType>(static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs))); }
 
-/** @ingroup gtkmmEnums */
-inline SizeType& operator^=(SizeType& lhs, SizeType rhs)
-  { return (lhs = static_cast<SizeType>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs))); }
-
+namespace Gtk
+{
 
 /**
  * @ingroup gtkmmEnums
  * @par Bitwise operators:
- * <tt>%InputMode operator|(InputMode, InputMode)</tt><br>
- * <tt>%InputMode operator&(InputMode, InputMode)</tt><br>
- * <tt>%InputMode operator^(InputMode, InputMode)</tt><br>
- * <tt>%InputMode operator~(InputMode)</tt><br>
- * <tt>%InputMode& operator|=(InputMode&, InputMode)</tt><br>
- * <tt>%InputMode& operator&=(InputMode&, InputMode)</tt><br>
- * <tt>%InputMode& operator^=(InputMode&, InputMode)</tt><br>
+ * <tt>%RegionFlags operator|(RegionFlags, RegionFlags)</tt><br>
+ * <tt>%RegionFlags operator&(RegionFlags, RegionFlags)</tt><br>
+ * <tt>%RegionFlags operator^(RegionFlags, RegionFlags)</tt><br>
+ * <tt>%RegionFlags operator~(RegionFlags)</tt><br>
+ * <tt>%RegionFlags& operator|=(RegionFlags&, RegionFlags)</tt><br>
+ * <tt>%RegionFlags& operator&=(RegionFlags&, RegionFlags)</tt><br>
+ * <tt>%RegionFlags& operator^=(RegionFlags&, RegionFlags)</tt><br>
  */
-enum InputMode
+enum RegionFlags
 {
-  INPUT_MODE_ALPHA = 1 << 0,
-  INPUT_MODE_NUMERIC = 1 << 1,
-  INPUT_MODE_SPECIAL = 1 << 2,
-  INPUT_MODE_HEXA = 1 << 3,
-  INPUT_MODE_TELE = 1 << 4,
-  INPUT_MODE_FULL = 0x07,
-  INPUT_MODE_MULTILINE = 1 << 28,
-  INPUT_MODE_INVISIBLE = 1 << 29,
-  INPUT_MODE_AUTOCAP = 1 << 30,
-  INPUT_MODE_DICTIONARY = 1 << 31
+  REGION_EVEN = 1 << 0,
+  REGION_ODD = 1 << 1,
+  REGION_FIRST = 1 << 2,
+  REGION_LAST = 1 << 3,
+  REGION_ONLY = 1 << 4,
+  REGION_SORTED = 1 << 5
 };
 
 /** @ingroup gtkmmEnums */
-inline InputMode operator|(InputMode lhs, InputMode rhs)
-  { return static_cast<InputMode>(static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs)); }
+inline RegionFlags operator|(RegionFlags lhs, RegionFlags rhs)
+  { return static_cast<RegionFlags>(static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs)); }
 
 /** @ingroup gtkmmEnums */
-inline InputMode operator&(InputMode lhs, InputMode rhs)
-  { return static_cast<InputMode>(static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs)); }
+inline RegionFlags operator&(RegionFlags lhs, RegionFlags rhs)
+  { return static_cast<RegionFlags>(static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs)); }
 
 /** @ingroup gtkmmEnums */
-inline InputMode operator^(InputMode lhs, InputMode rhs)
-  { return static_cast<InputMode>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs)); }
+inline RegionFlags operator^(RegionFlags lhs, RegionFlags rhs)
+  { return static_cast<RegionFlags>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs)); }
 
 /** @ingroup gtkmmEnums */
-inline InputMode operator~(InputMode flags)
-  { return static_cast<InputMode>(~static_cast<unsigned>(flags)); }
+inline RegionFlags operator~(RegionFlags flags)
+  { return static_cast<RegionFlags>(~static_cast<unsigned>(flags)); }
 
 /** @ingroup gtkmmEnums */
-inline InputMode& operator|=(InputMode& lhs, InputMode rhs)
-  { return (lhs = static_cast<InputMode>(static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs))); }
+inline RegionFlags& operator|=(RegionFlags& lhs, RegionFlags rhs)
+  { return (lhs = static_cast<RegionFlags>(static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs))); }
 
 /** @ingroup gtkmmEnums */
-inline InputMode& operator&=(InputMode& lhs, InputMode rhs)
-  { return (lhs = static_cast<InputMode>(static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs))); }
+inline RegionFlags& operator&=(RegionFlags& lhs, RegionFlags rhs)
+  { return (lhs = static_cast<RegionFlags>(static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs))); }
 
 /** @ingroup gtkmmEnums */
-inline InputMode& operator^=(InputMode& lhs, InputMode rhs)
-  { return (lhs = static_cast<InputMode>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs))); }
+inline RegionFlags& operator^=(RegionFlags& lhs, RegionFlags rhs)
+  { return (lhs = static_cast<RegionFlags>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs))); }
+
+} // namespace Gtk
 
 
-} // namespace Hildon
-#endif /* GTKMM_MAEMO_EXTENSIONS_ENABLED */
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+namespace Glib
+{
+
+template <>
+class Value<Gtk::RegionFlags> : public Glib::Value_Flags<Gtk::RegionFlags>
+{
+public:
+  static GType value_type() G_GNUC_CONST;
+};
+
+} // namespace Glib
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+
+namespace Gtk
+{
+
+/**
+ * @ingroup gtkmmEnums
+ * @par Bitwise operators:
+ * <tt>%JunctionSides operator|(JunctionSides, JunctionSides)</tt><br>
+ * <tt>%JunctionSides operator&(JunctionSides, JunctionSides)</tt><br>
+ * <tt>%JunctionSides operator^(JunctionSides, JunctionSides)</tt><br>
+ * <tt>%JunctionSides operator~(JunctionSides)</tt><br>
+ * <tt>%JunctionSides& operator|=(JunctionSides&, JunctionSides)</tt><br>
+ * <tt>%JunctionSides& operator&=(JunctionSides&, JunctionSides)</tt><br>
+ * <tt>%JunctionSides& operator^=(JunctionSides&, JunctionSides)</tt><br>
+ */
+enum JunctionSides
+{
+  JUNCTION_NONE = 0x0,
+  JUNCTION_CORNER_TOPLEFT = 1 << 0,
+  JUNCTION_CORNER_TOPRIGHT = 1 << 1,
+  JUNCTION_CORNER_BOTTOMLEFT = 1 << 2,
+  JUNCTION_CORNER_BOTTOMRIGHT = 1 << 3,
+  JUNCTION_TOP = 0x3,
+  JUNCTION_BOTTOM = 0xC,
+  JUNCTION_LEFT = 0x5,
+  JUNCTION_RIGHT = 0xA
+};
+
+/** @ingroup gtkmmEnums */
+inline JunctionSides operator|(JunctionSides lhs, JunctionSides rhs)
+  { return static_cast<JunctionSides>(static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs)); }
+
+/** @ingroup gtkmmEnums */
+inline JunctionSides operator&(JunctionSides lhs, JunctionSides rhs)
+  { return static_cast<JunctionSides>(static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs)); }
+
+/** @ingroup gtkmmEnums */
+inline JunctionSides operator^(JunctionSides lhs, JunctionSides rhs)
+  { return static_cast<JunctionSides>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs)); }
+
+/** @ingroup gtkmmEnums */
+inline JunctionSides operator~(JunctionSides flags)
+  { return static_cast<JunctionSides>(~static_cast<unsigned>(flags)); }
+
+/** @ingroup gtkmmEnums */
+inline JunctionSides& operator|=(JunctionSides& lhs, JunctionSides rhs)
+  { return (lhs = static_cast<JunctionSides>(static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs))); }
+
+/** @ingroup gtkmmEnums */
+inline JunctionSides& operator&=(JunctionSides& lhs, JunctionSides rhs)
+  { return (lhs = static_cast<JunctionSides>(static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs))); }
+
+/** @ingroup gtkmmEnums */
+inline JunctionSides& operator^=(JunctionSides& lhs, JunctionSides rhs)
+  { return (lhs = static_cast<JunctionSides>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs))); }
+
+} // namespace Gtk
+
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+namespace Glib
+{
+
+template <>
+class Value<Gtk::JunctionSides> : public Glib::Value_Flags<Gtk::JunctionSides>
+{
+public:
+  static GType value_type() G_GNUC_CONST;
+};
+
+} // namespace Glib
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+
+namespace Gtk
+{
+
+/**
+ * @ingroup gtkmmEnums
+ * @par Bitwise operators:
+ * <tt>%StateFlags operator|(StateFlags, StateFlags)</tt><br>
+ * <tt>%StateFlags operator&(StateFlags, StateFlags)</tt><br>
+ * <tt>%StateFlags operator^(StateFlags, StateFlags)</tt><br>
+ * <tt>%StateFlags operator~(StateFlags)</tt><br>
+ * <tt>%StateFlags& operator|=(StateFlags&, StateFlags)</tt><br>
+ * <tt>%StateFlags& operator&=(StateFlags&, StateFlags)</tt><br>
+ * <tt>%StateFlags& operator^=(StateFlags&, StateFlags)</tt><br>
+ */
+enum StateFlags
+{
+  STATE_FLAG_NORMAL = 0x0,
+  STATE_FLAG_ACTIVE = 1 << 0,
+  STATE_FLAG_PRELIGHT = 1 << 1,
+  STATE_FLAG_SELECTED = 1 << 2,
+  STATE_FLAG_INSENSITIVE = 1 << 3,
+  STATE_FLAG_INCONSISTENT = 1 << 4,
+  STATE_FLAG_FOCUSED = 1 << 5,
+  STATE_FLAG_BACKDROP = 1 << 6
+};
+
+/** @ingroup gtkmmEnums */
+inline StateFlags operator|(StateFlags lhs, StateFlags rhs)
+  { return static_cast<StateFlags>(static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs)); }
+
+/** @ingroup gtkmmEnums */
+inline StateFlags operator&(StateFlags lhs, StateFlags rhs)
+  { return static_cast<StateFlags>(static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs)); }
+
+/** @ingroup gtkmmEnums */
+inline StateFlags operator^(StateFlags lhs, StateFlags rhs)
+  { return static_cast<StateFlags>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs)); }
+
+/** @ingroup gtkmmEnums */
+inline StateFlags operator~(StateFlags flags)
+  { return static_cast<StateFlags>(~static_cast<unsigned>(flags)); }
+
+/** @ingroup gtkmmEnums */
+inline StateFlags& operator|=(StateFlags& lhs, StateFlags rhs)
+  { return (lhs = static_cast<StateFlags>(static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs))); }
+
+/** @ingroup gtkmmEnums */
+inline StateFlags& operator&=(StateFlags& lhs, StateFlags rhs)
+  { return (lhs = static_cast<StateFlags>(static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs))); }
+
+/** @ingroup gtkmmEnums */
+inline StateFlags& operator^=(StateFlags& lhs, StateFlags rhs)
+  { return (lhs = static_cast<StateFlags>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs))); }
+
+} // namespace Gtk
+
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+namespace Glib
+{
+
+template <>
+class Value<Gtk::StateFlags> : public Glib::Value_Flags<Gtk::StateFlags>
+{
+public:
+  static GType value_type() G_GNUC_CONST;
+};
+
+} // namespace Glib
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+
+namespace Gtk
+{
 
 
 /* We use a class to implement the GtkIconSize enum, because you can register
@@ -1622,31 +1590,31 @@ public:
   // These static methods are implemented in iconfactory.ccg. TODO: That's probably unnecessarily obscure. murrayc.
 
   /** Obtains the pixel size of a semantic icon size, possibly modified by user preferences for the default Gtk::Settings.
-   * Normally size would be Gtk::ICON_SIZE_MENU, Gtk::ICON_SIZE_BUTTON, etc. 
-   * This function isn't normally needed because Gtk::Widget::render_icon() is the usual way to get an icon for 
-   * rendering - then just look at the size of the rendered pixbuf. The rendered pixbuf may not even correspond 
-   * to the width/height returned by IconSize::lookup(), because themes are free to render the pixbuf however they 
+   * Normally size would be Gtk::ICON_SIZE_MENU, Gtk::ICON_SIZE_BUTTON, etc.
+   * This function isn't normally needed because Gtk::Widget::render_icon() is the usual way to get an icon for
+   * rendering - then just look at the size of the rendered pixbuf. The rendered pixbuf may not even correspond
+   * to the width/height returned by IconSize::lookup(), because themes are free to render the pixbuf however they
    * like, including changing the usual size.
    *
    * @param size An icon size.
-   * @param width Location to store icon width. 
+   * @param width Location to store icon width.
    * @param height Location to store icon height.
-   * @result true if size was a valid size. 
+   * @result true if size was a valid size.
    */
   static bool lookup(IconSize size, int& width, int& height);
 
-  /** Obtains the pixel size of a semantic icon size, possibly modified by user preferences for a particular 
-   * Gtk::Settings. Normally size would be Gtk::ICON_SIZE_MENU, Gtk::ICON_SIZE_BUTTON, etc. 
-   * This function isn't normally needed because Gtk::Widget::render_icon() is the usual way to get an icon for 
-   * rendering - then just look at the size of the rendered pixbuf. The rendered pixbuf may not even correspond 
-   * to the width/height returned by IconSize::lookup(), because themes are free to render the pixbuf however they 
+  /** Obtains the pixel size of a semantic icon size, possibly modified by user preferences for a particular
+   * Gtk::Settings. Normally size would be Gtk::ICON_SIZE_MENU, Gtk::ICON_SIZE_BUTTON, etc.
+   * This function isn't normally needed because Gtk::Widget::render_icon() is the usual way to get an icon for
+   * rendering - then just look at the size of the rendered pixbuf. The rendered pixbuf may not even correspond
+   * to the width/height returned by IconSize::lookup(), because themes are free to render the pixbuf however they
    * like, including changing the usual size.
    *
    * @param size An icon size.
-   * @param width Location to store icon width. 
+   * @param width Location to store icon width.
    * @param height Location to store icon height.
    * @param settings A Gtk::Settings object, used to determine which set of user preferences to used.
-   * @result true if size was a valid size. 
+   * @result true if size was a valid size.
    *
    * @newin{2,14}
    */
@@ -1657,31 +1625,46 @@ public:
    * @param	name Name of the icon size.
    * @param width The icon width.
    * @param height The icon height.
-   * @result Integer value representing the size. 
+   * @result Integer value representing the size.
    */
   static IconSize register_new(const Glib::ustring& name, int width, int height);
-  
+
   /** Registers @a alias as another name for @a target so calling from_name() with @a alias as argument will return @a target.
    *
    * @param alias An alias for target.
    * @param target An existing icon size.
    */
   static void register_alias(const Glib::ustring& alias, IconSize target);
-  
+
   /** Looks up the icon size associated with @a name.
    *
    * @param name the name to look up.
    * result The icon size with the given name.
    */
   static IconSize from_name(const Glib::ustring& name);
-  
+
   /** Gets the canonical name of the given icon size.
    *
-   * @param size size AnIconSize. 
+   * @param size size AnIconSize.
    * @result The name of the given icon size.
    */
   static Glib::ustring get_name(IconSize size);
 };
+
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+struct IconSizeTraits
+{
+  typedef Gtk::IconSize CppType;
+  typedef GtkIconSize   CType;
+  typedef GtkIconSize   CTypeNonConst;
+
+  static CType   to_c_type      (CType c_obj)            { return c_obj; }
+  static void    release_c_type (CType)                  {}
+  static CType   to_c_type      (const CppType& cpp_obj) { int value (cpp_obj); return static_cast<CType> (value); }
+  static CppType to_cpp_type    (CType c_obj)            { return CppType (c_obj); }
+};
+#endif //DOXYGEN_SHOULD_SKIP_THIS
 
 } // namespace Gtk
 
@@ -1703,28 +1686,9 @@ public:
 namespace Gtk
 {
 
-  /** Methods are overriden so you can use these simple enums, or floats for more precision.
-   * @ingroup gtkmmEnums
-   */
-  enum AlignmentEnum
-  {
-    ALIGN_START, /**< Same as 0.0. */
-    ALIGN_CENTER,  /**< Same as 0.5. */
-    ALIGN_END  /**< Same as 1.0. */
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-    ,
-    ALIGN_LEFT = ALIGN_START, /**< @deprecated Use ALIGN_START. */
-    ALIGN_RIGHT = ALIGN_END, /**< @deprecated Use ALIGN_END. */
-    ALIGN_TOP = ALIGN_START, /**< @deprecated Use ALIGN_START. */
-    ALIGN_BOTTOM = ALIGN_END /**< @deprecated Use ALIGN_END. */
-#endif // GTKMM_DISABLE_DEPRECATED
-
-  };
-
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 //We need this because we can't just use floats for enum value.
-float _gtkmm_align_float_from_enum(AlignmentEnum value);
+float _gtkmm_align_float_from_enum(Align value);
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 } //namespace Gtk

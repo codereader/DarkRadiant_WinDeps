@@ -4,7 +4,8 @@
 #define _GTKMM_BUTTON_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: button.hg,v 1.10 2006/08/21 19:07:14 jjongsma Exp $ */
 
@@ -23,12 +24,12 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- 
 #include <gtkmm/bin.h>
+#include <gtkmm/activatable.h>
 #include <gtkmm/stockid.h>
 
 
@@ -45,8 +46,6 @@ namespace Gtk
 
 namespace Stock { struct BuiltinStockID; }
 
-// TODO: Inherit/Implement Activatable when we can break ABI.
-
 /** A widget that creates a signal when clicked on.
  *
  * This widget is generally used with a signal handler that is called when the button is pressed.
@@ -58,7 +57,9 @@ namespace Stock { struct BuiltinStockID; }
  * @ingroup Widgets
  */
 
-class Button : public Bin
+class Button
+  : public Bin,
+    public Activatable
 {
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -87,8 +88,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -108,21 +113,28 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_pressed().
   virtual void on_pressed();
+  /// This is a default handler for the signal signal_released().
   virtual void on_released();
+  /// This is a default handler for the signal signal_clicked().
   virtual void on_clicked();
+  /// This is a default handler for the signal signal_enter().
   virtual void on_enter();
+  /// This is a default handler for the signal signal_leave().
   virtual void on_leave();
+  /// This is a default handler for the signal signal_activate().
   virtual void on_activate();
 
 
 private:
 
+  
 public:
 
   /** Create an empty button.
    * With an empty button, you can Gtk::Button::add() a widget
-   * such as a Gtk::Pixmap or Gtk::Box.
+   * such as a Gtk::Image or Gtk::Box.
    *
    * If you just wish to add a Gtk::Label,
    * you may want to
@@ -145,35 +157,25 @@ public:
    */
   explicit Button(const StockID& stock_id);
 
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  void pressed();
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  void released();
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-  void clicked();
   
-#ifndef GTKMM_DISABLE_DEPRECATED
+  /** Emits a Gtk::Button::signal_clicked() signal to the given Gtk::Button.
+   */
+  void clicked();
+   //deprecated
 
-  void enter();
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  void leave();
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
+  
+  /** Sets the relief style of the edges of the given Gtk::Button widget.
+   * Three styles exist, GTK_RELIEF_NORMAL, GTK_RELIEF_HALF, GTK_RELIEF_NONE.
+   * The default style is, as one can guess, GTK_RELIEF_NORMAL.
+   * 
+   * <!-- FIXME: put pictures of each style -->
+   * @param newstyle The GtkReliefStyle as described above.
+   */
   void set_relief(ReliefStyle newstyle);
   
+  /** Returns the current relief style of the given Gtk::Button.
+   * @return The current Gtk::ReliefStyle.
+   */
   ReliefStyle get_relief() const;
 
   
@@ -244,7 +246,7 @@ public:
 
   
   /** Sets the alignment of the child. This property has no effect unless 
-   * the child is a Gtk::Misc or a Gtk::Aligment.
+   * the child is a Gtk::Misc or a Gtk::Alignment.
    * 
    * @newin{2,4}
    * @param xalign The horizontal position of the child, 0.0 is left aligned, 
@@ -264,7 +266,7 @@ public:
 
   
   /** Set the image of @a button to the given widget. Note that
-   * it depends on the Gtk::Settings:gtk-button-images setting whether the
+   * it depends on the Gtk::Settings::property_gtk_button_images() setting whether the
    * image will be displayed or not, you don't have to call
    * Gtk::Widget::show() on @a image yourself.
    * 
@@ -324,52 +326,95 @@ public:
   Glib::RefPtr<const Gdk::Window> get_event_window() const;
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%pressed()</tt>
+   *
+   * Emitted when the button is pressed.
+   * 
+   * Deprecated: 2.8: Use the Gtk::Widget::signal_button_press_event() signal.
+   * @deprecated Use Widget::signal_button_press_event() instead.
    */
+
+#ifndef GTKMM_DISABLE_DEPRECATED
 
   Glib::SignalProxy0< void > signal_pressed();
+#endif // GTKMM_DISABLE_DEPRECATED
 
-  
-  /**
-   * @par Prototype:
+
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%released()</tt>
+   *
+   * Emitted when the button is released.
+   * 
+   * Deprecated: 2.8: Use the Gtk::Widget::signal_button_release_event() signal.
+   * @deprecated Use Widget::signal_button_release_event() instead.
    */
 
-  Glib::SignalProxy0< void > signal_released();
+#ifndef GTKMM_DISABLE_DEPRECATED
 
-  
-  /**
-   * @par Prototype:
+  Glib::SignalProxy0< void > signal_released();
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%clicked()</tt>
+   *
+   * Emitted when the button has been activated (pressed and released).
    */
 
   Glib::SignalProxy0< void > signal_clicked();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%enter()</tt>
+   *
+   * Emitted when the pointer enters the button.
+   * 
+   * Deprecated: 2.8: Use the Gtk::Widget::signal_enter_notify_event() signal.
+   * @deprecated Use Widget::signal_enter_notify_event() instead.
    */
+
+#ifndef GTKMM_DISABLE_DEPRECATED
 
   Glib::SignalProxy0< void > signal_enter();
+#endif // GTKMM_DISABLE_DEPRECATED
 
-  
-  /**
-   * @par Prototype:
+
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%leave()</tt>
+   *
+   * Emitted when the pointer leaves the button.
+   * 
+   * Deprecated: 2.8: Use the Gtk::Widget::signal_leave_notify_event() signal.
+   * @deprecated Use Widget::signal_leave_notify_event() instead.
    */
+
+#ifndef GTKMM_DISABLE_DEPRECATED
 
   Glib::SignalProxy0< void > signal_leave();
+#endif // GTKMM_DISABLE_DEPRECATED
 
-  
-  /**
-   * @par Prototype:
+
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%activate()</tt>
+   *
+   * The signal_activate() signal on GtkButton is an action signal and
+   * emitting it causes the button to animate press then release. 
+   * Applications should never connect to this signal, but use the
+   * Gtk::Button::signal_clicked() signal.
+   * @deprecated Use signal_clicked() instead.
    */
+
+#ifndef GTKMM_DISABLE_DEPRECATED
 
   Glib::SignalProxy0< void > signal_activate();
+#endif // GTKMM_DISABLE_DEPRECATED
 
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -379,7 +424,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_label() ;
+  Glib::PropertyProxy< Glib::ustring > property_label() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -389,7 +434,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_label() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_label() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -399,7 +444,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<ReliefStyle> property_relief() ;
+  Glib::PropertyProxy< ReliefStyle > property_relief() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -409,10 +454,29 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<ReliefStyle> property_relief() const;
+  Glib::PropertyProxy_ReadOnly< ReliefStyle > property_relief() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
-  //Ignored because it's write-only and construct: _WRAP_PROPERTY("use-underline", bool)
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** If set, an underline in the text indicates the next character should be used for the mnemonic accelerator key.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< bool > property_use_underline() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** If set, an underline in the text indicates the next character should be used for the mnemonic accelerator key.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< bool > property_use_underline() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** If set, the label is used to pick a stock item instead of being displayed.
    *
@@ -420,7 +484,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_use_stock() ;
+  Glib::PropertyProxy< bool > property_use_stock() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -430,7 +494,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_use_stock() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_use_stock() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -440,7 +504,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_focus_on_click() ;
+  Glib::PropertyProxy< bool > property_focus_on_click() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -450,7 +514,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_focus_on_click() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_focus_on_click() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -460,7 +524,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<float> property_xalign() ;
+  Glib::PropertyProxy< float > property_xalign() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -470,7 +534,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<float> property_xalign() const;
+  Glib::PropertyProxy_ReadOnly< float > property_xalign() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -480,7 +544,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<float> property_yalign() ;
+  Glib::PropertyProxy< float > property_yalign() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -490,7 +554,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<float> property_yalign() const;
+  Glib::PropertyProxy_ReadOnly< float > property_yalign() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -500,7 +564,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Gtk::Widget*> property_image() ;
+  Glib::PropertyProxy< Gtk::Widget* > property_image() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -510,7 +574,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Gtk::Widget*> property_image() const;
+  Glib::PropertyProxy_ReadOnly< Gtk::Widget* > property_image() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -520,7 +584,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<PositionType> property_image_position() ;
+  Glib::PropertyProxy< PositionType > property_image_position() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -530,7 +594,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<PositionType> property_image_position() const;
+  Glib::PropertyProxy_ReadOnly< PositionType > property_image_position() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

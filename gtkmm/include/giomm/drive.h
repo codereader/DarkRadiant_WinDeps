@@ -4,7 +4,8 @@
 #define _GIOMM_DRIVE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -25,6 +26,7 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <glibmm/listhandle.h>
 #include <giomm/mount.h>
 #include <giomm/icon.h>
 //#include <giomm/volume.h>
@@ -179,9 +181,14 @@ private:
   Drive(const Drive&);
   Drive& operator=(const Drive&);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 protected:
-  Drive(); // you must derive from this class
-
+  /**
+   * You should derive from this class to use it.
+   */
+  Drive();
+  
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /** Called by constructors of derived classes. Provide the result of 
    * the Class init() function to ensure that it is properly 
    * initialized.
@@ -356,7 +363,7 @@ public:
   
    
   /** Gets the kinds of identifiers that @a drive has. 
-   * Use Glib::drive_get_identifer() to obtain the identifiers
+   * Use g_drive_get_identifier() to obtain the identifiers
    * themselves.
    * @return A <tt>0</tt>-terminated
    * array of strings containing kinds of identifiers. Use Glib::strfreev()
@@ -414,10 +421,20 @@ public:
    */
   DriveStartStopType get_start_stop_type() const;
 
+  
+  /** Gets the sort key for @a drive, if any.
+   * 
+   * @newin{2,32}
+   * @return Sorting key for @a drive or <tt>0</tt> if no such key is available.
+   */
+  Glib::ustring get_sort_key() const;
+
   /** @newin{2,20}
    *
-   * @par Prototype:
+* @par Slot Prototype:
    * <tt>void on_my_%changed()</tt>
+   *
+   * Emitted when the drive's state has changed.
    */
 
   Glib::SignalProxy0< void > signal_changed();
@@ -425,8 +442,13 @@ public:
 
   /** @newin{2,20}
    *
-   * @par Prototype:
+* @par Slot Prototype:
    * <tt>void on_my_%disconnected()</tt>
+   *
+   * This signal is emitted when the Drive have been
+   * disconnected. If the recipient is holding references to the
+   * object they should release them so the object can be
+   * finalized.
    */
 
   Glib::SignalProxy0< void > signal_disconnected();
@@ -434,16 +456,24 @@ public:
 
   /** @newin{2,20}
    *
-   * @par Prototype:
+* @par Slot Prototype:
    * <tt>void on_my_%eject_button()</tt>
+   *
+   * Emitted when the physical eject button (if any) of a drive has
+   * been pressed.
    */
 
   Glib::SignalProxy0< void > signal_eject_button();
 
-
-  /** @newin{2,22} *
-   * @par Prototype:
+  
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%stop_button()</tt>
+   *
+   * Emitted when the physical stop button (if any) of a drive has
+   * been pressed.
+   * 
+   * @newin{2,22}
    */
 
   Glib::SignalProxy0< void > signal_stop_button();

@@ -6,7 +6,8 @@
 #include <gtkmmconfig.h>
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 2006 The gtkmm Development Team
  *
@@ -21,18 +22,19 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- 
+
+#include <vector>
+
 #include <gdkmm/screen.h>
 #include <gdkmm/pixbuf.h>
 
 #include <gtkmm/recentinfo.h>
 
 #include <glibmm/object.h>
-#include <glibmm/containers.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -151,8 +153,11 @@ protected:
 public:
   virtual ~RecentManager();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -179,39 +184,13 @@ public:
 
 
   /** Gets a unique instance of Gtk::RecentManager, that you can share
-   * in your application without caring about memory management. The
-   * returned instance will be freed when you application terminates.
+   * in your application without caring about memory management.
    * 
    * @newin{2,10}
    * @return A unique Gtk::RecentManager. Do not ref or unref it.
    */
   static Glib::RefPtr<RecentManager> get_default();
-  
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Gets the recent manager object associated with @a screen; if this
-   * function has not previously been called for the given screen,
-   * a new recent manager object will be created and associated with
-   * the screen. Recent manager objects are fairly expensive to create,
-   * so using this function is usually a better choice than calling 
-   * new() and setting the screen yourself; by using
-   * this function a single recent manager object will be shared between
-   * users.
-   * 
-   * Deprecated: 2.12: This function has been deprecated and should
-   * not be used in newly written code. Calling this function is
-   * equivalent to calling get_default().
-   * 
-   * @newin{2,10}
-   * @param screen A Gdk::Screen.
-   * @return A unique Gtk::RecentManager associated with the given
-   * screen. This recent manager is associated to the with the screen
-   * and can be used as long as the screen is open. Do not ref or
-   * unref it.
-   */
-  static Glib::RefPtr<RecentManager> get_for_screen(const Glib::RefPtr<Gdk::Screen>& screen);
-#endif // GTKMM_DISABLE_DEPRECATED
-
+   //deprecated
 
   /** Meta-data passed to add_item().  You should
    * use RecentManager::Data if you want to control the meta-data associated
@@ -242,24 +221,9 @@ public:
     bool is_private;
   };
 
+   //deprecated
+
   
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Sets the screen for a recent manager; the screen is used to
-   * track the user's currently configured recently used documents
-   * storage.
-   * 
-   * @newin{2,10}
-   * 
-   * Deprecated: 2.12: This function has been deprecated and should
-   * not be used in newly written code. Calling this function has
-   * no effect.
-   * @param screen A Gdk::Screen.
-   */
-  void set_screen(const Glib::RefPtr<Gdk::Screen>& screen);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
   /** Adds a new resource into the recently used resources list. This function
    * will try and guess some of the meta-data associated to a URI. If you
    * know some of meta-data about the document yourself, set the desired
@@ -330,35 +294,8 @@ public:
    * @return <tt>true</tt> on success.
    */
   bool move_item(const Glib::ustring& uri, const Glib::ustring& new_uri);
-  
-  /** Sets the maximum number of item that the get_items()
-   * function should return.  If @a limit is set to -1, then return all the
-   * items.
-   * 
-   * @newin{2,10}
-   * 
-   * Deprecated: 2.22: The length of the list should be managed by the
-   * view (implementing Gtk::RecentChooser), and not by the model (the
-   * Gtk::RecentManager). See Gtk::RecentChooser:limit.
-   * @param limit The maximum number of items to return, or -1.
-   */
-  void set_limit(int limit);
-  
-  /** Gets the maximum number of items that the get_items()
-   * function should return.
-   * 
-   * @newin{2,10}
-   * 
-   * Deprecated: 2.22: The length of the list should be managed by the
-   * view (implementing Gtk::RecentChooser), and not by the model (the
-   * Gtk::RecentManager). See Gtk::RecentChooser:limit.
-   * @return The number of items to return, or -1 for every item.
-   */
-  int get_limit() const;
 
-  typedef Glib::ListHandle<RecentInfo, RecentInfoTraits> ListHandle_RecentInfos;
-  
-
+ 
   /** Gets the list of recently used resources.
    * 
    * @newin{2,10}
@@ -367,7 +304,7 @@ public:
    * Gtk::RecentInfo::unref() on each item inside the list, and then
    * free the list itself using Glib::list_free().
    */
-  ListHandle_RecentInfos get_items() const;
+  std::vector<Glib::RefPtr<RecentInfo> > get_items() const;
 
   
   /** Purges every item from the recently used resources list.
@@ -381,10 +318,16 @@ public:
   /// For instance, void on_changed();
   typedef sigc::slot<void> SlotChanged;
 
-  /** The "changed" signal is emitted when an item in the recently used resources list is changed.
-  *
-   * @par Prototype:
+  
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%changed()</tt>
+   *
+   * Emitted when the current recently used resources manager changes its
+   * contents, either by calling Gtk::RecentManager::add_item() or by another
+   * application.
+   * 
+   * @newin{2,10}
    */
 
   Glib::SignalProxy0< void > signal_changed();
@@ -397,29 +340,9 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_filename() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_filename() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The maximum number of items to be returned by gtk_recent_manager_get_items().
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<int> property_limit() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** The maximum number of items to be returned by gtk_recent_manager_get_items().
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<int> property_limit() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The size of the recently used resources list.
@@ -428,7 +351,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_size() const;
+  Glib::PropertyProxy_ReadOnly< int > property_size() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -441,6 +364,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_changed().
   virtual void on_changed();
 
 

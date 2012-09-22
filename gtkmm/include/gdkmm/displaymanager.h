@@ -4,7 +4,8 @@
 #define _GDKMM_DISPLAYMANAGER_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: displaymanager.hg,v 1.8 2006/04/12 11:11:24 murrayc Exp $ */
 
@@ -23,9 +24,11 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+#include <vector>
 
 #include <glibmm/object.h>
 #include <gdkmm/display.h>
@@ -74,8 +77,11 @@ protected:
 public:
   virtual ~DisplayManager();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -99,25 +105,31 @@ public:
   
   /** Gets the singleton Gdk::DisplayManager object.
    * 
+   * When called for the first time, this function consults the
+   * <envar>GDK_BACKEND</envar> environment variable to find out which
+   * of the supported GDK backends to use (in case GDK has been compiled
+   * with multiple backends).
+   * 
    * @newin{2,2}
-   * @return The global Gdk::DisplayManager singleton; gdk_parse_pargs(),
-   * gdk_init(), or gdk_init_check() must have been called first.
+   * @return The global Gdk::DisplayManager singleton;
+   * gdk_parse_args(), gdk_init(), or gdk_init_check() must have
+   * been called first.
    */
   static Glib::RefPtr<DisplayManager> get();
   
   /** Gets the default Gdk::Display.
    * 
    * @newin{2,2}
-   * @return A Gdk::Display, or <tt>0</tt> if there is no default
-   * display.
+   * @return A Gdk::Display, or <tt>0</tt>
+   * if there is no default display.
    */
   Glib::RefPtr<Display> get_default_display();
   
   /** Gets the default Gdk::Display.
    * 
    * @newin{2,2}
-   * @return A Gdk::Display, or <tt>0</tt> if there is no default
-   * display.
+   * @return A Gdk::Display, or <tt>0</tt>
+   * if there is no default display.
    */
   Glib::RefPtr<const Display> get_default_display() const;
 
@@ -129,13 +141,23 @@ public:
    */
   void set_default_display(const Glib::RefPtr<Display>& display);
 
-  
+ 
   /** List all currently open displays.
    * 
    * @newin{2,2}
    * @return A list of Gdk::Display objects.
    */
-  Glib::SListHandle< Glib::RefPtr<Display> > list_displays();
+  std::vector< Glib::RefPtr<Display> > list_displays();
+
+  
+  /** Opens a display.
+   * 
+   * @newin{3,0}
+   * @param name The name of the display to open.
+   * @return A Gdk::Display, or <tt>0</tt>
+   * if the display could not be opened.
+   */
+  Glib::RefPtr<Display> open_display(const Glib::ustring& name);
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The default display for GDK.
@@ -158,14 +180,17 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   
-  /** The display_opened signal is emitted when a display is opened.
-   *
-   * @newin{2,2}
-   *
-   * @param display the opened display
-   *
-   * @par Prototype:
+  //We use no_default_handler because GdkDisplayManagerClass is private.
+  
+  
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%display_opened(const Glib::RefPtr<Display>& display)</tt>
+   *
+   * The signal_display_opened() signal is emitted when a display is opened.
+   * 
+   * @newin{2,2}
+   * @param display The opened display.
    */
 
   Glib::SignalProxy1< void,const Glib::RefPtr<Display>& > signal_display_opened();
@@ -180,7 +205,6 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
-  virtual void on_display_opened(const Glib::RefPtr<Display>& display);
 
 
 };

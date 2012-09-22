@@ -4,7 +4,8 @@
 #define _GDKMM_PIXBUFFORMAT_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: pixbufformat.hg,v 1.4 2005/01/05 17:30:16 murrayc Exp $ */
 
@@ -21,13 +22,14 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 
 #include <gdkmmconfig.h>
-
+#include <glibmm/value.h>
+#include <vector>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 extern "C" { typedef struct _GdkPixbufFormat GdkPixbufFormat; }
@@ -44,28 +46,51 @@ class PixbufFormat
   typedef GdkPixbufFormat BaseObjectType;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
+  static GType get_type() G_GNUC_CONST;
+
+
+  explicit PixbufFormat(GdkPixbufFormat* gobject, bool make_a_copy = true);
+
+  PixbufFormat(const PixbufFormat& other);
+  PixbufFormat& operator=(const PixbufFormat& other);
+
+  ~PixbufFormat();
+
+  void swap(PixbufFormat& other);
+
+  ///Provides access to the underlying C instance.
+  GdkPixbufFormat*       gobj()       { return gobject_; }
+
+  ///Provides access to the underlying C instance.
+  const GdkPixbufFormat* gobj() const { return gobject_; }
+
+  ///Provides access to the underlying C instance. The caller is responsible for freeing it. Use when directly setting fields in structs.
+  GdkPixbufFormat* gobj_copy() const;
+
+protected:
+  GdkPixbufFormat* gobject_;
+
 private:
 
-
+  
 public:
+  
   PixbufFormat();
-  explicit PixbufFormat(const GdkPixbufFormat* gobject);
-  virtual ~PixbufFormat();
-
-  PixbufFormat(const PixbufFormat& src);
-  PixbufFormat& operator=(const PixbufFormat& src);
 
   
   Glib::ustring get_name() const;
   
   Glib::ustring get_description() const;
+
+ 
+  std::vector<Glib::ustring> get_mime_types() const;
   
-  Glib::StringArrayHandle get_mime_types() const;
-  
-  Glib::StringArrayHandle get_extensions() const;
+  std::vector<Glib::ustring> get_extensions() const;
   
   bool is_writable() const;
-  
+
   
   bool is_scalable() const;
   
@@ -75,18 +100,58 @@ public:
   
   Glib::ustring get_license() const;
 
-  /// Provides access to the underlying C GObject.
-  GdkPixbufFormat*       gobj()       { return const_cast<GdkPixbufFormat*>(gobject_); }
-  /// Provides access to the underlying C GObject.
-  const GdkPixbufFormat* gobj() const { return gobject_; }
-
-protected:
-  const GdkPixbufFormat* gobject_;
-
 
 };
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+struct PixbufFormatTraits
+{
+  typedef PixbufFormat  CppType;
+  typedef const GdkPixbufFormat*      CType;
+  typedef GdkPixbufFormat*            CTypeNonConst;
+
+  static CType   to_c_type      (const CppType& obj) { return obj.gobj();     }
+  static CType   to_c_type      (CType          ptr) { return ptr;                   }
+  static CppType to_cpp_type    (CType          ptr) { return PixbufFormat(const_cast<GdkPixbufFormat*>(ptr), true); }
+  static void    release_c_type (CType          /* ptr */) { /* Doesn't happen */ }
+};
+#endif //DOXYGEN_SHOULD_SKIP_THIS
+
 } // namespace Gdk
+
+
+namespace Gdk
+{
+
+/** @relates Gdk::PixbufFormat
+ * @param lhs The left-hand side
+ * @param rhs The right-hand side
+ */
+inline void swap(PixbufFormat& lhs, PixbufFormat& rhs)
+  { lhs.swap(rhs); }
+
+} // namespace Gdk
+
+namespace Glib
+{
+
+/** A Glib::wrap() method for this object.
+ * 
+ * @param object The C instance.
+ * @param take_copy False if the result should take ownership of the C instance. True if it should take a new copy or ref.
+ * @result A C++ instance that wraps this C instance.
+ *
+ * @relates Gdk::PixbufFormat
+ */
+Gdk::PixbufFormat wrap(GdkPixbufFormat* object, bool take_copy = false);
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+template <>
+class Value<Gdk::PixbufFormat> : public Glib::Value_Boxed<Gdk::PixbufFormat>
+{};
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+} // namespace Glib
 
 
 #endif /* _GDKMM_PIXBUFFORMAT_H */

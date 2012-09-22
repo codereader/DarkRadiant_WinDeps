@@ -4,7 +4,8 @@
 #define _GIOMM_UNIXFDMESSAGE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -25,6 +26,7 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <glibmm/arrayhandle.h>
 #include <giomm/socketcontrolmessage.h>
 
 

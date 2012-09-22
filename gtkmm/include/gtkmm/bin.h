@@ -4,7 +4,8 @@
 #define _GTKMM_BIN_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: bin.hg,v 1.2 2003/03/03 07:49:05 murrayc Exp $ */
 
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/container.h>
@@ -41,11 +42,12 @@ namespace Gtk
 namespace Gtk
 {
 
+//TODO: Add an add_pixbuf() method?
 /** A container with just one child.
  *
  * This is an abstract base class from which all classes holding
  * up to 1 widget inside of them derive.  It provides access to methods
- * relevent to a single object, such as add_label, add_pixmap, etc.
+ * relevent to a single object, such as add_label, etc.
  *
  * @ingroup Widgets
  */
@@ -79,8 +81,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -160,23 +166,14 @@ public:
    * @param mnemonic If <tt>true</tt>, characters preceded by an underscore
    * (_) will be underlined and used as a keyboard accelerator (shortcut).
    * @param x_align The horizontal alignment of the text.  For possible
-   * values, see Gtk::AlignmentEnum.
+   * values, see Gtk::Align.
    * @param y_align The vertical alignment of the text.  For possible
-   * values, see Gtk::AlignmentEnum.
+   * values, see Gtk::Align.
    */
   void add_label(const Glib::ustring& label, bool mnemonic,
-		 AlignmentEnum x_align, AlignmentEnum y_align = ALIGN_CENTER);
+		 Align x_align, Align y_align = ALIGN_CENTER);
 
-  /** Add an Image object.
-   * This does not correspond to any GTK+ function and is provided purely for
-   * convenience.
-   * This will create, manage, add, and show a new Image to this Bin.
-   * @param pixmap A Glib::RefPtr to a Gdk::Pixmap.
-   * @param mask A Glib::RefPtr to a Gdk::Bitmap.
-   */
-  void add_pixmap(const Glib::RefPtr<Gdk::Pixmap>& pixmap,
-		  const Glib::RefPtr<Gdk::Bitmap>& mask);
-
+  //TODO: Change this to Pixbuf?
   /** Add Image and Label objects.
    * This does not correspond to any GTK+ function and is provided purely for
    * convenience.
@@ -188,10 +185,12 @@ public:
    * @param x_align The horizontal alignment of the text in the label.
    * @param y_align The vertical alignment of the text in the label.
    */
+  /*
   void add_pixlabel(const Glib::RefPtr<Gdk::Pixmap>& pixmap,
                     const Glib::RefPtr<Gdk::Bitmap>& mask,
                     const Glib::ustring& label,
 		                double x_align = 0.5, double y_align = 0.5);
+  */
 
   /** Add Image and Label objects.
    * This does not correspond to any GTK+ function and is provided purely for
@@ -203,7 +202,7 @@ public:
    * @param x_align The horizontal alignment of the text in the label.
    * @param y_align The vertical alignment of the text in the label.
    */
-  void add_pixlabel(const Glib::ustring& pixfile,
+  void add_pixlabel(const std::string& pixfile,
                     const Glib::ustring& label,
 		                double x_align = 0.5, double y_align = 0.5);
 

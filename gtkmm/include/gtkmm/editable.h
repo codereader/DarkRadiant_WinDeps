@@ -4,7 +4,8 @@
 #define _GTKMM_EDITABLE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: editable.hg,v 1.3 2006/05/18 17:53:15 murrayc Exp $ */
 
@@ -21,8 +22,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <glibmm/interface.h>
@@ -31,10 +32,9 @@
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 extern "C"
 {
-typedef struct _GtkEditableClass GtkEditableClass;
+typedef struct _GtkEditableInterface GtkEditableInterface;
 }
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 typedef struct _GtkEditable GtkEditable;
@@ -67,7 +67,7 @@ public:
   typedef Editable CppObjectType;
   typedef Editable_Class CppClassType;
   typedef GtkEditable BaseObjectType;
-  typedef GtkEditableClass BaseClassType;
+  typedef GtkEditableInterface BaseClassType;
 
 private:
   friend class Editable_Class;
@@ -77,9 +77,14 @@ private:
   Editable(const Editable&);
   Editable& operator=(const Editable&);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 protected:
-  Editable(); // you must derive from this class
-
+  /**
+   * You should derive from this class to use it.
+   */
+  Editable();
+  
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /** Called by constructors of derived classes. Provide the result of 
    * the Class init() function to ensure that it is properly 
    * initialized.
@@ -102,8 +107,11 @@ public:
 
   static void add_interface(GType gtype_implementer);
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -157,6 +165,8 @@ public:
    * 
    * Note that the position is in characters, not in bytes. 
    * The function updates @a position to point after the newly inserted text.
+   * 
+   * Virtual: do_insert_text
    * @param new_text The text to append.
    * @param new_text_length The length of the text in bytes, or -1.
    * @param position Location of the position text will be inserted at.
@@ -169,6 +179,8 @@ public:
    * are those from @a start_pos to the end of the text.
    * 
    * Note that the positions are specified in characters, not bytes.
+   * 
+   * Virtual: do_delete_text
    * @param start_pos Start position.
    * @param end_pos End position.
    */
@@ -197,6 +209,8 @@ public:
    * the end of the text.
    * 
    * Note that positions are specified in characters, not bytes.
+   * 
+   * Virtual: set_selection_bounds
    * @param start_pos Start of region.
    * @param end_pos End of region.
    */
@@ -237,17 +251,38 @@ public:
   Glib::SignalProxy2< void,const Glib::ustring&,int* > signal_insert_text();
 
     
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%delete_text(int start_pos, int end_pos)</tt>
+   *
+   * This signal is emitted when text is deleted from
+   * the widget by the user. The default handler for
+   * this signal will normally be responsible for deleting
+   * the text, so by connecting to this signal and then
+   * stopping the signal with Glib::signal_stop_emission(), it
+   * is possible to modify the range of deleted text, or
+   * prevent it from being deleted entirely. The @a start_pos
+   * and @a end_pos parameters are interpreted as for
+   * Gtk::Editable::delete_text().
+   * @param start_pos The starting position.
+   * @param end_pos The end position.
    */
 
   Glib::SignalProxy2< void,int,int > signal_delete_text();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%changed()</tt>
+   *
+   * The signal_changed() signal is emitted at the end of a single
+   * user-visible operation on the contents of the Gtk::Editable.
+   * 
+   * E.g., a paste operation that replaces the contents of the
+   * selection will cause only one signal emission (even though it
+   * is implemented by first deleting the selection, then inserting
+   * the new content, and may cause multiple ::notify::text signals
+   * to be emitted).
    */
 
   Glib::SignalProxy0< void > signal_changed();
@@ -282,8 +317,11 @@ virtual void insert_text_vfunc(const Glib::ustring& text, int& position);
 
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_insert_text().
   virtual void on_insert_text(const Glib::ustring& text, int* position);
+  /// This is a default handler for the signal signal_delete_text().
   virtual void on_delete_text(int start_pos, int end_pos);
+  /// This is a default handler for the signal signal_changed().
   virtual void on_changed();
 
 

@@ -4,7 +4,8 @@
 #define _GTKMM_MESSAGEDIALOG_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: messagedialog.hg,v 1.15 2006/06/20 18:46:59 murrayc Exp $ */
 
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/dialog.h>
@@ -123,8 +124,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -176,19 +181,6 @@ public:
   const Widget* get_image() const;
 
   
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Sets the text of the message dialog to be @a str, which is marked
-   * up with the .
-   * 
-   * @newin{2,4}
-   * @deprecated Use set_message(string, true).
-   * @param str Markup string (see ).
-   */
-  void set_markup(const Glib::ustring& str);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
   /** Sets the primary text of the message dialog.
    *
    * @param text The message.
@@ -219,7 +211,7 @@ public:
    * @return A Gtk::VBox corresponding to the
    * "message area" in the @a message_dialog.
    */
-  VBox* get_message_area();
+  Box* get_message_area();
   
   /** Returns the message area of the dialog. This is the box where the
    * dialog's primary and secondary labels are packed. You can add your
@@ -232,7 +224,7 @@ public:
    * @return A Gtk::VBox corresponding to the
    * "message area" in the @a message_dialog.
    */
-  const VBox* get_message_area() const;
+  const Box* get_message_area() const;
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The type of message.
@@ -241,7 +233,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<MessageType> property_message_type() ;
+  Glib::PropertyProxy< MessageType > property_message_type() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -251,10 +243,10 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<MessageType> property_message_type() const;
+  Glib::PropertyProxy_ReadOnly< MessageType > property_message_type() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
-  //gtkmmproc error: buttons : attempt to wrap write-only and construct-only property.
+  //Not wrapped because it is write-only and construct: _WRAP_PROPERTY("buttons", ButtonsType)
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The primary text of the message dialog.
    *
@@ -262,7 +254,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_text() ;
+  Glib::PropertyProxy< Glib::ustring > property_text() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -272,7 +264,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_text() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_text() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -282,7 +274,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_use_markup() ;
+  Glib::PropertyProxy< bool > property_use_markup() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -292,7 +284,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_use_markup() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_use_markup() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -302,7 +294,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_secondary_text() ;
+  Glib::PropertyProxy< Glib::ustring > property_secondary_text() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -312,7 +304,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_secondary_text() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_secondary_text() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -322,7 +314,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_secondary_use_markup() ;
+  Glib::PropertyProxy< bool > property_secondary_use_markup() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -332,7 +324,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_secondary_use_markup() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_secondary_use_markup() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -342,7 +334,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Widget*> property_image() ;
+  Glib::PropertyProxy< Widget* > property_image() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -352,7 +344,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Widget*> property_image() const;
+  Glib::PropertyProxy_ReadOnly< Widget* > property_image() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -362,7 +354,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<VBox*> property_message_area() const;
+  Glib::PropertyProxy_ReadOnly< Box* > property_message_area() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

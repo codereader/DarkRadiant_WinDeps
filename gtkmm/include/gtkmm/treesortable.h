@@ -6,7 +6,8 @@
 #include <gtkmmconfig.h>
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: treesortable.hg,v 1.8 2006/04/21 07:41:28 murrayc Exp $ */
 
@@ -24,8 +25,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 // This is for including the config header before any code (such as
@@ -45,7 +46,6 @@ extern "C"
 typedef struct _GtkTreeSortableIface GtkTreeSortableIface;
 }
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 typedef struct _GtkTreeSortable GtkTreeSortable;
@@ -83,9 +83,14 @@ private:
   TreeSortable(const TreeSortable&);
   TreeSortable& operator=(const TreeSortable&);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 protected:
-  TreeSortable(); // you must derive from this class
-
+  /**
+   * You should derive from this class to use it.
+   */
+  TreeSortable();
+  
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /** Called by constructors of derived classes. Provide the result of 
    * the Class init() function to ensure that it is properly 
    * initialized.
@@ -108,8 +113,11 @@ public:
 
   static void add_interface(GType gtype_implementer);
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -146,16 +154,16 @@ public:
   
   /** Sets the current sort column to be @a sort_column_id. The @a sortable will
    * resort itself to reflect this change, after emitting a
-   * Gtk::TreeSortable::sort-column-changed signal. @a sort_column_id may either be
+   * Gtk::TreeSortable::signal_sort_column_changed() signal. @a sort_column_id may either be
    * a regular column id, or one of the following special values:
    * <variablelist>
    * <varlistentry>
    * <term>Gtk::TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID</term>
-   * <listitem>the default sort function will be used, if it is set</listitem>
+   * - the default sort function will be used, if it is set
    * </varlistentry>
    * <varlistentry>
    * <term>Gtk::TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID</term>
-   * <listitem>no sorting will occur</listitem>
+   * - no sorting will occur
    * </varlistentry>
    * </variablelist>
    * @param sort_column_id The sort column id to set.
@@ -165,34 +173,22 @@ public:
   
   /** Sets the current sort column to be @a sort_column_id. The @a sortable will
    * resort itself to reflect this change, after emitting a
-   * Gtk::TreeSortable::sort-column-changed signal. @a sort_column_id may either be
+   * Gtk::TreeSortable::signal_sort_column_changed() signal. @a sort_column_id may either be
    * a regular column id, or one of the following special values:
    * <variablelist>
    * <varlistentry>
    * <term>Gtk::TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID</term>
-   * <listitem>the default sort function will be used, if it is set</listitem>
+   * - the default sort function will be used, if it is set
    * </varlistentry>
    * <varlistentry>
    * <term>Gtk::TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID</term>
-   * <listitem>no sorting will occur</listitem>
+   * - no sorting will occur
    * </varlistentry>
    * </variablelist>
    * @param sort_column_id The sort column id to set.
    * @param order The sort order of the column.
    */
   void set_sort_column(int sort_column_id, SortType order);
-
-  #ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** @deprecated Use set_sort_column() instead.
-   */
-  void set_sort_column_id(const TreeModelColumnBase& sort_column_id, SortType order);
-
-  /** @deprecated Use set_sort_column() instead.
-   */
-  void set_sort_column_id(int sort_column_id, SortType order);
-  #endif // GTKMM_DISABLE_DEPRECATED
-
 
   /** This callback should return -1 if a compares before b, 0 if they compare equal, 1 if a compares after b. 
    * For instance, int on_sort_compare(const Gtk::TreeModel::iterator& a, const Gtk::TreeModel::iterator& b);
@@ -239,13 +235,17 @@ public:
   bool has_default_sort_func() const;
 
   
-  /** Emits a Gtk::TreeSortable::sort-column-changed signal on @a sortable.
+  /** Emits a Gtk::TreeSortable::signal_sort_column_changed() signal on @a sortable.
    */
   void sort_column_changed();
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%sort_column_changed()</tt>
+   *
+   * The signal_sort_column_changed() signal is emitted when the sort column
+   * or sort order of @a sortable is changed. The signal is emitted before
+   * the contents of @a sortable are resorted.
    */
 
   Glib::SignalProxy0< void > signal_sort_column_changed();
@@ -274,6 +274,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_sort_column_changed().
   virtual void on_sort_column_changed();
 
 

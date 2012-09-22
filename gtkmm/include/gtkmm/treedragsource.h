@@ -4,7 +4,8 @@
 #define _GTKMM_TREEDRAGSOURCE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: treedragsource.hg,v 1.8 2006/05/10 20:59:28 murrayc Exp $ */
 
@@ -21,13 +22,13 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <glibmm/interface.h>
-#include <gtkmm/selectiondata.h>
 #include <gtkmm/treemodel.h>
+#include <gtkmm/selectiondata.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -73,9 +74,14 @@ private:
   TreeDragSource(const TreeDragSource&);
   TreeDragSource& operator=(const TreeDragSource&);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 protected:
-  TreeDragSource(); // you must derive from this class
-
+  /**
+   * You should derive from this class to use it.
+   */
+  TreeDragSource();
+  
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /** Called by constructors of derived classes. Provide the result of 
    * the Class init() function to ensure that it is properly 
    * initialized.
@@ -98,8 +104,11 @@ public:
 
   static void add_interface(GType gtype_implementer);
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -128,11 +137,12 @@ public:
    * the required type of the data.  Should robustly handle a @a path no
    * longer found in the model!
    * @param path Row that was dragged.
-   * @param selection_data A Gtk::SelectionData to fill with data from the dragged row.
+   * @param selection_data A Gtk::SelectionData to fill with data
+   * from the dragged row.
    * @return <tt>true</tt> if data of the required type was provided.
    */
   bool drag_data_get(const TreeModel::Path& path, SelectionData& selection_data);
-
+               
   
   /** Asks the Gtk::TreeDragSource to delete the row at @a path, because
    * it was moved somewhere else via drag-and-drop. Returns <tt>false</tt>
@@ -152,7 +162,7 @@ protected:
 
   //We hand-code this so that we can use a temporary instance for the SelectionData& output parameter:
   virtual bool drag_data_get_vfunc(const TreeModel::Path& path, SelectionData& selection_data) const;
-
+   
     virtual bool drag_data_delete_vfunc(const TreeModel::Path& path);
 
 

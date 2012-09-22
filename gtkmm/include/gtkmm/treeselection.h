@@ -4,7 +4,8 @@
 #define _GTKMM_TREESELECTION_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: treeselection.hg,v 1.6 2006/04/12 11:11:25 murrayc Exp $ */
 
@@ -21,15 +22,16 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <vector>
 
-#include <gtkmm/treepath.h>
 #include <gtkmm/enums.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treeiter.h>
+#include <gtkmm/treepath.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -100,8 +102,11 @@ protected:
 public:
   virtual ~TreeSelection();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -120,7 +125,7 @@ private:
 
    
 protected:
-
+  
 
 public:
   
@@ -174,7 +179,7 @@ public:
   Glib::RefPtr<const TreeModel> get_model() const; // convenience function, not in GTK+
 
   //TODO: Add TreeModel::const_iterator get_selected() const, when we have a real const_iterator.
-
+  
   /** Get the currently selected row.
    * @return The currently selected row.
    * @note
@@ -192,15 +197,13 @@ public:
    */
   TreeModel::iterator get_selected(Glib::RefPtr<TreeModel>& model);
 
-  typedef Glib::ListHandle<TreeModel::Path, TreePath_Traits> ListHandle_Path;
-
   /** Creates a list of paths of all selected rows.
    * Additionally, if you are planning on modifying the model after calling this function,
    * you may want to convert the returned list into a list of GtkTreeRowReferences.
    *
    * @returns a standard container containing a Gtk::Model::Path for each selected row.
    */
-  ListHandle_Path get_selected_rows() const;
+  std::vector<TreeModel::Path> get_selected_rows() const;
 
   /** Creates a list of paths of all selected rows.
    * Additionally, if you are planning on modifying the model after calling this function,
@@ -209,7 +212,7 @@ public:
    * @retval model The current TreeModel.
    * @returns a standard container containing a Gtk::Model::Path for each selected row.
    */
-  ListHandle_Path get_selected_rows(Glib::RefPtr<TreeModel>& model);
+  std::vector<TreeModel::Path> get_selected_rows(Glib::RefPtr<TreeModel>& model);
 
   
   /** Returns the number of rows that have been selected in @a tree.
@@ -327,7 +330,7 @@ public:
    * @return <tt>true</tt>, if @a iter is selected.
    */
   bool is_selected(const TreeModel::iterator& iter) const;
-
+  
   
   /** Selects all the nodes. @a selection must be set to Gtk::SELECTION_MULTIPLE
    * mode.
@@ -337,11 +340,36 @@ public:
   /** Unselects all the nodes.
    */
   void unselect_all();
-
   
-  /**
-   * @par Prototype:
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Selection mode.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< SelectionMode > property_mode() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Selection mode.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< SelectionMode > property_mode() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%changed()</tt>
+   *
+   * Emitted whenever the selection has (possibly) changed. Please note that
+   * this signal is mostly a hint.  It may only be emitted once when a range
+   * of rows are selected, and it may occasionally be emitted when nothing
+   * has happened.
    */
 
   Glib::SignalProxy0< void > signal_changed();
@@ -356,6 +384,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_changed().
   virtual void on_changed();
 
 

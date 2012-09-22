@@ -6,7 +6,8 @@
 #include <gdkmmconfig.h>
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 1998-2002 The gtkmm Development Team
  *
@@ -21,21 +22,23 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- // This is for including the config header before any code (such as
+// This is for including the config header before any code (such as
 // the #ifndef GDKMM_DISABLE_DEPRECATED in deprecated classes) is generated:
 
 
-#include <gdkmm/drawable.h>
-#include <gdkmm/image.h>
-#include <gdkmm/pixmap.h>
-#include <gdkmm/bitmap.h>
+#include <vector>
+
+//#include <gdkmm/window.h>
 #include <gdkmm/pixbufformat.h>
 #include <gdkmm/types.h>
 #include <giomm/inputstream.h>
+#include <giomm/icon.h>
+#include <cairomm/surface.h>
+#include <glibmm/error.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -48,6 +51,8 @@ namespace Gdk
 { class Pixbuf_Class; } // namespace Gdk
 namespace Gdk
 {
+
+class Window;
 
 
 /** @addtogroup gdkmmEnums gdkmm Enums and Flags */
@@ -226,22 +231,9 @@ namespace Gdk
 {
 
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-struct PixbufFormatTraits
-{
-  typedef PixbufFormat  CppType;
-  typedef const GdkPixbufFormat*      CType;
-  typedef GdkPixbufFormat*            CTypeNonConst;
-
-  static CType   to_c_type      (const CppType& obj) { return obj.gobj();     }
-  static CType   to_c_type      (CType          ptr) { return ptr;                   }
-  static CppType to_cpp_type    (CType          ptr) { return PixbufFormat(ptr); /* Does not take ownership */ }
-  static void    release_c_type (CType          /* ptr */) { /* Doesn't happen */ }
-};
-#endif //DOXYGEN_SHOULD_SKIP_THIS
-
-
-class Pixbuf : public Glib::Object
+class Pixbuf
+  : public Glib::Object,
+    public Gio::Icon
 {
   
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -269,8 +261,11 @@ protected:
 public:
   virtual ~Pixbuf();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -290,229 +285,93 @@ private:
   
 protected:
 
-  /** Creates a pixbuf object from a drawable.
-   *
-   * Transfers image data from a Drawable and converts it to an RGB(A)
-   * representation inside a Pixbuf. In other words, copies
+  //TODO: Throw an exception when the C function returns NULL?
+  /** Transfers image data from a #GdkWindow and converts it to an RGB(A)
+   * representation inside a Gdk::Pixbuf. In other words, copies
    * image data from a server-side drawable to a client-side RGB(A) buffer.
    * This allows you to efficiently read individual pixels on the client side.
+   * 
+   * This function will create an RGB pixbuf with 8 bits per channel with
+   * the same size specified by the @a width and @a height arguments. The pixbuf
+   * will contain an alpha channel if the @a window contains one.
    *
-   * If the drawable @src has no colormap (See Gdk::Drawable::get_colormap()),
-   * then a suitable colormap must be specified. Otherwise, you may use the
-   * constructor that takes no colormap argument.
-   * Typically a Gdk::Window or a pixmap created by passing a Gdk:Window
-   * to the Gdk::Pixbuf constructor will already have a colormap associated with
-   * it.  If the drawable is a bitmap (1 bit per pixel pixmap),
-   * then a colormap is not required; pixels with a value of 1 are
-   * assumed to be white, and pixels with a value of 0 are assumed to be
-   * black. For taking screenshots, Gdk::Colormap::get_system() returns
-   * the correct colormap to use.
-   *
-   * This will create an RGB pixbuf with 8 bits per channel and no
-   * alpha, with the same size specified by the @a width and @a height
-   * arguments.
-   *
-   * If the specified drawable is a pixmap, then the requested source
-   * rectangle must be completely contained within the pixmap, otherwise
-   * the constructor will fail. For pixmaps only (not for windows)
-   * passing -1 for width or height is allowed to mean the full width
-   * or height of the pixmap.
-   *
-   * If the specified drawable is a window, and the window is off the
-   * screen, then there is no image data in the obscured/offscreen
-   * regions to be placed in the pixbuf. The contents of portions of the
-   * pixbuf corresponding to the offscreen region are undefined.
+   * If the window is off the screen, then there is no image data in the
+   * obscured/offscreen regions to be placed in the pixbuf. The contents of
+   * portions of the pixbuf corresponding to the offscreen region are undefined.
    *
    * If the window you're obtaining data from is partially obscured by
    * other windows, then the contents of the pixbuf areas corresponding
    * to the obscured regions are undefined.
    *
-   * See alo Gdk::Drawable::get_image().
+   * If the window is not mapped (typically because it's iconified/minimized
+   * or not on the current workspace), then an invalid object will be returned.
    *
-   * @param src Source drawable.
-   * @param cmap: A colormap.
-   * @param src_x Source X coordinate within drawable.
-   * @param src_y Source Y coordinate within drawable.
+   * If memory can't be allocated for the return value, an invalid object will be returned
+   * instead.
+   *
+   * @param src Source window.
+   * @param src_x Source X coordinate within the window.
+   * @param src_y Source Y coordinate within the window.
    * @param width Width in pixels of region to get.
    * @param height Height in pixels of region to get.
    *
    * @newin{2,12}
    */
-   Pixbuf(const Glib::RefPtr<Drawable>& src, const Glib::RefPtr<Colormap>& cmap,
+   Pixbuf(const Glib::RefPtr<Window>& src,
          int src_x, int src_y, int width, int height);
+   
 
-  /** Creates a pixbuf object from a drawable, using the colormap from the drawable.
-   *
-   * @param src Source drawable.
-   * @param src_x Source X coordinate within drawable.
-   * @param src_y Source Y coordinate within drawable.
-   * @param width Width in pixels of region to get.
-   * @param height Height in pixels of region to get.
-   *
-   * @newin{2,12}
-   */
-   Pixbuf(const Glib::RefPtr<Drawable>& src,
+   //TODO: Documentation:
+   /** @newin{2,30}
+    */
+   Pixbuf(const Cairo::RefPtr<Cairo::Surface>& src,
          int src_x, int src_y, int width, int height);
-
-  #ifndef GDKMM_DISABLE_DEPRECATED
-
-   /// @deprecated Use the constructor without dest_x and dest_y parameters.
-   Pixbuf(const Glib::RefPtr<Drawable>& src, const Glib::RefPtr<Colormap>& cmap,
-         int src_x, int src_y, int dest_x, int dest_y, int width, int height);
-  #endif // GDKMM_DISABLE_DEPRECATED
-
-
-  /** Creates a pixbuf object from an image.
-   *
-   * @param src Source Image.
-   * @param cmap A colormap.
-   * @param src_x Source X coordinate within the image.
-   * @param src_y Source Y coordinate within the image.
-   * @param width Width in pixels of region to get.
-   * @param height Height in pixels of region to get.
-   *
-   * @newin{2,12}
-   */
-  Pixbuf(const Glib::RefPtr<Image>& src, const Glib::RefPtr<Colormap>& cmap,
-         int src_x, int src_y, int width, int height);
-
-  /** Creates a pixbuf object from an image, using the colormap from the image.
-   *
-   * @param src Source Image.
-   * @param src_x Source X coordinate within the image.
-   * @param src_y Source Y coordinate within the image.
-   * @param width Width in pixels of region to get.
-   * @param height Height in pixels of region to get.
-   *
-   * @newinp212
-   */
-  Pixbuf(const Glib::RefPtr<Image>& src,
-         int src_x, int src_y, int width, int height);
-
-  #ifndef GDKMM_DISABLE_DEPRECATED
-
-  /// @deprecated Use the constructors without dest_x and dest_y parameters.
-  Pixbuf(const Glib::RefPtr<Image>& src, const Glib::RefPtr<Colormap>& cmap,
-         int src_x, int src_y, int dest_x, int dest_y, int width, int height);
-  #endif // GDKMM_DISABLE_DEPRECATED
-
+   
 
 public:
   typedef sigc::slot<void, const guint8*> SlotDestroyData;
 
-  // Hand-coded so the implementation in the .ccg is also only
-  // built when GDKMM_DISABLE_DEPRECATED is defined.
-  #ifndef GDKMM_DISABLE_DEPRECATED
-
-  /** @deprecated Use the create() methods that don't have the unused dest_x and dest_y parameters. */
-  static Glib::RefPtr<Gdk::Pixbuf> create(const Glib::RefPtr<Drawable>& src,
-                                          const Glib::RefPtr<Colormap>& cmap,
-                                          int src_x, int src_y,
-                                          int dest_x, int dest_y,
-                                          int width, int height);
-
-  /** @deprecated Use the create() methods that that don't have the unused dest_x and dest_y parameters. */
-  static Glib::RefPtr<Gdk::Pixbuf> create(const Glib::RefPtr<Image>& src,
-                                          const Glib::RefPtr<Colormap>& cmap,
-                                          int src_x, int src_y,
-                                          int dest_x, int dest_y,
-                                          int width, int height);
-  #endif // GDKMM_DISABLE_DEPRECATED
-
-
-  /** Creates a pixbuf object from a drawable.
-   *
-   * Transfers image data from a Drawable and converts it to an RGB(A)
-   * representation inside a Pixbuf. In other words, copies
+  /** Transfers image data from a #GdkWindow and converts it to an RGB(A)
+   * representation inside a Gdk::Pixbuf. In other words, copies
    * image data from a server-side drawable to a client-side RGB(A) buffer.
    * This allows you to efficiently read individual pixels on the client side.
+   * 
+   * This function will create an RGB pixbuf with 8 bits per channel with
+   * the same size specified by the @a width and @a height arguments. The pixbuf
+   * will contain an alpha channel if the @a window contains one.
    *
-   * If the drawable @src has no colormap (See Gdk::Drawable::get_colormap()),
-   * then a suitable colormap must be specified. Otherwise, you may use the
-   * constructor that takes no colormap argument.
-   * Typically a Gdk::Window or a pixmap created by passing a Gdk:Window
-   * to the Gdk::Pixbuf constructor will already have a colormap associated with
-   * it.  If the drawable is a bitmap (1 bit per pixel pixmap),
-   * then a colormap is not required; pixels with a value of 1 are
-   * assumed to be white, and pixels with a value of 0 are assumed to be
-   * black. For taking screenshots, Gdk::Colormap::get_system() returns
-   * the correct colormap to use.
-   *
-   * This will create an RGB pixbuf with 8 bits per channel and no
-   * alpha, with the same size specified by the @a width and @a height
-   * arguments.
-   *
-   * If the specified drawable is a pixmap, then the requested source
-   * rectangle must be completely contained within the pixmap, otherwise
-   * the constructor will fail. For pixmaps only (not for windows)
-   * passing -1 for width or height is allowed to mean the full width
-   * or height of the pixmap.
-   *
-   * If the specified drawable is a window, and the window is off the
-   * screen, then there is no image data in the obscured/offscreen
-   * regions to be placed in the pixbuf. The contents of portions of the
-   * pixbuf corresponding to the offscreen region are undefined.
+   * If the window is off the screen, then there is no image data in the
+   * obscured/offscreen regions to be placed in the pixbuf. The contents of
+   * portions of the pixbuf corresponding to the offscreen region are undefined.
    *
    * If the window you're obtaining data from is partially obscured by
    * other windows, then the contents of the pixbuf areas corresponding
    * to the obscured regions are undefined.
    *
-   * See alo Gdk::Drawable::get_image().
+   * If the window is not mapped (typically because it's iconified/minimized
+   * or not on the current workspace), then an invalid object will be returned.
    *
-   * @param src Source drawable.
-   * @param cmap: A colormap.
-   * @param src_x Source X coordinate within drawable.
-   * @param src_y Source Y coordinate within drawable.
+   * If memory can't be allocated for the return value, an invalid object will be returned
+   * instead.
+   *
+   * @param src Source window.
+   * @param src_x Source X coordinate within the window.
+   * @param src_y Source Y coordinate within the window.
    * @param width Width in pixels of region to get.
    * @param height Height in pixels of region to get.
    *
    * @newin{2,12}
    */
   
-  static Glib::RefPtr<Pixbuf> create(const Glib::RefPtr<Drawable>& src, const Glib::RefPtr<Colormap>& cmap, int src_x, int src_y, int width, int height);
+  static Glib::RefPtr<Pixbuf> create(const Glib::RefPtr<Window>& src, int src_x, int src_y, int width, int height);
 
 
-  /** Creates a pixbuf object from a drawable, using the colormap from the drawable.
-   *
-   * @param src Source drawable.
-   * @param src_x Source X coordinate within drawable.
-   * @param src_y Source Y coordinate within drawable.
-   * @param width Width in pixels of region to get.
-   * @param height Height in pixels of region to get.
-   *
-   * @newin{2,12}
-   */
+   //TODO: Documentation
+   /**
+    * @newin{2,30}
+    */
   
-  static Glib::RefPtr<Pixbuf> create(const Glib::RefPtr<Drawable>& src, int src_x, int src_y, int width, int height);
-
-
-  /** Creates a pixbuf object from an image.
-   *
-   * @param src Source Image.
-   * @param cmap A colormap.
-   * @param src_x Source X coordinate within the image.
-   * @param src_y Source Y coordinate within the image.
-   * @param width Width in pixels of region to get.
-   * @param height Height in pixels of region to get.
-   *
-   * @newin{2,12}
-   */
-  
-  static Glib::RefPtr<Pixbuf> create(const Glib::RefPtr<Image>& src, const Glib::RefPtr<Colormap>& cmap, int src_x, int src_y, int width, int height);
-
-
-  /** Creates a pixbuf object from an image, using the colormap from the image.
-   *
-   * @param src Source Image.
-   * @param src_x Source X coordinate within the image.
-   * @param src_y Source Y coordinate within the image.
-   * @param width Width in pixels of region to get.
-   * @param height Height in pixels of region to get.
-   *
-   * @newinp212
-   */
-  
-  static Glib::RefPtr<Pixbuf> create(const Glib::RefPtr<Image>& src, int src_x, int src_y, int width, int height);
+  static Glib::RefPtr<Pixbuf> create(const Cairo::RefPtr<Cairo::Surface>& src, int src_x, int src_y, int width, int height);
 
 
   Glib::RefPtr<Pixbuf> copy() const;
@@ -688,10 +547,25 @@ public:
    * @throw Gdk::PixbufError
    */
   void save(const std::string& filename, const Glib::ustring& type,
-            const Glib::StringArrayHandle& option_keys,
-            const Glib::StringArrayHandle& option_values);
+            const std::vector<Glib::ustring>& option_keys,
+            const std::vector<Glib::ustring>& option_values);
 
   
+#if 0 //TODO:
+  typedef sigc::slot<const char* buf, gsize> SlotSave;
+  
+  /** @throws TODO
+   */
+  void save(const SlotSave& slot, const std::string& type);
+
+
+  /** A map of option keys to option values.
+   */
+  typepdef std::map<Glib::ustring, Glib::ustring> SaveValuesMap;
+  
+  void save(const SlotSave& slot, const std::string& type, const SaveValuesMap& options);
+#endif
+
 /* TODO:
 typedef gboolean (*GdkPixbufSaveFunc)   (const gchar *buf,
 					 gsize count,
@@ -742,8 +616,8 @@ gboolean gdk_pixbuf_save_to_callbackv   (GdkPixbuf  *pixbuf,
    */
   void save_to_buffer(gchar*& buffer, gsize& buffer_size,
                       const Glib::ustring& type,
-                      const Glib::StringArrayHandle& option_keys,
-                      const Glib::StringArrayHandle& option_values);
+                      const std::vector<Glib::ustring>& option_keys,
+                      const std::vector<Glib::ustring>& option_values);
   
 
   Glib::RefPtr<Gdk::Pixbuf> add_alpha(bool substitute_color, guint8 r, guint8 g, guint8 b) const;
@@ -774,104 +648,110 @@ gboolean gdk_pixbuf_save_to_callbackv   (GdkPixbuf  *pixbuf,
   
   Glib::RefPtr<Gdk::Pixbuf> flip(bool horizontal =  true) const;
 
+  //Use Gdk::Drawable::draw_pixbuf() instead of gdk_pixbuf_render_to_drawable(), gdk_pixbuf_render_to_drawable_alpha().
   
-  /** Takes the opacity values in a rectangular portion of a pixbuf and thresholds
-   * them to produce a bi-level alpha mask that can be used as a clipping mask for
-   * a drawable.
-   * @param bitmap Bitmap where the bilevel mask will be painted to.
-   * @param src_x Source X coordinate.
-   * @param src_y Source Y coordinate.
-   * @param dest_x Destination X coordinate.
-   * @param dest_y Destination Y coordinate.
-   * @param width Width of region to threshold, or -1 to use pixbuf width.
-   * @param height Height of region to threshold, or -1 to use pixbuf height.
-   * @param alpha_threshold Opacity values below this will be painted as zero; all
-   * other values will be painted as one.
-   */
-  void render_threshold_alpha(const Glib::RefPtr<Gdk::Bitmap>& bitmap, int src_x, int src_y, int dest_x, int dest_y, int width, int height, int alpha_threshold);
 
-  
-#ifndef GDKMM_DISABLE_DEPRECATED
-
-  /** Renders a rectangular portion of a pixbuf to a drawable while using the
-   * specified GC.  This is done using GdkRGB, so the specified drawable must have
-   * the GdkRGB visual and colormap.  Note that this function will ignore the
-   * opacity information for images with an alpha channel; the GC must already
-   * have the clipping mask set if you want transparent regions to show through.
-   * 
-   * For an explanation of dither offsets, see the GdkRGB documentation.  In
-   * brief, the dither offset is important when re-rendering partial regions of an
-   * image to a rendered version of the full image, or for when the offsets to a
-   * base position change, as in scrolling.  The dither matrix has to be shifted
-   * for consistent visual results.  If you do not have any of these cases, the
-   * dither offsets can be both zero.
-   * 
-   * Deprecated: 2.4: This function is obsolete. Use gdk_draw_pixbuf() instead.
-   * @deprecated Use Gdk::Drawable::draw_pixbuf() instead.
-   * @param drawable Destination drawable.
-   * @param gc GC used for rendering.
-   * @param src_x Source X coordinate within pixbuf.
-   * @param src_y Source Y coordinate within pixbuf.
-   * @param dest_x Destination X coordinate within drawable.
-   * @param dest_y Destination Y coordinate within drawable.
-   * @param width Width of region to render, in pixels, or -1 to use pixbuf width.
-   * @param height Height of region to render, in pixels, or -1 to use pixbuf height.
-   * @param dither Dithering mode for GdkRGB.
-   * @param x_dither X offset for dither.
-   * @param y_dither Y offset for dither.
-   */
-  void render_to_drawable(const Glib::RefPtr<Drawable>& drawable, const Glib::RefPtr<Gdk::GC>& gc, int src_x, int src_y, int dest_x, int dest_y, int width, int height, RgbDither dither, int x_dither, int y_dither);
-#endif // GDKMM_DISABLE_DEPRECATED
-
-
-#ifndef GDKMM_DISABLE_DEPRECATED
-
-  /** Renders a rectangular portion of a pixbuf to a drawable.  The destination
-   * drawable must have a colormap. All windows have a colormap, however, pixmaps
-   * only have colormap by default if they were created with a non-<tt>0</tt> window argument.
-   * Otherwise a colormap must be set on them with gdk_drawable_set_colormap.
-   * 
-   * On older X servers, rendering pixbufs with an alpha channel involves round trips
-   * to the X server, and may be somewhat slow.
-   * 
-   * Deprecated: 2.4: This function is obsolete. Use gdk_draw_pixbuf() instead.
-   * @deprecated Use Gdk::Drawable::draw_pixbuf() instead.
-   * @param drawable Destination drawable.
-   * @param src_x Source X coordinate within pixbuf.
-   * @param src_y Source Y coordinates within pixbuf.
-   * @param dest_x Destination X coordinate within drawable.
-   * @param dest_y Destination Y coordinate within drawable.
-   * @param width Width of region to render, in pixels, or -1 to use pixbuf width.
-   * @param height Height of region to render, in pixels, or -1 to use pixbuf height.
-   * @param alpha_mode Ignored. Present for backwards compatibility.
-   * @param alpha_threshold Ignored. Present for backwards compatibility.
-   * @param dither Dithering mode for GdkRGB.
-   * @param x_dither X offset for dither.
-   * @param y_dither Y offset for dither.
-   */
-  void render_to_drawable_alpha(const Glib::RefPtr<Drawable>& drawable, int src_x, int src_y, int dest_x, int dest_y, int width, int height, PixbufAlphaMode alpha_mode, int alpha_threshold, RgbDither dither, int x_dither, int y_dither);
-#endif // GDKMM_DISABLE_DEPRECATED
-
-
-  void render_pixmap_and_mask_for_colormap(const Glib::RefPtr<Colormap>& colormap,
-                                           Glib::RefPtr<Pixmap>& pixmap_return,
-                                           Glib::RefPtr<Bitmap>& mask_return,
-                                           int alpha_threshold);
-
-  void render_pixmap_and_mask(Glib::RefPtr<Pixmap>& pixmap_return,
-                              Glib::RefPtr<Bitmap>& mask_return, int alpha_threshold);
-
-  
   Glib::ustring get_option(const Glib::ustring& key) const;
-
-
-  typedef Glib::SListHandle< Glib::RefPtr<PixbufFormat>, PixbufFormatTraits > SListHandle_PixbufFormat;
   
+   //gdk_pixbuf_set_option() is only available when GDK_PIXBUF_ENABLE_BACKEND is defined.
+
+  //This creates a new GdkPixbuf or returns the original with a reference.
+  
+  Glib::RefPtr<Pixbuf> apply_embedded_orientation();
+
   /** Obtains the available information about the image formats supported by GdkPixbuf.
    * @result A list of PixbufFormats describing the supported image formats. 
    */
-  static SListHandle_PixbufFormat get_formats();
+  static std::vector<PixbufFormat> get_formats();
   
+  
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The colorspace in which the samples are interpreted.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< Colorspace > property_colorspace() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The number of samples per pixel.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< int > property_n_channels() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the pixbuf has an alpha channel.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< bool > property_has_alpha() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The number of bits per sample.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< int > property_bits_per_sample() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The number of columns of the pixbuf.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< int > property_width() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The number of rows of the pixbuf.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< int > property_height() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The number of bytes between the start of a row and the start of the next row.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< int > property_rowstride() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** A pointer to the pixel data of the pixbuf.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< void* > property_pixels() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
 
 public:
 

@@ -4,7 +4,8 @@
 #define _GIOMM_UNIXCONNECTION_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -106,8 +107,8 @@ private:
 
 public:
     
-  /** Passes a file descriptor to the recieving side of the
-   * connection. The recieving end has to call g_unix_connection_receive_fd()
+  /** Passes a file descriptor to the receiving side of the
+   * connection. The receiving end has to call g_unix_connection_receive_fd()
    * to accept the file descriptor.
    * 
    * As well as sending the fd this also writes a single byte to the
@@ -173,7 +174,7 @@ public:
   Glib::RefPtr<const Credentials> receive_credentials(const Glib::RefPtr<Cancellable>& cancellable) const;
     
   /** Passes the credentials of the current user the receiving side
-   * of the connection. The recieving end has to call
+   * of the connection. The receiving end has to call
    * g_unix_connection_receive_credentials() (or similar) to accept the
    * credentials.
    * 

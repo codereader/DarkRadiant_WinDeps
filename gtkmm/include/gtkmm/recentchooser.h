@@ -4,7 +4,8 @@
 #define _GTKMM_RECENTCHOOSER_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 2006 The gtkmm Development Team
  *
@@ -19,9 +20,11 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+#include <vector>
 
 #include <glibmm/interface.h>
 #include <gtkmm/recentinfo.h>
@@ -35,7 +38,6 @@ extern "C"
 typedef struct _GtkRecentChooserIface GtkRecentChooserIface;
 }
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 typedef struct _GtkRecentChooser GtkRecentChooser;
@@ -158,9 +160,14 @@ private:
   RecentChooser(const RecentChooser&);
   RecentChooser& operator=(const RecentChooser&);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 protected:
-  RecentChooser(); // you must derive from this class
-
+  /**
+   * You should derive from this class to use it.
+   */
+  RecentChooser();
+  
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /** Called by constructors of derived classes. Provide the result of 
    * the Class init() function to ensure that it is properly 
    * initialized.
@@ -183,8 +190,11 @@ public:
 
   static void add_interface(GType gtype_implementer);
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -408,8 +418,8 @@ public:
    */
   void unselect_all();
 
-  typedef Glib::ListHandle<RecentInfo, RecentInfoTraits> ListHandle_RecentInfos;
-  
+  //typedef Glib::ListHandle<RecentInfo, RecentInfoTraits> ListHandle_RecentInfos;
+ 
 
   /** Gets the list of recently used resources in form of Gtk::RecentInfo objects.
    * 
@@ -422,14 +432,14 @@ public:
    * use Gtk::RecentInfo::unref() on every item of the list, and then free
    * the list itself using Glib::list_free().
    */
-  ListHandle_RecentInfos get_items() const;
+  std::vector<Glib::RefPtr<RecentInfo> > get_items() const;
 
   /** Gets the URI of the recently used resources.
    *
    * The return value of this function is affected by the "sort-type" and
    * "limit" properties of the recent chooser.
    */
-  Glib::StringArrayHandle get_uris() const;
+  std::vector<Glib::ustring> get_uris() const;
   
 
   /** Adds @a filter to the list of Gtk::RecentFilter objects held by @a chooser.
@@ -440,15 +450,16 @@ public:
    * @newin{2,10}
    * @param filter A Gtk::RecentFilter.
    */
-  void add_filter(const RecentFilter& filter);
+  void add_filter(const Glib::RefPtr<RecentFilter>& filter);
   
   /** Removes @a filter from the list of Gtk::RecentFilter objects held by @a chooser.
    * 
    * @newin{2,10}
    * @param filter A Gtk::RecentFilter.
    */
-  void remove_filter(const RecentFilter& filter);
-  
+  void remove_filter(const Glib::RefPtr<RecentFilter>& filter);
+
+ 
   /** Gets the Gtk::RecentFilter objects held by @a chooser.
    * 
    * @newin{2,10}
@@ -456,8 +467,9 @@ public:
    * of Gtk::RecentFilter objects.  You
    * should just free the returned list using Glib::slist_free().
    */
-  Glib::SListHandle<RecentFilter*> list_filters();
-  
+  std::vector< Glib::RefPtr<RecentFilter> > list_filters();
+ 
+
   /** Gets the Gtk::RecentFilter objects held by @a chooser.
    * 
    * @newin{2,10}
@@ -465,7 +477,8 @@ public:
    * of Gtk::RecentFilter objects.  You
    * should just free the returned list using Glib::slist_free().
    */
-  Glib::SListHandle<const RecentFilter*> list_filters() const;
+  std::vector< Glib::RefPtr<const RecentFilter> > list_filters() const;
+
   
   /** Sets @a filter as the current Gtk::RecentFilter object used by @a chooser
    * to affect the displayed recently used resources.
@@ -473,7 +486,7 @@ public:
    * @newin{2,10}
    * @param filter A Gtk::RecentFilter.
    */
-  void set_filter(const RecentFilter& filter);
+  void set_filter(const Glib::RefPtr<RecentFilter>& filter);
   
   /** Gets the Gtk::RecentFilter object currently used by @a chooser to affect
    * the display of the recently used resources.
@@ -481,7 +494,7 @@ public:
    * @newin{2,10}
    * @return A Gtk::RecentFilter object.
    */
-  RecentFilter* get_filter();
+  Glib::RefPtr<RecentFilter> get_filter();
   
   /** Gets the Gtk::RecentFilter object currently used by @a chooser to affect
    * the display of the recently used resources.
@@ -489,27 +502,34 @@ public:
    * @newin{2,10}
    * @return A Gtk::RecentFilter object.
    */
-  const RecentFilter* get_filter() const;
+  Glib::RefPtr<const RecentFilter> get_filter() const;
 
-  /** This signal is emitted when there is a change in the set of
+  
+/**
+   * @par Slot Prototype:
+   * <tt>void on_my_%selection_changed()</tt>
+   *
+   * This signal is emitted when there is a change in the set of
    * selected recently used resources.  This can happen when a user
    * modifies the selection with the mouse or the keyboard, or when
    * explicitely calling functions to change the selection.
-   *
-   * @par Prototype:
-   * <tt>void on_my_%selection_changed()</tt>
+   * 
+   * @newin{2,10}
    */
 
   Glib::SignalProxy0< void > signal_selection_changed();
 
-
-  /** This signal is emitted when the user "activates" a recent item
+  
+/**
+   * @par Slot Prototype:
+   * <tt>void on_my_%item_activated()</tt>
+   *
+   * This signal is emitted when the user "activates" a recent item
    * in the recent chooser.  This can happen by double-clicking on an item
    * in the recently used resources list, or by pressing
    * <keycap>Enter</keycap>.
-   *
-   * @par Prototype:
-   * <tt>void on_my_%item_activated()</tt>
+   * 
+   * @newin{2,10}
    */
 
   Glib::SignalProxy0< void > signal_item_activated();
@@ -523,7 +543,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_show_private() ;
+  Glib::PropertyProxy< bool > property_show_private() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -533,7 +553,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_show_private() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_show_private() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -543,7 +563,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_show_tips() ;
+  Glib::PropertyProxy< bool > property_show_tips() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -553,7 +573,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_show_tips() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_show_tips() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -563,7 +583,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_show_icons() ;
+  Glib::PropertyProxy< bool > property_show_icons() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -573,7 +593,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_show_icons() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_show_icons() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -583,7 +603,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_show_not_found() ;
+  Glib::PropertyProxy< bool > property_show_not_found() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -593,7 +613,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_show_not_found() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_show_not_found() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -603,7 +623,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_select_multiple() ;
+  Glib::PropertyProxy< bool > property_select_multiple() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -613,7 +633,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_select_multiple() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_select_multiple() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -623,7 +643,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_local_only() ;
+  Glib::PropertyProxy< bool > property_local_only() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -633,7 +653,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_local_only() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_local_only() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -643,7 +663,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_limit() ;
+  Glib::PropertyProxy< int > property_limit() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -653,7 +673,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_limit() const;
+  Glib::PropertyProxy_ReadOnly< int > property_limit() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -663,7 +683,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<RecentSortType> property_sort_type() ;
+  Glib::PropertyProxy< RecentSortType > property_sort_type() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -673,7 +693,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<RecentSortType> property_sort_type() const;
+  Glib::PropertyProxy_ReadOnly< RecentSortType > property_sort_type() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -683,7 +703,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<RecentFilter*> property_filter() ;
+  Glib::PropertyProxy< Glib::RefPtr<RecentFilter> > property_filter() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -693,7 +713,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<RecentFilter*> property_filter() const;
+  Glib::PropertyProxy_ReadOnly< Glib::RefPtr<RecentFilter> > property_filter() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -701,6 +721,7 @@ protected:
  
 
   // TODO: How to wrap those vfuncs?
+  // TODO: Also: use vectorutils.
 
   //__CONVERSION(`ListHandle_RecentInfos', `GList*', `($3).data()')
   //__CONVERSION(`Glib::SListHandle<RecentFilter*>', `GSList*', `($3).data()')
@@ -719,9 +740,10 @@ protected:
   //_WRAP_VFUNC(ArrayHandle_RecentInfos get_items() const, "get_items")
     virtual Glib::RefPtr<RecentManager> get_recent_manager_vfunc();
 
-    virtual void add_filter_vfunc(const RecentFilter& filter);
 
-    virtual void remove_filter_vfunc(const RecentFilter& filter);
+    virtual void add_filter_vfunc(const Glib::RefPtr<RecentFilter>& filter);
+
+    virtual void remove_filter_vfunc(const Glib::RefPtr<RecentFilter>& filter);
 
   //_WRAP_VFUNC(Glib::SListHandle<RecentFilter*> list_filters(), "list_filters")
   //_WRAP_VFUNC(void set_sort_func(const SlotCompare& slot), "set_sort_func")
@@ -736,10 +758,14 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_selection_changed().
+  virtual void on_selection_changed();
+  /// This is a default handler for the signal signal_item_activated().
+  virtual void on_item_activated();
 
 
 };
- 
+
 } // namespace Gtk
 
 

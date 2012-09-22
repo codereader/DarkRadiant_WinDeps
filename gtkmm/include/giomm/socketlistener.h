@@ -4,7 +4,8 @@
 #define _GIOMM_SOCKETLISTENER_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -169,7 +170,7 @@ public:
    * 
    * Note that adding an IPv6 address, depending on the platform,
    * may or may not result in a listener that also accepts IPv4
-   * connections.  For more determinstic behaviour, see
+   * connections.  For more deterministic behavior, see
    * g_socket_listener_add_inet_port().
    * 
    *  @a source_object will be passed out in the various calls
@@ -178,7 +179,7 @@ public:
    * different things depending on what address is connected to.
    * 
    * If successful and @a effective_address is non-<tt>0</tt> then it will
-   * be set to the address that the binding actually occured at.  This
+   * be set to the address that the binding actually occurred at.  This
    * is helpful for determining the port number that was used for when
    * requesting a binding to port 0 (ie: "any port").  This address, if
    * requested, belongs to the caller and must be freed.
@@ -201,7 +202,7 @@ bool add_address(const Glib::RefPtr<SocketAddress>& address, SocketType type, So
    * 
    * Note that adding an IPv6 address, depending on the platform,
    * may or may not result in a listener that also accepts IPv4
-   * connections.  For more determinstic behaviour, see
+   * connections.  For more deterministic behavior, see
    * g_socket_listener_add_inet_port().
    * 
    *  @a source_object will be passed out in the various calls
@@ -210,7 +211,7 @@ bool add_address(const Glib::RefPtr<SocketAddress>& address, SocketType type, So
    * different things depending on what address is connected to.
    * 
    * If successful and @a effective_address is non-<tt>0</tt> then it will
-   * be set to the address that the binding actually occured at.  This
+   * be set to the address that the binding actually occurred at.  This
    * is helpful for determining the port number that was used for when
    * requesting a binding to port 0 (ie: "any port").  This address, if
    * requested, belongs to the caller and must be freed.
@@ -263,7 +264,7 @@ bool add_inet_port(guint16 port);
 
   
   /** Listens for TCP connections on any available port number for both
-   * IPv6 and IPv4 (if each are available).
+   * IPv6 and IPv4 (if each is available).
    * 
    * This is useful if you need to have a socket for incoming connections
    * but don't care about the specific port number.
@@ -281,7 +282,7 @@ bool add_inet_port(guint16 port);
 
   
   /** Listens for TCP connections on any available port number for both
-   * IPv6 and IPv4 (if each are available).
+   * IPv6 and IPv4 (if each is available).
    * 
    * This is useful if you need to have a socket for incoming connections
    * but don't care about the specific port number.
@@ -596,7 +597,7 @@ Glib::RefPtr<Socket> accept_socket(Glib::RefPtr<Glib::Object>& source_object, co
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_listen_backlog() ;
+  Glib::PropertyProxy< int > property_listen_backlog() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -606,7 +607,7 @@ Glib::RefPtr<Socket> accept_socket(Glib::RefPtr<Glib::Object>& source_object, co
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_listen_backlog() const;
+  Glib::PropertyProxy_ReadOnly< int > property_listen_backlog() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

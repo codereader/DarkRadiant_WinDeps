@@ -146,9 +146,9 @@ public:
    * type @a type.
    * 
    * It is appropriate to call g_variant_type_free() on the return value.
+   * @return A new array VariantType
    * 
-   * Since 2.24
-   * @return A new array VariantType.
+   * Since 2.24.
    */
   static VariantType create_array(const VariantType& element);
   
@@ -156,9 +156,9 @@ public:
    * type @a type or Nothing.
    * 
    * It is appropriate to call g_variant_type_free() on the return value.
+   * @return A new maybe VariantType
    * 
-   * Since 2.24
-   * @return A new maybe VariantType.
+   * Since 2.24.
    */
   static VariantType create_maybe(const VariantType& element);
 
@@ -170,10 +170,10 @@ public:
    * of type @a key and a value of type @a value.
    * 
    * It is appropriate to call g_variant_type_free() on the return value.
-   * 
-   * Since 2.24
    * @param value A VariantType.
-   * @return A new dictionary entry VariantType.
+   * @return A new dictionary entry VariantType
+   * 
+   * Since 2.24.
    */
   static VariantType create_dict_entry(const VariantType& key, const VariantType& value);
 
@@ -182,9 +182,9 @@ public:
   /** Returns the length of the type string corresponding to the given
    *  @a type.  This function must be used to determine the valid extent of
    * the memory region returned by g_variant_type_peek_string().
+   * @return The length of the corresponding type string
    * 
-   * Since 2.24
-   * @return The length of the corresponding type string.
+   * Since 2.24.
    */
   gsize _get_string_length() const;
   
@@ -193,9 +193,9 @@ public:
    * must call g_variant_type_get_string_length().
    * 
    * To get a nul-terminated string, see g_variant_type_dup_string().
+   * @return The corresponding type string (not nul-terminated)
    * 
-   * Since 2.24
-   * @return The corresponding type string (not nul-terminated).
+   * Since 2.24.
    */
   std::string get_string() const;
   
@@ -210,9 +210,9 @@ public:
    * result in <tt>true</tt> being returned.  Calling this function on an
    * indefinite type like VARIANT_TYPE_ARRAY, however, will result in
    * <tt>false</tt> being returned.
+   * @return <tt>true</tt> if @a type is definite
    * 
-   * Since 2.24
-   * @return <tt>true</tt> if @a type is definite.
+   * Since 2.24.
    */
   bool is_definite() const;
   
@@ -224,9 +224,9 @@ public:
    * This function returns <tt>true</tt> for any indefinite type for which every
    * definite subtype is a container -- VARIANT_TYPE_ARRAY, for
    * example.
+   * @return <tt>true</tt> if @a type is a container type
    * 
-   * Since 2.24
-   * @return <tt>true</tt> if @a type is a container type.
+   * Since 2.24.
    */
   bool is_container() const;
   
@@ -239,9 +239,9 @@ public:
    * 
    * This function returns <tt>false</tt> for all indefinite types except
    * VARIANT_TYPE_BASIC.
+   * @return <tt>true</tt> if @a type is a basic type
    * 
-   * Since 2.24
-   * @return <tt>true</tt> if @a type is a basic type.
+   * Since 2.24.
    */
   bool is_basic() const;
   
@@ -251,9 +251,9 @@ public:
    * This function returns <tt>true</tt> for any indefinite type for which every
    * definite subtype is a maybe type -- VARIANT_TYPE_MAYBE, for
    * example.
+   * @return <tt>true</tt> if @a type is a maybe type
    * 
-   * Since 2.24
-   * @return <tt>true</tt> if @a type is a maybe type.
+   * Since 2.24.
    */
   bool is_maybe() const;
   
@@ -263,9 +263,9 @@ public:
    * This function returns <tt>true</tt> for any indefinite type for which every
    * definite subtype is an array type -- VARIANT_TYPE_ARRAY, for
    * example.
+   * @return <tt>true</tt> if @a type is an array type
    * 
-   * Since 2.24
-   * @return <tt>true</tt> if @a type is an array type.
+   * Since 2.24.
    */
   bool is_array() const;
   
@@ -276,9 +276,9 @@ public:
    * This function returns <tt>true</tt> for any indefinite type for which every
    * definite subtype is a tuple type -- VARIANT_TYPE_TUPLE, for
    * example.
+   * @return <tt>true</tt> if @a type is a tuple type
    * 
-   * Since 2.24
-   * @return <tt>true</tt> if @a type is a tuple type.
+   * Since 2.24.
    */
   bool is_tuple() const;
   
@@ -288,16 +288,16 @@ public:
    * This function returns <tt>true</tt> for any indefinite type for which every
    * definite subtype is a dictionary entry type --
    * VARIANT_TYPE_DICT_ENTRY, for example.
+   * @return <tt>true</tt> if @a type is a dictionary entry type
    * 
-   * Since 2.24
-   * @return <tt>true</tt> if @a type is a dictionary entry type.
+   * Since 2.24.
    */
   bool is_dict_entry() const;
   
   /** Determines if the given @a type is the variant type.
+   * @return <tt>true</tt> if @a type is the variant type
    * 
-   * Since 2.24
-   * @return <tt>true</tt> if @a type is the variant type.
+   * Since 2.24.
    */
   bool is_variant() const;
 
@@ -307,10 +307,10 @@ public:
    * The argument type of @a type is only #gconstpointer to allow use with
    * HashTable without function pointer casting.  A valid
    * VariantType must be provided.
-   * 
-   * Since 2.24
    * @param type A VariantType.
-   * @return The hash value.
+   * @return The hash value
+   * 
+   * Since 2.24.
    */
   guint hash() const;
   
@@ -324,11 +324,11 @@ public:
    * The argument types of @a type1 and @a type2 are only #gconstpointer to
    * allow use with HashTable without function pointer casting.  For
    * both arguments, a valid VariantType must be provided.
-   * 
-   * Since 2.24
    * @param type1 A VariantType.
    * @param type2 A VariantType.
-   * @return <tt>true</tt> if @a type1 and @a type2 are exactly equal.
+   * @return <tt>true</tt> if @a type1 and @a type2 are exactly equal
+   * 
+   * Since 2.24.
    */
   bool equal(const VariantType& other) const;
 
@@ -338,10 +338,10 @@ public:
    * This function returns <tt>true</tt> if @a type is a subtype of @a supertype.  All
    * types are considered to be subtypes of themselves.  Aside from that,
    * only indefinite types can have subtypes.
-   * 
-   * Since 2.24
    * @param supertype A VariantType.
-   * @return <tt>true</tt> if @a type is a subtype of @a supertype.
+   * @return <tt>true</tt> if @a type is a subtype of @a supertype
+   * 
+   * Since 2.24.
    */
   bool is_subtype_of(const VariantType& supertype) const;
 
@@ -349,9 +349,9 @@ public:
   /** Determines the element type of an array or maybe type.
    * 
    * This function may only be used with array or maybe types.
+   * @return The element type of @a type
    * 
-   * Since 2.24
-   * @return The element type of @a type.
+   * Since 2.24.
    */
   VariantType element() const;
   
@@ -369,9 +369,9 @@ public:
    * 
    * This call, together with g_variant_type_next() provides an iterator
    * interface over tuple and dictionary entry types.
+   * @return The first item type of @a type, or <tt>0</tt>
    * 
-   * Since 2.24
-   * @return The first item type of @a type, or <tt>0</tt>.
+   * Since 2.24.
    */
   VariantType first() const;
   
@@ -386,9 +386,9 @@ public:
    * entry then this call returns <tt>0</tt>.
    * 
    * For tuples, <tt>0</tt> is returned when @a type is the last item in a tuple.
+   * @return The next VariantType after @a type, or <tt>0</tt>
    * 
-   * Since 2.24
-   * @return The next VariantType after @a type, or <tt>0</tt>.
+   * Since 2.24.
    */
   VariantType next() const;
   
@@ -401,9 +401,9 @@ public:
    * 
    * In the case of a dictionary entry type, this function will always
    * return 2.
+   * @return The number of items in @a type
    * 
-   * Since 2.24
-   * @return The number of items in @a type.
+   * Since 2.24.
    */
   gsize n_items() const;
   
@@ -412,18 +412,18 @@ public:
    * This function may only be used with a dictionary entry type.  Other
    * than the additional restriction, this call is equivalent to
    * g_variant_type_first().
+   * @return The key type of the dictionary entry
    * 
-   * Since 2.24
-   * @return The key type of the dictionary entry.
+   * Since 2.24.
    */
   VariantType key() const;
   
   /** Determines the value type of a dictionary entry type.
    * 
    * This function may only be used with a dictionary entry type.
+   * @return The value type of the dictionary entry
    * 
-   * Since 2.24
-   * @return The value type of the dictionary entry.
+   * Since 2.24.
    */
   VariantType value() const;
 

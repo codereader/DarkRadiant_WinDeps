@@ -4,7 +4,8 @@
 #define _GDKMM_DISPLAY_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: display.hg,v 1.22 2006/04/12 11:11:24 murrayc Exp $ */
 
@@ -23,12 +24,15 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <vector>
+
 #include <gdkmm/screen.h>
-#include <gdkmm/device.h>
+#include <gdkmm/applaunchcontext.h>
+//#include <gdkmm/devicemanager.h>
 #include <gdkmm/types.h> //For ModifierType
 
 
@@ -44,7 +48,7 @@ namespace Gdk
 {
 
 
-class Drawable;
+class DeviceManager;
 
  /** Gdk::Display object's purpose is two fold:
  *   To grab/ungrab keyboard focus and mouse pointer
@@ -84,8 +88,11 @@ protected:
 public:
   virtual ~Display();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -111,8 +118,8 @@ public:
    * 
    * @newin{2,2}
    * @param display_name The name of the display to open.
-   * @return A Gdk::Display, or <tt>0</tt> if the display
-   * could not be opened.
+   * @return A Gdk::Display, or <tt>0</tt>
+   * if the display could not be opened.
    */
   static Glib::RefPtr<Display> open(const Glib::ustring& display_name);
 
@@ -164,27 +171,8 @@ public:
    */
   Glib::RefPtr<const Screen> get_default_screen() const;
 
-  
-  /** Release any pointer grab.
-   * 
-   * @newin{2,2}
-   * @param timestamp A timestap (e.g. GDK_CURRENT_TIME).
-   */
-  void pointer_ungrab(guint32 timestamp);
-  
-  /** Release any keyboard grab
-   * 
-   * @newin{2,2}
-   * @param timestamp A timestap (e.g Gdk::CURRENT_TIME).
-   */
-  void keyboard_ungrab(guint32 timestamp);
-  
-  /** Test if the pointer is grabbed.
-   * 
-   * @newin{2,2}
-   * @return <tt>true</tt> if an active X pointer grab is in effect.
-   */
-  bool pointer_is_grabbed() const;
+   //deprecated
+
   
   /** Emits a short beep on @a display
    * 
@@ -196,7 +184,7 @@ public:
    * requests have been handled. This is often used for making sure that the
    * display is synchronized with the current state of the program. Calling
    * sync() before gdk_error_trap_pop() makes sure that any errors
-   * generated from earlier requests are handled before the error trap is 
+   * generated from earlier requests are handled before the error trap is
    * removed.
    * 
    * This is most useful for X11. On windowing systems where requests are
@@ -212,23 +200,16 @@ public:
    * @newin{2,2}
    */
   void close();
+  
+  /** Finds out if the display has been closed.
+   * 
+   * @newin{2,22}
+   * @return <tt>true</tt> if the display is closed.
+   */
+  bool is_closed() const;
 
-  
-  /** Returns the list of available input devices attached to @a display.
-   * The list is statically allocated and should not be freed.
-   * 
-   * @newin{2,2}
-   * @return A list of Gdk::Device.
-   */
-  Glib::ListHandle< Glib::RefPtr<Device> > list_devices();
-  
-  /** Returns the list of available input devices attached to @a display.
-   * The list is statically allocated and should not be freed.
-   * 
-   * @newin{2,2}
-   * @return A list of Gdk::Device.
-   */
-  Glib::ListHandle< Glib::RefPtr<const Device> > list_devices() const;
+
+   //deprecated
 
   //TODO: Use C++ Gdk::Event:
   //TODO: get_event() might remove the event - if so, then there should not be a const version:
@@ -283,34 +264,33 @@ public:
    * @param event A Gdk::Event.
    */
   void put_event(GdkEvent* event);
-
-  //TODO: Use a slot here, though this is probably never used anyway:
-  //Find out whether we can use a string representation for the atom - look for examples of this function's use.
   
-  /** Adds a filter to be called when X ClientMessage events are received.
-   * See Gdk::Window::add_filter() if you are interested in filtering other
-   * types of events.
+  /** Returns whether the display has events that are waiting
+   * to be processed.
    * 
-   * @newin{2,2}
-   * @param message_type The type of ClientMessage events to receive.
-   * This will be checked against the @a message_type field 
-   * of the XClientMessage event struct.
-   * @param func The function to call to process the event.
-   * @param data User data to pass to @a func.
+   * @newin{3,0}
+   * @return <tt>true</tt> if there are events ready to be processed.
    */
-  void add_client_message_filter(Glib::ustring& message_type, GdkFilterFunc func, gpointer data);
+  bool has_pending() const;
 
   
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** Sets the double click time (two clicks within this time interval
    * count as a double click and result in a Gdk::2BUTTON_PRESS event).
    * Applications should <em>not</em> set this, it is a global 
    * user-configured setting.
    * 
    * @newin{2,2}
+   * @deprecated No replacement method. Applications should not set this.
    * @param msec Double click time in milliseconds (thousandths of a second).
    */
   void set_double_click_time(guint msec);
-  
+#endif // GDKMM_DISABLE_DEPRECATED
+
+
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** Sets the double click distance (two clicks within this distance
    * count as a double click and result in a Gdk::2BUTTON_PRESS event).
    * See also set_double_click_time().
@@ -318,148 +298,25 @@ public:
    * user-configured setting.
    * 
    * @newin{2,4}
+   * @deprecated No replacement method. Applications should not set this.
    * @param distance Distance in pixels.
    */
   void set_double_click_distance(guint distance);
+#endif // GDKMM_DISABLE_DEPRECATED
 
 
   /** Gets the default Gdk::Display. This is a convenience
    * function for
-   * <tt>gdk_display_manager_get_default_display (manager_get())</tt>.
+   * <tt>gdk_display_manager_get_default_display (Gdk::DisplayManager::get())</tt>.
    * 
    * @newin{2,2}
    * @return A Gdk::Display, or <tt>0</tt> if there is no default
    * display.
    */
   static Glib::RefPtr<Display> get_default();
-
+ 
   
-  /** Returns the core pointer device for the given display
-   * 
-   * @newin{2,2}
-   * @return The core pointer device; this is owned by the
-   * display and should not be freed.
-   */
-  Glib::RefPtr<Device> get_core_pointer();
-  
-  /** Returns the core pointer device for the given display
-   * 
-   * @newin{2,2}
-   * @return The core pointer device; this is owned by the
-   * display and should not be freed.
-   */
-  Glib::RefPtr<const Device> get_core_pointer() const;
-
-  /** Gets the current location of the pointer and the current modifier
-   * mask for a given display.
-   *
-   * @param screen location to store the screen that the cursor is on.
-   * @param x location to store root window X coordinate of pointer.
-   * @param y location to store root window Y coordinate of pointer.
-   * @param mask location to store current modifier mask.
-   *
-   **/
-  void get_pointer(Glib::RefPtr<Screen>& screen, int& x, int& y, ModifierType& mask);
-
-  // In fact, any one of these gdk_display_get_pointer() args can be NULL, but we don't need so many overloads.
-  /**
-   * Gets the current location of the pointer and the current modifier
-   * mask for a given display.
-   *
-   * @param x location to store root window X coordinate of pointer.
-   * @param y location to store root window Y coordinate of pointer.
-   * @param mask location to store current modifier mask.
-   *
-   **/
-  void get_pointer(int& x, int& y, ModifierType& mask);
-  
-
-  /** Obtains the window underneath the mouse pointer, returning the location
-   * of the pointer in that window in @a win_x, @a win_y for @a screen. Returns <tt>0</tt>
-   * if the window under the mouse pointer is not known to GDK (for example, 
-   * belongs to another application).
-   * 
-   * @newin{2,2}
-   * @param win_x Return location for x coordinate of the pointer location relative
-   * to the window origin, or <tt>0</tt>.
-   * @param win_y Return location for y coordinate of the pointer location relative
-   *  &    to the window origin, or <tt>0</tt>.
-   * @return The window under the mouse pointer, or <tt>0</tt>.
-   */
-  Glib::RefPtr<Window> get_window_at_pointer(int& win_x, int& win_y);
-  
-  /** Obtains the window underneath the mouse pointer, returning the location
-   * of the pointer in that window in @a win_x, @a win_y for @a screen. Returns <tt>0</tt>
-   * if the window under the mouse pointer is not known to GDK (for example, 
-   * belongs to another application).
-   * 
-   * @newin{2,2}
-   * @param win_x Return location for x coordinate of the pointer location relative
-   * to the window origin, or <tt>0</tt>.
-   * @param win_y Return location for y coordinate of the pointer location relative
-   *  &    to the window origin, or <tt>0</tt>.
-   * @return The window under the mouse pointer, or <tt>0</tt>.
-   */
-  Glib::RefPtr<const Window> get_window_at_pointer(int& win_x, int& win_y) const;
-
-  /** Obtains the window underneath the mouse pointer. Returns a null RefPtr if the window
-   * under the mouse pointer is not known to GDK (for example, belongs to
-   * another application).
-   * @result The window underneath the mouse pointer.
-   */
-  Glib::RefPtr<Window> get_window_at_pointer();
-
-  /** Obtains the window underneath the mouse pointer. Returns a null RefPtr if the window
-   * under the mouse pointer is not known to GDK (for example, belongs to
-   * another application).
-   * @result The window underneath the mouse pointer.
-   */
-  Glib::RefPtr<const Window> get_window_at_pointer() const;
-
-  
-  /** Warps the pointer of @a display to the point @a x, @a y on 
-   * the screen @a screen, unless the pointer is confined
-   * to a window by a grab, in which case it will be moved
-   * as far as allowed by the grab. Warping the pointer 
-   * creates events as if the user had moved the mouse 
-   * instantaneously to the destination.
-   * 
-   * Note that the pointer should normally be under the
-   * control of the user. This function was added to cover
-   * some rare use cases like keyboard navigation support
-   * for the color picker in the Gtk::ColorSelectionDialog.
-   * 
-   * @newin{2,8}
-   * @param screen The screen of @a display to warp the pointer to.
-   * @param x The x coordinate of the destination.
-   * @param y The y coordinate of the destination.
-   */
-  void warp_pointer(const Glib::RefPtr<Screen>& screen, int x, int y);
-
-  
-#ifndef GDKMM_DISABLE_DEPRECATED
-
-  /** This function allows for hooking into the operation
-   * of getting the current location of the pointer on a particular
-   * display. This is only useful for such low-level tools as an
-   * event recorder. Applications should never have any
-   * reason to use this facility.
-   * 
-   * @newin{2,2}
-   * @param new_hooks A table of pointers to functions for getting
-   * quantities related to the current pointer position.
-   * @return The previous pointer hook table.
-   */
-  GdkDisplayPointerHooks* set_pointer_hooks(const GdkDisplayPointerHooks* new_hooks);
-#endif // GDKMM_DISABLE_DEPRECATED
-
-
-  #ifndef GDKMM_DISABLE_DEPRECATED
-
-  /** @deprecated This method has been removed in gtkmm-3.0 for lack of use cases.
-   */
-  GdkDisplayPointerHooks* unset_pointer_hooks();
-  #endif // GDKMM_DISABLE_DEPRECATED
+   //deprecated
 
   
   /** Opens the default display specified by command line arguments or
@@ -467,44 +324,10 @@ public:
    * it.  gdk_parse_args must have been called first. If the default
    * display has previously been set, simply returns that. An internal
    * function that should not be used by applications.
-   * @return The default display, if it could be opened,
-   * otherwise <tt>0</tt>.
+   * @return The default display, if it could be
+   * opened, otherwise <tt>0</tt>.
    */
   static Glib::RefPtr<Display> open_default_libgtk_only();
-
-#ifdef G_OS_WIN32
-#ifndef GDKMM_DISABLE_DEPRECATED
-
-  /** Finds out the DND protocol supported by a window.
-   *
-   * @newin{2,2}
-   * @deprecated Use the version that takes a GdkNativeWindow.
-   * @param xid The X id of the destination window.
-   * @param protocol Location where the supported DND protocol is returned.
-   * @return The X id of the window where the drop should happen. This
-   * may be @a xid or the X id of a proxy window, or None if @a xid doesn't
-   * support Drag and Drop.
-   *
-   * On Windows, GdkNativeWindow is not the same as guint32, so we keep the
-   * guint32 variant for ABI compatibility. On Linux, it is the same, and they
-   * can't be overloaded therefore. But the ABI stays the same anyway.
-   */
-  guint32 get_drag_protocol(guint32 xid, GdkDragProtocol& protocol);
-#endif // GDKMM_DISABLE_DEPRECATED
-
-#endif
-
-  
-  /** Finds out the DND protocol supported by a window.
-   * 
-   * @newin{2,2}
-   * @param xid The windowing system id of the destination window.
-   * @param protocol Location where the supported DND protocol is returned.
-   * @return The windowing system id of the window where the drop should happen. This 
-   * may be @a xid or the id of a proxy window, or zero if @a xid doesn't
-   * support Drag and Drop.
-   */
-  GdkNativeWindow get_drag_protocol(GdkNativeWindow xid, GdkDragProtocol& protocol);
 
   
   /** Returns the Gdk::Keymap attached to @a display.
@@ -524,24 +347,6 @@ public:
   bool set_selection_owner(const Glib::RefPtr<Window>& owner, Glib::ustring& selection, guint32 time_, bool send_event);
   Glib::RefPtr<Window> get_selection_owner(const Glib::ustring& selection);
 
-#ifdef G_OS_WIN32
-  /** Send a response to SelectionRequest event.
-   *
-   * @newin{2,2}
-   * @param requestor Window to which to deliver response.
-   * @param selection Selection that was requested.
-   * @param target Target that was selected.
-   * @param property Property in which the selection owner stored the data,
-   * or "None" to indicate that the request was rejected.
-   * @param time_ Timestamp.
-   *
-   * On Windows, GdkNativeWindow is not the same as guint32, so we keep the
-   * guint32 variant for ABI compatibility. On Linux, it is the same, and they
-   * can't be overloaded therefore. But the ABI stays the same anyway.
-   */
-  void selection_send_notify(guint32 requestor, Glib::ustring& selection, Glib::ustring& target, Glib::ustring& property, guint32 time_);
-#endif
-
   /** Send a response to SelectionRequest event.
    *
    * @newin{2,2}
@@ -552,32 +357,7 @@ public:
    * or "None" to indicate that the request was rejected.
    * @param time_ Timestamp.
    */
-  void selection_send_notify(GdkNativeWindow requestor, Glib::ustring& selection, Glib::ustring& target, Glib::ustring& property, guint32 time_);
-
-  
-  /** Looks up the Gdk::Pixmap that wraps the given native pixmap handle.
-   * 
-   * For example in the X backend, a native pixmap handle is an Xlib
-   * <type>XID</type>.
-   * 
-   * @newin{2,2}
-   * @param anid A native pixmap handle.
-   * @return The Gdk::Pixmap wrapper for the native pixmap,
-   * or <tt>0</tt> if there is none.
-   */
-  Glib::RefPtr<Pixmap> lookup_pixmap(NativeWindow anid);
-  
-  /** Looks up the Gdk::Pixmap that wraps the given native pixmap handle.
-   * 
-   * For example in the X backend, a native pixmap handle is an Xlib
-   * <type>XID</type>.
-   * 
-   * @newin{2,2}
-   * @param anid A native pixmap handle.
-   * @return The Gdk::Pixmap wrapper for the native pixmap,
-   * or <tt>0</tt> if there is none.
-   */
-  Glib::RefPtr<const Pixmap> lookup_pixmap(NativeWindow anid) const;
+  void selection_send_notify(const Glib::RefPtr<Window>& requestor, Glib::ustring& selection, Glib::ustring& target, Glib::ustring& property, guint32 time_);
 
   
   /** Flushes any requests queued for the windowing system; this happens automatically
@@ -593,9 +373,10 @@ public:
    * @newin{2,4}
    */
   void flush();
+  //TODO: Read the docs to know what the types are really: _WRAP_METHOD(GdkDisplayDeviceHooks* set_device_hooks(const GdkDisplayDeviceHooks *new_hooks), gdk_display_set_device_hooks)
   
-  /** Returns <tt>true</tt> if cursors can use an 8bit alpha channel 
-   * on @a display. Otherwise, cursors are restricted to bilevel 
+  /** Returns <tt>true</tt> if cursors can use an 8bit alpha channel
+   * on @a display. Otherwise, cursors are restricted to bilevel
    * alpha (i.e. a mask).
    * 
    * @newin{2,4}
@@ -629,31 +410,33 @@ public:
 
   
   /** Returns the default group leader window for all toplevel windows
-   * on @a display. This window is implicitly created by GDK. 
+   * on @a display. This window is implicitly created by GDK.
    * See Gdk::Window::set_group().
    * 
    * @newin{2,4}
-   * @return The default group leader window for @a display.
+   * @return The default group leader window
+   * for @a display.
    */
   Glib::RefPtr<Window> get_default_group();
   
   /** Returns the default group leader window for all toplevel windows
-   * on @a display. This window is implicitly created by GDK. 
+   * on @a display. This window is implicitly created by GDK.
    * See Gdk::Window::set_group().
    * 
    * @newin{2,4}
-   * @return The default group leader window for @a display.
+   * @return The default group leader window
+   * for @a display.
    */
   Glib::RefPtr<const Window> get_default_group() const;
 
   //TODO: wrap the vfuncs, though they are not very useful because people will not derive from this class? murrayc.
 
 
-  /** Returns whether Gdk::EventOwnerChange events will be 
+  /** Returns whether Gdk::EventOwnerChange events will be
    * sent when the owner of a selection changes.
    * 
    * @newin{2,6}
-   * @return Whether Gdk::EventOwnerChange events will 
+   * @return Whether Gdk::EventOwnerChange events will
    * be sent.
    */
   bool supports_selection_notification() const;
@@ -664,7 +447,7 @@ public:
    * @newin{2,6}
    * @param selection The Gdk::Atom naming the selection for which
    * ownership change notification is requested.
-   * @return Whether Gdk::EventOwnerChange events will 
+   * @return Whether Gdk::EventOwnerChange events will
    * be sent.
    */
   bool request_selection_notification(const Glib::ustring& selection);
@@ -691,10 +474,10 @@ public:
    */
   void store_clipboard(const Glib::RefPtr<Gdk::Window>& clipboard_window, guint32 time_);
 
-  void store_clipboard(const Glib::RefPtr<Gdk::Window>& clipboard_window, guint32 time_, const Glib::StringArrayHandle& targets);
+  void store_clipboard(const Glib::RefPtr<Gdk::Window>& clipboard_window, guint32 time_, const std::vector<Glib::ustring>& targets);
   
 
-  /** Returns <tt>true</tt> if Gdk::Window::shape_combine_mask() can
+  /** Returns <tt>true</tt> if gdk_window_shape_combine_mask() can
    * be used to create shaped windows on @a display.
    * 
    * @newin{2,10}
@@ -702,7 +485,7 @@ public:
    */
   bool supports_shapes() const;
   
-  /** Returns <tt>true</tt> if Gdk::Window::input_shape_combine_mask() can
+  /** Returns <tt>true</tt> if gdk_window_input_shape_combine_mask() can
    * be used to modify the input shape of windows on @a display.
    * 
    * @newin{2,10}
@@ -720,18 +503,84 @@ public:
    * @return <tt>true</tt> if windows may be composited.
    */
   bool supports_composite() const;
+  
+  /** Indicates to the GUI environment that the application has
+   * finished loading, using a given identifier.
+   * 
+   * GTK+ will call this function automatically for Gtk::Window
+   * with custom startup-notification identifier unless
+   * gtk_window_set_auto_startup_notification() is called to
+   * disable that feature.
+   * 
+   * @newin{3,0}
+   * @param startup_id A startup-notification identifier, for which
+   * notification process should be completed.
+   */
+  void notify_startup_complete(const Glib::ustring& startup_id);
+
+  
+  /** Returns the Gdk::DeviceManager associated to @a display.
+   * 
+   * @newin{3,0}
+   * @return A Gdk::DeviceManager, or <tt>0</tt>. This memory is
+   * owned by GDK and must not be freed or unreferenced.
+   */
+  Glib::RefPtr<DeviceManager> get_device_manager();
+  
+  /** Returns the Gdk::DeviceManager associated to @a display.
+   * 
+   * @newin{3,0}
+   * @return A Gdk::DeviceManager, or <tt>0</tt>. This memory is
+   * owned by GDK and must not be freed or unreferenced.
+   */
+  Glib::RefPtr<const DeviceManager> get_device_manager() const;
+
+ 
+  /** Returns a Gdk::AppLaunchContext suitable for launching
+   * applications on the given display.
+   * 
+   * @newin{3,0}
+   * @return A new Gdk::AppLaunchContext for @a display.
+   * Free with Glib::object_unref() when done.
+   */
+  Glib::RefPtr<AppLaunchContext> get_app_launch_context();
+  
+  /** Returns a Gdk::AppLaunchContext suitable for launching
+   * applications on the given display.
+   * 
+   * @newin{3,0}
+   * @return A new Gdk::AppLaunchContext for @a display.
+   * Free with Glib::object_unref() when done.
+   */
+  Glib::RefPtr<const AppLaunchContext> get_app_launch_context() const;
 
 
-  /** The closed signal is emitted when the connection to the windowing
-   * system for this display is closed.
-   *
-   * @param is_error true if the display was closed due to an error
-   *
-   * @par Prototype:
+  //We use no_default_handler because GdkDisplayClass is private.
+  
+  
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%closed(bool is_error)</tt>
+   *
+   * The signal_closed() signal is emitted when the connection to the windowing
+   * system for @a display is closed.
+   * 
+   * @newin{2,2}
+   * @param is_error <tt>true</tt> if the display was closed due to an error.
    */
 
   Glib::SignalProxy1< void,bool > signal_closed();
+
+  
+/**
+   * @par Slot Prototype:
+   * <tt>void on_my_%opened()</tt>
+   *
+   * The signal_opened() signal is emitted when the connection to the windowing
+   * system for @a display is opened.
+   */
+
+  Glib::SignalProxy0< void > signal_opened();
 
 
 public:
@@ -743,7 +592,6 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
-  virtual void on_closed(bool is_error);
 
 
 };

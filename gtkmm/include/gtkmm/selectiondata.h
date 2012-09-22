@@ -4,7 +4,8 @@
 #define _GTKMM_SELECTIONDATA_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: selectiondata.hg,v 1.9 2006/07/05 16:59:28 murrayc Exp $ */
 
@@ -21,13 +22,15 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library, ) if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library, ) if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 
-#include <gdkmm/display.h>
+#include <vector>
 
+#include <gdkmm/display.h>
+#include <gdkmm/pixbuf.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 extern "C" { typedef struct _GtkSelectionData GtkSelectionData; }
@@ -46,9 +49,11 @@ class SelectionData
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   typedef SelectionData CppObjectType;
   typedef GtkSelectionData BaseObjectType;
-
-  static GType get_type() G_GNUC_CONST;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
+  static GType get_type() G_GNUC_CONST;
 
   SelectionData();
 
@@ -149,28 +154,30 @@ public:
    * If the result is non-<tt>0</tt> it must be freed with Glib::object_unref().
    */
   Glib::RefPtr<const Gdk::Pixbuf> get_pixbuf() const;
-  
+
 # 
 
- 
+
   /** Sets the contents of the selection from a list of URIs.
    * The string is converted to the form determined by
    *  @a selection_data->target.
    * 
    * @newin{2,6}
-   * @param uris A <tt>0</tt>-terminated array of strings holding URIs.
+   * @param uris A <tt>0</tt>-terminated array of
+   * strings holding URIs.
    * @return <tt>true</tt> if the selection was successfully set,
    * otherwise <tt>false</tt>.
    */
-  bool set_uris(const Glib::StringArrayHandle& uris);
-  
+  bool set_uris(const std::vector<Glib::ustring>& uris);
+ 
+
   /** Gets the contents of the selection data as a container of URIs.
    * @return If the selection data contains a list of
    * URIs, a container containing the URIs, otherwise an empty container.
    * 
    * @newin{2,6}.
    */
-  Glib::StringArrayHandle get_uris() const;
+  std::vector<Glib::ustring> get_uris() const;
 
 
   /** Retrieves the raw data of the selection.
@@ -187,16 +194,16 @@ public:
    */
   int get_length() const;
 
+  //TODO: Documentation
   std::string get_data_as_string() const;
 
-  //TODO: Change the return type to std::string, when we can break ABI:
-  
+ 
   /** Retrieves the selection Gdk::Atom of the selection data.
    * 
    * @newin{2,16}
    * @return The selection Gdk::Atom of the selection data.
    */
-  GdkAtom get_selection() const;
+  std::string get_selection() const;
 
   /** Retrieves the target of the selection.
    *
@@ -206,7 +213,7 @@ public:
   
 
   /// See also Gtk::Clipboard::request_targets()
-  Gdk::ArrayHandle_AtomString get_targets() const;
+  std::vector<std::string> get_targets() const;
   
 
   /** Returns the type of the data as set by SelectionData::set().

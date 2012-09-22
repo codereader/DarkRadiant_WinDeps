@@ -6,7 +6,8 @@
 #include <gtkmmconfig.h>
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /*
  * Copyright (C) 2007 The gtkmm Development Team
@@ -22,13 +23,16 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- 
+
+#include <vector>
+
 #include <gtkmm/button.h>
 #include <gtkmm/adjustment.h>
+#include <gtkmm/orientable.h>
 #include <gtkmm/enums.h>
 
 
@@ -43,8 +47,6 @@ namespace Gtk
 namespace Gtk
 {
 
-//TODO: Inherit/Implement Orientation when we can break ABI.
-
 /** A button which pops up a scale widget.
  *
  * This kind of widget is commonly used for volume controls in multimedia
@@ -55,7 +57,9 @@ namespace Gtk
  * @newin{2,12}
  */
 
-class ScaleButton : public Button
+class ScaleButton
+ : public Button,
+   public Orientable
 {
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -84,8 +88,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -105,23 +113,26 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_value_changed().
   virtual void on_value_changed(double value);
 
 
 private:
 
-
+  
 public:
-    explicit ScaleButton(IconSize size, double min, double max, double step, const Glib::StringArrayHandle& icons);
+ 
+
+    explicit ScaleButton(IconSize size, double min, double max, double step, const std::vector<Glib::ustring>& icons);
 
 
   /** Sets the icons to be used by the scale button.
-   * For details, see the Gtk::ScaleButton:icons property.
+   * For details, see the Gtk::ScaleButton::property_icons() property.
    * 
    * @newin{2,12}
    * @param icons A <tt>0</tt>-terminated array of icon names.
    */
-  void set_icons(const Glib::StringArrayHandle& icons);
+  void set_icons(const std::vector<Glib::ustring>& icons);
   
   /** Gets the current value of the scale button.
    * 
@@ -132,7 +143,7 @@ public:
   
   /** Sets the current value of the scale; if the value is outside
    * the minimum or maximum range values, it will be clamped to fit
-   * inside them. The scale button emits the Gtk::ScaleButton::value-changed
+   * inside them. The scale button emits the Gtk::ScaleButton::signal_value_changed()
    * signal if the value changes.
    * 
    * @newin{2,12}
@@ -141,32 +152,23 @@ public:
   void set_value(double value);
 
   
-#ifndef GTKMM_DISABLE_DEPRECATED
-
   /** Gets the Gtk::Adjustment associated with the Gtk::ScaleButton's scale.
    * See Gtk::Range::get_adjustment() for details.
    * 
    * @newin{2,12}
    * @return The adjustment associated with the scale.
    */
-  Gtk::Adjustment* get_adjustment();
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-  //The return type should bge const. This has been fixed in the gtkmm-3maybe branch.
+  Glib::RefPtr<Adjustment> get_adjustment();
   
-#ifndef GTKMM_DISABLE_DEPRECATED
-
   /** Gets the Gtk::Adjustment associated with the Gtk::ScaleButton's scale.
    * See Gtk::Range::get_adjustment() for details.
    * 
    * @newin{2,12}
    * @return The adjustment associated with the scale.
    */
-  Gtk::Adjustment* get_adjustment() const;
-#endif // GTKMM_DISABLE_DEPRECATED
+  Glib::RefPtr<const Adjustment> get_adjustment() const;
 
-
+  
   /** Sets the Gtk::Adjustment to be used as a model
    * for the Gtk::ScaleButton's scale.
    * See Gtk::Range::set_adjustment() for details.
@@ -174,27 +176,9 @@ public:
    * @newin{2,12}
    * @param adjustment A Gtk::Adjustment.
    */
-  void set_adjustment(Gtk::Adjustment& adjustment);
+  void set_adjustment(const Glib::RefPtr<Adjustment>& adjustment);
 
-  // TODO: Should be deprecated, but we have no replacement yet, until we break ABI.
-  
-  /** Gets the orientation of the Gtk::ScaleButton's popup window.
-   * 
-   * @newin{2,14}
-   * 
-   * Deprecated: 2.16: Use Gtk::Orientable::get_orientation() instead.
-   * @return The Gtk::ScaleButton's orientation.
-   */
-  Orientation get_orientation();
-  
-  /** Sets the orientation of the Gtk::ScaleButton's popup window.
-   * 
-   * @newin{2,14}
-   * 
-   * Deprecated: 2.16: Use Gtk::Orientable::set_orientation() instead.
-   * @param orientation The new orientation.
-   */
-  void set_orientation(Orientation orientation);
+   //deprecated
 
   
   /** Retrieves the plus button of the Gtk::ScaleButton.
@@ -240,9 +224,15 @@ public:
   const Gtk::Widget* get_popup() const;
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%value_changed(double value)</tt>
+   *
+   * The signal_value_changed() signal is emitted when the value field has
+   * changed.
+   * 
+   * @newin{2,12}
+   * @param value The new value.
    */
 
   Glib::SignalProxy1< void,double > signal_value_changed();
@@ -258,7 +248,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<double> property_value() ;
+  Glib::PropertyProxy< double > property_value() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -268,7 +258,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<double> property_value() const;
+  Glib::PropertyProxy_ReadOnly< double > property_value() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -278,7 +268,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<IconSize> property_size() ;
+  Glib::PropertyProxy< IconSize > property_size() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -288,7 +278,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<IconSize> property_size() const;
+  Glib::PropertyProxy_ReadOnly< IconSize > property_size() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -298,7 +288,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Adjustment*> property_adjustment() ;
+  Glib::PropertyProxy< Adjustment* > property_adjustment() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -308,7 +298,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Adjustment*> property_adjustment() const;
+  Glib::PropertyProxy_ReadOnly< Adjustment* > property_adjustment() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -318,7 +308,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::StringArrayHandle> property_icons() ;
+  Glib::PropertyProxy< std::vector<Glib::ustring> > property_icons() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -328,28 +318,10 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::StringArrayHandle> property_icons() const;
+  Glib::PropertyProxy_ReadOnly< std::vector<Glib::ustring> > property_icons() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The orientation of the orientable.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<Orientation> property_orientation() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** The orientation of the orientable.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<Orientation> property_orientation() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
+  //gtkmmproc error: orientation : property defs lookup failed.
 
 
 };

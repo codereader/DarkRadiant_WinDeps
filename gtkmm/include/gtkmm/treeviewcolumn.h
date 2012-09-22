@@ -6,7 +6,8 @@
 #include <gtkmmconfig.h>
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright(C) 2002 The gtkmm Development Team
  *
@@ -21,20 +22,19 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- // This is for including the config header before any code (such as
+// This is for including the config header before any code (such as
 // the #ifndef GTKMM_DISABLE_DEPRECATED in deprecated classes) is generated:
 
 
-#include <gtkmm/object.h>
-#include <gtkmm/widget.h>
-#include <gdkmm/window.h>
 #include <gtkmm/treeiter.h>
+#include <gtkmm/button.h>
+#include <gdkmm/window.h>
 #include <gtkmm/treemodel.h>
-#include <glibmm/listhandle.h>
+#include <gtkmm/celllayout.h>
 #include <gtkmm/cellrenderer_generation.h>
 
 
@@ -88,17 +88,18 @@ namespace Gtk
 // when using --export-all and auto-import.
 // See http://bugzilla.gnome.org/show_bug.cgi?id=309030.
 
-//TODO: This should derive+implement from CellLayout when we can break ABI.
-
 class TreeView;
 
+//TODO: Deal with the GtkObject->GObject change?
 /** Typedefed as Gtk::TreeView::Column.
  * This is a visible column in a Gtk::TreeView widget. It determines the geometry, type.
  *
  * @ingroup TreeView
 */
 
-class GTKMM_API TreeViewColumn : public Gtk::Object
+class GTKMM_API TreeViewColumn
+  : public Object,
+    public CellLayout
 {
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -127,8 +128,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -148,6 +153,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_clicked().
   virtual void on_clicked();
 
 
@@ -189,7 +195,7 @@ public:
    * the cell is allocated no more space than it needs. Any unused space is divided
    * evenly between cells for which @a expand is <tt>true</tt>.
    *
-   * You can use get_first_cell() or get_cell_renderers() to access the generated CellRenderer.
+   * You can use get_first_cell() or get_cells() to access the generated CellRenderer.
    *
    * @param column The model column that will be rendered by the view cell.
    * @param expand <tt>true</tt> if the cell is to be given extra space allocated to the view column.
@@ -202,7 +208,7 @@ public:
    * the cell is allocated no more space than it needs. Any unused space is divided
    * evenly between cells for which @a expand is <tt>true</tt>.
    *
-   * You can use get_first_cell() or get_cell_renderers() to access the generated CellRenderer.
+   * You can use get_first_cell() or get_cells() to access the generated CellRenderer.
    *
    * @param column The model column that will be rendered by the view cell.
    * @param expand <tt>true</tt> if the cell is to be given extra space allocated to the view column.
@@ -215,56 +221,7 @@ public:
    */
   void clear();
 
-  //We replaced get_first_cell() with get_first_cell() because that
-  //is the name of the method in CellLayout, which this class derives from in gtkmm-3.0.
-  //That allows more code to be ported before actually using gtkmm-3.0.
-
-  /** Gets the CellRenderer for the column.
-    * You should dynamic_cast<> to the expected derived CellRenderer type.
-    * This assumes that the TreeViewColumn contains only one CellRenderer.
-    */
-  CellRenderer* get_first_cell();
-
-  /** Gets the CellRenderer for the column.
-    * You should dynamic_cast<> to the expected derived CellRenderer type.
-    * This assumes that the TreeViewColumn contains only one CellRenderer.
-    */
-  const CellRenderer* get_first_cell() const;
-
-  #ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Gets the CellRenderer for the column.
-    * You should dynamic_cast<> to the expected derived CellRenderer type.
-    * This assumes that the TreeViewColumn contains only one CellRenderer.
-    *
-    * @deprecated Use get_first_cell().
-    */
-  CellRenderer* get_first_cell_renderer();
-
-  /** Gets the CellRenderer for the column.
-    * You should dynamic_cast<> to the expected derived CellRenderer type.
-    * This assumes that the TreeViewColumn contains only one CellRenderer.
-    *
-    * @deprecated Use get_first_cell().
-    */
-  const CellRenderer* get_first_cell_renderer() const;
-  #endif // GTKMM_DISABLE_DEPRECATED
-
-
-  // TODO: Should be deprecated, but we cannot derive from CellLayout
-  // without breaking API and ABI.
-  
-  /** Returns a list of all the cell renderers in the column,
-   * in no particular order.
-   * @return A list of Gtk::CellRenderers.
-   */
-  Glib::ListHandle<CellRenderer*> get_cell_renderers();
-  
-  /** Returns a list of all the cell renderers in the column,
-   * in no particular order.
-   * @return A list of Gtk::CellRenderers.
-   */
-  Glib::ListHandle<const CellRenderer*> get_cell_renderers() const;
+   //deprecated
 
   
   /** Adds an attribute mapping to the list in @a tree_column.  The @a column is the
@@ -368,6 +325,13 @@ public:
    */
   TreeViewColumnSizing get_sizing();
   
+  /** Returns the current X offset of @a tree_column in pixels.
+   * 
+   * @newin{3,2}
+   * @return The current X offset of @a tree_column.
+   */
+  int get_x_offset() const;
+  
   /** Returns the current size of @a tree_column in pixels.
    * @return The current width of @a tree_column.
    */
@@ -451,8 +415,8 @@ public:
   bool get_expand() const;
 
   
-  /** Sets the header to be active if @a active is <tt>true</tt>.  When the header is active,
-   * then it can take keyboard focus, and can be clicked.
+  /** Sets the header to be active if @a clickable is <tt>true</tt>.  When the header is
+   * active, then it can take keyboard focus, and can be clicked.
    * @param clickable <tt>true</tt> if the header is active.
    */
   void set_clickable(bool clickable =  true);
@@ -495,7 +459,7 @@ public:
    * for center, 1.0 for right.
    * @param xalign The alignment, which is between [0.0 and 1.0] inclusive.
    */
-  void set_alignment(AlignmentEnum xalign);
+  void set_alignment(Align xalign);
 
   
   /** Returns the current x alignment of @a tree_column.  This value can range
@@ -528,18 +492,7 @@ public:
    */
   void set_sort_column(int sort_column_id);
 
-  #ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** @deprecated Use set_sort_column() instead.
-   */
-  void set_sort_column_id(const TreeModelColumnBase& sort_column_id);
-
-  /** @deprecated Use set_sort_column() instead.
-   */
-  void set_sort_column_id(int sort_column_id);
-  #endif // GTKMM_DISABLE_DEPRECATED
-
-
+  
   /** Gets the logical @a sort_column_id that the model sorts on when this
    * column is selected for sorting.
    * See set_sort_column_id().
@@ -592,24 +545,6 @@ public:
    * @param is_expanded <tt>true</tt>, if the row has visible children.
    */
   void cell_set_cell_data(const Glib::RefPtr<TreeModel>& tree_model, const TreeModel::iterator& iter, bool is_expander, bool is_expanded);
-
-  //This is obviously a bad cast, but we need it to preserve this (wrong) deprecated version of this function:
-   
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Obtains the width and height needed to render the column.  This is used
-   * primarily by the Gtk::TreeView.
-   * @deprecated Use the cell_get_size() method override that takes a const cell_area.
-   * @param cell_area The area a cell in the column will be allocated.
-   * @param x_offset Location to return x offset of a cell relative to @a cell_area.
-   * @param y_offset Location to return y offset of a cell relative to @a cell_area.
-   * @param width Location to return width needed to render a cell.
-   * @param height Location to return height needed to render a cell.
-   */
-  void cell_get_size(Gdk::Rectangle& cell_area, int& x_offset, int& y_offset, int& width, int& height) const;
-#endif // GTKMM_DISABLE_DEPRECATED
-
 
   //TODO: cell_area can be NULL. Add a method override.
   //But see http://bugzilla.gnome.org/show_bug.cgi?id=542329 about the lack of C documentation.
@@ -681,9 +616,25 @@ public:
   const TreeView* get_tree_view() const;
 
   
-  /**
-   * @par Prototype:
+  /** Returns the button used in the treeview column header
+   * 
+   * @newin{3,0}
+   * @return The button for the column header.
+   */
+  Button* get_button();
+  
+  /** Returns the button used in the treeview column header
+   * 
+   * @newin{3,0}
+   * @return The button for the column header.
+   */
+  const Button* get_button() const;
+  
+  
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%clicked()</tt>
+   *
    */
 
   Glib::SignalProxy0< void > signal_clicked();
@@ -696,7 +647,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_visible() ;
+  Glib::PropertyProxy< bool > property_visible() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -706,7 +657,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_visible() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_visible() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -716,7 +667,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_resizable() ;
+  Glib::PropertyProxy< bool > property_resizable() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -726,8 +677,19 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_resizable() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_resizable() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Current X position of the column.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< int > property_x_offset() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** Current width of the column.
@@ -736,7 +698,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_width() const;
+  Glib::PropertyProxy_ReadOnly< int > property_width() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -747,7 +709,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_spacing() ;
+  Glib::PropertyProxy< int > property_spacing() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -757,7 +719,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_spacing() const;
+  Glib::PropertyProxy_ReadOnly< int > property_spacing() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -767,7 +729,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<TreeViewColumnSizing> property_sizing() ;
+  Glib::PropertyProxy< TreeViewColumnSizing > property_sizing() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -777,7 +739,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<TreeViewColumnSizing> property_sizing() const;
+  Glib::PropertyProxy_ReadOnly< TreeViewColumnSizing > property_sizing() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -787,7 +749,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_fixed_width() ;
+  Glib::PropertyProxy< int > property_fixed_width() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -797,7 +759,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_fixed_width() const;
+  Glib::PropertyProxy_ReadOnly< int > property_fixed_width() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -807,7 +769,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_min_width() ;
+  Glib::PropertyProxy< int > property_min_width() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -817,7 +779,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_min_width() const;
+  Glib::PropertyProxy_ReadOnly< int > property_min_width() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -827,7 +789,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_max_width() ;
+  Glib::PropertyProxy< int > property_max_width() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -837,7 +799,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_max_width() const;
+  Glib::PropertyProxy_ReadOnly< int > property_max_width() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -847,7 +809,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_title() ;
+  Glib::PropertyProxy< Glib::ustring > property_title() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -857,7 +819,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_title() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_title() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -867,7 +829,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_expand() ;
+  Glib::PropertyProxy< bool > property_expand() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -877,7 +839,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_expand() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_expand() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -887,7 +849,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_clickable() ;
+  Glib::PropertyProxy< bool > property_clickable() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -897,7 +859,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_clickable() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_clickable() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -907,7 +869,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Widget*> property_widget() ;
+  Glib::PropertyProxy< Widget* > property_widget() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -917,7 +879,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Widget*> property_widget() const;
+  Glib::PropertyProxy_ReadOnly< Widget* > property_widget() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -927,7 +889,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<float> property_alignment() ;
+  Glib::PropertyProxy< float > property_alignment() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -937,7 +899,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<float> property_alignment() const;
+  Glib::PropertyProxy_ReadOnly< float > property_alignment() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -947,7 +909,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_reorderable() ;
+  Glib::PropertyProxy< bool > property_reorderable() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -957,7 +919,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_reorderable() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_reorderable() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -967,7 +929,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_sort_indicator() ;
+  Glib::PropertyProxy< bool > property_sort_indicator() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -977,7 +939,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_sort_indicator() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_sort_indicator() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -987,7 +949,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<SortType> property_sort_order() ;
+  Glib::PropertyProxy< SortType > property_sort_order() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -997,7 +959,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<SortType> property_sort_order() const;
+  Glib::PropertyProxy_ReadOnly< SortType > property_sort_order() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1007,7 +969,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_sort_column_id() ;
+  Glib::PropertyProxy< int > property_sort_column_id() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1017,7 +979,17 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_sort_column_id() const;
+  Glib::PropertyProxy_ReadOnly< int > property_sort_column_id() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The GtkCellArea used to layout cells.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< Glib::RefPtr<CellArea> > property_cell_area() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

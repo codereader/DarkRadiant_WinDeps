@@ -4,7 +4,8 @@
 #define _GDKMM_SCREEN_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: screen.hg,v 1.8 2006/06/10 15:26:24 murrayc Exp $ */
 
@@ -23,13 +24,12 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 //#include <gdkmm/visual.h>
 //#include <gdkmm/window.h>
-#include <gdkmm/region.h> //Just to solve GDK_DISABLE_DEPRECATED problems when this header is included from elsewhere.
 #include <gdkmm/rectangle.h>
 #include <glibmm/object.h>
 #include <cairomm/fontoptions.h>
@@ -47,14 +47,13 @@ namespace Gdk
 {
 
 class Display;
-class Colormap;
 class Visual;
 class Window;
 
 /** Object representing a physical screen
  * Gdk::Screen objects are the GDK representation of a physical screen. It is used throughout GDK and GTK+ to specify
  * which screen the top level windows are to be displayed on. It is also used to query the screen specification and
- * default settings such as the default colormap (get_default_colormap()), the screen width (get_width()), etc.
+ * default settings such as the screen width (get_width()), etc.
  * Note that a screen may consist of multiple monitors which are merged to form a large screen area.
  */
 
@@ -86,8 +85,11 @@ protected:
 public:
   virtual ~Screen();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -108,43 +110,6 @@ protected:
 
 public:
   
-  /** Gets the default colormap for @a screen.
-   * 
-   * @newin{2,2}
-   * @return The default Gdk::Colormap.
-   */
-  Glib::RefPtr<Colormap> get_default_colormap();
-  
-  /** Gets the default colormap for @a screen.
-   * 
-   * @newin{2,2}
-   * @return The default Gdk::Colormap.
-   */
-  Glib::RefPtr<const Colormap> get_default_colormap() const;
-
-  
-  /** Sets the default @a colormap for @a screen.
-   * 
-   * @newin{2,2}
-   * @param colormap A Gdk::Colormap.
-   */
-  void set_default_colormap(const Glib::RefPtr<const Colormap>& colormap);
-  
-  /** Gets the system's default colormap for @a screen
-   * 
-   * @newin{2,2}
-   * @return The default colormap for @a screen.
-   */
-  Glib::RefPtr<Colormap> get_system_colormap();
-  
-  /** Gets the system's default colormap for @a screen
-   * 
-   * @newin{2,2}
-   * @return The default colormap for @a screen.
-   */
-  Glib::RefPtr<const Colormap> get_system_colormap() const;
-
-  
   /** Get the system's default visual for @a screen.
    * This is the visual for the root window of the display.
    * The return value should not be freed.
@@ -164,64 +129,8 @@ public:
   Glib::RefPtr<const Visual> get_system_visual() const;
 
   
-  /** Gets the preferred colormap for rendering image data on @a screen.
-   * Not a very useful function; historically, GDK could only render RGB
-   * image data to one colormap and visual, but in the current version
-   * it can render to any colormap and visual. So there's no need to
-   * call this function.
-   * 
-   * @newin{2,2}
-   * 
-   * Deprecated: 2.22: Use get_system_colormap()
-   * @return The preferred colormap.
-   */
-  Glib::RefPtr<Colormap> get_rgb_colormap();
-  
-  /** Gets the preferred colormap for rendering image data on @a screen.
-   * Not a very useful function; historically, GDK could only render RGB
-   * image data to one colormap and visual, but in the current version
-   * it can render to any colormap and visual. So there's no need to
-   * call this function.
-   * 
-   * @newin{2,2}
-   * 
-   * Deprecated: 2.22: Use get_system_colormap()
-   * @return The preferred colormap.
-   */
-  Glib::RefPtr<const Colormap> get_rgb_colormap() const;
-
-  
-  /** Gets a "preferred visual" chosen by GdkRGB for rendering image data
-   * on @a screen. In previous versions of
-   * GDK, this was the only visual GdkRGB could use for rendering. In
-   * current versions, it's simply the visual GdkRGB would have chosen as 
-   * the optimal one in those previous versions. GdkRGB can now render to 
-   * drawables with any visual.
-   * 
-   * @newin{2,2}
-   * 
-   * Deprecated: 2.22: Use get_system_visual()
-   * @return The Gdk::Visual chosen by GdkRGB.
-   */
-  Glib::RefPtr<Visual> get_rgb_visual();
-  
-  /** Gets a "preferred visual" chosen by GdkRGB for rendering image data
-   * on @a screen. In previous versions of
-   * GDK, this was the only visual GdkRGB could use for rendering. In
-   * current versions, it's simply the visual GdkRGB would have chosen as 
-   * the optimal one in those previous versions. GdkRGB can now render to 
-   * drawables with any visual.
-   * 
-   * @newin{2,2}
-   * 
-   * Deprecated: 2.22: Use get_system_visual()
-   * @return The Gdk::Visual chosen by GdkRGB.
-   */
-  Glib::RefPtr<const Visual> get_rgb_visual() const;
-
-  
-  /** Gets a colormap to use for creating windows or pixmaps with an
-   * alpha channel. The windowing system on which GTK+ is running
+  /** Gets a visual to use for creating windows with an alpha channel.
+   * The windowing system on which GTK+ is running
    * may not support this capability, in which case <tt>0</tt> will
    * be returned. Even if a non-<tt>0</tt> value is returned, its
    * possible that the window's alpha channel won't be honored
@@ -233,37 +142,6 @@ public:
    * 
    * For setting an overall opacity for a top-level window, see
    * Gdk::Window::set_opacity().
-   * 
-   * @newin{2,8}
-   * @return A colormap to use for windows with
-   * an alpha channel or <tt>0</tt> if the capability is not available.
-   */
-  Glib::RefPtr<Colormap> get_rgba_colormap();
-  
-  /** Gets a colormap to use for creating windows or pixmaps with an
-   * alpha channel. The windowing system on which GTK+ is running
-   * may not support this capability, in which case <tt>0</tt> will
-   * be returned. Even if a non-<tt>0</tt> value is returned, its
-   * possible that the window's alpha channel won't be honored
-   * when displaying the window on the screen: in particular, for
-   * X an appropriate windowing manager and compositing manager
-   * must be running to provide appropriate display.
-   * 
-   * This functionality is not implemented in the Windows backend.
-   * 
-   * For setting an overall opacity for a top-level window, see
-   * Gdk::Window::set_opacity().
-   * 
-   * @newin{2,8}
-   * @return A colormap to use for windows with
-   * an alpha channel or <tt>0</tt> if the capability is not available.
-   */
-  Glib::RefPtr<const Colormap> get_rgba_colormap() const;
-
-  
-  /** Gets a visual to use for creating windows or pixmaps with an
-   * alpha channel. See the docs for get_rgba_colormap()
-   * for caveats.
    * 
    * @newin{2,8}
    * @return A visual to use for windows with an
@@ -271,9 +149,19 @@ public:
    */
   Glib::RefPtr<Visual> get_rgba_visual();
   
-  /** Gets a visual to use for creating windows or pixmaps with an
-   * alpha channel. See the docs for get_rgba_colormap()
-   * for caveats.
+  /** Gets a visual to use for creating windows with an alpha channel.
+   * The windowing system on which GTK+ is running
+   * may not support this capability, in which case <tt>0</tt> will
+   * be returned. Even if a non-<tt>0</tt> value is returned, its
+   * possible that the window's alpha channel won't be honored
+   * when displaying the window on the screen: in particular, for
+   * X an appropriate windowing manager and compositing manager
+   * must be running to provide appropriate display.
+   * 
+   * This functionality is not implemented in the Windows backend.
+   * 
+   * For setting an overall opacity for a top-level window, see
+   * Gdk::Window::set_opacity().
    * 
    * @newin{2,8}
    * @return A visual to use for windows with an
@@ -348,7 +236,7 @@ public:
    */
   int get_height() const;
   
-  /** Gets the width of @a screen in millimeters. 
+  /** Gets the width of @a screen in millimeters.
    * Note that on some X servers this value will not be correct.
    * 
    * @newin{2,2}
@@ -356,7 +244,7 @@ public:
    */
   int get_width_mm() const;
   
-  /** Returns the height of @a screen in millimeters. 
+  /** Returns the height of @a screen in millimeters.
    * Note that on some X servers this value will not be correct.
    * 
    * @newin{2,2}
@@ -372,7 +260,7 @@ public:
    * @newin{2,2}
    * @return A list of visuals.
    */
-  Glib::ListHandle< Glib::RefPtr<Visual> > list_visuals();
+  std::vector< Glib::RefPtr<Visual> > list_visuals();
 
  
   /** Obtains a list of all toplevel windows known to GDK on the screen @a screen.
@@ -381,7 +269,7 @@ public:
    * @newin{2,2}
    * @return List of toplevel windows.
    */
-  Glib::ListHandle< Glib::RefPtr<Window> > get_toplevel_windows();
+  std::vector< Glib::RefPtr<Window> > get_toplevel_windows();
 
   
   /** Determines the name to pass to Gdk::Display::open() to get
@@ -417,12 +305,16 @@ public:
   /** Retrieves the Gdk::Rectangle representing the size and position of
    * the individual monitor within the entire screen area.
    * 
+   * Monitor numbers start at 0. To obtain the number of monitors of
+   *  @a screen, use get_n_monitors().
+   * 
    * Note that the size of the entire screen area can be retrieved via
    * get_width() and get_height().
    * 
    * @newin{2,2}
-   * @param monitor_num The monitor number, between 0 and gdk_screen_get_n_monitors (screen).
-   * @param dest A Gdk::Rectangle to be filled with the monitor geometry.
+   * @param monitor_num The monitor number.
+   * @param dest A Gdk::Rectangle to be filled with
+   * the monitor geometry.
    */
   void get_monitor_geometry(int monitor_num, Rectangle& dest) const;
   
@@ -436,7 +328,7 @@ public:
    */
   int get_monitor_at_point(int x, int y) const;
   
-  /** Returns the number of the monitor in which the largest area of the 
+  /** Returns the number of the monitor in which the largest area of the
    * bounding rectangle of @a window resides.
    * 
    * @newin{2,2}
@@ -476,24 +368,6 @@ public:
   Glib::ustring get_monitor_plug_name(int monitor_num) const;
 
   
-  /** On X11, sends an X ClientMessage event to all toplevel windows on
-   *  @a screen. 
-   * 
-   * Toplevel windows are determined by checking for the WM_STATE property, 
-   * as described in the Inter-Client Communication Conventions Manual (ICCCM).
-   * If no windows are found with the WM_STATE property set, the message is 
-   * sent to all children of the root window.
-   * 
-   * On Windows, broadcasts a message registered with the name
-   * GDK_WIN32_CLIENT_MESSAGE to all top-level windows. The amount of
-   * data is limited to one long, i.e. four bytes.
-   * 
-   * @newin{2,2}
-   * @param event The Gdk::Event.
-   */
-  void broadcast_client_message(GdkEvent* event);
-
-  
   /** Gets the default screen for the default display. (See
    * Gdk::Display::get_default()).
    * 
@@ -516,7 +390,7 @@ public:
    * @param options A #cairo_font_options_t, or <tt>0</tt> to unset any
    * previously set default font options.
    */
-  void set_font_options(const Cairo::FontOptions& options);
+  void set_font_options(const ::Cairo::FontOptions& options);
 
   // Note: This returns a const, so we assume that we must copy it:
    
@@ -527,7 +401,7 @@ public:
    * @return The current font options, or <tt>0</tt> if no default
    * font options have been set.
    */
-  Cairo::FontOptions get_font_options() const;
+  ::Cairo::FontOptions get_font_options() const;
 
   
   /** Sets the resolution for font handling on the screen. This is a
@@ -554,7 +428,8 @@ public:
   /** Returns the screen's currently active window.
    * 
    * On X11, this is done by inspecting the _NET_ACTIVE_WINDOW property
-   * on the root window, as described in the . If there is no currently currently active
+   * on the root window, as described in the Extended Window
+   * Manager Hints. If there is no currently currently active
    * window, or the window manager does not support the
    * _NET_ACTIVE_WINDOW hint, this function returns <tt>0</tt>.
    * 
@@ -572,7 +447,8 @@ public:
   /** Returns the screen's currently active window.
    * 
    * On X11, this is done by inspecting the _NET_ACTIVE_WINDOW property
-   * on the root window, as described in the . If there is no currently currently active
+   * on the root window, as described in the Extended Window
+   * Manager Hints. If there is no currently currently active
    * window, or the window manager does not support the
    * _NET_ACTIVE_WINDOW hint, this function returns <tt>0</tt>.
    * 
@@ -592,7 +468,8 @@ public:
    * window stack.
    * 
    * On X11, this is done by inspecting the _NET_CLIENT_LIST_STACKING
-   * property on the root window, as described in the . If the window manager does not support the
+   * property on the root window, as described in the Extended Window
+   * Manager Hints. If the window manager does not support the
    * _NET_CLIENT_LIST_STACKING hint, this function returns <tt>0</tt>.
    * 
    * On other platforms, this function may return <tt>0</tt>, depending on whether
@@ -606,35 +483,53 @@ public:
    * @return A list of Gdk::Window<!-- -->s for the current window stack,
    * or <tt>0</tt>.
    */
-  Glib::ListHandle< Glib::RefPtr<Window> > get_window_stack();
+  std::vector< Glib::RefPtr<Window> > get_window_stack();
 
-  /** The size_changed signal is emitted when the pixel width or
-   * height of a screen changes.
-   *
-   * @par Prototype:
+  //We use no_default_handler because GdkDisplayManagerClass is private.
+
+  
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%size_changed()</tt>
+   *
+   * The signal_size_changed() signal is emitted when the pixel width or 
+   * height of a screen changes.
+   * 
+   * @newin{2,2}
    */
 
   Glib::SignalProxy0< void > signal_size_changed();
 
   
-  //TODO: Remove no_default_handler when we can break ABI:
-  
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%composited_changed()</tt>
+   *
+   * The signal_composited_changed() signal is emitted when the composited
+   * status of the screen changes
+   * 
+   * @newin{2,10}
    */
 
   Glib::SignalProxy0< void > signal_composited_changed();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%monitors_changed()</tt>
+   *
+   * The signal_monitors_changed() signal is emitted when the number, size
+   * or position of the monitors attached to the screen change. 
+   * 
+   * Only for X11 and OS X for now. A future implementation for Win32
+   * may be a possibility.
+   * 
+   * @newin{2,14}
    */
 
   Glib::SignalProxy0< void > signal_monitors_changed();
 
+
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The default font options for the screen.
    *
@@ -642,7 +537,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Cairo::FontOptions> property_font_options() ;
+  Glib::PropertyProxy< ::Cairo::FontOptions > property_font_options() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -652,7 +547,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Cairo::FontOptions> property_font_options() const;
+  Glib::PropertyProxy_ReadOnly< ::Cairo::FontOptions > property_font_options() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -662,7 +557,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<double> property_resolution() ;
+  Glib::PropertyProxy< double > property_resolution() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -672,7 +567,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<double> property_resolution() const;
+  Glib::PropertyProxy_ReadOnly< double > property_resolution() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -685,7 +580,6 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
-  virtual void on_size_changed();
 
 
 };

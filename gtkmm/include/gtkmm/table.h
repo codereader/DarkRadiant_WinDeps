@@ -4,7 +4,11 @@
 #define _GTKMM_TABLE_H
 
 
-#include <glibmm.h>
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: table.hg,v 1.3 2006/05/16 14:16:08 jjongsma Exp $ */
 
@@ -21,18 +25,13 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <glibmm/helperlist.h>
+
 #include <gtkmm/container.h>
 #include <gtkmm/enums.h>
-
-//TODO: Careful of including this before box.h,
-//because we need to undef some things first.
-//TODO: Maybe do all includes of gtk.h in a single file.
-#include <gtk/gtk.h> /* for GtkTableChild */
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -45,103 +44,6 @@ namespace Gtk
 { class Table_Class; } // namespace Gtk
 namespace Gtk
 {
-
-class Table;
-
-/** @deprecated Use Container::get_children() instead.
- */
-namespace Table_Helpers
-{
-
-/** @deprecated Use Container::get_children() instead.
- */
-class Child : protected _GtkTableChild
-{
-private:
-  Child& operator=(const Child&); //Not implemented.
-  Child(const Child&); //Not implemented.
-
-public:
-  inline _GtkTableChild* gobj() {return (this);}
-  inline const _GtkTableChild* gobj() const {return (this);}
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  Widget* get_widget() const;
-
-  //TODO: Which of the GtkTableChild's fields are public API?
-  //Maybe we should remove some of these get()s or add some set()s.
-  //If get_widget() is the only accessor, then we should probably make
-  //the STL-style Table list contain Widgets instead of Childs.
-
-  guint16 get_left_attach() const;
-  guint16 get_right_attach() const;
-  guint16 get_top_attach() const;
-  guint16 get_bottom_attach() const;
-  guint16 get_xpadding() const;
-  guint16 get_ypadding() const;
-  bool get_xexpand() const;
-  bool get_yexpand() const;
-  bool get_xshrink() const;
-  bool get_yshrink() const;
-  bool get_xfill() const;
-  bool get_yfill() const;
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-protected:
-  inline GtkTable* parent()
-    { return GTK_TABLE(gtk_widget_get_parent(gobj()->widget)); }
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  friend class Dummy_; // silence the compiler (Child has only private ctors)
-#endif
-};
-
-
-class TableList : public Glib::HelperList< Child, Widget, Glib::List_Iterator< Child > >
-{
-public:
-  TableList();
-  explicit TableList(GtkTable* gparent);
-  TableList(const TableList& src);
-  virtual ~TableList() {}
-
-  TableList& operator=(const TableList& src);
-
-  typedef Glib::HelperList< Child, Widget,  Glib::List_Iterator< Child > > type_base;
-
-  GtkTable* gparent();
-  const GtkTable* gparent() const;
-
-  virtual GList*& glist() const;      // front of list
-
-  virtual void erase(iterator start, iterator stop);
-  virtual iterator erase(iterator);  //Implented as custom or by LIST_CONTAINER_REMOVE
-  virtual void remove(const_reference); //Implented as custom or by LIST_CONTAINER_REMOVE
-
-  /// This is order n. (use at own risk)
-  reference operator[](size_type l) const;
-
-protected:
-  //Hide these because its read-only:
-  iterator insert(iterator position, element_type& e);
-
-  inline void pop_front();
-  inline void pop_back();
-
-
-  //The standard iterator, instead of List_Cpp_Iterator,
-  //only works because Child is derived from _GtkTableChild.
-
-  
-virtual void remove(Widget& w); //Implented as custom or by LIST_CONTAINER_REMOVE
-
-  };
-
-
-} // namespace Table_Helpers
-
 
 /** Pack widgets in regular patterns.
  * @ingroup Widgets
@@ -179,6 +81,10 @@ virtual void remove(Widget& w); //Implented as custom or by LIST_CONTAINER_REMOV
  * A Table widget looks like this:
  * @image html table1.png
  *
+ * @deprecated Use Gtk::Grid instead. It provides the same
+ * capabilities as Gtk::Table for arranging widgets in a rectangular grid, but
+ * does support height-for-width geometry management.
+ *
  * @see Gtk::HBox, Gtk::VBox
  */
 
@@ -211,8 +117,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -241,35 +151,97 @@ public:
     explicit Table(guint n_rows =  1, guint n_columns =  1, bool homogeneous =  false);
 
 
+  /** Adds a widget to a table. The number of 'cells' that a widget will occupy is
+   * specified by @a left_attach, @a right_attach, @a top_attach and @a bottom_attach.
+   * These each represent the leftmost, rightmost, uppermost and lowest column
+   * and row numbers of the table. (Columns and rows are indexed from zero).
+   * 
+   * To make a button occupy the lower right cell of a 2x2 table, use
+   * [C example ellipted]
+   * If you want to make the button span the entire bottom row, use @a left_attach == 0 and @a right_attach = 2 instead.
+   * 
+   * Deprecated: 3.4: Use Gtk::Grid::attach() with Gtk::Grid. Note that the attach
+   * arguments differ between those two functions.
+   * @param child The widget to add.
+   * @param left_attach The column number to attach the left side of a child widget to.
+   * @param right_attach The column number to attach the right side of a child widget to.
+   * @param top_attach The row number to attach the top of a child widget to.
+   * @param bottom_attach The row number to attach the bottom of a child widget to.
+   * @param xoptions Used to specify the properties of the child widget when the table is resized.
+   * @param yoptions The same as xoptions, except this field determines behaviour of vertical resizing.
+   * @param xpadding An integer value specifying the padding on the left and right of the widget being added to the table.
+   * @param ypadding The amount of padding above and below the child widget.
+   */
   void attach(Widget& child, guint left_attach, guint right_attach, guint top_attach, guint bottom_attach, AttachOptions xoptions =  FILL | EXPAND, AttachOptions yoptions =  FILL | EXPAND, guint xpadding =  0, guint ypadding =  0);
 
 
+  /** If you need to change a table's size <em>after</em>
+   * it has been created, this function allows you to do so.
+   * 
+   * Deprecated: 3.4: Gtk::Grid resizes automatically.
+   * @param rows The new number of rows.
+   * @param columns The new number of columns.
+   */
   void resize(guint rows, guint columns);
 
 
+  /** Changes the space between a given table row and the subsequent row.
+   * 
+   * Deprecated: 3.4: Use Gtk::Widget::set_margin_top() and
+   * Gtk::Widget::set_margin_bottom() on the widgets contained in the row if
+   * you need this functionality. Gtk::Grid does not support per-row spacing.
+   * @param row Row number whose spacing will be changed.
+   * @param spacing Number of pixels that the spacing should take up.
+   */
   void set_row_spacing(guint row, guint spacing);
   
   /** Gets the amount of space between row @a row, and
    * row @a row + 1. See set_row_spacing().
+   * 
+   * Deprecated: 3.4: Gtk::Grid does not offer a replacement for this
+   * functionality.
    * @param row A row in the table, 0 indicates the first row.
    * @return The row spacing.
    */
   guint get_row_spacing(guint row) const;
 
   
+  /** Alters the amount of space between a given table column and the following
+   * column.
+   * 
+   * Deprecated: 3.4: Use Gtk::Widget::set_margin_left() and
+   * Gtk::Widget::set_margin_right() on the widgets contained in the row if
+   * you need this functionality. Gtk::Grid does not support per-row spacing.
+   * @param column The column whose spacing should be changed.
+   * @param spacing Number of pixels that the spacing should take up.
+   */
   void set_col_spacing(guint column, guint spacing);
   
   /** Gets the amount of space between column @a col, and
    * column @a col + 1. See set_col_spacing().
+   * 
+   * Deprecated: 3.4: Gtk::Grid does not offer a replacement for this
+   * functionality.
    * @param column A column in the table, 0 indicates the first column.
    * @return The column spacing.
    */
   guint get_col_spacing(guint column) const;
 
   
+  /** Sets the space between every row in @a table equal to @a spacing.
+   * 
+   * Deprecated: 3.4: Use Gtk::Grid::set_row_spacing() with Gtk::Grid.
+   * @param spacing The number of pixels of space to place between every row in the table.
+   */
   void set_row_spacings(guint spacing);
 
   
+  /** Sets the space between every column in @a table equal to @a spacing.
+   * 
+   * Deprecated: 3.4: Use Gtk::Grid::set_column_spacing() with Gtk::Grid.
+   * @param spacing The number of pixels of space to place between every column
+   * in the table.
+   */
   void set_col_spacings(guint spacing);
 
   void set_spacings(guint spacing);
@@ -278,6 +250,8 @@ public:
   /** Gets the default row spacing for the table. This is
    * the spacing that will be used for newly added rows.
    * (See set_row_spacings())
+   * 
+   * Deprecated: 3.4: Use Gtk::Grid::get_row_spacing() with Gtk::Grid.
    * @return The default row spacing.
    */
   guint get_default_row_spacing();
@@ -285,11 +259,21 @@ public:
   /** Gets the default column spacing for the table. This is
    * the spacing that will be used for newly added columns.
    * (See set_col_spacings())
+   * 
+   * Deprecated: 3.4: Use Gtk::Grid::get_column_spacing() with Gtk::Grid.
    * @return The default column spacing.
    */
   guint get_default_col_spacing();
 
   
+  /** Changes the homogenous property of table cells, ie. whether all cells are
+   * an equal size or not.
+   * 
+   * Deprecated: 3.4: Use Gtk::Grid::set_row_homogeneous() and
+   * Gtk::Grid::set_column_homogeneous() with Gtk::Grid.
+   * @param homogeneous Set to <tt>true</tt> to ensure all table cells are the same size. Set
+   * to <tt>false</tt> if this is not your desired behaviour.
+   */
   void set_homogeneous(bool homogeneous =  true);
   
   /** Returns whether the table cells are all constrained to the same
@@ -299,9 +283,12 @@ public:
   bool get_homogeneous() const;
 
   
-  /** Returns the number of rows and columns in the table.
+  /** Gets the number of rows and columns in the table.
    * 
    * @newin{2,22}
+   * 
+   * Deprecated: 3.4: Gtk::Grid does not expose the number of columns and
+   * rows.
    * @param rows Return location for the number of
    * rows, or <tt>0</tt>.
    * @param columns Return location for the number
@@ -309,22 +296,6 @@ public:
    */
   void get_size(guint& rows, guint& columns) const;
 
-  /** @deprecated Use Container::get_children() instead.
-   */
-  typedef Table_Helpers::TableList TableList;
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** @deprecated Use Container::get_children() instead.
-   */
-  TableList& children();
-
-  /** @deprecated Use Container::get_children() instead.
-   */
-  const TableList& children() const;
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The number of rows in the table.
    *
@@ -332,7 +303,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<guint> property_n_rows() ;
+  Glib::PropertyProxy< guint > property_n_rows() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -342,7 +313,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<guint> property_n_rows() const;
+  Glib::PropertyProxy_ReadOnly< guint > property_n_rows() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -352,7 +323,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<guint> property_n_columns() ;
+  Glib::PropertyProxy< guint > property_n_columns() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -362,7 +333,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<guint> property_n_columns() const;
+  Glib::PropertyProxy_ReadOnly< guint > property_n_columns() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -372,7 +343,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<guint> property_column_spacing() ;
+  Glib::PropertyProxy< guint > property_column_spacing() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -382,7 +353,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<guint> property_column_spacing() const;
+  Glib::PropertyProxy_ReadOnly< guint > property_column_spacing() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -392,7 +363,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<guint> property_row_spacing() ;
+  Glib::PropertyProxy< guint > property_row_spacing() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -402,7 +373,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<guint> property_row_spacing() const;
+  Glib::PropertyProxy_ReadOnly< guint > property_row_spacing() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -412,7 +383,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_homogeneous() ;
+  Glib::PropertyProxy< bool > property_homogeneous() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -422,14 +393,8 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_homogeneous() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_homogeneous() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
-
-
-protected:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  mutable TableList children_proxy_;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 
 };
@@ -449,6 +414,9 @@ namespace Glib
    */
   Gtk::Table* wrap(GtkTable* object, bool take_copy = false);
 } //namespace Glib
+
+
+#endif // GTKMM_DISABLE_DEPRECATED
 
 
 #endif /* _GTKMM_TABLE_H */

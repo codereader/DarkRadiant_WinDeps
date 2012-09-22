@@ -4,7 +4,8 @@
 #define _GIOMM_DATAOUTPUTSTREAM_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -215,7 +216,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<DataStreamByteOrder> property_byte_order() ;
+  Glib::PropertyProxy< DataStreamByteOrder > property_byte_order() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -225,7 +226,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<DataStreamByteOrder> property_byte_order() const;
+  Glib::PropertyProxy_ReadOnly< DataStreamByteOrder > property_byte_order() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

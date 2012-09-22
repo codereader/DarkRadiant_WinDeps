@@ -4,7 +4,8 @@
 #define _GIOMM_DATAINPUTSTREAM_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -121,7 +122,7 @@ public:
    * 
    * Note that using G_DATA_STREAM_NEWLINE_TYPE_ANY is slightly unsafe. If a read
    * chunk ends in "CR" we must read an additional byte to know if this is "CR" or
-   * "CR LF", and this might block if there is no more data availible.
+   * "CR LF", and this might block if there is no more data available.
    * @param type The type of new line return as DataStreamNewlineType.
    */
   void set_newline_type(DataStreamNewlineType type);
@@ -271,6 +272,39 @@ public:
    */
   bool read_line(std::string& line);
 
+// The below initialization is unusual because it stores the return in a 'tmp'
+// variable, sets the output parameter and then frees the return.  If this is
+// too weird, the methods can probably be just handwritten.
+# 
+
+
+  /** Reads a UTF-8 encoded line from the data input stream.
+   * 
+   * If @a cancellable is not <tt>0</tt>, then the operation can be cancelled by
+   * triggering the cancellable object from another thread. If the operation
+   * was cancelled, the error IO_ERROR_CANCELLED will be returned.
+   * 
+   * @newin{2,30}
+   * @param length A #gsize to get the length of the data read in.
+   * @param cancellable Optional Cancellable object, <tt>0</tt> to ignore.
+   * @return A NUL terminated UTF-8 string with the
+   * line that was read in (without the newlines).  Set @a length to a
+   * #gsize to get the length of the read line.  On an error, it will
+   * return <tt>0</tt> and @a error will be set.  For UTF-8 conversion errors,
+   * the set error domain is CONVERT_ERROR.  If there's no content to
+   * read, it will still return <tt>0</tt>, but @a error won't be set.
+   */
+  void read_line_utf8(std::string& line, const Glib::RefPtr<Cancellable>& cancellable, gsize& length);
+
+  /// A read_line_utf8() convenience overload.
+  void read_line_utf8(std::string& line, const Glib::RefPtr<Cancellable>& cancellable);
+
+  /// A read_line_utf8() convenience overload.
+  void read_line_utf8(std::string& line, gsize& length);
+
+  /// A read_line_utf8() convenience overload.
+  void read_line_utf8(std::string& line);
+
   /** The asynchronous version of read_until(). It is
    * an error to have two outstanding calls to this function.
    *
@@ -290,6 +324,24 @@ public:
    */
   bool read_line_finish(const Glib::RefPtr<AsyncResult>& result, std::string& data);
   
+
+  /** Finish an asynchronous call started by
+   * g_data_input_stream_read_line_async().
+   * 
+   * @newin{2,30}
+   * @param result The AsyncResult that was provided to the callback.
+   * @param length A #gsize to get the length of the data read in.
+   * @return A string with the line that was read in
+   * (without the newlines).  Set @a length to a #gsize to get the length
+   * of the read line.  On an error, it will return <tt>0</tt> and @a error
+   * will be set. For UTF-8 conversion errors, the set error domain is
+   * CONVERT_ERROR.  If there's no content to read, it will still
+   * return <tt>0</tt>, but @a error won't be set.
+   */
+  void read_line_finish_utf8(const Glib::RefPtr<AsyncResult>& result, std::string& data, gsize& length);
+
+  /// A read_line_finish_utf8() convenience overload.
+  void read_line_finish_utf8(const Glib::RefPtr<AsyncResult>& result, std::string& data);
 
   /** Reads a string from the data input stream, up to the first
    * occurrence of any of the stop characters.
@@ -311,7 +363,7 @@ public:
   bool read_until(std::string& data, const std::string& stop_chars, const Glib::RefPtr<Cancellable>& cancellable);
   
 
-  //TODO: This will be really deprecated sometime, maybe even before glib 2.28.0.
+  //TODO: This will be really deprecated sometime, maybe sometime after glib 2.30.0.
   /** A non-cancellable version of read_until().
    *
    * Note that, in contrast to read_until_async(),
@@ -329,7 +381,7 @@ public:
    */
   bool read_until(std::string& data, const std::string& stop_chars);
 
-  //TODO: This will be really deprecated sometime after glib 2.28.0.
+  //TODO: This will be really deprecated sometime after glib 2.30.0.
   /** The asynchronous version of read_until(). It is
    * an error to have two outstanding calls to this function.
    *
@@ -352,7 +404,7 @@ public:
   void read_until_async(const std::string& stop_chars, const SlotAsyncReady& slot, const Glib::RefPtr<Cancellable>& cancellable, int io_priority = Glib::PRIORITY_DEFAULT);
   
 
-  //TODO: This will be really deprecated sometime after glib 2.28.0.
+  //TODO: This will be really deprecated sometime after glib 2.30.0.
   /** Finish an asynchronous call started by read_until_async().
    *
    * @param result The AsyncResult that was provided to the callback slot.
@@ -424,7 +476,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<DataStreamByteOrder> property_byte_order() ;
+  Glib::PropertyProxy< DataStreamByteOrder > property_byte_order() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -434,7 +486,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<DataStreamByteOrder> property_byte_order() const;
+  Glib::PropertyProxy_ReadOnly< DataStreamByteOrder > property_byte_order() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -444,7 +496,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<DataStreamNewlineType> property_newline_type() ;
+  Glib::PropertyProxy< DataStreamNewlineType > property_newline_type() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -454,7 +506,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<DataStreamNewlineType> property_newline_type() const;
+  Glib::PropertyProxy_ReadOnly< DataStreamNewlineType > property_newline_type() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

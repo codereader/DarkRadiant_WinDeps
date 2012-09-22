@@ -4,12 +4,13 @@
 #define _GTKMM_COMBOBOX_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: combobox.hg,v 1.17 2006/09/19 20:08:42 murrayc Exp $ */
 
 /* combobox.h
- * 
+ *
  * Copyright (C) 2003 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -23,13 +24,15 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/bin.h>
 #include <gtkmm/celllayout.h>
+#include <gtkmm/celleditable.h>
 #include <gtkmm/treemodel.h>
+#include <gtkmm/cellarea.h>
 #include <gtkmm/cellrenderer.h>
 #include <gtkmm/treeview.h>
 #include <gtkmm/enums.h> //For SensitivityType.
@@ -48,32 +51,37 @@ namespace Gtk
 
 /** A widget used to choose from a list of items.
  *
- * A ComboBox is a widget that allows the user to choose from a list of valid choices. The ComboBox displays the 
- * selected choice. When activated, the ComboBox displays a popup which allows the user to make a new choice. The 
- * style in which the selected value is displayed, and the style of the popup is determined by the current theme. 
- * It may be similar to a OptionMenu, or similar to a Windows-style combo box.
+ * A ComboBox is a widget that allows the user to choose from a list of valid choices. The ComboBox displays the
+ * selected choice. When activated, the ComboBox displays a popup which allows the user to make a new choice. The
+ * style in which the selected value is displayed, and the style of the popup is determined by the current theme.
+ * It may be similar to a Windows-style combo box.
  *
- * The ComboBox uses the model-view pattern; the list of valid choices is specified in the form of a tree model, 
- * and the display of the choices can be adapted to the data in the model by using cell renderers, as you would in 
- * a tree view. This is possible since ComboBox implements the CellLayout interface. The tree model holding the 
- * valid choices is not restricted to a flat list, it can be a real tree, and the popup will reflect the tree 
+ * The ComboBox uses the model-view pattern; the list of valid choices is specified in the form of a tree model,
+ * and the display of the choices can be adapted to the data in the model by using cell renderers, as you would in
+ * a tree view. This is possible since ComboBox implements the CellLayout interface. The tree model holding the
+ * valid choices is not restricted to a flat list, it can be a real tree, and the popup will reflect the tree
  * structure.
  *
- * The ComboBox widget looks like this with has_entry = false:
+ * To allow the user to enter values not in the model, the 'has-entry'
+ * property allows the ComboBox to contain a Gtk::Entry. This entry
+ * can be accessed by calling get_entry(), or you can just call get_entry_text() 
+ * to get the text from the Entry.
+ *
+ * For a simple list of textual choices, the model-view API of ComboBox
+ * can be a bit overwhelming. In this case, ComboBoxText offers a
+ * simple alternative. Both ComboBox and ComboBoxText can contain
+ * an entry.
+ *
+ * The ComboBox widget looks like this:
  * @image html combobox1.png
- *
- * The ComboBox widget looks like this with has_entry = true:
- * @image html comboboxentry1.png
- *
- * See also ComboBoxText, which is specialised for a single text column.
  *
  * @ingroup Widgets
  */
 
 class ComboBox
 : public Bin,
-  public CellLayout
-//TODO: Since GTK+ 2.6, this should now inherit also from CellEditable, but we can't add this base without breaking ABI.
+  public CellLayout,
+  public CellEditable
 {
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -102,8 +110,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -123,6 +135,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_changed().
   virtual void on_changed();
 
 
@@ -130,30 +143,29 @@ private:
 
   
 public:
-  ComboBox();
-  
-  /** Creates a new ComboBox with the model initialized to @a model.
-   */
-    explicit ComboBox(const Glib::RefPtr<TreeModel>& model);
-
-   //See ComboBoxText for an equivalent of gtk_combo_box_new_text().
 
   /** Creates a new empty #GtkComboBox, optionally with an entry.
    * @param has_entry If this is true then this will have an Entry widget.
-   *
-   * newin{2,24}
    */
-  explicit ComboBox(bool has_entry); //has_entry has a default value in gtkmm-3.0 but can't here because we already have a default constructor.
+  explicit ComboBox(bool has_entry = false);
   
+
   /** Creates a new ComboBox with the model initialized to @a model.
    * @param model The model containing data to display in the ComboBox.
    * @param has_entry If this is true then this will have an Entry widget.
-   *
-   * newin{2,24}
    */
-  explicit ComboBox(const Glib::RefPtr<TreeModel>& model, bool has_entry); //has_entry has a default value in gtkmm-3.0 but can't here because we already have a default constructor.
+  explicit ComboBox(const Glib::RefPtr<TreeModel>& model, bool has_entry = false);
   
   
+  /** Creates a new empty #GtkComboBox, optionally with an entry.
+   * @param has_entry If this is true then this will have an Entry widget.
+   */
+  explicit ComboBox(const Glib::RefPtr<CellArea>& cell_area, bool has_entry = false);
+  
+
+   //See ComboBoxText for an equivalent of gtk_combo_box_new_text().
+
+
   /** Sets the wrap width of @a combo_box to be @a width. The wrap width is basically
    * the preferred number of columns when you want the popup to be layed out
    * in a table.
@@ -163,8 +175,8 @@ public:
    */
   void set_wrap_width(int width);
   
-  /** Returns the wrap width which is used to determine the number of columns 
-   * for the popup menu. If the wrap width is larger than 1, the combo box 
+  /** Returns the wrap width which is used to determine the number of columns
+   * for the popup menu. If the wrap width is larger than 1, the combo box
    * is in table mode.
    * 
    * @newin{2,6}
@@ -212,7 +224,7 @@ public:
    */
   bool get_add_tearoffs() const;
   
-  /** Sets whether the popup menu should have a tearoff 
+  /** Sets whether the popup menu should have a tearoff
    * menu item.
    * 
    * @newin{2,6}
@@ -238,22 +250,22 @@ public:
   void set_title(const Glib::ustring& title);
 
   
-  /** Returns whether the combo box grabs focus when it is clicked 
+  /** Returns whether the combo box grabs focus when it is clicked
    * with the mouse. See set_focus_on_click().
    * 
    * @newin{2,6}
-   * @return <tt>true</tt> if the combo box grabs focus when it is 
+   * @return <tt>true</tt> if the combo box grabs focus when it is
    * clicked with the mouse.
    */
   bool get_focus_on_click() const;
   
-  /** Sets whether the combo box will grab focus when it is clicked with 
-   * the mouse. Making mouse clicks not grab focus is useful in places 
-   * like toolbars where you don't want the keyboard focus removed from 
+  /** Sets whether the combo box will grab focus when it is clicked with
+   * the mouse. Making mouse clicks not grab focus is useful in places
+   * like toolbars where you don't want the keyboard focus removed from
    * the main area of the application.
    * 
    * @newin{2,6}
-   * @param focus_on_click Whether the combo box grabs focus when clicked 
+   * @param focus_on_click Whether the combo box grabs focus when clicked
    * with the mouse.
    */
   void set_focus_on_click(bool focus_on_click =  true);
@@ -261,13 +273,13 @@ public:
 /* get/set active item */
   
   /** Returns the index of the currently active item, or -1 if there's no
-   * active item. If the model is a non-flat treemodel, and the active item 
-   * is not an immediate child of the root of the tree, this function returns 
-   * <tt>gtk_tree_path_get_indices (path)[0]</tt>, where 
+   * active item. If the model is a non-flat treemodel, and the active item
+   * is not an immediate child of the root of the tree, this function returns
+   * <tt>gtk_tree_path_get_indices (path)[0]</tt>, where
    * <tt>path</tt> is the Gtk::TreePath of the active item.
    * 
    * @newin{2,4}
-   * @return An integer which is the index of the currently active item, 
+   * @return An integer which is the index of the currently active item,
    * or -1 if there's no active item.
    */
   int get_active_row_number() const;
@@ -276,13 +288,13 @@ public:
    * @result The iterator.
    */
   TreeModel::iterator get_active();
-  
+
   /** Gets an iterator that points to the current active item, if it exists.
    * @result The iterator.
    */
   TreeModel::const_iterator get_active() const;
   
-    
+
   /** Sets the active item of @a combo_box to be the item at @a index.
    * 
    * @newin{2,4}
@@ -298,7 +310,7 @@ public:
    * @param iter The Gtk::TreeIter, or <tt>0</tt>.
    */
   void set_active(const TreeModel::iterator& iter);
-  
+
   //TODO: See https://bugzilla.gnome.org/show_bug.cgi?id=612396#c30
   /** Get the text in the entry, if there is an entry.
    *
@@ -347,15 +359,15 @@ public:
    */
   void unset_model();
 
-  typedef TreeView::SlotRowSeparator SlotRowSeparator;  
-  
-  /** Sets the row separator function, which is used to determine whether a row should be drawn as a separator. 
+  typedef TreeView::SlotRowSeparator SlotRowSeparator;
+
+  /** Sets the row separator function, which is used to determine whether a row should be drawn as a separator.
    * See also unset_row_separator_func().
-   * 
+   *
    * @param slot The callback.
    */
   void set_row_separator_func(const SlotRowSeparator& slot);
-  
+
   /** Causes no separators to be drawn.
    */
   void unset_row_separator_func();
@@ -382,7 +394,7 @@ public:
    */
   SensitivityType get_button_sensitivity() const;
 
-  
+
   /** Returns whether the combo box has an entry.
    * 
    * @newin{2,24}
@@ -396,7 +408,7 @@ public:
    * must be of type TYPE_STRING.
    * 
    * This is only relevant if @a combo_box has been created with
-   * Gtk::ComboBox:has-entry as <tt>true</tt>.
+   * Gtk::ComboBox::property_has_entry() as <tt>true</tt>.
    * 
    * @newin{2,24}
    * @param text_column A column in @a model to get the strings from for
@@ -409,7 +421,7 @@ public:
    * must be of type TYPE_STRING.
    * 
    * This is only relevant if @a combo_box has been created with
-   * Gtk::ComboBox:has-entry as <tt>true</tt>.
+   * Gtk::ComboBox::property_has_entry() as <tt>true</tt>.
    * 
    * @newin{2,24}
    * @param text_column A column in @a model to get the strings from for
@@ -427,7 +439,24 @@ public:
   int get_entry_text_column() const;
 
   
-  /** Pops up the menu or dropdown list of @a combo_box. 
+  /** Specifies whether the popup's width should be a fixed width
+   * matching the allocated width of the combo box.
+   * 
+   * @newin{3,0}
+   * @param fixed Whether to use a fixed popup width.
+   */
+  void set_popup_fixed_width(bool fixed =  true);
+  
+  /** Gets whether the popup uses a fixed width matching
+   * the allocated width of the combo box.
+   * 
+   * @newin{3,0}
+   * @return <tt>true</tt> if the popup uses a fixed width.
+   */
+  bool get_popup_fixed_width() const;
+
+  
+  /** Pops up the menu or dropdown list of @a combo_box.
    * 
    * This function is mostly intended for use by accessibility technologies;
    * applications should have little use for it.
@@ -435,6 +464,15 @@ public:
    * @newin{2,4}
    */
   void popup();
+  
+  /** Pops up the menu or dropdown list of @a combo_box, the popup window
+   * will be grabbed so only @a device and its associated pointer/keyboard
+   * are the only Gdk::Device<!-- -->s able to send events to it.
+   * 
+   * @newin{3,0}
+   * @param device A Gdk::Device.
+   */
+  void popup(const Glib::RefPtr<Gdk::Device>& device);
   
   /** Hides the menu or dropdown list of @a combo_box.
    * 
@@ -475,8 +513,57 @@ public:
   Glib::RefPtr<const Atk::Object> get_popup_accessible() const;
 #endif //  GTKMM_ATKMM_ENABLED
 
+  
+  /** Returns the column which @a combo_box is using to get string IDs
+   * for values from.
+   * 
+   * @newin{3,0}
+   * @return A column in the data source model of @a combo_box.
+   */
+  int get_id_column() const;
+  
+  /** Sets the model column which @a combo_box should use to get string IDs
+   * for values from. The column @a id_column in the model of @a combo_box
+   * must be of type TYPE_STRING.
+   * 
+   * @newin{3,0}
+   * @param id_column A column in @a model to get string IDs for values from.
+   */
+  void set_id_column(int id_column);
+  
+  /** Returns the ID of the active row of @a combo_box.  This value is taken
+   * from the active row and the column specified by the Gtk::ComboBox::property_id_column()
+   * property of @a combo_box (see set_id_column()).
+   * 
+   * The returned value is an interned string which means that you can
+   * compare the pointer by value to other interned strings and that you
+   * must not free it.
+   * 
+   * If the Gtk::ComboBox::property_id_column() property of @a combo_box is not set, or if
+   * no row is active, or if the active row has a <tt>0</tt> ID value, then <tt>0</tt>
+   * is returned.
+   * 
+   * @newin{3,0}
+   * @return The ID of the active row, or <tt>0</tt>.
+   */
+  Glib::ustring get_active_id() const;
+  
+  /** Changes the active row of @a combo_box to the one that has an ID equal to
+   *  @a active_id, or unsets the active row if @a active_id is <tt>0</tt>.  Rows having
+   * a <tt>0</tt> ID string cannot be made active by this function.
+   * 
+   * If the Gtk::ComboBox::property_id_column() property of @a combo_box is unset or if no
+   * row has the given ID then the function does nothing and returns <tt>false</tt>.
+   * 
+   * @newin{3,0}
+   * @param active_id The ID of the row to select, or <tt>0</tt>.
+   * @return <tt>true</tt> if a row with a matching ID was found.  If a <tt>0</tt>
+   *  @a active_id was given to unset the active row, the function
+   * always returns <tt>true</tt>.
+   */
+  void get_active_id(const Glib::ustring& active_id);
 
-   //These are in ComboBoxText.
+   //deprecated
 
   /** @see Bin::get_child().
    * @newin{2,24}
@@ -487,7 +574,8 @@ public:
    * @newin{2,24}
    */
   const Entry* get_entry() const;
-  
+
+
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The model for the combo box.
    *
@@ -515,7 +603,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_wrap_width() ;
+  Glib::PropertyProxy< int > property_wrap_width() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -525,7 +613,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_wrap_width() const;
+  Glib::PropertyProxy_ReadOnly< int > property_wrap_width() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -535,7 +623,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_row_span_column() ;
+  Glib::PropertyProxy< int > property_row_span_column() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -545,7 +633,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_row_span_column() const;
+  Glib::PropertyProxy_ReadOnly< int > property_row_span_column() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -555,7 +643,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_column_span_column() ;
+  Glib::PropertyProxy< int > property_column_span_column() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -565,7 +653,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_column_span_column() const;
+  Glib::PropertyProxy_ReadOnly< int > property_column_span_column() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -575,7 +663,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_active() ;
+  Glib::PropertyProxy< int > property_active() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -585,7 +673,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_active() const;
+  Glib::PropertyProxy_ReadOnly< int > property_active() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -595,7 +683,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_add_tearoffs() ;
+  Glib::PropertyProxy< bool > property_add_tearoffs() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -605,7 +693,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_add_tearoffs() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_add_tearoffs() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -615,7 +703,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_has_frame() ;
+  Glib::PropertyProxy< bool > property_has_frame() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -625,7 +713,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_has_frame() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_has_frame() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -635,7 +723,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_focus_on_click() ;
+  Glib::PropertyProxy< bool > property_focus_on_click() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -645,7 +733,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_focus_on_click() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_focus_on_click() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -655,7 +743,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_tearoff_title() ;
+  Glib::PropertyProxy< Glib::ustring > property_tearoff_title() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -665,7 +753,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_tearoff_title() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_tearoff_title() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -675,7 +763,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_popup_shown() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_popup_shown() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -686,7 +774,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<SensitivityType> property_button_sensitivity() ;
+  Glib::PropertyProxy< SensitivityType > property_button_sensitivity() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -696,25 +784,163 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<SensitivityType> property_button_sensitivity() const;
+  Glib::PropertyProxy_ReadOnly< SensitivityType > property_button_sensitivity() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the popup's width should be a fixed width matching the allocated width of the combo box.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< bool > property_popup_fixed_width() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the popup's width should be a fixed width matching the allocated width of the combo box.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< bool > property_popup_fixed_width() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The GtkCellArea used to layout cells.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< Glib::RefPtr<CellArea> > property_cell_area() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
-  /** The changed signal gets emitted when the active
-   * item is changed. This can be due to the user selecting
-   * a different item from the list, or due to a 
-   * call to set_active_iter().
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether combo box has an entry.
    *
-   * @par Prototype:
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< bool > property_has_entry() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The column in the combo box's model to associate with strings from the entry if the combo was created with #GtkComboBox:has-entry = %TRUE.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< int > property_entry_text_column() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The column in the combo box's model to associate with strings from the entry if the combo was created with #GtkComboBox:has-entry = %TRUE.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< int > property_entry_text_column() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The column in the combo box's model that provides string IDs for the values in the model.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< int > property_id_column() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The column in the combo box's model that provides string IDs for the values in the model.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< int > property_id_column() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The value of the id column for the active row.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< Glib::ustring > property_active_id() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The value of the id column for the active row.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_active_id() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%changed()</tt>
+   *
+   * The changed signal is emitted when the active
+   * item is changed. The can be due to the user selecting
+   * a different item from the list, or due to a
+   * call to Gtk::ComboBox::set_active_iter().
+   * It will also be emitted while typing into the entry of a combo box
+   * with an entry.
+   * 
+   * @newin{2,4}
    */
 
   Glib::SignalProxy0< void > signal_changed();
 
 
+//TODO: Remove no_defualt_handler when we can break ABI
+   
+
+/**
+   * @par Slot Prototype:
+   * <tt>Glib::ustring on_my_%format_entry_text(const TreeModel::Path& path)</tt>
+   *
+   * For combo boxes that are created with an entry (See GtkComboBox:has-entry).
+   * 
+   * A signal which allows you to change how the text displayed in a combo box's
+   * entry is displayed.
+   * 
+   * Connect a signal handler which returns an allocated string representing
+   *  @a path. That string will then be used to set the text in the combo box's entry.
+   * The default signal handler uses the text from the GtkComboBox::entry-text-column 
+   * model column.
+   * 
+   * Here's an example signal handler which fetches data from the model and
+   * displays it in the entry.
+   * 
+   * [C example ellipted]
+   * 
+   * @newin{3,4}
+   * @param path The GtkTreePath string from the combo box's current model to format text for.
+   * @return A newly allocated string representing @a path 
+   * for the current GtkComboBox model.
+   */
+
+  Glib::SignalProxy1< Glib::ustring,const TreeModel::Path& > signal_format_entry_text();
+
+
   //Key-binding signals:
   
-    
+  
 };
 
 

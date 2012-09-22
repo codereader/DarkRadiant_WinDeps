@@ -4,7 +4,8 @@
 #define _GDKMM_EVENT_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 1998-2002 The gtkmm Development Team
  *
@@ -19,12 +20,12 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- 
-#include <gdkmm/window.h>
+
+#include <gdkmm/types.h>
 #include <gdkmm/screen.h>
 
 /* Shadow DELETE macro (from winnt.h).
@@ -53,44 +54,47 @@ namespace Gdk
 enum EventType
 {
   NOTHING = -1,
-  DELETE,
-  DESTROY,
-  EXPOSE,
-  MOTION_NOTIFY,
-  BUTTON_PRESS,
-  DOUBLE_BUTTON_PRESS,
-  TRIPLE_BUTTON_PRESS,
-  BUTTON_RELEASE,
-  KEY_PRESS,
-  KEY_RELEASE,
-  ENTER_NOTIFY,
-  LEAVE_NOTIFY,
-  FOCUS_CHANGE,
-  CONFIGURE,
-  MAP,
-  UNMAP,
-  PROPERTY_NOTIFY,
-  SELECTION_CLEAR,
-  SELECTION_REQUEST,
-  SELECTION_NOTIFY,
-  PROXIMITY_IN,
-  PROXIMITY_OUT,
-  DRAG_ENTER,
-  DRAG_LEAVE,
-  DRAG_MOTION,
-  DRAG_STATUS,
-  DROP_START,
-  DROP_FINISHED,
-  CLIENT_EVENT,
-  VISIBILITY_NOTIFY,
-  NO_EXPOSE,
-  SCROLL,
-  WINDOW_STATE,
-  SETTING,
-  OWNER_CHANGE,
-  GRAB_BROKEN,
-  DAMAGE,
-  EVENT_LAST
+  DELETE = 0,
+  DESTROY = 1,
+  EXPOSE = 2,
+  MOTION_NOTIFY = 3,
+  BUTTON_PRESS = 4,
+  DOUBLE_BUTTON_PRESS = 5,
+  TRIPLE_BUTTON_PRESS = 6,
+  BUTTON_RELEASE = 7,
+  KEY_PRESS = 8,
+  KEY_RELEASE = 9,
+  ENTER_NOTIFY = 10,
+  LEAVE_NOTIFY = 11,
+  FOCUS_CHANGE = 12,
+  CONFIGURE = 13,
+  MAP = 14,
+  UNMAP = 15,
+  PROPERTY_NOTIFY = 16,
+  SELECTION_CLEAR = 17,
+  SELECTION_REQUEST = 18,
+  SELECTION_NOTIFY = 19,
+  PROXIMITY_IN = 20,
+  PROXIMITY_OUT = 21,
+  DRAG_ENTER = 22,
+  DRAG_LEAVE = 23,
+  DRAG_MOTION = 24,
+  DRAG_STATUS = 25,
+  DROP_START = 26,
+  DROP_FINISHED = 27,
+  CLIENT_EVENT = 28,
+  VISIBILITY_NOTIFY = 29,
+  SCROLL = 31,
+  WINDOW_STATE = 32,
+  SETTING = 33,
+  OWNER_CHANGE = 34,
+  GRAB_BROKEN = 35,
+  DAMAGE = 36,
+  TOUCH_BEGIN = 37,
+  TOUCH_UPDATE = 38,
+  TOUCH_END = 39,
+  TOUCH_CANCEL = 40,
+  EVENT_LAST = 41
 };
 
 } // namespace Gdk
@@ -114,37 +118,6 @@ public:
 namespace Gdk
 {
 
-
-/**
- * @ingroup gdkmmEnums
- */
-enum ExtensionMode
-{
-  EXTENSION_EVENTS_NONE,
-  EXTENSION_EVENTS_ALL,
-  EXTENSION_EVENTS_CURSOR
-};
-
-} // namespace Gdk
-
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-namespace Glib
-{
-
-template <>
-class Value<Gdk::ExtensionMode> : public Glib::Value_Enum<Gdk::ExtensionMode>
-{
-public:
-  static GType value_type() G_GNUC_CONST;
-};
-
-} // namespace Glib
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-
-namespace Gdk
-{
 
 /**
  * @ingroup gdkmmEnums
@@ -190,9 +163,11 @@ class Event
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   typedef Event CppObjectType;
   typedef GdkEvent BaseObjectType;
-
-  static GType get_type() G_GNUC_CONST;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
+  static GType get_type() G_GNUC_CONST;
 
   Event();
 
@@ -238,22 +213,8 @@ public:
    * free().
    */
   static Event peek();
+   //deprecated
   
-#ifndef GDKMM_DISABLE_DEPRECATED
-
-  /** Waits for a GraphicsExpose or NoExpose event from the X server.
-   * This is used in the Gtk::Text and Gtk::CList widgets in GTK+ to make sure any
-   * GraphicsExpose events are handled before the widget is scrolled.
-   * 
-   * Deprecated: 2.18:
-   * @param window The Gdk::Window to wait for the events for.
-   * @return A Gdk::EventExpose if a GraphicsExpose was received, or <tt>0</tt> if a
-   * NoExpose event was received.
-   */
-  static Event get_graphics_expose(const Glib::RefPtr<Window>& window);
-#endif // GDKMM_DISABLE_DEPRECATED
-
-
   /** Appends a copy of the given event onto the front of the event
    * queue for event->any.window's display, or the default event
    * queue if event->any.window is <tt>0</tt>. See Gdk::Display::put_event().
@@ -319,15 +280,7 @@ public:
    */
   static bool get_show_events();
 
-  
-  /** Sets the screen for @a event to @a screen. The event must
-   * have been allocated by GTK+, for instance, by
-   * copy().
-   * 
-   * @newin{2,2}
-   * @param screen A Gdk::Screen.
-   */
-  void set_screen(const Glib::RefPtr<Screen>& screen);
+   //deprecated
   
   /** Returns the screen for the event. The screen is
    * typically the screen for <tt>event->any.window</tt>, but
@@ -355,17 +308,6 @@ public:
    */
   Glib::RefPtr<const Screen> get_screen() const;
 
-  
-  /** Sends an X ClientMessage event to a given window (which must be
-   * on the default Gdk::Display.)
-   * This could be used for communicating between different applications,
-   * though the amount of data is limited to 20 bytes.
-   * @param winid The window to send the X ClientMessage event to.
-   * @return Non-zero on success.
-   */
-  bool send_client_message(NativeWindow winid);
-  bool send_client_message(const Glib::RefPtr<Display>& display, NativeWindow winid);
-  
 
 };
 

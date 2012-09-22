@@ -4,7 +4,8 @@
 #define _GIOMM_EMBLEMEDICON_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -25,6 +26,7 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <glibmm/listhandle.h>
 #include <glibmm/object.h>
 #include <giomm/icon.h>
 #include <giomm/emblem.h>
@@ -172,6 +174,12 @@ public:
    * @param emblem A Emblem.
    */
   void add_emblem(const Glib::RefPtr<Emblem>& emblem);
+  
+  /** Removes all the emblems from @a icon.
+   * 
+   * @newin{2,28}
+   */
+  void clear_emblems();
 
 
 public:

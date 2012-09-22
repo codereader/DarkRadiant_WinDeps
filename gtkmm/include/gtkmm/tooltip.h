@@ -4,7 +4,8 @@
 #define _GTKMM_TOOLTIP_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 2007 The gtkmm Development Team
  *
@@ -19,8 +20,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <glibmm/object.h>
@@ -42,9 +43,6 @@ namespace Gtk
 {
 
 /** Add tips to your widgets
- *
- * Gtk::Tooltip belongs to the new tooltips API that was introduced in GTK+ 2.12
- * and which deprecates the old Gtk::Tooltips API.
  *
  * Basic tooltips can be realized simply by using set_tooltip_text()
  * or set_tooltip_markup() without any explicit tooltip object.
@@ -116,8 +114,11 @@ protected:
 public:
   virtual ~Tooltip();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -138,13 +139,19 @@ private:
 public:
   
   /** Sets the text of the tooltip to be @a markup, which is marked up
-   * with the .
+   * with the Pango text markup language.
    * If @a markup is <tt>0</tt>, the label will be hidden.
    * 
    * @newin{2,12}
-   * @param markup A markup string (see ) or <tt>0</tt>.
+   * @param markup A markup string (see Pango markup format) or <tt>0</tt>.
    */
   void set_markup(const Glib::ustring& markup);
+  
+  /** Hide the label.
+   * @newin{3,2}
+   */
+  void unset_markup();
+
   
   /** Sets the text of the tooltip to be @a text. If @a text is <tt>0</tt>, the label
    * will be hidden. See also set_markup().
@@ -153,6 +160,12 @@ public:
    * @param text A text string or <tt>0</tt>.
    */
   void set_text(const Glib::ustring& markup);
+  
+  /** Hide the label.
+   * @newin{3,2}
+   */
+  void unset_text();
+  
   
   /** Sets the icon of the tooltip (which is in front of the text) to be
    *  @a pixbuf.  If @a pixbuf is <tt>0</tt>, the image will be hidden.
@@ -193,8 +206,13 @@ public:
    * @param size A stock icon size.
    */
   void set_icon_from_icon_name(const Glib::ustring& icon_name, IconSize size);
+    
+  /** Hide the image.
+   * @newin{3,2}
+   */
+  void unset_icon();
 
-
+  
   /** Replaces the widget packed into the tooltip with
    *  @a custom_widget. @a custom_widget does not get destroyed when the tooltip goes
    * away.
@@ -207,6 +225,12 @@ public:
    * @param custom_widget A Gtk::Widget, or <tt>0</tt> to unset the old custom widget.
    */
   void set_custom(Widget& custom_widget);
+  
+  /** Remove the custom widget.
+   * @newin{3,2}
+   */
+  void unset_custom();
+
   
   /** Sets the area of the widget, where the contents of this tooltip apply,
    * to be @a rect (in widget coordinates).  This is especially useful for

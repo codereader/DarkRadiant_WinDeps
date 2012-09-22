@@ -4,12 +4,13 @@
 #define _GTKMM_CHECKBUTTON_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: checkbutton.hg,v 1.2 2004/01/19 19:48:44 murrayc Exp $ */
 
 /* checkbutton.h
- * 
+ *
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/togglebutton.h>
@@ -83,8 +84,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -112,10 +117,10 @@ public:
 
   /** Create an empty check button.
    * With an empty button, you can Gtk::Button::add() a widget such as a
-   * Gtk::Pixmap or Gtk::Box.
+   * Gtk::Image or Gtk::Box.
    *
    * If you just wish to add a Gtk::Label, you may want to use the
-   * Gtk::CheckButton(const Glib::ustring &label) constructor directly
+   * Gtk::CheckButton(const Glib::ustring& label) constructor directly
    * instead.
    */
   CheckButton();
@@ -125,9 +130,11 @@ public:
    * contains a Gtk::Label
    */
   explicit CheckButton(const Glib::ustring& label, bool mnemonic = false);
-  
+
 
 protected:
+
+
   /** Emited on button redraw to update indicator.
    * Triggered when the button is redrawn (e.g.after being toggled)
    * Overload this signal if you want to implement your own check button
@@ -135,9 +142,9 @@ protected:
    * The GdkRectangle specifies the area of the widget which will get
    * redrawn.
    */
-    virtual void draw_indicator_vfunc(GdkRectangle* area);
+    virtual void draw_indicator_vfunc(const ::Cairo::RefPtr< ::Cairo::Context>& cr);
 
-  
+
 };
 
 

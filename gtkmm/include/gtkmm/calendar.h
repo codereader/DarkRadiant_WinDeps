@@ -6,7 +6,8 @@
 #include <gtkmmconfig.h>
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /*
  * Copyright (C) 1998-2002 The gtkmm Development Team
@@ -22,11 +23,11 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- 
+
 #include <gtkmm/widget.h>
 #include <glibmm/date.h>
 
@@ -62,7 +63,6 @@ enum CalendarDisplayOptions
   CALENDAR_SHOW_DAY_NAMES = 1 << 1,
   CALENDAR_NO_MONTH_CHANGE = 1 << 2,
   CALENDAR_SHOW_WEEK_NUMBERS = 1 << 3,
-  CALENDAR_WEEK_START_MONDAY = 1 << 4,
   CALENDAR_SHOW_DETAILS = 1 << 5
 };
 
@@ -167,8 +167,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -188,12 +192,19 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_month_changed().
   virtual void on_month_changed();
+  /// This is a default handler for the signal signal_day_selected().
   virtual void on_day_selected();
+  /// This is a default handler for the signal signal_day_selected_double_click().
   virtual void on_day_selected_double_click();
+  /// This is a default handler for the signal signal_prev_month().
   virtual void on_prev_month();
+  /// This is a default handler for the signal signal_next_month().
   virtual void on_next_month();
+  /// This is a default handler for the signal signal_prev_year().
   virtual void on_prev_year();
+  /// This is a default handler for the signal signal_next_year().
   virtual void on_next_year();
 
 
@@ -204,59 +215,35 @@ public:
 
   
   /** Shifts the calendar to a different month.
-   * 
-   * Note that this function always returns <tt>true</tt>, and you should
-   * ignore the return value. In GTK+ 3, this function will not
-   * return a value.
    * @param month A month number between 0 and 11.
    * @param year The year the month is in.
-   * @return <tt>true</tt>, always.
    */
-  int select_month(guint month, guint year);
+  void select_month(guint month, guint year);
   
   /** Selects a day from the current month.
-   * @param day The day number between 1 and 31, or 0 to unselect 
+   * @param day The day number between 1 and 31, or 0 to unselect
    * the currently selected day.
    */
   void select_day(guint day);
   
   /** Places a visual marker on a particular day.
-   * 
-   * Note that this function always returns <tt>true</tt>, and you should
-   * ignore the return value. In GTK+ 3, this function will not
-   * return a value.
    * @param day The day number to mark between 1 and 31.
-   * @return <tt>true</tt>, always.
    */
-  int mark_day(guint day);
+  void mark_day(guint day);
   
   /** Removes the visual marker from a particular day.
-   * 
-   * Note that this function always returns <tt>true</tt>, and you should
-   * ignore the return value. In GTK+ 3, this function will not
-   * return a value.
    * @param day The day number to unmark between 1 and 31.
-   * @return <tt>true</tt>, always.
    */
-  int unmark_day(guint day);
+  void unmark_day(guint day);
   
   /** Remove all visual markers.
    */
   void clear_marks();
 
+   //deprecated
+
   
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Sets display options (whether to display the heading and the month headings).
-   * 
-   * Deprecated: 2.4: Use set_display_options() instead
-   * @param flags The display options to set.
-   */
-  void display_options(CalendarDisplayOptions flags);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-  /** Sets display options (whether to display the heading and the month  
+  /** Sets display options (whether to display the heading and the month
    * headings).
    * 
    * @newin{2,4}
@@ -264,7 +251,7 @@ public:
    */
   void set_display_options(CalendarDisplayOptions flags);
   
-  /** Returns the current display options of @a calendar. 
+  /** Returns the current display options of @a calendar.
    * 
    * @newin{2,4}
    * @return The display options.
@@ -273,9 +260,12 @@ public:
 
   
   /** Obtains the selected date from a Gtk::Calendar.
-   * @param year Location to store the year number, or <tt>0</tt>.
-   * @param month Location to store the month number (between 0 and 11), or <tt>0</tt>.
-   * @param day Location to store the day number (between 1 and 31), or <tt>0</tt>.
+   * @param year Location to store the year as a decimal
+   * number (e.g. 2011), or <tt>0</tt>.
+   * @param month Location to store the month number
+   * (between 0 and 11), or <tt>0</tt>.
+   * @param day Location to store the day number (between
+   * 1 and 31), or <tt>0</tt>.
    */
   void get_date(guint& year, guint& month, guint& day) const;
   // Additional method not in GTK (#350584)
@@ -322,7 +312,7 @@ public:
   
 
   /** Updates the width of detail cells.
-   * See Gtk::Calendar:detail-width-chars.
+   * See Gtk::Calendar::property_detail_width_chars().
    * 
    * @newin{2,14}
    * @param chars Detail width in characters.
@@ -330,7 +320,7 @@ public:
   void set_detail_width_chars(int chars);
   
   /** Updates the height of detail cells.
-   * See Gtk::Calendar:detail-height-rows.
+   * See Gtk::Calendar::property_detail_height_rows().
    * 
    * @newin{2,14}
    * @param rows Detail height in rows.
@@ -339,7 +329,7 @@ public:
 
   
   /** Queries the width of detail cells, in characters.
-   * See Gtk::Calendar:detail-width-chars.
+   * See Gtk::Calendar::property_detail_width_chars().
    * 
    * @newin{2,14}
    * @return The width of detail cells, in characters.
@@ -347,87 +337,91 @@ public:
   int get_detail_width_chars() const;
   
   /** Queries the height of detail cells, in rows.
-   * See Gtk::Calendar:detail-width-chars.
+   * See Gtk::Calendar::property_detail_width_chars().
    * 
    * @newin{2,14}
    * @return The height of detail cells, in rows.
    */
   int get_detail_height_rows() const;
+  
+  
+  /** Returns if the @a day of the @a calendar is already marked.
+   * 
+   * @newin{3,0}
+   * @param day The day number between 1 and 31.
+   * @return Whether the day is marked.
+   */
+  bool get_day_is_marked(guint day) const;
+
+   //deprecated
 
   
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Does nothing. Previously locked the display of the calendar until
-   * it was thawed with thaw().
-   * 
-   * Deprecated: 2.8:
-   */
-  void freeze();
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Does nothing. Previously defrosted a calendar; all the changes made
-   * since the last freeze() were displayed.
-   * 
-   * Deprecated: 2.8:
-   */
-  void thaw();
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%month_changed()</tt>
+   *
+   * Emitted when the user clicks a button to change the selected month on a
+   * calendar.
    */
 
   Glib::SignalProxy0< void > signal_month_changed();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%day_selected()</tt>
+   *
+   * Emitted when the user selects a day.
    */
 
   Glib::SignalProxy0< void > signal_day_selected();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%day_selected_double_click()</tt>
+   *
+   * Emitted when the user double-clicks a day.
    */
 
   Glib::SignalProxy0< void > signal_day_selected_double_click();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%prev_month()</tt>
+   *
+   * Emitted when the user switched to the previous month.
    */
 
   Glib::SignalProxy0< void > signal_prev_month();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%next_month()</tt>
+   *
+   * Emitted when the user switched to the next month.
    */
 
   Glib::SignalProxy0< void > signal_next_month();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%prev_year()</tt>
+   *
+   * Emitted when user switched to the previous year.
    */
 
   Glib::SignalProxy0< void > signal_prev_year();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%next_year()</tt>
+   *
+   * Emitted when user switched to the next year.
    */
 
   Glib::SignalProxy0< void > signal_next_year();
@@ -440,7 +434,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_year() ;
+  Glib::PropertyProxy< int > property_year() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -450,7 +444,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_year() const;
+  Glib::PropertyProxy_ReadOnly< int > property_year() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -460,7 +454,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_month() ;
+  Glib::PropertyProxy< int > property_month() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -470,7 +464,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_month() const;
+  Glib::PropertyProxy_ReadOnly< int > property_month() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -480,7 +474,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_day() ;
+  Glib::PropertyProxy< int > property_day() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -490,7 +484,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_day() const;
+  Glib::PropertyProxy_ReadOnly< int > property_day() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -500,7 +494,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_show_heading() ;
+  Glib::PropertyProxy< bool > property_show_heading() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -510,7 +504,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_show_heading() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_show_heading() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -520,7 +514,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_show_day_names() ;
+  Glib::PropertyProxy< bool > property_show_day_names() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -530,7 +524,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_show_day_names() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_show_day_names() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -540,7 +534,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_no_month_change() ;
+  Glib::PropertyProxy< bool > property_no_month_change() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -550,7 +544,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_no_month_change() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_no_month_change() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -560,7 +554,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_show_week_numbers() ;
+  Glib::PropertyProxy< bool > property_show_week_numbers() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -570,7 +564,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_show_week_numbers() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_show_week_numbers() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -580,7 +574,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_show_details() ;
+  Glib::PropertyProxy< bool > property_show_details() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -590,7 +584,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_show_details() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_show_details() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -600,7 +594,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_detail_width_chars() ;
+  Glib::PropertyProxy< int > property_detail_width_chars() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -610,7 +604,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_detail_width_chars() const;
+  Glib::PropertyProxy_ReadOnly< int > property_detail_width_chars() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -620,7 +614,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_detail_height_rows() ;
+  Glib::PropertyProxy< int > property_detail_height_rows() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -630,7 +624,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_detail_height_rows() const;
+  Glib::PropertyProxy_ReadOnly< int > property_detail_height_rows() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

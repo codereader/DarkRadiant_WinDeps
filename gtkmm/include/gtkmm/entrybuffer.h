@@ -6,7 +6,8 @@
 #include <gtkmmconfig.h>
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: entrybuffer.hg,v 1.20 2006/11/20 09:19:49 murrayc Exp $ */
 
@@ -23,15 +24,15 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 // This is for including the config header before any code (such as
 // the #ifndef GTKMM_DISABLE_DEPRECATED in deprecated classes) is generated:
 
 
-#include <gtkmm/object.h>
+#include <glibmm/object.h>
 #include <gtkmmconfig.h>
 #include <utility>
 
@@ -91,8 +92,11 @@ protected:
 public:
   virtual ~EntryBuffer();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -233,17 +237,30 @@ public:
   void emit_deleted_text(guint position, guint n_chars);
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%inserted_text(guint position, const gchar* chars, guint n_chars)</tt>
+   *
+   * This signal is emitted after text is inserted into the buffer.
+   * 
+   * @newin{2,18}
+   * @param position The position the text was inserted at.
+   * @param chars The text that was inserted.
+   * @param n_chars The number of characters that were inserted.
    */
 
   Glib::SignalProxy3< void,guint,const gchar*,guint > signal_inserted_text();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%deleted_text(guint position, guint n_chars)</tt>
+   *
+   * This signal is emitted after text is deleted from the buffer.
+   * 
+   * @newin{2,18}
+   * @param position The position the text was deleted at.
+   * @param n_chars The number of characters that were deleted.
    */
 
   Glib::SignalProxy2< void,guint,guint > signal_deleted_text();
@@ -256,7 +273,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_text() ;
+  Glib::PropertyProxy< Glib::ustring > property_text() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -266,7 +283,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_text() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_text() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -276,7 +293,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<guint> property_length() const;
+  Glib::PropertyProxy_ReadOnly< guint > property_length() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -287,7 +304,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_max_length() ;
+  Glib::PropertyProxy< int > property_max_length() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -297,7 +314,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_max_length() const;
+  Glib::PropertyProxy_ReadOnly< int > property_max_length() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -310,7 +327,9 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_inserted_text().
   virtual void on_inserted_text(guint position, const gchar* chars, guint n_chars);
+  /// This is a default handler for the signal signal_deleted_text().
   virtual void on_deleted_text(guint position, guint n_chars);
 
 

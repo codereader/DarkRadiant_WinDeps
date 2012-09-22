@@ -4,7 +4,8 @@
 #define _GIOMM_ENUMS_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -26,6 +27,7 @@
  */
 
 #include <gio/gio.h>
+#include <glibmm/value.h>
 
 
 namespace Gio

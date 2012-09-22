@@ -4,7 +4,8 @@
 #define _GTKMM_DIALOG_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: dialog.hg,v 1.8 2006/03/22 16:53:22 murrayc Exp $ */
 
@@ -23,12 +24,14 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <gtkmm/box.h>
+#include <vector>
+
 #include <gtkmm/window.h>
+#include <gtkmm/box.h>
 #include <gtkmm/button.h>
 #include <gtkmm/buttonbox.h>
 
@@ -149,8 +152,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -170,6 +177,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_response().
   virtual void on_response(int response_id);
 
 
@@ -178,15 +186,15 @@ private:
   
 public:
   Dialog();
-  explicit Dialog(const Glib::ustring& title, bool modal = false, bool use_separator = false);
-  Dialog(const Glib::ustring& title, Gtk::Window& parent, bool modal = false, bool use_separator = false);
+  explicit Dialog(const Glib::ustring& title, bool modal = false);
+  Dialog(const Glib::ustring& title, Gtk::Window& parent, bool modal = false);
 
   
   /** Adds an activatable widget to the action area of a Gtk::Dialog,
-   * connecting a signal handler that will emit the Gtk::Dialog::response 
-   * signal on the dialog when the widget is activated. The widget is 
+   * connecting a signal handler that will emit the Gtk::Dialog::signal_response()
+   * signal on the dialog when the widget is activated. The widget is
    * appended to the end of the dialog's action area. If you want to add a
-   * non-activatable widget, simply pack it into the @a action_area field 
+   * non-activatable widget, simply pack it into the @a action_area field
    * of the Gtk::Dialog struct.
    * @param child An activatable widget.
    * @param response_id Response ID for @a child.
@@ -195,27 +203,27 @@ public:
   
   /** Adds a button with the given text (or a stock button, if @a button_text is a
    * stock ID) and sets things up so that clicking the button will emit the
-   * Gtk::Dialog::response signal with the given @a response_id. The button is 
-   * appended to the end of the dialog's action area. The button widget is 
+   * Gtk::Dialog::signal_response() signal with the given @a response_id. The button is
+   * appended to the end of the dialog's action area. The button widget is
    * returned, but usually you don't need it.
    * @param button_text Text of button, or stock ID.
    * @param response_id Response ID for the button.
-   * @return The button widget that was added.
+   * @return The Gtk::Button widget that was added.
    */
   Button* add_button(const Glib::ustring& button_text, int response_id);
   
   /** Adds a button with the given text (or a stock button, if @a button_text is a
    * stock ID) and sets things up so that clicking the button will emit the
-   * Gtk::Dialog::response signal with the given @a response_id. The button is 
-   * appended to the end of the dialog's action area. The button widget is 
+   * Gtk::Dialog::signal_response() signal with the given @a response_id. The button is
+   * appended to the end of the dialog's action area. The button widget is
    * returned, but usually you don't need it.
    * @param button_text Text of button, or stock ID.
    * @param response_id Response ID for the button.
-   * @return The button widget that was added.
+   * @return The Gtk::Button widget that was added.
    */
   Button* add_button(const Gtk::StockID& stock_id, int response_id);
   
-  /** Calls <tt>gtk_widget_set_sensitive (widget, @a setting)</tt> 
+  /** Calls <tt>gtk_widget_set_sensitive (widget, @a setting)</tt>
    * for each widget in the dialog's action area with the given @a response_id.
    * A convenient way to sensitize/desensitize dialog buttons.
    * @param response_id A response ID.
@@ -235,7 +243,8 @@ public:
    * 
    * @newin{2,20}
    * @param response_id The response ID used by the @a dialog widget.
-   * @return The @a widget button that uses the given @a response_id, or <tt>0</tt>.
+   * @return The @a widget button that uses the given
+   *  @a response_id, or <tt>0</tt>.
    */
   Widget* get_widget_for_response(int response_id);
   
@@ -244,7 +253,8 @@ public:
    * 
    * @newin{2,20}
    * @param response_id The response ID used by the @a dialog widget.
-   * @return The @a widget button that uses the given @a response_id, or <tt>0</tt>.
+   * @return The @a widget button that uses the given
+   *  @a response_id, or <tt>0</tt>.
    */
   const Widget* get_widget_for_response(int response_id) const;
   
@@ -257,30 +267,16 @@ public:
    * if @a widget doesn't have a response id set.
    */
   int get_response_for_widget(const Gtk::Widget& widget) const;
-  
-  /** Sets whether the dialog has a separator above the buttons.
-   * 
-   * Deprecated: 2.22: This function will be removed in GTK+ 3
-   * @param setting <tt>true</tt> to have a separator.
-   */
-  void set_has_separator(bool setting =  true);
-  
-  /** Accessor for whether the dialog has a separator.
-   * 
-   * Deprecated: 2.22: This function will be removed in GTK+ 3
-   * @return <tt>true</tt> if the dialog has a separator.
-   */
-  bool get_has_separator() const;
 
   
   /** Returns <tt>true</tt> if dialogs are expected to use an alternative
    * button order on the screen @a screen. See
    * Gtk::Dialog::set_alternative_button_order() for more details
-   * about alternative button order. 
+   * about alternative button order.
    * 
    * If you need to use this function, you should probably connect
    * to the ::notify:gtk-alternative-button-order signal on the
-   * Gtk::Settings object associated to @a screen, in order to be 
+   * Gtk::Settings object associated to @a screen, in order to be
    * notified if the button order setting changes.
    * 
    * @newin{2,6}
@@ -306,13 +302,13 @@ public:
    *
    * @newinp26
    */
-  void set_alternative_button_order_from_array(const Glib::ArrayHandle<int>& new_order);
+  void set_alternative_button_order_from_array(const std::vector<int>& new_order);
   
 
-  /** Emits the Gtk::Dialog::response signal with the given response ID. 
+  /** Emits the Gtk::Dialog::signal_response() signal with the given response ID.
    * Used to indicate that the user has responded to the dialog in some way;
    * typically either you or run() will be monitoring the
-   * ::response signal and take appropriate action.
+   * signal_response() signal and take appropriate action.
    * @param response_id Response ID.
    */
   void response(int response_id);
@@ -366,59 +362,63 @@ public:
    */
   const ButtonBox* get_action_area() const;
 
-  //TODO: Rename to get_content_area() when we do an ABI break.
-  //We kept it as get_vbox() when reimplementing a MEMBER_GET with this new C function:
+  
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+  /** Returns the content area of @a dialog.
+   * 
+   * @newin{2,14}
+   * @deprecated Use get_content_area() instead.
+   * @return The content area Gtk::Box.
+   */
+  Box* get_vbox();
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+  /** Returns the content area of @a dialog.
+   * 
+   * @newin{2,14}
+   * @deprecated Use get_content_area() instead.
+   * @return The content area Gtk::Box.
+   */
+  const Box* get_vbox() const;
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+  /** Returns the content area of @a dialog.
+   * 
+   * @newin{2,14}
+   * @return The content area Gtk::Box.
+   */
+  Box* get_content_area();
   
   /** Returns the content area of @a dialog.
    * 
    * @newin{2,14}
-   * @return The content area Gtk::VBox.
+   * @return The content area Gtk::Box.
    */
-  VBox* get_vbox();
+  const Box* get_content_area() const;
+
   
-  /** Returns the content area of @a dialog.
-   * 
-   * @newin{2,14}
-   * @return The content area Gtk::VBox.
-   */
-  const VBox* get_vbox() const;
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The dialog has a separator bar above its buttons.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<bool> property_has_separator() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** The dialog has a separator bar above its buttons.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<bool> property_has_separator() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%response(int response_id)</tt>
+   *
+   * Emitted when an action widget is clicked, the dialog receives a
+   * delete event, or the application programmer calls Gtk::Dialog::response().
+   * On a delete event, the response ID is Gtk::RESPONSE_DELETE_EVENT.
+   * Otherwise, it depends on which action widget was clicked.
+   * @param response_id The response ID.
    */
 
   Glib::SignalProxy1< void,int > signal_response();
 
-  
+
   //_WRAP_PROPERTY("has-separator", bool) //deprecated.
 
   
-protected:
-  void construct_(bool modal, bool use_separator);
-
-
 };
 
 } /* namespace Gtk */

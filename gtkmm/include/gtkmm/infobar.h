@@ -4,7 +4,8 @@
 #define _GTKMM_INFOBAR_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: infobar.hg,v 1.10 2006/08/21 19:07:14 jjongsma Exp $ */
 
@@ -21,8 +22,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/box.h>
@@ -40,8 +41,6 @@ namespace Gtk
 { class InfoBar_Class; } // namespace Gtk
 namespace Gtk
 {
-
-//TODO: Derive from Gtk::Buildable when we can break ABI.
 
 /** This widget that can be used to show messages to the user without showing a dialog.
  * It is often temporarily shown at the top or bottom of a document. In contrast to
@@ -65,7 +64,7 @@ namespace Gtk
  * @ingroup Widgets
  */
 
-class InfoBar : public HBox
+class InfoBar : public HBox //Note: The C object really derives from this convenience type.
 {
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -94,8 +93,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -115,6 +118,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_response().
   virtual void on_response(int response_id);
 
 
@@ -158,7 +162,7 @@ public:
 
   
   /** Add an activatable widget to the action area of a Gtk::InfoBar,
-   * connecting a signal handler that will emit the Gtk::InfoBar::response
+   * connecting a signal handler that will emit the Gtk::InfoBar::signal_response()
    * signal on the message area when the widget is activated. The widget
    * is appended to the end of the message areas action area.
    * 
@@ -178,7 +182,7 @@ public:
    * @newin{2,18}
    * @param button_text Text of button, or stock ID.
    * @param response_id Response ID for the button.
-   * @return The button widget that was added.
+   * @return The Gtk::Button widget that was added.
    */
   Button* add_button(const Glib::ustring& button_text, int response_id);
   
@@ -191,7 +195,7 @@ public:
    * @newin{2,18}
    * @param button_text Text of button, or stock ID.
    * @param response_id Response ID for the button.
-   * @return The button widget that was added.
+   * @return The Gtk::Button widget that was added.
    */
   Button* add_button(const Gtk::StockID& stock_id, int response_id);
 
@@ -244,9 +248,16 @@ public:
   MessageType get_message_type() const;
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%response(int response_id)</tt>
+   *
+   * Emitted when an action widget is clicked or the application programmer
+   * calls Gtk::Dialog::response(). The @a response_id depends on which action
+   * widget was clicked.
+   * 
+   * @newin{2,18}
+   * @param response_id The response ID.
    */
 
   Glib::SignalProxy1< void,int > signal_response();
@@ -259,7 +270,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<MessageType> property_message_type() ;
+  Glib::PropertyProxy< MessageType > property_message_type() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -269,7 +280,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<MessageType> property_message_type() const;
+  Glib::PropertyProxy_ReadOnly< MessageType > property_message_type() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

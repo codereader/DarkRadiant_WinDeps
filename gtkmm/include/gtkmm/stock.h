@@ -17,13 +17,13 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <gtkmm/iconset.h>
 #include <gtkmm/stockitem.h>
 #include <gtkmm/stockid.h>
+#include <gtkmm/iconset.h>
 #include <gtkmm/image.h>
 
 /* Shadow DELETE macro (from winnt.h).
@@ -183,8 +183,8 @@ extern GTKMM_API const Gtk::BuiltinStockID ZOOM_OUT;         /*!< @image html gt
 
 /** Add a stock item to the list of registered stock items.
  * @param item StockItem to register.
- *
- * If an item already exists with the same stock ID the old item gets replaced.
+ * 
+ * If an item already exists with the same stock ID the old item gets replaced. 
  */
 void add(const Gtk::StockItem& item);
 
@@ -202,7 +202,7 @@ bool lookup(const Gtk::StockID& stock_id, Gtk::StockItem& item);
   *
   * @return <tt>true</tt> if the item was found - <tt>false</tt> otherwise.
   */
-bool lookup(const Gtk::StockID& stock_id, Gtk::IconSet& iconset);
+bool lookup(const Gtk::StockID& stock_id, Glib::RefPtr<Gtk::IconSet>& iconset);
 
 /** Receive an Image of the registered stock id with the correct size.
   * @param stock_id StockID to search for.
@@ -210,14 +210,14 @@ bool lookup(const Gtk::StockID& stock_id, Gtk::IconSet& iconset);
   * @param image: Image to fill.
   *
   * @return <tt>true</tt> if the item was found - <tt>false</tt> otherwise
-  */
+  */  
 bool lookup(const Gtk::StockID& stock_id, Gtk::IconSize size, Gtk::Image& image);
 
 /** Retrieves a list of all known stock IDs added to an IconFactory or registered with Stock::add().
   *
   * @return list of all known stock IDs.
   */
-Glib::SListHandle<Gtk::StockID,Gtk::StockID_Traits> get_ids();
+std::vector<Gtk::StockID> get_ids();
 
 } // namespace Stock
 
@@ -225,3 +225,4 @@ Glib::SListHandle<Gtk::StockID,Gtk::StockID_Traits> get_ids();
 
 
 #endif /* _GTKMM_STOCK_H */
+

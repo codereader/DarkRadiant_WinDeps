@@ -6,9 +6,10 @@
 #include <gdkmmconfig.h>
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
-/* Copyright(C) 1998-2002 The gtkmm Development Team
+/* Copyright(C) 1998-2010 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,25 +22,23 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not write to the Free
- * Software Foundation Inc. 675 Mass Ave Cambridge MA 02139 USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- 
-#include <gdkmm/region.h>
-#include <gdkmm/drawable.h>
-#include <gdkmm/bitmap.h>
+
+#include <glibmm/object.h>
 //#include <gdkmm/cursor.h>
 #include <gdkmm/dragcontext.h>
 #include <gdkmm/types.h>
+#include <cairomm/region.h>
+#include <cairomm/pattern.h>
+#include <gdkmm/device.h>
+#include <gdkmm/visual.h>
+#include <gdkmm/rgba.h>
+#include <cairomm/context.h>
+#include <gdk/gdk.h>
 
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-extern "C" {
-// Custom struct prototype, because this isn't what the code-generator expects:
-typedef struct _GdkDrawable GdkWindow;
-} // extern "C"
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
@@ -51,92 +50,6 @@ namespace Gdk
 {
 
 /** @addtogroup gdkmmEnums gdkmm Enums and Flags */
-
-/**
- * @ingroup gdkmmEnums
- * @par Bitwise operators:
- * <tt>%EventMask operator|(EventMask, EventMask)</tt><br>
- * <tt>%EventMask operator&(EventMask, EventMask)</tt><br>
- * <tt>%EventMask operator^(EventMask, EventMask)</tt><br>
- * <tt>%EventMask operator~(EventMask)</tt><br>
- * <tt>%EventMask& operator|=(EventMask&, EventMask)</tt><br>
- * <tt>%EventMask& operator&=(EventMask&, EventMask)</tt><br>
- * <tt>%EventMask& operator^=(EventMask&, EventMask)</tt><br>
- */
-enum EventMask
-{
-  EXPOSURE_MASK = 1 << 1,
-  POINTER_MOTION_MASK = 1 << 2,
-  POINTER_MOTION_HINT_MASK = 1 << 3,
-  BUTTON_MOTION_MASK = 1 << 4,
-  BUTTON1_MOTION_MASK = 1 << 5,
-  BUTTON2_MOTION_MASK = 1 << 6,
-  BUTTON3_MOTION_MASK = 1 << 7,
-  BUTTON_PRESS_MASK = 1 << 8,
-  BUTTON_RELEASE_MASK = 1 << 9,
-  KEY_PRESS_MASK = 1 << 10,
-  KEY_RELEASE_MASK = 1 << 11,
-  ENTER_NOTIFY_MASK = 1 << 12,
-  LEAVE_NOTIFY_MASK = 1 << 13,
-  FOCUS_CHANGE_MASK = 1 << 14,
-  STRUCTURE_MASK = 1 << 15,
-  PROPERTY_CHANGE_MASK = 1 << 16,
-  VISIBILITY_NOTIFY_MASK = 1 << 17,
-  PROXIMITY_IN_MASK = 1 << 18,
-  PROXIMITY_OUT_MASK = 1 << 19,
-  SUBSTRUCTURE_MASK = 1 << 20,
-  SCROLL_MASK = 1 << 21,
-  ALL_EVENTS_MASK = 0x3FFFFE
-};
-
-/** @ingroup gdkmmEnums */
-inline EventMask operator|(EventMask lhs, EventMask rhs)
-  { return static_cast<EventMask>(static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs)); }
-
-/** @ingroup gdkmmEnums */
-inline EventMask operator&(EventMask lhs, EventMask rhs)
-  { return static_cast<EventMask>(static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs)); }
-
-/** @ingroup gdkmmEnums */
-inline EventMask operator^(EventMask lhs, EventMask rhs)
-  { return static_cast<EventMask>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs)); }
-
-/** @ingroup gdkmmEnums */
-inline EventMask operator~(EventMask flags)
-  { return static_cast<EventMask>(~static_cast<unsigned>(flags)); }
-
-/** @ingroup gdkmmEnums */
-inline EventMask& operator|=(EventMask& lhs, EventMask rhs)
-  { return (lhs = static_cast<EventMask>(static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs))); }
-
-/** @ingroup gdkmmEnums */
-inline EventMask& operator&=(EventMask& lhs, EventMask rhs)
-  { return (lhs = static_cast<EventMask>(static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs))); }
-
-/** @ingroup gdkmmEnums */
-inline EventMask& operator^=(EventMask& lhs, EventMask rhs)
-  { return (lhs = static_cast<EventMask>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs))); }
-
-} // namespace Gdk
-
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-namespace Glib
-{
-
-template <>
-class Value<Gdk::EventMask> : public Glib::Value_Flags<Gdk::EventMask>
-{
-public:
-  static GType value_type() G_GNUC_CONST;
-};
-
-} // namespace Glib
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-
-namespace Gdk
-{
 
 /**
  * @ingroup gdkmmEnums
@@ -157,7 +70,8 @@ enum WindowState
   WINDOW_STATE_STICKY = 1 << 3,
   WINDOW_STATE_FULLSCREEN = 1 << 4,
   WINDOW_STATE_ABOVE = 1 << 5,
-  WINDOW_STATE_BELOW = 1 << 6
+  WINDOW_STATE_BELOW = 1 << 6,
+  WINDOW_STATE_FOCUSED = 1 << 7
 };
 
 /** @ingroup gdkmmEnums */
@@ -217,7 +131,6 @@ enum WindowType
   WINDOW_ROOT,
   WINDOW_TOPLEVEL,
   WINDOW_CHILD,
-  WINDOW_DIALOG,
   WINDOW_TEMP,
   WINDOW_FOREIGN,
   WINDOW_OFFSCREEN
@@ -261,11 +174,10 @@ enum WindowAttributesType
   WA_X = 1 << 2,
   WA_Y = 1 << 3,
   WA_CURSOR = 1 << 4,
-  WA_COLORMAP = 1 << 5,
-  WA_VISUAL = 1 << 6,
-  WA_WMCLASS = 1 << 7,
-  WA_NOREDIR = 1 << 8,
-  WA_TYPE_HINT = 1 << 9
+  WA_VISUAL = 1 << 5,
+  WA_WMCLASS = 1 << 6,
+  WA_NOREDIR = 1 << 7,
+  WA_TYPE_HINT = 1 << 8
 };
 
 /** @ingroup gdkmmEnums */
@@ -647,41 +559,9 @@ public:
 namespace Gdk
 {
 
-/**
- * @ingroup gdkmmEnums
- */
-enum GrabStatus
-{
-  GRAB_SUCCESS,
-  GRAB_ALREADY_GRABBED,
-  GRAB_INVALID_TIME,
-  GRAB_NOT_VIEWABLE,
-  GRAB_FROZEN
-};
-
-} // namespace Gdk
-
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-namespace Glib
-{
-
-template <>
-class Value<Gdk::GrabStatus> : public Glib::Value_Enum<Gdk::GrabStatus>
-{
-public:
-  static GType value_type() G_GNUC_CONST;
-};
-
-} // namespace Glib
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-
-namespace Gdk
-{
-
 
 class Cursor;
+class Pixbuf;
 
 /** A Gdk::Window is a rectangular region on the screen. It's a low-level object, used to implement high-level objects such
  * as Gtk::Widget and Gtk::Window on the GTK+ level. A Gtk::Window is a toplevel window, the thing a user might think of as
@@ -689,9 +569,8 @@ class Cursor;
  * Gdk::Window associated with it.
  */
 
-class Window : public Gdk::Drawable
+class Window : public Glib::Object
 {
-  // GdkWindow is a typedef to GdkDrawable, but it's actually a GdkWindowObject.
   
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
@@ -699,7 +578,7 @@ public:
   typedef Window CppObjectType;
   typedef Window_Class CppClassType;
   typedef GdkWindow BaseObjectType;
-  typedef GdkWindowObjectClass BaseClassType;
+  typedef GdkWindowClass BaseClassType;
 
 private:  friend class Window_Class;
   static CppClassType window_class_;
@@ -718,8 +597,11 @@ protected:
 public:
   virtual ~Window();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -764,14 +646,18 @@ public:
    * @return A Gdk::Visual.
    */
   Glib::RefPtr<const Visual> get_visual() const;
-
+  
   
   /** Gets the Gdk::Screen associated with a Gdk::Window.
+   * 
+   * @newin{2,24}
    * @return The Gdk::Screen associated with @a window.
    */
   Glib::RefPtr<Screen> get_screen();
   
   /** Gets the Gdk::Screen associated with a Gdk::Window.
+   * 
+   * @newin{2,24}
    * @return The Gdk::Screen associated with @a window.
    */
   Glib::RefPtr<const Screen> get_screen() const;
@@ -790,7 +676,7 @@ public:
    * @return The Gdk::Display associated with @a window.
    */
   Glib::RefPtr<const Display> get_display() const;
-
+  
   
   /** Like show_unraised(), but also raises the window to the
    * top of the window stack (moves the window to the front of the
@@ -872,30 +758,6 @@ public:
    */
   void reparent(const Glib::RefPtr<Window>& new_parent, int x, int y);
   
-  /** Clears an entire @a window to the background color or background pixmap.
-   */
-  void clear();
-  
-  /** Clears an area of @a window to the background color or background pixmap.
-   * @param x X coordinate of rectangle to clear.
-   * @param y Y coordinate of rectangle to clear.
-   * @param width Width of rectangle to clear.
-   * @param height Height of rectangle to clear.
-   */
-  void clear_area(int x, int y, int width, int height);
-  
-  /** Like clear_area(), but also generates an expose event for
-   * the cleared area.
-   * 
-   * This function has a stupid name because it dates back to the mists
-   * time, pre-GDK-1.0.
-   * @param x X coordinate of rectangle to clear.
-   * @param y Y coordinate of rectangle to clear.
-   * @param width Width of rectangle to clear.
-   * @param height Height of rectangle to clear.
-   */
-  void clear_area_e(int x, int y, int width, int height);
-  
   /** Raises @a window to the top of the Z-order (stacking order), so that
    * other windows with the same parent window appear below @a window.
    * This is true whether or not the windows are visible.
@@ -951,7 +813,7 @@ public:
   void restack(bool above);
 
   
-  /** Sets keyboard focus to @a window. In most cases, gtk_window_present() 
+  /** Sets keyboard focus to @a window. In most cases, gtk_window_present()
    * should be used on a Gtk::Window, rather than calling this function.
    * @param timestamp Timestamp of the event triggering the window focus.
    */
@@ -988,8 +850,9 @@ public:
    * doing. Pass <tt>0</tt> for @a window to get all events for all windows,
    * instead of events for a specific window.
    * 
-   * See Gdk::Display::add_client_message_filter() if you are interested
-   * in X ClientMessage events.
+   * If you are interested in X GenericEvents, bear in mind that
+   * XGetEventData() has been already called on the event, and
+   * XFreeEventData() must not be called within @a function.
    * @param function Filter callback.
    * @param data Data to pass to filter callback.
    */
@@ -1002,9 +865,17 @@ public:
   void remove_filter(GdkFilterFunc function, gpointer data);
 
   
-  /** Scroll the contents of its window, both pixels and children, by
-   * the given amount. Portions of the window that the scroll operation
-   * brings in from offscreen areas are invalidated.
+  /** Scroll the contents of @a window, both pixels and children, by the
+   * given amount. @a window itself does not move. Portions of the window
+   * that the scroll operation brings in from offscreen areas are
+   * invalidated. The invalidated region may be bigger than what would
+   * strictly be necessary.
+   * 
+   * For X11, a minimum area will be invalidated if the window has no
+   * subwindows, or if the edges of the window's parent do not extend
+   * beyond the edges of the window. In other cases, a multi-step process
+   * is used to scroll the window which may produce temporary visual
+   * artifacts and unnecessary invalidations.
    * @param dx Amount to scroll in the X direction.
    * @param dy Amount to scroll in the Y direction.
    */
@@ -1017,11 +888,11 @@ public:
    * Child windows are not moved.
    * 
    * @newin{2,8}
-   * @param region The Gdk::Region to move.
+   * @param region The #cairo_region_t to move.
    * @param dx Amount to move in the X direction.
    * @param dy Amount to move in the Y direction.
    */
-  void move_region(const Region& region, int dx, int dy);
+  void move_region(const ::Cairo::RefPtr< ::Cairo::Region>& region, int dx, int dy);
   
   /** Tries to ensure that there is a window-system native window for this
    * GdkWindow. This may fail in some situations, returning <tt>false</tt>.
@@ -1036,32 +907,8 @@ public:
   bool ensure_native();
 
   
-  /** Applies a shape mask to @a window. Pixels in @a window corresponding to
-   * set bits in the @a mask will be visible; pixels in @a window
-   * corresponding to unset bits in the @a mask will be transparent. This
-   * gives a non-rectangular window.
-   * 
-   * If @a mask is <tt>0</tt>, the shape mask will be unset, and the @a x/ @a y
-   * parameters are not used.
-   * 
-   * On the X11 platform, this uses an X server extension which is
-   * widely available on most common platforms, but not available on
-   * very old X servers, and occasionally the implementation will be
-   * buggy. On servers without the shape extension, this function
-   * will do nothing.
-   * 
-   * This function works on both toplevel and child windows.
-   * @param mask Shape mask.
-   * @param x X position of shape mask with respect to @a window.
-   * @param y Y position of shape mask with respect to @a window.
-   */
-  void shape_combine_mask(const Glib::RefPtr<Bitmap>& mask, int x, int y);
-  void unset_shape_combine_mask();
-
-  
   /** Makes pixels in @a window outside @a shape_region be transparent,
-   * so that the window may be nonrectangular. See also
-   * shape_combine_mask() to use a bitmap as the mask.
+   * so that the window may be nonrectangular.
    * 
    * If @a shape_region is <tt>0</tt>, the shape will be unset, so the whole
    * window will be opaque again. @a offset_x and @a offset_y are ignored
@@ -1078,7 +925,7 @@ public:
    * @param offset_x X position of @a shape_region in @a window coordinates.
    * @param offset_y Y position of @a shape_region in @a window coordinates.
    */
-  void shape_combine_region(const Region& shape_region, int offset_x, int offset_y);
+  void shape_combine_region(const ::Cairo::RefPtr< ::Cairo::Region>& shape_region, int offset_x =  0, int offset_y =  0);
   
   /** Sets the shape mask of @a window to the union of shape masks
    * for all children of @a window, ignoring the shape mask of @a window
@@ -1128,7 +975,7 @@ public:
   /** Merges the shape masks for any child windows into the
    * shape mask for @a window. i.e. the union of all masks
    * for @a window and its children will become the new mask
-   * for @a window. See shape_combine_mask().
+   * for @a window. See shape_combine_region().
    * 
    * This function is distinct from set_child_shapes()
    * because it includes @a window's shape mask in the set of shapes to
@@ -1136,30 +983,6 @@ public:
    */
   void merge_child_shapes();
 
-  
-  /** Like shape_combine_mask(), but the shape applies
-   * only to event handling. Mouse events which happen while
-   * the pointer position corresponds to an unset bit in the
-   * mask will be passed on the window below @a window.
-   * 
-   * An input shape is typically used with RGBA windows.
-   * The alpha channel of the window defines which pixels are
-   * invisible and allows for nicely antialiased borders,
-   * and the input shape controls where the window is
-   * "clickable".
-   * 
-   * On the X11 platform, this requires version 1.1 of the
-   * shape extension.
-   * 
-   * On the Win32 platform, this functionality is not present and the
-   * function does nothing.
-   * 
-   * @newin{2,10}
-   * @param mask Shape mask, or <tt>0</tt>.
-   * @param x X position of shape mask with respect to @a window.
-   * @param y Y position of shape mask with respect to @a window.
-   */
-  void input_shape_combine_mask(const Glib::RefPtr<Bitmap>& mask, int x, int y);
   
   /** Like shape_combine_region(), but the shape applies
    * only to event handling. Mouse events which happen while
@@ -1183,7 +1006,7 @@ public:
    * @param offset_x X position of @a shape_region in @a window coordinates.
    * @param offset_y Y position of @a shape_region in @a window coordinates.
    */
-  void input_shape_combine_region(const Region& shape_region, int offset_x, int offset_y);
+  void input_shape_combine_region(const ::Cairo::RefPtr< ::Cairo::Region>& shape_region, int offset_x, int offset_y);
   
   /** Sets the input shape mask of @a window to the union of input shape masks
    * for all children of @a window, ignoring the input shape mask of @a window
@@ -1197,7 +1020,7 @@ public:
   /** Merges the input shape masks for any child windows into the
    * input shape mask for @a window. i.e. the union of all input masks
    * for @a window and its children will become the new input mask
-   * for @a window. See input_shape_combine_mask().
+   * for @a window. See input_shape_combine_region().
    * 
    * This function is distinct from set_child_input_shapes()
    * because it includes @a window's input shape mask in the set of
@@ -1300,7 +1123,7 @@ public:
    * To unset all hints, use a @a geom_mask of 0 and a @a geometry of <tt>0</tt>.
    * 
    * This function provides hints to the windowing system about
-   * acceptable sizes for a toplevel window. The purpose of 
+   * acceptable sizes for a toplevel window. The purpose of
    * this is to constrain user resizing, but the windowing system
    * will typically  (but is not required to) also constrain the
    * current size of the window to the provided values and
@@ -1321,34 +1144,17 @@ public:
    */
   void set_geometry_hints(const Geometry& geometry, WindowHints geom_mask);
   
-  /** Sets the &lt;literal&gt;SM_CLIENT_ID&lt;/literal&gt; property on the application's leader window so that
-   * the window manager can save the application's state using the X11R6 ICCCM
-   * session management protocol.
-   * 
-   * See the X Session Management Library documentation for more information on
-   * session management and the Inter-Client Communication Conventions Manual
-   * (ICCCM) for information on the &lt;literal&gt;WM_CLIENT_LEADER&lt;/literal&gt; property.
-   * (Both documents are part of the X&nbsp;%Window System distribution.)
-   * @param sm_client_id The client id assigned by the session manager when the
-   * connection was opened.
-   */
-  static void set_sm_client_id(const Glib::ustring& sm_client_id);
-  static void unset_sm_client_id();
-
-  //Note: The rectangle parameter was made const in GTK+ 2.16, but we can't change that in our C++ API. TODO: Change it when we can do an ABI break.
-   
-
   /** A convenience wrapper around begin_paint_region() which
    * creates a rectangular region for you. See
    * begin_paint_region() for details.
    * @param rectangle Rectangle you intend to draw to.
    */
-  void begin_paint_rect(Rectangle& rectangle);
+  void begin_paint_rect(const Rectangle& rectangle);
   
   /** Indicates that you are beginning the process of redrawing @a region.
    * A backing store (offscreen buffer) large enough to contain @a region
    * will be created. The backing store will be initialized with the
-   * background color or background pixmap for @a window. Then, all
+   * background color or background surface for @a window. Then, all
    * drawing operations performed on @a window will be diverted to the
    * backing store.  When you call end_paint(), the backing
    * store will be copied to @a window, making it visible onscreen. Only
@@ -1385,7 +1191,7 @@ public:
    * begin_paint_region().
    * @param region Region you intend to draw to.
    */
-  void begin_paint_region(const Region& region);
+  void begin_paint_region(const ::Cairo::RefPtr< ::Cairo::Region>& region);
   
   /** Indicates that the backing store created by the most recent call to
    * begin_paint_region() should be copied onscreen and
@@ -1402,7 +1208,7 @@ public:
    * 
    * Gdk uses multiple kinds of caching to get better performance and
    * nicer drawing. For instance, during exposes all paints to a window
-   * using double buffered rendering are keep on a pixmap until the last
+   * using double buffered rendering are keep on a surface until the last
    * window has been exposed. It also delays window moves/scrolls until
    * as long as possible until next update to avoid tearing when moving
    * windows.
@@ -1461,45 +1267,41 @@ public:
    */
   void set_transient_for(const Glib::RefPtr<Window>& parent);
   
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** Sets the background color of @a window. (However, when using GTK+,
    * set the background of a widget with gtk_widget_modify_bg() - if
    * you're an application - or gtk_style_set_background() - if you're
    * implementing a custom widget.)
    * 
-   * The @a color must be allocated; gdk_rgb_find_color() is the best way
-   * to allocate a color.
+   * See also set_background_pattern().
    * 
-   * See also gdk_window_set_background_pixmap().
-   * @param color An allocated Gdk::Color.
+   * Deprecated: 3.4: Use set_background_rgba() instead.
+   * @deprecated Use the set_background() method that takes a Gdk::RGBA instead.
+   * @param color A Gdk::Color.
    */
   void set_background(const Color& color);
-  
-  /** Sets the background pixmap of @a window. 
-   * A background pixmap will be tiled, positioning the first tile at the origin of
-   *  @a window, or if @a parent_relative is <tt>true</tt>, the tiling will be done based on the
-   * origin of the parent window (useful to align tiles in a parent with tiles
-   * in a child).
+#endif // GDKMM_DISABLE_DEPRECATED
+
+
+  /** Sets the background color of @a window.
+   * 
+   * See also set_background_pattern().
+   * @param rgba A Gdk::RGBA color.
+   */
+  void set_background(const RGBA& color);
+
+ 
+  /** Sets the background of @a window.
+   * 
+   * A background of <tt>0</tt> means that the window will inherit its
+   * background form its parent window.
    * 
    * The windowing system will normally fill a window with its background
-   * when the window is obscured then exposed, and when you call
-   * clear().
-   * 
-   * See also unset_back_pixmap().
-   * @param pixmap A Gdk::Pixmap.
-   * @param parent_relative Whether the tiling origin is at the origin of @a window's parent.
+   * when the window is obscured then exposed.
+   * @param pattern A pattern to use, or <tt>0</tt>.
    */
-  void set_back_pixmap(const Glib::RefPtr<Pixmap>& pixmap, bool parent_relative =  true);
-
-  /** Unsets the background pixmap of @a window so that the window will have no
-   * background.  A window with no background will never have its
-   * background filled by the windowing system, instead the window will
-   * contain whatever pixels were already in the corresponding area of
-   * the display.
-   *
-   * @see set_back_pixmap().
-   * @newin{2,14}
-   */
-  void unset_back_pixmap();
+  void set_background(const ::Cairo::RefPtr< ::Cairo::Pattern>& pattern);
 
    
   /** Gets the pattern used to clear the background on @a window. If @a window
@@ -1510,7 +1312,7 @@ public:
    * @return The pattern to use for the background or
    * <tt>0</tt> to use the parent's background.
    */
-  Cairo::RefPtr<Cairo::Pattern> get_background_pattern();
+  ::Cairo::RefPtr< ::Cairo::Pattern> get_background_pattern();
    
 
   /** Gets the pattern used to clear the background on @a window. If @a window
@@ -1521,25 +1323,95 @@ public:
    * @return The pattern to use for the background or
    * <tt>0</tt> to use the parent's background.
    */
-  Cairo::RefPtr<const Cairo::Pattern> get_background_pattern() const;
+  ::Cairo::RefPtr<const ::Cairo::Pattern> get_background_pattern() const;
 
 
   /** Sets the mouse pointer for a Gdk::Window. 
-   * To make the cursor invisible, use Gdk::Cursor::new_from_pixmap() to create
+   * To make the cursor invisible, use gdk_cursor_new_from_pixmap() to create
    * a cursor with no pixels in it.
    * @param cursor A cursor.
    */
-  void set_cursor(const Cursor& cursor);
+  void set_cursor(const Glib::RefPtr<Cursor>& cursor);
 
   /** Use the parent window's cursor.
    * For top-level windows this means that it will use the default cursor for the ROOT window.
    */
   void set_cursor();
 
-  //TODO: GdkCursor is a ref-counted boxed type,
-  //so we could add a copy constructor and then return by value.
-  //We would also need a Cursor::operator bool() to check for a null value.
-  //TODO: _WRAP_METHOD(Cursor get_cursor(), gdk_window_get_cursor)
+  
+  /** Sets a specific Gdk::Cursor for a given device when it gets inside @a window.
+   * Use Gdk::Cursor::new_for_display() or Gdk::Cursor::new_from_pixbuf() to create
+   * the cursor. To make the cursor invisible, use Gdk::BLANK_CURSOR. Passing
+   * <tt>0</tt> for the @a cursor argument to set_cursor() means that
+   *  @a window will use the cursor of its parent window. Most windows should
+   * use this default.
+   * 
+   * @newin{3,0}
+   * @param device A master, pointer Gdk::Device.
+   * @param cursor A Gdk::Cursor.
+   */
+  void set_device_cursor(const Glib::RefPtr<Device>& device, const Glib::RefPtr<Cursor>& cursor);
+
+  /** Use the parent window's cursor.
+   * For top-level windows this means that it will use the default cursor for the ROOT window.
+   */
+  void set_device_cursor(const Glib::RefPtr<Device>& device);
+  
+  
+  /** Retrieves a Gdk::Cursor pointer for the @a device currently set on the
+   * specified Gdk::Window, or <tt>0</tt>.  If the return value is <tt>0</tt> then
+   * there is no custom cursor set on the specified window, and it is
+   * using the cursor for its parent window.
+   * 
+   * @newin{3,0}
+   * @param device A master, pointer Gdk::Device.
+   * @return A Gdk::Cursor, or <tt>0</tt>. The returned
+   * object is owned by the Gdk::Window and should not be unreferenced
+   * directly. Use set_cursor() to unset the cursor of the
+   * window.
+   */
+  Glib::RefPtr<Cursor> get_device_cursor(const Glib::RefPtr<Device>& device);
+  
+  /** Retrieves a Gdk::Cursor pointer for the @a device currently set on the
+   * specified Gdk::Window, or <tt>0</tt>.  If the return value is <tt>0</tt> then
+   * there is no custom cursor set on the specified window, and it is
+   * using the cursor for its parent window.
+   * 
+   * @newin{3,0}
+   * @param device A master, pointer Gdk::Device.
+   * @return A Gdk::Cursor, or <tt>0</tt>. The returned
+   * object is owned by the Gdk::Window and should not be unreferenced
+   * directly. Use set_cursor() to unset the cursor of the
+   * window.
+   */
+  Glib::RefPtr<const Cursor> get_device_cursor(const Glib::RefPtr<const Device>& device) const;
+
+
+  /** Retrieves a Gdk::Cursor pointer for the cursor currently set on the
+   * specified Gdk::Window, or <tt>0</tt>.  If the return value is <tt>0</tt> then
+   * there is no custom cursor set on the specified window, and it is
+   * using the cursor for its parent window.
+   * 
+   * @newin{2,18}
+   * @return A Gdk::Cursor, or <tt>0</tt>. The returned
+   * object is owned by the Gdk::Window and should not be unreferenced
+   * directly. Use set_cursor() to unset the cursor of the
+   * window.
+   */
+  Glib::RefPtr<Cursor> get_cursor();
+  
+  /** Retrieves a Gdk::Cursor pointer for the cursor currently set on the
+   * specified Gdk::Window, or <tt>0</tt>.  If the return value is <tt>0</tt> then
+   * there is no custom cursor set on the specified window, and it is
+   * using the cursor for its parent window.
+   * 
+   * @newin{2,18}
+   * @return A Gdk::Cursor, or <tt>0</tt>. The returned
+   * object is owned by the Gdk::Window and should not be unreferenced
+   * directly. Use set_cursor() to unset the cursor of the
+   * window.
+   */
+  Glib::RefPtr<const Cursor> get_cursor() const;
 
   
   /** Retrieves the user data for @a window, which is normally the widget
@@ -1564,19 +1436,18 @@ public:
    * 
    * <note>
    * If @a window is not a toplevel, it is <em>much</em> better
-   * to call get_position() and Gdk::Drawable::get_size() instead,
-   * because it avoids the roundtrip to the X server and because
-   * Gdk::Drawable::get_size() supports the full 32-bit coordinate space,
-   * whereas get_geometry() is restricted to the 16-bit
-   * coordinates of X11.
+   * to call get_position(), get_width() and
+   * get_height() instead, because it avoids the roundtrip to
+   * the X server and because these functions support the full 32-bit
+   * coordinate space, whereas get_geometry() is restricted to
+   * the 16-bit coordinates of X11.
    * </note>
    * @param x Return location for X coordinate of window (relative to its parent).
    * @param y Return location for Y coordinate of window (relative to its parent).
    * @param width Return location for width of window.
    * @param height Return location for height of window.
-   * @param depth Return location for bit depth of window.
    */
-  void get_geometry(int& x, int& y, int& width, int& height, int& depth) const;
+  void get_geometry(int& x, int& y, int& width, int& height) const;
   
   /** Returns the width of the given @a window.
    * 
@@ -1599,6 +1470,7 @@ public:
    * @return The height of @a window.
    */
   int get_height() const;
+
   
   /** Obtains the position of the window as reported in the
    * most-recently-processed Gdk::EventConfigure. Contrast with
@@ -1638,7 +1510,7 @@ public:
   /** Transforms window coordinates from a child window to its parent
    * window, where the parent window is the normal parent as returned by
    * get_parent() for normal windows, and the window's
-   * embedder as returned by gdk_offscreen_window_get_embedder() for
+   * embedder as returned by Gdk::OffscreenWindow::get_embedder() for
    * offscreen windows.
    * 
    * For normal windows, calling this function is equivalent to adding
@@ -1665,7 +1537,7 @@ public:
   /** Transforms window coordinates from a parent window to a child
    * window, where the parent window is the normal parent as returned by
    * get_parent() for normal windows, and the window's
-   * embedder as returned by gdk_offscreen_window_get_embedder() for
+   * embedder as returned by Gdk::OffscreenWindow::get_embedder() for
    * offscreen windows.
    * 
    * For normal windows, calling this function is equivalent to subtracting
@@ -1703,9 +1575,14 @@ public:
    */
   void get_frame_extents(Rectangle& rect);
   
+#ifndef GDKMM_DISABLE_DEPRECATED
+
   /** Obtains the current pointer position and modifier state.
    * The position is given in coordinates relative to the upper left
    * corner of @a window.
+   * 
+   * Deprecated: 3.0: Use get_device_position() instead.
+   * @deprecated Use get_device_position() instead
    * @param x Return location for X coordinate of pointer or <tt>0</tt> to not
    * return the X coordinate.
    * @param y Return location for Y coordinate of pointer or <tt>0</tt> to not
@@ -1717,7 +1594,9 @@ public:
    * pointer isn't known to GDK.
    */
   Glib::RefPtr<Window> get_pointer(int& x, int& y, ModifierType& mask);
-  
+#endif // GDKMM_DISABLE_DEPRECATED
+
+
   /** Obtains the parent of @a window, as known to GDK. Does not query the
    * X server; thus this returns the parent as passed to new(),
    * not the actual parent. This should never matter unless you're using
@@ -1777,11 +1656,26 @@ public:
   Glib::RefPtr<const Window> get_toplevel() const;
 
   
+  /** Obtains the current device position and modifier state.
+   * The position is given in coordinates relative to the upper left
+   * corner of @a window.
+   * 
+   * @newin{3,0}
+   * @param device Pointer Gdk::Device to query to.
+   * @param x Return location for the X coordinate of @a device, or <tt>0</tt>.
+   * @param y Return location for the Y coordinate of @a device, or <tt>0</tt>.
+   * @param mask Return location for the modifier mask, or <tt>0</tt>.
+   * @return The window underneath @a device (as with
+   * Gdk::Device::get_window_at_position()), or <tt>0</tt> if the window is not known to GDK.
+   */
+  Glib::RefPtr<Window> get_device_position(const Glib::RefPtr<const Device>& device, int& x, int& y, ModifierType& mask) const;
+
+  
   /** Obtains the parent of @a window, as known to GDK. Works like
    * get_parent() for normal windows, but returns the
    * window's embedder for offscreen windows.
    * 
-   * See also: gdk_offscreen_window_get_embedder()
+   * See also: Gdk::OffscreenWindow::get_embedder()
    * 
    * @newin{2,22}
    * @return Effective parent of @a window.
@@ -1792,7 +1686,7 @@ public:
    * get_parent() for normal windows, but returns the
    * window's embedder for offscreen windows.
    * 
-   * See also: gdk_offscreen_window_get_embedder()
+   * See also: Gdk::OffscreenWindow::get_embedder()
    * 
    * @newin{2,22}
    * @return Effective parent of @a window.
@@ -1804,15 +1698,26 @@ public:
    * Works like get_toplevel(), but treats an offscreen window's
    * embedder as its parent, using get_effective_parent().
    * 
-   * See also: gdk_offscreen_window_get_embedder()
+   * See also: Gdk::OffscreenWindow::get_embedder()
    * 
    * @newin{2,22}
    * @return The effective toplevel window containing @a window.
    */
   Glib::RefPtr<Window> get_effective_toplevel();
-  //gtkmmproc error: gdk_window_effective_get_toplevel : method defs lookup failed (1)
+  
+  /** Gets the toplevel window that's an ancestor of @a window.
+   * 
+   * Works like get_toplevel(), but treats an offscreen window's
+   * embedder as its parent, using get_effective_parent().
+   * 
+   * See also: Gdk::OffscreenWindow::get_embedder()
+   * 
+   * @newin{2,22}
+   * @return The effective toplevel window containing @a window.
+   */
+  Glib::RefPtr<const Window> get_effective_toplevel() const;
 
-  
+ 
   /** Gets the list of children of @a window known to GDK.
    * This function only returns children created via GDK,
    * so for example it's useless when used with the root window;
@@ -1822,8 +1727,9 @@ public:
    * list need not be.
    * @return List of child windows inside @a window.
    */
-  Glib::ListHandle< Glib::RefPtr<Window> > get_children();
-  
+  std::vector< Glib::RefPtr<Window> > get_children();
+ 
+
   /** Gets the list of children of @a window known to GDK.
    * This function only returns children created via GDK,
    * so for example it's useless when used with the root window;
@@ -1833,24 +1739,66 @@ public:
    * list need not be.
    * @return List of child windows inside @a window.
    */
-  Glib::ListHandle< Glib::RefPtr<const Window> > get_children() const;
+  std::vector< Glib::RefPtr<const Window> > get_children() const;
    //gdk_window_peek_children() is the same as gdk_window_get_children() with different memory mangement of the list.
 
   
-  /** Gets the event mask for @a window. See set_events().
+  /** Gets the event mask for @a window for all master input devices. See
+   * set_events().
    * @return Event mask for @a window.
    */
   EventMask get_events() const;
   
   /** The event mask for a window determines which events will be reported
-   * for that window. For example, an event mask including Gdk::BUTTON_PRESS_MASK
-   * means the window should report button press events. The event mask
-   * is the bitwise OR of values from the Gdk::EventMask enumeration.
+   * for that window from all master input devices. For example, an event mask
+   * including Gdk::BUTTON_PRESS_MASK means the window should report button
+   * press events. The event mask is the bitwise OR of values from the
+   * Gdk::EventMask enumeration.
    * @param event_mask Event mask for @a window.
    */
   void set_events(EventMask event_mask);
 
   
+  /** Returns the event mask for @a window corresponding to an specific device.
+   * 
+   * @newin{3,0}
+   * @param device A Gdk::Device.
+   * @return Device event mask for @a window.
+   */
+  EventMask get_device_events(const Glib::RefPtr<const Device>& device) const;
+  
+  /** Sets the event mask for a given device (Normally a floating device, not
+   * attached to any visible pointer) to @a window. For example, an event mask
+   * including Gdk::BUTTON_PRESS_MASK means the window should report button
+   * press events. The event mask is the bitwise OR of values from the
+   * Gdk::EventMask enumeration.
+   * 
+   * @newin{3,0}
+   * @param device Gdk::Device to enable events for.
+   * @param event_mask Event mask for @a window.
+   */
+  void set_device_events(const Glib::RefPtr<Device>& device, EventMask event_mask);
+  
+  
+  /** Returns the event mask for @a window corresponding to the device class specified
+   * by @a source.
+   * @param source A Gdk::InputSource to define the source class.
+   * @return Source event mask for @a window.
+   */
+  EventMask get_source_events(InputSource source) const;
+  
+  /** Sets the event mask for any floating device (i.e.\ not attached to any
+   * visible pointer) that has the source defined as @a source. This event
+   * mask will be applied both to currently existing, newly added devices
+   * after this call, and devices being attached/detached.
+   * 
+   * @newin{3,0}
+   * @param source A Gdk::InputSource to define the source class.
+   * @param event_mask Event mask for @a window.
+   */
+  void set_source_events(InputSource source, EventMask event_mask);
+
+ 
   /** Sets a list of icons for the window. One of these will be used
    * to represent the window when it has been iconified. The icon is
    * usually shown in an icon box or some sort of task bar. Which icon
@@ -1860,19 +1808,7 @@ public:
    * icon by a small amount or not at all.
    * @param pixbufs A list of pixbufs, of different sizes.
    */
-  void set_icon_list(const Glib::ListHandle< Glib::RefPtr<Gdk::Pixbuf> >& pixbufs);
-  
-  /** Sets the icon of @a window as a pixmap or window. If using GTK+, investigate
-   * gtk_window_set_default_icon_list() first, and then gtk_window_set_icon_list()
-   * and gtk_window_set_icon(). If those don't meet your needs, look at
-   * set_icon_list(). Only if all those are too high-level do you
-   * want to fall back to set_icon().
-   * @param icon_window A Gdk::Window to use for the icon.
-   * @param pixmap A Gdk::Pixmap to use as the icon,.
-   * @param mask A 1-bit pixmap (Gdk::Bitmap) to use as mask for @a pixmap.
-   */
-  void set_icon(const Glib::RefPtr<Window>& icon_window, const Glib::RefPtr<Pixmap>& pixmap, const Glib::RefPtr<Bitmap>& mask);
-  void set_icon(const Glib::RefPtr<Window>& icon_window, const Glib::RefPtr<Pixmap>& pixmap);
+  void set_icon_list(const std::vector< Glib::RefPtr<Gdk::Pixbuf> >& pixbufs);
   void unset_icon();
   
   /** Windows may have a name used while minimized, distinct from the
@@ -1937,7 +1873,8 @@ public:
    */
   void set_decorations(WMDecoration decorations);
   
-  /** Returns the decorations set on the GdkWindow with #gdk_window_set_decorations
+  /** Returns the decorations set on the GdkWindow with
+   * set_decorations().
    * @param decorations The window decorations will be written here.
    * @return <tt>true</tt> if the window has decorations set, <tt>false</tt> otherwise.
    */
@@ -1946,7 +1883,7 @@ public:
   /** Sets hints about the window management functions to make available
    * via buttons on the window frame.
    * 
-   * On the X backend, this function sets the traditional Motif window 
+   * On the X backend, this function sets the traditional Motif window
    * manager hint for this purpose. However, few window managers do
    * anything reliable or interesting with this hint. Many ignore it
    * entirely.
@@ -1960,19 +1897,9 @@ public:
    */
   void set_functions(WMFunction functions);
 
-  
-#ifndef GDKMM_DISABLE_DEPRECATED
+   //deprecated
 
-  /** Obtains a list of all toplevel windows known to GDK on the default
-   * screen (see gdk_window_get_toplevels_for_screen()).
-   * A toplevel window is a child of the root window (see
-   * gdk_get_default_root_window()).
-   * @return List of toplevel windows.
-   */
-  static Glib::ListHandle< Glib::RefPtr<Window> > get_toplevels();
-#endif // GDKMM_DISABLE_DEPRECATED
-
-
+   
   /** Create a new surface that is as compatible as possible with the
    * given @a window. For example the new surface will have the same
    * fallback resolution and font options as @a window. Generally, the new
@@ -1995,7 +1922,7 @@ public:
    * pointer to a "nil" surface if @a other is already in an error state
    * or any other error occurs.
    */
-  Cairo::RefPtr<Cairo::Surface> create_similar_surface(Cairo::Content content, int width, int height);
+  ::Cairo::RefPtr< ::Cairo::Surface> create_similar_surface(::Cairo::Content content, int width, int height);
 
   
   /** Emits a short beep associated to @a window in the appropriate
@@ -2068,13 +1995,31 @@ public:
    */
   void unmaximize();
   
+  /** Registers a window as a potential drop destination.
+   */
   void register_dnd();
   
+  
+  /** Finds out the DND protocol supported by a window.
+   * 
+   * @newin{3,0}
+   * @param target Location of the window
+   * where the drop should happen. This may be @a window or a proxy window,
+   * or <tt>0</tt> if @a window does not support Drag and Drop.
+   * @return The supported DND protocol.
+   */
+
+  DragProtocol get_drag_protocol(Glib::RefPtr<Window>& target) const;
+
+  //TODO: Documentation  
+  DragProtocol get_drag_protocol() const;
+  
+  
   /** Begins a window resize operation (for a toplevel window).
-   * You might use this function to implement a "window resize grip," for
-   * example; in fact Gtk::Statusbar uses it. The function works best
-   * with window managers that support the , but has a 
-   * fallback implementation for other window managers.
+   * 
+   * This function assumes that the drag is controlled by the
+   * client pointer device, use begin_resize_drag_for_device()
+   * to begin a drag with a different device.
    * @param edge The edge or corner from which the drag is started.
    * @param button The button being used to drag.
    * @param root_x Root window X coordinate of mouse click that began the drag.
@@ -2082,18 +2027,53 @@ public:
    * @param timestamp Timestamp of mouse click that began the drag (use Gdk::Event::get_time()).
    */
   void begin_resize_drag(WindowEdge edge, int button, int root_x, int root_y, guint32 timestamp);
+
   
-  /** Begins a window move operation (for a toplevel window).  You might
-   * use this function to implement a "window move grip," for
-   * example. The function works best with window managers that support
-   * the , but has a fallback implementation for
-   * other window managers.
+  /** Begins a window resize operation (for a toplevel window).
+   * You might use this function to implement a "window resize grip," for
+   * example; in fact Gtk::Statusbar uses it. The function works best
+   * with window managers that support the Extended Window Manager Hints, but has a
+   * fallback implementation for other window managers.
+   * 
+   * @newin{3,4}
+   * @param edge The edge or corner from which the drag is started.
+   * @param device The device used for the operation.
+   * @param button The button being used to drag.
+   * @param root_x Root window X coordinate of mouse click that began the drag.
+   * @param root_y Root window Y coordinate of mouse click that began the drag.
+   * @param timestamp Timestamp of mouse click that began the drag (use Gdk::Event::get_time()).
+   */
+  void resize_drag(WindowEdge edge, const Glib::RefPtr<Device>& device, int button, int root_x, int root_y, guint32 timestamp);
+
+  
+  /** Begins a window move operation (for a toplevel window).
+   * 
+   * This function assumes that the drag is controlled by the
+   * client pointer device, use begin_move_drag_for_device()
+   * to begin a drag with a different device.
    * @param button The button being used to drag.
    * @param root_x Root window X coordinate of mouse click that began the drag.
    * @param root_y Root window Y coordinate of mouse click that began the drag.
    * @param timestamp Timestamp of mouse click that began the drag.
    */
   void begin_move_drag(int button, int root_x, int root_y, guint32 timestamp);
+
+  
+  /** Begins a window move operation (for a toplevel window).
+   * You might use this function to implement a "window move grip," for
+   * example. The function works best with window managers that support
+   * the Extended
+   * Window Manager Hints, but has a fallback implementation for
+   * other window managers.
+   * 
+   * @newin{3,4}
+   * @param device The device used for the operation.
+   * @param button The button being used to drag.
+   * @param root_x Root window X coordinate of mouse click that began the drag.
+   * @param root_y Root window Y coordinate of mouse click that began the drag.
+   * @param timestamp Timestamp of mouse click that began the drag.
+   */
+  void begin_move_drag(const Glib::RefPtr<Device>& device, int button, int root_x, int root_y, guint32 timestamp);
 
   /** Starts a drag and creates a new drag context for it.
    * 
@@ -2104,7 +2084,7 @@ public:
    *
    * @newin{2,24}
    */
-  Glib::RefPtr<DragContext> drag_begin(const Glib::StringArrayHandle& targets);
+  Glib::RefPtr<DragContext> drag_begin(const std::vector<Glib::ustring>& targets);
   
 
   /** A convenience wrapper around invalidate_region() which
@@ -2140,11 +2120,21 @@ public:
    * If <tt>false</tt>, then the update area for child windows will remain
    * unaffected. See gdk_window_invalidate_maybe_recurse if you need
    * fine grained control over which children are invalidated.
-   * @param region A Gdk::Region.
+   * @param region A #cairo_region_t.
    * @param invalidate_children <tt>true</tt> to also invalidate child windows.
    */
-  void invalidate_region(const Region& region, bool invalidate_children =  true);
+  void invalidate_region(const ::Cairo::RefPtr< ::Cairo::Region>& region, bool invalidate_children =  true);
 
+  //TODO:
+  /*
+  void       gdk_window_invalidate_maybe_recurse  (GdkWindow          *window,
+						 const cairo_region_t    *region,
+						 gboolean (*child_func) (GdkWindow *, gpointer),
+						 gpointer   user_data);
+	*/
+
+ 
+  //This method should not have a const version - see the docs
   
   /** Transfers ownership of the update area from @a window to the caller
    * of the function. That is, after calling this function, @a window will
@@ -2153,8 +2143,7 @@ public:
    * get_update_area() returns an invalid Region.
    * @return The update area for @a window.
    */
-  Region get_update_area();
-  //This method should not have a const version - see the docs.
+  ::Cairo::RefPtr< ::Cairo::Region> get_update_area();
 
   
   /** Temporarily freezes a window such that it won't receive expose
@@ -2219,7 +2208,6 @@ public:
    * @param new_height Location to store resulting height.
    */
   static void constrain_size(const Geometry& geometry, guint flags, int width, int height, int& new_width, int& new_height);
-  void get_internal_paint_info(Glib::RefPtr<Drawable>& real_drawable, int& x_offset, int& y_offset) const;
 
   
   /** Indicates that the application will cooperate with the window
@@ -2254,8 +2242,8 @@ public:
   /** Toggles whether a window should appear in a task list or window
    * list. If a window's semantic type as specified with
    * set_type_hint() already fully describes the window, this
-   * function should <em>not</em> be called in addition, 
-   * instead you should allow the window to be treated according to 
+   * function should <em>not</em> be called in addition,
+   * instead you should allow the window to be treated according to
    * standard policy for its semantic type.
    * 
    * @newin{2,2}
@@ -2267,9 +2255,9 @@ public:
    * switcher, or other desktop utility program that displays a small
    * thumbnail representation of the windows on the desktop). If a
    * window's semantic type as specified with set_type_hint()
-   * already fully describes the window, this function should 
-   * <em>not</em> be called in addition, instead you should 
-   * allow the window to be treated according to standard policy for 
+   * already fully describes the window, this function should
+   * <em>not</em> be called in addition, instead you should
+   * allow the window to be treated according to standard policy for
    * its semantic type.
    * 
    * @newin{2,2}
@@ -2314,52 +2302,13 @@ public:
    * don't have a concept of "fullscreen"; so you can't rely on the
    * unfullscreenification actually happening. But it will happen with
    * most standard window managers, and GDK makes a best effort to get
-   * it to happen. 
+   * it to happen.
    * 
    * @newin{2,2}
    */
   void unfullscreen();
 
-  
-  GrabStatus pointer_grab(bool owner_events, EventMask event_mask, const Glib::RefPtr<const Window>& confine_to, const Cursor& cursor, guint32 time_);
-
-  /** Grabs the pointer to a specific window.
-   * Requires a corresponding call to pointer_ungrab().
-   *
-   * Arguments:
-   * @param owner_events Specifies whether events will be reported as is, or relative to the window.
-   * @param event_mask Masks only interesting events.
-   * @param cursor Changes the cursor for the duration of the grab.
-   * @param timestamp Specifies the time.
-   */
-  GrabStatus pointer_grab(bool owner_events, EventMask event_mask, const Cursor& cursor, guint32 timestamp);
-
-  /** Grabs the pointer to a specific window.
-   * Requires a corresponding call to pointer_ungrab().
-   *
-   * Arguments:
-   * @param owner_events Specifies whether events will be reported as is, or relative to the window.
-   * @param event_mask Masks only interesting events.
-   * @param timestamp Specifies the time.
-   */
-  GrabStatus pointer_grab(bool owner_events, EventMask event_mask, guint32 timestamp);
-
-  
-  /** Ungrabs the pointer on the default display, if it is grabbed by this 
-   * application.
-   * @param timestamp A timestamp from a Gdk::Event, or Gdk::CURRENT_TIME if no 
-   * timestamp is available.
-   */
-  static void pointer_ungrab(guint32 timestamp);
-  
-  GrabStatus keyboard_grab(bool owner_events, guint32 timestamp);
-  
-  /** Ungrabs the keyboard on the default display, if it is grabbed by this 
-   * application.
-   * @param timestamp A timestamp from a Gdk::Event, or Gdk::CURRENT_TIME if no
-   * timestamp is available.
-   */
-  static void keyboard_ungrab(guint32 timestamp);
+   //deprecated
 
   
   /** Set if @a window must be kept above other windows. If the
@@ -2400,7 +2349,7 @@ public:
    * On X11, this works only on X screens with a compositing manager 
    * running.
    * 
-   * For setting up per-pixel alpha, see Gdk::Screen::get_rgba_colormap().
+   * For setting up per-pixel alpha, see Gdk::Screen::get_rgba_visual().
    * For making non-toplevel windows translucent, see 
    * set_composited().
    * 
@@ -2419,9 +2368,9 @@ public:
   bool get_accept_focus() const;
   
   /** Setting @a accept_focus to <tt>false</tt> hints the desktop environment that the
-   * window doesn't want to receive input focus. 
+   * window doesn't want to receive input focus.
    * 
-   * On X, it is the responsibility of the window manager to interpret this 
+   * On X, it is the responsibility of the window manager to interpret this
    * hint. ICCCM-compliant window manager usually respect it.
    * 
    * @newin{2,4}
@@ -2440,7 +2389,7 @@ public:
   bool get_focus_on_map() const;
   
   /** Setting @a focus_on_map to <tt>false</tt> hints the desktop environment that the
-   * window doesn't want to receive input focus when it is mapped.  
+   * window doesn't want to receive input focus when it is mapped.
    * focus_on_map should be turned off for windows that aren't triggered
    * interactively (such as popups from network activity).
    * 
@@ -2461,33 +2410,29 @@ public:
   static Glib::RefPtr<Window> get_default_root_window();
 
   
-  /** Gets the offscreen pixmap that an offscreen window renders into.
+  /** Gets the offscreen surface that an offscreen window renders into.
    * If you need to keep this around over window resizes, you need to
    * add a reference to it.
-   * 
-   * @newin{2,18}
    * @param window A Gdk::Window.
-   * @return The offscreen pixmap, or <tt>0</tt> if not offscreen.
+   * @return The offscreen surface, or <tt>0</tt> if not offscreen.
    */
-  Glib::RefPtr<Pixmap> get_offscreen_pixmap();
+  ::Cairo::RefPtr< ::Cairo::Surface> get_offscreen_surface();
   
-  /** Gets the offscreen pixmap that an offscreen window renders into.
+  /** Gets the offscreen surface that an offscreen window renders into.
    * If you need to keep this around over window resizes, you need to
    * add a reference to it.
-   * 
-   * @newin{2,18}
    * @param window A Gdk::Window.
-   * @return The offscreen pixmap, or <tt>0</tt> if not offscreen.
+   * @return The offscreen surface, or <tt>0</tt> if not offscreen.
    */
-  Glib::RefPtr<const Pixmap> get_offscreen_pixmap() const;
+  ::Cairo::RefPtr<const ::Cairo::Surface> get_offscreen_surface() const;
 
   
   /** Gets the window that @a window is embedded in.
    * 
    * @newin{2,18}
    * @param window A Gdk::Window.
-   * @return The embedding Gdk::Window, or <tt>0</tt> if @a window is not an
-   * embedded offscreen window.
+   * @return The embedding Gdk::Window, or <tt>0</tt>
+   * if @a window is not an mbedded offscreen window.
    */
   Glib::RefPtr<Window> get_offscreen_embedder();
   
@@ -2495,8 +2440,8 @@ public:
    * 
    * @newin{2,18}
    * @param window A Gdk::Window.
-   * @return The embedding Gdk::Window, or <tt>0</tt> if @a window is not an
-   * embedded offscreen window.
+   * @return The embedding Gdk::Window, or <tt>0</tt>
+   * if @a window is not an mbedded offscreen window.
    */
   Glib::RefPtr<const Window> get_offscreen_embedder() const;
 
@@ -2504,46 +2449,15 @@ public:
   /** Sets @a window to be embedded in @a embedder.
    * 
    * To fully embed an offscreen window, in addition to calling this
-   * function, it is also necessary to handle the Gdk::Window::pick-embedded-child
-   * signal on the @a embedder and the Gdk::Window::to-embedder and
-   * Gdk::Window::from-embedder signals on @a window.
+   * function, it is also necessary to handle the Gdk::Window::signal_pick_embedded_child()
+   * signal on the @a embedder and the Gdk::Window::signal_to_embedder() and
+   * Gdk::Window::signal_from_embedder() signals on @a window.
    * 
    * @newin{2,18}
    * @param window A Gdk::Window.
    * @param embedder The Gdk::Window that @a window gets embedded in.
    */
   void set_offscreen_embedder(const Glib::RefPtr<Window>& embedder);
-
-  
-  /** Redirects drawing into @a window so that drawing to the
-   * window in the rectangle specified by @a src_x, @a src_y,
-   *  @a width and @a height is also drawn into @a drawable at
-   *  @a dest_x, @a dest_y.
-   * 
-   * Only drawing between begin_paint_region() or
-   * begin_paint_rect() and end_paint() is
-   * redirected.
-   * 
-   * Redirection is active until remove_redirection()
-   * is called.
-   * 
-   * @newin{2,14}
-   * @param drawable A Gdk::Drawable.
-   * @param src_x X position in @a window.
-   * @param src_y Y position in @a window.
-   * @param dest_x X position in @a drawable.
-   * @param dest_y Y position in @a drawable.
-   * @param width Width of redirection, or -1 to use the width of @a window.
-   * @param height Height of redirection or -1 to use the height of @a window.
-   */
-  void redirect_to_drawable(const Glib::RefPtr<Drawable>& drawable, int src_x, int src_y, int dest_x, int dest_y, int width, int height);
-  
-  /** Removes any active redirection started by
-   * redirect_to_drawable().
-   * 
-   * @newin{2,14}
-   */
-  void remove_redirection();
 
   
   /** This function informs GDK that the geometry of an embedded
@@ -2553,14 +2467,83 @@ public:
    * @newin{2,18}
    */
   void geometry_changed();
+
   
+  /** This function will enable multidevice features in @a window.
+   * 
+   * Multidevice aware windows will need to handle properly multiple,
+   * per device enter/leave events, device grabs and grab ownerships.
+   * 
+   * @newin{3,0}
+   * @param support_multidevice <tt>true</tt> to enable multidevice support in @a window.
+   */
+  void set_support_multidevice(bool support_multidevice =  true);
+  
+  /** Returns <tt>true</tt> if the window is aware of the existence of multiple
+   * devices.
+   * 
+   * @newin{3,0}
+   * @return <tt>true</tt> if the window handles multidevice features.
+   */
+  bool get_support_multidevice();
+
+ 
+  //This is const because it returns a copy (though that is not very clear from the C documentation)
+  
+  /** Computes the region of a window that potentially can be written
+   * to by drawing primitives. This region may not take into account
+   * other factors such as if the window is obscured by other windows,
+   * but no area outside of this region will be affected by drawing
+   * primitives.
+   * @return A #cairo_region_t. This must be freed with cairo_region_destroy()
+   * when you are done.
+   */
+  ::Cairo::RefPtr< ::Cairo::Region> get_clip_region() const;
+
+  //This is const because it returns a copy (though that is not very clear from the C documentation)
+  
+  /** Computes the region of the @a window that is potentially visible.
+   * This does not necessarily take into account if the window is
+   * obscured by other windows, but no area outside of this region
+   * is visible.
+   * @return A #cairo_region_t. This must be freed with cairo_region_destroy()
+   * when you are done.
+   */
+  ::Cairo::RefPtr< ::Cairo::Region> get_visible_region() const;
+
+ 
+  /** Creates a Cairo context for drawing to @a drawable.
+   * @return A newly created Cairo context.
+   * 
+   * @newin{2,10}.
+   */
+  ::Cairo::RefPtr< ::Cairo::Context> create_cairo_context();
+
   //TODO: Wrap these? Find out when they are emitted and if they are useful outside of GTK+, and improve the C docs.
   //_WRAP_SIGNAL(Glib::RefPtr<Gdk::Window> pick_embedded_child(double x, double y), pick-embedded-child, no_default_handler)
   //_WRAP_SIGNAL(Glib::RefPtr<Gdk::Window> to_embedder(double offscreen_x, double offscreen_y, double& embedder_x, double& embedder_y), to-embedder, no_default_handler)
   //_WRAP_SIGNAL(Glib::RefPtr<Gdk::Window> from_embedder(double embedder_x, double embedder_y, double& offscreen_x, double& offscreen_y), from-embedder, no_default_handler)
 
 
-  //TODO: _WRAP_PROPERTY("cursor", Cursor)
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Cursor.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< Glib::RefPtr<Cursor> > property_cursor() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Cursor.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< Glib::RefPtr<Cursor> > property_cursor() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
 
 
 public:
@@ -2589,7 +2572,7 @@ namespace Glib
    *
    * @relates Gdk::Window
    */
-  Glib::RefPtr<Gdk::Window> wrap(GdkWindowObject* object, bool take_copy = false);
+  Glib::RefPtr<Gdk::Window> wrap(GdkWindow* object, bool take_copy = false);
 }
 
 

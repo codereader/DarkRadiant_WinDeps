@@ -4,7 +4,8 @@
 #define _GIOMM_DESKTOPAPPINFO_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -37,6 +38,13 @@ typedef struct _GDesktopAppInfoClass GDesktopAppInfoClass;
 
 namespace Gio
 { class DesktopAppInfo_Class; } // namespace Gio
+namespace Glib
+{
+
+class KeyFile;
+
+}
+
 namespace Gio
 {
 
@@ -112,7 +120,9 @@ public:
    * directories (i.e. the directories specified in the 
    * <envar>XDG_DATA_HOME</envar> and <envar>XDG_DATA_DIRS</envar> environment 
    * variables). GIO also supports the prefix-to-subdirectory mapping that is
-   * described in the ).
+   * described in the Menu Spec 
+   * (i.e. a desktop id of kde-foo.desktop will match
+   * <filename>/usr/share/applications/kde/foo.desktop</filename>).
    * @param desktop_id The desktop file id.
    * @return A new DesktopAppInfo, or <tt>0</tt> if no desktop file with that id.
    */
@@ -149,11 +159,22 @@ public:
   bool is_hidden() const;
   
   /** Sets the name of the desktop that the application is running in.
-   * This is used by g_app_info_should_show() to evaluate the
+   * This is used by g_app_info_should_show() and
+   * g_desktop_app_info_get_show_in() to evaluate the
    * <tt>OnlyShowIn</tt> and <tt>NotShowIn</tt>
    * desktop entry fields.
    * 
-   * The 
+   * The Desktop
+   * Menu specification recognizes the following:
+   * <simplelist>
+   * <member>GNOME</member>
+   * <member>KDE</member>
+   * <member>ROX</member>
+   * <member>XFCE</member>
+   * <member>LXDE</member>
+   * <member>Unity</member>
+   * <member>Old</member>
+   * </simplelist>
    * 
    * Should be called only once; subsequent calls are ignored.
    * @param desktop_env A string specifying what desktop this is.

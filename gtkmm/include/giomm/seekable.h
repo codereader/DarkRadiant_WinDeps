@@ -4,7 +4,8 @@
 #define _GIOMM_SEEKABLE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -27,6 +28,7 @@
 
 #include <giomm/cancellable.h>
 #include <glibmm/interface.h>
+#include <glibmm/iochannel.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -77,9 +79,14 @@ private:
   Seekable(const Seekable&);
   Seekable& operator=(const Seekable&);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 protected:
-  Seekable(); // you must derive from this class
-
+  /**
+   * You should derive from this class to use it.
+   */
+  Seekable();
+  
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /** Called by constructors of derived classes. Provide the result of 
    * the Class init() function to ensure that it is properly 
    * initialized.

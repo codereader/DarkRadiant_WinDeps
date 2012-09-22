@@ -4,12 +4,13 @@
 #define _GTKMM_RADIOBUTTON_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: radiobutton.hg,v 1.8 2006/01/24 14:55:50 murrayc Exp $ */
 
 /* radiobutton.h
- * 
+ *
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/checkbutton.h>
@@ -82,8 +83,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -103,6 +108,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_group_changed().
   virtual void on_group_changed();
 
 
@@ -129,7 +135,7 @@ public:
    * since it already contains a Gtk::Label.
    */
   RadioButton(Group& group, const Glib::ustring& label, bool mnemonic = false);
-  
+
 
   /** Get the radio button's group.
    * This group may be passed to the constructors of other radio buttons, or used with set_group().
@@ -138,6 +144,7 @@ public:
    */
   Group get_group();
 
+ //TODO: Remove set/get_group() now that we have join_group()?
  /** Set the radio button's group.
    * You can obtain a suitable group from another radio button by using get_group().
    *
@@ -150,14 +157,39 @@ public:
   void reset_group();
   
 
-  /**
-   * @par Prototype:
+  /** Joins a Gtk::RadioButton object to the group of another Gtk::RadioButton object
+   * 
+   * Use this in language bindings instead of the get_group() 
+   * and set_group() methods
+   * 
+   * A common way to set up a group of radio buttons is the following:
+   * 
+   * [C example ellipted]
+   * 
+   * @newin{3,0}
+   * @param group_source A radio button object whos group we are 
+   * joining, or <tt>0</tt> to remove the radio button from its group.
+   */
+  void join_group(RadioButton& group_source);
+
+  
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%group_changed()</tt>
+   *
+   * Emitted when the group of radio buttons that a radio button belongs
+   * to changes. This is emitted when a radio button switches from
+   * being alone to being part of a group of 2 or more buttons, or
+   * vice-versa, and when a button is moved from one group of 2 or
+   * more buttons to a different one, but not when the composition
+   * of the group that a button belongs to changes.
+   * 
+   * @newin{2,4}
    */
 
   Glib::SignalProxy0< void > signal_group_changed();
 
-  
+
   //Probably wouldn't work: _WRAP_PROPERTY("group", Group)
 
 

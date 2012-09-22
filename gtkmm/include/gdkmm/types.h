@@ -4,7 +4,8 @@
 #define _GDKMM_TYPES_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: types.hg,v 1.6 2005/12/14 15:36:23 murrayc Exp $ */
 
@@ -21,11 +22,12 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 
+#include <glibmm/value.h>
 #include <gdk/gdk.h>
 #include <gdkmmconfig.h>
 
@@ -60,14 +62,9 @@ enum { ERROR = GTKMM_MACRO_DEFINITION_ERROR };
 namespace Gdk
 {
 
-class Bitmap;
-class Colormap;
-class Pixmap;
 class Window;
 class Font;
-class GC;
 class Color;
-class Image;
 
 /** @addtogroup gdkmmEnums gdkmm Enums and Flags */
 
@@ -127,9 +124,23 @@ enum ModifierType
   BUTTON3_MASK = 1 << 10,
   BUTTON4_MASK = 1 << 11,
   BUTTON5_MASK = 1 << 12,
+  MODIFIER_RESERVED_13_MASK = 1 << 13,
+  MODIFIER_RESERVED_14_MASK = 1 << 14,
+  MODIFIER_RESERVED_15_MASK = 1 << 15,
+  MODIFIER_RESERVED_16_MASK = 1 << 16,
+  MODIFIER_RESERVED_17_MASK = 1 << 17,
+  MODIFIER_RESERVED_18_MASK = 1 << 18,
+  MODIFIER_RESERVED_19_MASK = 1 << 19,
+  MODIFIER_RESERVED_20_MASK = 1 << 20,
+  MODIFIER_RESERVED_21_MASK = 1 << 21,
+  MODIFIER_RESERVED_22_MASK = 1 << 22,
+  MODIFIER_RESERVED_23_MASK = 1 << 23,
+  MODIFIER_RESERVED_24_MASK = 1 << 24,
+  MODIFIER_RESERVED_25_MASK = 1 << 25,
   SUPER_MASK = 1 << 26,
   HYPER_MASK = 1 << 27,
   META_MASK = 1 << 28,
+  MODIFIER_RESERVED_29_MASK = 1 << 29,
   RELEASE_MASK = 1 << 30,
   MODIFIER_MASK = 0x5c001fff
 };
@@ -186,6 +197,40 @@ namespace Gdk
 /**
  * @ingroup gdkmmEnums
  */
+enum ModifierIntent
+{
+  MODIFIER_INTENT_PRIMARY_ACCELERATOR,
+  MODIFIER_INTENT_CONTEXT_MENU,
+  MODIFIER_INTENT_EXTEND_SELECTION,
+  MODIFIER_INTENT_MODIFY_SELECTION,
+  MODIFIER_INTENT_NO_TEXT_INPUT,
+  MODIFIER_INTENT_SHIFT_GROUP
+};
+
+} // namespace Gdk
+
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+namespace Glib
+{
+
+template <>
+class Value<Gdk::ModifierIntent> : public Glib::Value_Enum<Gdk::ModifierIntent>
+{
+public:
+  static GType value_type() G_GNUC_CONST;
+};
+
+} // namespace Glib
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+
+namespace Gdk
+{
+
+/**
+ * @ingroup gdkmmEnums
+ */
 enum Status
 {
   OK = 0,
@@ -216,76 +261,8 @@ public:
 namespace Gdk
 {
 
-/**
- * @ingroup gdkmmEnums
- * @par Bitwise operators:
- * <tt>%InputCondition operator|(InputCondition, InputCondition)</tt><br>
- * <tt>%InputCondition operator&(InputCondition, InputCondition)</tt><br>
- * <tt>%InputCondition operator^(InputCondition, InputCondition)</tt><br>
- * <tt>%InputCondition operator~(InputCondition)</tt><br>
- * <tt>%InputCondition& operator|=(InputCondition&, InputCondition)</tt><br>
- * <tt>%InputCondition& operator&=(InputCondition&, InputCondition)</tt><br>
- * <tt>%InputCondition& operator^=(InputCondition&, InputCondition)</tt><br>
- */
-enum InputCondition
-{
-  INPUT_READ = 1 << 0,
-  INPUT_WRITE = 1 << 1,
-  INPUT_EXCEPTION = 1 << 2
-};
-
-/** @ingroup gdkmmEnums */
-inline InputCondition operator|(InputCondition lhs, InputCondition rhs)
-  { return static_cast<InputCondition>(static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs)); }
-
-/** @ingroup gdkmmEnums */
-inline InputCondition operator&(InputCondition lhs, InputCondition rhs)
-  { return static_cast<InputCondition>(static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs)); }
-
-/** @ingroup gdkmmEnums */
-inline InputCondition operator^(InputCondition lhs, InputCondition rhs)
-  { return static_cast<InputCondition>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs)); }
-
-/** @ingroup gdkmmEnums */
-inline InputCondition operator~(InputCondition flags)
-  { return static_cast<InputCondition>(~static_cast<unsigned>(flags)); }
-
-/** @ingroup gdkmmEnums */
-inline InputCondition& operator|=(InputCondition& lhs, InputCondition rhs)
-  { return (lhs = static_cast<InputCondition>(static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs))); }
-
-/** @ingroup gdkmmEnums */
-inline InputCondition& operator&=(InputCondition& lhs, InputCondition rhs)
-  { return (lhs = static_cast<InputCondition>(static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs))); }
-
-/** @ingroup gdkmmEnums */
-inline InputCondition& operator^=(InputCondition& lhs, InputCondition rhs)
-  { return (lhs = static_cast<InputCondition>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs))); }
-
-} // namespace Gdk
-
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-namespace Glib
-{
-
-template <>
-class Value<Gdk::InputCondition> : public Glib::Value_Flags<Gdk::InputCondition>
-{
-public:
-  static GType value_type() G_GNUC_CONST;
-};
-
-} // namespace Glib
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-
-namespace Gdk
-{
-
 
 typedef GdkGeometry Geometry; //It's not used enough to justify having a wrapper.
-typedef GdkNativeWindow NativeWindow;
 
 /** This is a simple structure containing an x and y coordinate of a point.
  */
@@ -332,6 +309,18 @@ inline bool operator!=(const Point& lhs, const Point& rhs)
   { return !lhs.equal(rhs); }
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
+struct PointTraits
+{
+  typedef Gdk::Point     CppType;
+  typedef GdkPoint       CType;
+  typedef GdkPoint       CTypeNonConst;
+
+  static CType   to_c_type      (CType c_obj)            { return c_obj; }
+  static void    release_c_type (CType)                  {}
+  static CType   to_c_type      (const CppType& cpp_obj) { return *(cpp_obj.gobj ()); }
+  static CppType to_cpp_type    (CType c_obj)            { return CppType (c_obj.x, c_obj.y); }
+};
+
 struct AtomStringTraits
 {
   typedef std::string CppType;
@@ -351,10 +340,24 @@ struct AtomStringTraits
 // we don't want it to look like we're calling a template trait, but
 // a utility function. -Bryan
 typedef AtomStringTraits AtomString;
-#endif //DOXYGEN_SHOULD_SKIP_THIS
 
-typedef Glib::ArrayHandle<std::string,AtomStringTraits> ArrayHandle_AtomString;
-typedef Glib::ListHandle<std::string,AtomStringTraits> ListHandle_AtomString;
+struct AtomUstringTraits
+{
+  typedef Glib::ustring CppType;
+  typedef GdkAtom     CType;
+  typedef GdkAtom     CTypeNonConst;
+
+  static GdkAtom to_c_type(GdkAtom atom) { return atom; }
+  static void    release_c_type(GdkAtom) {}
+
+  // These aren't worth to be inlined since doing so
+  // would expose way too much of the implementation.
+  static GdkAtom     to_c_type  (const Glib::ustring& atom_name);
+  static Glib::ustring to_cpp_type(GdkAtom atom);
+};
+
+typedef AtomUstringTraits AtomUstring;
+#endif //DOXYGEN_SHOULD_SKIP_THIS
 
 } // namespace Gdk
 

@@ -4,7 +4,8 @@
 #define _GIOMM_DBUSSERVER_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -165,28 +166,25 @@ private:
   
 protected:
 
-//TODO: Uncomment when this bug is resolved: https://bugzilla.gnome.org/show_bug.cgi?id=639478
-/*
-  DBusServer(const std::string& address,
+  Server(const std::string& address,
     const std::string& guid,
     const Glib::RefPtr<AuthObserver>& observer,
     const Glib::RefPtr<Cancellable>& cancellable,
     ServerFlags flags);
 
-  DBusServer(const std::string& address,
+  Server(const std::string& address,
     const std::string& guid,
     const Glib::RefPtr<Cancellable>& cancellable,
     ServerFlags flags);
 
-  DBusServer(const std::string& address,
+  Server(const std::string& address,
     const std::string& guid,
     const Glib::RefPtr<AuthObserver>& observer,
     ServerFlags flags);
 
-  DBusServer(const std::string& address,
+  Server(const std::string& address,
     const std::string& guid,
     ServerFlags flags);
-*/
 
 public:
 
@@ -197,7 +195,7 @@ public:
    * Once constructed, you can use g_dbus_server_get_client_address() to
    * get a D-Bus address string that clients can use to connect.
    * 
-   * Connect to the DBusServer::new-connection signal to handle
+   * Connect to the DBusServer::signal_new_connection() signal to handle
    * incoming connections.
    * 
    * The returned DBusServer isn't active - you have to start it with
@@ -233,7 +231,7 @@ public:
    * Once constructed, you can use g_dbus_server_get_client_address() to
    * get a D-Bus address string that clients can use to connect.
    * 
-   * Connect to the DBusServer::new-connection signal to handle
+   * Connect to the DBusServer::signal_new_connection() signal to handle
    * incoming connections.
    * 
    * The returned DBusServer isn't active - you have to start it with
@@ -322,7 +320,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_active() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_active() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -333,7 +331,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<std::string> property_address() const;
+  Glib::PropertyProxy_ReadOnly< std::string > property_address() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -355,7 +353,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<std::string> property_client_address() const;
+  Glib::PropertyProxy_ReadOnly< std::string > property_client_address() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -366,7 +364,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<ServerFlags> property_flags() const;
+  Glib::PropertyProxy_ReadOnly< ServerFlags > property_flags() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -377,33 +375,39 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<std::string> property_guid() const;
+  Glib::PropertyProxy_ReadOnly< std::string > property_guid() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
-  /** Emitted when a new authenticated connection has been made. Use
-   * Gio::DBus::Connection::get_peer_credentials() to figure out what identity
-   * (if any), was authenticated.
-   *
-   * If you want to accept the connection, keep a global reference to the
-   * connection (by keeping it in a global RefPtr<>) and return <tt>true</tt>.
-   * When you are done with the connection call Gio::DBus::Connection::close().
-   * Note that the other peer may disconnect at any time - a typical thing to
-   * do when accepting a connection is to listen to the
-   * Gio::DBus::Connection::signal_closed() signal.
-   *
-   * If property_flags() contains Gio::DBus::SERVER_FLAGS_RUN_IN_THREAD then
-   * the signal is emitted in a new thread dedicated to the connection.
-   * Otherwise the signal is emitted in the thread-default main loop of the
-   * thread that server was constructed in.
-   *
-   * You are guaranteed that signal handlers for this signal runs before
-   * incoming messages on the connection are processed. This means that it's
-   * suitable to call Gio::DBus::Connection::register_object() or similar from
-   * the signal handler.
-   *
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>bool on_my_%new_connection(const Glib::RefPtr<Connection>& connection)</tt>
+   *
+   * Emitted when a new authenticated connection has been made. Use
+   * g_dbus_connection_get_peer_credentials() to figure out what
+   * identity (if any), was authenticated.
+   * 
+   * If you want to accept the connection, take a reference to the
+   *  @a connection object and return <tt>true</tt>. When you are done with the
+   * connection call g_dbus_connection_close() and give up your
+   * reference. Note that the other peer may disconnect at any time -
+   * a typical thing to do when accepting a connection is to listen to
+   * the DBusConnection::signal_closed() signal.
+   * 
+   * If DBusServer::property_flags() contains DBUS_SERVER_FLAGS_RUN_IN_THREAD
+   * then the signal is emitted in a new thread dedicated to the
+   * connection. Otherwise the signal is emitted in the thread-default main
+   * loop of the thread that @a server was constructed in.
+   * 
+   * You are guaranteed that signal handlers for this signal runs
+   * before incoming messages on @a connection are processed. This means
+   * that it's suitable to call g_dbus_connection_register_object() or
+   * similar from the signal handler.
+   * 
+   * @newin{2,26}
+   * @param connection A DBusConnection for the new connection.
+   * @return <tt>true</tt> to claim @a connection, <tt>false</tt> to let other handlers
+   * run.
    */
 
   Glib::SignalProxy1< bool,const Glib::RefPtr<Connection>& > signal_new_connection();

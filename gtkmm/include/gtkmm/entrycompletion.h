@@ -4,7 +4,8 @@
 #define _GTKMM_ENTRYCOMPLETION_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: entrycompletion.hg,v 1.24 2006/07/19 16:58:50 murrayc Exp $ */
 
@@ -21,11 +22,12 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/widget.h>
+#include <gtkmm/celllayout.h>
 #include <gtkmm/treemodel.h>
  
 
@@ -42,8 +44,7 @@ namespace Gtk
 
 class Entry;
 
-//TODO: This should derive+implement from CellLayout, when we can break ABI.
-//Then we should add "It derives from the Gtk::CellLayout, to allow the user to add extra cells to the Gtk::TreeView with completion matches".
+//TODO: we should add "It derives from the Gtk::CellLayout, to allow the user to add extra cells to the Gtk::TreeView with completion matches".
 
 /** Completion functionality for Gtk::Entry.
  *
@@ -72,7 +73,10 @@ class Entry;
  * selected, the action_activated signal is emitted. 
  */
 
-class EntryCompletion : public Glib::Object
+class EntryCompletion
+ : public Glib::Object,
+   public Gtk::CellLayout,
+   public Gtk::Buildable
 {
   
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -100,8 +104,11 @@ protected:
 public:
   virtual ~EntryCompletion();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -118,7 +125,7 @@ public:
 
 private:
 
-
+  
 protected:
   EntryCompletion();
 
@@ -202,6 +209,18 @@ public:
    */
   int get_minimum_key_length() const;
   
+  /** Computes the common prefix that is shared by all rows in @a completion
+   * that start with @a key. If no row matches @a key, <tt>0</tt> will be returned.
+   * Note that a text column must have been set for this function to work,
+   * see set_text_column() for details. 
+   * 
+   * @newin{3,4}
+   * @param key The text to complete for.
+   * @return The common prefix all rows starting with @a key
+   * or <tt>0</tt> if no row matches @a key.
+   */
+  Glib::ustring compute_prefix(const Glib::ustring& key);
+  
   /** Requests a completion operation, or in other words a refiltering of the
    * current list with completions, using the current key. The completion list
    * view will be updated accordingly.
@@ -211,7 +230,7 @@ public:
   void complete();
 
   
-  /** Requests a prefix insertion. 
+  /** Requests a prefix insertion.
    * 
    * @newin{2,6}
    */
@@ -234,7 +253,7 @@ public:
   /** Deletes the action at @a index from @a completion's action list.
    * 
    * @newin{2,4}
-   * @param index The index of the item to Delete.
+   * @param index The index of the item to delete.
    */
   void delete_action(int index =  0);
 
@@ -293,34 +312,20 @@ public:
    */
   void set_popup_set_width(bool popup_set_width =  true);
   
-  /** Returns whether the  completion popup window will be resized to the 
+  /** Returns whether the  completion popup window will be resized to the
    * width of the entry.
    * 
    * @newin{2,8}
-   * @return <tt>true</tt> if the popup window will be resized to the width of 
+   * @return <tt>true</tt> if the popup window will be resized to the width of
    * the entry.
    */
   bool get_popup_set_width() const;
 
   
-#ifndef GTKMM_DISABLE_DEPRECATED
-
   /** Sets whether the completion popup window will appear even if there is
    * only a single match. You may want to set this to <tt>false</tt> if you
-   * are using .
-   * 
-   * @newin{2,8}
-   * @deprecated Use set_popup_single_match() instead. This function was wrongly named.
-   * @param popup_single_match <tt>true</tt> if the popup should appear even for a single
-   * match.
-   */
-  void set_popup_single_width(bool popup_single_match =  true);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-  /** Sets whether the completion popup window will appear even if there is
-   * only a single match. You may want to set this to <tt>false</tt> if you
-   * are using .
+   * are using inline
+   * completion.
    * 
    * @newin{2,8}
    * @param popup_single_match <tt>true</tt> if the popup should appear even for a single
@@ -330,7 +335,7 @@ public:
 
   
   /** Returns whether the completion popup window will appear even if there is
-   * only a single match. 
+   * only a single match.
    * 
    * @newin{2,8}
    * @return <tt>true</tt> if the popup window will appear regardless of the
@@ -352,9 +357,10 @@ public:
    * to have a list displaying all (and just) strings in the completion list,
    * and to get those strings from @a column in the model of @a completion.
    * 
-   * This functions creates and adds a Gtk::CellRendererText for the selected 
-   * column. If you need to set the text column, but don't want the cell 
-   * renderer, use Glib::object_set() to set the ::text_column property directly.
+   * This functions creates and adds a Gtk::CellRendererText for the selected
+   * column. If you need to set the text column, but don't want the cell
+   * renderer, use Glib::object_set() to set the Gtk::EntryCompletion::property_text_column()
+   * property directly.
    * 
    * @newin{2,4}
    * @param column The column in the model of @a completion to get strings from.
@@ -366,27 +372,16 @@ public:
    * to have a list displaying all (and just) strings in the completion list,
    * and to get those strings from @a column in the model of @a completion.
    * 
-   * This functions creates and adds a Gtk::CellRendererText for the selected 
-   * column. If you need to set the text column, but don't want the cell 
-   * renderer, use Glib::object_set() to set the ::text_column property directly.
+   * This functions creates and adds a Gtk::CellRendererText for the selected
+   * column. If you need to set the text column, but don't want the cell
+   * renderer, use Glib::object_set() to set the Gtk::EntryCompletion::property_text_column()
+   * property directly.
    * 
    * @newin{2,4}
    * @param column The column in the model of @a completion to get strings from.
    */
   void set_text_column(int column);
   
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Returns the column in the model of @a completion to get strings from.
-   * 
-   * @newin{2,6}
-   * @deprecated Use the const version of this method.
-   * @return The column containing the strings.
-   */
-  int get_text_column();
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
   /** Returns the column in the model of @a completion to get strings from.
    * 
    * @newin{2,6}
@@ -394,12 +389,15 @@ public:
    */
   int get_text_column() const;
 
-  /** Emitted when an action is activated.
-   *
-   * @param index The index of the activated action.
-   *
-   * @par Prototype:
+  
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%action_activated(int index)</tt>
+   *
+   * Gets emitted when an action is activated.
+   * 
+   * @newin{2,4}
+   * @param index The index of the activated action.
    */
 
   Glib::SignalProxy1< void,int > signal_action_activated();
@@ -449,25 +447,22 @@ public:
   Glib::SignalProxy1< bool, const TreeModel::iterator& > signal_cursor_on_match();
 
 
-  //We use no_default_handler for these signals, because we can not add a new vfunc without breaking ABI.
-  //TODO: Remove no_default_handler when we do an ABI-break-with-parallel-install.
-
-  /** Emitted when the inline autocompletion is triggered. 
-   * The default behaviour is to make the entry display the 
-   * whole prefix and select the newly inserted part.
+/**
+   * @par Slot Prototype:
+   * <tt>bool on_my_%insert_prefix(const Glib::ustring& prefix)</tt>
    *
+   * Gets emitted when the inline autocompletion is triggered.
+   * The default behaviour is to make the entry display the
+   * whole prefix and select the newly inserted part.
+   * 
    * Applications may connect to this signal in order to insert only a
    * smaller part of the @a prefix into the entry - e.g. the entry used in
-   * the FileChooser inserts only the part of the prefix up to the 
+   * the Gtk::FileChooser inserts only the part of the prefix up to the
    * next '/'.
    * 
    * @newin{2,6}
-   *
    * @param prefix The common prefix of all possible completions.
-   * @result true if the signal has been handled
-   *
-   * @par Prototype:
-   * <tt>bool on_my_%insert_prefix(const Glib::ustring& prefix)</tt>
+   * @return <tt>true</tt> if the signal has been handled.
    */
 
   Glib::SignalProxy1< bool,const Glib::ustring& > signal_insert_prefix();
@@ -500,7 +495,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_minimum_key_length() ;
+  Glib::PropertyProxy< int > property_minimum_key_length() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -510,7 +505,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_minimum_key_length() const;
+  Glib::PropertyProxy_ReadOnly< int > property_minimum_key_length() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -520,7 +515,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_text_column() ;
+  Glib::PropertyProxy< int > property_text_column() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -530,7 +525,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_text_column() const;
+  Glib::PropertyProxy_ReadOnly< int > property_text_column() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -540,7 +535,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_inline_completion() ;
+  Glib::PropertyProxy< bool > property_inline_completion() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -550,7 +545,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_inline_completion() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_inline_completion() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -560,7 +555,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_popup_completion() ;
+  Glib::PropertyProxy< bool > property_popup_completion() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -570,7 +565,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_popup_completion() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_popup_completion() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -580,7 +575,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_popup_set_width() ;
+  Glib::PropertyProxy< bool > property_popup_set_width() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -590,7 +585,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_popup_set_width() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_popup_set_width() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -600,7 +595,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_popup_single_match() ;
+  Glib::PropertyProxy< bool > property_popup_single_match() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -610,7 +605,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_popup_single_match() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_popup_single_match() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -620,7 +615,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_inline_selection() ;
+  Glib::PropertyProxy< bool > property_inline_selection() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -630,7 +625,17 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_inline_selection() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_inline_selection() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The GtkCellArea used to layout cells.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< Glib::RefPtr<CellArea> > property_cell_area() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -650,7 +655,10 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_action_activated().
   virtual void on_action_activated(int index);
+  /// This is a default handler for the signal signal_insert_prefix().
+  virtual bool on_insert_prefix(const Glib::ustring& prefix);
 
 
 };

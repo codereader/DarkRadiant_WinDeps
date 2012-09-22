@@ -4,7 +4,8 @@
 #define _GTKMM_ENTRY_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: entry.hg,v 1.12 2006/06/13 17:16:26 murrayc Exp $ */
 
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/widget.h>
@@ -127,8 +128,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -148,8 +153,11 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_populate_popup().
   virtual void on_populate_popup(Menu* menu);
+  /// This is a default handler for the signal signal_insert_at_cursor().
   virtual void on_insert_at_cursor(const Glib::ustring& str);
+  /// This is a default handler for the signal signal_activate().
   virtual void on_activate();
 
 
@@ -178,7 +186,19 @@ public:
    */
   Glib::RefPtr<const EntryBuffer> get_buffer() const;
 
+
+  /** Returns the area where the entry's text is drawn. 
+   * This function is useful when drawing something to the entry in a draw callback.
+   *
+   * See also get_icon_area().
+   *
+   * @result The location for the text area.
+   *
+   * @newin{3,0}
+   **/
+  Gdk::Rectangle get_text_area() const;
   
+                                                 
   /** Set the Gtk::EntryBuffer object which holds the text for
    * this widget.
    * 
@@ -186,31 +206,6 @@ public:
    * @param buffer A Gtk::EntryBuffer.
    */
   void set_buffer(const Glib::RefPtr<EntryBuffer>& buffer);
-
-  
-  /** Returns the Gdk::Window which contains the text. This function is
-   * useful when drawing something to the entry in an expose-event
-   * callback because it enables the callback to distinguish between
-   * the text window and entry's icon windows.
-   * 
-   * See also get_icon_window().
-   * 
-   * @newin{2,20}
-   * @return The entry's text window.
-   */
-  Glib::RefPtr<Gdk::Window> get_text_window();
-  
-  /** Returns the Gdk::Window which contains the text. This function is
-   * useful when drawing something to the entry in an expose-event
-   * callback because it enables the callback to distinguish between
-   * the text window and entry's icon windows.
-   * 
-   * See also get_icon_window().
-   * 
-   * @newin{2,20}
-   * @return The entry's text window.
-   */
-  Glib::RefPtr<const Gdk::Window> get_text_window() const;
   
   /** Sets whether the contents of the entry are visible or not. 
    * When visibility is set to <tt>false</tt>, characters are displayed 
@@ -268,6 +263,8 @@ public:
   bool get_has_frame() const;
 
   
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   /** Sets %entry's inner-border property to %border, or clears it if <tt>0</tt>
    * is passed. The inner-border is the area around the entry's text, but
    * inside its frame.
@@ -278,19 +275,32 @@ public:
    * pixel-exact positioning of the entry is important.
    * 
    * @newin{2,10}
+   * 
+   * Deprecated: 3.4: Use the standard border and padding CSS properties;
+   * the value set with this function is ignored by Gtk::Entry.
+   * @deprecated Use the standard border and padding CSS properties instead (through classes like StyleContext and CssProvider).
    * @param border A Gtk::Border, or <tt>0</tt>.
    */
   void set_inner_border(const Border& border);
-  
-  /** This function returns the entry's Gtk::Entry:inner-border property. See
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+  /** This function returns the entry's Gtk::Entry::property_inner_border() property. See
    * set_inner_border() for more information.
    * 
    * @newin{2,10}
+   * 
+   * Deprecated: 3.4: Use the standard border and padding CSS properties;
+   * the value returned by this function is ignored by Gtk::Entry.
+   * @deprecated Use the standard border and padding CSS properties instead (through classes like StyleContext and CssProvider).
    * @return The entry's Gtk::Border, or <tt>0</tt> if none was set.
    */
   Border get_inner_border() const;
+#endif // GTKMM_DISABLE_DEPRECATED
 
-  
+
   /** Sets whether the text is overwritten when typing in the Gtk::Entry.
    * 
    * @newin{2,14}
@@ -311,9 +321,7 @@ public:
    * 
    * This is equivalent to:
    * 
-   * @code
-   * gtk_entry_buffer_set_max_length (gtk_entry_get_buffer (entry), max);
-   * @endcode
+   * [C example ellipted]
    * @param max The maximum length of the entry, or 0 for no maximum.
    * (other than the maximum length of entries.) The value passed in will
    * be clamped to the range 0-65536.
@@ -325,9 +333,7 @@ public:
    * 
    * This is equivalent to:
    * 
-   * @code
-   * gtk_entry_buffer_get_max_length (gtk_entry_get_buffer (entry));
-   * @endcode
+   * [C example ellipted]
    * @return The maximum allowed number of characters
    * in Gtk::Entry, or 0 if there is no maximum.
    */
@@ -338,9 +344,7 @@ public:
    * 
    * This is equivalent to:
    * 
-   * @code
-   * gtk_entry_buffer_get_length (gtk_entry_get_buffer (entry));
-   * @endcode
+   * [C example ellipted]
    * 
    * @newin{2,14}
    * @return The current number of characters
@@ -355,7 +359,7 @@ public:
    * 
    * (For experts: if @a setting is <tt>true</tt>, the entry calls
    * Gtk::Window::activate_default() on the window containing the entry, in
-   * the default handler for the Gtk::Widget::activate signal.)
+   * the default handler for the Gtk::Widget::signal_activate() signal.)
    * @param setting <tt>true</tt> to activate window's default widget on Enter keypress.
    */
   void set_activates_default(bool setting =  true);
@@ -476,7 +480,7 @@ public:
    * @param adjustment An adjustment which should be adjusted when the cursor 
    * is moved, or <tt>0</tt>.
    */
-  void set_cursor_hadjustment(Adjustment& adjustment);
+  void set_cursor_hadjustment(const Glib::RefPtr<Adjustment>& adjustment);
   
   /** Retrieves the horizontal cursor adjustment for the entry. 
    * See set_cursor_hadjustment().
@@ -485,7 +489,7 @@ public:
    * @return The horizontal cursor adjustment, or <tt>0</tt>
    * if none has been set.
    */
-  Adjustment* get_cursor_hadjustment();
+  Glib::RefPtr<Adjustment> get_cursor_hadjustment();
   
   /** Retrieves the horizontal cursor adjustment for the entry. 
    * See set_cursor_hadjustment().
@@ -494,7 +498,7 @@ public:
    * @return The horizontal cursor adjustment, or <tt>0</tt>
    * if none has been set.
    */
-  const Adjustment* get_cursor_hadjustment() const;
+  Glib::RefPtr<const Adjustment> get_cursor_hadjustment() const;
 
   
   /** Sets the alignment for the contents of the entry. This controls
@@ -515,7 +519,7 @@ public:
    * @param xalign The horizontal alignment, from 0 (left) to 1 (right).
    * Reversed for RTL layouts.
    */
-  void set_alignment(AlignmentEnum xalign);
+  void set_alignment(Align xalign);
   
   /** Gets the value set by set_alignment().
    * 
@@ -594,8 +598,33 @@ public:
    * @newin{2,16}
    */
   void progress_pulse();
+  
+  
+  /** Retrieves the text that will be displayed when @a entry is empty and unfocused
+   * 
+   * @newin{3,2}
+   * @return A pointer to the placeholder text as a string. This string points to internally allocated
+   * storage in the widget and must not be freed, modified or stored.
+   */
+  Glib::ustring get_placeholder_text() const;
+  
+  /** Sets text to be displayed in @a entry when it is empty and unfocused.
+   * This can be used to give a visual hint of the expected contents of
+   * the Gtk::Entry.
+   * 
+   * Note that since the placeholder text gets removed when the entry
+   * received focus, using this feature is a bit problematic if the entry
+   * is given the initial focus in a window. Sometimes this can be
+   * worked around by delaying the initial focus setting until the
+   * first key event arrives.
+   * 
+   * @newin{3,2}
+   * @param text A string to be displayed when @a entry is empty an unfocused, or <tt>0</tt>.
+   */
+  void set_placeholder_text(const Glib::ustring& text);
 
-
+  //We hand-code these so we can change the parameter oder, so we can have a default parameter value:
+  
   /** Sets the icon shown in the specified position using a pixbuf.
    * 
    * If @a pixbuf is <tt>0</tt>, no icon will be shown in the specified position.
@@ -651,7 +680,18 @@ public:
 
   void set_icon_from_gicon(const Glib::RefPtr<Gio::Icon>& icon, EntryIconPosition icon_pos = ENTRY_ICON_PRIMARY);
   
+  
+  /** Do not show any icon in the specified position.
+   * See set_icon_from_pixbuf(), set_icon_from_stock(), set_icon_from_icon_name(), 
+   * and set_icon_from_gicon().
+   *
+   * @param icon_pos The icon position.
+   *
+   * @newin{3,0}
+   */
+  void unset_icon(EntryIconPosition icon_pos = ENTRY_ICON_PRIMARY);
 
+  
   /** Gets the type of representation being used by the icon
    * to store image data. If the icon has no image data,
    * the return value will be Gtk::IMAGE_EMPTY.
@@ -768,9 +808,10 @@ public:
    */
   bool get_icon_sensitive(EntryIconPosition icon_pos =  ENTRY_ICON_PRIMARY);
   
-  /** Finds the icon at the given position and return its index.
+  /** Finds the icon at the given position and return its index. The
+   * position's coordinates are relative to the @a entry's top left corner.
    * If @a x, @a y doesn't lie inside an icon, -1 is returned.
-   * This function is intended for use in a Gtk::Widget::query-tooltip
+   * This function is intended for use in a Gtk::Widget::signal_query_tooltip()
    * signal handler.
    * 
    * @newin{2,16}
@@ -810,7 +851,7 @@ public:
   
   /** Sets @a tooltip as the contents of the tooltip for the icon at
    * the specified position. @a tooltip is assumed to be marked up with
-   * the .
+   * the Pango text markup language.
    * 
    * Use <tt>0</tt> for @a tooltip to remove an existing tooltip.
    * 
@@ -840,13 +881,13 @@ public:
    * operation when the user clicks and drags the icon.
    * 
    * To handle the drag operation, you need to connect to the usual
-   * Gtk::Widget::drag-data-get (or possibly Gtk::Widget::drag-data-delete)
+   * Gtk::Widget::signal_drag_data_get() (or possibly Gtk::Widget::signal_drag_data_delete())
    * signal, and use get_current_icon_drag_source() in
    * your signal handler to find out if the drag was started from
    * an icon.
    * 
    * By default, GTK+ uses the icon as the drag icon. You can use the 
-   * Gtk::Widget::drag-begin signal to set a different icon. Note that you 
+   * Gtk::Widget::signal_drag_begin() signal to set a different icon. Note that you 
    * have to use Glib::signal_connect_after() to ensure that your signal handler
    * gets executed after the default handler.
    * 
@@ -859,10 +900,24 @@ public:
   void set_icon_drag_source(const Glib::RefPtr<TargetList>& target_list, Gdk::DragAction actions = Gdk::ACTION_COPY, EntryIconPosition icon_pos = ENTRY_ICON_PRIMARY);
   
 
+  /** Returns the area where entry's icon at @a icon_pos is drawn.
+   * This function is useful when drawing something to the
+   * entry in a draw callback.
+   *
+   * See also get_text_area().
+   *
+   * @param icon_pos Icon position.
+   * @result The location for the icon area.
+   *
+   * @newin{3,0}
+   */
+  Gdk::Rectangle get_icon_area(EntryIconPosition icon_pos = ENTRY_ICON_PRIMARY) const;
+  
+                                                          
   /** Returns the index of the icon which is the source of the current
    * DND operation, or -1.
    * 
-   * This function is meant to be used in a Gtk::Widget::drag-data-get
+   * This function is meant to be used in a Gtk::Widget::signal_drag_data_get()
    * callback.
    * 
    * @newin{2,16}
@@ -870,34 +925,6 @@ public:
    * DND operation, or -1.
    */
   int get_current_icon_drag_source();
-
-  
-  /** Returns the Gdk::Window which contains the entry's icon at
-   *  @a icon_pos. This function is useful when drawing something to the
-   * entry in an expose-event callback because it enables the callback
-   * to distinguish between the text window and entry's icon windows.
-   * 
-   * See also get_text_window().
-   * 
-   * @newin{2,20}
-   * @param icon_pos Icon position.
-   * @return The entry's icon window at @a icon_pos.
-   */
-  Glib::RefPtr<Gdk::Window> get_icon_window(EntryIconPosition icon_pos =  ENTRY_ICON_PRIMARY);
-  
-  /** Returns the Gdk::Window which contains the entry's icon at
-   *  @a icon_pos. This function is useful when drawing something to the
-   * entry in an expose-event callback because it enables the callback
-   * to distinguish between the text window and entry's icon windows.
-   * 
-   * See also get_text_window().
-   * 
-   * @newin{2,20}
-   * @param icon_pos Icon position.
-   * @return The entry's icon window at @a icon_pos.
-   */
-  Glib::RefPtr<const Gdk::Window> get_icon_window(EntryIconPosition icon_pos =  ENTRY_ICON_PRIMARY) const;
-
   
   /** Allow the Gtk::Entry input method to internally handle key press
    * and release events. If this function returns <tt>true</tt>, then no further
@@ -926,47 +953,83 @@ public:
   void reset_im_context();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%populate_popup(Menu* menu)</tt>
+   *
+   * The signal_populate_popup() signal gets emitted before showing the 
+   * context menu of the entry. 
+   * 
+   * If you need to add items to the context menu, connect
+   * to this signal and append your menuitems to the @a menu.
+   * @param menu The menu that is being populated.
    */
 
   Glib::SignalProxy1< void,Menu* > signal_populate_popup();
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%insert_at_cursor(const Glib::ustring& str)</tt>
+   *
+   * The signal_insert_at_cursor() signal is a
+   * keybinding signal
+   * which gets emitted when the user initiates the insertion of a
+   * fixed string at the cursor.
+   * 
+   * This signal has no default bindings.
+   * @param string The string to insert.
    */
 
   Glib::SignalProxy1< void,const Glib::ustring& > signal_insert_at_cursor();
 
 
-  //Key-binding signals:
-
-  //This is a keybinding signal, but it is allowed:
-  // http://mail.gnome.org/archives/gtk-devel-list/2003-January/msg00108.html
-  // "activate is probably about the only exception"
-  
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%activate()</tt>
+   *
+   * A  keybinding signal
+   * which gets emitted when the user activates the entry.
+   * 
+   * Applications should not connect to it, but may emit it with
+   * Glib::signal_emit_by_name() if they need to control activation 
+   * programmatically.
+   * 
+   * The default bindings for this signal are all forms of the Enter key.
+   * @deprecated Use signal_key_press_event() or signal_focus_out_event() instead.
    */
 
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   Glib::SignalProxy0< void > signal_activate();
+#endif // GTKMM_DISABLE_DEPRECATED
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%icon_release(EntryIconPosition icon_position, const GdkEventButton* event)</tt>
+   *
+   * The signal_icon_release() signal is emitted on the button release from a
+   * mouse click over an activatable icon.
+   * 
+   * @newin{2,16}
+   * @param icon_pos The position of the clicked icon.
+   * @param event The button release event.
    */
 
   Glib::SignalProxy2< void,EntryIconPosition,const GdkEventButton* > signal_icon_release();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%icon_press(EntryIconPosition icon_position, const GdkEventButton* event)</tt>
+   *
+   * The signal_icon_press() signal is emitted when an activatable icon
+   * is clicked.
+   * 
+   * @newin{2,16}
+   * @param icon_pos The position of the clicked icon.
+   * @param event The button press event.
    */
 
   Glib::SignalProxy2< void,EntryIconPosition,const GdkEventButton* > signal_icon_press();
@@ -999,7 +1062,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_cursor_position() const;
+  Glib::PropertyProxy_ReadOnly< int > property_cursor_position() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -1010,7 +1073,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_selection_bound() const;
+  Glib::PropertyProxy_ReadOnly< int > property_selection_bound() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -1021,7 +1084,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_editable() ;
+  Glib::PropertyProxy< bool > property_editable() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1031,7 +1094,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_editable() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_editable() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1041,7 +1104,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_max_length() ;
+  Glib::PropertyProxy< int > property_max_length() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1051,7 +1114,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_max_length() const;
+  Glib::PropertyProxy_ReadOnly< int > property_max_length() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1061,7 +1124,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_visibility() ;
+  Glib::PropertyProxy< bool > property_visibility() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1071,7 +1134,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_visibility() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_visibility() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1081,7 +1144,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_has_frame() ;
+  Glib::PropertyProxy< bool > property_has_frame() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1091,7 +1154,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_has_frame() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_has_frame() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1101,7 +1164,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Border> property_inner_border() ;
+  Glib::PropertyProxy< Border > property_inner_border() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1111,7 +1174,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Border> property_inner_border() const;
+  Glib::PropertyProxy_ReadOnly< Border > property_inner_border() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1121,7 +1184,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<gunichar> property_invisible_char() ;
+  Glib::PropertyProxy< gunichar > property_invisible_char() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1131,27 +1194,27 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<gunichar> property_invisible_char() const;
+  Glib::PropertyProxy_ReadOnly< gunichar > property_invisible_char() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether the invisible char has been set.
+/** Whether the invisible character has been set.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_invisible_char_set() ;
+  Glib::PropertyProxy< bool > property_invisible_char_set() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether the invisible char has been set.
+/** Whether the invisible character has been set.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_invisible_char_set() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_invisible_char_set() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1161,7 +1224,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_activates_default() ;
+  Glib::PropertyProxy< bool > property_activates_default() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1171,7 +1234,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_activates_default() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_activates_default() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1181,7 +1244,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_width_chars() ;
+  Glib::PropertyProxy< int > property_width_chars() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1191,7 +1254,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_width_chars() const;
+  Glib::PropertyProxy_ReadOnly< int > property_width_chars() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1201,7 +1264,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_scroll_offset() const;
+  Glib::PropertyProxy_ReadOnly< int > property_scroll_offset() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -1212,7 +1275,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<ShadowType> property_shadow_type() ;
+  Glib::PropertyProxy< ShadowType > property_shadow_type() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1222,7 +1285,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<ShadowType> property_shadow_type() const;
+  Glib::PropertyProxy_ReadOnly< ShadowType > property_shadow_type() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1232,7 +1295,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_text() ;
+  Glib::PropertyProxy< Glib::ustring > property_text() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1242,7 +1305,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_text() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_text() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1252,7 +1315,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<float> property_xalign() ;
+  Glib::PropertyProxy< float > property_xalign() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1262,7 +1325,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<float> property_xalign() const;
+  Glib::PropertyProxy_ReadOnly< float > property_xalign() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1272,7 +1335,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_truncate_multiline() ;
+  Glib::PropertyProxy< bool > property_truncate_multiline() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1282,7 +1345,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_truncate_multiline() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_truncate_multiline() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1292,7 +1355,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_overwrite_mode() ;
+  Glib::PropertyProxy< bool > property_overwrite_mode() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1302,7 +1365,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_overwrite_mode() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_overwrite_mode() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1312,7 +1375,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<guint> property_text_length() const;
+  Glib::PropertyProxy_ReadOnly< guint > property_text_length() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -1323,7 +1386,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_caps_lock_warning() ;
+  Glib::PropertyProxy< bool > property_caps_lock_warning() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1333,7 +1396,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_caps_lock_warning() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_caps_lock_warning() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1343,7 +1406,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<double> property_progress_fraction() ;
+  Glib::PropertyProxy< double > property_progress_fraction() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1353,7 +1416,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<double> property_progress_fraction() const;
+  Glib::PropertyProxy_ReadOnly< double > property_progress_fraction() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1363,7 +1426,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<double> property_progress_pulse_step() ;
+  Glib::PropertyProxy< double > property_progress_pulse_step() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1373,7 +1436,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<double> property_progress_pulse_step() const;
+  Glib::PropertyProxy_ReadOnly< double > property_progress_pulse_step() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1423,7 +1486,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<StockID> property_primary_icon_stock() ;
+  Glib::PropertyProxy< StockID > property_primary_icon_stock() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1433,7 +1496,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<StockID> property_primary_icon_stock() const;
+  Glib::PropertyProxy_ReadOnly< StockID > property_primary_icon_stock() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1443,7 +1506,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<StockID> property_secondary_icon_stock() ;
+  Glib::PropertyProxy< StockID > property_secondary_icon_stock() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1453,7 +1516,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<StockID> property_secondary_icon_stock() const;
+  Glib::PropertyProxy_ReadOnly< StockID > property_secondary_icon_stock() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1463,7 +1526,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_primary_icon_name() ;
+  Glib::PropertyProxy< Glib::ustring > property_primary_icon_name() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1473,7 +1536,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_primary_icon_name() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_primary_icon_name() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1483,7 +1546,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_secondary_icon_name() ;
+  Glib::PropertyProxy< Glib::ustring > property_secondary_icon_name() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1493,7 +1556,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_secondary_icon_name() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_secondary_icon_name() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1543,7 +1606,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<ImageType> property_primary_icon_storage_type() const;
+  Glib::PropertyProxy_ReadOnly< ImageType > property_primary_icon_storage_type() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -1554,7 +1617,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<ImageType> property_secondary_icon_storage_type() const;
+  Glib::PropertyProxy_ReadOnly< ImageType > property_secondary_icon_storage_type() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -1565,7 +1628,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_primary_icon_activatable() ;
+  Glib::PropertyProxy< bool > property_primary_icon_activatable() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1575,7 +1638,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_primary_icon_activatable() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_primary_icon_activatable() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1585,7 +1648,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_secondary_icon_activatable() ;
+  Glib::PropertyProxy< bool > property_secondary_icon_activatable() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1595,7 +1658,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_secondary_icon_activatable() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_secondary_icon_activatable() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1605,7 +1668,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_primary_icon_sensitive() ;
+  Glib::PropertyProxy< bool > property_primary_icon_sensitive() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1615,7 +1678,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_primary_icon_sensitive() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_primary_icon_sensitive() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1625,7 +1688,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_secondary_icon_sensitive() ;
+  Glib::PropertyProxy< bool > property_secondary_icon_sensitive() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1635,7 +1698,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_secondary_icon_sensitive() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_secondary_icon_sensitive() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1645,7 +1708,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_primary_icon_tooltip_text() ;
+  Glib::PropertyProxy< bool > property_primary_icon_tooltip_text() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1655,7 +1718,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_primary_icon_tooltip_text() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_primary_icon_tooltip_text() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1665,7 +1728,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_secondary_icon_tooltip_text() ;
+  Glib::PropertyProxy< bool > property_secondary_icon_tooltip_text() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1675,7 +1738,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_secondary_icon_tooltip_text() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_secondary_icon_tooltip_text() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1685,7 +1748,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_primary_icon_tooltip_markup() ;
+  Glib::PropertyProxy< bool > property_primary_icon_tooltip_markup() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1695,7 +1758,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_primary_icon_tooltip_markup() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_primary_icon_tooltip_markup() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1705,7 +1768,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_secondary_icon_tooltip_markup() ;
+  Glib::PropertyProxy< bool > property_secondary_icon_tooltip_markup() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1715,7 +1778,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_secondary_icon_tooltip_markup() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_secondary_icon_tooltip_markup() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1725,7 +1788,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_im_module() ;
+  Glib::PropertyProxy< Glib::ustring > property_im_module() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1735,7 +1798,47 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_im_module() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_im_module() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Show text in the entry when it's empty and unfocused.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< Glib::ustring > property_placeholder_text() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Show text in the entry when it's empty and unfocused.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_placeholder_text() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The auxiliary completion object.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< Glib::RefPtr<EntryCompletion> > property_completion() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The auxiliary completion object.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< Glib::RefPtr<EntryCompletion> > property_completion() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

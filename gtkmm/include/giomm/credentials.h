@@ -4,7 +4,8 @@
 #define _GIOMM_CREDENTIALS_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -48,7 +49,8 @@ enum CredentialsType
 {
   CREDENTIALS_TYPE_INVALID,
   CREDENTIALS_TYPE_LINUX_UCRED,
-  CREDENTIALS_TYPE_FREEBSD_CMSGCRED
+  CREDENTIALS_TYPE_FREEBSD_CMSGCRED,
+  CREDENTIALS_TYPE_OPENBSD_SOCKPEERCRED
 };
 
 
@@ -194,9 +196,9 @@ public:
    * @return The UNIX user identifier or -1 if @a error is set.
    */
 
-#ifdef  G_OS_UNX
+#ifdef  G_OS_UNIX
   uid_t get_unix_user();
-#endif //  G_OS_UNX
+#endif //  G_OS_UNIX
 
   
   /** Tries to set the UNIX user identifier on @a credentials. This method

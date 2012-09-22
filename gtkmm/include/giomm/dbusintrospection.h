@@ -4,7 +4,8 @@
 #define _GIOMM_DBUSINTROSPECTION_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -26,6 +27,7 @@
  */
 
 #include <gio/gio.h>
+#include <glibmm/arrayhandle.h>
 
 
 namespace Gio
@@ -389,7 +391,8 @@ public:
   
   /** Looks up information about a method.
    * 
-   * This cost of this function is O(n) in number of methods.
+   * This cost of this function is O(n) in number of methods unless
+   * g_dbus_interface_info_cache_build() has been used on @a info.
    * 
    * @newin{2,26}
    * @param name A D-Bus method name (typically in CamelCase).
@@ -399,7 +402,8 @@ public:
   
   /** Looks up information about a method.
    * 
-   * This cost of this function is O(n) in number of methods.
+   * This cost of this function is O(n) in number of methods unless
+   * g_dbus_interface_info_cache_build() has been used on @a info.
    * 
    * @newin{2,26}
    * @param name A D-Bus method name (typically in CamelCase).
@@ -410,7 +414,8 @@ public:
   
   /** Looks up information about a signal.
    * 
-   * This cost of this function is O(n) in number of signals.
+   * This cost of this function is O(n) in number of signals unless
+   * g_dbus_interface_info_cache_build() has been used on @a info.
    * 
    * @newin{2,26}
    * @param name A D-Bus signal name (typically in CamelCase).
@@ -420,7 +425,8 @@ public:
   
   /** Looks up information about a signal.
    * 
-   * This cost of this function is O(n) in number of signals.
+   * This cost of this function is O(n) in number of signals unless
+   * g_dbus_interface_info_cache_build() has been used on @a info.
    * 
    * @newin{2,26}
    * @param name A D-Bus signal name (typically in CamelCase).
@@ -431,7 +437,8 @@ public:
   
   /** Looks up information about a property.
    * 
-   * This cost of this function is O(n) in number of properties.
+   * This cost of this function is O(n) in number of properties unless
+   * g_dbus_interface_info_cache_build() has been used on @a info.
    * 
    * @newin{2,26}
    * @param name A D-Bus property name (typically in CamelCase).
@@ -441,7 +448,8 @@ public:
   
   /** Looks up information about a property.
    * 
-   * This cost of this function is O(n) in number of properties.
+   * This cost of this function is O(n) in number of properties unless
+   * g_dbus_interface_info_cache_build() has been used on @a info.
    * 
    * @newin{2,26}
    * @param name A D-Bus property name (typically in CamelCase).
@@ -502,6 +510,10 @@ private:
 public:
   
   /** Parses @a xml_data and returns a DBusNodeInfo representing the data.
+   * 
+   * Note that this routine is using a
+   * GMarkup-based
+   * parser that only accepts a subset of valid XML documents.
    * 
    * @newin{2,26}
    * @param xml_data Valid D-Bus introspection XML.

@@ -4,7 +4,8 @@
 #define _GTKMM_TREEMODELFILTER_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: treemodelfilter.hg,v 1.16 2006/04/12 11:11:25 murrayc Exp $ */
 
@@ -21,15 +22,14 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
-// We couldn't include it in treemodel.h, but doing it here makes it easier for people.
-#include <gtkmm/treepath.h>
 
 #include <gtkmm/treeiter.h>
 #include <gtkmm/treemodel.h>
+// We couldn't include it in treemodel.h, but doing it here makes it easier for people.
+#include <gtkmm/treepath.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -43,9 +43,9 @@ namespace Gtk
 namespace Gtk
 {
 
-/**
+/** 
  * @ingroup TreeView
- *
+ * 
  */
 
 class TreeModelFilter :
@@ -78,8 +78,11 @@ protected:
 public:
   virtual ~TreeModelFilter();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -124,7 +127,7 @@ public:
   /** For instance,
    * bool on_visible(const TreeModel::const_iterator& iter);
    * This should return true if the given row should be visible and false otherwise.
-   */
+   */                                     
   typedef sigc::slot<bool, const TreeModel::const_iterator&> SlotVisible;
 
   /** Sets the "visible" callback used when filtering the filter.
@@ -147,7 +150,7 @@ public:
    */
   typedef sigc::slot<void, const Gtk::TreeModel::iterator& /* iter */, Glib::ValueBase& /* value */, int /* column */> SlotModify;
 
-  /** Specify columns that will be provided by this model, and a callback that will provide data for these
+  /** Specify columns that will be provided by this model, and a callback that will provide data for these 
    * columns based on data in the columns of the child model.
    * The modify function will get called for each data access.
    *
@@ -156,7 +159,7 @@ public:
    */
   void set_modify_func(const TreeModelColumnRecord& columns, const SlotModify& slot);
   
-
+ 
   /** Sets @a column of the child_model to be the column where @a filter should
    * look for visibility information. @a columns should be a column of type
    * TYPE_BOOLEAN, where <tt>true</tt> means that a row is visible, and <tt>false</tt>
@@ -206,41 +209,7 @@ public:
    */
   iterator convert_iter_to_child_iter(const iterator& filter_iter) const;
 
-  //TODO: Remove these deprecated non-const versions when we can break ABI:
   
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Converts @a child_path to a path relative to @a filter. That is, @a child_path
-   * points to a path in the child model. The rerturned path will point to the
-   * same row in the filtered model. If @a child_path isn't a valid path on the
-   * child model or points to a row which is not visible in @a filter, then <tt>0</tt>
-   * is returned.
-   * 
-   * @newin{2,4}
-   * @deprecated Use convert_child_path_to_path(const Path& child_path) const
-   * @param child_path A Gtk::TreePath to convert.
-   * @return A newly allocated Gtk::TreePath, or <tt>0</tt>.
-   */
-  Path convert_child_path_to_path(const Path& child_path);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Converts @a filter_path to a path on the child model of @a filter. That is,
-   *  @a filter_path points to a location in @a filter. The returned path will
-   * point to the same location in the model not being filtered. If @a filter_path
-   * does not point to a location in the child model, <tt>0</tt> is returned.
-   * 
-   * @newin{2,4}
-   * @deprecated convert_path_to_child_path(const Path& filter_path) const
-   * @param filter_path A Gtk::TreePath to convert.
-   * @return A newly allocated Gtk::TreePath, or <tt>0</tt>.
-   */
-  Path convert_path_to_child_path(const Path& filter_path);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
   /** Converts @a child_path to a path relative to @a filter. That is, @a child_path
    * points to a path in the child model. The rerturned path will point to the
    * same row in the filtered model. If @a child_path isn't a valid path on the
@@ -301,7 +270,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<TreeModel::Path> property_virtual_root() const;
+  Glib::PropertyProxy_ReadOnly< TreeModel::Path > property_virtual_root() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

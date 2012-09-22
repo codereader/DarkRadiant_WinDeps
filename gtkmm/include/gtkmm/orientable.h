@@ -4,7 +4,8 @@
 #define _GTKMM_ORIENTABLE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: orientable.hg,v 1.3 2006/05/18 17:53:15 murrayc Exp $ */
 
@@ -21,8 +22,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <glibmm/interface.h>
@@ -36,7 +37,6 @@ typedef struct _GtkOrientableIface GtkOrientableIface;
 }
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 typedef struct _GtkOrientable GtkOrientable;
 typedef struct _GtkOrientableClass GtkOrientableClass;
@@ -48,10 +48,10 @@ namespace Gtk
 namespace Gtk
 {
 
-/** This interface is implemented by all widgets that can be oriented 
- * horizontally or vertically. Historically, such widgets have been realized as 
- * subclasses of a common base class (e.g GtkBox/GtkHBox/GtkVBox and 
- * GtkScale/GtkHScale/GtkVScale). GtkOrientable is more flexible in that it 
+/** This interface is implemented by all widgets that can be oriented
+ * horizontally or vertically. Historically, such widgets have been realized as
+ * subclasses of a common base class (e.g GtkBox/GtkHBox/GtkVBox and
+ * GtkScale/GtkHScale/GtkVScale). GtkOrientable is more flexible in that it
  * allows the orientation to be changed at runtime, allowing the widgets to 'flip'.
  *
  * @newin{2,16}
@@ -76,9 +76,14 @@ private:
   Orientable(const Orientable&);
   Orientable& operator=(const Orientable&);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 protected:
-  Orientable(); // you must derive from this class
-
+  /**
+   * You should derive from this class to use it.
+   */
+  Orientable();
+  
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /** Called by constructors of derived classes. Provide the result of 
    * the Class init() function to ensure that it is properly 
    * initialized.
@@ -101,8 +106,11 @@ public:
 
   static void add_interface(GType gtype_implementer);
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -138,7 +146,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Orientation> property_orientation() ;
+  Glib::PropertyProxy< Orientation > property_orientation() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -148,7 +156,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Orientation> property_orientation() const;
+  Glib::PropertyProxy_ReadOnly< Orientation > property_orientation() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

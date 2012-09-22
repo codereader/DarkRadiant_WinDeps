@@ -4,7 +4,8 @@
 #define _GIOMM_CANCELLABLE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -104,7 +105,7 @@ public:
 
 
   /** Checks if a cancellable job has been cancelled.
-   * @return <tt>true</tt> if @a cancellable is cancelled, 
+   * @return <tt>true</tt> if @a cancellable is cancelled,
    * <tt>false</tt> if called with <tt>0</tt> or if item is not cancelled.
    */
   bool is_cancelled() const;
@@ -174,7 +175,7 @@ public:
   //This is safe to call from another thread.
   
   /** Will set @a cancellable to cancelled, and will emit the
-   * Cancellable::cancelled signal. (However, see the warning about
+   * Cancellable::signal_cancelled() signal. (However, see the warning about
    * race conditions in the documentation for that signal if you are
    * planning to connect to it.)
    * 
@@ -199,7 +200,7 @@ public:
 
   
   /** Pushes @a cancellable onto the cancellable stack. The current
-   * cancellable can then be recieved using g_cancellable_get_current().
+   * cancellable can then be received using g_cancellable_get_current().
    * 
    * This is useful when implementing cancellable operations in
    * code that does not allow you to pass down the cancellable object.
@@ -215,6 +216,9 @@ public:
   void pop_current();
   
   /** Resets @a cancellable to its uncancelled state.
+   * 
+   * If cancellable is currently in use by any cancellable operation
+   * then the behavior of this function is undefined.
    */
   void reset();
 
@@ -222,7 +226,7 @@ public:
   //_WRAP_METHOD(void make_pollfd(PollFD* pollfd), g_cancellable_make_pollfd)
 
   
-  /** Convenience function to connect to the Cancellable::cancelled
+  /** Convenience function to connect to the Cancellable::signal_cancelled()
    * signal. Also handles the race condition that may happen
    * if the cancellable is cancelled right before connecting.
    * 
@@ -234,7 +238,7 @@ public:
    * disconnected, or immediately if the cancellable is already
    * cancelled.
    * 
-   * See Cancellable::cancelled for details on how to use this.
+   * See Cancellable::signal_cancelled() for details on how to use this.
    * 
    * @newin{2,22}
    * @param callback The Callback to connect.
@@ -251,12 +255,12 @@ public:
    * Glib::signal_handler_disconnect().  Additionally, in the event that a
    * signal handler is currently running, this call will block until the
    * handler has finished.  Calling this function from a
-   * Cancellable::cancelled signal handler will therefore result in a
+   * Cancellable::signal_cancelled() signal handler will therefore result in a
    * deadlock.
    * 
    * This avoids a race condition where a thread cancels at the
    * same time as the cancellable operation is finished and the
-   * signal handler is removed. See Cancellable::cancelled for
+   * signal handler is removed. See Cancellable::signal_cancelled() for
    * details on how to use this.
    * 
    * If @a cancellable is <tt>0</tt> or @a handler_id is %0 this function does
@@ -268,9 +272,42 @@ public:
   void disconnect(gulong handler_id);
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%cancelled()</tt>
+   *
+   * Emitted when the operation has been cancelled.
+   * 
+   * Can be used by implementations of cancellable operations. If the
+   * operation is cancelled from another thread, the signal will be
+   * emitted in the thread that cancelled the operation, not the
+   * thread that is running the operation.
+   * 
+   * Note that disconnecting from this signal (or any signal) in a
+   * multi-threaded program is prone to race conditions. For instance
+   * it is possible that a signal handler may be invoked even
+   * <em>after</em> a call to
+   * Glib::signal_handler_disconnect() for that handler has already
+   * returned.
+   * 
+   * There is also a problem when cancellation happen
+   * right before connecting to the signal. If this happens the
+   * signal will unexpectedly not be emitted, and checking before
+   * connecting to the signal leaves a race condition where this is
+   * still happening.
+   * 
+   * In order to make it safe and easy to connect handlers there
+   * are two helper functions: g_cancellable_connect() and
+   * g_cancellable_disconnect() which protect against problems
+   * like this.
+   * 
+   * An example of how to us this:
+   * 
+   * [C example ellipted]
+   * 
+   * Note that the cancelled signal is emitted in the thread that
+   * the user cancelled from, which may be the main thread. So, the
+   * cancellable signal should not do something that can block.
    */
 
   Glib::SignalProxy0< void > signal_cancelled();
@@ -285,6 +322,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_cancelled().
   virtual void on_cancelled();
 
 

@@ -4,7 +4,8 @@
 #define _GIOMM_MEMORYOUTPUTSTREAM_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -131,7 +132,7 @@ public:
   /** Gets any loaded data from the @a ostream. Ownership of the data
    * is transferred to the caller; when no longer needed it must be
    * freed using the free function set in @a ostream's
-   * MemoryOutputStream:destroy-function property.
+   * MemoryOutputStream::property_destroy_function() property.
    * 
    *  @a ostream must be closed before calling this function.
    * 
@@ -172,7 +173,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<void*> property_data() const;
+  Glib::PropertyProxy_ReadOnly< void* > property_data() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -183,7 +184,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<gulong> property_data_size() const;
+  Glib::PropertyProxy_ReadOnly< gulong > property_data_size() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -196,7 +197,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<gulong> property_size() const;
+  Glib::PropertyProxy_ReadOnly< gulong > property_size() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

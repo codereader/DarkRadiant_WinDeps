@@ -6,7 +6,8 @@
 #include <gtkmmconfig.h>
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright(C) 2002 The gtkmm Development Team
  *
@@ -21,22 +22,22 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- // This is for including the config header before any code (such as
+// This is for including the config header before any code (such as
 // the #ifndef GTKMM_DISABLE_DEPRECATED in deprecated classes) is generated:
 
 
-#include <glibmm/listhandle.h>
+#include <vector>
+
 #include <gtkmm/container.h>
-#include <gtkmm/adjustment.h>
-#include <gdkmm/pixmap.h>
 #include <gtkmm/treeviewcolumn.h>
 #include <gtkmm/treeselection.h>
 #include <gtkmm/treemodelcolumn.h>
 #include <gtkmm/cellrenderer.h>
+#include <gtkmm/scrollable.h>
 #include <gtkmm/targetentry.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/tooltip.h>
@@ -143,6 +144,9 @@ namespace TreeView_Private
   template <class ColumnType> inline
   void _connect_auto_store_editable_signal_handler(Gtk::TreeView* this_p, Gtk::CellRenderer* pCellRenderer, const Gtk::TreeModelColumn<ColumnType>& model_column);
 
+  template <class ColumnType> inline
+  void _connect_auto_store_numeric_editable_signal_handler(Gtk::TreeView* this_p, Gtk::CellRenderer* pCellRenderer, const Gtk::TreeModelColumn<ColumnType>& model_column);
+
   template<class ColumnType> inline
   void _auto_store_on_cellrenderer_text_edited_string(const Glib::ustring& path_string, const Glib::ustring& new_text, int model_column, const Glib::RefPtr<Gtk::TreeModel>& model);
 
@@ -167,7 +171,8 @@ class TreeModel;
  * The View can show all of the model's columns, or just some, and it can show them in various ways.
  * You must provide the TreeModel in the constructor, or with set_model().
  *
- * Add View columns with append_column(), append_column_editable(), insert_column(), or insert_column_editable().
+ * Add View columns with append_column(), append_column_editable(), append_column_numeric(),
+ * append_column_numeric_editable(), insert_column(), or insert_column_editable().
  *
  * You can manipulate the selection by obtaining the @link Gtk::TreeSelection Gtk::TreeView::Selection@endlink from get_selection().
  *
@@ -176,7 +181,9 @@ class TreeModel;
  * @ingroup TreeView
  */
 
-class TreeView : public Container
+class TreeView
+ : public Container,
+   public Scrollable
 {
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -205,8 +212,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -226,13 +237,19 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
-  virtual void on_set_scroll_adjustments(Adjustment* hadjustment, Adjustment* vadjustment);
+  /// This is a default handler for the signal signal_row_activated().
   virtual void on_row_activated(const TreeModel::Path& path, TreeViewColumn* column);
+  /// This is a default handler for the signal signal_test_expand_row().
   virtual bool on_test_expand_row(const TreeModel::iterator& iter, const TreeModel::Path& path);
+  /// This is a default handler for the signal signal_test_collapse_row().
   virtual bool on_test_collapse_row(const TreeModel::iterator& iter, const TreeModel::Path& path);
+  /// This is a default handler for the signal signal_row_expanded().
   virtual void on_row_expanded(const TreeModel::iterator& iter, const TreeModel::Path& path);
+  /// This is a default handler for the signal signal_row_collapsed().
   virtual void on_row_collapsed(const TreeModel::iterator& iter, const TreeModel::Path& path);
+  /// This is a default handler for the signal signal_cursor_changed().
   virtual void on_cursor_changed();
+  /// This is a default handler for the signal signal_columns_changed().
   virtual void on_columns_changed();
 
 
@@ -247,12 +264,13 @@ public:
   /** A selection object for Gtk::TreeView.
    */
   typedef TreeSelection Selection;
-  /**
-     Default constructor
+
+  /** Default constructor.
    */
   TreeView();
+
   /**
-     Constructor that binds to a TreeModel
+     Constructor that binds to a TreeModel.
    */
     explicit TreeView(const Glib::RefPtr<TreeModel>& model);
 
@@ -294,51 +312,7 @@ public:
    * @return A Gtk::TreeSelection object.
    */
   Glib::RefPtr<const TreeSelection> get_selection() const;
-  
-  /** Gets the Gtk::Adjustment currently being used for the horizontal aspect.
-   * @return A Gtk::Adjustment object, or <tt>0</tt>
-   * if none is currently being used.
-   */
-  Adjustment* get_hadjustment();
-  
-  /** Gets the Gtk::Adjustment currently being used for the horizontal aspect.
-   * @return A Gtk::Adjustment object, or <tt>0</tt>
-   * if none is currently being used.
-   */
-  const Adjustment* get_hadjustment() const;
-  
-  /** Sets the Gtk::Adjustment for the current horizontal aspect. See also unset_hadjustment().
-   * @param adjustment The Gtk::Adjustment to set.
-   */
-  void set_hadjustment(Adjustment& adjustment);
-
-  /** This method removes the hadjustment.
-   * @see set_hadjustment().
-   */
-  void unset_hadjustment();
-
-  
-  /** Gets the Gtk::Adjustment currently being used for the vertical aspect.
-   * @return A Gtk::Adjustment object, or <tt>0</tt>
-   * if none is currently being used.
-   */
-  Adjustment* get_vadjustment();
-  
-  /** Gets the Gtk::Adjustment currently being used for the vertical aspect.
-   * @return A Gtk::Adjustment object, or <tt>0</tt>
-   * if none is currently being used.
-   */
-  const Adjustment* get_vadjustment() const;
-  
-  /** Sets the Gtk::Adjustment for the current vertical aspect. See also unset_vadjustment().
-   * @param adjustment The Gtk::Adjustment to set.
-   */
-  void set_vadjustment(Adjustment& adjustment);
-
-  /** This method removes the vadjustment.
-   * @see set_vadjustment().
-   */
-  void unset_vadjustment();
+   //deprecated
 
   
   /** Returns <tt>true</tt> if the headers on the @a tree_view are visible.
@@ -512,7 +486,7 @@ public:
    * code to automatically store user changes in the model.  To intercept the
    * user's change and implement non-default logic, or if the compiler can't
    * instantiate appropriate code for your model type, you should use
-   * append_column() and connect a signal handler to the CellRenderer.
+   * insert_column() and connect a signal handler to the CellRenderer.
    *
    * @param title The text to be used in the title header of this column.
    * @param model_column The column in the TreeModel that will be rendered by this View column.
@@ -536,6 +510,14 @@ public:
    * @return number of columns in the TreeView after the insert
    */
   int insert_column_with_data_func(int position, const Glib::ustring& title, CellRenderer& cell, const SlotCellData& slot);
+
+  
+  /** Queries the number of columns in the given @a tree_view.
+   * 
+   * @newin{3,4}
+   * @return The number of columns in the @a tree_view.
+   */
+  guint get_n_columns() const;
 
   
   /** Gets the Gtk::TreeViewColumn at the given position in the #tree_view.
@@ -575,16 +557,17 @@ public:
     */
   const CellRenderer* get_column_cell_renderer(int n) const;
 
-  
+ 
   /** Returns a list of all the Gtk::TreeViewColumn s currently in @a tree_view.
    * @return A list of Gtk::TreeViewColumn s.
    */
-  Glib::ListHandle<TreeViewColumn*> get_columns();
-  
+  std::vector<TreeViewColumn*> get_columns();
+ 
+
   /** Returns a list of all the Gtk::TreeViewColumn s currently in @a tree_view.
    * @return A list of Gtk::TreeViewColumn s.
    */
-  Glib::ListHandle<const TreeViewColumn*> get_columns() const;
+  std::vector<const TreeViewColumn*> get_columns() const;
 
   
   /** Moves @a column to be after to @a base_column.  See also move_column_to_start().
@@ -799,8 +782,8 @@ public:
   bool row_expanded(const TreeModel::Path& path);
   
   /** This function is a convenience function to allow you to reorder
-   * models that support the Gtk::DragSourceIface and the
-   * Gtk::DragDestIface.  Both Gtk::TreeStore and Gtk::ListStore support
+   * models that support the Gtk::TreeDragSourceIface and the
+   * Gtk::TreeDragDestIface.  Both Gtk::TreeStore and Gtk::ListStore support
    * these.  If @a reorderable is <tt>true</tt>, then the user can reorder the
    * model by dragging and dropping rows. The developer can listen to
    * these changes by connecting to the model's row_inserted and
@@ -895,14 +878,6 @@ public:
    */
   Glib::RefPtr<const Gdk::Window> get_bin_window() const;
 
-  #ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** @deprecated Use the const version.
-   */
-  bool get_path_at_pos(int x, int y, TreeModel::Path& path, TreeViewColumn*& column, int& cell_x, int& cell_y);
-  #endif // GTKMM_DISABLE_DEPRECATED
-
-
   /** Finds the path at the point (@a x, @a y), relative to bin_window coordinates
    * (please get_bin_window()).
    * That is, @a x and @a y are relative to an events coordinates. @a x and @a y must
@@ -955,27 +930,7 @@ public:
    */
   bool get_path_at_pos(int x, int y, TreeModel::Path& path) const;
 
-  
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Fills the bounding rectangle in tree window coordinates for the cell at the
-   * row specified by @a path and the column specified by @a column.  If @a path points to a path not currently displayed, the @a y and @a height fields
-   * of the rectangle will be filled with 0.  The sum of all cell rects does not cover the
-   * entire tree; there are extra pixels in between rows, for example. The
-   * returned rectangle is equivalent to the @a cell_area passed to
-   * Gtk::CellRenderer::render().  This function is only valid if #tree_view is
-   * realized.
-   * @deprecated Use the const version
-   * @param path A Gtk::TreePath for the row.
-   * @param column A Gtk::TreeViewColumn for the column.
-   * @param rect Rectangle to fill with cell rect.
-   */
-  void get_cell_area(const TreeModel::Path& path, TreeViewColumn& column, Gdk::Rectangle& rect);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-//We ignore the fact that one of the arguments can be 0 - it does not seem useful.
-
+  //We ignore the fact that one of the arguments can be 0 - it does not seem useful.
   
   /** Fills the bounding rectangle in tree window coordinates for the cell at the
    * row specified by @a path and the column specified by @a column.  If @a path points to a path not currently displayed, the @a y and @a height fields
@@ -990,25 +945,7 @@ public:
    */
   void get_cell_area(const TreeModel::Path& path, TreeViewColumn& column, Gdk::Rectangle& rect) const;
 
-   
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Fills the bounding rectangle in tree window coordinates for the cell at the
-   * row specified by @a path and the column specified by @a column.  The returned rectangle is equivalent to the
-   *  @a background_area passed to Gtk::CellRenderer::render().  These background
-   * areas tile to cover the entire tree window (except for the area used for
-   * header buttons). Contrast with the @a cell_area, returned by
-   * get_cell_area(), which returns only the cell itself, excluding
-   * surrounding borders and the tree expander area.
-   * @deprecated Use the const version.
-   * @param path A Gtk::TreePath for the row.
-   * @param column A Gtk::TreeViewColumn for the column.
-   * @param rect Rectangle to fill with cell background rect.
-   */
-  void get_background_area(const TreeModel::Path& path, TreeViewColumn& column, Gdk::Rectangle& rect);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
+  
   /** Fills the bounding rectangle in tree window coordinates for the cell at the
    * row specified by @a path and the column specified by @a column.  The returned rectangle is equivalent to the
    *  @a background_area passed to Gtk::CellRenderer::render().  These background
@@ -1024,20 +961,6 @@ public:
   //We ignore the fact that one of the arguments can be 0 - it does not seem useful.
 
   
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Fills @a visible_rect with the currently-visible region of the
-   * buffer, in tree coordinates. Convert to bin_window coordinates with
-   * convert_tree_to_bin_window_coords().
-   * Tree coordinates start at 0,0 for row 0 of the tree, and cover the entire
-   * scrollable area of the tree.
-   * @deprecated Use the const version.
-   * @param visible_rect Rectangle to fill.
-   */
-  void get_visible_rect(Gdk::Rectangle& visible_rect);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
   /** Fills @a visible_rect with the currently-visible region of the
    * buffer, in tree coordinates. Convert to bin_window coordinates with
    * convert_tree_to_bin_window_coords().
@@ -1047,83 +970,18 @@ public:
    */
   void get_visible_rect(Gdk::Rectangle& visible_rect) const;
 
-  
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Converts bin_window coordinates to coordinates for the
-   * tree (the full scrollable area of the tree).
-   * 
-   * Deprecated: 2.12: Due to historial reasons the name of this function is
-   * incorrect.  For converting coordinates relative to the widget to
-   * bin_window coordinates, please see
-   * convert_widget_to_bin_window_coords().
-   * @deprecated Use the const version
-   * @param wx X coordinate relative to bin_window.
-   * @param wy Y coordinate relative to bin_window.
-   * @param tx Return location for tree X coordinate.
-   * @param ty Return location for tree Y coordinate.
-   */
-  void widget_to_tree_coords(int wx, int wy, int& tx, int& ty);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Converts bin_window coordinates to coordinates for the
-   * tree (the full scrollable area of the tree).
-   * 
-   * Deprecated: 2.12: Due to historial reasons the name of this function is
-   * incorrect.  For converting coordinates relative to the widget to
-   * bin_window coordinates, please see
-   * convert_widget_to_bin_window_coords().
-   * @param wx X coordinate relative to bin_window.
-   * @param wy Y coordinate relative to bin_window.
-   * @param tx Return location for tree X coordinate.
-   * @param ty Return location for tree Y coordinate.
-   */
-  void widget_to_tree_coords(int wx, int wy, int& tx, int& ty) const;
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Converts tree coordinates (coordinates in full scrollable area of the tree)
-   * to bin_window coordinates.
-   * 
-   * Deprecated: 2.12: Due to historial reasons the name of this function is
-   * incorrect.  For converting bin_window coordinates to coordinates relative
-   * to bin_window, please see
-   * convert_bin_window_to_widget_coords().
-   * @deprecated Use the const version.
-   * @param tx Tree X coordinate.
-   * @param ty Tree Y coordinate.
-   * @param wx Return location for X coordinate relative to bin_window.
-   * @param wy Return location for Y coordinate relative to bin_window.
-   */
-  void tree_to_widget_coords(int tx, int ty, int& wx, int& wy);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Converts tree coordinates (coordinates in full scrollable area of the tree)
-   * to bin_window coordinates.
-   * 
-   * Deprecated: 2.12: Due to historial reasons the name of this function is
-   * incorrect.  For converting bin_window coordinates to coordinates relative
-   * to bin_window, please see
-   * convert_bin_window_to_widget_coords().
-   * @param tx Tree X coordinate.
-   * @param ty Tree Y coordinate.
-   * @param wx Return location for X coordinate relative to bin_window.
-   * @param wy Return location for Y coordinate relative to bin_window.
-   */
-  void tree_to_widget_coords(int tx, int ty, int& wx, int& wy) const;
-#endif // GTKMM_DISABLE_DEPRECATED
-
+   //deprecated
 
    bool get_visible_range(TreeModel::Path& start_path, TreeModel::Path& end_path) const;
   
+
+  //TODO: Documentation
+  bool is_blank_at_pos(int x, int y, TreePath& path, TreeViewColumn*& column, int& cell_x, int& cell_y) const;
+  
+
+  //TODO: Documentation
+  bool is_blank_at_pos(int x, int y) const;
+
 
 /* Drag-and-Drop support */
   
@@ -1135,7 +993,7 @@ public:
    * @param start_button_mask Mask of allowed buttons to start drag.
    * @param actions The bitmask of possible actions for a drag from this widget.
    */
-  void enable_model_drag_source(const ArrayHandle_TargetEntry& targets,
+  void enable_model_drag_source(const std::vector<TargetEntry>& targets,
                                 Gdk::ModifierType start_button_mask = Gdk::MODIFIER_MASK,
                                 Gdk::DragAction actions = Gdk::ACTION_COPY | Gdk::ACTION_MOVE);
 
@@ -1155,7 +1013,7 @@ public:
    * @param targets The table of targets that the drag will support.
    * @param actions The bitmask of possible actions for a drag from this widget.
    */
-  void enable_model_drag_dest(const ArrayHandle_TargetEntry& targets, Gdk::DragAction actions = Gdk::ACTION_COPY | Gdk::ACTION_MOVE);
+  void enable_model_drag_dest(const std::vector<TargetEntry>& targets, Gdk::DragAction actions = Gdk::ACTION_COPY | Gdk::ACTION_MOVE);
 
   /** Turns the TreeView into a drop destination for automatic DND.  This uses the default
     *  "GTK_TREE_MODEL_ROW" target, which the TreeView can handle automatically.
@@ -1179,11 +1037,19 @@ public:
 
   
   /** Sets the row that is highlighted for feedback.
+   * See also unset_drag_dest_row().
    *
    * @param path The path of the row to highlight
    * @param pos Specifies whether to drop before, after or into the row
    */
   void set_drag_dest_row(const TreeModel::Path& path, TreeViewDropPosition pos);
+
+  /** Remove an existing highlight.
+   * See set_drag_dest_row().
+   *
+   * @newin{3,2}
+   */
+  void unset_drag_dest_row();
 
   /** Gets information about the row that is highlighted for feedback.
    *
@@ -1201,13 +1067,13 @@ public:
    */
   bool get_dest_row_at_pos(int drag_x, int drag_y, TreeModel::Path& path, TreeViewDropPosition& pos) const;
 
-  
-  /** Creates a Gdk::Pixmap representation of the row at @a path.
+ 
+  /** Creates a #cairo_surface_t representation of the row at @a path.  
    * This image is used for a drag icon.
    * @param path A Gtk::TreePath in @a tree_view.
-   * @return A newly-allocated pixmap of the drag icon.
+   * @return A newly-allocated surface of the drag icon.
    */
-  Glib::RefPtr<Gdk::Pixmap> create_row_drag_icon(const TreeModel::Path& path);
+  Cairo::RefPtr<Cairo::Surface> create_row_drag_icon(const TreeModel::Path& path) const;
 
 /* Interactive search */
   
@@ -1388,7 +1254,7 @@ public:
    */
   bool get_fixed_height_mode() const;
   
-  /** Enables of disables the hover selection mode of @a tree_view.
+  /** Enables or disables the hover selection mode of @a tree_view.
    * Hover selection makes the selected row follow the pointer.
    * Currently, this works only for the selection modes 
    * Gtk::SELECTION_SINGLE and Gtk::SELECTION_BROWSE.
@@ -1405,7 +1271,7 @@ public:
    */
   bool get_hover_selection() const;
   
-  /** Enables of disables the hover expansion mode of @a tree_view.
+  /** Enables or disables the hover expansion mode of @a tree_view.
    * Hover expansion makes rows expand or collapse if the pointer 
    * moves over them.
    * 
@@ -1450,14 +1316,28 @@ public:
    */
   bool is_rubber_banding_active() const;
 
-  /** For instance,
-   * void on_row_separator(const Gtk::TreeModel& model, const Gtk::TreeModel::iterator& iter);
+  /** The slot type for determining whether the row pointed to by the iterator should be rendered as a separator.
+   * Return true if the row is a separator. 
+   * A common way to implement this is to have a boolean column in the model, whose values the slot returns. 
+   *
+   * For instance,
+   * bool on_row_separator(const Glib::RefPtr<Gtk::TreeModel>& model, const Gtk::TreeModel::iterator& iter);
    */
   typedef sigc::slot<bool, const Glib::RefPtr<TreeModel>&, const TreeModel::iterator&> SlotRowSeparator;
 
+  /** Sets the row separator function, which is used to determine whether a row should be drawn as a separator.
+   */
   void set_row_separator_func(const SlotRowSeparator& slot);
   
+  
+  /** Removes the row separator function, so no separators are drawn.
+   * See set_row_separator_func().
+   *
+   * @newin{3,2}
+   */
+  void unset_row_separator_func();
 
+  
   /** Sets which grid lines to draw in @a tree_view.
    * 
    * @newin{2,10}
@@ -1624,8 +1504,8 @@ public:
    * for you. @a column should be set to the column in @a tree_view's model
    * containing the tooltip texts, or -1 to disable this feature.
    * 
-   * When enabled, Gtk::Widget::has-tooltip will be set to <tt>true</tt> and
-   *  @a tree_view will connect a Gtk::Widget::query-tooltip signal handler.
+   * When enabled, Gtk::Widget::signal_has_tooltip() will be set to <tt>true</tt> and
+   *  @a tree_view will connect a Gtk::Widget::signal_query_tooltip() signal handler.
    * 
    * Note that the signal handler sets the text with Gtk::Tooltip::set_markup(),
    * so &, <, etc have to be escaped in the text.
@@ -1645,67 +1525,92 @@ public:
   int get_tooltip_column() const;
 
 
-//TODO: Ignore this? It's in many widgets and seems internals.
-  
-  /**
-   * @par Prototype:
-   * <tt>void on_my_%set_scroll_adjustments(Adjustment* hadjustment, Adjustment* vadjustment)</tt>
-   */
-
-  Glib::SignalProxy2< void,Adjustment*,Adjustment* > signal_set_scroll_adjustments();
-
-
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%row_activated(const TreeModel::Path& path, TreeViewColumn* column)</tt>
+   *
+   * The "row-activated" signal is emitted when the method
+   * Gtk::TreeView::row_activated() is called or the user double clicks 
+   * a treeview row. It is also emitted when a non-editable row is 
+   * selected and one of the keys: Space, Shift+Space, Return or 
+   * Enter is pressed.
+   * 
+   * For selection handling refer to the tree 
+   * widget conceptual overview as well as Gtk::TreeSelection.
+   * @param path The Gtk::TreePath for the activated row.
+   * @param column The Gtk::TreeViewColumn in which the activation occurred.
    */
 
   Glib::SignalProxy2< void,const TreeModel::Path&,TreeViewColumn* > signal_row_activated();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>bool on_my_%test_expand_row(const TreeModel::iterator& iter, const TreeModel::Path& path)</tt>
+   *
+   * The given row is about to be expanded (show its children nodes). Use this
+   * signal if you need to control the expandability of individual rows.
+   * @param iter The tree iter of the row to expand.
+   * @param path A tree path that points to the row.
+   * @return <tt>false</tt> to allow expansion, <tt>true</tt> to reject.
    */
 
   Glib::SignalProxy2< bool,const TreeModel::iterator&,const TreeModel::Path& > signal_test_expand_row();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>bool on_my_%test_collapse_row(const TreeModel::iterator& iter, const TreeModel::Path& path)</tt>
+   *
+   * The given row is about to be collapsed (hide its children nodes). Use this
+   * signal if you need to control the collapsibility of individual rows.
+   * @param iter The tree iter of the row to collapse.
+   * @param path A tree path that points to the row.
+   * @return <tt>false</tt> to allow collapsing, <tt>true</tt> to reject.
    */
 
   Glib::SignalProxy2< bool,const TreeModel::iterator&,const TreeModel::Path& > signal_test_collapse_row();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%row_expanded(const TreeModel::iterator& iter, const TreeModel::Path& path)</tt>
+   *
+   * The given row has been expanded (child nodes are shown).
+   * @param iter The tree iter of the expanded row.
+   * @param path A tree path that points to the row.
    */
 
   Glib::SignalProxy2< void,const TreeModel::iterator&,const TreeModel::Path& > signal_row_expanded();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%row_collapsed(const TreeModel::iterator& iter, const TreeModel::Path& path)</tt>
+   *
+   * The given row has been collapsed (child nodes are hidden).
+   * @param iter The tree iter of the collapsed row.
+   * @param path A tree path that points to the row.
    */
 
   Glib::SignalProxy2< void,const TreeModel::iterator&,const TreeModel::Path& > signal_row_collapsed();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%cursor_changed()</tt>
+   *
+   * The position of the cursor (focused cell) has changed.
    */
 
   Glib::SignalProxy0< void > signal_cursor_changed();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%columns_changed()</tt>
+   *
+   * The number of columns of the treeview has changed.
    */
 
   Glib::SignalProxy0< void > signal_columns_changed();
@@ -1735,53 +1640,13 @@ public:
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Horizontal Adjustment for the widget.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<Adjustment*> property_hadjustment() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** Horizontal Adjustment for the widget.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<Adjustment*> property_hadjustment() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Vertical Adjustment for the widget.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<Adjustment*> property_vadjustment() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** Vertical Adjustment for the widget.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<Adjustment*> property_vadjustment() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
 /** Show the column header buttons.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_headers_visible() ;
+  Glib::PropertyProxy< bool > property_headers_visible() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1791,7 +1656,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_headers_visible() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_headers_visible() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1801,7 +1666,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_headers_clickable() ;
+  Glib::PropertyProxy< bool > property_headers_clickable() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1811,7 +1676,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_headers_clickable() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_headers_clickable() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1821,7 +1686,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<TreeViewColumn*> property_expander_column() ;
+  Glib::PropertyProxy< TreeViewColumn* > property_expander_column() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1831,7 +1696,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<TreeViewColumn*> property_expander_column() const;
+  Glib::PropertyProxy_ReadOnly< TreeViewColumn* > property_expander_column() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1841,7 +1706,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_reorderable() ;
+  Glib::PropertyProxy< bool > property_reorderable() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1851,7 +1716,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_reorderable() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_reorderable() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1861,7 +1726,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_rules_hint() ;
+  Glib::PropertyProxy< bool > property_rules_hint() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1871,7 +1736,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_rules_hint() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_rules_hint() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1881,7 +1746,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_enable_search() ;
+  Glib::PropertyProxy< bool > property_enable_search() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1891,7 +1756,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_enable_search() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_enable_search() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1901,7 +1766,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_search_column() ;
+  Glib::PropertyProxy< int > property_search_column() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1911,7 +1776,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_search_column() const;
+  Glib::PropertyProxy_ReadOnly< int > property_search_column() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1921,7 +1786,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_fixed_height_mode() ;
+  Glib::PropertyProxy< bool > property_fixed_height_mode() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1931,7 +1796,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_fixed_height_mode() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_fixed_height_mode() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1941,7 +1806,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_hover_selection() ;
+  Glib::PropertyProxy< bool > property_hover_selection() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1951,7 +1816,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_hover_selection() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_hover_selection() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1961,7 +1826,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_hover_expand() ;
+  Glib::PropertyProxy< bool > property_hover_expand() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1971,7 +1836,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_hover_expand() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_hover_expand() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1981,7 +1846,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_show_expanders() ;
+  Glib::PropertyProxy< bool > property_show_expanders() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1991,7 +1856,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_show_expanders() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_show_expanders() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -2001,7 +1866,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_level_indentation() ;
+  Glib::PropertyProxy< bool > property_level_indentation() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -2011,7 +1876,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_level_indentation() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_level_indentation() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -2021,7 +1886,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_rubber_banding() ;
+  Glib::PropertyProxy< bool > property_rubber_banding() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -2031,7 +1896,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_rubber_banding() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_rubber_banding() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -2041,7 +1906,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_enable_grid_lines() ;
+  Glib::PropertyProxy< bool > property_enable_grid_lines() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -2051,7 +1916,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_enable_grid_lines() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_enable_grid_lines() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -2061,7 +1926,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_enable_tree_lines() ;
+  Glib::PropertyProxy< bool > property_enable_tree_lines() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -2071,7 +1936,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_enable_tree_lines() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_enable_tree_lines() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -2081,7 +1946,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_tooltip_column() ;
+  Glib::PropertyProxy< int > property_tooltip_column() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -2091,12 +1956,9 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_tooltip_column() const;
+  Glib::PropertyProxy_ReadOnly< int > property_tooltip_column() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
-
-  /// Get the treeview's model, but actually get the child model if it's a TreeModelFilter.
-  Glib::RefPtr<Gtk::TreeModel> _get_base_model();
 
 protected:
 
@@ -2178,7 +2040,7 @@ int TreeView::append_column_numeric_editable(const Glib::ustring& title, const T
   CellRenderer *const cell = get_column_cell_renderer(cols_count - 1);
   if(cell)
   {
-    TreeView_Private::_connect_auto_store_editable_signal_handler<ColumnType>(this, cell, model_column);
+    TreeView_Private::_connect_auto_store_numeric_editable_signal_handler<ColumnType>(this, cell, model_column);
   }
 
   return cols_count;
@@ -2232,6 +2094,34 @@ namespace TreeView_Private
 //Template specializations, for different model column types:
 //TODO: Move these specializations into the .ccg file - I tried, but the int specialization was not used by the compiler. murrayc.
 
+// append_column_editable<>() and insert_column_editable<>() call template function
+// _connect_auto_store_editable_signal_handler<ColumnType>().
+// There are 3 versions of _connect_auto_store_editable_signal_handler<>():
+//
+// 1. The default version for string data. It connects
+//    CellRendererText::signal_edited() to template function
+//    _auto_store_on_cellrenderer_text_edited_string<ColumnType>().
+//
+// 2. A bool specialization. It connects CellRendererToggle::signal_toggled()
+//    to function _auto_store_on_cellrenderer_toggle_edited_with_model().
+//
+// 3. Several identical (except for the type name) specializations for numeric data.
+//    They call _connect_auto_store_numeric_editable_signal_handler<ColumnType>(),
+//    which connects CellRendererText::signal_edited() to template function
+//    _auto_store_on_cellrenderer_text_edited_numerical<ColumnType>().
+//
+// We need all those specializations with identical implementations, because we
+// chose to avoid multiple specializations for the string types by dealing with
+// string types in the default implementation.
+//
+// With these numeric specializations append_column_editable<>() and
+// insert_column_editable<>() can be used for the same numeric types as
+// append_column<>() and insert_column<>(). Those are fundamental types in the
+// GType system, and Glib registers conversion functions from those types to
+// gchararray with g_value_register_transform_func().
+// 'short' is not one of those types. It can be handled only by
+// append_column_numeric<>() and append_column_numeric_editable<>().
+
 #ifdef GTKMM_HAVE_SIGC_BIND
 
 //bool specialization:
@@ -2249,7 +2139,7 @@ void _connect_auto_store_editable_signal_handler(Gtk::TreeView* this_p, Gtk::Cel
     sigc::slot<void, const Glib::ustring&, int> slot_temp =
       sigc::bind<-1>(
         sigc::mem_fun(*this_p, &Gtk::TreeView::_auto_store_on_cellrenderer_toggle_edited_with_model),
-        this_p->_get_base_model()
+        this_p->get_model()
       );
 
     pCellToggle->signal_toggled().connect(
@@ -2267,166 +2157,42 @@ void _connect_auto_store_editable_signal_handler(Gtk::TreeView* this_p, Gtk::Cel
 template<> inline
 void _connect_auto_store_editable_signal_handler(Gtk::TreeView* this_p, Gtk::CellRenderer* pCellRenderer,  const Gtk::TreeModelColumn<int>& model_column)
 {
-  Gtk::CellRendererText* pCellText = dynamic_cast<Gtk::CellRendererText*>(pCellRenderer);
-  if(pCellText)
-  {
-    //Set the appropriate property,
-    pCellText->property_editable() = true;
-
-    //Some compilers don't like us to give the pointer to a template function directly to sigc::ptr_fun():
-    typedef void (*type_fptr)(const Glib::ustring& path_string, const Glib::ustring& new_text, int model_column, const Glib::RefPtr<Gtk::TreeModel>& model);
-    type_fptr fptr = _auto_store_on_cellrenderer_text_edited_numerical<int>;
-
-    //Connect to the appropriate signal, sending the model_column too,
-    //We use bind<-1> twice here, instead of using bind() once, because some compilers need the extra hint.
-    pCellText->signal_edited().connect(
-      sigc::bind<-1>(
-        sigc::bind<-1>(
-          sigc::ptr_fun(fptr),
-          this_p->_get_base_model() ),
-        model_column.index()
-      )
-    );
-
-  }
+  _connect_auto_store_numeric_editable_signal_handler<int>(this_p, pCellRenderer, model_column);
 }
 
 //unsigned int specialization:
 template<> inline
 void _connect_auto_store_editable_signal_handler(Gtk::TreeView* this_p, Gtk::CellRenderer* pCellRenderer,  const Gtk::TreeModelColumn<unsigned int>& model_column)
 {
-  Gtk::CellRendererText* pCellText = dynamic_cast<Gtk::CellRendererText*>(pCellRenderer);
-  if(pCellText)
-  {
-    //Set the appropriate property,
-    pCellText->property_editable() = true;
-
-    //Some compilers don't like us to give the pointer to a template function directly to sigc::ptr_fun():
-    typedef void (*type_fptr)(const Glib::ustring& path_string, const Glib::ustring& new_text, int model_column, const Glib::RefPtr<Gtk::TreeModel>& model);
-    type_fptr fptr = _auto_store_on_cellrenderer_text_edited_numerical<unsigned int>;
-
-    //Connect to the appropriate signal, sending the model_column too,
-    //We use bind<-1> twice here, instead of using bind() once, because some compilers need the extra hint.
-    pCellText->signal_edited().connect(
-      sigc::bind<-1>(
-        sigc::bind<-1>(
-          sigc::ptr_fun(fptr),
-          this_p->_get_base_model() ),
-        model_column.index()
-      )
-    );
-
-  }
+  _connect_auto_store_numeric_editable_signal_handler<unsigned int>(this_p, pCellRenderer, model_column);
 }
 
 //long specialization:
 template<> inline
 void _connect_auto_store_editable_signal_handler(Gtk::TreeView* this_p, Gtk::CellRenderer* pCellRenderer,  const Gtk::TreeModelColumn<long>& model_column)
 {
-  Gtk::CellRendererText* pCellText = dynamic_cast<Gtk::CellRendererText*>(pCellRenderer);
-  if(pCellText)
-  {
-    //Set the appropriate property,
-    pCellText->property_editable() = true;
-
-    //Some compilers don't like us to give the pointer to a template function directly to sigc::ptr_fun():
-    typedef void (*type_fptr)(const Glib::ustring& path_string, const Glib::ustring& new_text, int model_column, const Glib::RefPtr<Gtk::TreeModel>& model);
-    type_fptr fptr = _auto_store_on_cellrenderer_text_edited_numerical<long>;
-
-    //Connect to the appropriate signal, sending the model_column too,
-    //We use bind<-1> twice here, instead of using bind() once, because some compilers need the extra hint.
-    pCellText->signal_edited().connect(
-      sigc::bind<-1>(
-        sigc::bind<-1>(
-          sigc::ptr_fun(fptr),
-          this_p->_get_base_model() ),
-        model_column.index()
-      )
-    );
-
-  }
+  _connect_auto_store_numeric_editable_signal_handler<long>(this_p, pCellRenderer, model_column);
 }
 
 //unsigned long specialization:
 template<> inline
 void _connect_auto_store_editable_signal_handler(Gtk::TreeView* this_p, Gtk::CellRenderer* pCellRenderer,  const Gtk::TreeModelColumn<unsigned long>& model_column)
 {
-  Gtk::CellRendererText* pCellText = dynamic_cast<Gtk::CellRendererText*>(pCellRenderer);
-  if(pCellText)
-  {
-    //Set the appropriate property,
-    pCellText->property_editable() = true;
-
-    //Some compilers don't like us to give the pointer to a template function directly to sigc::ptr_fun():
-    typedef void (*type_fptr)(const Glib::ustring& path_string, const Glib::ustring& new_text, int model_column, const Glib::RefPtr<Gtk::TreeModel>& model);
-    type_fptr fptr = _auto_store_on_cellrenderer_text_edited_numerical<unsigned long>;
-
-    //Connect to the appropriate signal, sending the model_column too,
-    //We use bind<-1> twice here, instead of using bind() once, because some compilers need the extra hint.
-    pCellText->signal_edited().connect(
-      sigc::bind<-1>(
-        sigc::bind<-1>(
-          sigc::ptr_fun(fptr),
-          this_p->_get_base_model() ),
-        model_column.index()
-      )
-    );
-
-  }
+  _connect_auto_store_numeric_editable_signal_handler<unsigned long>(this_p, pCellRenderer, model_column);
 }
 
 //float specialization:
 template<> inline
 void _connect_auto_store_editable_signal_handler(Gtk::TreeView* this_p, Gtk::CellRenderer* pCellRenderer,  const Gtk::TreeModelColumn<float>& model_column)
 {
-  Gtk::CellRendererText* pCellText = dynamic_cast<Gtk::CellRendererText*>(pCellRenderer);
-  if(pCellText)
-  {
-    //Set the appropriate property,
-    pCellText->property_editable() = true;
-
-    //Some compilers don't like us to give the pointer to a template function directly to sigc::ptr_fun():
-    typedef void (*type_fptr)(const Glib::ustring& path_string, const Glib::ustring& new_text, int model_column, const Glib::RefPtr<Gtk::TreeModel>& model);
-    type_fptr fptr = _auto_store_on_cellrenderer_text_edited_numerical<float>;
-
-    //Connect to the appropriate signal, sending the model_column too,
-    //We use bind<-1> twice here, instead of using bind() once, because some compilers need the extra hint.
-    pCellText->signal_edited().connect(
-      sigc::bind<-1>(
-        sigc::bind<-1>(
-          sigc::ptr_fun(fptr),
-          this_p->_get_base_model() ),
-        model_column.index()
-      )
-    );
-  }
+  _connect_auto_store_numeric_editable_signal_handler<float>(this_p, pCellRenderer, model_column);
 }
 
 //double specialization:
 template<> inline
 void _connect_auto_store_editable_signal_handler(Gtk::TreeView* this_p, Gtk::CellRenderer* pCellRenderer,  const Gtk::TreeModelColumn<double>& model_column)
 {
-  Gtk::CellRendererText* pCellText = dynamic_cast<Gtk::CellRendererText*>(pCellRenderer);
-  if(pCellText)
-  {
-    //Set the appropriate property,
-    pCellText->property_editable() = true;
-
-    //Some compilers don't like us to give the pointer to a template function directly to sigc::ptr_fun():
-    typedef void (*type_fptr)(const Glib::ustring& path_string, const Glib::ustring& new_text, int model_column, const Glib::RefPtr<Gtk::TreeModel>& model);
-    type_fptr fptr = _auto_store_on_cellrenderer_text_edited_numerical<double>;
-
-    //Connect to the appropriate signal, sending the model_column too,
-    //We use bind<-1> twice here, instead of using bind() once, because some compilers need the extra hint.
-    pCellText->signal_edited().connect(
-      sigc::bind<-1>(
-        sigc::bind<-1>(
-          sigc::ptr_fun(fptr),
-          this_p->_get_base_model() ),
-        model_column.index()
-      )
-    );
-  }
+  _connect_auto_store_numeric_editable_signal_handler<double>(this_p, pCellRenderer, model_column);
 }
 
 #endif //GTKMM_HAVE_SIGC_BIND
@@ -2448,7 +2214,7 @@ void _connect_auto_store_editable_signal_handler(Gtk::TreeView* this_p, Gtk::Cel
 
   //The different CellRenderers have different "edited" signals,
   //and numerical values need to convert the text value to a number,
-  //so there are specializations for this tempate.
+  //so there are specializations for this template.
 
   Gtk::CellRendererText* pCellText = dynamic_cast<Gtk::CellRendererText*>(pCellRenderer);
 
@@ -2460,14 +2226,43 @@ void _connect_auto_store_editable_signal_handler(Gtk::TreeView* this_p, Gtk::Cel
 
     //Some compilers (IRIX MipsPro) don't like us to give the pointer to a template function directly to sigc::ptr_fun():
     typedef void (*type_func)(const Glib::ustring&, const Glib::ustring&, int, const Glib::RefPtr<Gtk::TreeModel>&);
-    type_func func = &(_auto_store_on_cellrenderer_text_edited_string<ColumnType>);
+    type_func func = &(Gtk::TreeView_Private::_auto_store_on_cellrenderer_text_edited_string<ColumnType>);
     sigc::slot<void, const Glib::ustring&, const Glib::ustring&, int, const Glib::RefPtr<Gtk::TreeModel>&> theslot  =
       sigc::ptr_fun(func);
 
     //We use bind<-1> twice here, instead of using bind() once, because some compilers need the extra hint.
     pCellText->signal_edited().connect(
       sigc::bind<-1>(
-        sigc::bind<-1>( theslot, this_p->_get_base_model()),
+        sigc::bind<-1>( theslot, this_p->get_model()),
+        model_column.index()
+      )
+    );
+  }
+}
+
+template<class ColumnType> inline
+void _connect_auto_store_numeric_editable_signal_handler(Gtk::TreeView* this_p, Gtk::CellRenderer* pCellRenderer,  const Gtk::TreeModelColumn<ColumnType>& model_column)
+{
+  //The different CellRenderers have different "edited" signals,
+  //and numerical values need to convert the text value to a number.
+
+  Gtk::CellRendererText* pCellText = dynamic_cast<Gtk::CellRendererText*>(pCellRenderer);
+  if(pCellText)
+  {
+    //Set the appropriate property.
+    pCellText->property_editable() = true;
+
+    //Some compilers don't like us to give the pointer to a template function directly to sigc::ptr_fun():
+    typedef void (*type_fptr)(const Glib::ustring& path_string, const Glib::ustring& new_text, int model_column, const Glib::RefPtr<Gtk::TreeModel>& model);
+    type_fptr fptr = _auto_store_on_cellrenderer_text_edited_numerical<ColumnType>;
+
+    //Connect to the appropriate signal, sending the model_column too.
+    //We use bind<-1> twice here, instead of using bind() once, because some compilers need the extra hint.
+    pCellText->signal_edited().connect(
+      sigc::bind<-1>(
+        sigc::bind<-1>(
+          sigc::ptr_fun(fptr),
+          this_p->get_model() ),
         model_column.index()
       )
     );

@@ -4,7 +4,8 @@
 #define _GIOMM_SETTINGS_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 2010 Jonathon Jongsma
  *
@@ -23,6 +24,7 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <glibmm/arrayhandle.h>
 #include <glibmm/object.h>
 #include <glibmm/variant.h>
 
@@ -413,7 +415,7 @@ public:
   guint get_flags(const Glib::ustring& key) const;
   
   /** Looks up the flags type nicks for the bits specified by @a value, puts
-   * them in an array of strings and writes the array to @a key, withing
+   * them in an array of strings and writes the array to @a key, within
    *  @a settings.
    * 
    * It is a programmer error to give a @a key that isn't contained in the
@@ -519,7 +521,7 @@ public:
    * This function does not list the schemas that do not provide their own
    * paths (ie: schemas for which you must use
    * g_settings_new_with_path()).  See
-   * Glib::settings_list_relocatable_schemas() for that.
+   * g_settings_list_relocatable_schemas() for that.
    * 
    * @newin{2,26}
    * @return A list of Settings
@@ -649,25 +651,65 @@ public:
   //TODO?: _WRAP_SIGNAL(bool change_event(const Glib::ArrayHandle<Glib::QueryQuark>& keys, int n_keys), "change-event")
 
  
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%changed(const Glib::ustring& key)</tt>
+   *
+   * The "changed" signal is emitted when a key has potentially changed.
+   * You should call one of the g_settings_get() calls to check the new
+   * value.
+   * 
+   * This signal supports detailed connections.  You can connect to the
+   * detailed signal "changed::x" in order to only receive callbacks
+   * when key "x" changes.
+   * @param key The name of the key that changed.
    */
 
   Glib::SignalProxy1< void,const Glib::ustring& > signal_changed();
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>bool on_my_%writable_change_event(guint key)</tt>
+   *
+   * The "writable-change-event" signal is emitted once per writability
+   * change event that affects this settings object.  You should connect
+   * to this signal if you are interested in viewing groups of changes
+   * before they are split out into multiple emissions of the
+   * "writable-changed" signal.  For most use cases it is more
+   * appropriate to use the "writable-changed" signal.
+   * 
+   * In the event that the writability change applies only to a single
+   * key, @a key will be set to the Quark for that key.  In the event
+   * that the writability change affects the entire settings object,
+   *  @a key will be 0.
+   * 
+   * The default handler for this signal invokes the "writable-changed"
+   * and "changed" signals for each affected key.  This is done because
+   * changes in writability might also imply changes in value (if for
+   * example, a new mandatory setting is introduced).  If any other
+   * connected handler returns <tt>true</tt> then this default functionality
+   * will be suppressed.
+   * @param key The quark of the key, or 0.
+   * @return <tt>true</tt> to stop other handlers from being invoked for the
+   * event. <tt>false</tt> to propagate the event further.
    */
 
   Glib::SignalProxy1< bool,guint > signal_writable_change_event();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%writable_changed(const Glib::ustring& key)</tt>
+   *
+   * The "writable-changed" signal is emitted when the writability of a
+   * key has potentially changed.  You should call
+   * g_settings_is_writable() in order to determine the new status.
+   * 
+   * This signal supports detailed connections.  You can connect to the
+   * detailed signal "writable-changed::x" in order to only receive
+   * callbacks when the writability of "x" changes.
+   * @param key The key.
    */
 
   Glib::SignalProxy1< void,const Glib::ustring& > signal_writable_changed();
@@ -682,8 +724,11 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_changed().
   virtual void on_changed(const Glib::ustring& key);
+  /// This is a default handler for the signal signal_writable_change_event().
   virtual bool on_writable_change_event(guint key);
+  /// This is a default handler for the signal signal_writable_changed().
   virtual void on_writable_changed(const Glib::ustring& key);
 
 

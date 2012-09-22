@@ -4,7 +4,8 @@
 #define _GTKMM_ICONVIEW_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: iconview.hg,v 1.11 2006/07/08 16:31:38 murrayc Exp $ */
 
@@ -23,15 +24,19 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <vector>
 
 #include <gtkmm/container.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treepath.h>
+#include <gtkmm/celllayout.h>
+#include <gtkmm/cellarea.h>
 #include <gtkmm/cellrenderer.h>
+#include <gtkmm/scrollable.h>
 #include <gtkmm/tooltip.h>
 
 
@@ -83,8 +88,6 @@ namespace Gtk
 {
 
 
-//TODO: This should derive+implement from CellLayout when we can break ABI.
-
 /** The IconView provides an alternative view of a list model.
  * It displays the model as a grid of icons with labels.
  * Like the TreeView, it allows the user to select one or multiple items
@@ -96,7 +99,10 @@ namespace Gtk
  * @ingroup Containers
  */
 
-class IconView : public Container
+class IconView
+ : public Container,
+   public CellLayout,
+   public Scrollable
 {
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -125,8 +131,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -146,17 +156,21 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
-  virtual void on_set_scroll_adjustments(Adjustment* hadjustment, Adjustment* vadjustment);
+  /// This is a default handler for the signal signal_item_activated().
   virtual void on_item_activated(const TreeModel::Path& path);
+  /// This is a default handler for the signal signal_selection_changed().
   virtual void on_selection_changed();
 
 
 private:
 
+  
 public:
 
   IconView();
     explicit IconView(const Glib::RefPtr<TreeModel>& model);
+
+    explicit IconView(const Glib::RefPtr<CellArea>& cell_area);
 
 
   /** Sets the model for a Gtk::IconView.
@@ -270,45 +284,24 @@ public:
   int get_pixbuf_column() const;
 
   
-  /** Sets the ::orientation property which determines whether the labels 
+  /** Sets the property_item_orientation() property which determines whether the labels 
    * are drawn beside the icons instead of below.
    * 
    * @newin{2,6}
-   * 
-   * Deprecated: 2.22: Use set_item_orientation()
-   * @param orientation The relative position of texts and icons.
-   */
-  void set_orientation(Orientation orientation);
-  
-  /** Returns the value of the ::orientation property which determines 
-   * whether the labels are drawn beside the icons instead of below. 
-   * 
-   * @newin{2,6}
-   * 
-   * Deprecated: 2.22: Use get_item_orientation()
-   * @return The relative position of texts and icons.
-   */
-  Orientation get_orientation() const;
-
-  
-  /** Sets the ::item-orientation property which determines whether
-   * the labels are drawn beside the icons instead of below.
-   * 
-   * @newin{2,22}
    * @param orientation The relative position of texts and icons.
    */
   void set_item_orientation(Orientation orientation);
   
-  /** Returns the value of the ::item-orientation property which determines
-   * whether the labels are drawn beside the icons instead of below.
+  /** Returns the value of the property_item_orientation() property which determines 
+   * whether the labels are drawn beside the icons instead of below. 
    * 
-   * @newin{2,22}
+   * @newin{2,6}
    * @return The relative position of texts and icons.
    */
   Orientation get_item_orientation() const;
 
   
-  /** Sets the ::columns property which determines in how
+  /** Sets the property_columns() property which determines in how
    * many columns the icons are arranged. If @a columns is
    * -1, the number of columns will be chosen automatically 
    * to fill the available area. 
@@ -318,14 +311,14 @@ public:
    */
   void set_columns(int columns);
   
-  /** Returns the value of the ::columns property.
+  /** Returns the value of the property_columns() property.
    * 
    * @newin{2,6}
    * @return The number of columns, or -1.
    */
   int get_columns() const;
   
-  /** Sets the ::item-width property which specifies the width 
+  /** Sets the property_item_width() property which specifies the width 
    * to use for each item. If it is set to -1, the icon view will 
    * automatically determine a suitable item size.
    * 
@@ -334,14 +327,14 @@ public:
    */
   void set_item_width(int item_width);
   
-  /** Returns the value of the ::item-width property.
+  /** Returns the value of the property_item_width() property.
    * 
    * @newin{2,6}
    * @return The width of a single item, or -1.
    */
   int get_icon_width() const;
   
-  /** Sets the ::spacing property which specifies the space 
+  /** Sets the property_spacing() property which specifies the space 
    * which is inserted between the cells (i.e.\ the icon and 
    * the text) of an item.
    * 
@@ -350,14 +343,14 @@ public:
    */
   void set_spacing(int spacing);
   
-  /** Returns the value of the ::spacing property.
+  /** Returns the value of the property_spacing() property.
    * 
    * @newin{2,6}
    * @return The space between cells.
    */
   int get_spacing() const;
   
-  /** Sets the ::row-spacing property which specifies the space 
+  /** Sets the property_row_spacing() property which specifies the space 
    * which is inserted between the rows of the icon view.
    * 
    * @newin{2,6}
@@ -365,14 +358,14 @@ public:
    */
   void set_row_spacing(int row_spacing);
   
-  /** Returns the value of the ::row-spacing property.
+  /** Returns the value of the property_row_spacing() property.
    * 
    * @newin{2,6}
    * @return The space between rows.
    */
   gint get_row_spacing() const;
   
-  /** Sets the ::column-spacing property which specifies the space 
+  /** Sets the property_column_spacing() property which specifies the space 
    * which is inserted between the columns of the icon view.
    * 
    * @newin{2,6}
@@ -380,7 +373,7 @@ public:
    */
   void set_column_spacing(int column_spacing);
   
-  /** Returns the value of the ::column-spacing property.
+  /** Returns the value of the property_column_spacing() property.
    * 
    * @newin{2,6}
    * @return The space between columns.
@@ -388,7 +381,7 @@ public:
   int get_column_spacing() const;
 
   
-  /** Sets the ::margin property which specifies the space 
+  /** Sets the property_margin() property which specifies the space 
    * which is inserted at the top, bottom, left and right 
    * of the icon view.
    * 
@@ -397,7 +390,7 @@ public:
    */
   void set_margin(int margin);
   
-  /** Returns the value of the ::margin property.
+  /** Returns the value of the property_margin() property.
    * 
    * @newin{2,6}
    * @return The space at the borders.
@@ -529,24 +522,20 @@ public:
   };
   #endif //DOXYGEN_SHOULD_SKIP_THIS
 
-  typedef Glib::ListHandle<TreePath, TreePathTraits> ArrayHandle_TreePaths;
-
-  
+ 
   /** Creates a list of paths of all selected items. Additionally, if you are
    * planning on modifying the model after calling this function, you may
    * want to convert the returned list into a list of Gtk::TreeRowReference<!-- -->s.
    * To do this, you can use Gtk::TreeRowReference::new().
    * 
    * To free the return value, use:
-   * |[
-   * g_list_foreach (list, (GFunc)gtk_tree_path_free, <tt>0</tt>);
-   * g_list_free (list);
-   * ]|
+   * 
+   * [C example ellipted]
    * 
    * @newin{2,6}
    * @return A List containing a Gtk::TreePath for each selected row.
    */
-  ArrayHandle_TreePaths get_selected_items() const;
+  std::vector<TreePath> get_selected_items() const;
 
   
   /** Selects all the icons. @a icon_view must has its selection mode set
@@ -654,7 +643,7 @@ public:
    * @param start_button_mask Mask of allowed buttons to start drag.
    * @param actions The bitmask of possible actions for a drag from this widget.
    */
-  void enable_model_drag_source(const ArrayHandle_TargetEntry& targets,
+  void enable_model_drag_source(const std::vector<TargetEntry>& targets,
                                 Gdk::ModifierType start_button_mask = Gdk::MODIFIER_MASK,
                                 Gdk::DragAction actions = Gdk::ACTION_COPY | Gdk::ACTION_MOVE);
   
@@ -664,18 +653,18 @@ public:
    * @param targets The table of targets that the drag will support.
    * @param actions The bitmask of possible actions for a drag from this widget.
    */
-  void enable_model_drag_dest(const ArrayHandle_TargetEntry& targets, Gdk::DragAction actions = Gdk::ACTION_COPY | Gdk::ACTION_MOVE);
+  void enable_model_drag_dest(const std::vector<TargetEntry>& targets, Gdk::DragAction actions = Gdk::ACTION_COPY | Gdk::ACTION_MOVE);
   
 
   /** Undoes the effect of enable_model_drag_source(). Calling this
-   * method sets Gtk::IconView:reorderable to <tt>false</tt>.
+   * method sets Gtk::IconView::property_reorderable() to <tt>false</tt>.
    * 
    * @newin{2,8}
    */
   void unset_model_drag_source();
   
   /** Undoes the effect of enable_model_drag_dest(). Calling this
-   * method sets Gtk::IconView:reorderable to <tt>false</tt>.
+   * method sets Gtk::IconView::property_reorderable() to <tt>false</tt>.
    * 
    * @newin{2,8}
    */
@@ -781,14 +770,14 @@ public:
   bool get_dest_item_at_pos(int drag_x, int drag_y, IconViewDropPosition& pos) const;
   
 
-  /** Creates a Gdk::Pixmap representation of the item at @a path.
+  /** Creates a #cairo_surface_t representation of the item at @a path.  
    * This image is used for a drag icon.
    * 
    * @newin{2,8}
    * @param path A Gtk::TreePath in @a icon_view.
-   * @return A newly-allocated pixmap of the drag icon.
+   * @return A newly-allocated surface of the drag icon.
    */
-  Glib::RefPtr<Gdk::Pixmap> create_drag_icon(const TreeModel::Path& path);
+  Cairo::RefPtr<Cairo::Surface> create_drag_icon(const TreeModel::Path& path);
 
   
   /** Converts widget coordinates to coordinates for the bin_window,
@@ -890,8 +879,11 @@ public:
    * for you. @a column should be set to the column in @a icon_view's model
    * containing the tooltip texts, or -1 to disable this feature.
    * 
-   * When enabled, Gtk::Widget::has-tooltip will be set to <tt>true</tt> and
-   *  @a icon_view will connect a Gtk::Widget::query-tooltip signal handler.
+   * When enabled, Gtk::Widget::property_has_tooltip() will be set to <tt>true</tt> and
+   *  @a icon_view will connect a Gtk::Widget::signal_query_tooltip() signal handler.
+   * 
+   * Note that the signal handler sets the text with Gtk::Tooltip::set_markup(),
+   * so &, <, etc have to be escaped in the text.
    * 
    * @newin{2,12}
    * @param column An integer, which is a valid column number for @a icon_view's model.
@@ -907,26 +899,28 @@ public:
    */
   int get_tooltip_column() const;
 
-
-  /**
-   * @par Prototype:
-   * <tt>void on_my_%set_scroll_adjustments(Adjustment* hadjustment, Adjustment* vadjustment)</tt>
-   */
-
-  Glib::SignalProxy2< void,Adjustment*,Adjustment* > signal_set_scroll_adjustments();
-
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%item_activated(const TreeModel::Path& path)</tt>
+   *
+   * The signal_item_activated() signal is emitted when the method
+   * Gtk::IconView::item_activated() is called or the user double 
+   * clicks an item. It is also emitted when a non-editable item
+   * is selected and one of the keys: Space, Return or Enter is
+   * pressed.
+   * @param path The Gtk::TreePath for the activated item.
    */
 
   Glib::SignalProxy1< void,const TreeModel::Path& > signal_item_activated();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%selection_changed()</tt>
+   *
+   * The signal_selection_changed() signal is emitted when the selection
+   * (i.e.\ the set of selected items) changes.
    */
 
   Glib::SignalProxy0< void > signal_selection_changed();
@@ -942,7 +936,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_pixbuf_column() ;
+  Glib::PropertyProxy< int > property_pixbuf_column() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -952,7 +946,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_pixbuf_column() const;
+  Glib::PropertyProxy_ReadOnly< int > property_pixbuf_column() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -962,7 +956,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_text_column() ;
+  Glib::PropertyProxy< int > property_text_column() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -972,7 +966,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_text_column() const;
+  Glib::PropertyProxy_ReadOnly< int > property_text_column() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -982,7 +976,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_markup_column() ;
+  Glib::PropertyProxy< int > property_markup_column() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -992,27 +986,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_markup_column() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The column in the model containing the tooltip texts for the items.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<int> property_tooltip_column() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** The column in the model containing the tooltip texts for the items.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<int> property_tooltip_column() const;
+  Glib::PropertyProxy_ReadOnly< int > property_markup_column() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1022,7 +996,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<SelectionMode> property_selection_mode() ;
+  Glib::PropertyProxy< SelectionMode > property_selection_mode() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1032,7 +1006,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<SelectionMode> property_selection_mode() const;
+  Glib::PropertyProxy_ReadOnly< SelectionMode > property_selection_mode() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1042,7 +1016,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Orientation> property_orientation() ;
+  Glib::PropertyProxy< Orientation > property_item_orientation() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1052,47 +1026,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Orientation> property_orientation() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
- //deprecated
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** How the text and icon of each item are positioned relative to each other.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<Orientation> property_item_orientation() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** How the text and icon of each item are positioned relative to each other.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<Orientation> property_item_orientation() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** View is reorderable.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<bool> property_reorderable() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** View is reorderable.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<bool> property_reorderable() const;
+  Glib::PropertyProxy_ReadOnly< Orientation > property_item_orientation() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1122,7 +1056,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_columns() ;
+  Glib::PropertyProxy< int > property_columns() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1132,7 +1066,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_columns() const;
+  Glib::PropertyProxy_ReadOnly< int > property_columns() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1142,7 +1076,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_item_width() ;
+  Glib::PropertyProxy< int > property_item_width() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1152,7 +1086,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_item_width() const;
+  Glib::PropertyProxy_ReadOnly< int > property_item_width() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1162,7 +1096,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_spacing() ;
+  Glib::PropertyProxy< int > property_spacing() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1172,7 +1106,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_spacing() const;
+  Glib::PropertyProxy_ReadOnly< int > property_spacing() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1182,7 +1116,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_row_spacing() ;
+  Glib::PropertyProxy< int > property_row_spacing() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1192,7 +1126,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_row_spacing() const;
+  Glib::PropertyProxy_ReadOnly< int > property_row_spacing() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1202,7 +1136,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_column_spacing() ;
+  Glib::PropertyProxy< int > property_column_spacing() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1212,7 +1146,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_column_spacing() const;
+  Glib::PropertyProxy_ReadOnly< int > property_column_spacing() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1222,7 +1156,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_margin() ;
+  Glib::PropertyProxy< int > property_margin() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1232,27 +1166,17 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_margin() const;
+  Glib::PropertyProxy_ReadOnly< int > property_margin() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Padding around icon view items.
+/** The GtkCellArea used to layout cells.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_item_padding() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** Padding around icon view items.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<int> property_item_padding() const;
+  Glib::PropertyProxy_ReadOnly< Glib::RefPtr<CellArea> > property_cell_area() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

@@ -4,7 +4,8 @@
 #define _GIOMM_PROXY_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -80,9 +81,14 @@ private:
   Proxy(const Proxy&);
   Proxy& operator=(const Proxy&);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 protected:
-  Proxy(); // you must derive from this class
-
+  /**
+   * You should derive from this class to use it.
+   */
+  Proxy();
+  
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /** Called by constructors of derived classes. Provide the result of 
    * the Class init() function to ensure that it is properly 
    * initialized.
@@ -160,7 +166,7 @@ public:
   /** See g_proxy_connect().
    * 
    * @newin{2,26}
-   * @param result A AsyncRetult.
+   * @param result A AsyncResult.
    * @return A IOStream.
    */
   Glib::RefPtr<IOStream> connect_finish(const Glib::RefPtr<AsyncResult>& result);

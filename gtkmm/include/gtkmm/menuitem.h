@@ -6,7 +6,8 @@
 #include <gtkmmconfig.h>
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /*
  * Copyright (C) 1998-2002 The gtkmm Development Team
@@ -22,14 +23,15 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- 
-#include <gtkmm/item.h>
+
+#include <gtkmm/bin.h>
 #include <gtkmm/accelkey.h>
 #include <gtkmm/accellabel.h>
+#include <gtkmm/activatable.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -46,8 +48,6 @@ namespace Gtk
 class Menu;
 namespace Menu_Helpers { class Element; }
 
-// TODO: Inherit/Implement Activatable when we can break ABI.
-
 /** Child item for menus.
  * Handle highlighting, alignment, events and submenus.
  * As it derives from Gtk::Bin it can hold any valid child widget, altough only a few are really useful.
@@ -55,7 +55,9 @@ namespace Menu_Helpers { class Element; }
  * @ingroup Menus
  */
 
-class MenuItem : public Item
+class MenuItem
+ : public Bin,
+   public Activatable
 {
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -84,8 +86,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -105,14 +111,19 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_activate().
   virtual void on_activate();
+  /// This is a default handler for the signal signal_activate_item().
   virtual void on_activate_item();
+  /// This is a default handler for the signal signal_toggle_size_request().
   virtual void on_toggle_size_request(int* requisition);
+  /// This is a default handler for the signal signal_toggle_size_allocate().
   virtual void on_toggle_size_allocate(int allocation);
 
 
 private:
 
+  
 public:
   /// Create an empty menu item
   MenuItem();
@@ -148,47 +159,65 @@ public:
    */
   const Menu* get_submenu() const;
   bool has_submenu() const;
+   //deprecated
+  
+  /** Emits the Gtk::MenuItem::signal_select() signal on the given item. Behaves
+   * exactly like #gtk_item_select.
+   */
+  void select();
+  
+  /** Emits the Gtk::MenuItem::signal_deselect() signal on the given item. Behaves
+   * exactly like #gtk_item_deselect.
+   */
+  void deselect();
+  
+  /** Emits the Gtk::MenuItem::signal_activate() signal on the given item
+   */
+  void activate();
+  
+  /** Emits the Gtk::MenuItem::signal_toggle_size_request() signal on the given item.
+   * @param requisition The requisition to use as signal data.
+   */
+  void toggle_size_request(int& requisition);
+  
+  /** Emits the Gtk::MenuItem::signal_toggle_size_allocate() signal on the given item.
+   * @param allocation The allocation to use as signal data.
+   */
+  void toggle_size_allocate(int allocation);
 
   
 #ifndef GTKMM_DISABLE_DEPRECATED
 
-  /** Removes the widget's submenu.
-   * 
-   * Deprecated: 2.12: remove_submenu() is deprecated and
-   * should not be used in newly written code. Use
-   * set_submenu() instead.
-   */
-  void remove_submenu();
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-  void select();
-  
-  void deselect();
-  
-  void activate();
-  
-  void toggle_size_request(int& requisition);
-  
-  void toggle_size_allocate(int allocation);
-  
   /** Sets whether the menu item appears justified at the right
-   * side of a menu bar. This was traditionally done for "Help" menu
-   * items, but is now considered a bad idea. (If the widget
+   * side of a menu bar. This was traditionally done for "Help"
+   * menu items, but is now considered a bad idea. (If the widget
    * layout is reversed for a right-to-left language like Hebrew
    * or Arabic, right-justified-menu-items appear at the left.)
-   * @param right_justified If <tt>true</tt> the menu item will appear at the 
+   * 
+   * Deprecated: 3.2: If you insist on using it, use
+   * Gtk::Widget::set_hexpand() and Gtk::Widget::set_halign().
+   * @deprecated If you insist on using it
+   * @param right_justified If <tt>true</tt> the menu item will appear at the
    * far right if added to a menu bar.
    */
   void set_right_justified(bool right_justified =  true);
-  
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   /** Gets whether the menu item appears justified at the right
    * side of the menu bar.
+   * 
+   * Deprecated: 3.2: See set_right_justified()
+   * @deprecated See set_right_justified().
    * @return <tt>true</tt> if the menu item will appear at the
    * far right if added to a menu bar.
    */
   bool get_right_justified() const;
-  
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
   /** Set the accelerator path on @a menu_item, through which runtime changes of the
    * menu item's accelerator caused by the user can be identified and saved to
    * persistant storage (see Gtk::AccelMap::save() on this).
@@ -214,8 +243,8 @@ public:
    * See set_accel_path() for details.
    * 
    * @newin{2,14}
-   * @return The accelerator path corresponding to this menu item's
-   * functionality, or <tt>0</tt> if not set.
+   * @return The accelerator path corresponding to this menu
+   * item's functionality, or <tt>0</tt> if not set.
    */
   Glib::ustring get_accel_path() const;
   
@@ -234,77 +263,137 @@ public:
    */
   Glib::ustring get_label() const;
   
-  /** If true, an underline in the text indicates the next character should be
-   * used for the mnemonic accelerator key.
+  /** If true, an underline in the text indicates the next character
+   * should be used for the mnemonic accelerator key.
    * 
    * @newin{2,16}
    * @param setting <tt>true</tt> if underlines in the text indicate mnemonics.
    */
   void set_use_underline(bool setting =  true);
   
-  /** Checks if an underline in the text indicates the next character should be
-   * used for the mnemonic accelerator key.
+  /** Checks if an underline in the text indicates the next character
+   * should be used for the mnemonic accelerator key.
    * 
    * @newin{2,16}
-   * @return <tt>true</tt> if an embedded underline in the label indicates
-   * the mnemonic accelerator key.
+   * @return <tt>true</tt> if an embedded underline in the label
+   * indicates the mnemonic accelerator key.
    */
   bool get_use_underline() const;
 
   
-  /**
-   * @par Prototype:
+  /** Sets whether the @a menu_item should reserve space for
+   * the submenu indicator, regardless if it actually has
+   * a submenu or not.
+   * 
+   * There should be little need for applications to call
+   * this functions.
+   * 
+   * @newin{3,0}
+   * @param reserve The new value.
+   */
+  void set_reserve_indicator(bool reserve =  true);
+  
+  /** Returns whether the @a menu_item reserves space for
+   * the submenu indicator, regardless if it has a submenu
+   * or not.
+   * 
+   * @newin{3,0}
+   * @return <tt>true</tt> if @a menu_item always reserves space for the
+   * submenu indicator.
+   */
+  bool get_reserve_indicator() const;
+
+  
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%activate()</tt>
+   *
+   * Emitted when the item is activated.
    */
 
   Glib::SignalProxy0< void > signal_activate();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%activate_item()</tt>
+   *
+   * Emitted when the item is activated, but also if the menu item has a
+   * submenu. For normal applications, the relevant signal is
+   * Gtk::MenuItem::signal_activate().
    */
 
   Glib::SignalProxy0< void > signal_activate_item();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%toggle_size_request(int* requisition)</tt>
+   *
    */
 
   Glib::SignalProxy1< void,int* > signal_toggle_size_request();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%toggle_size_allocate(int allocation)</tt>
+   *
    */
 
   Glib::SignalProxy1< void,int > signal_toggle_size_allocate();
 
 
+  //TODO: Remove no_default_handler when we can break ABI
+  
+/**
+   * @par Slot Prototype:
+   * <tt>void on_my_%select()</tt>
+   *
+   */
+
+  Glib::SignalProxy0< void > signal_select();
+
+  
+/**
+   * @par Slot Prototype:
+   * <tt>void on_my_%deselect()</tt>
+   *
+   */
+
+  Glib::SignalProxy0< void > signal_deselect();
+
+
   void accelerate(Window& window);
 
-  #ifdef GLIBMM_PROPERTIES_ENABLED
+  //TODO: Deprecate the C property once GTK+ 3.5 has begun. It seems to have been forgotten.
+  
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
 /** Sets whether the menu item appears justified at the right side of a menu bar.
+   * @deprecated See set_right_justified.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_right_justified() ;
+  Glib::PropertyProxy< bool > property_right_justified() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
 /** Sets whether the menu item appears justified at the right side of a menu bar.
+   * @deprecated See set_right_justified.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_right_justified() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_right_justified() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
+
+#endif // GTKMM_DISABLE_DEPRECATED
+
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The submenu attached to the menu item, or NULL if it has none.
@@ -313,7 +402,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Gtk::Menu*> property_submenu() ;
+  Glib::PropertyProxy< Gtk::Menu* > property_submenu() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -323,7 +412,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Gtk::Menu*> property_submenu() const;
+  Glib::PropertyProxy_ReadOnly< Gtk::Menu* > property_submenu() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -333,7 +422,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_accel_path() ;
+  Glib::PropertyProxy< Glib::ustring > property_accel_path() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -343,7 +432,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_accel_path() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_accel_path() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -353,7 +442,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_label() ;
+  Glib::PropertyProxy< Glib::ustring > property_label() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -363,7 +452,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_label() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_label() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -373,7 +462,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_use_underline() ;
+  Glib::PropertyProxy< bool > property_use_underline() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -383,7 +472,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_use_underline() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_use_underline() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

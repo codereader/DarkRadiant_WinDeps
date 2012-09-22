@@ -4,7 +4,8 @@
 #define _GTKMM_CELLRENDERERCOMBO_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: cellrenderercombo.hg,v 1.5 2006/05/10 20:59:27 murrayc Exp $ */
 
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/cellrenderertext.h>
@@ -84,8 +85,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -114,9 +119,27 @@ public:
   CellRendererCombo();
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%changed(const Glib::ustring& path, const TreeModel::iterator& iter)</tt>
+   *
+   * This signal is emitted each time after the user selected an item in
+   * the combo box, either by using the mouse or the arrow keys.  Contrary
+   * to GtkComboBox, GtkCellRendererCombo::changed is not emitted for
+   * changes made to a selected item in the entry.  The argument @a new_iter
+   * corresponds to the newly selected item in the combo box and it is relative
+   * to the GtkTreeModel set via the model property on GtkCellRendererCombo.
+   * 
+   * Note that as soon as you change the model displayed in the tree view,
+   * the tree view will immediately cease the editing operating.  This
+   * means that you most probably want to refrain from changing the model
+   * until the combo cell renderer emits the edited or editing_canceled signal.
+   * 
+   * @newin{2,14}
+   * @param path_string A string of the path identifying the edited cell
+   * (relative to the tree view model).
+   * @param new_iter The new iter selected in the combo box
+   * (relative to the combo box model).
    */
 
   Glib::SignalProxy2< void,const Glib::ustring&,const TreeModel::iterator& > signal_changed();
@@ -149,7 +172,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_text_column() ;
+  Glib::PropertyProxy< int > property_text_column() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -159,7 +182,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_text_column() const;
+  Glib::PropertyProxy_ReadOnly< int > property_text_column() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -169,7 +192,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_has_entry() ;
+  Glib::PropertyProxy< bool > property_has_entry() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -179,7 +202,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_has_entry() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_has_entry() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

@@ -4,7 +4,8 @@
 #define _GTKMM_TEXTCHILDANCHOR_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: textchildanchor.hg,v 1.3 2006/03/22 16:53:22 murrayc Exp $ */
 
@@ -23,14 +24,13 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <vector>
 
-#include <gtkmm/object.h>
 #include <gtkmm/widget.h>
-#include <glibmm/listhandle.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -80,8 +80,11 @@ protected:
 public:
   virtual ~TextChildAnchor();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -109,12 +112,13 @@ public:
   /** Gets a list of all widgets anchored at this child anchor.
    * @return List of widgets anchored at @a anchor.
    */
-  Glib::ListHandle<Widget*> get_widgets();
-  
+  std::vector<Widget*> get_widgets();
+ 
+
   /** Gets a list of all widgets anchored at this child anchor.
    * @return List of widgets anchored at @a anchor.
    */
-  Glib::ListHandle<const Widget*> get_widgets() const;
+  std::vector<const Widget*> get_widgets() const;
   
   /** Determines whether a child anchor has been deleted from
    * the buffer. Keep in mind that the child anchor will be

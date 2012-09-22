@@ -4,7 +4,8 @@
 #define _GTKMM_FIXED_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: fixed.hg,v 1.1 2003/01/21 13:38:49 murrayc Exp $ */
 
@@ -23,11 +24,10 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- 
 #include <gtkmm/container.h>
 
 
@@ -86,8 +86,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -115,38 +119,20 @@ public:
   Fixed();
 
   
+  /** Adds a widget to a Gtk::Fixed container at the given position.
+   * @param widget The widget to add.
+   * @param x The horizontal position to place the widget at.
+   * @param y The vertical position to place the widget at.
+   */
   void put(Widget& widget, int x, int y);
   
+  /** Moves a child of a Gtk::Fixed container to the given position.
+   * @param widget The child widget.
+   * @param x The horizontal position to move the widget to.
+   * @param y The vertical position to move the widget to.
+   */
   void move(Widget& widget, int x, int y);
-  
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Sets whether a Gtk::Fixed widget is created with a separate
-   * Gdk::Window for @a widget->window or not. (By default, it will be
-   * created with no separate Gdk::Window). This function must be called
-   * while the Gtk::Fixed is not realized, for instance, immediately after the
-   * window is created.
-   * 
-   * This function was added to provide an easy migration path for
-   * older applications which may expect Gtk::Fixed to have a separate window.
-   * 
-   * Deprecated: 2.20: Use Gtk::Widget::set_has_window() instead.
-   * @param has_window <tt>true</tt> if a separate window should be created.
-   */
-  void set_has_window(bool has_window =  true);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Gets whether the Gtk::Fixed has its own Gdk::Window.
-   * See set_has_window().
-   * 
-   * Deprecated: 2.20: Use Gtk::Widget::get_has_window() instead.
-   * @return <tt>true</tt> if @a fixed has its own window.
-   */
-  bool get_has_window() const;
-#endif // GTKMM_DISABLE_DEPRECATED
+   // deprecated
 
 
 };

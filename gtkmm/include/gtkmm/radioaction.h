@@ -4,7 +4,8 @@
 #define _GTKMM_RADIOACTION_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: radioaction.hg,v 1.8 2006/01/29 12:21:43 murrayc Exp $ */
 
@@ -21,8 +22,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/toggleaction.h>
@@ -42,8 +43,8 @@ namespace Gtk
 
 /** An action of which only one in a group can be active.
  *
- * A Gtk::RadioAction is similar to Gtk::RadioMenuItem. A number of 
- * radio actions can be linked together so that only one may be active 
+ * A Gtk::RadioAction is similar to Gtk::RadioMenuItem. A number of
+ * radio actions can be linked together so that only one may be active
  * at any one time.
  */
 
@@ -75,8 +76,11 @@ protected:
 public:
   virtual ~RadioAction();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -95,7 +99,7 @@ private:
 
 public:
   typedef RadioButtonGroup Group;
-  
+
 protected:
   //TODO: Remove the default constructor, because name may not be NULL.
   RadioAction();
@@ -179,18 +183,8 @@ public:
    * to the group. 
    * 
    * A common way to set up a group of radio group is the following:
-   * |[
-   * GSList *group = <tt>0</tt>;
-   * GtkRadioAction *action;
    * 
-   * while (/ * more actions to add * /)
-   * {
-   * action = gtk_radio_action_new (...);
-   * 
-   * gtk_radio_action_set_group (action, group);
-   * group = gtk_radio_action_get_group (action);
-   * }
-   * ]|
+   * [C example ellipted]
    * 
    * @newin{2,4}
    * @return The list representing the radio group for this object.
@@ -198,6 +192,22 @@ public:
   Group get_group();
    void set_group(Group& group);
   
+
+  /** Joins a radio action object to the group of another radio action object.
+   * 
+   * Use this in language bindings instead of the get_group() 
+   * and set_group() methods
+   * 
+   * A common way to set up a group of radio actions is the following:
+   * 
+   * [C example ellipted]
+   * 
+   * @newin{3,0}
+   * @param group_source A radio action object whos group we are 
+   * joining, or <tt>0</tt> to remove the radio action from its group.
+   */
+  void join_group(const Glib::RefPtr<RadioAction>& group_source);
+
   
   /** Obtains the value property of the currently active member of 
    * the group to which @a action belongs.
@@ -216,14 +226,16 @@ public:
   void set_current_value(int current_value);
 
    
-  /** The changed signal is emitted on every member of a radio group when the
-   * active member is changed. The signal is emitted after the activate signals
-   * for the previous and current active members.
-   *
-   * @param current the member of this action's group which has just been activated.
-   *
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%changed(const Glib::RefPtr<RadioAction>& current)</tt>
+   *
+   * The signal_changed() signal is emitted on every member of a radio group when the
+   * active member is changed. The signal gets emitted after the signal_activate() signals
+   * for the previous and current active members.
+   * 
+   * @newin{2,4}
+   * @param current The member of @a action<!-- -->s group which has just been activated.
    */
 
   Glib::SignalProxy1< void,const Glib::RefPtr<RadioAction>& > signal_changed();
@@ -236,7 +248,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_value() ;
+  Glib::PropertyProxy< int > property_value() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -246,7 +258,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_value() const;
+  Glib::PropertyProxy_ReadOnly< int > property_value() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   //Probably wouldn't work: _WRAP_PROPERTY("group", Group)
@@ -257,7 +269,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_current_value() ;
+  Glib::PropertyProxy< int > property_current_value() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -267,7 +279,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_current_value() const;
+  Glib::PropertyProxy_ReadOnly< int > property_current_value() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -280,6 +292,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_changed().
   virtual void on_changed(const Glib::RefPtr<RadioAction>& current);
 
 

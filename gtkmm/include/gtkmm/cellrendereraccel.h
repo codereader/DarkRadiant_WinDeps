@@ -4,7 +4,8 @@
 #define _GTKMM_CELLRENDERERACCEL_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: cellrendereraccel.hg,v 1.2 2006/05/11 11:40:24 murrayc Exp $ */
 
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/cellrenderertext.h>
@@ -116,8 +117,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -137,7 +142,9 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_accel_edited().
   virtual void on_accel_edited(const Glib::ustring& path_string, guint accel_key, Gdk::ModifierType accel_mods, guint hardware_keycode);
+  /// This is a default handler for the signal signal_accel_cleared().
   virtual void on_accel_cleared(const Glib::ustring& path_string);
 
 
@@ -150,17 +157,30 @@ public:
  
   //TODO: Wrap accel_key and accel_mods in an AccelKey?
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%accel_edited(const Glib::ustring& path_string, guint accel_key, Gdk::ModifierType accel_mods, guint hardware_keycode)</tt>
+   *
+   * Gets emitted when the user has selected a new accelerator.
+   * 
+   * @newin{2,10}
+   * @param path_string The path identifying the row of the edited cell.
+   * @param accel_key The new accelerator keyval.
+   * @param accel_mods The new acclerator modifier mask.
+   * @param hardware_keycode The keycode of the new accelerator.
    */
 
   Glib::SignalProxy4< void,const Glib::ustring&,guint,Gdk::ModifierType,guint > signal_accel_edited();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%accel_cleared(const Glib::ustring& path_string)</tt>
+   *
+   * Gets emitted when the user has removed the accelerator.
+   * 
+   * @newin{2,10}
+   * @param path_string The path identifying the row of the edited cell.
    */
 
   Glib::SignalProxy1< void,const Glib::ustring& > signal_accel_cleared();
@@ -173,7 +193,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<guint> property_accel_key() ;
+  Glib::PropertyProxy< guint > property_accel_key() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -183,7 +203,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<guint> property_accel_key() const;
+  Glib::PropertyProxy_ReadOnly< guint > property_accel_key() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -193,7 +213,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Gdk::ModifierType> property_accel_mods() ;
+  Glib::PropertyProxy< Gdk::ModifierType > property_accel_mods() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -203,7 +223,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Gdk::ModifierType> property_accel_mods() const;
+  Glib::PropertyProxy_ReadOnly< Gdk::ModifierType > property_accel_mods() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -213,7 +233,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<guint> property_keycode() ;
+  Glib::PropertyProxy< guint > property_keycode() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -223,7 +243,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<guint> property_keycode() const;
+  Glib::PropertyProxy_ReadOnly< guint > property_keycode() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -233,7 +253,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<CellRendererAccelMode> property_accel_mode() ;
+  Glib::PropertyProxy< CellRendererAccelMode > property_accel_mode() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -243,7 +263,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<CellRendererAccelMode> property_accel_mode() const;
+  Glib::PropertyProxy_ReadOnly< CellRendererAccelMode > property_accel_mode() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

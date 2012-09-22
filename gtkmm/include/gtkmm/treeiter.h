@@ -6,7 +6,8 @@
 #include <gtkmmconfig.h>
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: treeiter.hg,v 1.14 2005/04/07 08:46:44 murrayc Exp $ */
 
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library, ) if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library, ) if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 
@@ -48,9 +49,11 @@ class TreeIterBase
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   typedef TreeIterBase CppObjectType;
   typedef GtkTreeIter BaseObjectType;
-
-  static GType get_type() G_GNUC_CONST;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
+  static GType get_type() G_GNUC_CONST;
 
   TreeIterBase();
 
@@ -150,9 +153,19 @@ public:
 
   bool equal(const TreeIter& other) const;
 
+  /** This typedef is just to make it more obvious that 
+   * our operator const void* should be used like operator bool().
+   */ 
+  typedef const void* BoolExpr;
+
   /** Discover whether the iterator is valid, and not equal to end().
+   * For instance,
+   * @code
+   * if(treeiter)
+   *   do_something()
+   * @endcode
    */
-  operator bool() const;
+  operator BoolExpr() const;
 
   /** This is only useful when implementing a custom Gtk::TreeModel class.
    * Compare the iterator's stamp with your model's stamp to discover whether it is valid.
@@ -318,9 +331,19 @@ public:
    */
   TreeIter parent() const;
 
+  /** This typedef is just to make it more obvious that 
+   * our operator const void* should be used like operator bool().
+   */ 
+  typedef const void* BoolExpr;
+
   /** Discover whether this is a valid row.
+   * For instance,
+   * @code
+   * if(treeiter)
+   *   do_something()
+   * @endcode
    */
-  operator bool() const;
+  operator BoolExpr() const;
 
   /// Provides access to the underlying C GObject.  
   GtkTreeIter*       gobj()       { return TreeIter::gobj(); }
@@ -381,7 +404,23 @@ public:
 
   size_type size() const;
   bool empty() const;
-  operator bool() const { return !empty(); }
+
+  /** This typedef is just to make it more obvious that 
+   * our operator const void* should be used like operator bool().
+   */ 
+  typedef const void* BoolExpr;
+
+  /** Discover whether this is a valid TreeNodeChildren.
+   * For instance,
+   * @code
+   * if(children)
+   *   do_something()
+   * @endcode
+   */
+  operator BoolExpr() const
+  {
+    return !empty() ? GINT_TO_POINTER(1) : 0;
+  }
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 

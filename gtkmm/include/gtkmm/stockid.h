@@ -19,11 +19,12 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <glibmm/containerhandle_shared.h>
 
 namespace Gtk
 {
@@ -68,9 +69,19 @@ public:
    */
   StockID& operator=(const StockID& other);
 
+  /** This typedef is just to make it more obvious that 
+   * our operator const void* should be used like operator bool().
+   */ 
+  typedef const void* BoolExpr;
+
   /** Tests whether the StockID is not empty.
+   * For instance,
+   * @code
+   * if(stockid)
+   *   do_something()
+   * @endcode
    */
-  operator bool() const;
+  operator BoolExpr() const;
 
   /** Check if two StockIDs are equal.
    * @param rhs Another StockID.
@@ -105,7 +116,7 @@ inline bool operator!=(const StockID& lhs, const StockID& rhs)
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-struct StockID_Traits : public Glib::Container_Helpers::TypeTraits<Glib::ustring>
+struct StockIDTraits : public Glib::Container_Helpers::TypeTraits<Glib::ustring>
 {
   typedef Gtk::StockID CppType;
 

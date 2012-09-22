@@ -4,7 +4,8 @@
 #define _GTKMM_TARGETLIST_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright(C) 2002 The gtkmm Development Team
  *
@@ -19,10 +20,12 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library, ) if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library, ) if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+
+#include <vector>
 
 #include <gtkmm/enums.h>
 #include <gtkmm/targetentry.h>
@@ -34,6 +37,8 @@ namespace Gtk
 
 class TargetList
 {
+  //GtkTargetList is actually registered as a boxed type, but it has custom 
+  //reference-counting instead of copy/free functions, so we use it via RefPtr.
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   typedef TargetList CppObjectType;
@@ -72,7 +77,7 @@ private:
 
 
 public:
-  static Glib::RefPtr<Gtk::TargetList> create(const ArrayHandle_TargetEntry& targets);
+  static Glib::RefPtr<Gtk::TargetList> create(const std::vector<TargetEntry>& targets);
   
  
   /** Appends another target to a Gtk::TargetList.
@@ -81,7 +86,7 @@ public:
    * @param info An ID that will be passed back to the application.
    */
   void add(const Glib::ustring& target, TargetFlags flags =  TargetFlags(0), guint info =  0);
-  void add(const ArrayHandle_TargetEntry& targets);
+  void add(const std::vector<TargetEntry>& targets);
   
   /** Removes a target from a target list.
    * @param target The interned atom representing the target.

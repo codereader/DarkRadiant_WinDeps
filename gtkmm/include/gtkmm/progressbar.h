@@ -4,12 +4,13 @@
 #define _GTKMM_PROGRESSBAR_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: progressbar.hg,v 1.2 2004/11/10 22:05:57 murrayc Exp $ */
 
 /* progressbar.h
- * 
+ *
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -23,11 +24,12 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/widget.h>
+#include <gtkmm/orientable.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -38,39 +40,6 @@ typedef struct _GtkProgressBarClass GtkProgressBarClass;
 
 namespace Gtk
 { class ProgressBar_Class; } // namespace Gtk
-namespace Gtk
-{
-
-
-/** @addtogroup gtkmmEnums gtkmm Enums and Flags */
-
-/**
- * @ingroup gtkmmEnums
- */
-enum ProgressBarStyle
-{
-  PROGRESS_CONTINUOUS,
-  PROGRESS_DISCRETE
-};
-
-} // namespace Gtk
-
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-namespace Glib
-{
-
-template <>
-class Value<Gtk::ProgressBarStyle> : public Glib::Value_Enum<Gtk::ProgressBarStyle>
-{
-public:
-  static GType value_type() G_GNUC_CONST;
-};
-
-} // namespace Glib
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-
 namespace Gtk
 {
 
@@ -98,7 +67,7 @@ namespace Gtk
  * There is quite a bit of flexibility provided to control the appearance of
  * the Gtk::ProgressBar. Functions are provided to control the orientation of
  * the bar, optional text can be displayed along with the bar, and the step
- * size used in activity mode can be set. 
+ * size used in activity mode can be set.
  *
  * The ProgressBar widget looks like this:
  * @image html progressbar1.png
@@ -106,7 +75,9 @@ namespace Gtk
  * @ingroup Widgets
  */
 
-class ProgressBar : public Widget
+class ProgressBar
+ : public Widget,
+   public Orientable
 {
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -135,8 +106,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -165,7 +140,7 @@ public:
   ProgressBar();
 
   
-  /** Indicates that some progress is made, but you don't know how much.
+  /** Indicates that some progress has been made, but you don't know how much.
    * Causes the progress bar to enter "activity mode," where a block
    * bounces back and forth. Each call to pulse()
    * causes the block to move by a little bit (the amount of movement
@@ -181,6 +156,14 @@ public:
   Glib::ustring get_text() const;
   
   /** Causes the given @a text to appear superimposed on the progress bar.
+   * 
+   * If @a text is <tt>0</tt> and Gtk::ProgressBar::property_show_text() is <tt>true</tt>, the current
+   * value of Gtk::ProgressBar::property_fraction() will be displayed as a percentage.
+   * 
+   * If @a text is non-<tt>0</tt> and Gtk::ProgressBar::property_show_text() is <tt>true</tt>, the text will
+   * be displayed. In this case, it will not display the progress percentage.
+   * If @a text is the empty string, the progress bar will still be styled and sized
+   * suitably for containing text, as long as Gtk::ProgressBar::property_show_text() is <tt>true</tt>.
    * @param text A UTF-8 string, or <tt>0</tt>.
    */
   void set_text(const Glib::ustring& text);
@@ -199,7 +182,7 @@ public:
   void set_fraction(double fraction);
 
   
-  /** Retrieves the pulse step set with set_pulse_step()
+  /** Retrieves the pulse step set with set_pulse_step().
    * @return A fraction from 0.0 to 1.0.
    */
   double get_pulse_step() const;
@@ -209,21 +192,21 @@ public:
    * @param fraction Fraction between 0.0 and 1.0.
    */
   void set_pulse_step(double fraction);
+  
+  
+  /** Progress bars normally grow from top to bottom or left to right.
+   * Inverted progress bars grow in the opposite direction.
+   * @param inverted <tt>true</tt> to invert the progress bar.
+   */
+  void set_inverted(bool inverted =  true);
+  
+  /** Gets the value set by set_inverted().
+   * @return <tt>true</tt> if the progress bar is inverted.
+   */
+  bool get_inverted() const;
 
   
-  /** Causes the progress bar to switch to a different orientation
-   * (left-to-right, right-to-left, top-to-bottom, or bottom-to-top).
-   * @param orientation Orientation of the progress bar.
-   */
-  void set_orientation(ProgressBarOrientation orientation =  PROGRESS_LEFT_TO_RIGHT);
-  
-  /** Retrieves the current progress bar orientation.
-   * @return Orientation of the progress bar.
-   */
-  ProgressBarOrientation get_orientation() const;
-
-  
-  /** Sets the mode used to ellipsize (add an ellipsis: "...") the text 
+  /** Sets the mode used to ellipsize (add an ellipsis: "...") the text
    * if there is not enough space to render the entire string.
    * 
    * @newin{2,6}
@@ -231,33 +214,36 @@ public:
    */
   void set_ellipsize(Pango::EllipsizeMode mode);
   
-  /** Returns the ellipsizing position of the progressbar. 
+  /** Returns the ellipsizing position of the progress bar.
    * See set_ellipsize().
    * 
    * @newin{2,6}
    * @return Pango::EllipsizeMode.
    */
   Pango::EllipsizeMode get_ellipsize() const;
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The GtkAdjustment connected to the progress bar (Deprecated).
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
+  
+  
+  /** Sets whether the progress bar will show text superimposed
+   * over the bar. The shown text is either the value of
+   * the Gtk::ProgressBar::property_text() property or, if that is <tt>0</tt>,
+   * the Gtk::ProgressBar::property_fraction() value, as a percentage.
+   * 
+   * To make a progress bar that is styled and sized suitably for containing
+   * text (even if the actual text is blank), set Gtk::ProgressBar::property_show_text() to
+   * <tt>true</tt> and Gtk::ProgressBar::property_text() to the empty string (not <tt>0</tt>).
+   * 
+   * @newin{3,0}
+   * @param show_text Whether to show superimposed text.
    */
-  Glib::PropertyProxy<Adjustment*> property_adjustment() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** The GtkAdjustment connected to the progress bar (Deprecated).
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
+  void set_show_text(bool show_text =  true);
+  
+  /** Gets the value of the Gtk::ProgressBar::property_show_text() property.
+   * See set_show_text().
+   * 
+   * @newin{3,0}
+   * @return <tt>true</tt> if text is shown in the progress bar.
    */
-  Glib::PropertyProxy_ReadOnly<Adjustment*> property_adjustment() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
+  bool get_show_text() const;
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The fraction of total work that has been completed.
@@ -266,7 +252,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<double> property_fraction() ;
+  Glib::PropertyProxy< double > property_fraction() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -276,7 +262,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<double> property_fraction() const;
+  Glib::PropertyProxy_ReadOnly< double > property_fraction() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -286,7 +272,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<double> property_pulse_step() ;
+  Glib::PropertyProxy< double > property_pulse_step() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -296,107 +282,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<double> property_pulse_step() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Orientation and growth direction of the progress bar.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<ProgressBarOrientation> property_orientation() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** Orientation and growth direction of the progress bar.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<ProgressBarOrientation> property_orientation() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Specifies the visual style of the bar in percentage mode (Deprecated).
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<ProgressBarStyle> property_bar_style() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** Specifies the visual style of the bar in percentage mode (Deprecated).
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<ProgressBarStyle> property_bar_style() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The increment used for each iteration in activity mode (Deprecated).
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<guint> property_activity_step() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** The increment used for each iteration in activity mode (Deprecated).
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<guint> property_activity_step() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The number of blocks which can fit in the progress bar area in activity mode (Deprecated).
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<guint> property_activity_blocks() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** The number of blocks which can fit in the progress bar area in activity mode (Deprecated).
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<guint> property_activity_blocks() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The number of discrete blocks in a progress bar (when shown in the discrete style).
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<guint> property_discrete_blocks() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** The number of discrete blocks in a progress bar (when shown in the discrete style).
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<guint> property_discrete_blocks() const;
+  Glib::PropertyProxy_ReadOnly< double > property_pulse_step() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -406,7 +292,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_text() ;
+  Glib::PropertyProxy< Glib::ustring > property_text() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -416,7 +302,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_text() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_text() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -426,7 +312,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_ellipsize() ;
+  Glib::PropertyProxy< bool > property_ellipsize() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -436,7 +322,47 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_ellipsize() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_ellipsize() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the progress is shown as text.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< bool > property_show_text() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the progress is shown as text.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< bool > property_show_text() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Invert the direction in which the progress bar grows.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< bool > property_inverted() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Invert the direction in which the progress bar grows.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< bool > property_inverted() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

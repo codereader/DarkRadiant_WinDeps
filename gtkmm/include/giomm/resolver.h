@@ -4,7 +4,8 @@
 #define _GIOMM_RESOLVER_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -122,9 +123,12 @@ public:
    * a wrapper around g_inet_address_new_from_string()).
    * 
    * On success, g_resolver_lookup_by_name() will return a List of
-   * InetAddress, sorted in order of preference. (That is, you should
-   * attempt to connect to the first address first, then the second if
-   * the first fails, etc.)
+   * InetAddress, sorted in order of preference and guaranteed to not
+   * contain duplicates. That is, if using the result to connect to
+   *  @a hostname, you should attempt to connect to the first address
+   * first, then the second if the first fails, etc. If you are using
+   * the result to listen on a socket, it is appropriate to add each
+   * result using e.g. g_socket_listener_add_address().
    * 
    * If the DNS resolution fails, @a error (if non-<tt>0</tt>) will be set to a
    * value from ResolverError.
@@ -345,9 +349,12 @@ public:
 
   //TODO: Remove no_default_handler when we can break ABI:
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%reload()</tt>
+   *
+   * Emitted when the resolver notices that the system resolver
+   * configuration has changed.
    */
 
   Glib::SignalProxy0< void > signal_reload();

@@ -4,7 +4,8 @@
 #define _GTKMM_RADIOMENUITEM_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: radiomenuitem.hg,v 1.7 2005/04/07 08:46:44 murrayc Exp $ */
 
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/checkmenuitem.h>
@@ -79,8 +80,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -100,6 +105,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_group_changed().
   virtual void on_group_changed();
 
 
@@ -119,7 +125,8 @@ public:
                     
   /** Returns the group to which the radio menu item belongs, as a List of
    * Gtk::RadioMenuItem. The list belongs to GTK+ and should not be freed.
-   * @return The group of @a radio_menu_item.
+   * @return The group
+   * of @a radio_menu_item.
    */
   Group get_group();
   
@@ -133,8 +140,9 @@ public:
    * more menu items to a different one, but not when the composition
    * of the group that a menu item belongs to changes.
    *
-   * @par Prototype:
+* @par Slot Prototype:
    * <tt>void on_my_%group_changed()</tt>
+   *
    */
 
   Glib::SignalProxy0< void > signal_group_changed();

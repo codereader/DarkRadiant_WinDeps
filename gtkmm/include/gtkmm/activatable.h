@@ -4,7 +4,8 @@
 #define _GTKMM_ACTIVATABLE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: activatable.hg,v 1.3 2006/05/18 17:53:15 murrayc Exp $ */
 
@@ -21,8 +22,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/action.h>
@@ -36,7 +37,6 @@ typedef struct _GtkActivatableIface GtkActivatableIface;
 }
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 typedef struct _GtkActivatable GtkActivatable;
 typedef struct _GtkActivatableClass GtkActivatableClass;
@@ -48,7 +48,6 @@ namespace Gtk
 namespace Gtk
 {
 
-//TODO: Use this when we can add new base classes to existing classes.
 /** Activatable widgets can be connected to a Gtk::Action and reflect the state 
  * of the action. An Activatable can also provide feedback through its action, 
  * as it is responsible for activating the related action.
@@ -75,9 +74,14 @@ private:
   Activatable(const Activatable&);
   Activatable& operator=(const Activatable&);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 protected:
-  Activatable(); // you must derive from this class
-
+  /**
+   * You should derive from this class to use it.
+   */
+  Activatable();
+  
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /** Called by constructors of derived classes. Provide the result of 
    * the Class init() function to ensure that it is properly 
    * initialized.
@@ -100,8 +104,11 @@ public:
 
   static void add_interface(GType gtype_implementer);
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -119,7 +126,7 @@ public:
   /** This is a utility function for Gtk::Activatable implementors.
    * 
    * When implementing Gtk::Activatable you must call this when
-   * handling changes of the Gtk::Activatable:related-action, and
+   * handling changes of the Gtk::Activatable::property_related_action(), and
    * you must also use this to break references in Object->dispose().
    * 
    * This function adds a reference to the currently set related
@@ -160,9 +167,9 @@ public:
   bool get_use_action_appearance() const;
   
   /** This is called to update the activatable completely, this is called
-   * internally when the Gtk::Activatable::related-action property is set
+   * internally when the Gtk::Activatable::property_related_action() property is set
    * or unset and by the implementing class when
-   * Gtk::Activatable::use-action-appearance changes.
+   * Gtk::Activatable::property_use_action_appearance() changes.
    * 
    * @newin{2,16}
    * @param action The related Gtk::Action or <tt>0</tt>.
@@ -171,7 +178,7 @@ public:
   
   /** Sets the related action on the @a activatable object.
    * 
-   * <note>Gtk::Activatable implementors need to handle the Gtk::Activatable:related-action
+   * <note>Gtk::Activatable implementors need to handle the Gtk::Activatable::property_related_action()
    * property and call do_set_related_action() when it changes.</note>
    * 
    * @newin{2,16}
@@ -183,7 +190,7 @@ public:
    * when setting the related action or when the action changes appearance
    * 
    * <note>Gtk::Activatable implementors need to handle the
-   * Gtk::Activatable:use-action-appearance property and call
+   * Gtk::Activatable::property_use_action_appearance() property and call
    * sync_action_properties() to update @a activatable
    * if needed.</note>
    * 
@@ -219,7 +226,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_use_action_appearance() ;
+  Glib::PropertyProxy< bool > property_use_action_appearance() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -229,7 +236,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_use_action_appearance() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_use_action_appearance() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

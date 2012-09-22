@@ -4,7 +4,8 @@
 #define _GTKMM_RECENTFILTER_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 2006 The gtkmm Development Team
  *
@@ -19,11 +20,11 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <gtkmm/object.h>
+#include <glibmm/object.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -131,24 +132,21 @@ namespace Gtk
  * @ingroup RecentFiles
  */
 
-class RecentFilter : public Gtk::Object
+class RecentFilter : public Glib::Object
 {
-  public:
+  
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+public:
   typedef RecentFilter CppObjectType;
   typedef RecentFilter_Class CppClassType;
   typedef GtkRecentFilter BaseObjectType;
   typedef GtkRecentFilterClass BaseClassType;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-  virtual ~RecentFilter();
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
-private:
-  friend class RecentFilter_Class;
+private:  friend class RecentFilter_Class;
   static CppClassType recentfilter_class_;
 
+private:
   // noncopyable
   RecentFilter(const RecentFilter&);
   RecentFilter& operator=(const RecentFilter&);
@@ -160,35 +158,38 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  virtual ~RecentFilter();
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
-  ///Provides access to the underlying C GtkObject.
+  ///Provides access to the underlying C GObject.
   GtkRecentFilter*       gobj()       { return reinterpret_cast<GtkRecentFilter*>(gobject_); }
 
-  ///Provides access to the underlying C GtkObject.
+  ///Provides access to the underlying C GObject.
   const GtkRecentFilter* gobj() const { return reinterpret_cast<GtkRecentFilter*>(gobject_); }
 
-
-public:
-  //C++ methods used to invoke GTK+ virtual functions:
-
-protected:
-  //GTK+ Virtual Functions (override these to change behaviour):
-
-  //Default Signal Handlers::
-
+  ///Provides access to the underlying C instance. The caller is responsible for unrefing it. Use when directly setting fields in structs.
+  GtkRecentFilter* gobj_copy();
 
 private:
 
-public:
+  
+protected:
   RecentFilter();
 
+public:
   
+  static Glib::RefPtr<RecentFilter> create();
+
+
   /** Sets the human-readable name of the filter; this is the string
    * that will be displayed in the recently used resources selector
    * user interface if there is a selectable list of filters.
@@ -283,7 +284,7 @@ public:
 
   /// For instance, bool on_custom(const Gtk::RecentFilter::Info& filter_info);
   typedef sigc::slot<bool, const Info&> SlotCustom;
-  
+
   void add_custom(RecentFilterFlags needed, const SlotCustom& slot);
   
 
@@ -305,6 +306,17 @@ public:
   //_WRAP_METHOD(bool filter(const GtkRecentFilterInfo* filter_info), gtk_recent_filter_filter)
 
 
+public:
+
+public:
+  //C++ methods used to invoke GTK+ virtual functions:
+
+protected:
+  //GTK+ Virtual Functions (override these to change behaviour):
+
+  //Default Signal Handlers::
+
+
 };
 
 } // namespace Gtk
@@ -320,8 +332,8 @@ namespace Glib
    *
    * @relates Gtk::RecentFilter
    */
-  Gtk::RecentFilter* wrap(GtkRecentFilter* object, bool take_copy = false);
-} //namespace Glib
+  Glib::RefPtr<Gtk::RecentFilter> wrap(GtkRecentFilter* object, bool take_copy = false);
+}
 
 
 #endif /* _GTKMM_RECENTFILTER_H */

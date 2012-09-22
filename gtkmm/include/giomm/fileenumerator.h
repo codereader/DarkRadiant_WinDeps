@@ -4,7 +4,8 @@
 #define _GIOMM_FILEENUMERATOR_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -28,6 +29,7 @@
 #include <glibmm/object.h>
 #include <glibmm/arrayhandle.h>
 #include <glibmm/listhandle.h>
+#include <glibmm/priorities.h>
 #include <giomm/asyncresult.h>
 #include <giomm/cancellable.h>
 #include <giomm/fileinfo.h>

@@ -4,7 +4,8 @@
 #define _GIOMM_VOLUME_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -87,9 +88,14 @@ private:
   Volume(const Volume&);
   Volume& operator=(const Volume&);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 protected:
-  Volume(); // you must derive from this class
-
+  /**
+   * You should derive from this class to use it.
+   */
+  Volume();
+  
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /** Called by constructors of derived classes. Provide the result of 
    * the Class init() function to ensure that it is properly 
    * initialized.
@@ -232,7 +238,7 @@ public:
   void mount(MountMountFlags flags = MOUNT_MOUNT_NONE);
 
   
-  /** Finishes mounting a volume. If any errors occured during the operation,
+  /** Finishes mounting a volume. If any errors occurred during the operation,
    *  @a error will be set to contain the errors and <tt>false</tt> will be returned.
    * 
    * If the mount operation succeeded, g_volume_get_mount() on @a volume
@@ -263,7 +269,7 @@ public:
   
 
   /** Gets the identifier of the given kind for @a volume. 
-   * See the 
+   * See the introduction
    * for more information about volume identifiers.
    * @param kind The kind of identifier to return.
    * @return A newly allocated string containing the
@@ -273,8 +279,8 @@ public:
   std::string get_identifier(const std::string& kind) const;
 
    
-  /** Gets the kinds of 
-   * that @a volume has. Use Glib::volume_get_identifer() to obtain 
+  /** Gets the kinds of identifiers
+   * that @a volume has. Use g_volume_get_identifier() to obtain
    * the identifiers themselves.
    * @return A <tt>0</tt>-terminated array
    * of strings containing kinds of identifiers. Use Glib::strfreev() to free.
@@ -355,17 +361,23 @@ public:
   Glib::RefPtr<const File> get_activation_root() const;
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%changed()</tt>
+   *
+   * Emitted when the volume has been changed.
    */
 
   Glib::SignalProxy0< void > signal_changed();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%removed()</tt>
+   *
+   * This signal is emitted when the Volume have been removed. If
+   * the recipient is holding references to the object they should
+   * release them so the object can be finalized.
    */
 
   Glib::SignalProxy0< void > signal_removed();
@@ -405,7 +417,9 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_changed().
   virtual void on_changed();
+  /// This is a default handler for the signal signal_removed().
   virtual void on_removed();
 
 

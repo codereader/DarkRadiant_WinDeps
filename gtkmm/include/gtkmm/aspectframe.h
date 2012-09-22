@@ -4,7 +4,8 @@
 #define _GTKMM_ASPECTFRAME_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: aspectframe.hg,v 1.2 2003/03/03 07:49:05 murrayc Exp $ */
 
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/frame.h>
@@ -82,8 +83,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -113,14 +118,14 @@ public:
   /** Constructor to create a new AspectFrame object.
    * @param label Label text.
    * @param xalign Horizontal alignment of the child within the allocation of this
-   * AspectFrame.  For possible values, see Gtk::AlignmentEnum.
+   * AspectFrame.  For possible values, see Gtk::Align.
    * @param yalign Vertical alignment of the child within the allocation of this 
-   * AspectFrame. For possible values, see Gtk::AlignmentEnum.
+   * AspectFrame. For possible values, see Gtk::Align.
    * @param ratio The desired aspect ratio.
    * @param obey_child If <tt>true</tt>, @a ratio  is ignored and the aspect ratio
    * is taken from the requisition of the child.
    */
-    explicit AspectFrame(const Glib::ustring& label =  Glib::ustring(), AlignmentEnum xalign =  Gtk::ALIGN_CENTER, AlignmentEnum yalign =  Gtk::ALIGN_CENTER, float ratio =  1.0, bool obey_child =  false);
+    explicit AspectFrame(const Glib::ustring& label =  Glib::ustring(), Align xalign =  Gtk::ALIGN_CENTER, Align yalign =  Gtk::ALIGN_CENTER, float ratio =  1.0, bool obey_child =  false);
 
 
   /** Constructor to create a new AspectFrame object.
@@ -152,14 +157,14 @@ public:
   
   /** Set the properties of this AspectFrame.
    * @param xalign Horizontal alignment of the child within the allocation of this 
-   * AspectFrame.  For possible values, see Gtk::AlignmentEnum.
+   * AspectFrame.  For possible values, see Gtk::Align.
    * @param yalign Vertical alignment of the child within the allocation of this 
-   * AspectFrame.  For possible values, see Gtk::AlignmentEnum.
+   * AspectFrame.  For possible values, see Gtk::Align.
    * @param ratio The desired aspect ratio.
    * @param obey_child If <tt>true</tt>, @a ratio  is ignored and the aspect ratio
    * is taken from the requisition of the child.
    */
-  void set(AlignmentEnum xalign, AlignmentEnum yalign, float ratio, bool obey_child =  true);
+  void set(Align xalign, Align yalign, float ratio, bool obey_child =  true);
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** X alignment of the child.
@@ -168,7 +173,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<float> property_xalign() ;
+  Glib::PropertyProxy< float > property_xalign() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -178,7 +183,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<float> property_xalign() const;
+  Glib::PropertyProxy_ReadOnly< float > property_xalign() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -188,7 +193,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<float> property_yalign() ;
+  Glib::PropertyProxy< float > property_yalign() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -198,7 +203,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<float> property_yalign() const;
+  Glib::PropertyProxy_ReadOnly< float > property_yalign() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -208,7 +213,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<float> property_ratio() ;
+  Glib::PropertyProxy< float > property_ratio() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -218,7 +223,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<float> property_ratio() const;
+  Glib::PropertyProxy_ReadOnly< float > property_ratio() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -228,7 +233,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_obey_child() ;
+  Glib::PropertyProxy< bool > property_obey_child() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -238,7 +243,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_obey_child() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_obey_child() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

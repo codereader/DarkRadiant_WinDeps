@@ -4,7 +4,8 @@
 #define _GTKMM_TEXTTAGTABLE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: texttagtable.hg,v 1.4 2006/04/12 11:11:25 murrayc Exp $ */
 
@@ -23,11 +24,11 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <gtkmm/object.h>
+#include <glibmm/object.h>
 #include <gtkmm/texttag.h>
 
 
@@ -81,8 +82,11 @@ protected:
 public:
   virtual ~TextTagTable();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -146,25 +150,35 @@ public:
   int get_size() const;
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%tag_changed(const Glib::RefPtr<TextTag>& tag, bool size_changed)</tt>
+   *
+   * 
+   * @param tag The changed tag.
+   * @param size_changed Whether the size has been changed.
    */
 
   Glib::SignalProxy2< void,const Glib::RefPtr<TextTag>&,bool > signal_tag_changed();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%tag_added(const Glib::RefPtr<TextTag>& tag)</tt>
+   *
+   * 
+   * @param tag The added tag.
    */
 
   Glib::SignalProxy1< void,const Glib::RefPtr<TextTag>& > signal_tag_added();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%tag_removed(const Glib::RefPtr<TextTag>& tag)</tt>
+   *
+   * 
+   * @param tag The removed tag.
    */
 
   Glib::SignalProxy1< void,const Glib::RefPtr<TextTag>& > signal_tag_removed();
@@ -179,8 +193,11 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_tag_changed().
   virtual void on_tag_changed(const Glib::RefPtr<TextTag>& tag, bool size_changed);
+  /// This is a default handler for the signal signal_tag_added().
   virtual void on_tag_added(const Glib::RefPtr<TextTag>& tag);
+  /// This is a default handler for the signal signal_tag_removed().
   virtual void on_tag_removed(const Glib::RefPtr<TextTag>& tag);
 
 

@@ -4,7 +4,8 @@
 #define _GIOMM_FILEMONITOR_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -65,7 +66,7 @@ class File;
  * File::monitor_directory().
  * 
  * To get informed about changes to the file or directory you are monitoring, 
- * connect to signal_changed.
+ * connect to signal_changed().
  *
  * @newin{2,16}
  */
@@ -141,9 +142,20 @@ public:
   //g_file_monitor_emit_event is for implementations.
   
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%changed(const Glib::RefPtr<File>& file, const Glib::RefPtr<File>& other_file, FileMonitorEvent event_type)</tt>
+   *
+   * Emitted when @a file has been changed.
+   * 
+   * If using FILE_MONITOR_SEND_MOVED flag and @a event_type is
+   * FILE_MONITOR_SEND_MOVED, @a file will be set to a File containing the
+   * old path, and @a other_file will be set to a File containing the new path.
+   * 
+   * In all the other cases, @a other_file will be set to #<tt>0</tt>.
+   * @param file A File.
+   * @param other_file A File or #<tt>0</tt>.
+   * @param event_type A FileMonitorEvent.
    */
 
   Glib::SignalProxy3< void,const Glib::RefPtr<File>&,const Glib::RefPtr<File>&,FileMonitorEvent > signal_changed();
@@ -158,7 +170,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_rate_limit() ;
+  Glib::PropertyProxy< int > property_rate_limit() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -168,7 +180,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_rate_limit() const;
+  Glib::PropertyProxy_ReadOnly< int > property_rate_limit() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -178,7 +190,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_cancelled() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_cancelled() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -191,6 +203,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_changed().
   virtual void on_changed(const Glib::RefPtr<File>& file, const Glib::RefPtr<File>& other_file, FileMonitorEvent event_type);
 
 

@@ -11,8 +11,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #ifndef _GTKMM_LISTVIEW_TEXT_H
@@ -57,31 +57,6 @@ public:
    */
   Glib::ustring get_column_title(guint column) const;
 
-#ifndef GTKMM_DISABLE_DEPRECATED
-  /** Add a new row at the end of the list
-   * @param column_one_value the new text for the new row, column 0
-   * @return the number of the row added
-   *
-   * @deprecated Use append().
-   */
-  guint append_text(const Glib::ustring& column_one_value = Glib::ustring());
-
-  /** Insert a new row at the beginning of the list
-   * @param column_one_value the new text for the new row, column 0
-   *
-   * @deprecated Use prepend().
-   */
-  void prepend_text(const Glib::ustring& column_one_value = Glib::ustring());
-
-  /** Insert a new row at an arbitrary position in the list
-   * @param row The row number
-   * @param column_one_value the new text for the new row, column 0
-   *
-   * @deprecated Use insert().
-   */
-  void insert_text(guint row, const Glib::ustring& column_one_value = Glib::ustring());
-#endif //GTKMM_DISABLE_DEPRECATED  
-  
   /** Add a new row at the end of the list
    * @param column_one_value the new text for the new row, column 0
    * @return the number of the row added

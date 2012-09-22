@@ -6,7 +6,8 @@
 #include <gtkmmconfig.h>
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /*
  * Copyright (C) 2010 The gtkmm Development Team
@@ -22,11 +23,11 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- 
+
 #include <gtkmm/window.h>
 
 
@@ -52,7 +53,7 @@ namespace Gtk
  *
  * The idea is to take a widget and manually set the state of it,
  * add it to an OffscreenWindow and then retrieve the snapshot
- * as a Gdk::Pixmap or Gdk::Pixbuf.
+ * as a Gdk::Pixbuf.
  *
  * OffscreenWindow derives from Window only as an implementation
  * detail.  Applications should not use any API specific to #GtkWindow
@@ -96,8 +97,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -125,28 +130,30 @@ private:
 public:
   OffscreenWindow();
 
-  
-  /** Retrieves a snapshot of the contained widget in the form of
-   * a Gdk::Pixmap.  If you need to keep this around over window
-   * resizes then you should add a reference to it.
-   * 
-   * @newin{2,20}
-   * @return A Gdk::Pixmap pointer to the offscreen pixmap,
-   * or <tt>0</tt>.
-   */
-  Glib::RefPtr<Gdk::Pixmap> get_pixmap();
-  
-  /** Retrieves a snapshot of the contained widget in the form of
-   * a Gdk::Pixmap.  If you need to keep this around over window
-   * resizes then you should add a reference to it.
-   * 
-   * @newin{2,20}
-   * @return A Gdk::Pixmap pointer to the offscreen pixmap,
-   * or <tt>0</tt>.
-   */
-  Glib::RefPtr<const Gdk::Pixmap> get_pixmap() const;
+  //TODO: Should this always be const?
+ 
 
+  /** Retrieves a snapshot of the contained widget in the form of
+   * a #cairo_surface_t.  If you need to keep this around over window
+   * resizes then you should add a reference to it.
+   * 
+   * @newin{2,20}
+   * @return A #cairo_surface_t pointer to the offscreen
+   * surface, or <tt>0</tt>.
+   */
+  Cairo::RefPtr<Cairo::Surface> get_surface();
   
+  /** Retrieves a snapshot of the contained widget in the form of
+   * a #cairo_surface_t.  If you need to keep this around over window
+   * resizes then you should add a reference to it.
+   * 
+   * @newin{2,20}
+   * @return A #cairo_surface_t pointer to the offscreen
+   * surface, or <tt>0</tt>.
+   */
+  Cairo::RefPtr<const Cairo::Surface> get_surface() const;
+
+
   /** Retrieves a snapshot of the contained widget in the form of
    * a Gdk::Pixbuf.  This is a new pixbuf with a reference count of 1,
    * and the application should unreference it once it is no longer

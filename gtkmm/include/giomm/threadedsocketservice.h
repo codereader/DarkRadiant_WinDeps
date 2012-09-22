@@ -4,7 +4,8 @@
 #define _GIOMM_THREADEDSOCKETSERVICE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -118,9 +119,17 @@ public:
   static Glib::RefPtr<ThreadedSocketService> create(int max_threads);
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>bool on_my_%run(const Glib::RefPtr<SocketConnection>& connection, const Glib::RefPtr<Glib::Object>& source_object)</tt>
+   *
+   * The signal_run() signal is emitted in a worker thread in response to an
+   * incoming connection. This thread is dedicated to handling
+   *  @a connection and may perform blocking IO. The signal handler need
+   * not return until the connection is closed.
+   * @param connection A new SocketConnection object.
+   * @param source_object The source_object passed to g_socket_listener_add_address().
+   * @return <tt>true</tt> to stop further signal handlers from being called.
    */
 
   Glib::SignalProxy2< bool,const Glib::RefPtr<SocketConnection>&,const Glib::RefPtr<Glib::Object>& > signal_run();
@@ -132,7 +141,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_max_threads() const;
+  Glib::PropertyProxy_ReadOnly< int > property_max_threads() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -145,6 +154,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_run().
   virtual bool on_run(const Glib::RefPtr<SocketConnection>& connection, const Glib::RefPtr<Glib::Object>& source_object);
 
 

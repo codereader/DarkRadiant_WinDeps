@@ -4,12 +4,13 @@
 #define _GTKMM_LAYOUT_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: layout.hg,v 1.4 2006/04/12 11:11:25 murrayc Exp $ */
 
 /* layout.h
- * 
+ *
  * Copyright (C) 2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -23,12 +24,12 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/container.h>
-#include <gtkmm/adjustment.h>
+#include <gtkmm/scrollable.h>
 #include <gdkmm/window.h>
 
 
@@ -52,15 +53,13 @@ namespace Gtk
  * Gtk::Container.  However if you're just going to draw, a Gtk::DrawingArea
  * is a better choice since it has lower overhead.
  *
- * When handling expose_event signals, you must draw to the bin_window
- * Gdk::Window - see get_bin_window() - rather than the normal Gdk::Window -
- * see get_window() - as you would for a drawing area.
- *
  * @ingroup Widgets
  * @ingroup Containers
  */
 
-class Layout : public Container
+class Layout
+ : public Container,
+   public Scrollable
 {
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -89,8 +88,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -110,7 +113,6 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
-  virtual void on_set_scroll_adjustments(Adjustment* hadj, Adjustment* vadj);
 
 
 private:
@@ -118,7 +120,7 @@ private:
   
 public:
   Layout();
-  Layout(Adjustment& hadjustment, Adjustment& vadjustment);
+    explicit Layout(const Glib::RefPtr<Adjustment>& hadjustment, const Glib::RefPtr<Adjustment>& vadjustment);
 
   
   /** Retrieve the bin window of the layout used for drawing operations.
@@ -160,121 +162,14 @@ public:
   /** Gets the size that has been set on the layout, and that determines
    * the total extents of the layout's scrollbar area. See
    * set_size().
-   * @param width Location to store the width set on @a layout, or <tt>0</tt>.
-   * @param height Location to store the height set on @a layout, or <tt>0</tt>.
+   * @param width Location to store the width set on
+   *  @a layout, or <tt>0</tt>.
+   * @param height Location to store the height set on
+   *  @a layout, or <tt>0</tt>.
    */
   void get_size(guint& width, guint& height) const;
-
   
-  /** Sets the horizontal scroll adjustment for the layout.
-   * 
-   * See Gtk::ScrolledWindow, Gtk::Scrollbar, Gtk::Adjustment for details.
-   * @param adjustment New scroll adjustment.
-   */
-  void set_hadjustment(Adjustment& adjustment);
-
-  /// Creates the Adjustment.
-  void set_hadjustment();
-  
-  /** This function should only be called after the layout has been
-   * placed in a Gtk::ScrolledWindow or otherwise configured for
-   * scrolling. It returns the Gtk::Adjustment used for communication
-   * between the horizontal scrollbar and @a layout.
-   * 
-   * See Gtk::ScrolledWindow, Gtk::Scrollbar, Gtk::Adjustment for details.
-   * @return Horizontal scroll adjustment.
-   */
-  Adjustment* get_hadjustment();
-  
-  /** This function should only be called after the layout has been
-   * placed in a Gtk::ScrolledWindow or otherwise configured for
-   * scrolling. It returns the Gtk::Adjustment used for communication
-   * between the horizontal scrollbar and @a layout.
-   * 
-   * See Gtk::ScrolledWindow, Gtk::Scrollbar, Gtk::Adjustment for details.
-   * @return Horizontal scroll adjustment.
-   */
-  const Adjustment* get_hadjustment() const;
-  
-  /** Sets the vertical scroll adjustment for the layout.
-   * 
-   * See Gtk::ScrolledWindow, Gtk::Scrollbar, Gtk::Adjustment for details.
-   * @param adjustment New scroll adjustment.
-   */
-  void set_vadjustment(Adjustment& adjustment);
-
-  /// Creates the Adjustment.
-  void set_vadjustment();
-  
-  /** This function should only be called after the layout has been
-   * placed in a Gtk::ScrolledWindow or otherwise configured for
-   * scrolling. It returns the Gtk::Adjustment used for communication
-   * between the vertical scrollbar and @a layout.
-   * 
-   * See Gtk::ScrolledWindow, Gtk::Scrollbar, Gtk::Adjustment for details.
-   * @return Vertical scroll adjustment.
-   */
-  Adjustment* get_vadjustment();
-  
-  /** This function should only be called after the layout has been
-   * placed in a Gtk::ScrolledWindow or otherwise configured for
-   * scrolling. It returns the Gtk::Adjustment used for communication
-   * between the vertical scrollbar and @a layout.
-   * 
-   * See Gtk::ScrolledWindow, Gtk::Scrollbar, Gtk::Adjustment for details.
-   * @return Vertical scroll adjustment.
-   */
-  const Adjustment* get_vadjustment() const;
-
-  // See Gtk::Widget::set_scroll_adjustments()
-  
-  /**
-   * @par Prototype:
-   * <tt>void on_my_%set_scroll_adjustments(Adjustment* hadj, Adjustment* vadj)</tt>
-   */
-
-  Glib::SignalProxy2< void,Adjustment*,Adjustment* > signal_set_scroll_adjustments();
-
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The GtkAdjustment for the horizontal position.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<Adjustment*> property_hadjustment() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** The GtkAdjustment for the horizontal position.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<Adjustment*> property_hadjustment() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The GtkAdjustment for the vertical position.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<Adjustment*> property_vadjustment() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** The GtkAdjustment for the vertical position.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<Adjustment*> property_vadjustment() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
+   //deprecated
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The width of the layout.
@@ -283,7 +178,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<guint> property_width() ;
+  Glib::PropertyProxy< guint > property_width() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -293,7 +188,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<guint> property_width() const;
+  Glib::PropertyProxy_ReadOnly< guint > property_width() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -303,7 +198,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<guint> property_height() ;
+  Glib::PropertyProxy< guint > property_height() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -313,7 +208,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<guint> property_height() const;
+  Glib::PropertyProxy_ReadOnly< guint > property_height() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

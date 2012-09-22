@@ -4,7 +4,8 @@
 #define _GIOMM_FILEINFO_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -228,7 +229,8 @@ public:
    */
   Glib::RefPtr<FileInfo> dup() const;
   
-  /** Copies all of the FileAttribute<!-- -->s from @a src_info to @a dest_info.
+  /** Copies all of the GFileAttributes
+   * from @a src_info to @a dest_info.
    * @param dest_info Destination to copy attributes to.
    */
   void copy_into(Glib::RefPtr<FileInfo>& dest) const;
@@ -477,7 +479,7 @@ public:
 
   //TODO: This should return a ustring instead. See https://bugzilla.gnome.org/show_bug.cgi?id=615950#c4
   
-  /** Gets the  for a given
+  /** Gets the entity tag for a given
    * FileInfo. See FILE_ATTRIBUTE_ETAG_VALUE.
    * @return A string containing the value of the "etag:value" attribute.
    */
@@ -554,7 +556,7 @@ public:
   
   /** Sets the content type attribute for a given FileInfo.
    * See FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE.
-   * @param content_type A content type. See ContentType.
+   * @param content_type A content type. See GContentType.
    */
   void set_content_type(const std::string& content_type);
 

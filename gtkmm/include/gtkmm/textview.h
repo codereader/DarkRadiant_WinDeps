@@ -6,7 +6,8 @@
 #include <gtkmmconfig.h>
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: textview.hg,v 1.10 2006/04/12 11:11:25 murrayc Exp $ */
 
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 // This is for including the config header before any code (such as
@@ -32,10 +33,10 @@
 
 
 #include <gtkmm/container.h>
+#include <gtkmm/scrollable.h>
 #include <gtkmm/textbuffer.h>
 #include <gtkmm/textmark.h>
 #include <gtkmm/menu.h>
-#include <gtkmm/adjustment.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -102,7 +103,9 @@ namespace Gtk
  * @ingroup TextView
  */
 
-class TextView : public Container
+class TextView
+ : public Container,
+   public Scrollable
 {
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -131,8 +134,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -152,14 +159,17 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
-  virtual void on_set_scroll_adjustments(Adjustment* hadjustment, Adjustment* vadjustment);
+  /// This is a default handler for the signal signal_populate_popup().
   virtual void on_populate_popup(Menu* menu);
+  /// This is a default handler for the signal signal_set_anchor().
   virtual void on_set_anchor();
+  /// This is a default handler for the signal signal_insert_at_cursor().
   virtual void on_insert_at_cursor(const Glib::ustring& str);
 
 
 private:
 
+  
 public:
   TextView();
   explicit TextView(const Glib::RefPtr<TextBuffer>& buffer);
@@ -187,22 +197,6 @@ public:
    * @return A Gtk::TextBuffer.
    */
   Glib::RefPtr<const TextBuffer> get_buffer() const;
-
-  #ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** @deprecated Use scroll_to().
-   */
-  bool scroll_to_iter(TextBuffer::iterator& iter, double within_margin);
-
-  /** @deprecated Use scroll_to().
-   */
-  void scroll_to_mark(const Glib::RefPtr<TextBuffer::Mark>& mark, double within_margin);
-
-  /** @deprecated Use scroll_to()
-   */
-  void scroll_mark_onscreen(const Glib::RefPtr<TextBuffer::Mark>& mark);
-  #endif // GTKMM_DISABLE_DEPRECATED
-
 
   /** Scrolls the TextView so that @a iter is on the screen, by scrolling the minimal distance to get the mark onscreen,
    * possibly not scrolling at all. The effective screen for purposes of this function is reduced by a margin of size
@@ -289,6 +283,36 @@ public:
    * @return Whether the insertion mark is visible.
    */
   bool get_cursor_visible() const;
+  
+  
+  /** Given an @a iter within a text layout, determine the positions of the
+   * strong and weak cursors if the insertion point is at that
+   * iterator. The position of each cursor is stored as a zero-width
+   * rectangle. The strong cursor location is the location where
+   * characters of the directionality equal to the base direction of the
+   * paragraph are inserted.  The weak cursor location is the location
+   * where characters of the directionality opposite to the base
+   * direction of the paragraph are inserted.
+   * 
+   * If @a iter is <tt>0</tt>, the actual cursor position is used.
+   * 
+   * Note that if @a iter happens to be the actual cursor position, and
+   * there is currently an IM preedit sequence being entered, the
+   * returned locations will be adjusted to account for the preedit
+   * cursor's offset within the preedit sequence.
+   * 
+   * The rectangle position is in buffer coordinates; use
+   * buffer_to_window_coords() to convert these
+   * coordinates to coordinates for one of the windows in the text view.
+   * 
+   * @newin{3,0}
+   * @param iter A Gtk::TextIter.
+   * @param strong Location to store the strong
+   * cursor position (may be <tt>0</tt>).
+   * @param weak Location to store the weak
+   * cursor position (may be <tt>0</tt>).
+   */
+  void get_cursor_locations(const TextBuffer::iterator& iter, Gdk::Rectangle& strong, Gdk::Rectangle& weak) const;
 
   
   /** Gets a rectangle which roughly contains the character at @a iter.
@@ -381,34 +405,7 @@ public:
    */
   void window_to_buffer_coords(TextWindowType win, int window_x, int window_y, int& buffer_x, int& buffer_y) const;
 
-  
-  /** Gets the horizontal-scrolling Gtk::Adjustment.
-   * 
-   * @newin{2,22}
-   * @return Pointer to the horizontal Gtk::Adjustment.
-   */
-  Gtk::Adjustment* get_hadjustment();
-  
-  /** Gets the horizontal-scrolling Gtk::Adjustment.
-   * 
-   * @newin{2,22}
-   * @return Pointer to the horizontal Gtk::Adjustment.
-   */
-  const Gtk::Adjustment* get_hadjustment() const;
-  
-  /** Gets the vertical-scrolling Gtk::Adjustment.
-   * 
-   * @newin{2,22}
-   * @return Pointer to the vertical Gtk::Adjustment.
-   */
-  Gtk::Adjustment* get_vadjustment();
-  
-  /** Gets the vertical-scrolling Gtk::Adjustment.
-   * 
-   * @newin{2,22}
-   * @return Pointer to the vertical Gtk::Adjustment.
-   */
-  const Gtk::Adjustment* get_vadjustment() const;
+   //deprecated
 
   
   /** Retrieves the Gdk::Window corresponding to an area of the text view;
@@ -552,22 +549,8 @@ public:
    * you need to insert your own key handling between the input method
    * and the default key event handling of the Gtk::TextView.
    * 
-   * |[
-   * static <tt>bool</tt>
-   * gtk_foo_bar_key_press_event (GtkWidget   *widget,
-   * GdkEventKey *event)
-   * {
-   * if ((key->keyval == GDK_Return || key->keyval == GDK_KP_Enter))
-   * {
-   * if (gtk_text_view_im_context_filter_keypress (GTK_TEXT_VIEW (view), event))
-   * return <tt>true</tt>;
-   * }
    * 
-   * / * Do some stuff * /
-   * 
-   * return GTK_WIDGET_CLASS (gtk_foo_bar_parent_class)->key_press_event (widget, event);
-   * }
-   * ]|
+   * [C example ellipted]
    * 
    * @newin{2,22}
    * @param event The key event.
@@ -593,7 +576,9 @@ public:
 
   
   /** Adds a child at fixed coordinates in one of the text widget's
-   * windows. The window must have nonzero size (see
+   * windows.
+   * 
+   * The window must have nonzero size (see
    * set_border_window_size()). Note that the child
    * coordinates are given relative to the Gdk::Window in question, and
    * that these coordinates have no sane relationship to scrolling. When
@@ -603,11 +588,7 @@ public:
    * text window), you'll need to compute the child's correct position
    * in buffer coordinates any time scrolling occurs or buffer changes
    * occur, and then call move_child() to update the
-   * child's position. Unfortunately there's no good way to detect that
-   * scrolling has occurred, using the current API; a possible hack
-   * would be to update all child positions when the scroll adjustments
-   * change or the text buffer changes. See bug 64518 on
-   * bugzilla.gnome.org for status of fixing this issue.
+   * child's position.
    * @param child A Gtk::Widget.
    * @param which_window Which window the child should appear in.
    * @param xpos X position of child in window coordinates.
@@ -791,33 +772,48 @@ public:
   bool get_accepts_tab() const;
 
   
-  /**
-   * @par Prototype:
-   * <tt>void on_my_%set_scroll_adjustments(Adjustment* hadjustment, Adjustment* vadjustment)</tt>
-   */
-
-  Glib::SignalProxy2< void,Adjustment*,Adjustment* > signal_set_scroll_adjustments();
-
-  
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%populate_popup(Menu* menu)</tt>
+   *
+   * The signal_populate_popup() signal gets emitted before showing the 
+   * context menu of the text view.
+   * 
+   * If you need to add items to the context menu, connect
+   * to this signal and append your menuitems to the @a menu.
+   * @param menu The menu that is being populated.
    */
 
   Glib::SignalProxy1< void,Menu* > signal_populate_popup();
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%set_anchor()</tt>
+   *
+   * The signal_set_anchor() signal is a
+   * keybinding signal
+   * which gets emitted when the user initiates setting the "anchor" 
+   * mark. The "anchor" mark gets placed at the same position as the
+   * "insert" mark.
+   * 
+   * This signal has no default bindings.
    */
 
   Glib::SignalProxy0< void > signal_set_anchor();
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%insert_at_cursor(const Glib::ustring& str)</tt>
+   *
+   * The signal_insert_at_cursor() signal is a
+   * keybinding signal
+   * which gets emitted when the user initiates the insertion of a 
+   * fixed string at the cursor.
+   * 
+   * This signal has no default bindings.
+   * @param string The string to insert.
    */
 
   Glib::SignalProxy1< void,const Glib::ustring& > signal_insert_at_cursor();
@@ -833,7 +829,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_pixels_above_lines() ;
+  Glib::PropertyProxy< int > property_pixels_above_lines() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -843,7 +839,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_pixels_above_lines() const;
+  Glib::PropertyProxy_ReadOnly< int > property_pixels_above_lines() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -853,7 +849,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_pixels_below_lines() ;
+  Glib::PropertyProxy< int > property_pixels_below_lines() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -863,7 +859,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_pixels_below_lines() const;
+  Glib::PropertyProxy_ReadOnly< int > property_pixels_below_lines() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -873,7 +869,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_pixels_inside_wrap() ;
+  Glib::PropertyProxy< int > property_pixels_inside_wrap() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -883,7 +879,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_pixels_inside_wrap() const;
+  Glib::PropertyProxy_ReadOnly< int > property_pixels_inside_wrap() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -893,7 +889,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_editable() ;
+  Glib::PropertyProxy< bool > property_editable() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -903,7 +899,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_editable() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_editable() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -913,7 +909,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<WrapMode> property_wrap_mode() ;
+  Glib::PropertyProxy< WrapMode > property_wrap_mode() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -923,7 +919,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<WrapMode> property_wrap_mode() const;
+  Glib::PropertyProxy_ReadOnly< WrapMode > property_wrap_mode() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -933,7 +929,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Justification> property_justification() ;
+  Glib::PropertyProxy< Justification > property_justification() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -943,7 +939,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Justification> property_justification() const;
+  Glib::PropertyProxy_ReadOnly< Justification > property_justification() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -953,7 +949,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_left_margin() ;
+  Glib::PropertyProxy< int > property_left_margin() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -963,7 +959,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_left_margin() const;
+  Glib::PropertyProxy_ReadOnly< int > property_left_margin() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -973,7 +969,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_right_margin() ;
+  Glib::PropertyProxy< int > property_right_margin() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -983,7 +979,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_right_margin() const;
+  Glib::PropertyProxy_ReadOnly< int > property_right_margin() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -993,7 +989,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_indent() ;
+  Glib::PropertyProxy< int > property_indent() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1003,7 +999,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_indent() const;
+  Glib::PropertyProxy_ReadOnly< int > property_indent() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1013,7 +1009,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Pango::TabArray> property_tabs() ;
+  Glib::PropertyProxy< Pango::TabArray > property_tabs() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1023,7 +1019,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Pango::TabArray> property_tabs() const;
+  Glib::PropertyProxy_ReadOnly< Pango::TabArray > property_tabs() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1033,7 +1029,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_cursor_visible() ;
+  Glib::PropertyProxy< bool > property_cursor_visible() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1043,7 +1039,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_cursor_visible() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_cursor_visible() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1073,7 +1069,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_overwrite() ;
+  Glib::PropertyProxy< bool > property_overwrite() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1083,7 +1079,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_overwrite() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_overwrite() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1093,7 +1089,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_accepts_tab() ;
+  Glib::PropertyProxy< bool > property_accepts_tab() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1103,7 +1099,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_accepts_tab() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_accepts_tab() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1113,7 +1109,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_im_module() ;
+  Glib::PropertyProxy< Glib::ustring > property_im_module() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1123,7 +1119,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_im_module() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_im_module() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

@@ -4,7 +4,11 @@
 #define _GTKMM_HANDLEBOX_H
 
 
-#include <glibmm.h>
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
  /* $Id: handlebox.hg,v 1.1 2003/01/21 13:40:26 murrayc Exp $ */
 
@@ -23,8 +27,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/eventbox.h>
@@ -48,6 +52,10 @@ namespace Gtk
  * When reattaching, the ghost and float window must be aligned along one of the edges, the snap edge. This can be specified by the application programmer explicitely, or GTK+ will pick a reasonable default based on the handle position.
  * To make detaching and reattaching the handlebox as minimally confusing as possible to the user, it is important to set the snap edge so that the snap edge does not move when the handlebox is deattached.
  * For instance, if the handlebox is packed at the bottom of a VBox, then when the handlebox is detached, the bottom edge of the handlebox's allocation will remain fixed as the height of the handlebox shrinks, so the snap edge should be set to GTK_POS_BOTTOM.
+ *
+ * @deprecated This is very specialized, lacks features
+ * to make it useful and most importantly does not fit well into modern
+ * application design. There is no replacement.
  *
  * @ingroup Widgets
  * @ingroup Containers
@@ -82,8 +90,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -103,38 +115,78 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_child_attached().
   virtual void on_child_attached(Widget* child);
+  /// This is a default handler for the signal signal_child_detached().
   virtual void on_child_detached(Widget* child);
 
 
 private:
 
+  
 public:
   HandleBox();
 
 
+  /** Sets the type of shadow to be drawn around the border
+   * of the handle box.
+   * 
+   * Deprecated: 3.4: Gtk::HandleBox has been deprecated.
+   * @param type The shadow type.
+   */
   void set_shadow_type(ShadowType type);
   
   /** Gets the type of shadow drawn around the handle box. See
    * set_shadow_type().
+   * 
+   * Deprecated: 3.4: Gtk::HandleBox has been deprecated.
    * @return The type of shadow currently drawn around the handle box.
    */
   ShadowType get_shadow_type() const;
   
+  /** Sets the side of the handlebox where the handle is drawn.
+   * 
+   * Deprecated: 3.4: Gtk::HandleBox has been deprecated.
+   * @param position The side of the handlebox where the handle should be drawn.
+   */
   void set_handle_position(PositionType position);
   
   /** Gets the handle position of the handle box. See
    * set_handle_position().
+   * 
+   * Deprecated: 3.4: Gtk::HandleBox has been deprecated.
    * @return The current handle position.
    */
   PositionType get_handle_position() const;
   
+  /** Sets the snap edge of a handlebox. The snap edge is
+   * the edge of the detached child that must be aligned
+   * with the corresponding edge of the "ghost" left
+   * behind when the child was detached to reattach
+   * the torn-off window. Usually, the snap edge should
+   * be chosen so that it stays in the same place on
+   * the screen when the handlebox is torn off.
+   * 
+   * If the snap edge is not set, then an appropriate value
+   * will be guessed from the handle position. If the
+   * handle position is Gtk::POS_RIGHT or Gtk::POS_LEFT,
+   * then the snap edge will be Gtk::POS_TOP, otherwise
+   * it will be Gtk::POS_LEFT.
+   * 
+   * Deprecated: 3.4: Gtk::HandleBox has been deprecated.
+   * @param edge The snap edge, or -1 to unset the value; in which
+   * case GTK+ will try to guess an appropriate value
+   * in the future.
+   */
   void set_snap_edge(PositionType edge);
   
-  /** Gets the edge used for determining reattachment of the handle box. See
-   * set_snap_edge().
-   * @return The edge used for determining reattachment, or (GtkPositionType)-1 if this
-   * is determined (as per default) from the handle position.
+  /** Gets the edge used for determining reattachment of the handle box.
+   * See set_snap_edge().
+   * 
+   * Deprecated: 3.4: Gtk::HandleBox has been deprecated.
+   * @return The edge used for determining reattachment, or
+   * (GtkPositionType)-1 if this is determined (as per default)
+   * from the handle position.
    */
   PositionType get_snap_edge() const;
 
@@ -142,51 +194,43 @@ public:
   /** Whether the handlebox's child is currently detached.
    * 
    * @newin{2,14}
+   * 
+   * Deprecated: 3.4: Gtk::HandleBox has been deprecated.
    * @return <tt>true</tt> if the child is currently detached, otherwise <tt>false</tt>.
    */
   bool is_child_detached() const;
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%child_attached(Widget* child)</tt>
+   *
+   * This signal is emitted when the contents of the
+   * handlebox are reattached to the main window.
+   * 
+   * Deprecated: 3.4: Gtk::HandleBox has been deprecated.
+   * @param widget The child widget of the handlebox.
+   * (this argument provides no extra information
+   * and is here only for backwards-compatibility).
    */
 
   Glib::SignalProxy1< void,Widget* > signal_child_attached();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%child_detached(Widget* child)</tt>
+   *
+   * This signal is emitted when the contents of the
+   * handlebox are detached from the main window.
+   * 
+   * Deprecated: 3.4: Gtk::HandleBox has been deprecated.
+   * @param widget The child widget of the handlebox.
+   * (this argument provides no extra information
+   * and is here only for backwards-compatibility).
    */
 
   Glib::SignalProxy1< void,Widget* > signal_child_detached();
-
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** @deprecated You should not need to call this method.
-   */
-   Glib::RefPtr<Gdk::Window> get_bin_window();
-  Glib::RefPtr<const Gdk::Window> get_bin_window() const;
- 
-  /** @deprecated You should not need to call this method.
-   */
-   Glib::RefPtr<Gdk::Window> get_float_window();
-  Glib::RefPtr<const Gdk::Window> get_float_window() const;
- 
-  /** @deprecated This method does not seem to be useful and will be removed from a future version of gtkmm, due to changes in GTK+.
-   */
-  bool is_float_window_mapped() const;
-
-  /** @deprecated This method does not seem to be useful and will be removed from a future version of gtkmm, due to changes in GTK+.
-   */
-  bool is_in_drag() const;
-
-  /** @deprecated This method does not seem to be useful and will be removed from a future version of gtkmm, due to changes in GTK+.
-   */
-  bool shrinks_on_detach() const;
-#endif // GTKMM_DISABLE_DEPRECATED
 
 
   //_WRAP_PROPERTY("shadow", ShadowType); //deprecated.
@@ -197,7 +241,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<ShadowType> property_shadow_type() ;
+  Glib::PropertyProxy< ShadowType > property_shadow_type() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -207,7 +251,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<ShadowType> property_shadow_type() const;
+  Glib::PropertyProxy_ReadOnly< ShadowType > property_shadow_type() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -217,7 +261,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<PositionType> property_handle_position() ;
+  Glib::PropertyProxy< PositionType > property_handle_position() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -227,7 +271,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<PositionType> property_handle_position() const;
+  Glib::PropertyProxy_ReadOnly< PositionType > property_handle_position() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -237,7 +281,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<PositionType> property_snap_edge() ;
+  Glib::PropertyProxy< PositionType > property_snap_edge() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -247,7 +291,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<PositionType> property_snap_edge() const;
+  Glib::PropertyProxy_ReadOnly< PositionType > property_snap_edge() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -257,7 +301,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_snap_edge_set() ;
+  Glib::PropertyProxy< bool > property_snap_edge_set() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -267,7 +311,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_snap_edge_set() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_snap_edge_set() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -277,7 +321,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_child_detached() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_child_detached() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -298,6 +342,9 @@ namespace Glib
    */
   Gtk::HandleBox* wrap(GtkHandleBox* object, bool take_copy = false);
 } //namespace Glib
+
+
+#endif // GTKMM_DISABLE_DEPRECATED
 
 
 #endif /* _GTKMM_HANDLEBOX_H */

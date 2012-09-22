@@ -4,7 +4,8 @@
 #define _GIOMM_TCPCONNECTION_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -100,7 +101,7 @@ private:
 public:
     
   /** This enabled graceful disconnects on close. A graceful disconnect
-   * means that we signal the recieving end that the connection is terminated
+   * means that we signal the receiving end that the connection is terminated
    * and wait for it to close the connection before closing the connection.
    * 
    * A graceful disconnect means that we can be sure that we successfully sent
@@ -129,7 +130,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_graceful_disconnect() ;
+  Glib::PropertyProxy< bool > property_graceful_disconnect() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -139,7 +140,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_graceful_disconnect() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_graceful_disconnect() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

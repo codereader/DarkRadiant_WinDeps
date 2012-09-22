@@ -4,7 +4,8 @@
 #define _GTKMM_TOGGLEBUTTON_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: togglebutton.hg,v 1.3 2006/07/16 19:18:49 murrayc Exp $ */
 
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/button.h>
@@ -77,8 +78,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -98,6 +103,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_toggled().
   virtual void on_toggled();
 
 
@@ -107,7 +113,7 @@ public:
 
   /** Create an empty toggle button.
    * With an empty button, you can Gtk::Button::add() a widget such as a
-   * Gtk::Pixmap or Gtk::Box.
+   * Gtk::Image or Gtk::Box.
    *
    * If you just wish to add a Gtk::Label, you may want to use the
    * Gtk::ToggleButton(const Glib::ustring &label) constructor directly
@@ -148,8 +154,17 @@ public:
   bool get_mode() const;
 
   
+  /** Sets the status of the toggle button. Set to <tt>true</tt> if you want the
+   * GtkToggleButton to be 'pressed in', and <tt>false</tt> to raise it.
+   * This action causes the toggled signal to be emitted.
+   * @param is_active <tt>true</tt> or <tt>false</tt>.
+   */
   void set_active(bool is_active =  true);
   
+  /** Queries a Gtk::ToggleButton and returns its current state. Returns <tt>true</tt> if
+   * the toggle button is pressed in and <tt>false</tt> if it is raised.
+   * @return A <tt>bool</tt> value.
+   */
   bool get_active() const;
 
   
@@ -171,35 +186,42 @@ public:
   bool get_inconsistent() const;
 
   
+  /** Emits the Gtk::ToggleButton::signal_toggled() signal on the
+   * Gtk::ToggleButton. There is no good reason for an
+   * application ever to call this function.
+   */
   void toggled();
 
-  /** Emitted whenever the toggle tool button changes state.
-   *
-   * @par Prototype:
+  
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%toggled()</tt>
+   *
+   * Should be connected if you wish to perform an action whenever the
+   * Gtk::ToggleButton's state is changed.
    */
 
   Glib::SignalProxy0< void > signal_toggled();
 
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If the toggle button should be pressed in or not.
+/** If the toggle button should be pressed in.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_active() ;
+  Glib::PropertyProxy< bool > property_active() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If the toggle button should be pressed in or not.
+/** If the toggle button should be pressed in.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_active() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_active() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -209,7 +231,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_inconsistent() ;
+  Glib::PropertyProxy< bool > property_inconsistent() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -219,7 +241,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_inconsistent() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_inconsistent() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -229,7 +251,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_draw_indicator() ;
+  Glib::PropertyProxy< bool > property_draw_indicator() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -239,7 +261,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_draw_indicator() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_draw_indicator() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

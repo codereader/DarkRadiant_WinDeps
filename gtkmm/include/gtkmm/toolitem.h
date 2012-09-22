@@ -6,7 +6,8 @@
 #include <gtkmmconfig.h>
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /*
  * Copyright (C) 1998-2002 The gtkmm Development Team
@@ -22,16 +23,16 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- // This is for including the config header before any code (such as
+// This is for including the config header before any code (such as
 // the #ifndef GTKMM_DISABLE_DEPRECATED in deprecated classes) is generated:
 
 
 #include <gtkmm/bin.h>
-#include <gtkmm/tooltips.h>
+#include <gtkmm/activatable.h>
 #include <gtkmm/sizegroup.h>
 
 
@@ -50,7 +51,9 @@ namespace Gtk
  * @ingroup Widgets
  */
 
-class ToolItem : public Bin
+class ToolItem
+ : public Bin,
+   public Activatable
 {
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -79,8 +82,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -100,12 +107,15 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_create_menu_proxy().
   virtual bool on_create_menu_proxy();
+  /// This is a default handler for the signal signal_toolbar_reconfigured().
   virtual void on_toolbar_reconfigured();
 
 
 private:
 
+  
 public:
   ToolItem();
 
@@ -147,25 +157,9 @@ public:
    */
   bool get_expand() const;
 
+   //deprecated.
+
   
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Sets the Gtk::Tooltips object to be used for @a tool_item, the
-   * text to be displayed as tooltip on the item and the private text
-   * to be used. See Gtk::Tooltips::set_tip().
-   * 
-   * @newin{2,4}
-   * 
-   * Deprecated: 2.12: Use set_tooltip_text() instead.
-   * @deprecated Use set_tooltip_text() or set_tooltip_markup() instead
-   * @param tooltips The Gtk::Tooltips object to be used.
-   * @param tip_text Text to be used as tooltip text for @a tool_item.
-   * @param tip_private Text to be used as private tooltip text.
-   */
-  void set_tooltip(Tooltips& tooltips, const Glib::ustring& tip_text, const Glib::ustring& tip_private =  Glib::ustring());
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
   /** Sets the text to be displayed as tooltip on the item.
    * See Gtk::Widget::set_tooltip_text().
    * 
@@ -295,19 +289,16 @@ public:
    * the toolbar is displayed and change themselves accordingly 
    * 
    * Possibilities are:
-   * <itemizedlist>
-   * <listitem> GTK_TOOLBAR_BOTH, meaning the tool item should show
-   * both an icon and a label, stacked vertically </listitem>
-   * <listitem> GTK_TOOLBAR_ICONS, meaning the toolbar shows
-   * only icons </listitem>
-   * <listitem> GTK_TOOLBAR_TEXT, meaning the tool item should only
-   * show text</listitem>
-   * <listitem> GTK_TOOLBAR_BOTH_HORIZ, meaning the tool item should show
+   * -  GTK_TOOLBAR_BOTH, meaning the tool item should show
+   * both an icon and a label, stacked vertically 
+   * -  GTK_TOOLBAR_ICONS, meaning the toolbar shows
+   * only icons 
+   * -  GTK_TOOLBAR_TEXT, meaning the tool item should only
+   * show text
+   * -  GTK_TOOLBAR_BOTH_HORIZ, meaning the tool item should show
    * both an icon and a label, arranged horizontally (however, note the 
-   * Gtk::ToolButton::has_text_horizontally that makes tool buttons not
+   * Gtk::ToolButton::property_has()_text_horizontally property that makes tool buttons not
    * show labels when the toolbar style is GTK_TOOLBAR_BOTH_HORIZ.
-   * </listitem>
-   * </itemizedlist>
    * 
    * @newin{2,4}
    * @return A Gtk::ToolbarStyle indicating the toolbar style used
@@ -435,7 +426,7 @@ public:
    * the menu will be rebuilt.
    * 
    * The function must be called when the tool item changes what it
-   * will do in response to the Gtk::ToolItem::create-menu-proxy signal.
+   * will do in response to the Gtk::ToolItem::signal_create_menu_proxy() signal.
    * 
    * @newin{2,6}
    */
@@ -451,75 +442,54 @@ public:
   void toolbar_reconfigured();
 
   //TODO: This suggests calling set_proxy_menu_item() with NULL. but the function asserts against that.
-  /** This signal is emitted when the toolbar needs information from @tool_item
+  
+/**
+   * @par Slot Prototype:
+   * <tt>bool on_my_%create_menu_proxy()</tt>
+   *
+   * This signal is emitted when the toolbar needs information from @a tool_item
    * about whether the item should appear in the toolbar overflow menu. In
    * response the tool item should either
-   * <itemizedlist>
-   * <listitem> call set_proxy_menu_item() with a NULL
-   * pointer and return true to indicate that the item should not appear
+   * - call Gtk::ToolItem::set_proxy_menu_item() with a <tt>0</tt>
+   * pointer and return <tt>true</tt> to indicate that the item should not appear
    * in the overflow menu
-   * </listitem>
-   * <listitem> call set_proxy_menu_item() with a new menu
-   * item and return true, or
-   * </listitem>
-   * <listitem> return false to indicate that the signal was not
+   * -  call Gtk::ToolItem::set_proxy_menu_item() with a new menu
+   * item and return <tt>true</tt>, or 
+   * -  return <tt>false</tt> to indicate that the signal was not
    * handled by the item. This means that
    * the item will not appear in the overflow menu unless a later handler
    * installs a menu item.
-   * </listitem>
-   * </itemizedlist>
-   *
+   * 
    * The toolbar may cache the result of this signal. When the tool item changes
-   * how it will respond to this signal it must call rebuild_menu()
+   * how it will respond to this signal it must call Gtk::ToolItem::rebuild_menu()
    * to invalidate the cache and ensure that the toolbar rebuilds its overflow
    * menu.
-   *
-   * @result true if the signal was handled, false if not
-   *
-   * @par Prototype:
-   * <tt>bool on_my_%create_menu_proxy()</tt>
+   * @return <tt>true</tt> if the signal was handled, <tt>false</tt> if not.
    */
 
   Glib::SignalProxy0< bool > signal_create_menu_proxy();
 
 
-  /** This signal is emitted when some property of the toolbar that the
-   * item is a child of changes. For custom subclasses of ToolItem,
+/**
+   * @par Slot Prototype:
+   * <tt>void on_my_%toolbar_reconfigured()</tt>
+   *
+   * This signal is emitted when some property of the toolbar that the
+   * item is a child of changes. For custom subclasses of Gtk::ToolItem,
    * the default handler of this signal use the functions
-   * <itemizedlist>
-   * <listitem>Toolbar::get_orientation()</listitem>
-   * <listitem>Toolbar::get_style()</listitem>
-   * <listitem>Toolbar::get_icon_size()</listitem>
-   * <listitem>Toolbar::get_relief_style()</listitem>
-   * </itemizedlist>
+   * - Gtk::ToolShell::get_orientation()
+   * - Gtk::ToolShell::get_style()
+   * - Gtk::ToolShell::get_icon_size()
+   * - Gtk::ToolShell::get_relief_style()
    * to find out what the toolbar should look like and change
    * themselves accordingly.
-   *
-   * @par Prototype:
-   * <tt>void on_my_%toolbar_reconfigured()</tt>
    */
 
   Glib::SignalProxy0< void > signal_toolbar_reconfigured();
 
 
-  //We use no_default_handler for this, because we can not add a new vfunc to 2.5 without breaking ABI.
-
-  #ifndef GTKMM_DISABLE_DEPRECATED
-  //Note that we can ifdef this out, only because it doesn't affect class size, because we use no_default_handler:
-  /** This signal is emitted when the toolitem's tooltip changes.
-   * Application developers can use gtk_tool_item_set_tooltip() to
-   * set the item's tooltip.
-   * @deprecated Use the new Gtk::Tooltip API. This signal will now never be emitted.
-   *
-   * @param tooltips the Tooltips
-   * @param tip_text the tooltip text
-   * @param tip_private the tooltip private text
-   * @result true if the signal was handled, false if not.
-   */
-  Glib::SignalProxy3< bool,Tooltips*,const Glib::ustring&,const Glib::ustring& > signal_set_tooltip();
-  //_WRAP_SIGNAL(bool set_tooltip(Tooltips* tooltips, const Glib::ustring& tip_text, const Glib::ustring& tip_private), set_tooltip, no_default_handler, deprecated) //TODO: Implement deprecated for _WRAP_SIGNAL() to avoid hand-coding this:
+  //_WRAP_SIGNAL(bool set_tooltip(Tooltips* tooltips, const Glib::ustring& tip_text, const Glib::ustring& tip_private), set_tooltip, deprecated) //TODO: Implement deprecated for _WRAP_SIGNAL() to avoid hand-coding this:
   
-  #endif //GTKMM_DISABLE_DEPRECATED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** Whether the toolbar item is visible when the toolbar is in a horizontal orientation.
@@ -528,7 +498,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_visible_horizontal() ;
+  Glib::PropertyProxy< bool > property_visible_horizontal() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -538,7 +508,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_visible_horizontal() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_visible_horizontal() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -548,7 +518,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_visible_vertical() ;
+  Glib::PropertyProxy< bool > property_visible_vertical() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -558,7 +528,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_visible_vertical() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_visible_vertical() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -568,7 +538,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_is_important() ;
+  Glib::PropertyProxy< bool > property_is_important() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -578,7 +548,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_is_important() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_is_important() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

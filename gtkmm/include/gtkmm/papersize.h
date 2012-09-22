@@ -4,7 +4,8 @@
 #define _GTKMM_PAPERSIZE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 2006 The gtkmm Development Team
  *
@@ -19,10 +20,13 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+
+#include <glibmm/keyfile.h>
+#include <vector>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 extern "C" { typedef struct _GtkPaperSize GtkPaperSize; }
@@ -32,7 +36,7 @@ namespace Gtk
 {
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-class PaperSizeTraits;
+struct PaperSizeTraits;
 #endif
 
 /** Common paper names, from PWG 5101.1-2002 PWG: Standard for Media Standardized Names
@@ -99,9 +103,11 @@ class PaperSize
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   typedef PaperSize CppObjectType;
   typedef GtkPaperSize BaseObjectType;
-
-  static GType get_type() G_GNUC_CONST;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
+  static GType get_type() G_GNUC_CONST;
 
   PaperSize();
 
@@ -142,14 +148,23 @@ public:
   
   bool equal(const PaperSize& other) const;
 
+  /** This typedef is just to make it more obvious that 
+   * our operator const void* should be used like operator bool().
+   */ 
+  typedef const void* BoolExpr;
+
   /** Returns true if the PaperSize is a valid object.
+   * For instance,
+   * @code
+   * if(papersize)
+   *   do_something()
+   * @endcode
+   *
    * @newin{2,12}
    */
-  operator bool() const;
+  operator BoolExpr() const;
 
-  typedef Glib::ListHandle<PaperSize, PaperSizeTraits> ListHandle_PaperSizes;
-  
-
+   
   /** Creates a list of known paper sizes.
    * 
    * @newin{2,12}
@@ -158,7 +173,7 @@ public:
    * @return A newly allocated list of newly
    * allocated Gtk::PaperSize objects.
    */
-  static ListHandle_PaperSizes get_paper_sizes(bool include_custom =  true);
+  static std::vector<PaperSize> get_paper_sizes(bool include_custom =  true);
 
   
   /** Gets the name of the Gtk::PaperSize.
@@ -184,7 +199,7 @@ public:
   Glib::ustring get_ppd_name() const;
 
   
-  /** Gets the paper width of the Gtk::PaperSize, in 
+  /** Gets the paper width of the Gtk::PaperSize, in
    * units of @a unit.
    * 
    * @newin{2,10}
@@ -193,7 +208,7 @@ public:
    */
   double get_width(Unit unit) const;
   
-  /** Gets the paper height of the Gtk::PaperSize, in 
+  /** Gets the paper height of the Gtk::PaperSize, in
    * units of @a unit.
    * 
    * @newin{2,10}
@@ -250,8 +265,8 @@ public:
   double get_default_right_margin(Unit unit) const;
 
   
-  /** Returns the name of the default paper size, which 
-   * depends on the current locale.  
+  /** Returns the name of the default paper size, which
+   * depends on the current locale.
    * 
    * @newin{2,10}
    * @return The name of the default paper size. The string

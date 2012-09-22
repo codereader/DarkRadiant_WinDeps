@@ -4,7 +4,8 @@
 #define _GIOMM_MOUNTOPERATION_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -26,6 +27,7 @@
  */
 
 #include <glibmm/object.h>
+#include <glibmm/arrayhandle.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -242,15 +244,25 @@ public:
    */
   void set_choice(int choice);
   
-  /** Emits the MountOperation::reply signal.
+  /** Emits the MountOperation::signal_reply() signal.
    * @param result A MountOperationResult.
    */
   void reply(MountOperationResult result);
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%ask_password(const Glib::ustring& message, const Glib::ustring& default_user, const Glib::ustring& default_domain, AskPasswordFlags flags)</tt>
+   *
+   * Emitted when a mount operation asks the user for a password.
+   * 
+   * If the message contains a line break, the first line should be
+   * presented as a heading. For example, it may be used as the
+   * primary text in a Gtk::MessageDialog.
+   * @param message String containing a message to display to the user.
+   * @param default_user String containing the default user name.
+   * @param default_domain String containing the default domain.
+   * @param flags A set of AskPasswordFlags.
    */
 
   Glib::SignalProxy4< void,const Glib::ustring&,const Glib::ustring&,const Glib::ustring&,AskPasswordFlags > signal_ask_password();
@@ -259,17 +271,29 @@ public:
   //TODO: We really need some test to make sure that our use of StringArrayHandle is correct. murrayc.
  
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%ask_question(const Glib::ustring& message, const Glib::StringArrayHandle& choices)</tt>
+   *
+   * Emitted when asking the user a question and gives a list of
+   * choices for the user to choose from.
+   * 
+   * If the message contains a line break, the first line should be
+   * presented as a heading. For example, it may be used as the
+   * primary text in a Gtk::MessageDialog.
+   * @param message String containing a message to display to the user.
+   * @param choices An array of strings for each possible choice.
    */
 
   Glib::SignalProxy2< void,const Glib::ustring&,const Glib::StringArrayHandle& > signal_ask_question();
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%reply(MountOperationResult result)</tt>
+   *
+   * Emitted when the user has replied to the mount operation.
+   * @param result A MountOperationResult indicating how the request was handled.
    */
 
   Glib::SignalProxy1< void,MountOperationResult > signal_reply();
@@ -277,9 +301,17 @@ public:
 
   //TODO: Remove no_default_handler when we can break ABI:
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%aborted()</tt>
+   *
+   * Emitted by the backend when e.g.\ a device becomes unavailable
+   * while a mount operation is in progress.
+   * 
+   * Implementations of GMountOperation should handle this signal
+   * by dismissing open password dialogs.
+   * 
+   * @newin{2,20}
    */
 
   Glib::SignalProxy0< void > signal_aborted();
@@ -295,7 +327,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_username() ;
+  Glib::PropertyProxy< Glib::ustring > property_username() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -305,7 +337,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_username() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_username() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -315,7 +347,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_password() ;
+  Glib::PropertyProxy< Glib::ustring > property_password() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -325,7 +357,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_password() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_password() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -335,7 +367,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_anonymous() ;
+  Glib::PropertyProxy< bool > property_anonymous() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -345,7 +377,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_anonymous() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_anonymous() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -355,7 +387,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_domain() ;
+  Glib::PropertyProxy< Glib::ustring > property_domain() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -365,7 +397,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_domain() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_domain() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -375,7 +407,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<PasswordSave> property_password_save() ;
+  Glib::PropertyProxy< PasswordSave > property_password_save() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -385,7 +417,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<PasswordSave> property_password_save() const;
+  Glib::PropertyProxy_ReadOnly< PasswordSave > property_password_save() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -395,7 +427,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_choice() ;
+  Glib::PropertyProxy< int > property_choice() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -405,7 +437,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_choice() const;
+  Glib::PropertyProxy_ReadOnly< int > property_choice() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -418,8 +450,11 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_ask_password().
   virtual void on_ask_password(const Glib::ustring& message, const Glib::ustring& default_user, const Glib::ustring& default_domain, AskPasswordFlags flags);
+  /// This is a default handler for the signal signal_ask_question().
   virtual void on_ask_question(const Glib::ustring& message, const Glib::StringArrayHandle& choices);
+  /// This is a default handler for the signal signal_reply().
   virtual void on_reply(MountOperationResult result);
 
 

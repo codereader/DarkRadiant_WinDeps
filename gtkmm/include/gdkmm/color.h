@@ -6,7 +6,8 @@
 #include <gdkmmconfig.h>
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: color.hg,v 1.5 2005/11/29 16:38:10 murrayc Exp $ */
 
@@ -23,12 +24,16 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 // This is for including the config header before any code (such as
 // the #ifndef GDKMM_DISABLE_DEPRECATED in deprecated classes) is generated:
+
+
+#include <glibmm/value.h>
+#include <gdk/gdk.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -38,7 +43,7 @@ extern "C" { typedef struct _GdkColor GdkColor; }
 namespace Gdk
 {
 
-class Colormap;
+//TODO: Deprecate this? https://bugzilla.gnome.org/show_bug.cgi?id=636695
 
 /** Gdk::Color is used to describe an allocated or unallocated color.
  * It contains the following data:
@@ -53,9 +58,11 @@ class Color
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   typedef Color CppObjectType;
   typedef GdkColor BaseObjectType;
-
-  static GType get_type() G_GNUC_CONST;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
+  static GType get_type() G_GNUC_CONST;
 
 
   explicit Color(GdkColor* gobject, bool make_a_copy = true);
@@ -85,12 +92,11 @@ public:
 
   
   /** Instantiate a new Gdk::Color.
-   * You should then use the set methods and call Gdk::Colormap::alloc_color().
+   * You should then use the set methods.
    */
   Color();
 
   /** Instantiate a new Gdk::Color.
-   * The color is not allocated - you must call Gdk::Colormap::alloc_color() yourself.
    * The text string can be in any of the forms accepted by XParseColor; these include names for a color from rgb.txt,
    * such as DarkSlateGray, or a hex specification such as 305050.
    * @param value the string specifying the color..
@@ -121,7 +127,6 @@ public:
   void set_hsl(double h, double s, double l);
 
   /** Parses a textual specification of a color and fills in the red, green, and blue values.
-  * The color is not allocated - you must call Gdk::Colormap::alloc_color() yourself.
   * The text string can be in any of the forms accepted by XParseColor; these include names for a color from rgb.txt,
   * such as DarkSlateGray, or a hex specification such as 305050.
   *
@@ -129,15 +134,6 @@ public:
   * @result true if the parsing succeeded.
   */
   bool set(const Glib::ustring& value);
-
-  #ifndef GDKMM_DISABLE_DEPRECATED
-
-  /**
-   * @deprecated See set().
-   */
-  bool parse(const Glib::ustring& spec);
-  #endif // GDKMM_DISABLE_DEPRECATED
-
 
   /** Get the red component of the color.
    * @result The red component of the color.
@@ -168,23 +164,6 @@ public:
    * @param value The blue component of the color.
    */
   void set_blue(gushort value);
-
-#ifndef GDKMM_DISABLE_DEPRECATED
-
-  /** This will fill in the pixel field with the best matching pixel from a color cube.
-   * The color is then ready to be used for drawing, e.g. you can call Gdk::GC::set_foreground() which expects pixel to be initialized.
-   * Call this after setting the red, green, and blue fields.
-   *
-   * In many cases, you can avoid this whole issue by calling Gdk::GC::set_rgb_fg_color() or Gdk::GC::set_rgb_bg_color(),
-   * which do not expect pixels to be initialized in advance. If you use those methods, there's no need for this method().
-   *
-   * @param map The colormap for the graphics context and drawable you're using to draw. If you're drawing to a Gtk::Widget, call Gtk::Widget::get_colormap().
-   *
-   * @deprecated Cairo handles colors automatically.
-   */
-  void rgb_find_color(const Glib::RefPtr<Gdk::Colormap>& map);
-#endif // GDKMM_DISABLE_DEPRECATED
-
 
   /** Get the pixel value, for allocated colors.
    * @result For allocated colors, the value used to draw this color on the screen.
@@ -228,14 +207,12 @@ struct ColorTraits
   typedef GdkColor    CType;
   typedef GdkColor    CTypeNonConst;
 
-  static CType   to_c_type      (const CppType& obj);
-  static CType   to_c_type      (const CType&   obj);
-  static CppType to_cpp_type    (const CType&   obj);
-  static void    release_c_type (const CType&);
+  static CType   to_c_type      (const CppType& obj) { return *obj.gobj(); }
+  static CType   to_c_type      (const CType&   obj) { return obj; }
+  static CppType to_cpp_type    (const CType&   obj) { return CppType(const_cast<CType*>(&obj), true); }
+  static void    release_c_type (const CType&)       {}
 };
 #endif //DOXYGEN_SHOULD_SKIP_THIS
-
-typedef Glib::ArrayHandle<Color,ColorTraits> ArrayHandle_Color;
 
 } // namespace Gdk
 

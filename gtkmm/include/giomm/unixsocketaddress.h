@@ -4,7 +4,8 @@
 #define _GIOMM_UNIXSOCKETADDRESS_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -252,7 +253,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_abstract() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_abstract() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -263,7 +264,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<UnixSocketAddressType> property_address_type() const;
+  Glib::PropertyProxy_ReadOnly< UnixSocketAddressType > property_address_type() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -274,7 +275,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<std::string> property_path() const;
+  Glib::PropertyProxy_ReadOnly< std::string > property_path() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

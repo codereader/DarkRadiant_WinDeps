@@ -4,7 +4,8 @@
 #define _GIOMM_INETADDRESS_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -114,6 +115,15 @@ public:
 
   static Glib::RefPtr<InetAddress> create_any(SocketFamily family);
   static Glib::RefPtr<InetAddress> create_loopback(SocketFamily family);
+
+  
+  /** Checks if two InetAddress instances are equal, e.g.\ the same address.
+   * 
+   * @newin{2,30}
+   * @param other_address Another InetAddress.
+   * @return <tt>true</tt> if @a address and @a other_address are equal, <tt>false</tt> otherwise.
+   */
+  bool address_equal(const Glib::RefPtr<const InetAddress>& other_address) const;
 
   
   /** Gets the raw binary address data from @a address.
@@ -230,7 +240,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<void*> property_bytes() const;
+  Glib::PropertyProxy_ReadOnly< void* > property_bytes() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -241,7 +251,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<SocketFamily> property_family() const;
+  Glib::PropertyProxy_ReadOnly< SocketFamily > property_family() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -252,7 +262,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_is_any() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_is_any() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -263,7 +273,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_is_link_local() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_is_link_local() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -274,7 +284,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_is_loopback() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_is_loopback() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -285,7 +295,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_is_mc_global() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_is_mc_global() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -296,7 +306,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_is_mc_link_local() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_is_mc_link_local() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -307,7 +317,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_is_mc_node_local() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_is_mc_node_local() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -318,7 +328,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_is_mc_org_local() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_is_mc_org_local() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -329,7 +339,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_is_mc_site_local() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_is_mc_site_local() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -340,7 +350,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_is_multicast() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_is_multicast() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -351,7 +361,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_is_site_local() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_is_site_local() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

@@ -4,7 +4,8 @@
 #define _GTKMM_PRINTER_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 2006 The gtkmm Development Team
  *
@@ -19,9 +20,11 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+#include <vector>
 
 #include <gtkmm/pagesetup.h>
 
@@ -154,8 +157,11 @@ protected:
 public:
   virtual ~Printer();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -172,9 +178,9 @@ public:
 
 private:
 
-  //This is not available in on Win32.
-//This source file will not be compiled,
-//and the class will not be registered in wrap_init.h or wrap_init.cc
+  //This is not available on Win32.
+//This source file will not be compiled on Win32,
+//and no class defined in it will be registered by wrap_init().
 
 
 public:
@@ -287,8 +293,8 @@ public:
    * @return <tt>true</tt> if @a printer accepts PostScript.
    */
   bool accepts_ps() const;
+  
 
- 
   /** Lists all the paper sizes @a printer supports.
    * This will return and empty list unless the printer's details are 
    * available, see has_details() and request_details().
@@ -296,7 +302,7 @@ public:
    * @newin{2,12}
    * @return A newly allocated list of newly allocated Gtk::PageSetup s.
    */
-  Glib::ListHandle< Glib::RefPtr<PageSetup> > list_papers();
+  std::vector< Glib::RefPtr<PageSetup> > list_papers();
 
   
   /** Returns default page size of @a printer.
@@ -314,7 +320,7 @@ public:
    * @newin{2,12}
    * @return A newly allocated list of newly allocated Gtk::PageSetup s.
    */
-  Glib::ListHandle< Glib::RefPtr<const PageSetup> > list_papers() const;
+  std::vector< Glib::RefPtr<const PageSetup> > list_papers() const;
 
   
   /** Returns whether the printer details are available.
@@ -361,9 +367,16 @@ public:
   bool get_hard_margins(double& top, double& bottom, double& left, double& right) const;
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%details_acquired(bool success)</tt>
+   *
+   * Gets emitted in response to a request for detailed information
+   * about a printer from the print backend. The @a success parameter
+   * indicates if the information was actually obtained.
+   * 
+   * @newin{2,10}
+   * @param success <tt>true</tt> if the details were successfully acquired.
    */
 
   Glib::SignalProxy1< void,bool > signal_details_acquired();
@@ -376,7 +389,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_name() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_name() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -390,7 +403,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_is_virtual() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_is_virtual() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -401,7 +414,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_state_message() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_state_message() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -412,7 +425,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_location() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_location() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -423,7 +436,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_icon_name() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_icon_name() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -434,7 +447,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_job_count() const;
+  Glib::PropertyProxy_ReadOnly< int > property_job_count() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -445,7 +458,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_accepts_pdf() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_accepts_pdf() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -456,7 +469,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_accepts_ps() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_accepts_ps() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -467,7 +480,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_paused() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_paused() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -478,7 +491,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_accepting_jobs() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_accepting_jobs() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -491,6 +504,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_details_acquired().
   virtual void on_details_acquired(bool success);
 
 

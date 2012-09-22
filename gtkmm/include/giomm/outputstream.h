@@ -4,7 +4,8 @@
 #define _GIOMM_OUTPUTSTREAM_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -532,7 +533,10 @@ public:
   
   /** Finishes an asynchronous stream splice operation.
    * @param result A AsyncResult.
-   * @return A #gssize of the number of bytes spliced.
+   * @return A #gssize of the number of bytes spliced. Note that if the
+   * number of bytes spliced is greater than MAXSSIZE, then that
+   * will be returned, and there is no way to determine the actual
+   * number of bytes spliced.
    */
   gssize splice_finish(const Glib::RefPtr<AsyncResult>& result);
 
@@ -560,7 +564,7 @@ public:
 
   /** Finishes flushing an output stream.
    * @param result A GAsyncResult.
-   * @return <tt>true</tt> if flush operation suceeded, <tt>false</tt> otherwise.
+   * @return <tt>true</tt> if flush operation succeeded, <tt>false</tt> otherwise.
    */
   bool flush_finish(const Glib::RefPtr<AsyncResult>& result);
 

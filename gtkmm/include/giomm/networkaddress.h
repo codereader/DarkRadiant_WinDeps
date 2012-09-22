@@ -4,7 +4,8 @@
 #define _GIOMM_NETWORKADDRESS_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -137,7 +138,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<std::string> property_hostname() const;
+  Glib::PropertyProxy_ReadOnly< std::string > property_hostname() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -148,7 +149,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<guint> property_port() const;
+  Glib::PropertyProxy_ReadOnly< guint > property_port() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -159,7 +160,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<std::string> property_scheme() const;
+  Glib::PropertyProxy_ReadOnly< std::string > property_scheme() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

@@ -4,7 +4,8 @@
 #define _GTKMM_SCROLLBAR_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: scrollbar.hg,v 1.1 2003/01/21 13:40:36 murrayc Exp $ */
 
@@ -23,11 +24,12 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/range.h>
+#include <gtkmm/orientable.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -38,30 +40,13 @@ typedef struct _GtkScrollbarClass GtkScrollbarClass;
 
 namespace Gtk
 { class Scrollbar_Class; } // namespace Gtk
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-typedef struct _GtkVScrollbar GtkVScrollbar;
-typedef struct _GtkVScrollbarClass GtkVScrollbarClass;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-
-namespace Gtk
-{ class VScrollbar_Class; } // namespace Gtk
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-typedef struct _GtkHScrollbar GtkHScrollbar;
-typedef struct _GtkHScrollbarClass GtkHScrollbarClass;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-
-namespace Gtk
-{ class HScrollbar_Class; } // namespace Gtk
 namespace Gtk
 {
 
-//TODO: Inherit/Implement Orientation when we can break ABI.
-
-/** 
- * The Gtk::Scrollbar widget is an abstract base class for Gtk::HScrollbar
- * and Gtk::VScrollbar. It is not very useful in itself. 
+/** A Scrollbar.
+ *
+ * The #Scrollbar widget is a horizontal or vertical scrollbar,
+ * depending on the value of the orientation property.
  *
  * The position of the thumb in a scrollbar is controlled by the scroll
  * adjustments. See Gtk::Adjustment for the fields in an adjustment - for
@@ -75,7 +60,9 @@ namespace Gtk
  * @ingroup Widgets
  */
 
-class Scrollbar : public Range
+class Scrollbar
+ : public Range,
+   public Orientable
 {
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -104,8 +91,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -129,166 +120,23 @@ protected:
 
 private:
 
-
-protected:
   
-
-};
-
-/** A vertical scrollbar.
- *
- * The Gtk::VScrollbar widget is a widget arranged vertically creating a
- * scrollbar. See Gtk::Scrollbar for details on scrollbars.
- *
- * A Gtk::Adjustment may may be passed to the constructor  to handle the
- * adjustment of the scrollbar. If not specified, one will be created for
- * you. See Gtk::Adjustment for details.
- *
- * A VScrollbar widget looks like this:
- * @image html vscrollbar1.png
- *
- * @ingroup Widgets
- */
-
-class VScrollbar : public Scrollbar
-{
-  public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  typedef VScrollbar CppObjectType;
-  typedef VScrollbar_Class CppClassType;
-  typedef GtkVScrollbar BaseObjectType;
-  typedef GtkVScrollbarClass BaseClassType;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-  virtual ~VScrollbar();
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
-private:
-  friend class VScrollbar_Class;
-  static CppClassType vscrollbar_class_;
-
-  // noncopyable
-  VScrollbar(const VScrollbar&);
-  VScrollbar& operator=(const VScrollbar&);
-
-protected:
-  explicit VScrollbar(const Glib::ConstructParams& construct_params);
-  explicit VScrollbar(GtkVScrollbar* castitem);
-
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  static GType get_type()      G_GNUC_CONST;
-
-
-  static GType get_base_type() G_GNUC_CONST;
-#endif
-
-  ///Provides access to the underlying C GtkObject.
-  GtkVScrollbar*       gobj()       { return reinterpret_cast<GtkVScrollbar*>(gobject_); }
-
-  ///Provides access to the underlying C GtkObject.
-  const GtkVScrollbar* gobj() const { return reinterpret_cast<GtkVScrollbar*>(gobject_); }
-
-
-public:
-  //C++ methods used to invoke GTK+ virtual functions:
-
-protected:
-  //GTK+ Virtual Functions (override these to change behaviour):
-
-  //Default Signal Handlers::
-
-
-private:
-
-public:
-  VScrollbar();
-  explicit VScrollbar(Adjustment& gtkadjustment);
+  Scrollbar();
   
-
-};
-
-/** A horizontal scrollbar.
- *
- * The Gtk::HScrollbar widget is a widget arranged horizontally creating a
- * scrollbar. See Gtk::Scrollbar for details on scrollbars.
- *
- * A Gtk::Adjustment may may be passed to the constructor  to handle the
- * adjustment of the scrollbar. If not specified, one will be created for
- * you. See Gtk::Adjustment for details.
- *
- * The HScrollbar widget looks like this:
- * @image html hscrollbar1.png
- *
- * @ingroup Widgets
- */
-
-class HScrollbar : public Scrollbar
-{
-  public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  typedef HScrollbar CppObjectType;
-  typedef HScrollbar_Class CppClassType;
-  typedef GtkHScrollbar BaseObjectType;
-  typedef GtkHScrollbarClass BaseClassType;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-  virtual ~HScrollbar();
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
-private:
-  friend class HScrollbar_Class;
-  static CppClassType hscrollbar_class_;
-
-  // noncopyable
-  HScrollbar(const HScrollbar&);
-  HScrollbar& operator=(const HScrollbar&);
-
-protected:
-  explicit HScrollbar(const Glib::ConstructParams& construct_params);
-  explicit HScrollbar(GtkHScrollbar* castitem);
-
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  static GType get_type()      G_GNUC_CONST;
-
-
-  static GType get_base_type() G_GNUC_CONST;
-#endif
-
-  ///Provides access to the underlying C GtkObject.
-  GtkHScrollbar*       gobj()       { return reinterpret_cast<GtkHScrollbar*>(gobject_); }
-
-  ///Provides access to the underlying C GtkObject.
-  const GtkHScrollbar* gobj() const { return reinterpret_cast<GtkHScrollbar*>(gobject_); }
-
-
-public:
-  //C++ methods used to invoke GTK+ virtual functions:
-
-protected:
-  //GTK+ Virtual Functions (override these to change behaviour):
-
-  //Default Signal Handlers::
-
-
-private:
-
-public:
-  HScrollbar();
-  explicit HScrollbar(Adjustment& gtkadjustment);
+  //Note that we try to use the same defaul parameter value as the default property value.
+  explicit Scrollbar(const Glib::RefPtr<Adjustment>& adjustment, Orientation orientation = ORIENTATION_HORIZONTAL);
   
-
+  
 };
-
 
 } /* namespace Gtk */
+
+
+//Include the deprecated header, 
+//whose classes were previously in this header,
+//to preserve the "API" of the includes.
+#include <gtkmm/hvscrollbar.h>
 
 
 namespace Glib
@@ -302,34 +150,6 @@ namespace Glib
    * @relates Gtk::Scrollbar
    */
   Gtk::Scrollbar* wrap(GtkScrollbar* object, bool take_copy = false);
-} //namespace Glib
-
-
-namespace Glib
-{
-  /** A Glib::wrap() method for this object.
-   * 
-   * @param object The C instance.
-   * @param take_copy False if the result should take ownership of the C instance. True if it should take a new copy or ref.
-   * @result A C++ instance that wraps this C instance.
-   *
-   * @relates Gtk::VScrollbar
-   */
-  Gtk::VScrollbar* wrap(GtkVScrollbar* object, bool take_copy = false);
-} //namespace Glib
-
-
-namespace Glib
-{
-  /** A Glib::wrap() method for this object.
-   * 
-   * @param object The C instance.
-   * @param take_copy False if the result should take ownership of the C instance. True if it should take a new copy or ref.
-   * @result A C++ instance that wraps this C instance.
-   *
-   * @relates Gtk::HScrollbar
-   */
-  Gtk::HScrollbar* wrap(GtkHScrollbar* object, bool take_copy = false);
 } //namespace Glib
 
 

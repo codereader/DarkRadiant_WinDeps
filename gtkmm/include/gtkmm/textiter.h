@@ -4,7 +4,8 @@
 #define _GTKMM_TEXTITER_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: textiter.hg,v 1.8 2006/05/11 11:40:24 murrayc Exp $ */
 
@@ -21,16 +22,18 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library, ) if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library, ) if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <vector>
+
 #include <glibmm/exceptionhandler.h>
-#include <glibmm/slisthandle.h>
 #include <gdkmm/pixbuf.h>
 #include <gtkmm/texttag.h>
 #include <gtkmm/textchildanchor.h>
 #include <gtkmm/textattributes.h>
+#include <gtk/gtk.h> /* we need the definition of GtkTextIter */
 
 
 namespace Gtk
@@ -53,7 +56,8 @@ namespace Gtk
 enum TextSearchFlags
 {
   TEXT_SEARCH_VISIBLE_ONLY = 1 << 0,
-  TEXT_SEARCH_TEXT_ONLY = 1 << 1
+  TEXT_SEARCH_TEXT_ONLY = 1 << 1,
+  TEXT_SEARCH_CASE_INSENSITIVE = 1 << 2
 };
 
 /** @ingroup gtkmmEnums */
@@ -121,7 +125,7 @@ class TextMark;
  *
  * You can iterate over characters, words, lines, and sentences,
  * but operator*() and operator++() deal only in characters.
- * 
+ *
  * @ingroup TextView
  */
 class TextIter
@@ -130,9 +134,11 @@ class TextIter
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   typedef TextIter CppObjectType;
   typedef GtkTextIter BaseObjectType;
-
-  static GType get_type() G_GNUC_CONST;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
+  static GType get_type() G_GNUC_CONST;
 
   TextIter();
 
@@ -168,8 +174,19 @@ public:
   /** Alias for get_char(). */
   inline value_type operator*() const;
 
-  /** Alias for !is_end(). */
-  inline operator bool() const;
+  /** This typedef is just to make it more obvious that
+   * our operator const void* should be used like operator bool().
+   */
+  typedef const void* BoolExpr;
+
+  /** Alias for !is_end()
+   * For instance,
+   * @code
+   * if(textiter)
+   *   do_something()
+   * @endcode
+   */
+  inline operator BoolExpr() const;
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
@@ -320,7 +337,8 @@ public:
    * @return The pixbuf at @a iter.
    */
   Glib::RefPtr<Gdk::Pixbuf> get_pixbuf() const;
-  
+ 
+
   /** Returns a list of all Gtk::TextMark at this location. Because marks
    * are not iterable (they don't take up any "space" in the buffer,
    * they are just marks in between iterable locations), multiple marks
@@ -328,8 +346,9 @@ public:
    * meaningful order.
    * @return List of Gtk::TextMark.
    */
-  Glib::SListHandle< Glib::RefPtr<TextMark> > get_marks();
-  
+  std::vector< Glib::RefPtr<TextMark> > get_marks();
+ 
+
   /** Returns a list of all Gtk::TextMark at this location. Because marks
    * are not iterable (they don't take up any "space" in the buffer,
    * they are just marks in between iterable locations), multiple marks
@@ -337,8 +356,8 @@ public:
    * meaningful order.
    * @return List of Gtk::TextMark.
    */
-  Glib::SListHandle< Glib::RefPtr<const TextMark> > get_marks() const;
-  
+  std::vector< Glib::RefPtr<const TextMark> > get_marks() const;
+
   
   /** If the location at @a iter contains a child anchor, the
    * anchor is returned (with no new reference count added). Otherwise,
@@ -354,7 +373,7 @@ public:
    */
   Glib::RefPtr<const TextChildAnchor> get_child_anchor() const;
 
-  
+ 
   /** Returns a list of Gtk::TextTag that are toggled on or off at this
    * point.  (If @a toggled_on is <tt>true</tt>, the list contains tags that are
    * toggled on.) If a tag is toggled on at @a iter, then some non-empty
@@ -364,8 +383,9 @@ public:
    * @param toggled_on <tt>true</tt> to get toggled-on tags.
    * @return Tags toggled at this point.
    */
-  Glib::SListHandle< Glib::RefPtr<TextTag> > get_toggled_tags(bool toggled_on =  true);
-  
+  std::vector< Glib::RefPtr<TextTag> > get_toggled_tags(bool toggled_on =  true);
+ 
+
   /** Returns a list of Gtk::TextTag that are toggled on or off at this
    * point.  (If @a toggled_on is <tt>true</tt>, the list contains tags that are
    * toggled on.) If a tag is toggled on at @a iter, then some non-empty
@@ -375,7 +395,7 @@ public:
    * @param toggled_on <tt>true</tt> to get toggled-on tags.
    * @return Tags toggled at this point.
    */
-  Glib::SListHandle< Glib::RefPtr<const TextTag> > get_toggled_tags(bool toggled_on =  true) const;
+  std::vector< Glib::RefPtr<const TextTag> > get_toggled_tags(bool toggled_on =  true) const;
 
   
   /** Returns <tt>true</tt> if @a tag is toggled on at exactly this point. If @a tag
@@ -418,19 +438,19 @@ public:
    */
   bool has_tag(const Glib::RefPtr<const TextTag>& tag) const;
   bool has_tag() const;
-  
-  
-  /** Returns a list of tags that apply to @a iter, in ascending order of
-   * priority (highest-priority tags are last).
-   * @return List of Gtk::TextTag.
-   */
-  Glib::SListHandle< Glib::RefPtr<TextTag> > get_tags();
+
   
   /** Returns a list of tags that apply to @a iter, in ascending order of
    * priority (highest-priority tags are last).
    * @return List of Gtk::TextTag.
    */
-  Glib::SListHandle< Glib::RefPtr<const TextTag> > get_tags() const;
+  std::vector< Glib::RefPtr<TextTag> > get_tags();
+  
+  /** Returns a list of tags that apply to @a iter, in ascending order of
+   * priority (highest-priority tags are last).
+   * @return List of Gtk::TextTag.
+   */
+  std::vector< Glib::RefPtr<const TextTag> > get_tags() const;
 
   
   /** Returns whether the character at @a iter is within an editable region
@@ -744,7 +764,7 @@ public:
 
   //TODO: Now that there are so many *_visible_ versions of the methods, maybe we should
   //just add a visible=false parameter and therefore halve the number of methods. murrayc
- 
+
   
   /** Moves forward to the next visible word end. (If @a iter is currently on a
    * word end, moves forward to the next one after that.) Word breaks
@@ -1006,7 +1026,7 @@ public:
    * @return Whether a match was found.
    */
   bool forward_search(const Glib::ustring& str, TextSearchFlags flags, TextIter& match_start, TextIter& match_end, const TextIter& limit) const;
-         
+
   /** Same as forward_search(), but searchs to the end.
    *
    * @param str A search string.
@@ -1014,7 +1034,7 @@ public:
    * @param match_start Return location for start of match, or <tt>0</tt>.
    * @param match_end Return location for end of match, or <tt>0</tt>.
    * @return Whether a match was found.
-   */                          
+   */
    bool forward_search(const Glib::ustring& str, TextSearchFlags flags, TextIter& match_start, TextIter& match_end) const;
 
   
@@ -1034,7 +1054,7 @@ public:
    * @param match_start Return location for start of match, or <tt>0</tt>.
    * @param match_end Return location for end of match, or <tt>0</tt>.
    * @return Whether a match was found.
-   */                                    
+   */
   bool backward_search(const Glib::ustring& str, TextSearchFlags flags, TextIter& match_start, TextIter& match_end) const;
 
   
@@ -1132,9 +1152,9 @@ TextIter::value_type TextIter::operator*() const
 }
 
 inline
-TextIter::operator bool() const
+TextIter::operator BoolExpr() const
 {
-  return !is_end();
+  return !is_end() ? GINT_TO_POINTER(1) : 0;
 }
 
 template <class Predicate>

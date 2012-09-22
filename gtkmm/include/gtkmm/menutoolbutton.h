@@ -6,7 +6,8 @@
 #include <gtkmmconfig.h>
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /*
  * Copyright (C) 2003 The gtkmm Development Team
@@ -22,14 +23,13 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- 
+
 #include <gtkmm/toolbutton.h>
 #include <gtkmm/menu.h>
-#include <gtkmm/tooltips.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -78,8 +78,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -99,6 +103,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_show_menu().
   virtual void on_show_menu();
 
 
@@ -161,28 +166,11 @@ public:
    */
   const Menu* get_menu() const;
 
+   //deprecated
+
   
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Sets the Gtk::Tooltips object to be used for arrow button which
-   * pops up the menu. See Gtk::ToolItem::set_tooltip() for setting
-   * a tooltip on the whole Gtk::MenuToolButton.
-   * 
-   * @newin{2,6}
-   * 
-   * Deprecated: 2.12: Use set_arrow_tooltip_text()
-   * instead.
-   * @deprecated Use set_arrow_tooltip_text() or set_arrow_tooltip_markup() instead
-   * @param tooltips The Gtk::Tooltips object to be used.
-   * @param tip_text Text to be used as tooltip text for tool_item.
-   * @param tip_private Text to be used as private tooltip text.
-   */
-  void set_arrow_tooltip(Tooltips& tooltips, const Glib::ustring& tip_text, const Glib::ustring& tip_private);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
   /** Sets the tooltip text to be used as tooltip for the arrow button which
-   * pops up the menu.  See Gtk::ToolItem::set_tooltip() for setting a tooltip
+   * pops up the menu.  See Gtk::ToolItem::set_tooltip_text() for setting a tooltip
    * on the whole Gtk::MenuToolButton.
    * 
    * @newin{2,12}
@@ -191,7 +179,7 @@ public:
   void set_arrow_tooltip_text(const Glib::ustring& text);
   
   /** Sets the tooltip markup text to be used as tooltip for the arrow button
-   * which pops up the menu.  See Gtk::ToolItem::set_tooltip() for setting a
+   * which pops up the menu.  See Gtk::ToolItem::set_tooltip_text() for setting a
    * tooltip on the whole Gtk::MenuToolButton.
    * 
    * @newin{2,12}
@@ -200,9 +188,18 @@ public:
   void set_arrow_tooltip_markup(const Glib::ustring& markup);
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%show_menu()</tt>
+   *
+   * The signal_show_menu() signal is emitted before the menu is shown.
+   * 
+   * It can be used to populate the menu on demand, using 
+   * Gtk::MenuToolButton::get_menu(). 
+   * 
+   * Note that even if you populate the menu dynamically in this way, 
+   * you must set an empty menu on the Gtk::MenuToolButton beforehand,
+   * since the arrow is made insensitive if the menu is not set.
    */
 
   Glib::SignalProxy0< void > signal_show_menu();
@@ -214,7 +211,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Menu*> property_menu() ;
+  Glib::PropertyProxy< Menu* > property_menu() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -224,7 +221,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Menu*> property_menu() const;
+  Glib::PropertyProxy_ReadOnly< Menu* > property_menu() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

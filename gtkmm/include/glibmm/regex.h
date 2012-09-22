@@ -397,27 +397,8 @@ public:
    * To retrieve all the non-overlapping matches of the pattern in
    * string you can use g_match_info_next().
    * 
-   * |[
-   * static void
-   * print_uppercase_words (const gchar *string)
-   * {
-   * / * Print all uppercase-only words. * /
-   * GRegex *regex;
-   * GMatchInfo *match_info;
-   *  
-   * regex = g_regex_new ("[A-Z]+", 0, 0, <tt>0</tt>);
-   * g_regex_match (regex, string, 0, &match_info);
-   * while (g_match_info_matches (match_info))
-   * {
-   * gchar *word = g_match_info_fetch (match_info, 0);
-   * g_print ("Found: %s<tt>\\n</tt>", word);
-   * g_free (word);
-   * g_match_info_next (match_info, <tt>0</tt>);
-   * }
-   * g_match_info_free (match_info);
-   * g_regex_unref (regex);
-   * }
-   * ]|
+   * 
+   * [C example ellipted]
    * 
    *  @a string is not copied and is used in MatchInfo internally. If
    * you use any MatchInfo method (except g_match_info_free()) after
@@ -471,33 +452,8 @@ public:
    * To retrieve all the non-overlapping matches of the pattern in
    * string you can use g_match_info_next().
    * 
-   * |[
-   * static void
-   * print_uppercase_words (const gchar *string)
-   * {
-   * / * Print all uppercase-only words. * /
-   * GRegex *regex;
-   * GMatchInfo *match_info;
-   * GError *error = <tt>0</tt>;
-   *  
-   * regex = g_regex_new ("[A-Z]+", 0, 0, <tt>0</tt>);
-   * g_regex_match_full (regex, string, -1, 0, 0, &match_info, &error);
-   * while (g_match_info_matches (match_info))
-   * {
-   * gchar *word = g_match_info_fetch (match_info, 0);
-   * g_print ("Found: %s<tt>\\n</tt>", word);
-   * g_free (word);
-   * g_match_info_next (match_info, &error);
-   * }
-   * g_match_info_free (match_info);
-   * g_regex_unref (regex);
-   * if (error != <tt>0</tt>)
-   * {
-   * g_printerr ("Error while matching: %s<tt>\\n</tt>", error->message);
-   * g_error_free (error);
-   * }
-   * }
-   * ]|
+   * 
+   * [C example ellipted]
    * 
    * @newin{2,14}
    * @param string The string to scan for matches.
@@ -568,7 +524,7 @@ public:
 
   
   /** Using the standard algorithm for regular expression matching only
-   * the longest match in the string is retrieved, it is not possibile
+   * the longest match in the string is retrieved, it is not possible
    * to obtain all the available matches. For instance matching
    * "<a> <b> <c>" against the pattern "<.*>"
    * you get "<a> <b> <c>".
@@ -744,29 +700,24 @@ public:
    * 
    * <variablelist>
    * <varlistentry><term>\l</term>
-   * <listitem>
+   * - 
    * Convert to lower case the next character
-   * </listitem>
    * </varlistentry>
    * <varlistentry><term>\u</term>
-   * <listitem>
+   * - 
    * Convert to upper case the next character
-   * </listitem>
    * </varlistentry>
    * <varlistentry><term>\L</term>
-   * <listitem>
+   * - 
    * Convert to lower case till \E
-   * </listitem>
    * </varlistentry>
    * <varlistentry><term>\U</term>
-   * <listitem>
+   * - 
    * Convert to upper case till \E
-   * </listitem>
    * </varlistentry>
    * <varlistentry><term>\E</term>
-   * <listitem>
+   * - 
    * End case modification
-   * </listitem>
    * </varlistentry>
    * </variablelist>
    * 
@@ -822,42 +773,8 @@ public:
    * 
    * The following example uses g_regex_replace_eval() to replace multiple
    * strings at once:
-   * |[
-   * static <tt>bool</tt>
-   * eval_cb (const GMatchInfo *info,
-   * GString          *res,
-   * gpointer          data)
-   * {
-   * gchar *match;
-   * gchar *r;
    * 
-   * match = g_match_info_fetch (info, 0);
-   * r = g_hash_table_lookup ((GHashTable *)data, match);
-   * g_string_append (res, r);
-   * g_free (match);
-   * 
-   * return <tt>false</tt>;
-   * }
-   * 
-   * / * ... * /
-   * 
-   * GRegex *reg;
-   * GHashTable *h;
-   * gchar *res;
-   * 
-   * h = g_hash_table_new (g_str_hash, g_str_equal);
-   * 
-   * g_hash_table_insert (h, "1", "ONE");
-   * g_hash_table_insert (h, "2", "TWO");
-   * g_hash_table_insert (h, "3", "THREE");
-   * g_hash_table_insert (h, "4", "FOUR");
-   * 
-   * reg = g_regex_new ("1|2|3|4", 0, 0, <tt>0</tt>);
-   * res = g_regex_replace_eval (reg, text, -1, 0, 0, eval_cb, h, <tt>0</tt>);
-   * g_hash_table_destroy (h);
-   * 
-   * / * ... * /
-   * ]|
+   * [C example ellipted]
    * 
    * @newin{2,14}
    * @param string String to perform matches against.

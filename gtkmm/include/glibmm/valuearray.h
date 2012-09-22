@@ -28,6 +28,7 @@
 #include <glibmm/value.h>
 #include <sigc++/functors/slot.h>
 
+ 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 extern "C" { typedef struct _GValueArray GValueArray; }
 #endif
@@ -103,18 +104,62 @@ public:
   bool get_nth(guint index, Glib::ValueBase& value);
   
 
+  /** Insert a copy of @a value as last element of @a value_array. If @a value is
+   * <tt>0</tt>, an uninitialized value is appended.
+   * 
+   * Deprecated: 2.32: Use Array and Glib::array_append_val() instead.
+   * @param value Value to copy into ValueArray, or <tt>0</tt>.
+   * @return The ValueArray passed in as @a value_array.
+   */
+
   Glib::ValueArray& append(const Glib::ValueBase& value);
 
   
+  /** Insert a copy of @a value as first element of @a value_array. If @a value is
+   * <tt>0</tt>, an uninitialized value is prepended.
+   * 
+   * 
+   * Deprecated: 2.32: Use Array and Glib::array_prepend_val() instead.
+   * @param value Value to copy into ValueArray, or <tt>0</tt>.
+   * @return The ValueArray passed in as @a value_array.
+   */
+
   Glib::ValueArray& prepend(const Glib::ValueBase& value);
 
   
+  /** Insert a copy of @a value at specified position into @a value_array. If @a value
+   * is <tt>0</tt>, an uninitialized value is inserted.
+   * 
+   * Deprecated: 2.32: Use Array and Glib::array_insert_val() instead.
+   * @param index Insertion position, must be <= value_array->n_values.
+   * @param value Value to copy into ValueArray, or <tt>0</tt>.
+   * @return The ValueArray passed in as @a value_array.
+   */
+
   Glib::ValueArray& insert(guint index, const Glib::ValueBase& value);
 
   
+  /** Remove the value at position @a index from @a value_array.
+   * 
+   * Deprecated: 2.32: Use Array and g_array_remove_index() instead.
+   * @param index Position of value to remove, which must be less than
+   * <code>value_array->n_values</code>.
+   * @return The ValueArray passed in as @a value_array.
+   */
+
   Glib::ValueArray& remove(guint index);
 
   
+  /** Sort @a value_array using @a compare_func to compare the elements according to
+   * the semantics of CompareFunc.
+   * 
+   * The current implementation uses Quick-Sort as sorting algorithm.
+   * 
+   * Deprecated: 2.32: Use Array and g_array_sort().
+   * @param compare_func Function to compare elements.
+   * @return The ValueArray passed in as @a value_array.
+   */
+
   Glib::ValueArray& sort(const SlotCompare& compare_func);
   
 

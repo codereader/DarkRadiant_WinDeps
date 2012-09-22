@@ -4,7 +4,8 @@
 #define _GIOMM_DBUSPROXY_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -51,6 +52,8 @@ namespace Gio
 
 namespace DBus
 {
+//The GMMPROC_EXTRA_NAMESPACE() macro is a hint to generate_wrap_init.pl to put it in the DBus sub-namespace
+
 
 /** @addtogroup giommEnums giomm Enums and Flags */
 
@@ -70,7 +73,8 @@ enum ProxyFlags
   PROXY_FLAGS_NONE = 0x0,
   PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES = (1<<0),
   PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS = (1<<1),
-  PROXY_FLAGS_DO_NOT_AUTO_START = (1<<2)
+  PROXY_FLAGS_DO_NOT_AUTO_START = (1<<2),
+  PROXY_FLAGS_GET_INVALIDATED_PROPERTIES = (1<<3)
 };
 
 /** @ingroup giommEnums */
@@ -252,11 +256,11 @@ public:
    * at @a object_path owned by @a name at @a connection and asynchronously
    * loads D-Bus properties unless the
    * DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES flag is used. Connect to
-   * the DBusProxy::g-properties-changed signal to get notified about
+   * the DBusProxy::signal_g_properties_changed() signal to get notified about
    * property changes.
    * 
    * If the DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS flag is not set, also sets up
-   * match rules for signals. Connect to the DBusProxy::g-signal signal
+   * match rules for signals. Connect to the DBusProxy::signal_g_signal() signal
    * to handle signals from the remote object.
    * 
    * If @a name is a well-known name and the
@@ -322,7 +326,7 @@ public:
    * DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES flag is used.
    * 
    * If the DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS flag is not set, also sets up
-   * match rules for signals. Connect to the DBusProxy::g-signal signal
+   * match rules for signals. Connect to the DBusProxy::signal_g_signal() signal
    * to handle signals from the remote object.
    * 
    * If @a name is a well-known name and the
@@ -420,7 +424,8 @@ public:
    * @newin{2,26}
    * @param bus_type A BusType.
    * @param flags Flags used when constructing the proxy.
-   * @param info A DBusInterfaceInfo specifying the minimal interface that @a proxy conforms to or <tt>0</tt>.
+   * @param info A DBusInterfaceInfo specifying the minimal interface
+   * that @a proxy conforms to or <tt>0</tt>.
    * @param name A bus name (well-known or unique).
    * @param object_path An object path.
    * @param interface_name A D-Bus interface name.
@@ -479,8 +484,8 @@ public:
   
   /** The unique name that owns the name that @a proxy is for or <tt>0</tt> if
    * no-one currently owns that name. You may connect to the
-   * Object::notify signal to track changes to the
-   * DBusProxy:g-name-owner property.
+   * Object::signal_notify() signal to track changes to the
+   * DBusProxy::property_g_name_owner() property.
    * 
    * @newin{2,26}
    * @return The name owner or <tt>0</tt> if no name owner exists. Free with Glib::free().
@@ -506,7 +511,7 @@ public:
    * passed as @a timeout_msec in the g_dbus_proxy_call() and
    * g_dbus_proxy_call_sync() functions.
    * 
-   * See the DBusProxy:g-default-timeout property for more details.
+   * See the DBusProxy::property_g_default_timeout() property for more details.
    * 
    * @newin{2,26}
    * @return Timeout to use for @a proxy.
@@ -517,7 +522,7 @@ public:
    * passed as @a timeout_msec in the g_dbus_proxy_call() and
    * g_dbus_proxy_call_sync() functions.
    * 
-   * See the DBusProxy:g-default-timeout property for more details.
+   * See the DBusProxy::property_g_default_timeout() property for more details.
    * 
    * @newin{2,26}
    * @param timeout_msec Timeout in milliseconds.
@@ -547,18 +552,13 @@ public:
    * property cache.
    * 
    * If @a proxy has an expected interface (see
-   * DBusProxy:g-interface-info), then @a property_name (for existence)
-   * and @a value (for the type) is checked against it.
+   * DBusProxy::property_g_interface_info()) and @a property_name is referenced by
+   * it, then @a value is checked against the type of the property.
    * 
    * If the @a value Variant is floating, it is consumed. This allows
    * convenient 'inline' use of Glib::variant_new(), e.g.
-   * |[
-   * g_dbus_proxy_set_cached_property (proxy,
-   * "SomeProperty",
-   * g_variant_new ("(si)",
-   * "A String",
-   * 42));
-   * ]|
+   * 
+   * [C example ellipted]
    * 
    * Normally you will not need to use this method since @a proxy is
    * tracking changes using the
@@ -585,29 +585,25 @@ public:
   /** Gets the names of all cached properties on @a proxy.
    * 
    * @newin{2,26}
-   * @return A <tt>0</tt>-terminated array of strings or <tt>0</tt> if @a proxy has
-   * no cached properties. Free the returned array with Glib::strfreev().
+   * @return A <tt>0</tt>-terminated array of strings or <tt>0</tt> if
+   *  @a proxy has no cached properties. Free the returned array with
+   * Glib::strfreev().
    */
   Glib::StringArrayHandle get_cached_property_names() const;
 
   
   /** Ensure that interactions with @a proxy conform to the given
-   * interface.  For example, when completing a method call, if the type
-   * signature of the message isn't what's expected, the given Error
-   * is set.  Signals that have a type signature mismatch are simply
-   * dropped.
-   * 
-   * See the DBusProxy:g-interface-info property for more details.
+   * interface. See the DBusProxy::property_g_interface_info() property for more
+   * details.
    * 
    * @newin{2,26}
    * @param info Minimum interface this proxy conforms to or <tt>0</tt> to unset.
    */
   void set_interface_info(const Glib::RefPtr<InterfaceInfo>& info);
   
-  /** Returns the DBusInterfaceInfo, if any, specifying the minimal
-   * interface that @a proxy conforms to.
-   * 
-   * See the DBusProxy:g-interface-info property for more details.
+  /** Returns the DBusInterfaceInfo, if any, specifying the interface
+   * that @a proxy conforms to. See the DBusProxy::property_g_interface_info()
+   * property for more details.
    * 
    * @newin{2,26}
    * @return A DBusInterfaceInfo or <tt>0</tt>. Do not unref the returned
@@ -615,10 +611,9 @@ public:
    */
   Glib::RefPtr<InterfaceInfo> get_interface_info();
   
-  /** Returns the DBusInterfaceInfo, if any, specifying the minimal
-   * interface that @a proxy conforms to.
-   * 
-   * See the DBusProxy:g-interface-info property for more details.
+  /** Returns the DBusInterfaceInfo, if any, specifying the interface
+   * that @a proxy conforms to. See the DBusProxy::property_g_interface_info()
+   * property for more details.
    * 
    * @newin{2,26}
    * @return A DBusInterfaceInfo or <tt>0</tt>. Do not unref the returned
@@ -642,25 +637,23 @@ public:
    * 
    * If the @parameters Variant is floating, it is consumed. This allows
    * convenient 'inline' use of Glib::variant_new(), e.g.:
-   * |[
-   * g_dbus_proxy_call (proxy,
-   * "TwoStrings",
-   * g_variant_new ("(ss)",
-   * "Thing One",
-   * "Thing Two"),
-   * G_DBUS_CALL_FLAGS_NONE,
-   * -1,
-   * <tt>0</tt>,
-   * (GAsyncReadyCallback) two_strings_done,
-   * &data);
-   * ]|
+   * 
+   * [C example ellipted]
+   * 
+   * If @a proxy has an expected interface (see
+   * DBusProxy::property_g_interface_info()) and @a method_name is referenced by it,
+   * then the return value is checked against the return type.
    * 
    * This is an asynchronous method. When the operation is finished,
    *  @a callback will be invoked in the
-   *  of the thread you are calling this method from.
+   * thread-default main loop
+   * of the thread you are calling this method from.
    * You can then call g_dbus_proxy_call_finish() to get the result of
    * the operation. See g_dbus_proxy_call_sync() for the synchronous
    * version of this method.
+   * 
+   * If @a callback is <tt>0</tt> then the D-Bus method call message will be sent with
+   * the DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED flag set.
    * 
    * @newin{2,26}
    * @param method_name Name of method to invoke.
@@ -753,7 +746,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_g_default_timeout() ;
+  Glib::PropertyProxy< int > property_g_default_timeout() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -763,7 +756,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_g_default_timeout() const;
+  Glib::PropertyProxy_ReadOnly< int > property_g_default_timeout() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
  #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -773,7 +766,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<ProxyFlags> property_g_flags() const;
+  Glib::PropertyProxy_ReadOnly< ProxyFlags > property_g_flags() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -804,7 +797,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_g_interface_name() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_g_interface_name() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -815,7 +808,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_g_name() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_g_name() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -826,7 +819,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_g_name_owner() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_g_name_owner() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -837,26 +830,53 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_g_object_path() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_g_object_path() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
   typedef std::map<Glib::ustring, Glib::VariantBase> MapChangedProperties;
 
+  // TODO: Should the signal names match the C API names (ie. the C API names
+  // are g_signal_name while these are just signal_name).
+
   // The DBus API ensures that the variant changed_properties is of type "DICT<STRING,VARIANT>"
    
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%properties_changed(const MapChangedProperties& changed_properties, const std::vector<Glib::ustring>& invalidated_properties)</tt>
+   *
+   * Emitted when one or more D-Bus properties on @a proxy changes. The
+   * local cache has already been updated when this signal fires. Note
+   * that both @a changed_properties and @a invalidated_properties are
+   * guaranteed to never be <tt>0</tt> (either may be empty though).
+   * 
+   * If the proxy has the flag
+   * DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES set, then
+   *  @a invalidated_properties will always be empty.
+   * 
+   * This signal corresponds to the
+   * <tt>PropertiesChanged</tt> D-Bus signal on the
+   * <tt>org.freedesktop.DBus.Properties</tt> interface.
+   * 
+   * @newin{2,26}
+   * @param changed_properties A Variant containing the properties that changed.
+   * @param invalidated_properties A <tt>0</tt> terminated array of properties that was invalidated.
    */
 
   Glib::SignalProxy2< void,const MapChangedProperties&,const std::vector<Glib::ustring>& > signal_properties_changed();
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%signal(const Glib::ustring& sender_name, const Glib::ustring& signal_name, const Glib::VariantContainerBase& parameters)</tt>
+   *
+   * Emitted when a signal from the remote object and interface that @a proxy is for, has been received.
+   * 
+   * @newin{2,26}
+   * @param sender_name The sender of the signal or <tt>0</tt> if the connection is not a bus connection.
+   * @param signal_name The name of the signal.
+   * @param parameters A Variant tuple with parameters for the signal.
    */
 
   Glib::SignalProxy3< void,const Glib::ustring&,const Glib::ustring&,const Glib::VariantContainerBase& > signal_signal();
@@ -871,7 +891,9 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_properties_changed().
   virtual void on_properties_changed(const MapChangedProperties& changed_properties, const std::vector<Glib::ustring>& invalidated_properties);
+  /// This is a default handler for the signal signal_signal().
   virtual void on_signal(const Glib::ustring& sender_name, const Glib::ustring& signal_name, const Glib::VariantContainerBase& parameters);
 
 

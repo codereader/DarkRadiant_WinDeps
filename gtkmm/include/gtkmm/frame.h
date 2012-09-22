@@ -4,12 +4,13 @@
 #define _GTKMM_FRAME_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: frame.hg,v 1.6 2006/04/12 11:11:25 murrayc Exp $ */
 
 /* frame.h
- * 
+ *
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 
@@ -85,8 +86,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -117,7 +122,7 @@ public:
 
 
   //TODO: Add a bool use_markup arg to set_label() as a convenience - it would have to use set_label_widget().
-    
+
   
   /** Set the label to appear in the top edge of the frame.
    * Label alignment defaults to the upper left corner of the frame.
@@ -175,13 +180,15 @@ public:
    * 0.0 or 1.0 the gap in the frame won't be painted because the label
    * will be completely above or below the frame.
    */
-  void set_label_align(AlignmentEnum xalign, AlignmentEnum yalign =  Gtk::ALIGN_CENTER);
+  void set_label_align(Align xalign, Align yalign =  Gtk::ALIGN_CENTER);
 
   
   /** Retrieves the X and Y alignment of the frame's label. See
    * set_label_align().
-   * @param xalign Location to store X alignment of frame's label, or <tt>0</tt>.
-   * @param yalign Location to store X alignment of frame's label, or <tt>0</tt>.
+   * @param xalign Location to store X alignment of
+   * frame's label, or <tt>0</tt>.
+   * @param yalign Location to store X alignment of
+   * frame's label, or <tt>0</tt>.
    */
   void get_label_align(float& xalign, float& yalign) const;
 
@@ -203,7 +210,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_label() ;
+  Glib::PropertyProxy< Glib::ustring > property_label() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -213,7 +220,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_label() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_label() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -223,7 +230,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<double> property_label_xalign() ;
+  Glib::PropertyProxy< double > property_label_xalign() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -233,7 +240,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<double> property_label_xalign() const;
+  Glib::PropertyProxy_ReadOnly< double > property_label_xalign() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -243,7 +250,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<double> property_label_yalign() ;
+  Glib::PropertyProxy< double > property_label_yalign() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -253,7 +260,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<double> property_label_yalign() const;
+  Glib::PropertyProxy_ReadOnly< double > property_label_yalign() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   //deprecated: _WRAP_PROPERTY("shadow", ShadowType)
@@ -264,7 +271,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<ShadowType> property_shadow_type() ;
+  Glib::PropertyProxy< ShadowType > property_shadow_type() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -274,7 +281,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<ShadowType> property_shadow_type() const;
+  Glib::PropertyProxy_ReadOnly< ShadowType > property_shadow_type() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -284,7 +291,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Widget*> property_label_widget() ;
+  Glib::PropertyProxy< Widget* > property_label_widget() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -294,11 +301,13 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Widget*> property_label_widget() const;
+  Glib::PropertyProxy_ReadOnly< Widget* > property_label_widget() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
 protected:
+ 
+
     virtual void compute_child_allocation_vfunc(Allocation& allocation);
 
 

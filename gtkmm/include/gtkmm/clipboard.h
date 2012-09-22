@@ -4,7 +4,8 @@
 #define _GTKMM_CLIPBOARD_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: clipboard.hg,v 1.17 2006/06/13 17:16:26 murrayc Exp $ */
 
@@ -23,16 +24,17 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+#include <vector>
 
 #include <gdkmm/display.h> 
 #include <gdkmm/pixbuf.h>
 #include <gtkmm/targetentry.h>
 #include <gtkmm/selectiondata.h>
 #include <glibmm/object.h>
-#include <glibmm/containers.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -105,8 +107,11 @@ protected:
 public:
   virtual ~Clipboard();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -149,6 +154,7 @@ public:
    * 
    * (Passing Gdk::NONE is the same as using <tt>gdk_atom_intern
    * ("CLIPBOARD", <tt>false</tt>)</tt>. See 
+   * http://www.freedesktop.org/Standards/clipboards-spec
    * for a detailed discussion of the "CLIPBOARD" vs. "PRIMARY"
    * selections under the X window system. On Win32 the
    * Gdk::SELECTION_PRIMARY clipboard is essentially ignored.)
@@ -162,14 +168,11 @@ public:
    * 
    * @newin{2,2}
    * @param display The display for which the clipboard is to be retrieved or created.
-   * @param selection A Gdk::Atom which identifies the clipboard
-   * to use.
+   * @param selection A Gdk::Atom which identifies the clipboard to use.
    * @return The appropriate clipboard object. If no
-   * clipboard already exists, a new one will
-   * be created. Once a clipboard object has
-   * been created, it is persistent and, since
-   * it is owned by GTK+, must not be freed or
-   * unrefd.
+   * clipboard already exists, a new one will be created. Once a clipboard
+   * object has been created, it is persistent and, since it is owned by
+   * GTK+, must not be freed or unrefd.
    */
   static Glib::RefPtr<Clipboard> get_for_display(const Glib::RefPtr<Gdk::Display>& display, GdkAtom selection =  GDK_SELECTION_CLIPBOARD);
 
@@ -207,22 +210,24 @@ public:
   *               the clipboard data failed then the provided callback methods
   *               will be ignored.
   */
-  bool set(const ArrayHandle_TargetEntry& targets, const SlotGet& slot_get, const SlotClear& slot_clear);
+  bool set(const std::vector<TargetEntry>& targets, const SlotGet& slot_get, const SlotClear& slot_clear);
   
   
-  /** If the clipboard contents callbacks were set with 
-   * set_with_owner(), and the set_with_data() or 
-   * clear() has not subsequently called, returns the owner set 
+  /** If the clipboard contents callbacks were set with
+   * set_with_owner(), and the set_with_data() or
+   * clear() has not subsequently called, returns the owner set
    * by set_with_owner().
-   * @return The owner of the clipboard, if any; otherwise <tt>0</tt>.
+   * @return The owner of the clipboard, if any;
+   * otherwise <tt>0</tt>.
    */
   Glib::RefPtr<Glib::Object> get_owner();
   
-  /** If the clipboard contents callbacks were set with 
-   * set_with_owner(), and the set_with_data() or 
-   * clear() has not subsequently called, returns the owner set 
+  /** If the clipboard contents callbacks were set with
+   * set_with_owner(), and the set_with_data() or
+   * clear() has not subsequently called, returns the owner set
    * by set_with_owner().
-   * @return The owner of the clipboard, if any; otherwise <tt>0</tt>.
+   * @return The owner of the clipboard, if any;
+   * otherwise <tt>0</tt>.
    */
   Glib::RefPtr<const Glib::Object> get_owner() const;
 
@@ -311,8 +316,8 @@ public:
   void request_rich_text(const Glib::RefPtr<TextBuffer>& buffer, const SlotRichTextReceived& slot);
   
 
-  /// For instance: void on_uris_received(const Glib::StringArrayHandle& uris);
-  typedef sigc::slot<void, const Glib::StringArrayHandle&> SlotUrisReceived;
+  /// For instance: void on_uris_received(const std::vector<Glib::ustring>& uris);
+  typedef sigc::slot<void, const std::vector<Glib::ustring>&> SlotUrisReceived;
 
  /** Requests the contents of the clipboard as URIs. When the URIs are
   * later received @a slot will be called.
@@ -350,8 +355,8 @@ public:
   void request_image(const SlotImageReceived& slot);
   
 
-  /// For instance: void on_targetsreceived(const Glib::StringArrayHandle& targets);
-  typedef sigc::slot<void, const Glib::StringArrayHandle&> SlotTargetsReceived;
+  /// For instance: void on_targets_received(const std::vector<Glib::ustring>& targets);
+  typedef sigc::slot<void, const std::vector<Glib::ustring>&> SlotTargetsReceived;
 
   /** Requests the contents of the clipboard as list of supported targets.
    * When the list is later received, callback will be called.
@@ -361,9 +366,7 @@ public:
    *
    * @param slot a function to call when the targets are received,
    *             or the retrieval fails. (It will always be called
-   *             one way or the other.) Remember that Glib::StringArrayHandle
-   *             is an intermediate type, so you should convert it to a
-   *             standard C++ container.
+   *             one way or the other.)
    *
    * @newin{2,4}
    */
@@ -405,12 +408,12 @@ public:
    * timeouts, etc, may be dispatched during the wait.
    * 
    * @newin{2,6}
-   * @return A newly-allocated Gdk::Pixbuf object which must
-   * be disposed with Glib::object_unref(), or <tt>0</tt> if 
-   * retrieving the selection data failed. (This 
-   * could happen for various reasons, in particular 
-   * if the clipboard was empty or if the contents of 
-   * the clipboard could not be converted into an image.).
+   * @return A newly-allocated Gdk::Pixbuf
+   * object which must be disposed with Glib::object_unref(), or
+   * <tt>0</tt> if retrieving the selection data failed. (This could
+   * happen for various reasons, in particular if the clipboard
+   * was empty or if the contents of the clipboard could not be
+   * converted into an image.).
    */
   Glib::RefPtr<Gdk::Pixbuf> wait_for_image() const;
   
@@ -495,7 +498,7 @@ public:
    *
    * @newin{2,4}
    */
-  Glib::StringArrayHandle wait_for_targets() const;
+  std::vector<Glib::ustring> wait_for_targets() const;
   
 
   /** Requests the contents of the clipboard as URIs. This function waits
@@ -511,7 +514,7 @@ public:
    * if the clipboard was empty or if the contents of
    * the clipboard could not be converted into URI form.).
    */
-  Glib::StringArrayHandle wait_for_uris() const;
+  std::vector<Glib::ustring> wait_for_uris() const;
 
   /** Hints that the clipboard data should be stored somewhere when the application exits or when store() 
    * is called.
@@ -521,7 +524,7 @@ public:
    *
    * @param targets Array containing information about which forms should be stored.
    */
-  void set_can_store(const ArrayHandle_TargetEntry& targets);
+  void set_can_store(const std::vector<TargetEntry>& targets);
   
   /** Hints that all forms of clipboard data should be stored somewhere when the application exits or when store() 
    * is called.
@@ -539,11 +542,17 @@ public:
    */
   void store();
 
-  //We use no_default_handler because this signal was added and we don't want to break the ABI by adding a virtual function.
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%owner_change(GdkEventOwnerChange* event)</tt>
+   *
+   * The signal_owner_change() signal is emitted when GTK+ receives an
+   * event that indicates that the ownership of the selection
+   * associated with @a clipboard has changed.
+   * 
+   * @newin{2,6}
+   * @param event The @a GdkEventOwnerChange event.
    */
 
   Glib::SignalProxy1< void,GdkEventOwnerChange* > signal_owner_change();

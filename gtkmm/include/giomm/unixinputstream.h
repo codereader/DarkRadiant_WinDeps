@@ -4,7 +4,8 @@
 #define _GIOMM_UNIXINPUTSTREAM_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -139,7 +140,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_fd() const;
+  Glib::PropertyProxy_ReadOnly< int > property_fd() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -150,7 +151,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_close_fd() ;
+  Glib::PropertyProxy< bool > property_close_fd() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -160,7 +161,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_close_fd() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_close_fd() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

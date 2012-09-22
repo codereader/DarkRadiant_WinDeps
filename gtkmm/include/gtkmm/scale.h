@@ -4,12 +4,13 @@
 #define _GTKMM_SCALE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: scale.hg,v 1.7 2006/04/12 11:11:25 murrayc Exp $ */
 
 /* scale.h
- * 
+ *
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/range.h>
@@ -38,36 +39,21 @@ typedef struct _GtkScaleClass GtkScaleClass;
 
 namespace Gtk
 { class Scale_Class; } // namespace Gtk
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-typedef struct _GtkVScale GtkVScale;
-typedef struct _GtkVScaleClass GtkVScaleClass;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-
-namespace Gtk
-{ class VScale_Class; } // namespace Gtk
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-typedef struct _GtkHScale GtkHScale;
-typedef struct _GtkHScaleClass GtkHScaleClass;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-
-namespace Gtk
-{ class HScale_Class; } // namespace Gtk
 namespace Gtk
 {
 
-/** Abstract base clase for Gtk::HScale and Gtk::VScale.
- * 
+/** A slider widget for selecting a value from a range.
+ *
  * A Gtk::Scale is a slider control used to select a numeric value. To use it,
  * you'll probably want to investigate the methods on its base class,
  * Gtk::Range, in addition to the methods for Gtk::Scale itself. To set the
  * value of a scale, you would normally use set_value(). To detect
  * changes to the value, you would normally use signal_value_changed().
  *
- * The Gtk::Scale widget is an abstract class, used only for deriving the
- * subclasses Gtk::HScale and Gtk::VScale, so you should instantiate them
- * instead.
+ * Note that using the same upper and lower bounds for the Scale (through
+ * the Range methods) will hide the slider itself. This is useful for
+ * applications that want to show an undeterminate value on the scale, without
+ * changing the layout of the application (such as movie or music players).
  *
  * @ingroup Widgets
  */
@@ -101,8 +87,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -122,18 +112,28 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_format_value().
   virtual Glib::ustring on_format_value(double value);
 
 
 private:
 
-protected:
-  Scale();
 public:
+
+  Scale();
+
+  //Note that we try to use the same default parameter value as the default property value.
+  /**
+   * @newin{3,2}
+   */
+  explicit Scale(Orientation orientation);
   
+  //Note that we try to use the same default parameter value as the default property value.
+  explicit Scale(const Glib::RefPtr<Adjustment>& adjustment, Orientation orientation = ORIENTATION_HORIZONTAL);
   
+
   /** Set the number of decimal digits.
-   * 
+   *
    * This also causes the adjustment to be rounded off so the retrieved value
    * matches the value the user sees. Setting digits to 1 gives for example
    * 1.0, 2 gives 1.00, etc.
@@ -165,6 +165,24 @@ public:
    */
   PositionType get_value_pos() const;
 
+
+  /** If @a has_origin is set to <tt>true</tt> (the default),
+   * the scale will highlight the part of the scale
+   * between the origin (bottom or left side) of the scale
+   * and the current value.
+   * 
+   * @newin{3,4}
+   * @param has_origin <tt>true</tt> if the scale has an origin.
+   */
+  void set_has_origin(bool has_origin =  true);
+  
+  /** Returns whether the scale has an origin.
+   * 
+   * @newin{3,4}
+   * @return <tt>true</tt> if the scale has an origin.
+   */
+  bool get_has_origin() const;
+
   
   /** Gets the Pango::Layout used to display the scale. The returned
    * object is owned by the scale so does not need to be freed by
@@ -172,7 +190,7 @@ public:
    * 
    * @newin{2,4}
    * @return The Pango::Layout for this scale,
-   * or <tt>0</tt> if the Gtk::Scale:draw-value property is <tt>false</tt>.
+   * or <tt>0</tt> if the Gtk::Scale::property_draw_value() property is <tt>false</tt>.
    */
   Glib::RefPtr<Pango::Layout> get_layout();
   
@@ -182,7 +200,7 @@ public:
    * 
    * @newin{2,4}
    * @return The Pango::Layout for this scale,
-   * or <tt>0</tt> if the Gtk::Scale:draw-value property is <tt>false</tt>.
+   * or <tt>0</tt> if the Gtk::Scale::property_draw_value() property is <tt>false</tt>.
    */
   Glib::RefPtr<const Pango::Layout> get_layout() const;
   
@@ -191,7 +209,7 @@ public:
    * when using the Pango::Layout function you need to convert to
    * and from pixels using PANGO_PIXELS() or Pango::SCALE. 
    * 
-   * If the Gtk::Scale:draw-value property is <tt>false</tt>, the return 
+   * If the Gtk::Scale::property_draw_value() property is <tt>false</tt>, the return 
    * values are undefined.
    * 
    * @newin{2,4}
@@ -201,24 +219,24 @@ public:
   void get_layout_offsets(int& x, int& y) const;
 
   
-  /** Adds a mark at @a value. 
+  /** Adds a mark at @a value.
    * 
-   * A mark is indicated visually by drawing a tick mark next to the scale, 
-   * and GTK+ makes it easy for the user to position the scale exactly at the 
+   * A mark is indicated visually by drawing a tick mark next to the scale,
+   * and GTK+ makes it easy for the user to position the scale exactly at the
    * marks value.
    * 
-   * If @a markup is not <tt>0</tt>, text is shown next to the tick mark. 
+   * If @a markup is not <tt>0</tt>, text is shown next to the tick mark.
    * 
    * To remove marks from a scale, use clear_marks().
    * 
    * @newin{2,16}
-   * @param value The value at which the mark is placed, must be between 
+   * @param value The value at which the mark is placed, must be between
    * the lower and upper limits of the scales' adjustment.
    * @param position Where to draw the mark. For a horizontal scale, Gtk::POS_TOP
-   * is drawn above the scale, anything else below. For a vertical scale,
-   * Gtk::POS_LEFT is drawn to the left of the scale, anything else to the
-   * right.
-   * @param markup Text to be shown at the mark, using , or <tt>0</tt>.
+   * and Gtk::POS_LEFT are drawn above the scale, anything else below.
+   * For a vertical scale, Gtk::POS_LEFT and Gtk::POS_TOP are drawn to
+   * the left of the scale, anything else to the right.
+   * @param markup Text to be shown at the mark, using Pango markup, or <tt>0</tt>.
    */
   void add_mark(double value, PositionType position, const Glib::ustring& markup);
   
@@ -227,22 +245,28 @@ public:
    * @newin{2,16}
    */
   void clear_marks();
-  
+
       
-  /** Determines how the value is formatted.
-   * 
-   * This can be used to connect a custom function for determining how the
-   * value is formatted. The function (or function object) is given a the value
-   * as a double and should return the representation of it as a Glib::ustring.
-   *
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>Glib::ustring on_my_%format_value(double value)</tt>
+   *
+   * Signal which allows you to change how the scale value is displayed.
+   * Connect a signal handler which returns an allocated string representing 
+   *  @a value. That string will then be used to display the scale's value.
+   * 
+   * Here's an example signal handler which displays a value 1.0 as
+   * with "-->1.0<--".
+   * 
+   * [C example ellipted]
+   * @param value The value to format.
+   * @return Allocated string representing @a value.
    */
 
   Glib::SignalProxy1< Glib::ustring,double > signal_format_value();
 
   // TODO: When we can break ABI, this signal needs to be
-  // Glib::ustring format_value(double value, bool& use_default_formatting), 
+  // Glib::ustring format_value(double value, bool& use_default_formatting),
   // where use_default_formatting specifies whether the return value will actually be a null char*.
 
   /** Number of displayed decimal digits.
@@ -254,7 +278,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_digits() ;
+  Glib::PropertyProxy< int > property_digits() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -264,7 +288,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_digits() const;
+  Glib::PropertyProxy_ReadOnly< int > property_digits() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -277,7 +301,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_draw_value() ;
+  Glib::PropertyProxy< bool > property_draw_value() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -287,7 +311,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_draw_value() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_draw_value() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -300,7 +324,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<PositionType> property_value_pos() ;
+  Glib::PropertyProxy< PositionType > property_value_pos() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -310,7 +334,28 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<PositionType> property_value_pos() const;
+  Glib::PropertyProxy_ReadOnly< PositionType > property_value_pos() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the scale has an origin.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< bool > property_has_origin() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Whether the scale has an origin.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< bool > property_has_origin() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -318,172 +363,19 @@ protected:
 
     virtual void draw_value_vfunc();
 
-  
+
   virtual int calc_digits_(double step) const;
 
 
 };
 
-/** A vertical slider for selecting values.
- * 
- * The Gtk::VScale widget is used to allow the user to select a value using a
- * vertical slider. See the Gtk::Scale documentation for more information
- * on how to use a Gtk::VScale.
- *
- * A VScale widget looks like this:
- * @image html vscale1.png
- *
- * @ingroup Widgets
- */
-
-class VScale : public Scale
-{
-  public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  typedef VScale CppObjectType;
-  typedef VScale_Class CppClassType;
-  typedef GtkVScale BaseObjectType;
-  typedef GtkVScaleClass BaseClassType;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-  virtual ~VScale();
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
-private:
-  friend class VScale_Class;
-  static CppClassType vscale_class_;
-
-  // noncopyable
-  VScale(const VScale&);
-  VScale& operator=(const VScale&);
-
-protected:
-  explicit VScale(const Glib::ConstructParams& construct_params);
-  explicit VScale(GtkVScale* castitem);
-
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  static GType get_type()      G_GNUC_CONST;
-
-
-  static GType get_base_type() G_GNUC_CONST;
-#endif
-
-  ///Provides access to the underlying C GtkObject.
-  GtkVScale*       gobj()       { return reinterpret_cast<GtkVScale*>(gobject_); }
-
-  ///Provides access to the underlying C GtkObject.
-  const GtkVScale* gobj() const { return reinterpret_cast<GtkVScale*>(gobject_); }
-
-
-public:
-  //C++ methods used to invoke GTK+ virtual functions:
-
-protected:
-  //GTK+ Virtual Functions (override these to change behaviour):
-
-  //Default Signal Handlers::
-
-
-private:
-
-public:
-  VScale();
-
-  /**
-  * Construct a VScale with the given minimum and maximum. The step size is the
-  * distance the slider moves when the arrow keys are used to adjust the scale
-  * value.
-  */
-  VScale(double min, double max, double step);
-  explicit VScale(Adjustment& adjustment);
-  
-
-};
-
-/** A horizontal slider for selecting values.
- *
- * The Gtk::HScale widget is used to allow the user to select a value using a
- * horizontal slider. See the Gtk::Scale documentation for more information
- * on how to use a Gtk::HScale.
- *
- * The HScale widget looks like this:
- * @image html hscale1.png
- * 
- * @ingroup Widgets
- */
-
-class HScale : public Scale
-{
-  public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  typedef HScale CppObjectType;
-  typedef HScale_Class CppClassType;
-  typedef GtkHScale BaseObjectType;
-  typedef GtkHScaleClass BaseClassType;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-  virtual ~HScale();
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
-private:
-  friend class HScale_Class;
-  static CppClassType hscale_class_;
-
-  // noncopyable
-  HScale(const HScale&);
-  HScale& operator=(const HScale&);
-
-protected:
-  explicit HScale(const Glib::ConstructParams& construct_params);
-  explicit HScale(GtkHScale* castitem);
-
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  static GType get_type()      G_GNUC_CONST;
-
-
-  static GType get_base_type() G_GNUC_CONST;
-#endif
-
-  ///Provides access to the underlying C GtkObject.
-  GtkHScale*       gobj()       { return reinterpret_cast<GtkHScale*>(gobject_); }
-
-  ///Provides access to the underlying C GtkObject.
-  const GtkHScale* gobj() const { return reinterpret_cast<GtkHScale*>(gobject_); }
-
-
-public:
-  //C++ methods used to invoke GTK+ virtual functions:
-
-protected:
-  //GTK+ Virtual Functions (override these to change behaviour):
-
-  //Default Signal Handlers::
-
-
-private:
-
-public:
-  HScale();
-  /**
-  * Construct a HScale with the given minimum and maximum. The step size is the
-  * distance the slider moves when the arrow keys are used to adjust the scale
-  * value.
-  */
-  HScale(double min, double max, double step);
-  explicit HScale(Adjustment& adjustment);
-  
-
-};
-
 } /* namespace Gtk */
+
+
+//Include the deprecated header, 
+//whose classes were previously in this header,
+//to preserve the "API" of the includes.
+#include <gtkmm/hvscale.h>
 
 
 namespace Glib
@@ -497,34 +389,6 @@ namespace Glib
    * @relates Gtk::Scale
    */
   Gtk::Scale* wrap(GtkScale* object, bool take_copy = false);
-} //namespace Glib
-
-
-namespace Glib
-{
-  /** A Glib::wrap() method for this object.
-   * 
-   * @param object The C instance.
-   * @param take_copy False if the result should take ownership of the C instance. True if it should take a new copy or ref.
-   * @result A C++ instance that wraps this C instance.
-   *
-   * @relates Gtk::VScale
-   */
-  Gtk::VScale* wrap(GtkVScale* object, bool take_copy = false);
-} //namespace Glib
-
-
-namespace Glib
-{
-  /** A Glib::wrap() method for this object.
-   * 
-   * @param object The C instance.
-   * @param take_copy False if the result should take ownership of the C instance. True if it should take a new copy or ref.
-   * @result A C++ instance that wraps this C instance.
-   *
-   * @relates Gtk::HScale
-   */
-  Gtk::HScale* wrap(GtkHScale* object, bool take_copy = false);
 } //namespace Glib
 
 

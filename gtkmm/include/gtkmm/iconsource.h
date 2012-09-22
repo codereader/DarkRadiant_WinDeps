@@ -4,7 +4,8 @@
 #define _GTKMM_ICONSOURCE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: iconsource.hg,v 1.5 2006/04/12 11:11:25 murrayc Exp $ */
 
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library, ) if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library, ) if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gdkmm/pixbuf.h>
@@ -44,9 +45,11 @@ class IconSource
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   typedef IconSource CppObjectType;
   typedef GtkIconSource BaseObjectType;
-
-  static GType get_type() G_GNUC_CONST;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
+  static GType get_type() G_GNUC_CONST;
 
   IconSource();
 
@@ -93,8 +96,8 @@ public:
   /** Retrieves the source filename, or <tt>0</tt> if none is set. The
    * filename is not a copy, and should not be modified or expected to
    * persist beyond the lifetime of the icon source.
-   * @return Image filename. This string must not be modified
-   * or freed.
+   * @return Image filename. This string must not
+   * be modified or freed.
    */
   Glib::ustring get_filename() const;
   

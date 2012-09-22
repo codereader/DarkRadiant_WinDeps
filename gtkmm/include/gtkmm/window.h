@@ -4,7 +4,8 @@
 #define _GTKMM_WINDOW_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: window.hg,v 1.20 2006/05/10 20:59:28 murrayc Exp $ */
 
@@ -23,13 +24,15 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <vector>
+
 #include <glibmm/object.h>
-#include <glibmm/listhandle.h>
 #include <gtkmm/bin.h>
+#include <gtkmm/application.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -85,8 +88,11 @@ protected:
 public:
   virtual ~WindowGroup();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -175,8 +181,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -196,8 +206,8 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_set_focus().
   virtual void on_set_focus(Widget* focus);
-  virtual bool on_frame_event(GdkEvent* event);
 
 
 private:
@@ -214,7 +224,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<WindowType> property_type() const;
+  Glib::PropertyProxy_ReadOnly< WindowType > property_type() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -225,7 +235,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_title() ;
+  Glib::PropertyProxy< Glib::ustring > property_title() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -235,7 +245,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_title() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_title() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -245,49 +255,9 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_WriteOnly<Glib::ustring> property_startup_id() ;
+  Glib::PropertyProxy_WriteOnly< Glib::ustring > property_startup_id() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If TRUE, the window has no mimimum size. Setting this to TRUE is 99% of the time a bad idea.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<bool> property_allow_shrink() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** If TRUE, the window has no mimimum size. Setting this to TRUE is 99% of the time a bad idea.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<bool> property_allow_shrink() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If TRUE, users can expand the window beyond its minimum size.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<bool> property_allow_grow() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** If TRUE, users can expand the window beyond its minimum size.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<bool> property_allow_grow() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** If TRUE, users can resize the window.
@@ -296,7 +266,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_resizable() ;
+  Glib::PropertyProxy< bool > property_resizable() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -306,7 +276,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_resizable() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_resizable() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -316,7 +286,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_modal() ;
+  Glib::PropertyProxy< bool > property_modal() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -326,7 +296,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_modal() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_modal() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -336,7 +306,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<WindowPosition> property_window_position() ;
+  Glib::PropertyProxy< WindowPosition > property_window_position() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -346,7 +316,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<WindowPosition> property_window_position() const;
+  Glib::PropertyProxy_ReadOnly< WindowPosition > property_window_position() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -356,7 +326,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_default_width() ;
+  Glib::PropertyProxy< int > property_default_width() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -366,7 +336,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_default_width() const;
+  Glib::PropertyProxy_ReadOnly< int > property_default_width() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -376,7 +346,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_default_height() ;
+  Glib::PropertyProxy< int > property_default_height() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -386,7 +356,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_default_height() const;
+  Glib::PropertyProxy_ReadOnly< int > property_default_height() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -396,7 +366,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_destroy_with_parent() ;
+  Glib::PropertyProxy< bool > property_destroy_with_parent() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -406,7 +376,27 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_destroy_with_parent() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_destroy_with_parent() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** If this window's titlebar should be hidden when the window is maximized.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< bool > property_hide_titlebar_when_maximized() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** If this window's titlebar should be hidden when the window is maximized.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< bool > property_hide_titlebar_when_maximized() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -436,7 +426,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_mnemonics_visible() ;
+  Glib::PropertyProxy< bool > property_mnemonics_visible() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -446,7 +436,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_mnemonics_visible() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_mnemonics_visible() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -456,7 +446,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_icon_name() ;
+  Glib::PropertyProxy< Glib::ustring > property_icon_name() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -466,7 +456,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_icon_name() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_icon_name() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -496,7 +486,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_is_active() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_is_active() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -507,7 +497,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_has_toplevel_focus() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_has_toplevel_focus() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -518,7 +508,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<GdkWindowTypeHint> property_type_hint() ;
+  Glib::PropertyProxy< GdkWindowTypeHint > property_type_hint() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -528,7 +518,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<GdkWindowTypeHint> property_type_hint() const;
+  Glib::PropertyProxy_ReadOnly< GdkWindowTypeHint > property_type_hint() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -538,7 +528,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_skip_taskbar_hint() ;
+  Glib::PropertyProxy< bool > property_skip_taskbar_hint() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -548,7 +538,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_skip_taskbar_hint() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_skip_taskbar_hint() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -558,7 +548,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_skip_pager_hint() ;
+  Glib::PropertyProxy< bool > property_skip_pager_hint() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -568,7 +558,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_skip_pager_hint() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_skip_pager_hint() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -578,7 +568,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_role() ;
+  Glib::PropertyProxy< Glib::ustring > property_role() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -588,7 +578,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_role() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_role() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -598,7 +588,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_decorated() ;
+  Glib::PropertyProxy< bool > property_decorated() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -608,7 +598,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_decorated() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_decorated() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -618,7 +608,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Gdk::Gravity> property_gravity() ;
+  Glib::PropertyProxy< Gdk::Gravity > property_gravity() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -628,7 +618,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Gdk::Gravity> property_gravity() const;
+  Glib::PropertyProxy_ReadOnly< Gdk::Gravity > property_gravity() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -638,7 +628,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Window*> property_transient_for() ;
+  Glib::PropertyProxy< Window* > property_transient_for() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -648,7 +638,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Window*> property_transient_for() const;
+  Glib::PropertyProxy_ReadOnly< Window* > property_transient_for() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -658,7 +648,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<double> property_opacity() ;
+  Glib::PropertyProxy< double > property_opacity() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -668,8 +658,39 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<double> property_opacity() const;
+  Glib::PropertyProxy_ReadOnly< double > property_opacity() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Specifies whether the window should have a resize grip.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< bool > property_has_resize_grip() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** Specifies whether the window should have a resize grip.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< bool > property_has_resize_grip() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** Specifies whether the window's resize grip is visible.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< bool > property_resize_grip_visible() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** TRUE if the window should be brought to the user's attention.
@@ -678,7 +699,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_urgency_hint() ;
+  Glib::PropertyProxy< bool > property_urgency_hint() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -688,7 +709,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_urgency_hint() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_urgency_hint() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -698,7 +719,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_accept_focus() ;
+  Glib::PropertyProxy< bool > property_accept_focus() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -708,7 +729,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_accept_focus() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_accept_focus() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -718,7 +739,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_focus_on_map() ;
+  Glib::PropertyProxy< bool > property_focus_on_map() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -728,7 +749,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_focus_on_map() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_focus_on_map() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -738,7 +759,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_deletable() ;
+  Glib::PropertyProxy< bool > property_deletable() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -748,44 +769,37 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_deletable() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_deletable() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The GtkApplication for the window.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< Glib::RefPtr<Application> > property_application() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The GtkApplication for the window.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< Glib::RefPtr<Application> > property_application() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-
-  /** @deprecated Use Gtk::Widget::is_toplevel().
-   */
-  bool is_toplevel() const;
-
-  /** @deprecated Use get_window_type().
-   */
-  bool is_popup() const;
-
-  // This is special to the GTK+ linux-fb port.
-  /** @deprecated You should not need to call this method.
-   */
-   Glib::RefPtr<Gdk::Window> get_frame();
-  Glib::RefPtr<const Gdk::Window> get_frame() const;
- 
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%set_focus(Widget* focus)</tt>
+   *
    */
 
   Glib::SignalProxy1< void,Widget* > signal_set_focus();
-
-  
-  /**
-   * @par Prototype:
-   * <tt>bool on_my_%frame_event(GdkEvent* event)</tt>
-   */
-
-  Glib::SignalProxy1< bool,GdkEvent* > signal_frame_event();
 
 
   //Keybinding signals:
@@ -793,7 +807,8 @@ public:
   
   /** Sets the title of the Gtk::Window. The title of a window will be
    * displayed in its title bar; on the X&nbsp;%Window System, the title bar
-   * is rendered by the , so exactly how the title appears to users may vary
+   * is rendered by the window
+   * manager, so exactly how the title appears to users may vary
    * according to a user's exact configuration. The title should help a
    * user distinguish this window from other windows they may have
    * open. A good title might include the application name and current
@@ -828,7 +843,7 @@ public:
   /** This function is only useful on X11, not with other GTK+ targets.
    * 
    * In combination with the window title, the window role allows a
-   *  to identify "the
+   * window manager to identify "the
    * same" window when an application is restarted. So for example you
    * might set the "toolbox" role on your app's toolbox window, so that
    * when the user restarts their session, the window manager can put
@@ -929,7 +944,7 @@ public:
 
   
   /** Dialog windows should be set transient for the main application
-   * window they were spawned from. This allows  to e.g. keep the
+   * window they were spawned from. This allows window managers to e.g. keep the
    * dialog on top of the main window, or center the dialog over the
    * main window. Gtk::Dialog::new_with_buttons() and other convenience
    * functions in GTK+ will sometimes call
@@ -963,6 +978,52 @@ public:
    * if no transient parent has been set.
    */
   const Window* get_transient_for() const;
+
+  /** Unsets the attached-to widget.
+   * @see set_attached_to().
+   * @newin{3,4}
+   */
+  void unset_attached_to();
+
+  
+  /** Marks @a window as attached to @a attach_widget. This creates a logical binding
+   * between the window and the widget it belongs to, which is used by GTK+ to
+   * propagate information such as styling or accessibility to @a window as if it
+   * was a children of @a attach_widget.
+   * 
+   * Examples of places where specifying this relation is useful are for instance
+   * a Gtk::Menu created by a Gtk::ComboBox, a completion popup window
+   * created by Gtk::Entry or a typeahead search entry created by Gtk::TreeView.
+   * 
+   * Note that this function should not be confused with
+   * set_transient_for(), which specifies a window manager relation
+   * between two toplevels instead.
+   * 
+   * Passing <tt>0</tt> for @a attach_widget detaches the window.
+   * 
+   * @newin{3,4}
+   * @param attach_widget A Gtk::Widget, or <tt>0</tt>.
+   */
+  void set_attached_to(Widget& attach_widget);
+
+  
+  /** Fetches the attach widget for this window. See
+   * set_attached_to().
+   * 
+   * @newin{3,4}
+   * @return The widget where the window is attached,
+   * or <tt>0</tt> if the window is not attached to any widget.
+   */
+  Widget* get_attached_to();
+  
+  /** Fetches the attach widget for this window. See
+   * set_attached_to().
+   * 
+   * @newin{3,4}
+   * @return The widget where the window is attached,
+   * or <tt>0</tt> if the window is not attached to any widget.
+   */
+  const Widget* get_attached_to() const;
 
   
   /** Request the windowing system to make @a window partially transparent,
@@ -1103,13 +1164,41 @@ public:
   // I don't that that this is ever a good thing for C++.murrayc.
 
   
-  /** Sets the Gtk::Window:mnemonics-visible property.
+  /** If @a setting is <tt>true</tt>, then @a window will request that it's titlebar
+   * should be hidden when maximized.
+   * This is useful for windows that don't convey any information other
+   * than the application name in the titlebar, to put the available
+   * screen space to better use. If the underlying window system does not
+   * support the request, the setting will not have any effect.
+   * 
+   * @newin{3,4}
+   * @param setting Whether to hide the titlebar when @a window is maximized.
+   */
+  void set_hide_titlebar_when_maximized(bool setting =  true);
+  
+  /** Returns whether the window has requested to have its titlebar hidden
+   * when maximized. See set_hide_titlebar_when_maximized().
+   * 
+   * @newin{3,4}
+   * @return <tt>true</tt> if the window has requested to have its titlebar
+   * hidden when maximized.
+   */
+  bool get_hide_titlebar_when_maximized() const;
+
+  
+  /** Sets the Gtk::Window::property_mnemonics_visible() property.
    * 
    * @newin{2,20}
    * @param setting The new value.
    */
   void set_mnemonics_visible(bool setting =  true);
   
+  /** Gets the value of the Gtk::Window::property_mnemonics_visible() property.
+   * 
+   * @newin{2,20}
+   * @return <tt>true</tt> if mnemonics are supposed to be visible
+   * in this window.
+   */
   bool get_mnemonics_visible() const;
 
   
@@ -1147,8 +1236,8 @@ public:
    * the user.  You can set a minimum and maximum size; allowed resize
    * increments (e.g. for xterm, you can only resize by the size of a
    * character); aspect ratios; and more. See the Gdk::Geometry struct.
-   * @param geometry_widget Widget the geometry hints will be applied to.
-   * @param geometry Struct containing geometry information.
+   * @param geometry_widget Widget the geometry hints will be applied to or <tt>0</tt>.
+   * @param geometry Struct containing geometry information or <tt>0</tt>.
    * @param geom_mask Mask indicating which struct fields should be paid attention to.
    */
   void set_geometry_hints(Widget& geometry_widget, const Gdk::Geometry& geometry, Gdk::WindowHints geom_mask);
@@ -1178,92 +1267,15 @@ public:
    */
   Glib::RefPtr<const Gdk::Screen> get_screen() const;
 
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** (Note: this is a special-purpose function for the framebuffer port,
-   * that causes GTK+ to draw its own window border. For most applications,
-   * you want set_decorated() instead, which tells the window
-   * manager whether to draw the window border.)
-   * 
-   * If this function is called on a window with setting of <tt>true</tt>, before
-   * it is realized or showed, it will have a "frame" window around
-   *  @a window->window, accessible in @a window->frame. Using the signal 
-   * frame_event you can receive all events targeted at the frame.
-   * 
-   * This function is used by the linux-fb port to implement managed
-   * windows, but it could conceivably be used by X-programs that
-   * want to do their own window decorations.
-   * 
-   * Deprecated: 2.24: This function will be removed in GTK+ 3
-   * @param setting A boolean.
-   */
-  void set_has_frame(bool setting =  true);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Accessor for whether the window has a frame window exterior to
-   *  @a window->window. Gets the value set by set_has_frame().
-   * 
-   * Deprecated: 2.24: This function will be removed in GTK+ 3
-   * @return <tt>true</tt> if a frame has been added to the window
-   * via set_has_frame().
-   */
-  bool get_has_frame() const;
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** (Note: this is a special-purpose function intended for the framebuffer
-   * port; see set_has_frame(). It will have no effect on the
-   * window border drawn by the window manager, which is the normal
-   * case when using the X&nbsp;%Window system.)
-   * 
-   * For windows with frames (see set_has_frame()) this function
-   * can be used to change the size of the frame border.
-   * 
-   * Deprecated: 2.24: This function will be removed in GTK+ 3
-   * @param left The width of the left border.
-   * @param top The height of the top border.
-   * @param right The width of the right border.
-   * @param bottom The height of the bottom border.
-   */
-  void set_frame_dimensions(int left, int top, int right, int bottom);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** (Note: this is a special-purpose function intended for the
-   * framebuffer port; see set_has_frame(). It will not
-   * return the size of the window border drawn by the , which is the normal
-   * case when using a windowing system.  See
-   * gdk_window_get_frame_extents() to get the standard window border
-   * extents.)
-   * 
-   * Retrieves the dimensions of the frame window for this toplevel.
-   * See set_has_frame(), set_frame_dimensions().
-   * 
-   * Deprecated: 2.24: This function will be removed in GTK+ 3
-   * @param left Location to store the width of the frame at the left.
-   * @param top Location to store the height of the frame at the top.
-   * @param right Location to store the width of the frame at the returns.
-   * @param bottom Location to store the height of the frame at the bottom.
-   */
-  void get_frame_dimensions(int& left, int& top, int& right, int& bottom) const;
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
+  
   /** By default, windows are decorated with a title bar, resize
-   * controls, etc.  Some  allow GTK+ to disable these decorations, creating a
+   * controls, etc.  Some window
+   * managers allow GTK+ to disable these decorations, creating a
    * borderless window. If you set the decorated property to <tt>false</tt>
    * using this function, GTK+ will do its best to convince the window
    * manager not to decorate the window. Depending on the system, this
    * function may not have any effect when called on a window that is
-   * already visible, so you should call it before calling gtk_window_show().
+   * already visible, so you should call it before calling Gtk::Widget::show().
    * 
    * On Windows, this function always works, since there's no window manager
    * policy involved.
@@ -1279,7 +1291,7 @@ public:
 
   
   /** By default, windows have a close button in the window frame. Some 
-   *  allow GTK+ to 
+   * window managers allow GTK+ to 
    * disable this button. If you set the deletable property to <tt>false</tt>
    * using this function, GTK+ will do its best to convince the window
    * manager not to show a close button. Depending on the system, this
@@ -1302,22 +1314,23 @@ public:
    */
   bool get_deletable() const;
 
-  
+ 
   /** Retrieves the list of icons set by set_icon_list().
    * The list is copied, but the reference count on each
    * member won't be incremented.
    * @return Copy of window's icon list.
    */
-  Glib::ListHandle< Glib::RefPtr<Gdk::Pixbuf> > get_icon_list();
-  
-  /** Retrieves the list of icons set by set_icon_list().
-   * The list is copied, but the reference count on each
-   * member won't be incremented.
-   * @return Copy of window's icon list.
-   */
-  Glib::ListHandle< Glib::RefPtr<const Gdk::Pixbuf> > get_icon_list() const;
+  std::vector< Glib::RefPtr<Gdk::Pixbuf> > get_icon_list();
+ 
 
-  
+  /** Retrieves the list of icons set by set_icon_list().
+   * The list is copied, but the reference count on each
+   * member won't be incremented.
+   * @return Copy of window's icon list.
+   */
+  std::vector< Glib::RefPtr<const Gdk::Pixbuf> > get_icon_list() const;
+
+ 
   /** Sets up the icon representing a Gtk::Window. The icon is used when
    * the window is minimized (also known as iconified).  Some window
    * managers or desktop environments may also place it in the window
@@ -1344,7 +1357,7 @@ public:
    * set the icon on transient windows.
    * @param list List of Gdk::Pixbuf.
    */
-  void set_icon_list(const Glib::ListHandle< Glib::RefPtr<Gdk::Pixbuf> >& list);
+  void set_icon_list(const std::vector< Glib::RefPtr<Gdk::Pixbuf> >& list);
 
   
   /** Sets up the icon representing a Gtk::Window. This icon is used when
@@ -1425,13 +1438,13 @@ public:
    * See set_icon_list() for more details.
    * @param list A list of Gdk::Pixbuf.
    */
-  static void set_default_icon_list(const Glib::ListHandle< Glib::RefPtr<Gdk::Pixbuf> >& list);
+  static void set_default_icon_list(const std::vector< Glib::RefPtr<Gdk::Pixbuf> >& list);
 
   
   /** Gets the value set by Gtk::Window::set_default_icon_list().
    * @return Copy of default icon list.
    */
-  static Glib::ListHandle< Glib::RefPtr<Gdk::Pixbuf> > get_default_icon_list();
+  static std::vector< Glib::RefPtr<Gdk::Pixbuf> > get_default_icon_list();
 
   
   /** Sets an icon to be used as fallback for windows that haven't
@@ -1481,7 +1494,7 @@ public:
    * with other windows in the same application. To keep modal dialogs
    * on top of main application windows, use
    * set_transient_for() to make the dialog transient for the
-   * parent; most 
+   * parent; most window managers
    * will then disallow lowering the dialog below the parent.
    * @param modal Whether the window is modal.
    */
@@ -1494,7 +1507,7 @@ public:
    */
   bool get_modal() const;
 
-
+ 
   /** Returns a list of all existing toplevel windows. The widgets
    * in the list are not individually referenced. If you want
    * to iterate through the list and perform actions involving
@@ -1503,9 +1516,9 @@ public:
    * then unref all the widgets afterwards.
    * @return List of toplevel widgets.
    */
-  static Glib::ListHandle<Window*> list_toplevels();
+  static std::vector<Window*> list_toplevels();
 
-
+  
   /** Adds a mnemonic to this window.
    * @param keyval The mnemonic.
    * @param target The widget that gets activated by the mnemonic.
@@ -1575,7 +1588,7 @@ public:
   
   /** Asks to iconify (i.e.\ minimize) the specified @a window. Note that
    * you shouldn't assume the window is definitely iconified afterward,
-   * because other entities (e.g. the user or ) could deiconify it
+   * because other entities (e.g. the user or window manager) could deiconify it
    * again, or there may not be a window manager in which case
    * iconification isn't possible, etc. But normally the window will end
    * up iconified. Just don't write code that crashes if not.
@@ -1591,7 +1604,7 @@ public:
   
   /** Asks to deiconify (i.e.\ unminimize) the specified @a window. Note
    * that you shouldn't assume the window is definitely deiconified
-   * afterward, because other entities (e.g. the user or ) could iconify it
+   * afterward, because other entities (e.g. the user or window manager) could iconify it
    * again before your code which assumes deiconification gets to run.
    * 
    * You can track iconification via the "window-state-event" signal
@@ -1602,7 +1615,7 @@ public:
   
   /** Asks to stick @a window, which means that it will appear on all user
    * desktops. Note that you shouldn't assume the window is definitely
-   * stuck afterward, because other entities (e.g. the user or ) could unstick it
+   * stuck afterward, because other entities (e.g. the user or window manager) could unstick it
    * again, and some window managers do not support sticking
    * windows. But normally the window will end up stuck. Just don't
    * write code that crashes if not.
@@ -1617,7 +1630,8 @@ public:
   /** Asks to unstick @a window, which means that it will appear on only
    * one of the user's desktops. Note that you shouldn't assume the
    * window is definitely unstuck afterward, because other entities
-   * (e.g. the user or ) could stick it again. But normally the window will
+   * (e.g. the user or window
+   * manager) could stick it again. But normally the window will
    * end up stuck. Just don't write code that crashes if not.
    * 
    * You can track stickiness via the "window-state-event" signal
@@ -1628,7 +1642,7 @@ public:
   
   /** Asks to maximize @a window, so that it becomes full-screen. Note that
    * you shouldn't assume the window is definitely maximized afterward,
-   * because other entities (e.g. the user or ) could unmaximize it
+   * because other entities (e.g. the user or window manager) could unmaximize it
    * again, and not all window managers support maximization. But
    * normally the window will end up maximized. Just don't write code
    * that crashes if not.
@@ -1644,7 +1658,8 @@ public:
   
   /** Asks to unmaximize @a window. Note that you shouldn't assume the
    * window is definitely unmaximized afterward, because other entities
-   * (e.g. the user or ) could maximize it again, and not all window
+   * (e.g. the user or window
+   * manager) could maximize it again, and not all window
    * managers honor requests to unmaximize. But normally the window will
    * end up unmaximized. Just don't write code that crashes if not.
    * 
@@ -1656,7 +1671,7 @@ public:
   
   /** Asks to place @a window in the fullscreen state. Note that you
    * shouldn't assume the window is definitely full screen afterward,
-   * because other entities (e.g. the user or ) could unfullscreen it
+   * because other entities (e.g. the user or window manager) could unfullscreen it
    * again, and not all window managers honor requests to fullscreen
    * windows. But normally the window will end up fullscreen. Just
    * don't write code that crashes if not.
@@ -1670,7 +1685,7 @@ public:
   
   /** Asks to toggle off the fullscreen state for @a window. Note that you
    * shouldn't assume the window is definitely not full screen
-   * afterward, because other entities (e.g. the user or ) could fullscreen it
+   * afterward, because other entities (e.g. the user or window manager) could fullscreen it
    * again, and not all window managers honor requests to unfullscreen
    * windows. But normally the window will end up restored to its normal
    * state. Just don't write code that crashes if not.
@@ -1685,7 +1700,7 @@ public:
   
   /** Starts resizing a window. This function is used if an application
    * has window resizing controls. When GDK can support it, the resize
-   * will be done using the standard mechanism for the  or windowing
+   * will be done using the standard mechanism for the window manager or windowing
    * system. Otherwise, GDK will try to emulate window resizing,
    * potentially not all that well, depending on the windowing system.
    * @param button Mouse button that initiated the drag.
@@ -1699,7 +1714,7 @@ public:
   
   /** Starts moving a window. This function is used if an application has
    * window movement grips. When GDK can support it, the window movement
-   * will be done using the standard mechanism for the  or windowing
+   * will be done using the standard mechanism for the window manager or windowing
    * system. Otherwise, GDK will try to emulate window movement,
    * potentially not all that well, depending on the windowing system.
    * @param button Mouse button that initiated the drag.
@@ -1772,7 +1787,46 @@ public:
 
   
   /** Obtains the current size of @a window. If @a window is not onscreen,
-   * it returns the size GTK+ will suggest to the  a better way than
+   * it returns the size GTK+ will suggest to the window manager for the initial window
+   * size (but this is not reliably the same as the size the window
+   * manager will actually select). The size obtained by
+   * get_size() is the last size received in a
+   * Gdk::EventConfigure, that is, GTK+ uses its locally-stored size,
+   * rather than querying the X server for the size. As a result, if you
+   * call resize() then immediately call
+   * get_size(), the size won't have taken effect yet. After
+   * the window manager processes the resize request, GTK+ receives
+   * notification that the size has changed via a configure event, and
+   * the size of the window gets updated.
+   * 
+   * @note Nearly any use of this function creates a race condition,
+   * because the size of the window may change between the time that you
+   * get the size and the time that you perform some action assuming
+   * that size is the current size. To avoid race conditions, connect to
+   * "configure-event" on the window and adjust your size-dependent
+   * state to match the size delivered in the Gdk::EventConfigure.
+   * 
+   * @note The returned size does <em>not</em> include the
+   * size of the window manager decorations (aka the window frame or
+   * border). Those are not drawn by GTK+ and GTK+ has no reliable
+   * method of determining their size.
+   * 
+   * @note If you are getting a window size in order to position
+   * the window onscreen, there may be a better way. The preferred
+   * way is to simply set the window's semantic type with
+   * set_type_hint(), which allows the window manager to
+   * e.g. center dialogs. Also, if you set the transient parent of
+   * dialogs with set_transient_for() window managers
+   * will often center the dialog over its parent window. It's
+   * much preferred to let the window manager handle these
+   * things rather than doing it yourself, because all apps will
+   * behave consistently and according to user prefs if the window
+   * manager handles it. Also, the window manager can take the size
+   * of the window decorations/border into account, while your
+   * application cannot.
+   * 
+   * In any case, if you insist on application-specified window
+   * positioning, there's <em>still</em> a better way than
    * doing it yourself - set_position() will frequently
    * handle the details for you.
    * @param width Return location for width.
@@ -1781,7 +1835,37 @@ public:
   void get_size(int& width, int& height) const;
 
 
-  /** Asks the  has a 
+  /** Asks the window manager to move
+   *  @a window to the given position.  %Window managers are free to ignore
+   * this; most window managers ignore requests for initial window
+   * positions (instead using a user-defined placement algorithm) and
+   * honor requests after the window has already been shown.
+   * 
+   * @note the position is the position of the gravity-determined
+   * reference point for the window. The gravity determines two things:
+   * first, the location of the reference point in root window
+   * coordinates; and second, which point on the window is positioned at
+   * the reference point.
+   * 
+   * By default the gravity is Gdk::GRAVITY_NORTH_WEST, so the reference
+   * point is simply the @a x, @a y supplied to move(). The
+   * top-left corner of the window decorations (aka window frame or
+   * border) will be placed at @a x, @a y.  Therefore, to position a window
+   * at the top left of the screen, you want to use the default gravity
+   * (which is Gdk::GRAVITY_NORTH_WEST) and move the window to 0,0.
+   * 
+   * To position a window at the bottom right corner of the screen, you
+   * would set Gdk::GRAVITY_SOUTH_EAST, which means that the reference
+   * point is at @a x + the window width and @a y + the window height, and
+   * the bottom-right corner of the window border will be placed at that
+   * reference point. So, to place a window in the bottom right corner
+   * you would first set gravity to south east, then write:
+   * <tt>gtk_window_move (window, gdk_screen_width() - window_width,
+   * gdk_screen_height() - window_height)</tt> (note that this
+   * example does not take multi-head scenarios into account).
+   * 
+   * The Extended Window Manager Hints specification at 
+   * http://www.freedesktop.org/Standards/wm-spec has a
    * nice table of gravities in the "implementation notes" section.
    * 
    * The get_position() documentation may also be relevant.
@@ -1792,9 +1876,9 @@ public:
 
   
   /** This function returns the position you need to pass to
-   * move() to keep @a window in its current position.  This
-   * means that the meaning of the returned value varies with window
-   * gravity. See move() for more details.
+   * move() to keep @a window in its current position.
+   * This means that the meaning of the returned value varies with
+   * window gravity. See move() for more details.
    * 
    * If you haven't changed the window gravity, its gravity will be
    * Gdk::GRAVITY_NORTH_WEST. This means that get_position()
@@ -1853,51 +1937,8 @@ public:
    * to be called when the window has its "final" size, i.e. after calling
    * Gtk::Widget::show_all() on the contents and set_geometry_hints()
    * on the window.
-   * |[
-   * #include <gtk/gtk.h>
    * 
-   * static void
-   * fill_with_content (GtkWidget *vbox)
-   * {
-   * / * fill with content... * /
-   * }
-   * 
-   * int
-   * main (int argc, char *argv[])
-   * {
-   * GtkWidget *window, *vbox;
-   * GdkGeometry size_hints = {
-   * 100, 50, 0, 0, 100, 50, 10, 10, 0.0, 0.0, GDK_GRAVITY_NORTH_WEST  
-   * };
-   * 
-   * gtk_init (&argc, &argv);
-   * 
-   * window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-   * vbox = gtk_vbox_new (<tt>false</tt>, 0);
-   * 
-   * gtk_container_add (GTK_CONTAINER (window), vbox);
-   * fill_with_content (vbox);
-   * gtk_widget_show_all (vbox);
-   * 
-   * gtk_window_set_geometry_hints (GTK_WINDOW (window),
-   * window,
-   * &size_hints,
-   * GDK_HINT_MIN_SIZE | 
-   * GDK_HINT_BASE_SIZE | 
-   * GDK_HINT_RESIZE_INC);
-   * 
-   * if (argc > 1)
-   * {
-   * if (!gtk_window_parse_geometry (GTK_WINDOW (window), argv[1]))
-   * fprintf (stderr, "Failed to parse '%s'<tt>\\n</tt>", argv[1]);
-   * }
-   * 
-   * gtk_widget_show_all (window);
-   * gtk_main();
-   * 
-   * return 0;
-   * }
-   * ]|
+   * [C example ellipted]
    * @param geometry Geometry string.
    * @return <tt>true</tt> if string was parsed successfully.
    */
@@ -1937,10 +1978,92 @@ public:
    */
   void reshow_with_initial_size();
 
+  
+  /** Gets the Gtk::Application associated with the window (if any).
+   * 
+   * @newin{3,0}
+   * @return A Gtk::Application, or <tt>0</tt>.
+   */
+  Glib::RefPtr<Application> get_application();
+  
+  /** Gets the Gtk::Application associated with the window (if any).
+   * 
+   * @newin{3,0}
+   * @return A Gtk::Application, or <tt>0</tt>.
+   */
+  Glib::RefPtr<const Application> get_application() const;
+  
+  
+  /** Sets or unsets the Gtk::Application associated with the window.
+   * 
+   * The application will be kept alive for at least as long as the window
+   * is open.
+   * 
+   * @newin{3,0}
+   * @param application A Gtk::Application, or <tt>0</tt>.
+   */
+  void set_application(const Glib::RefPtr<Application>& application);
+  
+  /** Unsets the Application associated with the window.
+   * This could cause the application to exit if it is the application's last window.
+   */
+  void unset_application();
+                                                 
+  
+  /** Sets whether @a window has a corner resize grip.
+   * 
+   * Note that the resize grip is only shown if the window
+   * is actually resizable and not maximized. Use
+   * resize_grip_is_visible() to find out if the
+   * resize grip is currently shown.
+   * 
+   * @newin{3,0}
+   * @param value <tt>true</tt> to allow a resize grip.
+   */
+  void set_has_resize_grip(bool setting =  true);
+  
+  /** Determines whether the window may have a resize grip.
+   * 
+   * @newin{3,0}
+   * @return <tt>true</tt> if the window has a resize grip.
+   */
+  bool get_has_resize_grip() const;
 
+  
+  /** Determines whether a resize grip is visible for the specified window.
+   * 
+   * @newin{3,0}
+   * @return <tt>true</tt> if a resize grip exists and is visible.
+   */
+  bool get_resize_grip_is_visible() const;
+  
+  /** If a window has a resize grip, this will retrieve the grip
+   * position, width and height into the specified Gdk::Rectangle.
+   * 
+   * @newin{3,0}
+   * @param rect A pointer to a Gdk::Rectangle which we should store
+   * the resize grip area.
+   * @return <tt>true</tt> if the resize grip's area was retrieved.
+   */
+  bool get_resize_grip_area(Gdk::Rectangle& rect) const;
+
+  
   /** Asks to keep @a window above, so that it stays on top. Note that
    * you shouldn't assume the window is definitely above afterward,
-   * because other entities (e.g. the user or  specification, the above state is mainly meant 
+   * because other entities (e.g. the user or window manager) could not keep it above,
+   * and not all window managers support keeping windows above. But
+   * normally the window will end kept above. Just don't write code
+   * that crashes if not.
+   * 
+   * It's permitted to call this function before showing a window,
+   * in which case the window will be kept above when it appears onscreen
+   * initially.
+   * 
+   * You can track the above state via the "window-state-event" signal
+   * on Gtk::Widget.
+   * 
+   * Note that, according to the Extended Window 
+   * Manager Hints specification, the above state is mainly meant 
    * for user preferences and should not be used by applications e.g. for 
    * drawing attention to their dialogs.
    * 
@@ -1951,7 +2074,20 @@ public:
   
   /** Asks to keep @a window below, so that it stays in bottom. Note that
    * you shouldn't assume the window is definitely below afterward,
-   * because other entities (e.g. the user or  specification, the above state is mainly meant 
+   * because other entities (e.g. the user or window manager) could not keep it below,
+   * and not all window managers support putting windows below. But
+   * normally the window will be kept below. Just don't write code
+   * that crashes if not.
+   * 
+   * It's permitted to call this function before showing a window,
+   * in which case the window will be kept below when it appears onscreen
+   * initially.
+   * 
+   * You can track the below state via the "window-state-event" signal
+   * on Gtk::Widget.
+   * 
+   * Note that, according to the Extended Window 
+   * Manager Hints specification, the above state is mainly meant 
    * for user preferences and should not be used by applications e.g. for 
    * drawing attention to their dialogs.
    * 
@@ -1979,7 +2115,7 @@ protected:
 
   //See comments in the implementations:
   void destroy_();
-  void _destroy_c_instance();
+  void _release_c_instance();
 
 private:
 

@@ -4,7 +4,8 @@
 #define _GIOMM_BUFFEREDINPUTSTREAM_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -149,7 +150,8 @@ public:
   
   /** Peeks in the buffer, copying data of size @a count into @a buffer,
    * offset @a offset bytes.
-   * @param buffer A pointer to an allocated chunk of memory.
+   * @param buffer A pointer to
+   * an allocated chunk of memory.
    * @param offset A #gsize.
    * @param count A #gsize.
    * @return A #gsize of the number of bytes peeked, or -1 on error.
@@ -258,7 +260,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<guint> property_buffer_size() ;
+  Glib::PropertyProxy< guint > property_buffer_size() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -268,7 +270,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<guint> property_buffer_size() const;
+  Glib::PropertyProxy_ReadOnly< guint > property_buffer_size() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

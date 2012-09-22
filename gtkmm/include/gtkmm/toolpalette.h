@@ -4,7 +4,8 @@
 #define _GTKMM_TOOLPALETTE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 2009 The gtkmm Development Team
  *
@@ -19,14 +20,14 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/container.h>
 #include <gtkmm/toolitem.h>
 #include <gtkmm/orientable.h>
-#include <gtkmm/adjustment.h>
+#include <gtkmm/scrollable.h>
 #include <gtkmm/toolitemgroup.h>
 
 
@@ -56,8 +57,8 @@ namespace Gtk
  */
 enum ToolPaletteDragTargets
 {
-  TOOL_PALETTE_DRAG_ITEMS = 1 << 0,
-  TOOL_PALETTE_DRAG_GROUPS = 1 << 1
+  TOOL_PALETTE_DRAG_ITEMS = (1 << 0),
+  TOOL_PALETTE_DRAG_GROUPS = (1 << 1)
 };
 
 /** @ingroup gtkmmEnums */
@@ -130,7 +131,8 @@ namespace Gtk
 
 class ToolPalette
 : public Container,
-  public Orientable
+  public Orientable,
+  public Scrollable
 {
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -159,8 +161,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -380,35 +386,6 @@ public:
   void add_drag_dest(Gtk::Widget& widget, DestDefaults flags =  DEST_DEFAULT_ALL, ToolPaletteDragTargets targets =  TOOL_PALETTE_DRAG_ITEMS, Gdk::DragAction actions =  Gdk::ACTION_COPY);
 
   
-  /** Gets the horizontal adjustment of the tool palette.
-   * 
-   * @newin{2,20}
-   * @return The horizontal adjustment of @a palette.
-   */
-  Adjustment* get_hadjustment();
-  
-  /** Gets the horizontal adjustment of the tool palette.
-   * 
-   * @newin{2,20}
-   * @return The horizontal adjustment of @a palette.
-   */
-  const Adjustment* get_hadjustment() const;
-  
-  /** Gets the vertical adjustment of the tool palette.
-   * 
-   * @newin{2,20}
-   * @return The vertical adjustment of @a palette.
-   */
-  Adjustment* get_vadjustment();
-  
-  /** Gets the vertical adjustment of the tool palette.
-   * 
-   * @newin{2,20}
-   * @return The vertical adjustment of @a palette.
-   */
-  const Adjustment* get_vadjustment() const;
-
-
   /** Gets the target entry for a dragged Gtk::ToolItem.
    * 
    * @newin{2,20}
@@ -423,8 +400,7 @@ public:
    */
   static TargetEntry get_drag_target_group();
 
-  //Ignore the set_scroll_adjustment signal. It's in many widgets and seems internal.
-  //_WRAP_SIGNAL(void set_scroll_adjustments(Adjustment* hadjustment, Adjustment* vadjustment), "set-scroll-adjustments")
+  //Ignore the set_scroll_adjustment signal. It's deprecated.
   
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -434,7 +410,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<IconSize> property_icon_size() ;
+  Glib::PropertyProxy< IconSize > property_icon_size() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -444,7 +420,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<IconSize> property_icon_size() const;
+  Glib::PropertyProxy_ReadOnly< IconSize > property_icon_size() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -454,7 +430,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_icon_size_set() ;
+  Glib::PropertyProxy< bool > property_icon_size_set() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -464,7 +440,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_icon_size_set() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_icon_size_set() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -474,7 +450,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<ToolbarStyle> property_toolbar_style() ;
+  Glib::PropertyProxy< ToolbarStyle > property_toolbar_style() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -484,7 +460,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<ToolbarStyle> property_toolbar_style() const;
+  Glib::PropertyProxy_ReadOnly< ToolbarStyle > property_toolbar_style() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

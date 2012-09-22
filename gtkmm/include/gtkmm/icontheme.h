@@ -4,7 +4,8 @@
 #define _GTKMM_ICONTHEME_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 2003 The gtkmm Development Team
  *
@@ -19,9 +20,11 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+#include <vector>
 
 #include <gdkmm/pixbuf.h>
 #include <gdkmm/screen.h>
@@ -166,8 +169,11 @@ protected:
 public:
   virtual ~IconTheme();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -229,8 +235,8 @@ public:
    * @param screen A Gdk::Screen.
    */
   void set_screen(const Glib::RefPtr<Gdk::Screen>& screen);
-  void set_search_path(const Glib::ArrayHandle<Glib::ustring>& path);
-  Glib::ArrayHandle<Glib::ustring> get_search_path() const;
+  void set_search_path(const std::vector<Glib::ustring>& path);
+  std::vector<Glib::ustring> get_search_path() const;
   
   /** Appends a directory to the search path. 
    * See set_search_path(). 
@@ -254,8 +260,8 @@ public:
    * and get_for_screen().
    * 
    * @newin{2,4}
-   * @param theme_name Name of icon theme to use instead of configured theme,
-   * or <tt>0</tt> to unset a previously set custom theme.
+   * @param theme_name Name of icon theme to use instead of
+   * configured theme, or <tt>0</tt> to unset a previously set custom theme.
    */
   void set_custom_theme(const Glib::ustring& theme_name);
   
@@ -269,7 +275,7 @@ public:
    */
   bool has_icon(const Glib::ustring& icon_name) const;
 
-  Glib::ArrayHandle<int> get_icon_sizes(const Glib::ustring& icon_name) const;
+  std::vector<int> get_icon_sizes(const Glib::ustring& icon_name) const;
   
 
   /** Looks up a named icon and returns a structure containing
@@ -323,7 +329,7 @@ public:
    * 
    * @newin{2,12}.
    */
-  IconInfo choose_icon(const Glib::StringArrayHandle& icon_names, int size, IconLookupFlags flags);
+  IconInfo choose_icon(const std::vector<Glib::ustring>& icon_names, int size, IconLookupFlags flags);
 
   
   /** Looks up an icon in an icon theme, scales it to the given size
@@ -332,25 +338,25 @@ public:
    * lookup_icon() followed by Gtk::IconInfo::load_icon().
    * 
    * Note that you probably want to listen for icon theme changes and
-   * update the icon. This is usually done by connecting to the 
+   * update the icon. This is usually done by connecting to the
    * GtkWidget::style-set signal. If for some reason you do not want to
    * update the icon when the icon theme changes, you should consider
    * using gdk_pixbuf_copy() to make a private copy of the pixbuf
-   * returned by this function. Otherwise GTK+ may need to keep the old 
+   * returned by this function. Otherwise GTK+ may need to keep the old
    * icon theme loaded, which would be a waste of memory.
    * 
    * @newin{2,4}
    * @param icon_name The name of the icon to lookup.
    * @param size The desired icon size. The resulting icon may not be exactly this size; see Gtk::IconInfo::load_icon().
    * @param flags Flags modifying the behavior of the icon lookup.
-   * @return The rendered icon; this may be a newly
-   * created icon or a new reference to an internal icon, so you must not modify
-   * the icon. Use Glib::object_unref() to release your reference to the
-   * icon. <tt>0</tt> if the icon isn't found.
+   * @return The rendered icon; this may be a
+   * newly created icon or a new reference to an internal icon, so
+   * you must not modify the icon. Use Glib::object_unref() to release
+   * your reference to the icon. <tt>0</tt> if the icon isn't found.
    */
   Glib::RefPtr<Gdk::Pixbuf> load_icon(const Glib::ustring& icon_name, int size, IconLookupFlags flags =  (IconLookupFlags)0) const;
 
-
+ 
   /** Lists a subset of icons in the current icon theme, by providing a context string.
    * The set of values for the context string is system dependent,
    * but will typically include such values as 'Applications' and
@@ -361,7 +367,7 @@ public:
    * 
    * @newin{2,4}.
    */
-  Glib::ListHandle<Glib::ustring> list_icons(const Glib::ustring& context) const;
+  std::vector<Glib::ustring> list_icons(const Glib::ustring& context) const;
 
   /** Lists the icons in the current icon theme.
    *
@@ -370,7 +376,7 @@ public:
    * 
    * @newin{2,10}.
    */
-   Glib::ListHandle<Glib::ustring> list_icons() const;
+   std::vector<Glib::ustring> list_icons() const;
 
   
   /** Gets the list of contexts available within the current
@@ -380,7 +386,7 @@ public:
    * 
    * @newin{2,12}.
    */
-  Glib::ListHandle<Glib::ustring> list_contexts() const;
+  std::vector<Glib::ustring> list_contexts() const;
 
   
   /** Gets the name of an icon that is representative of the
@@ -426,9 +432,13 @@ public:
   static void add_builtin_icon(const Glib::ustring& icon_name, int size, const Glib::RefPtr<Gdk::Pixbuf>& pixbuf);
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%changed()</tt>
+   *
+   * Emitted when the current icon theme is switched or GTK+ detects
+   * that a change has occurred in the contents of the current
+   * icon theme.
    */
 
   Glib::SignalProxy0< void > signal_changed();
@@ -443,6 +453,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_changed().
   virtual void on_changed();
 
 

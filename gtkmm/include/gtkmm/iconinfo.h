@@ -4,7 +4,8 @@
 #define _GTKMM_ICONINFO_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 2003 The gtkmm Development Team
  *
@@ -19,12 +20,16 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <gdkmm/pixbuf.h>
+#include <vector>
+
+#include <gtkmm/stylecontext.h>
 #include <gdkmm/rectangle.h>
+#include <gdkmm/pixbuf.h>
+#include <gdkmm/rgba.h>
 #include <gdkmm/types.h>
 
 //#include <gtk/gtkicontheme.h>
@@ -45,9 +50,11 @@ class IconInfo
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   typedef IconInfo CppObjectType;
   typedef GtkIconInfo BaseObjectType;
-
-  static GType get_type() G_GNUC_CONST;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
+  static GType get_type() G_GNUC_CONST;
 
   IconInfo();
 
@@ -80,15 +87,19 @@ public:
   IconInfo(const Glib::RefPtr<IconTheme>& icon_theme, const Glib::RefPtr<Gdk::Pixbuf>& pixbuf);
   
 
-  #ifndef GTKMM_DISABLE_DEPRECATED
+  /** This typedef is just to make it more obvious that 
+   * our operator const void* should be used like operator bool().
+   */ 
+  typedef const void* BoolExpr;
 
-  ///@deprecated Use the const version.
-  operator bool();
-  #endif // GTKMM_DISABLE_DEPRECATED
-
-
-  ///Tests whether the IconInfo is valid.
-  operator bool() const;
+  /** Tests whether the IconInfo is valid.
+   * For instance,
+   * @code
+   * if(iconinfo)
+   *   do_something()
+   * @endcode
+   */
+  operator BoolExpr() const;
 
   
   /** Gets the base size for the icon. The base size
@@ -160,7 +171,17 @@ public:
    * to the icon.
    */
   Glib::RefPtr<Gdk::Pixbuf> load_icon() const;
+
+  //TODO: Documentation
+  Glib::RefPtr<Gdk::Pixbuf> load_symbolic(const Gdk::RGBA& fg, const Gdk::RGBA& success_color, const Gdk::RGBA& warning_color, const Gdk::RGBA& error_color, bool& was_symbolic) const;
   
+
+   //deprecated
+
+  //TODO: Documentation:
+  Glib::RefPtr<Gdk::Pixbuf> load_symbolic(const Glib::RefPtr<StyleContext>& style, bool& was_symbolic);
+               
+
   /** Sets whether the coordinates returned by get_embedded_rect()
    * and get_attach_points() should be returned in their
    * original form as specified in the icon theme, instead of scaled
@@ -196,7 +217,10 @@ public:
    * @return <tt>true</tt> if the icon has an embedded rectangle.
    */
   bool get_embedded_rect(Gdk::Rectangle& rectangle) const;
-  bool get_attach_points(Glib::ArrayHandle<Gdk::Point>& points) const;
+  
+  //TODO: Documentation.
+  std::vector<Gdk::Point> get_attach_points() const;
+
   
   /** Gets the display name for an icon. A display name is a
    * string to be used in place of the icon name in a user

@@ -4,11 +4,12 @@
 #define _GDKMM_VISUAL_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: visual.hg,v 1.4 2006/04/12 11:11:24 murrayc Exp $ */
 
-/* bitmap.h
+/* visual.h
  *
  * Copyright (C) 1998-2002 The gtkmm Development Team
  *
@@ -23,12 +24,14 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <glibmm/object.h>
 #include <gdkmm/screen.h>
+#include <gdkmm/types.h>
+//#include <gdk/gdk.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -88,14 +91,7 @@ namespace Gdk
  * formats; for example the "red" element of an RGB pixel may be in the top 8 bits of the pixel, or may be in the lower 4
  * bits.
  *
- * Usually you can avoid thinking about visuals in GTK+. Visuals are useful to interpret the contents of a GdkImage, but
- * you should avoid Gdk::Image precisely because its contents depend on the display hardware; use Gdk::Pixbuf instead, for
- * all but the most low-level purposes. Also, anytime you provide a Gdk::Colormap, the visual is implied as part of the
- * colormap (Gdk::Colormap::get_visual()), so you won't have to provide a visual in addition.
- *
- * There are several standard visuals. The visual returned by get_system() is the system's default visual. get_visual()
- * returns the visual most suited to displaying full-color image data. If you use the calls in Gdk::RGB, you should create
- * your windows using this visual (and the colormap returned by Gdk::Rgb::get_colormap()).
+ * There are several standard visuals. The visual returned by Gdk::Screen::get_system_visual() is the system's default visual.
  *
  * A number of methods are provided for determining the "best" available visual. For the purposes of making this
  * determination, higher bit depths are considered better, and for visuals of the same bit depth, GDK_VISUAL_PSEUDO_COLOR
@@ -132,8 +128,11 @@ protected:
 public:
   virtual ~Visual();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -171,8 +170,8 @@ public:
    
   /** Get the best visual with depth @a depth for the default GDK screen.
    * Color visuals and visuals with mutable colormaps are preferred
-   * over grayscale or fixed-colormap visuals. The return value should not
-   * be freed. <tt>0</tt> may be returned if no visual supports @a depth.
+   * over grayscale or fixed-colormap visuals. The return value should
+   * not be freed. <tt>0</tt> may be returned if no visual supports @a depth.
    * @param depth A bit depth.
    * @return Best visual for the given depth.
    */
@@ -187,7 +186,8 @@ public:
    */
   static Glib::RefPtr<Visual> get_best(VisualType visual_type);
    
-  /** Combines get_best_with_depth() and get_best_with_type().
+  /** Combines get_best_with_depth() and
+   * get_best_with_type().
    * @param depth A bit depth.
    * @param visual_type A visual type.
    * @return Best visual with both @a depth and
@@ -260,9 +260,9 @@ public:
   int get_bits_per_rgb() const;
    
   /** Obtains values that are needed to calculate red pixel values in TrueColor
-   * and DirectColor.  The "mask" is the significant bits within the pixel.
+   * and DirectColor. The "mask" is the significant bits within the pixel.
    * The "shift" is the number of bits left we must shift a primary for it
-   * to be in position (according to the "mask").  Finally, "precision" refers
+   * to be in position (according to the "mask"). Finally, "precision" refers
    * to how much precision the pixel value contains for a particular primary.
    * 
    * @newin{2,22}
@@ -273,9 +273,9 @@ public:
   void get_red_pixel_details(guint32& mask, int& shift, int& precision) const;
    
   /** Obtains values that are needed to calculate green pixel values in TrueColor
-   * and DirectColor.  The "mask" is the significant bits within the pixel.
+   * and DirectColor. The "mask" is the significant bits within the pixel.
    * The "shift" is the number of bits left we must shift a primary for it
-   * to be in position (according to the "mask").  Finally, "precision" refers
+   * to be in position (according to the "mask"). Finally, "precision" refers
    * to how much precision the pixel value contains for a particular primary.
    * 
    * @newin{2,22}
@@ -286,9 +286,9 @@ public:
   void get_green_pixel_details(guint32& mask, int& shift, int& precision) const;
    
   /** Obtains values that are needed to calculate blue pixel values in TrueColor
-   * and DirectColor.  The "mask" is the significant bits within the pixel.
+   * and DirectColor. The "mask" is the significant bits within the pixel.
    * The "shift" is the number of bits left we must shift a primary for it
-   * to be in position (according to the "mask").  Finally, "precision" refers
+   * to be in position (according to the "mask"). Finally, "precision" refers
    * to how much precision the pixel value contains for a particular primary.
    * 
    * @newin{2,22}
@@ -297,7 +297,7 @@ public:
    * @param precision A pointer to a <tt>int</tt> to be filled in, or <tt>0</tt>.
    */
   void get_blue_pixel_details(guint32& mask, int& shift, int& precision) const;
-
+                                                  
 
 public:
 

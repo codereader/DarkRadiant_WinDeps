@@ -4,7 +4,8 @@
 #define _GTKMM_TREEDRAGDEST_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: treedragdest.hg,v 1.4 2004/03/09 17:36:29 murrayc Exp $ */
 
@@ -21,13 +22,13 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <glibmm/interface.h>
-#include <gtkmm/selectiondata.h>
 #include <gtkmm/treemodel.h>
+#include <gtkmm/selectiondata.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -73,9 +74,14 @@ private:
   TreeDragDest(const TreeDragDest&);
   TreeDragDest& operator=(const TreeDragDest&);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 protected:
-  TreeDragDest(); // you must derive from this class
-
+  /**
+   * You should derive from this class to use it.
+   */
+  TreeDragDest();
+  
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /** Called by constructors of derived classes. Provide the result of 
    * the Class init() function to ensure that it is properly 
    * initialized.
@@ -98,8 +104,11 @@ public:
 
   static void add_interface(GType gtype_implementer);
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -125,7 +134,7 @@ public:
    * @param selection_data Data to drop.
    * @return Whether a new row was created before position @a dest.
    */
-  bool drag_data_received(const TreeModel::Path& dest, const SelectionData& selection_data);
+  bool drag_data_received(const TreeModel::Path& dest, const SelectionData& selection_data);              
 
   
   /** Determines whether a drop is possible before the given @a dest_path,
@@ -138,7 +147,7 @@ public:
    * @return <tt>true</tt> if a drop is possible before @a dest_path.
    */
   bool row_drop_possible(const TreeModel::Path& dest_path, const SelectionData& selection_data) const;
-
+                             
 protected:
     virtual bool drag_data_received_vfunc(const TreeModel::Path& dest, const SelectionData& selection_data);
 

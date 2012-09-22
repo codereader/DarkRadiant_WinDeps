@@ -152,7 +152,7 @@ public:
    * call <tt>exit (0)</tt>.
    * 
    * Note that function depends on the
-   *  for
+   * current locale for
    * automatic character set conversion of string and filename
    * arguments.
    * 

@@ -4,7 +4,8 @@
 #define _GTKMM_SEPARATOR_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: separator.hg,v 1.1 2003/01/21 13:40:37 murrayc Exp $ */
 
@@ -23,11 +24,12 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/widget.h>
+#include <gtkmm/orientable.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -38,33 +40,20 @@ typedef struct _GtkSeparatorClass GtkSeparatorClass;
 
 namespace Gtk
 { class Separator_Class; } // namespace Gtk
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-typedef struct _GtkVSeparator GtkVSeparator;
-typedef struct _GtkVSeparatorClass GtkVSeparatorClass;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-
-namespace Gtk
-{ class VSeparator_Class; } // namespace Gtk
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-typedef struct _GtkHSeparator GtkHSeparator;
-typedef struct _GtkHSeparatorClass GtkHSeparatorClass;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-
-namespace Gtk
-{ class HSeparator_Class; } // namespace Gtk
 namespace Gtk
 {
 
-//TODO: Inherit/Implement Orientation when we can break ABI.
-
-
-/** Separator base class.
- * Abstract base class for Gtk::VSeperator and Gtk::HSeperator.
+/** A separator widget.
+ *
+ * Gtk::Separator is a horizontal or vertical separator widget, depending on the 
+ * value of the orientation property, used to group the widgets within a
+ * window. It displays a line with a shadow to make it appear sunken into the 
+ * interface.
  */
 
-class Separator : public Widget
+class Separator
+ : public Widget,
+   public Orientable
 {
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -93,8 +82,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -118,159 +111,21 @@ protected:
 
 private:
 
+  
 public:
   
+  //Note that we try to use the same default parameter value as the default property value.
+    explicit Separator(Orientation orientation =  ORIENTATION_HORIZONTAL);
 
-protected:
-  Separator();
-
-
-};
-
-/** Vertical line widget.
- * Filler widget used to separate widgets with a visible line.
- * This widget has no window and receives no configuration events.
- * It should be considered a leaf widget.
- *
- * A VSeparator widget looks like this:
- * @image html vseparator1.png
- *
- * @ingroup Widgets
- */
-
-class VSeparator : public Separator
-{
-  public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  typedef VSeparator CppObjectType;
-  typedef VSeparator_Class CppClassType;
-  typedef GtkVSeparator BaseObjectType;
-  typedef GtkVSeparatorClass BaseClassType;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-  virtual ~VSeparator();
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
-private:
-  friend class VSeparator_Class;
-  static CppClassType vseparator_class_;
-
-  // noncopyable
-  VSeparator(const VSeparator&);
-  VSeparator& operator=(const VSeparator&);
-
-protected:
-  explicit VSeparator(const Glib::ConstructParams& construct_params);
-  explicit VSeparator(GtkVSeparator* castitem);
-
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  static GType get_type()      G_GNUC_CONST;
-
-
-  static GType get_base_type() G_GNUC_CONST;
-#endif
-
-  ///Provides access to the underlying C GtkObject.
-  GtkVSeparator*       gobj()       { return reinterpret_cast<GtkVSeparator*>(gobject_); }
-
-  ///Provides access to the underlying C GtkObject.
-  const GtkVSeparator* gobj() const { return reinterpret_cast<GtkVSeparator*>(gobject_); }
-
-
-public:
-  //C++ methods used to invoke GTK+ virtual functions:
-
-protected:
-  //GTK+ Virtual Functions (override these to change behaviour):
-
-  //Default Signal Handlers::
-
-
-private:
-
-public:
-  VSeparator();
-  
-
-};
-
-
-/** Horizontal line widget.
- * Filler widget used to separate widgets with a visible line.
- * This widget has no window and receives no configuration events.
- * It should be considered a leaf widget.
- *
- * The HSeparator widget looks like this:
- * @image html hseparator1.png
- *
- * @ingroup Widgets
- */
-
-class HSeparator : public Separator
-{
-  public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  typedef HSeparator CppObjectType;
-  typedef HSeparator_Class CppClassType;
-  typedef GtkHSeparator BaseObjectType;
-  typedef GtkHSeparatorClass BaseClassType;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-  virtual ~HSeparator();
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
-private:
-  friend class HSeparator_Class;
-  static CppClassType hseparator_class_;
-
-  // noncopyable
-  HSeparator(const HSeparator&);
-  HSeparator& operator=(const HSeparator&);
-
-protected:
-  explicit HSeparator(const Glib::ConstructParams& construct_params);
-  explicit HSeparator(GtkHSeparator* castitem);
-
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  static GType get_type()      G_GNUC_CONST;
-
-
-  static GType get_base_type() G_GNUC_CONST;
-#endif
-
-  ///Provides access to the underlying C GtkObject.
-  GtkHSeparator*       gobj()       { return reinterpret_cast<GtkHSeparator*>(gobject_); }
-
-  ///Provides access to the underlying C GtkObject.
-  const GtkHSeparator* gobj() const { return reinterpret_cast<GtkHSeparator*>(gobject_); }
-
-
-public:
-  //C++ methods used to invoke GTK+ virtual functions:
-
-protected:
-  //GTK+ Virtual Functions (override these to change behaviour):
-
-  //Default Signal Handlers::
-
-
-private:
-
-public:
-  HSeparator();
-  
 
 };
 
 } /* namespace Gtk */
+
+//Include the deprecated header, 
+//whose classes were previously in this header,
+//to preserve the "API" of the includes.
+#include <gtkmm/hvseparator.h>
 
 
 namespace Glib
@@ -284,34 +139,6 @@ namespace Glib
    * @relates Gtk::Separator
    */
   Gtk::Separator* wrap(GtkSeparator* object, bool take_copy = false);
-} //namespace Glib
-
-
-namespace Glib
-{
-  /** A Glib::wrap() method for this object.
-   * 
-   * @param object The C instance.
-   * @param take_copy False if the result should take ownership of the C instance. True if it should take a new copy or ref.
-   * @result A C++ instance that wraps this C instance.
-   *
-   * @relates Gtk::VSeparator
-   */
-  Gtk::VSeparator* wrap(GtkVSeparator* object, bool take_copy = false);
-} //namespace Glib
-
-
-namespace Glib
-{
-  /** A Glib::wrap() method for this object.
-   * 
-   * @param object The C instance.
-   * @param take_copy False if the result should take ownership of the C instance. True if it should take a new copy or ref.
-   * @result A C++ instance that wraps this C instance.
-   *
-   * @relates Gtk::HSeparator
-   */
-  Gtk::HSeparator* wrap(GtkHSeparator* object, bool take_copy = false);
 } //namespace Glib
 
 

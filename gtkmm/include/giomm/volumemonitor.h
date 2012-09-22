@@ -4,7 +4,8 @@
 #define _GIOMM_VOLUMEMONITOR_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -175,7 +176,7 @@ public:
    * blocks of a block device that is already represented by the native
    * volume monitor (for example a CD Audio file system driver). Such
    * a driver will generate its own Mount object that needs to be
-   * assoicated with the Volume object that represents the volume.
+   * associated with the Volume object that represents the volume.
    * 
    * The other is for implementing a VolumeMonitor whose sole purpose
    * is to return Volume objects representing entries in the users
@@ -195,81 +196,111 @@ public:
 #endif // GIOMM_DISABLE_DEPRECATED
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%volume_added(const Glib::RefPtr<Volume>& volume)</tt>
+   *
+   * Emitted when a mountable volume is added to the system.
+   * @param volume A Volume that was added.
    */
 
   Glib::SignalProxy1< void,const Glib::RefPtr<Volume>& > signal_volume_added();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%volume_removed(const Glib::RefPtr<Volume>& volume)</tt>
+   *
+   * Emitted when a mountable volume is removed from the system.
+   * @param volume A Volume that was removed.
    */
 
   Glib::SignalProxy1< void,const Glib::RefPtr<Volume>& > signal_volume_removed();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%volume_changed(const Glib::RefPtr<Volume>& volume)</tt>
+   *
+   * Emitted when mountable volume is changed.
+   * @param volume A Volume that changed.
    */
 
   Glib::SignalProxy1< void,const Glib::RefPtr<Volume>& > signal_volume_changed();
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%mount_added(const Glib::RefPtr<Mount>& mount)</tt>
+   *
+   * Emitted when a mount is added.
+   * @param mount A Mount that was added.
    */
 
   Glib::SignalProxy1< void,const Glib::RefPtr<Mount>& > signal_mount_added();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%mount_removed(const Glib::RefPtr<Mount>& mount)</tt>
+   *
+   * Emitted when a mount is removed.
+   * @param mount A Mount that was removed.
    */
 
   Glib::SignalProxy1< void,const Glib::RefPtr<Mount>& > signal_mount_removed();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%mount_pre_unmount(const Glib::RefPtr<Mount>& mount)</tt>
+   *
+   * Emitted when a mount is about to be removed.
+   * @param mount A Mount that is being unmounted.
    */
 
   Glib::SignalProxy1< void,const Glib::RefPtr<Mount>& > signal_mount_pre_unmount();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%mount_changed(const Glib::RefPtr<Mount>& mount)</tt>
+   *
+   * Emitted when a mount changes.
+   * @param mount A Mount that changed.
    */
 
   Glib::SignalProxy1< void,const Glib::RefPtr<Mount>& > signal_mount_changed();
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%drive_connected(const Glib::RefPtr<Drive>& drive)</tt>
+   *
+   * Emitted when a drive is connected to the system.
+   * @param drive A Drive that was connected.
    */
 
   Glib::SignalProxy1< void,const Glib::RefPtr<Drive>& > signal_drive_connected();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%drive_disconnected(const Glib::RefPtr<Drive>& drive)</tt>
+   *
+   * Emitted when a drive is disconnected from the system.
+   * @param drive A Drive that was disconnected.
    */
 
   Glib::SignalProxy1< void,const Glib::RefPtr<Drive>& > signal_drive_disconnected();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%drive_changed(const Glib::RefPtr<Drive>& drive)</tt>
+   *
+   * Emitted when a drive changes.
+   * @param drive The drive that changed.
    */
 
   Glib::SignalProxy1< void,const Glib::RefPtr<Drive>& > signal_drive_changed();
@@ -277,17 +308,27 @@ public:
 
   //TODO: Remove no_default_handler when we can break ABI:
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%drive_eject_button(const Glib::RefPtr<Drive>& drive)</tt>
+   *
+   * Emitted when the eject button is pressed on @a drive.
+   * 
+   * @newin{2,18}
+   * @param drive The drive where the eject button was pressed.
    */
 
   Glib::SignalProxy1< void,const Glib::RefPtr<Drive>& > signal_drive_eject_button();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%drive_stop_button(const Glib::RefPtr<Drive>& drive)</tt>
+   *
+   * Emitted when the stop button is pressed on @a drive.
+   * 
+   * @newin{2,22}
+   * @param drive The drive where the stop button was pressed.
    */
 
   Glib::SignalProxy1< void,const Glib::RefPtr<Drive>& > signal_drive_stop_button();
@@ -315,15 +356,25 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_volume_added().
   virtual void on_volume_added(const Glib::RefPtr<Volume>& volume);
+  /// This is a default handler for the signal signal_volume_removed().
   virtual void on_volume_removed(const Glib::RefPtr<Volume>& volume);
+  /// This is a default handler for the signal signal_volume_changed().
   virtual void on_volume_changed(const Glib::RefPtr<Volume>& volume);
+  /// This is a default handler for the signal signal_mount_added().
   virtual void on_mount_added(const Glib::RefPtr<Mount>& mount);
+  /// This is a default handler for the signal signal_mount_removed().
   virtual void on_mount_removed(const Glib::RefPtr<Mount>& mount);
+  /// This is a default handler for the signal signal_mount_pre_unmount().
   virtual void on_mount_pre_unmount(const Glib::RefPtr<Mount>& mount);
+  /// This is a default handler for the signal signal_mount_changed().
   virtual void on_mount_changed(const Glib::RefPtr<Mount>& mount);
+  /// This is a default handler for the signal signal_drive_connected().
   virtual void on_drive_connected(const Glib::RefPtr<Drive>& drive);
+  /// This is a default handler for the signal signal_drive_disconnected().
   virtual void on_drive_disconnected(const Glib::RefPtr<Drive>& drive);
+  /// This is a default handler for the signal signal_drive_changed().
   virtual void on_drive_changed(const Glib::RefPtr<Drive>& drive);
 
 

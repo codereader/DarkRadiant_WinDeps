@@ -4,12 +4,13 @@
 #define _GTKMM_LINKBUTTON_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: linkbutton.hg,v 1.2 2006/03/22 16:53:22 murrayc Exp $ */
 
 /* linkbutton.h
- * 
+ *
  * Copyright (C) 2006 The gtkmm Development Team
  *
  * This library is free software; you can redistribute it and/or
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/button.h>
@@ -41,15 +42,18 @@ namespace Gtk
 namespace Gtk
 {
 
+//TODO: Remove the mention of set_*_hook() when the C documentation has been fixed: https://bugzilla.gnome.org/show_bug.cgi?id=339745
 /** Create buttons bound to a URL.
  *
  * A Gtk::LinkButton is a Gtk::Button with a hyperlink, similar to the one
  * used by web browsers, which triggers an action when clicked. It is useful
  * to show quick links to resources.
  *
- * The URI bound to a Gtk::LinkButton can be set specifically using set_uri(), 
+ * The URI bound to a Gtk::LinkButton can be set specifically using set_uri(),
  * and retrieved using get_uri().
- * Gtk::LinkButton offers a global hook, which is called when the used clicks on it: see set_uri_hook(). 
+ * By default, Gtk::LinkButton calls gtk_show_uri() when the button is clicked.
+ * This behaviour can be overridden by connecting to the activate_link signal and
+ * returning true from the signal handler.
  *
  * The LinkButton widget looks like this:
  * @image html linkbutton1.png
@@ -87,8 +91,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -108,6 +116,8 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_activate_link().
+  virtual bool on_activate_link();
 
 
 private:
@@ -155,38 +165,6 @@ public:
    */
   void set_visited(bool visited =  true);
 
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** For instance,
-   * void on_linkbutton_uri(Gtk::LinkButton *button, const Glib::ustring& uri);
-   *
-   * @see set_uri_hook().
-   *
-   * @deprecated Use Button::signal_clicked() instead.
-   */
-  typedef sigc::slot<void, Gtk::LinkButton*, const Glib::ustring&> SlotUri;
-
-  /** Sets slot as the function that should be invoked every time a user clicks a LinkButton. 
-   * This function is called before every signal handler registered for the "clicked" signal.
-   *
-   * @param slot A function called each time a LinkButton is clicked.
-   * @newin{2,12}
-   *
-   * @deprecated Use Button::signal_clicked()  instead.
-   */
-  static void set_uri_hook(const SlotUri& slot);
-  
-
-  /** Unsets any previously set slot as the function that should be invoked every time a user clicks a LinkButton. 
-   * @see set_uri_hook().
-   * @newin{2,
-   *
-   * @deprecated Use  Button::signal_clicked() instead.
-   */
-  static void unset_uri_hook();
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The URI bound to this button.
    *
@@ -194,7 +172,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_uri() ;
+  Glib::PropertyProxy< Glib::ustring > property_uri() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -204,7 +182,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_uri() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_uri() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -214,7 +192,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_visited() ;
+  Glib::PropertyProxy< bool > property_visited() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -224,9 +202,27 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_visited() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_visited() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
-                                          
+
+
+/**
+   * @par Slot Prototype:
+   * <tt>bool on_my_%activate_link()</tt>
+   *
+   * The signal_activate_link() signal is emitted each time the Gtk::LinkButton
+   * has been clicked.
+   * 
+   * The default handler will call gtk_show_uri() with the URI stored inside
+   * the Gtk::LinkButton::property_uri() property.
+   * 
+   * To override the default behavior, you can connect to the signal_activate_link()
+   * signal and stop the propagation of the signal by returning <tt>true</tt> from
+   * your handler.
+   */
+
+  Glib::SignalProxy0< bool > signal_activate_link();
+
 
 };
 

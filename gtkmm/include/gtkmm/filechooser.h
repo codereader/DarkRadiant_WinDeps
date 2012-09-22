@@ -4,7 +4,8 @@
 #define _GTKMM_FILECHOOSER_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: filechooser.hg,v 1.23 2006/04/18 13:28:56 murrayc Exp $ */
 
@@ -21,13 +22,14 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+#include <vector>
 
 #include <gtkmm/widget.h>
 #include <gtkmm/filefilter.h>
-#include <glibmm/interface.h>
 #include <giomm/file.h>
 
 
@@ -181,17 +183,6 @@ namespace Gtk
  * UTF-8, which all gtkmm widgets expect. You should use
  * Glib::filename_to_utf8() to convert filenames into strings that can be
  * passed to gtkmm widgets.
- *
- * @note
- * The gtkmm FileChooser API is broken in that methods return Glib::ustring
- * even though the returned string is not necessarily UTF-8 encoded.  Any
- * FileChooser method that takes or returns a filename (not a URI) should
- * have std::string as parameter or return type.  Fortunately this mistake
- * doesn't prevent you from handling filenames correctly in your application.
- * Just pretend that the API uses std::string and call Glib::filename_to_utf8()
- * or Glib::filename_from_utf8() as appropriate.
- *
- * See http://bugzilla.gnome.org/show_bug.cgi?id=142138 for more information.
  */
 
 class FileChooser : public Glib::Interface
@@ -213,9 +204,14 @@ private:
   FileChooser(const FileChooser&);
   FileChooser& operator=(const FileChooser&);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 protected:
-  FileChooser(); // you must derive from this class
-
+  /**
+   * You should derive from this class to use it.
+   */
+  FileChooser();
+  
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /** Called by constructors of derived classes. Provide the result of 
    * the Class init() function to ensure that it is properly 
    * initialized.
@@ -238,8 +234,11 @@ public:
 
   static void add_interface(GType gtype_implementer);
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -335,11 +334,11 @@ public:
    * is <tt>false</tt> by default.
    * 
    * Regardless of this setting, the @a chooser will emit the
-   * Gtk::FileChooser::confirm-overwrite signal when appropriate.
+   * Gtk::FileChooser::signal_confirm_overwrite() signal when appropriate.
    * 
    * If all you need is the stock confirmation dialog, set this property to <tt>true</tt>.
    * You can override the way confirmation is done by actually handling the
-   * Gtk::FileChooser::confirm-overwrite signal; please refer to its documentation
+   * Gtk::FileChooser::signal_confirm_overwrite() signal; please refer to its documentation
    * for the details.
    * 
    * @newin{2,8}
@@ -378,7 +377,8 @@ public:
   /** Sets the current name in the file selector, as if entered
    * by the user. Note that the name passed in here is a UTF-8
    * string rather than a filename. This function is meant for
-   * such uses as a suggested name in a "Save As..." dialog.
+   * such uses as a suggested name in a "Save As..." dialog.  You can
+   * pass "Untitled.doc" or a similarly suitable suggestion for the @a name.
    * 
    * If you want to preselect a particular existing file, you should use
    * set_filename() or set_uri() instead.
@@ -402,48 +402,36 @@ public:
    * if no file is selected, or the selected file can't
    * be represented with a local filename.
    */
-  Glib::ustring get_filename() const;
+  std::string get_filename() const;
   
-  /** Sets @a filename as the current filename for the file chooser, by changing
-   * to the file's parent folder and actually selecting the file in list.  If
-   * the @a chooser is in Gtk::FILE_CHOOSER_ACTION_SAVE mode, the file's base name
-   * will also appear in the dialog's file name entry.
-   * 
-   * If the file name isn't in the current folder of @a chooser, then the current
-   * folder of @a chooser will be changed to the folder containing @a filename. This
-   * is equivalent to a sequence of unselect_all() followed by
-   * select_filename().
+  /** Sets @a filename as the current filename for the file chooser, by changing to
+   * the file's parent folder and actually selecting the file in list; all other
+   * files will be unselected.  If the @a chooser is in
+   * Gtk::FILE_CHOOSER_ACTION_SAVE mode, the file's base name will also appear in
+   * the dialog's file name entry.
    * 
    * Note that the file must exist, or nothing will be done except
    * for the directory change.
    * 
-   * If you are implementing a <guimenuitem>File/Save As...</guimenuitem> dialog,
-   * you should use this function if you already have a file name to which the 
-   * user may save; for example, when the user opens an existing file and then 
-   * does <guimenuitem>File/Save As...</guimenuitem> on it.  If you don't have 
-   * a file name already — for example, if the user just created a new 
-   * file and is saving it for the first time, do not call this function.  
-   * Instead, use something similar to this:
-   * |[
-   * if (document_is_new)
-   * {
-   * / * the user just created a new document * /
-   * gtk_file_chooser_set_current_folder (chooser, default_folder_for_saving);
-   * gtk_file_chooser_set_current_name (chooser, "Untitled document");
-   * }
-   * else
-   * {
-   * / * the user edited an existing document * / 
-   * gtk_file_chooser_set_filename (chooser, existing_filename);
-   * }
-   * ]|
+   * You should use this function only when implementing a <guimenuitem>File/Save
+   * As...</guimenuitem> dialog for which you already have a file name to which
+   * the user may save.  For example, when the user opens an existing file and
+   * then does <guimenuitem>File/Save As...</guimenuitem> on it to save a copy or
+   * a modified version.  If you don't have a file name already — for
+   * example, if the user just created a new file and is saving it for the first
+   * time, do not call this function.  Instead, use something similar to this:
+   * 
+   * [C example ellipted]
+   * 
+   * In the first case, the file chooser will present the user with useful suggestions
+   * as to where to save his new file.  In the second case, the file's existing location
+   * is already known, so the file chooser will use it.
    * 
    * @newin{2,4}
    * @param filename The filename to set as current.
-   * @return <tt>true</tt> if both the folder could be changed and the file was
-   * selected successfully, <tt>false</tt> otherwise.
+   * @return Not useful.
    */
-  bool set_filename(const Glib::ustring& filename);
+  bool set_filename(const std::string& filename);
   
   /** Selects a filename. If the file name isn't in the current
    * folder of @a chooser, then the current folder of @a chooser will
@@ -451,10 +439,11 @@ public:
    * 
    * @newin{2,4}
    * @param filename The filename to select.
-   * @return <tt>true</tt> if both the folder could be changed and the file was
-   * selected successfully, <tt>false</tt> otherwise.
+   * @return Not useful.
+   * 
+   * See also: set_filename().
    */
-  bool select_filename(const Glib::ustring& filename);
+  bool select_filename(const std::string& filename);
   
   /** Unselects a currently selected filename. If the filename
    * is not in the current directory, does not exist, or
@@ -463,7 +452,7 @@ public:
    * @newin{2,4}
    * @param filename The filename to unselect.
    */
-  void unselect_filename(const Glib::ustring& filename);
+  void unselect_filename(const std::string& filename);
   
   /** Selects all the files in the current folder of a file chooser.
    * 
@@ -476,7 +465,8 @@ public:
    * @newin{2,4}
    */
   void unselect_all();
-  
+
+ 
   /** Lists all the selected files and subfolders in the current folder of
    *  @a chooser. The returned names are full absolute paths. If files in the current
    * folder cannot be represented as local filenames they will be ignored. (See
@@ -486,18 +476,21 @@ public:
    * 
    * @newin{2,4}.
    */
-  Glib::SListHandle<Glib::ustring> get_filenames() const;
+  std::vector<std::string> get_filenames() const;
+
   
   /** Sets the current folder for @a chooser from a local filename.
    * The user will be shown the full contents of the current folder,
    * plus user interface elements for navigating to other folders.
    * 
+   * In general, you should not use this function.  See the section on setting up a file
+   * chooser dialog for the rationale behind this.
+   * 
    * @newin{2,4}
    * @param filename The full path of the new current folder.
-   * @return <tt>true</tt> if the folder could be changed successfully, <tt>false</tt>
-   * otherwise.
+   * @return Not useful.
    */
-  bool set_current_folder(const Glib::ustring& filename);
+  bool set_current_folder(const std::string& filename);
   
   /** Gets the current folder of @a chooser as a local filename.
    * See set_current_folder().
@@ -509,7 +502,7 @@ public:
    * 
    * @newin{2,4}.
    */
-  Glib::ustring get_current_folder() const;
+  std::string get_current_folder() const;
 
 
 /* URI manipulation
@@ -533,38 +526,27 @@ public:
    * list.  If the @a chooser is Gtk::FILE_CHOOSER_ACTION_SAVE mode, the URI's base
    * name will also appear in the dialog's file name entry.
    * 
-   * If the URI isn't in the current folder of @a chooser, then the current folder
-   * of @a chooser will be changed to the folder containing @a uri. This is equivalent
-   * to a sequence of unselect_all() followed by
-   * select_uri().
-   * 
    * Note that the URI must exist, or nothing will be done except for the 
    * directory change.
-   * If you are implementing a <guimenuitem>File/Save As...</guimenuitem> dialog,
-   * you should use this function if you already have a file name to which the 
-   * user may save; for example, when the user opens an existing file and then 
-   * does <guimenuitem>File/Save As...</guimenuitem> on it.  If you don't have 
-   * a file name already — for example, if the user just created a new 
-   * file and is saving it for the first time, do not call this function.  
-   * Instead, use something similar to this:
-   * |[
-   * if (document_is_new)
-   * {
-   * / * the user just created a new document * /
-   * gtk_file_chooser_set_current_folder_uri (chooser, default_folder_for_saving);
-   * gtk_file_chooser_set_current_name (chooser, "Untitled document");
-   * }
-   * else
-   * {
-   * / * the user edited an existing document * / 
-   * gtk_file_chooser_set_uri (chooser, existing_uri);
-   * }
-   * ]|
+   * 
+   * You should use this function only when implementing a <guimenuitem>File/Save
+   * As...</guimenuitem> dialog for which you already have a file name to which
+   * the user may save.  For example, whenthe user opens an existing file and then
+   * does <guimenuitem>File/Save As...</guimenuitem> on it to save a copy or a
+   * modified version.  If you don't have a file name already — for example,
+   * if the user just created a new file and is saving it for the first time, do
+   * not call this function.  Instead, use something similar to this:
+   * 
+   * [C example ellipted]
+   * 
+   * 
+   * In the first case, the file chooser will present the user with useful suggestions
+   * as to where to save his new file.  In the second case, the file's existing location
+   * is already known, so the file chooser will use it.
    * 
    * @newin{2,4}
    * @param uri The URI to set as current.
-   * @return <tt>true</tt> if both the folder could be changed and the URI was
-   * selected successfully, <tt>false</tt> otherwise.
+   * @return Not useful.
    */
   bool set_uri(const Glib::ustring& uri);
   
@@ -574,8 +556,7 @@ public:
    * 
    * @newin{2,4}
    * @param uri The URI to select.
-   * @return <tt>true</tt> if both the folder could be changed and the URI was
-   * selected successfully, <tt>false</tt> otherwise.
+   * @return Not useful.
    */
   bool select_uri(const Glib::ustring& uri);
   
@@ -587,7 +568,8 @@ public:
    * @param uri The URI to unselect.
    */
   void unselect_uri(const Glib::ustring& uri);
-  
+ 
+
   /** Lists all the selected files and subfolders in the current folder of
    *  @a chooser. The returned names are full absolute URIs.
    * @return A list containing the URIs of all selected
@@ -595,12 +577,15 @@ public:
    * 
    * @newin{2,4}.
    */
-  Glib::SListHandle<Glib::ustring> get_uris() const;
+  std::vector<Glib::ustring> get_uris() const;
 
   
   /** Sets the current folder for @a chooser from an URI.
    * The user will be shown the full contents of the current folder,
    * plus user interface elements for navigating to other folders.
+   * 
+   * In general, you should not use this function.  See the section on setting up a file
+   * chooser dialog for the rationale behind this.
    * 
    * @newin{2,4}
    * @param uri The URI for the new current folder.
@@ -615,7 +600,7 @@ public:
    * Note that this is the folder that the file chooser is currently displaying
    * (e.g. "file:///home/username/Documents"), which is <em>not the same</em>
    * as the currently-selected folder if the chooser is in
-   * Gtk::FILE_CHOOSER_SELECT_FOLDER mode
+   * Gtk::FILE_CHOOSER_ACTION_SELECT_FOLDER mode
    * (e.g. "file:///home/username/Documents/selected-folder/".  To get the
    * currently-selected folder in that mode, use get_uri() as the
    * usual way to get the selection.
@@ -646,24 +631,12 @@ public:
    * a file name already — for example, if the user just created a new
    * file and is saving it for the first time, do not call this function.
    * Instead, use something similar to this:
-   * |[
-   * if (document_is_new)
-   * {
-   * / * the user just created a new document * /
-   * gtk_file_chooser_set_current_folder_file (chooser, default_file_for_saving);
-   * gtk_file_chooser_set_current_name (chooser, "Untitled document");
-   * }
-   * else
-   * {
-   * / * the user edited an existing document * /
-   * gtk_file_chooser_set_file (chooser, existing_file);
-   * }
-   * ]|
+   * 
+   * [C example ellipted]
    * 
    * @newin{2,14}
    * @param file The File to set as current.
-   * @return <tt>true</tt> if both the folder could be changed and the file was
-   * selected successfully, <tt>false</tt> otherwise.
+   * @return Not useful.
    */
   bool set_file(const Glib::RefPtr<const Gio::File>& uri);
 
@@ -673,8 +646,7 @@ public:
    * 
    * @newin{2,14}
    * @param file The file to select.
-   * @return <tt>true</tt> if both the folder could be changed and the path was
-   * selected successfully, <tt>false</tt> otherwise.
+   * @return Not useful.
    */
   bool select_file(const Glib::RefPtr<const Gio::File>& file);
   
@@ -696,7 +668,7 @@ public:
    * current folder.  Free the returned list with Glib::slist_free(), and
    * the files with Glib::object_unref().
    */
-  Glib::SListHandle< Glib::RefPtr<Gio::File> > get_files();
+  std::vector< Glib::RefPtr<Gio::File> > get_files();
 
   
   /** Sets the current folder for @a chooser from a File.
@@ -752,7 +724,7 @@ public:
   
   /** Sets an application-supplied widget to use to display a custom preview
    * of the currently selected file. To implement a preview, after setting the
-   * preview widget, you connect to the Gtk::FileChooser::update-preview
+   * preview widget, you connect to the Gtk::FileChooser::signal_update_preview()
    * signal, and call get_preview_filename() or
    * get_preview_uri() on each change. If you can
    * display a preview of the new file, update your widget and
@@ -828,7 +800,7 @@ public:
    */
   bool get_use_preview_label() const;
 
-  
+ 
   /** Gets the filename that should be previewed in a custom preview
    * widget. See set_preview_widget().
    * 
@@ -837,7 +809,7 @@ public:
    * is selected, or if the selected file cannot be represented
    * as a local filename.
    */
-  Glib::ustring get_preview_filename() const;
+  std::string get_preview_filename() const;
   
   /** Gets the URI that should be previewed in a custom preview
    * widget. See set_preview_widget().
@@ -907,15 +879,24 @@ public:
    * @newin{2,4}
    * @param filter A Gtk::FileFilter.
    */
-  void add_filter(const FileFilter& filter);
+  void add_filter(const Glib::RefPtr<FileFilter>& filter);
   
   /** Removes @a filter from the list of filters that the user can select between.
    * 
    * @newin{2,4}
    * @param filter A Gtk::FileFilter.
    */
-  void remove_filter(const FileFilter& filter);
+  void remove_filter(const Glib::RefPtr<FileFilter>& filter);
 
+ 
+  /** Lists the current set of user-selectable filters; see
+   * add_filter(), remove_filter().
+   * @return A list containing the current set of
+   * user selectable filters.
+   * 
+   * @newin{2,4}.
+   */
+  std::vector< Glib::RefPtr<FileFilter> > list_filters();
   
   /** Lists the current set of user-selectable filters; see
    * add_filter(), remove_filter().
@@ -924,16 +905,7 @@ public:
    * 
    * @newin{2,4}.
    */
-  Glib::SListHandle< FileFilter* > list_filters();
-  
-  /** Lists the current set of user-selectable filters; see
-   * add_filter(), remove_filter().
-   * @return A list containing the current set of
-   * user selectable filters.
-   * 
-   * @newin{2,4}.
-   */
-  Glib::SListHandle< const FileFilter* > list_filters() const;
+  std::vector< Glib::RefPtr<const FileFilter> > list_filters() const;
 
 /* Current filter
  */
@@ -948,21 +920,21 @@ public:
    * @newin{2,4}
    * @param filter A Gtk::FileFilter.
    */
-  void set_filter(const FileFilter& filter);
+  void set_filter(const Glib::RefPtr<FileFilter>& filter);
   
   /** Gets the current filter; see set_filter().
    * 
    * @newin{2,4}
    * @return The current filter, or <tt>0</tt>.
    */
-  FileFilter* get_filter();
+  Glib::RefPtr<FileFilter> get_filter();
   
   /** Gets the current filter; see set_filter().
    * 
    * @newin{2,4}
    * @return The current filter, or <tt>0</tt>.
    */
-  const FileFilter* get_filter() const;
+  Glib::RefPtr<const FileFilter> get_filter() const;
 
 /* Per-application shortcut folders */
 
@@ -977,7 +949,7 @@ public:
    * @return <tt>true</tt> if the folder could be added successfully, <tt>false</tt>
    * otherwise.  In the latter case, the @a error will be set as appropriate.
    */
-  bool add_shortcut_folder(const Glib::ustring& folder);
+  bool add_shortcut_folder(const std::string& folder);
   
   /** Removes a folder from a file chooser's list of shortcut folders.
    * 
@@ -988,7 +960,8 @@ public:
    * 
    * See also: add_shortcut_folder().
    */
-  bool remove_shortcut_folder(const Glib::ustring& folder);
+  bool remove_shortcut_folder(const std::string& folder);
+
   
   /** Queries the list of shortcut folders in the file chooser, as set by
    * add_shortcut_folder().
@@ -997,7 +970,7 @@ public:
    * @return A list of folder filenames, if there are any shortcut
    * folders..
    */
-  Glib::SListHandle<Glib::ustring> list_shortcut_folders() const;
+  std::vector<std::string> list_shortcut_folders() const;
 
   
   /** Adds a folder URI to be displayed with the shortcut folders in a file
@@ -1029,92 +1002,170 @@ public:
    * 
    * @newin{2,4}.
    */
-  Glib::SListHandle<Glib::ustring> list_shortcut_folder_uris() const;
+  std::vector<Glib::ustring> list_shortcut_folder_uris() const;
 
 
-  /** This signal is emitted when the current folder in a FileChooser
+/**
+   * @par Slot Prototype:
+   * <tt>void on_my_%current_folder_changed()</tt>
+   *
+   * This signal is emitted when the current folder in a Gtk::FileChooser
    * changes.  This can happen due to the user performing some action that
    * changes folders, such as selecting a bookmark or visiting a folder on the
    * file list.  It can also happen as a result of calling a function to
    * explicitly change the current folder in a file chooser.
-   *
+   * 
    * Normally you do not need to connect to this signal, unless you need to keep
    * track of which folder a file chooser is showing.
-   *
-   * @see set_current_folder(), get_current_folder(),
-   * set_current_folder_uri(), get_current_folder_uri().
-   *
-   * @par Prototype:
-   * <tt>void on_my_%current_folder_changed()</tt>
+   * 
+   * See also:  Gtk::FileChooser::set_current_folder(),
+   * Gtk::FileChooser::get_current_folder(),
+   * Gtk::FileChooser::set_current_folder_uri(),
+   * Gtk::FileChooser::get_current_folder_uri().
    */
 
   Glib::SignalProxy0< void > signal_current_folder_changed();
 
-
-  /** This signal is emitted when there is a change in the set of selected files
-   * in a #GtkFileChooser.  This can happen when the user modifies the selection
+  
+/**
+   * @par Slot Prototype:
+   * <tt>void on_my_%selection_changed()</tt>
+   *
+   * This signal is emitted when there is a change in the set of selected files
+   * in a Gtk::FileChooser.  This can happen when the user modifies the selection
    * with the mouse or the keyboard, or when explicitly calling functions to
    * change the selection.
-   *
+   * 
    * Normally you do not need to connect to this signal, as it is easier to wait
    * for the file chooser to finish running, and then to get the list of
    * selected files using the functions mentioned below.
-   *
-   * @see select_filename(), unselect_filename(), get_filename(),
-   * get_filenames(), select_uri(),
-   * unselect_uri(), get_uri(),
-   * get_uris().
-   *
-   * @par Prototype:
-   * <tt>void on_my_%selection_changed()</tt>
+   * 
+   * See also: Gtk::FileChooser::select_filename(),
+   * Gtk::FileChooser::unselect_filename(), Gtk::FileChooser::get_filename(),
+   * Gtk::FileChooser::get_filenames(), Gtk::FileChooser::select_uri(),
+   * Gtk::FileChooser::unselect_uri(), Gtk::FileChooser::get_uri(),
+   * Gtk::FileChooser::get_uris().
    */
 
   Glib::SignalProxy0< void > signal_selection_changed();
 
-
-  /** This signal is emitted when the preview in a file chooser should be
+  
+/**
+   * @par Slot Prototype:
+   * <tt>void on_my_%update_preview()</tt>
+   *
+   * This signal is emitted when the preview in a file chooser should be
    * regenerated.  For example, this can happen when the currently selected file
    * changes.  You should use this signal if you want your file chooser to have
    * a preview widget.
-   *
+   * 
    * Once you have installed a preview widget with
-   * set_preview_widget(), you should update it when this
+   * Gtk::FileChooser::set_preview_widget(), you should update it when this
    * signal is emitted.  You can use the functions
-   * get_preview_filename() or get_preview_uri() to get the name of the file to preview.
-   * Your widget may not be able to preview all kinds of files; your signal handler
-   * must call set_preview_wiget_active() to inform the file
+   * Gtk::FileChooser::get_preview_filename() or
+   * Gtk::FileChooser::get_preview_uri() to get the name of the file to preview.
+   * Your widget may not be able to preview all kinds of files; your callback
+   * must call Gtk::FileChooser::set_preview_widget_active() to inform the file
    * chooser about whether the preview was generated successfully or not.
-   *
-   * @see set_preview_widget(), set_preview_widget_active(),
-   * set_use_preview_label(), get_preview_filename(), get_preview_uri().
-   *
-   * @par Prototype:
-   * <tt>void on_my_%update_preview()</tt>
+   * 
+   * Please see the example code in <xref linkend="gtkfilechooser-preview"/>.
+   * 
+   * See also: Gtk::FileChooser::set_preview_widget(),
+   * Gtk::FileChooser::set_preview_widget_active(),
+   * Gtk::FileChooser::set_use_preview_label(),
+   * Gtk::FileChooser::get_preview_filename(),
+   * Gtk::FileChooser::get_preview_uri().
    */
 
   Glib::SignalProxy0< void > signal_update_preview();
 
-
-  /** This signal is emitted when the user "activates" a file in the file
+  
+/**
+   * @par Slot Prototype:
+   * <tt>void on_my_%file_activated()</tt>
+   *
+   * This signal is emitted when the user "activates" a file in the file
    * chooser.  This can happen by double-clicking on a file in the file list, or
    * by pressing <keycap>Enter</keycap>.
-   *
+   * 
    * Normally you do not need to connect to this signal.  It is used internally
-   * by FileChooserDialog to know when to activate the default button in the
+   * by Gtk::FileChooserDialog to know when to activate the default button in the
    * dialog.
-   *
-   * @see get_filename(), get_filenames(), get_uri(), get_uris().
-   *
-   * @par Prototype:
-   * <tt>void on_my_%file_activated()</tt>
+   * 
+   * See also: Gtk::FileChooser::get_filename(),
+   * Gtk::FileChooser::get_filenames(), Gtk::FileChooser::get_uri(),
+   * Gtk::FileChooser::get_uris().
    */
 
   Glib::SignalProxy0< void > signal_file_activated();
 
-
-  /**
-   * @par Prototype:
+  
+/**
+   * @par Slot Prototype:
    * <tt>FileChooserConfirmation on_my_%confirm_overwrite()</tt>
+   *
+   * This signal gets emitted whenever it is appropriate to present a
+   * confirmation dialog when the user has selected a file name that
+   * already exists.  The signal only gets emitted when the file
+   * chooser is in Gtk::FILE_CHOOSER_ACTION_SAVE mode.
+   * 
+   * Most applications just need to turn on the
+   * Gtk::FileChooser::property_do_overwrite_confirmation() property (or call the
+   * Gtk::FileChooser::set_do_overwrite_confirmation() function), and
+   * they will automatically get a stock confirmation dialog.
+   * Applications which need to customize this behavior should do
+   * that, and also connect to the Gtk::FileChooser::signal_confirm_overwrite()
+   * signal.
+   * 
+   * A signal handler for this signal must return a
+   * Gtk::FileChooserConfirmation value, which indicates the action to
+   * take.  If the handler determines that the user wants to select a
+   * different filename, it should return
+   * Gtk::FILE_CHOOSER_CONFIRMATION_SELECT_AGAIN.  If it determines
+   * that the user is satisfied with his choice of file name, it
+   * should return Gtk::FILE_CHOOSER_CONFIRMATION_ACCEPT_FILENAME.
+   * On the other hand, if it determines that the stock confirmation
+   * dialog should be used, it should return
+   * Gtk::FILE_CHOOSER_CONFIRMATION_CONFIRM. The following example
+   * illustrates this.
+   * <example id="gtkfilechooser-confirmation">
+   * <title>Custom confirmation</title>
+   * 
+   * static GtkFileChooserConfirmation
+   * confirm_overwrite_callback (GtkFileChooser *chooser, gpointer data)
+   * {
+   * char *uri;
+   * 
+   * uri = gtk_file_chooser_get_uri (chooser);
+   * 
+   * if (is_uri_read_only (uri))
+   * {
+   * if (user_wants_to_replace_read_only_file (uri))
+   * return GTK_FILE_CHOOSER_CONFIRMATION_ACCEPT_FILENAME;
+   * else
+   * return GTK_FILE_CHOOSER_CONFIRMATION_SELECT_AGAIN;
+   * } else
+   * return GTK_FILE_CHOOSER_CONFIRMATION_CONFIRM; // fall back to the default dialog
+   * }
+   * 
+   * ...
+   * 
+   * chooser = gtk_file_chooser_dialog_new (...);
+   * 
+   * gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), <tt>true</tt>);
+   * g_signal_connect (chooser, "confirm-overwrite",
+   * G_CALLBACK (confirm_overwrite_callback), <tt>0</tt>);
+   * 
+   * if (gtk_dialog_run (chooser) == GTK_RESPONSE_ACCEPT)
+   * save_to_file (gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
+   * 
+   * gtk_widget_destroy (chooser);
+   * 
+   * </example>
+   * 
+   * @newin{2,8}
+   * @return A Gtk::FileChooserConfirmation value that indicates which
+   * action to take after emitting the signal.
    */
 
   Glib::SignalProxy0< FileChooserConfirmation > signal_confirm_overwrite();
@@ -1127,7 +1178,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<FileChooserAction> property_action() ;
+  Glib::PropertyProxy< FileChooserAction > property_action() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1137,7 +1188,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<FileChooserAction> property_action() const;
+  Glib::PropertyProxy_ReadOnly< FileChooserAction > property_action() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   //TODO: _WRAP_PROPERTY("file-system-backend", FileSystem) //FileSystem is not really public API.
@@ -1148,7 +1199,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<FileFilter*> property_filter() ;
+  Glib::PropertyProxy< Glib::RefPtr<FileFilter> > property_filter() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1158,7 +1209,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<FileFilter*> property_filter() const;
+  Glib::PropertyProxy_ReadOnly< Glib::RefPtr<FileFilter> > property_filter() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1168,7 +1219,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_local_only() ;
+  Glib::PropertyProxy< bool > property_local_only() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1178,7 +1229,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_local_only() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_local_only() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1188,7 +1239,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Widget*> property_preview_widget() ;
+  Glib::PropertyProxy< Widget* > property_preview_widget() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1198,7 +1249,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Widget*> property_preview_widget() const;
+  Glib::PropertyProxy_ReadOnly< Widget* > property_preview_widget() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1208,7 +1259,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_preview_widget_active() ;
+  Glib::PropertyProxy< bool > property_preview_widget_active() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1218,7 +1269,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_preview_widget_active() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_preview_widget_active() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1228,7 +1279,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_use_preview_label() ;
+  Glib::PropertyProxy< bool > property_use_preview_label() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1238,7 +1289,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_use_preview_label() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_use_preview_label() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1248,7 +1299,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Widget*> property_extra_widget() ;
+  Glib::PropertyProxy< Widget* > property_extra_widget() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1258,7 +1309,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Widget*> property_extra_widget() const;
+  Glib::PropertyProxy_ReadOnly< Widget* > property_extra_widget() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1268,7 +1319,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_select_multiple() ;
+  Glib::PropertyProxy< bool > property_select_multiple() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1278,7 +1329,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_select_multiple() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_select_multiple() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1288,7 +1339,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_show_hidden() ;
+  Glib::PropertyProxy< bool > property_show_hidden() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1298,7 +1349,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_show_hidden() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_show_hidden() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1308,7 +1359,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_do_overwrite_confirmation() ;
+  Glib::PropertyProxy< bool > property_do_overwrite_confirmation() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1318,7 +1369,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_do_overwrite_confirmation() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_do_overwrite_confirmation() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1328,7 +1379,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_create_folders() ;
+  Glib::PropertyProxy< bool > property_create_folders() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1338,7 +1389,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_create_folders() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_create_folders() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

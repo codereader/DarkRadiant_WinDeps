@@ -4,7 +4,8 @@
 #define _GTKMM_LABEL_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: label.hg,v 1.11 2006/06/21 20:04:25 murrayc Exp $ */
 
@@ -21,8 +22,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 
@@ -82,8 +83,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -103,6 +108,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_populate_popup().
   virtual void on_populate_popup(Menu* menu);
 
 
@@ -139,7 +145,7 @@ public:
    * label.set_alignment(x, y);
    * @endcode
    */
-  Label(const Glib::ustring& label, AlignmentEnum xalign, AlignmentEnum yalign = ALIGN_CENTER, bool mnemonic = false);
+  Label(const Glib::ustring& label, Align xalign, Align yalign = ALIGN_CENTER, bool mnemonic = false);
 
 
   /** Doesn't use markup.
@@ -159,7 +165,7 @@ public:
    * 
    * <note>The attributes set with this function will be applied
    * and merged with any other attributes previously effected by way
-   * of the Gtk::Label:use-underline or Gtk::Label:use-markup properties.
+   * of the Gtk::Label::property_use_underline() or Gtk::Label::property_use_markup() properties.
    * While it is not recommended to mix markup strings with manually set
    * attributes, if you must; know that the attributes will be applied
    * to the label after the markup string is parsed.</note>
@@ -178,11 +184,12 @@ public:
    */
   Pango::AttrList get_attributes() const;
 
+  //TODO: Remove set_label() or set_text()?
   
   /** Sets the text of the label. The label is interpreted as
    * including embedded underlines and/or Pango markup depending
-   * on the values of the Gtk::Label:use-underline" and
-   * Gtk::Label:use-markup properties.
+   * on the values of the Gtk::Label::property_use_underline()" and
+   * Gtk::Label::property_use_markup() properties.
    * @param str The new text to set for the label.
    */
   void set_label(const Glib::ustring& str);
@@ -194,21 +201,25 @@ public:
    */
   Glib::ustring get_label() const;
   
-  /** Parses @a str which is marked up with the ", str);
-   * gtk_label_set_markup (GTK_LABEL (label), markup);
-   * g_free (markup);
-   * ]|
-   * @param str A markup string (see ).
+  /** Parses @a str which is marked up with the Pango text markup language, setting the
+   * label's text and attribute list based on the parse results. If the @a str is
+   * external data, you may need to escape it with Glib::markup_escape_text() or
+   * Glib::markup_printf_escaped()<!-- -->:
+   * 
+   * [C example ellipted]
+   * @param str A markup string (see Pango markup format).
    */
   void set_markup(const Glib::ustring& str);
   
-  /** Sets whether the text of the label contains markup in . See set_markup().
+  /** Sets whether the text of the label contains markup in Pango's text markup
+   * language. See set_markup().
    * @param setting <tt>true</tt> if the label's text should be parsed for markup.
    */
   void set_use_markup(bool setting =  true);
   
   /** Returns whether the label's text is interpreted as marked up with
-   * the . See set_use_markup().
+   * the Pango text markup
+   * language. See set_use_markup().
    * @return <tt>true</tt> if the label's text will be parsed for markup.
    */
   bool get_use_markup() const;
@@ -227,14 +238,16 @@ public:
   bool get_use_underline() const;
 
   
-  /** Parses @a str which is marked up with the ,
+  /** Parses @a str which is marked up with the
+   * Pango text markup language,
    * setting the label's text and attribute list based on the parse results.
    * If characters in @a str are preceded by an underscore, they are underlined
    * indicating that they represent a keyboard accelerator called a mnemonic.
    * 
-   * The mnemonic key can be used to activate another widget, chosen 
+   * The mnemonic key can be used to activate another widget, chosen
    * automatically, or explicitly using set_mnemonic_widget().
-   * @param str A markup string (see ).
+   * @param str A markup string (see
+   * Pango markup format).
    */
   void set_markup_with_mnemonic(const Glib::ustring& str);
   
@@ -350,6 +363,12 @@ public:
   int get_max_width_chars() const;
 
   
+  /** The pattern of underlines you want under the existing text within the
+   * Gtk::Label widget.  For example if the current text of the label says
+   * "FooBarBaz" passing a pattern of "___   ___" will underline
+   * "Foo" and "Baz" but not "Bar".
+   * @param pattern The pattern as described above.
+   */
   void set_pattern(const Glib::ustring& pattern);
   
   /** Toggles line wrapping within the Gtk::Label widget. <tt>true</tt> makes it break
@@ -434,7 +453,7 @@ public:
    * @param start_offset Start offset (in characters not bytes)
    */
   void select_region(int start_offset);
-  
+
   
   /** Gets the selected range of characters in the label, returning <tt>true</tt>
    * if there's a selection.
@@ -471,7 +490,7 @@ public:
    * @param y Location to store Y offset of layout, or <tt>0</tt>.
    */
   void get_layout_offsets(int& x, int& y) const;
-  
+
   
   /** Sets whether the label is in single line mode.
    * 
@@ -486,15 +505,15 @@ public:
    * @return <tt>true</tt> when the label is in single line mode.
    */
   bool get_single_line_mode() const;
-  
+
   
   /** Returns the URI for the currently active link in the label.
    * The active link is the one under the mouse pointer or, in a
    * selectable label, the link in which the text cursor is currently
    * positioned.
    * 
-   * This function is intended for use in a Gtk::Label::activate-link handler
-   * or for use in a Gtk::Widget::query-tooltip handler.
+   * This function is intended for use in a Gtk::Label::signal_activate_link() handler
+   * or for use in a Gtk::Widget::signal_query_tooltip() handler.
    * 
    * @newin{2,18}
    * @return The currently active URI. The string is owned by GTK+ and must
@@ -520,17 +539,33 @@ public:
   bool get_track_visited_links() const;
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%populate_popup(Menu* menu)</tt>
+   *
+   * The signal_populate_popup() signal gets emitted before showing the
+   * context menu of the label. Note that only selectable labels
+   * have context menus.
+   * 
+   * If you need to add items to the context menu, connect
+   * to this signal and append your menuitems to the @a menu.
+   * @param menu The menu that is being populated.
    */
 
   Glib::SignalProxy1< void,Menu* > signal_populate_popup();
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>bool on_my_%activate_link(const Glib::ustring& uri)</tt>
+   *
+   * The signal which gets emitted to activate a URI.
+   * Applications may connect to it to override the default behaviour,
+   * which is to call gtk_show_uri().
+   * 
+   * @newin{2,18}
+   * @param uri The URI that is activated.
+   * @return <tt>true</tt> if the link has been activated.
    */
 
   Glib::SignalProxy1< bool,const Glib::ustring& > signal_activate_link();
@@ -546,7 +581,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_label() ;
+  Glib::PropertyProxy< Glib::ustring > property_label() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -556,7 +591,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_label() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_label() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -566,7 +601,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Pango::AttrList> property_attributes() ;
+  Glib::PropertyProxy< Pango::AttrList > property_attributes() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -576,7 +611,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Pango::AttrList> property_attributes() const;
+  Glib::PropertyProxy_ReadOnly< Pango::AttrList > property_attributes() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -586,7 +621,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_use_markup() ;
+  Glib::PropertyProxy< bool > property_use_markup() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -596,7 +631,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_use_markup() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_use_markup() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -606,7 +641,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_use_underline() ;
+  Glib::PropertyProxy< bool > property_use_underline() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -616,7 +651,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_use_underline() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_use_underline() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -626,7 +661,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Justification> property_justify() ;
+  Glib::PropertyProxy< Justification > property_justify() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -636,7 +671,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Justification> property_justify() const;
+  Glib::PropertyProxy_ReadOnly< Justification > property_justify() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -646,7 +681,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_WriteOnly<Glib::ustring> property_pattern() ;
+  Glib::PropertyProxy_WriteOnly< Glib::ustring > property_pattern() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -657,7 +692,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_wrap() ;
+  Glib::PropertyProxy< bool > property_wrap() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -667,7 +702,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_wrap() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_wrap() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -677,7 +712,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Pango::WrapMode> property_wrap_mode() ;
+  Glib::PropertyProxy< Pango::WrapMode > property_wrap_mode() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -687,7 +722,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Pango::WrapMode> property_wrap_mode() const;
+  Glib::PropertyProxy_ReadOnly< Pango::WrapMode > property_wrap_mode() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -697,7 +732,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_selectable() ;
+  Glib::PropertyProxy< bool > property_selectable() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -707,7 +742,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_selectable() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_selectable() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -717,7 +752,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<guint> property_mnemonic_keyval() const;
+  Glib::PropertyProxy_ReadOnly< guint > property_mnemonic_keyval() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -728,7 +763,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Widget*> property_mnemonic_widget() ;
+  Glib::PropertyProxy< Widget* > property_mnemonic_widget() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -738,7 +773,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Widget*> property_mnemonic_widget() const;
+  Glib::PropertyProxy_ReadOnly< Widget* > property_mnemonic_widget() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -748,7 +783,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_cursor_position() const;
+  Glib::PropertyProxy_ReadOnly< int > property_cursor_position() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -759,7 +794,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_selection_bound() const;
+  Glib::PropertyProxy_ReadOnly< int > property_selection_bound() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -770,7 +805,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Pango::EllipsizeMode> property_ellipsize() ;
+  Glib::PropertyProxy< Pango::EllipsizeMode > property_ellipsize() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -780,7 +815,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Pango::EllipsizeMode> property_ellipsize() const;
+  Glib::PropertyProxy_ReadOnly< Pango::EllipsizeMode > property_ellipsize() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -790,7 +825,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_width_chars() ;
+  Glib::PropertyProxy< int > property_width_chars() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -800,9 +835,9 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_width_chars() const;
+  Glib::PropertyProxy_ReadOnly< int > property_width_chars() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
-    
+
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** Whether the label is in single line mode.
    *
@@ -810,7 +845,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_single_line_mode() ;
+  Glib::PropertyProxy< bool > property_single_line_mode() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -820,7 +855,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_single_line_mode() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_single_line_mode() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -830,7 +865,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<double> property_angle() ;
+  Glib::PropertyProxy< double > property_angle() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -840,7 +875,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<double> property_angle() const;
+  Glib::PropertyProxy_ReadOnly< double > property_angle() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -850,7 +885,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_max_width_chars() ;
+  Glib::PropertyProxy< int > property_max_width_chars() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -860,7 +895,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_max_width_chars() const;
+  Glib::PropertyProxy_ReadOnly< int > property_max_width_chars() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -870,7 +905,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_track_visited_links() ;
+  Glib::PropertyProxy< bool > property_track_visited_links() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -880,7 +915,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_track_visited_links() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_track_visited_links() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

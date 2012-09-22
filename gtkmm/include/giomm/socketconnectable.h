@@ -4,7 +4,8 @@
 #define _GIOMM_SOCKETCONNECTABLE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -69,9 +70,14 @@ private:
   SocketConnectable(const SocketConnectable&);
   SocketConnectable& operator=(const SocketConnectable&);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 protected:
-  SocketConnectable(); // you must derive from this class
-
+  /**
+   * You should derive from this class to use it.
+   */
+  SocketConnectable();
+  
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /** Called by constructors of derived classes. Provide the result of 
    * the Class init() function to ensure that it is properly 
    * initialized.

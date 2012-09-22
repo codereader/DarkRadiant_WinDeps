@@ -6,7 +6,8 @@
 #include <gtkmmconfig.h>
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 2003 The gtkmm Development Team
  *
@@ -21,11 +22,13 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- 
+
+#include <vector>
+
 #include <gtkmm/widget.h>
 #include <gtkmm/accelgroup.h>
 #include <gtkmm/stockid.h>
@@ -80,7 +83,9 @@ class Image;
  * Proxies mirror the state of the action (text label, tooltip, icon, visible, sensitive, etc), and should change when the action's state changes. When the proxy is activated, it should activate its action.
  */
 
-class Action : public Glib::Object
+class Action
+  : public Glib::Object,
+    public Buildable
 {
   
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -108,8 +113,11 @@ protected:
 public:
   virtual ~Action();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -126,7 +134,7 @@ public:
 
 private:
 
-
+  
 protected:
   /** Creates an empty action. */
   Action();
@@ -228,7 +236,7 @@ public:
   bool get_sensitive() const;
 
   
-  /** Sets the ::sensitive property of the action to @a sensitive. Note that 
+  /** Sets the property_sensitive() property of the action to @a sensitive. Note that 
    * this doesn't necessarily mean effective sensitivity. See 
    * is_sensitive() 
    * for that.
@@ -256,7 +264,7 @@ public:
    */
   bool get_visible() const;
   
-  /** Sets the ::visible property of the action to @a visible. Note that 
+  /** Sets the property_visible() property of the action to @a visible. Note that 
    * this doesn't necessarily mean effective visibility. See 
    * is_visible() 
    * for that.
@@ -310,51 +318,26 @@ public:
    */
   Menu* create_menu();
 
-  //TODO: Deprecate these when we can derive the appropriate widgets from Activatable, when we can break ABI.
-  
-  /** Connects a widget to an action object as a proxy.  Synchronises 
-   * various properties of the action with the widget (such as label 
-   * text, icon, tooltip, etc), and attaches a callback so that the 
-   * action gets activated when the proxy widget does.
-   * 
-   * If the widget is already connected to an action, it is disconnected
-   * first.
-   * 
-   * @newin{2,4}
-   * 
-   * Deprecated: 2.16: Use Gtk::Activatable::set_related_action() instead.
-   * @param proxy The proxy widget.
-   */
-  void connect_proxy(Widget& proxy);
-  
-  /** Disconnects a proxy widget from an action.  
-   * Does <em>not</em> destroy the widget, however.
-   * 
-   * @newin{2,4}
-   * 
-   * Deprecated: 2.16: Use Gtk::Activatable::set_related_action() instead.
-   * @param proxy The proxy widget.
-   */
-  void disconnect_proxy(Widget& proxy);
+   // deprecated
 
   
   /** Returns the proxy widgets for an action.
-   * See also Gtk::Widget::get_action().
+   * See also Gtk::Activatable::get_related_action().
    * 
    * @newin{2,4}
    * @return A SList of proxy widgets. The list is owned by GTK+
    * and must not be modified.
    */
-  Glib::SListHandle<Widget*> get_proxies();
+  std::vector<Widget*> get_proxies();
   
   /** Returns the proxy widgets for an action.
-   * See also Gtk::Widget::get_action().
+   * See also Gtk::Activatable::get_related_action().
    * 
    * @newin{2,4}
    * @return A SList of proxy widgets. The list is owned by GTK+
    * and must not be modified.
    */
-  Glib::SListHandle<const Widget*> get_proxies() const;
+  std::vector<const Widget*> get_proxies() const;
 
   
   /** Installs the accelerator for @a action if @a action has an
@@ -389,10 +372,14 @@ public:
   /// For instance, void on_activate();
   typedef sigc::slot<void> SlotActivate;
 
-  /** The "activate" signal is emitted when the action is activated.
-   *
-   * @par Prototype:
+  
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%activate()</tt>
+   *
+   * The "activate" signal is emitted when the action is activated.
+   * 
+   * @newin{2,4}
    */
 
   Glib::SignalProxy0< void > signal_activate();
@@ -559,7 +546,7 @@ public:
 
   
   /** Sets whether @a action<!-- -->'s menu item proxies will ignore the
-   * Gtk::Settings:gtk-menu-images setting and always show their image, if available.
+   * Gtk::Settings::property_gtk_menu_images() setting and always show their image, if available.
    * 
    * Use this if the menu item would be useless or hard to use
    * without their image.
@@ -570,7 +557,7 @@ public:
   void set_always_show_image(bool always_show =  true);
   
   /** Returns whether @a action<!-- -->'s menu item proxies will ignore the
-   * Gtk::Settings:gtk-menu-images setting and always show their image,
+   * Gtk::Settings::property_gtk_menu_images() setting and always show their image,
    * if available.
    * 
    * @newin{2,20}
@@ -606,7 +593,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_name() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_name() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -617,7 +604,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_label() ;
+  Glib::PropertyProxy< Glib::ustring > property_label() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -627,7 +614,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_label() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_label() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -637,7 +624,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_short_label() ;
+  Glib::PropertyProxy< Glib::ustring > property_short_label() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -647,7 +634,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_short_label() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_short_label() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -657,7 +644,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_tooltip() ;
+  Glib::PropertyProxy< Glib::ustring > property_tooltip() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -667,7 +654,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_tooltip() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_tooltip() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -677,7 +664,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<StockID> property_stock_id() ;
+  Glib::PropertyProxy< StockID > property_stock_id() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -687,7 +674,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<StockID> property_stock_id() const;
+  Glib::PropertyProxy_ReadOnly< StockID > property_stock_id() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -717,7 +704,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_icon_name() ;
+  Glib::PropertyProxy< Glib::ustring > property_icon_name() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -727,7 +714,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_icon_name() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_icon_name() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -737,7 +724,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_visible_horizontal() ;
+  Glib::PropertyProxy< bool > property_visible_horizontal() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -747,7 +734,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_visible_horizontal() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_visible_horizontal() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -757,7 +744,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_visible_vertical() ;
+  Glib::PropertyProxy< bool > property_visible_vertical() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -767,7 +754,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_visible_vertical() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_visible_vertical() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -777,7 +764,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_visible_overflown() ;
+  Glib::PropertyProxy< bool > property_visible_overflown() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -787,7 +774,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_visible_overflown() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_visible_overflown() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -797,7 +784,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_is_important() ;
+  Glib::PropertyProxy< bool > property_is_important() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -807,7 +794,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_is_important() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_is_important() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -817,7 +804,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_hide_if_empty() ;
+  Glib::PropertyProxy< bool > property_hide_if_empty() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -827,7 +814,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_hide_if_empty() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_hide_if_empty() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -837,7 +824,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_sensitive() ;
+  Glib::PropertyProxy< bool > property_sensitive() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -847,7 +834,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_sensitive() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_sensitive() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -857,7 +844,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_visible() ;
+  Glib::PropertyProxy< bool > property_visible() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -867,7 +854,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_visible() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_visible() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -897,7 +884,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_always_show_image() ;
+  Glib::PropertyProxy< bool > property_always_show_image() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -907,41 +894,12 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_always_show_image() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_always_show_image() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
 protected:
-  //For use by child actions:
-  //TODO: Deprecate these when we can derive the appropriate widgets from Activatable, when we can break ABI.
-  
-  /** Disables calls to the activate()
-   * function by signals on the given proxy widget.  This is used to
-   * break notification loops for things like check or radio actions.
-   * 
-   * This function is intended for use by action implementations.
-   * 
-   * @newin{2,4}
-   * 
-   * Deprecated: 2.16: activatables are now responsible for activating the
-   * action directly so this doesnt apply anymore.
-   * @param proxy A proxy widget.
-   */
-  void block_activate_from(Widget& proxy);
-  
-  /** Re-enables calls to the activate()
-   * function by signals on the given proxy widget.  This undoes the
-   * blocking done by block_activate_from().
-   * 
-   * This function is intended for use by action implementations.
-   * 
-   * @newin{2,4}
-   * 
-   * Deprecated: 2.16: activatables are now responsible for activating the
-   * action directly so this doesnt apply anymore.
-   * @param proxy A proxy widget.
-   */
-  void unblock_activate_from(Widget& proxy);
+   //deprecated
 
 protected:
   //Widget-creation routines:
@@ -963,6 +921,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_activate().
   virtual void on_activate();
 
 

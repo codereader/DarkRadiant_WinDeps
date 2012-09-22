@@ -4,7 +4,8 @@
 #define _GIOMM_DBUSMETHODINVOCATION_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -45,6 +46,13 @@ namespace DBus
 { class MethodInvocation_Class; } // namespace DBus
 
 } // namespace Gio
+namespace Glib
+{
+
+class Error;
+
+}
+
 namespace Gio
 {
 
@@ -201,10 +209,11 @@ public:
   //We assume that this is a tuple (VariantContainerBase).
   //See https://bugzilla.gnome.org/show_bug.cgi?id=646420
   
-  /** Gets the parameters of the method invocation.
+  /** Gets the parameters of the method invocation. If there are no input
+   * parameters then this will return a GVariant with 0 children rather than <tt>0</tt>.
    * 
    * @newin{2,26}
-   * @return A Variant. Do not free, it is owned by @a invocation.
+   * @return A Variant tuple. Do not unref this because it is owned by @a invocation.
    */
   Glib::VariantContainerBase get_parameters() const;
 
@@ -224,7 +233,23 @@ public:
    */
   void return_value(const Glib::VariantContainerBase& parameters);
 
- 
+  
+  /** Like g_dbus_method_invocation_return_value() but also takes a UnixFDList.
+   * 
+   * This method is only available on UNIX.
+   * 
+   * This method will free @a invocation, you cannot use it afterwards.
+   * 
+   * @newin{2,30}
+   * @param parameters A Variant tuple with out parameters for the method or <tt>0</tt> if not passing any parameters.
+   * @param fd_list A UnixFDList or <tt>0</tt>.
+   */
+
+#ifdef  G_OS_UNIX
+  void return_value(const Glib::VariantContainerBase& parameters, const Glib::RefPtr<UnixFDList>& fd_list);
+#endif //  G_OS_UNIX
+
+
   /** Like g_dbus_method_invocation_return_error() but without printf()-style formatting.
    * 
    * This method will free @a invocation, you cannot use it afterwards.
@@ -236,7 +261,10 @@ public:
    */
   void return_error(const Glib::ustring& domain, int code, const Glib::ustring& message);
 
- 
+  // This function does not have to be wrapped because it's a convenience C
+  // function to avoid having to unreference the error (in C).
+  
+
   /** Like g_dbus_method_invocation_return_error() but takes a Error
    * instead of the error domain, error code and message.
    * 

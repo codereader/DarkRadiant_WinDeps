@@ -4,7 +4,8 @@
 #define _GIOMM_ICON_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -73,9 +74,14 @@ private:
   Icon(const Icon&);
   Icon& operator=(const Icon&);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 protected:
-  Icon(); // you must derive from this class
-
+  /**
+   * You should derive from this class to use it.
+   */
+  Icon();
+  
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /** Called by constructors of derived classes. Provide the result of 
    * the Class init() function to ensure that it is properly 
    * initialized.
@@ -135,19 +141,15 @@ public:
    * The encoding of the returned string is proprietary to Icon except
    * in the following two cases
    * 
-   * <itemizedlist>
-   * <listitem>
+   * - 
    * If @a icon is a FileIcon, the returned string is a native path
    * (such as <tt>/path/to/my icon.png</tt>) without escaping
    * if the File for @a icon is a native file.  If the file is not
    * native, the returned string is the result of g_file_get_uri()
-   * (such as <tt>sftp://path/to/my%%20icon.png</tt>).
-   * </listitem>
-   * <listitem>
+   * (such as <tt>sftp://path/to/my%20icon.png</tt>).
+   * - 
    * If @a icon is a ThemedIcon with exactly one name, the encoding is
    * simply the name (such as <tt>network-server</tt>).
-   * </listitem>
-   * </itemizedlist>
    * 
    * Virtual: to_tokens
    * @newin{2,20}

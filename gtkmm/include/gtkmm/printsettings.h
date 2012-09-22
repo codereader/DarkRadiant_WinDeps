@@ -4,7 +4,8 @@
 #define _GTKMM_PRINTSETTINGS_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 2006 The gtkmm Development Team
  *
@@ -19,9 +20,11 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+#include <vector>
 
 #include <glibmm/object.h>
 #include <gtkmm/enums.h>
@@ -246,8 +249,11 @@ protected:
 public:
   virtual ~PrintSettings();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -417,18 +423,6 @@ public:
    * @param group_name The group to add the settings to in @a key_file.
    */
   void save_to_key_file(Glib::KeyFile& key_file, const Glib::ustring& group_name) const;
-
-  #ifndef GTKMM_DISABLE_DEPRECATED
-  /** This function adds the print settings from @a settings to @a key_file,
-   * in the "Print Settings" group.
-   * 
-   * @newin{2,12}
-   * @param key_file The Glib::KeyFile to save the print settings to.
-   *
-   * @deprecated Use the const version.
-   */
-  void save_to_key_file(Glib::KeyFile& key_file);
-  #endif //GTKMM_DISABLE_DEPRECATED
 
   /** This function adds the print settings from @a settings to @a key_file,
    * in the "Print Settings" group.
@@ -895,8 +889,22 @@ public:
     int end;
   };
 
-  Glib::ArrayHandle<PageRange> get_page_ranges() const;
-  void set_page_ranges(const Glib::ArrayHandle<PageRange>& page_ranges);
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  struct PageRangeTraits
+  {
+    typedef PageRange          CppType;
+    typedef GtkPageRange       CType;
+    typedef GtkPageRange       CTypeNonConst;
+
+    static CType   to_c_type      (CType c_obj)            { return c_obj; }
+    static void    release_c_type (CType)                  {}
+    static CType   to_c_type      (const CppType& cpp_obj) { CTypeNonConst c_obj = {cpp_obj.start, cpp_obj.end}; return c_obj; }
+    static CppType to_cpp_type    (CType c_obj)            { return CppType (c_obj.start, c_obj.end); }
+  };
+#endif // DOXYGEN_SHOULD_SKIP_THIS
+
+  std::vector<PageRange> get_page_ranges() const;
+  void set_page_ranges(const std::vector<PageRange>& page_ranges);
 
   
   /** Gets the value of Gtk::PRINT_SETTINGS_PAGE_SET.

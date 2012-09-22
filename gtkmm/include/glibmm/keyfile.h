@@ -182,6 +182,8 @@ private:
 
 public:
 
+  //TODO: GKeyFile now seems to be a reference-counted type.
+
   //TODO: Maybe replace all the get_*/set_* methods with some generic get/set
   //methods when it is possible.
 

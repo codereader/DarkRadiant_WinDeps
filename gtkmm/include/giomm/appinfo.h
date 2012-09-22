@@ -4,7 +4,8 @@
 #define _GIOMM_APPINFO_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -25,11 +26,14 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <giomm/applaunchcontext.h>
+
 #include <exception>
 
 #include <string>
 
 #include <glibmm/interface.h>
+#include <glibmm/listhandle.h>
 #include <glibmm/object.h>
 //#include <giomm/file.h>
 #include <giomm/icon.h>
@@ -39,14 +43,6 @@
 typedef struct _GAppInfoIface GAppInfoIface;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-typedef struct _GAppLaunchContext GAppLaunchContext;
-typedef struct _GAppLaunchContextClass GAppLaunchContextClass;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-
-namespace Gio
-{ class AppLaunchContext_Class; } // namespace Gio
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 typedef struct _GAppInfo GAppInfo;
 typedef struct _GAppInfoClass GAppInfoClass;
@@ -108,111 +104,7 @@ inline AppInfoCreateFlags& operator^=(AppInfoCreateFlags& lhs, AppInfoCreateFlag
   { return (lhs = static_cast<AppInfoCreateFlags>(static_cast<unsigned>(lhs) ^ static_cast<unsigned>(rhs))); }
 
 
-class AppInfo;
 class File;
-
-/** This is used to handle, for instance, startup notification and launching of the new application on the same screen as the launching window.
- * See also AppInfo.
- *
- * @newin{2,16}
- */
-
-class AppLaunchContext : public Glib::Object
-{
-  
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
-public:
-  typedef AppLaunchContext CppObjectType;
-  typedef AppLaunchContext_Class CppClassType;
-  typedef GAppLaunchContext BaseObjectType;
-  typedef GAppLaunchContextClass BaseClassType;
-
-private:  friend class AppLaunchContext_Class;
-  static CppClassType applaunchcontext_class_;
-
-private:
-  // noncopyable
-  AppLaunchContext(const AppLaunchContext&);
-  AppLaunchContext& operator=(const AppLaunchContext&);
-
-protected:
-  explicit AppLaunchContext(const Glib::ConstructParams& construct_params);
-  explicit AppLaunchContext(GAppLaunchContext* castitem);
-
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-public:
-  virtual ~AppLaunchContext();
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  static GType get_type()      G_GNUC_CONST;
-
-
-  static GType get_base_type() G_GNUC_CONST;
-#endif
-
-  ///Provides access to the underlying C GObject.
-  GAppLaunchContext*       gobj()       { return reinterpret_cast<GAppLaunchContext*>(gobject_); }
-
-  ///Provides access to the underlying C GObject.
-  const GAppLaunchContext* gobj() const { return reinterpret_cast<GAppLaunchContext*>(gobject_); }
-
-  ///Provides access to the underlying C instance. The caller is responsible for unrefing it. Use when directly setting fields in structs.
-  GAppLaunchContext* gobj_copy();
-
-private:
-
-
-protected:
-  AppLaunchContext();
-
-public:
-  
-  static Glib::RefPtr<AppLaunchContext> create();
-
-
-  /** Gets the display string for the @a context. This is used to ensure new
-   * applications are started on the same display as the launching
-   * application, by setting the <envar>DISPLAY</envar> environment variable.
-   * @param info A AppInfo.
-   * @param files A List of File objects.
-   * @return A display string for the display.
-   */
-  std::string get_display(const Glib::RefPtr<AppInfo>& info, const Glib::ListHandle< Glib::RefPtr<Gio::File> >& files);
-
-  
-  /** Initiates startup notification for the application and returns the
-   * <envar>DESKTOP_STARTUP_ID</envar> for the launched operation,
-   * if supported.
-   * 
-   * Startup notification IDs are defined in the .
-   * @param info A AppInfo.
-   * @param files A List of of File objects.
-   * @return A startup notification ID for the application, or <tt>0</tt> if
-   * not supported.
-   */
-  std::string get_startup_notify_id(const Glib::RefPtr<AppInfo>& info, const Glib::ListHandle< Glib::RefPtr<Gio::File> >& files);
-  
-  /** Called when an application has failed to launch, so that it can cancel
-   * the application startup notification started in g_app_launch_context_get_startup_notify_id().
-   * @param startup_notify_id The startup notification id that was returned by g_app_launch_context_get_startup_notify_id().
-   */
-  void launch_failed(const std::string& startup_notify_id);
-
-
-public:
-
-public:
-  //C++ methods used to invoke GTK+ virtual functions:
-
-protected:
-  //GTK+ Virtual Functions (override these to change behaviour):
-
-  //Default Signal Handlers::
-
-
-};
 
 /** Application information, to describe applications installed on the system, 
  * and launch them.
@@ -240,9 +132,14 @@ private:
   AppInfo(const AppInfo&);
   AppInfo& operator=(const AppInfo&);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 protected:
-  AppInfo(); // you must derive from this class
-
+  /**
+   * You should derive from this class to use it.
+   */
+  AppInfo();
+  
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /** Called by constructors of derived classes. Provide the result of 
    * the Class init() function to ensure that it is properly 
    * initialized.
@@ -335,15 +232,76 @@ public:
 
   
   /** Gets the icon for the application.
-   * @return The default Icon for @a appinfo.
+   * @return The default Icon for @a appinfo or <tt>0</tt>
+   * if there is no default icon.
    */
   Glib::RefPtr<Icon> get_icon();
   
   /** Gets the icon for the application.
-   * @return The default Icon for @a appinfo.
+   * @return The default Icon for @a appinfo or <tt>0</tt>
+   * if there is no default icon.
    */
   const Glib::RefPtr<const Icon> get_icon() const;
 
+ 
+  /** Launches the application. This passes the @a file to the launched application
+   * as an argument, using the optional @a launch_context to get information
+   * about the details of the launcher (like what screen it is on).
+   * On error, an exception will be thrown accordingly.
+   * 
+   * Note that even if the launch is successful the application launched
+   * can fail to start if it runs into problems during startup. There is
+   * no way to detect this.
+   * 
+   * Some URIs can be changed when passed through a GFile (for instance
+   * unsupported uris with strange formats like mailto:), so if you have
+   * a textual uri you want to pass in as argument, consider using
+   * launch_uris() instead.
+   * 
+   * On UNIX, this function sets the <envar>GIO_LAUNCHED_DESKTOP_FILE</envar>
+   * environment variable with the path of the launched desktop file and
+   * <envar>GIO_LAUNCHED_DESKTOP_FILE_PID</envar> to the process
+   * id of the launched process. This can be used to ignore
+   * <envar>GIO_LAUNCHED_DESKTOP_FILE</envar>, should it be inherited
+   * by further processes. The <envar>DISPLAY</envar> and
+   * <envar>DESKTOP_STARTUP_ID</envar> environment variables are also
+   * set, based on information provided in @a launch_context.
+   * @param files A List of File objects.
+   * @param launch_context An AppLaunchContext.
+   * @return <tt>true</tt> on successful launch, <tt>false</tt> otherwise.
+   *
+   * @newin{3,2}
+   */
+  bool launch(const Glib::RefPtr<Gio::File>& file, const Glib::RefPtr<AppLaunchContext>& launch_context);
+  
+  /** Launches the application. This passes the @a file to the launched application
+   * as an arguments.
+   * On error, an exception will be thrown accordingly.
+   * 
+   * Note that even if the launch is successful the application launched
+   * can fail to start if it runs into problems during startup. There is
+   * no way to detect this.
+   * 
+   * Some URIs can be changed when passed through a GFile (for instance
+   * unsupported uris with strange formats like mailto:), so if you have
+   * a textual uri you want to pass in as argument, consider using
+   * launch_uris() instead.
+   * 
+   * On UNIX, this function sets the <envar>GIO_LAUNCHED_DESKTOP_FILE</envar>
+   * environment variable with the path of the launched desktop file and
+   * <envar>GIO_LAUNCHED_DESKTOP_FILE_PID</envar> to the process
+   * id of the launched process. This can be used to ignore
+   * <envar>GIO_LAUNCHED_DESKTOP_FILE</envar>, should it be inherited
+   * by further processes. The <envar>DISPLAY</envar> and
+   * <envar>DESKTOP_STARTUP_ID</envar> environment variables are also
+   * set, based on information provided in @a launch_context.
+   * @param files A File object.
+   * @return <tt>true</tt> on successful launch, <tt>false</tt> otherwise.
+   *
+   * @newin{3,2}
+   */
+  bool launch(const Glib::RefPtr<Gio::File>& file);
+  
   
   /** Launches the application. Passes @a files to the launched application
    * as arguments, using the optional @a launch_context to get information
@@ -357,9 +315,13 @@ public:
    * no way to detect this.
    * 
    * Some URIs can be changed when passed through a GFile (for instance
-   * unsupported uris with strange formats like mailto:), so if you have
-   * a textual uri you want to pass in as argument, consider using
+   * unsupported URIs with strange formats like mailto:), so if you have
+   * a textual URI you want to pass in as argument, consider using
    * g_app_info_launch_uris() instead.
+   * 
+   * The launched application inherits the environment of the launching
+   * process, but it can be modified with g_app_launch_context_setenv() and
+   * g_app_launch_context_unsetenv().
    * 
    * On UNIX, this function sets the <envar>GIO_LAUNCHED_DESKTOP_FILE</envar>
    * environment variable with the path of the launched desktop file and
@@ -373,7 +335,11 @@ public:
    * @param launch_context A AppLaunchContext or <tt>0</tt>.
    * @return <tt>true</tt> on successful launch, <tt>false</tt> otherwise.
    */
-  bool launch(const Glib::ListHandle<std::string>& files, const Glib::RefPtr<AppLaunchContext>& launch_context);
+  bool launch(const std::vector< Glib::RefPtr<Gio::File> >& files, const Glib::RefPtr<AppLaunchContext>& launch_context);
+
+  /// A launch() convenience overload.
+  bool launch(const std::vector< Glib::RefPtr<Gio::File> >& files);
+
   
   /** Checks if the application supports reading files and directories from URIs.
    * @return <tt>true</tt> if the @a appinfo supports URIs.
@@ -384,13 +350,37 @@ public:
    * @return <tt>true</tt> if the @a appinfo supports files.
    */
   bool supports_files() const;
-  
-  /** Launches the application. Passes @a uris to the launched application
+
+ 
+#ifndef GIOMM_DISABLE_DEPRECATED
+
+  /** Launches the application. This passes the @a uris to the launched application
    * as arguments, using the optional @a launch_context to get information
    * about the details of the launcher (like what screen it is on).
    * On error, @a error will be set accordingly.
    * 
-   * To lauch the application without arguments pass a <tt>0</tt> @a uris list.
+   * To launch the application without arguments pass a <tt>0</tt> @a uris list.
+   * 
+   * Note that even if the launch is successful the application launched
+   * can fail to start if it runs into problems during startup. There is
+   * no way to detect this.
+   * @deprecated Use the method that takes an AppLaunchContext
+   * @param uris A List containing URIs to launch.
+   * @param launch_context A AppLaunchContext or <tt>0</tt>.
+   * @return <tt>true</tt> on successful launch, <tt>false</tt> otherwise.
+   */
+  bool launch_uris(const Glib::ListHandle<std::string>& uris, GAppLaunchContext* launch_context);
+#endif // GIOMM_DISABLE_DEPRECATED
+
+
+  //TODO: I think we use Glib::ustring elsewhere for URIs:
+  
+  /** Launches the application. This passes the @a uris to the launched application
+   * as arguments, using the optional @a launch_context to get information
+   * about the details of the launcher (like what screen it is on).
+   * On error, @a error will be set accordingly.
+   * 
+   * To launch the application without arguments pass a <tt>0</tt> @a uris list.
    * 
    * Note that even if the launch is successful the application launched
    * can fail to start if it runs into problems during startup. There is
@@ -399,7 +389,33 @@ public:
    * @param launch_context A AppLaunchContext or <tt>0</tt>.
    * @return <tt>true</tt> on successful launch, <tt>false</tt> otherwise.
    */
-  bool launch_uris(const Glib::ListHandle<std::string>& uris, GAppLaunchContext* launch_context);
+  bool launch_uris(const Glib::ListHandle<std::string>& uris, const Glib::RefPtr<AppLaunchContext>& launch_context);
+
+  /// A launch_uris() convenience overload.
+  bool launch_uris(const Glib::ListHandle<std::string>& uris);
+               
+  /** Launches the application. This passes the @a uri to the launched application
+   * as an arguments, using the optional @a launch_context to get information
+   * about the details of the launcher (like what screen it is on).
+   * On error, an exception will be thrown accordingly.
+   * 
+   * Note that even if the launch is successful the application launched
+   * can fail to start if it runs into problems during startup. There is
+   * no way to detect this.
+   * @param uris A URIs to launch.
+   * @param launch_context An AppLaunchContext.
+   * @return <tt>true</tt> on successful launch, <tt>false</tt> otherwise.
+   *
+   * @newin{3,2}
+   */
+  bool launch_uri(const std::string& uris, const Glib::RefPtr<AppLaunchContext>& launch_context);
+
+  /** A launch_uri() convenience overload.
+   *
+   * @newin{3,2}
+   */
+  bool launch_uri(const std::string& uris);
+  
   
   /** Checks if the application info should be shown in menus that 
    * list available applications.
@@ -474,14 +490,17 @@ public:
    */
   static Glib::ListHandle<Glib::RefPtr<AppInfo> > get_all();
   
-  /** Gets a list of all AppInfos for a given content type.
+  /** Gets a list of all AppInfos for a given content type,
+   * including the recommended and fallback AppInfos. See
+   * g_app_info_get_recommended_for_type() and
+   * g_app_info_get_fallback_for_type().
    * @param content_type The content type to find a AppInfo for.
    * @return List of AppInfos
    * for given @a content_type or <tt>0</tt> on error.
    */
   static Glib::ListHandle<Glib::RefPtr<AppInfo> > get_all_for_type(const std::string& content_type);
   
-  /** Gets the AppInfo that corresponds to a given content type.
+  /** Gets the default AppInfo for a given content type.
    * @param content_type The content type to find a AppInfo for.
    * @param must_support_uris If <tt>true</tt>, the AppInfo is expected to
    * support URIs.
@@ -490,9 +509,9 @@ public:
    */
   static Glib::RefPtr<AppInfo> get_default_for_type(const std::string& content_type, bool must_support_uris =  true);
   
-  /** Gets the default application for launching applications 
-   * using this URI scheme. A URI scheme is the initial part 
-   * of the URI, up to but not including the ':', e.g. "http", 
+  /** Gets the default application for handling URIs with
+   * the given URI scheme. A URI scheme is the initial part
+   * of the URI, up to but not including the ':', e.g. "http",
    * "ftp" or "sip".
    * @param uri_scheme A string containing a URI scheme.
    * @return AppInfo for given @a uri_scheme or <tt>0</tt> on error.
@@ -500,9 +519,10 @@ public:
   static Glib::RefPtr<AppInfo> get_default_for_uri_scheme(const std::string& uri_scheme);
   
   /** Removes all changes to the type associations done by
-   * g_app_info_set_as_default_for_type(), 
-   * g_app_info_set_as_default_for_extension(), 
-   * g_app_info_add_supports_type() or g_app_info_remove_supports_type().
+   * g_app_info_set_as_default_for_type(),
+   * g_app_info_set_as_default_for_extension(),
+   * g_app_info_add_supports_type() or
+   * g_app_info_remove_supports_type().
    * 
    * @newin{2,20}
    * @param content_type A content type.
@@ -529,9 +549,9 @@ protected:
   //_WRAP_VFUNC(std::string get_description() const, "get_description")
   //_WRAP_VFUNC(std::string get_executable() const, "get_executable")
   //_WRAP_VFUNC(Glib::RefPtr<Icon> get_icon() const, "get_icon")
- 
-
-  //_WRAP_VFUNC(bool launch(const Glib::ListHandle<std::string>& filenames, const Glib::RefPtr<AppLaunchContext>& launch_context, GError** error), "launch")
+//#m4 __CONVERSION(`const Glib::ListHandle<std::string>&',`GList*',`$3.data()')
+//#m4 __CONVERSION(`GList*',`const Glib::ListHandle<std::string>&',`Glib::ListHandle<std::string>($3, Glib::OWNERSHIP_NONE)')
+  //_WRAP_VFUNC(bool launch(const std::vector<Gio::File>& filenames, const Glib::RefPtr<AppLaunchContext>& launch_context, GError** error), "launch")
   //_WRAP_VFUNC(bool supports_uris() const, "supports_uris")
   //_WRAP_VFUNC(bool supports_files() const, "supports_files")
   //_WRAP_VFUNC(bool launch_uris(const Glib::ListHandle<std::string>& uris, const Glib::RefPtr<AppLaunchContext>& launch_context, GError** error), "launch_uris")
@@ -557,20 +577,6 @@ protected:
 };
 
 } // namespace Gio
-
-
-namespace Glib
-{
-  /** A Glib::wrap() method for this object.
-   * 
-   * @param object The C instance.
-   * @param take_copy False if the result should take ownership of the C instance. True if it should take a new copy or ref.
-   * @result A C++ instance that wraps this C instance.
-   *
-   * @relates Gio::AppLaunchContext
-   */
-  Glib::RefPtr<Gio::AppLaunchContext> wrap(GAppLaunchContext* object, bool take_copy = false);
-}
 
 
 namespace Glib

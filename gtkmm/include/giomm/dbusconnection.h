@@ -4,7 +4,8 @@
 #define _GIOMM_DBUSCONNECTION_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -54,6 +55,11 @@ namespace DBus
 } // namespace Gio
 namespace Gio
 {
+
+class ActionGroup;
+class MenuModel;
+class UnixFDList;
+
 
 namespace DBus
 {
@@ -252,7 +258,8 @@ inline SendMessageFlags& operator^=(SendMessageFlags& lhs, SendMessageFlags rhs)
  */
 enum SignalFlags
 {
-  SIGNAL_FLAGS_NONE = 0x0
+  SIGNAL_FLAGS_NONE = 0x0,
+  SIGNAL_FLAGS_NO_MATCH_RULE = (1<<0)
 };
 
 /** @ingroup giommEnums */
@@ -544,11 +551,11 @@ public:
    * The returned object is a singleton, that is, shared with other
    * callers of g_bus_get() and g_bus_get_sync() for @a bus_type. In the
    * event that you need a private message bus connection, use
-   * Glib::dbus_address_get_for_bus() and
+   * g_dbus_address_get_for_bus_sync() and
    * g_dbus_connection_new_for_address().
    * 
    * Note that the returned DBusConnection object will (usually) have
-   * the DBusConnection:exit-on-close property set to <tt>true</tt>.
+   * the DBusConnection::property_exit_on_close() property set to <tt>true</tt>.
    * 
    * @newin{2,26}
    * @param res A AsyncResult obtained from the AsyncReadyCallback passed to g_bus_get().
@@ -576,7 +583,7 @@ public:
    * g_dbus_connection_new_for_address().
    * 
    * Note that the returned DBusConnection object will (usually) have
-   * the DBusConnection:exit-on-close property set to <tt>true</tt>.
+   * the DBusConnection::property_exit_on_close() property set to <tt>true</tt>.
    * 
    * @newin{2,26}
    * @param bus_type A BusType.
@@ -591,6 +598,13 @@ public:
   
   /** Asynchronously sets up a D-Bus connection for exchanging D-Bus messages
    * with the end represented by @a stream.
+   * 
+   * If @a stream is a SocketConnection, then the corresponding Socket
+   * will be put into non-blocking mode.
+   * 
+   * The D-Bus connection will interact with @a stream from a worker thread.
+   * As a result, the caller should not interact with @a stream after this
+   * method has been called, except by calling Glib::object_unref() on it.
    * 
    * If @a observer is not <tt>0</tt> it may be used to control the
    * authentication process.
@@ -623,6 +637,13 @@ public:
   
   /** Asynchronously sets up a D-Bus connection for exchanging D-Bus messages
    * with the end represented by @a stream.
+   * 
+   * If @a stream is a SocketConnection, then the corresponding Socket
+   * will be put into non-blocking mode.
+   * 
+   * The D-Bus connection will interact with @a stream from a worker thread.
+   * As a result, the caller should not interact with @a stream after this
+   * method has been called, except by calling Glib::object_unref() on it.
    * 
    * If @a observer is not <tt>0</tt> it may be used to control the
    * authentication process.
@@ -778,6 +799,13 @@ public:
   /** Synchronously sets up a D-Bus connection for exchanging D-Bus messages
    * with the end represented by @a stream.
    * 
+   * If @a stream is a SocketConnection, then the corresponding Socket
+   * will be put into non-blocking mode.
+   * 
+   * The D-Bus connection will interact with @a stream from a worker thread.
+   * As a result, the caller should not interact with @a stream after this
+   * method has been called, except by calling Glib::object_unref() on it.
+   * 
    * If @a observer is not <tt>0</tt> it may be used to control the
    * authentication process.
    * 
@@ -804,6 +832,13 @@ public:
   
   /** Synchronously sets up a D-Bus connection for exchanging D-Bus messages
    * with the end represented by @a stream.
+   * 
+   * If @a stream is a SocketConnection, then the corresponding Socket
+   * will be put into non-blocking mode.
+   * 
+   * The D-Bus connection will interact with @a stream from a worker thread.
+   * As a result, the caller should not interact with @a stream after this
+   * method has been called, except by calling Glib::object_unref() on it.
    * 
    * If @a observer is not <tt>0</tt> it may be used to control the
    * authentication process.
@@ -1108,7 +1143,7 @@ public:
   
   /** Gets whether the process is terminated when @a connection is
    * closed by the remote peer. See
-   * DBusConnection:exit-on-close for more details.
+   * DBusConnection::property_exit_on_close() for more details.
    * 
    * @newin{2,26}
    * @return Whether the process is terminated when @a connection is
@@ -1117,8 +1152,15 @@ public:
   bool get_exit_on_close() const;
   
   /** Sets whether the process should be terminated when @a connection is
-   * closed by the remote peer. See DBusConnection:exit-on-close for
+   * closed by the remote peer. See DBusConnection::property_exit_on_close() for
    * more details.
+   * 
+   * Note that this function should be used with care. Most modern UNIX
+   * desktops tie the notion of a user session the session bus, and expect
+   * all of a users applications to quit when their bus connection goes away.
+   * If you are setting @a exit_on_close to <tt>false</tt> for the shared session
+   * bus connection, you should make sure that your application exits
+   * when the user session ends.
    * 
    * @newin{2,26}
    * @param exit_on_close Whether the process should be terminated
@@ -1152,7 +1194,8 @@ public:
    * @newin{2,26}
    * @param message A DBusMessage.
    * @param flags Flags affecting how the message is sent.
-   * @param out_serial Return location for serial number assigned to @a message when sending it or <tt>0</tt>.
+   * @param out_serial Return location for serial number assigned
+   * to @a message when sending it or <tt>0</tt>.
    * @return <tt>true</tt> if the message was well-formed and queued for
    * transmission, <tt>false</tt> if @a error is set.
    */
@@ -1208,7 +1251,7 @@ public:
   /** Finishes an operation started with g_dbus_connection_send_message_with_reply().
    * 
    * Note that @a error is only set if a local in-process error
-   * occured. That is to say that the returned DBusMessage object may
+   * occurred. That is to say that the returned DBusMessage object may
    * be of type DBUS_MESSAGE_TYPE_ERROR. Use
    * g_dbus_message_to_gerror() to transcode this to a Error.
    * 
@@ -1292,12 +1335,20 @@ public:
   
   /** Gets the underlying stream used for IO.
    * 
+   * While the DBusConnection is active, it will interact with this
+   * stream from a worker thread, so it is not safe to interact with
+   * the stream directly.
+   * 
    * @newin{2,26}
    * @return The stream used for IO.
    */
   Glib::RefPtr<IOStream> get_stream();
   
   /** Gets the underlying stream used for IO.
+   * 
+   * While the DBusConnection is active, it will interact with this
+   * stream from a worker thread, so it is not safe to interact with
+   * the stream directly.
    * 
    * @newin{2,26}
    * @return The stream used for IO.
@@ -1306,7 +1357,7 @@ public:
 
   
   /** The GUID of the peer performing the role of server when
-   * authenticating. See DBusConnection:guid for more details.
+   * authenticating. See DBusConnection::property_guid() for more details.
    * 
    * @newin{2,26}
    * @return The GUID. Do not free this string, it is owned by
@@ -1411,7 +1462,7 @@ public:
     const Glib::RefPtr<Cancellable>&    cancellable,
     const Glib::ustring&                bus_name = Glib::ustring(),
     int                                 timeout_msec = -1,
-    CallFlags                       flags = Gio::DBus::CALL_FLAGS_NONE,
+    CallFlags                           flags = Gio::DBus::CALL_FLAGS_NONE,
     const Glib::VariantType&            reply_type = Glib::VariantType()
   );
   
@@ -1425,7 +1476,7 @@ public:
     const SlotAsyncReady&               slot,
     const Glib::ustring&                bus_name = Glib::ustring(),
     int                                 timeout_msec = -1,
-    CallFlags                       flags = Gio::DBus::CALL_FLAGS_NONE,
+    CallFlags                           flags = Gio::DBus::CALL_FLAGS_NONE,
     const Glib::VariantType&            reply_type = Glib::VariantType()
   );
 
@@ -1481,7 +1532,7 @@ public:
     const Glib::RefPtr<Cancellable>&    cancellable,
     const Glib::ustring&                bus_name = Glib::ustring(),
     int                                 timeout_msec = -1,
-    CallFlags                       flags = Gio::DBus::CALL_FLAGS_NONE,
+    CallFlags                           flags = Gio::DBus::CALL_FLAGS_NONE,
     const Glib::VariantType&            reply_type = Glib::VariantType()
   );
   
@@ -1494,9 +1545,91 @@ public:
     const Glib::VariantContainerBase&   parameters,
     const Glib::ustring&                bus_name = Glib::ustring(),
     int                                 timeout_msec = -1,
-    CallFlags                       flags = Gio::DBus::CALL_FLAGS_NONE,
+    CallFlags                           flags = Gio::DBus::CALL_FLAGS_NONE,
     const Glib::VariantType&            reply_type = Glib::VariantType()
   );
+
+// TODO: Re-add the following two methods when the call_finish() method with a
+// UnixFDList is wrapped.
+#if 0
+#ifdef G_OS_LINUX
+  /** Like call() but also takes a GUnixFDList object.
+   * This method is only available on UNIX.
+   *
+   * @param object_path Path of remote object.
+   * @param interface_name D-Bus interface to invoke method on.
+   * @param method_name The name of the method to invoke.
+   * @param parameters A Glib::VariantContainerBase tuple with parameters for the
+   * method or <tt>0</tt> if not passing parameters.
+   * @param slot A SlotAsyncReady to call when the request is satisfied.
+   * @param cancellable A Cancellable.
+   * @param fd_list A UnixFDList.
+   * @param bus_name A unique or well-known bus name or <tt>0</tt> if the
+   * connection is not a message bus connection.
+   * @param timeout_msec The timeout in milliseconds, -1 to use the default
+   * timeout or G_MAXINT for no timeout.
+   * @param flags Flags from the Gio::DBus::CallFlags enumeration.
+   * @param reply_type The expected type of the reply, or <tt>0</tt>.
+   * @newin{2,32}
+   */
+  void call(
+    const Glib::ustring&                object_path,
+    const Glib::ustring&                interface_name,
+    const Glib::ustring&                method_name,
+    const Glib::VariantContainerBase&   parameters,
+    const SlotAsyncReady&               slot,
+    const Glib::RefPtr<Cancellable>&    cancellable,
+    const Glib::RefPtr<UnixFDList>&     fd_list,
+    const Glib::ustring&                bus_name = Glib::ustring(),
+    int                                 timeout_msec = -1,
+    CallFlags                           flags = Gio::DBus::CALL_FLAGS_NONE,
+    const Glib::VariantType&            reply_type = Glib::VariantType()
+  );
+  
+
+  /// A non-cancellable version of call() (with a UnixFDList).
+  void call(
+    const Glib::ustring&                object_path,
+    const Glib::ustring&                interface_name,
+    const Glib::ustring&                method_name,
+    const Glib::VariantContainerBase&   parameters,
+    const SlotAsyncReady&               slot,
+    const Glib::RefPtr<UnixFDList>&     fd_list,
+    const Glib::ustring&                bus_name = Glib::ustring(),
+    int                                 timeout_msec = -1,
+    CallFlags                           flags = Gio::DBus::CALL_FLAGS_NONE,
+    const Glib::VariantType&            reply_type = Glib::VariantType()
+  );
+#endif // G_OS_LINUX
+#endif // 0
+
+  ///** Finishes an operation started with call() (with a UnixFDList).
+   //* @param res A AsyncResult obtained from the SlotAsyncReady passed to
+   //* call().
+   //* @result A Variant tuple with return values.
+   //* @throw Glib::Error.
+   //* @newin{2,32}
+   //*/
+  //TODO: _WRAP_METHOD(Glib::VariantContainerBase call_with_unix_fd_finish(const Glib::RefPtr<AsyncResult>& res{.}, Glib::RefPtr<UnixFDList>& out_fd_list{.?}), g_dbus_connection_call_with_unix_fd_list_finish, errthrow)
+
+  /* TODO:
+  _WRAP_METHOD(
+    Glib::VariantContainerBase call_sync(
+      const Glib::ustring&                object_path{.},
+      const Glib::ustring&                interface_name{.},
+      const Glib::ustring&                method_name{.},
+      const Glib::VariantContainerBase&   parameters{.},
+      const Glib::RefPtr<Cancellable>&    cancellable{.?},
+      const Glib::RefPtr<UnixFDList>&     fd_list{.},
+      Glib::RefPtr<UnixFDList>&           out_fd_list{.},
+      const Glib::ustring&                bus_name{.} = Glib::ustring(),
+      int                                 timeout_msec{.} = -1,
+      CallFlags                           flags{.} = Gio::DBus::CALL_FLAGS_NONE,
+      const Glib::VariantType&            reply_type{.} = Glib::VariantType()
+    ),
+    g_dbus_connection_call_with_unix_fd_list_sync, errthrow
+  )
+  */
 
   /** Emits a signal.
    *
@@ -1728,6 +1861,81 @@ public:
    */
   bool unregister_subtree(guint registration_id);
 
+  
+  /** Exports @a action_group on @a connection at @a object_path.
+   * 
+   * The implemented D-Bus API should be considered private.  It is
+   * subject to change in the future.
+   * 
+   * A given object path can only have one action group exported on it.
+   * If this constraint is violated, the export will fail and 0 will be
+   * returned (with @a error set accordingly).
+   * 
+   * You can unexport the action group using
+   * g_dbus_connection_unexport_action_group() with the return value of
+   * this function.
+   * 
+   * The thread default main context is taken at the time of this call.
+   * All incoming action activations and state change requests are
+   * reported from this context.  Any changes on the action group that
+   * cause it to emit signals must also come from this same context.
+   * Since incoming action activations and state change requests are
+   * rather likely to cause changes on the action group, this effectively
+   * limits a given action group to being exported from only one main
+   * context.
+   * 
+   * @newin{2,32}
+   * @param object_path A D-Bus object path.
+   * @param action_group A ActionGroup.
+   * @return The ID of the export (never zero), or 0 in case of failure.
+   */
+  guint export_action_group(const Glib::ustring& object_path, const Glib::RefPtr<ActionGroup>& action_group);
+  
+  /** Reverses the effect of a previous call to
+   * g_dbus_connection_export_action_group().
+   * 
+   * It is an error to call this function with an ID that wasn't returned
+   * from g_dbus_connection_export_action_group() or to call it with the
+   * same ID more than once.
+   * 
+   * @newin{2,32}
+   * @param export_id The ID from g_dbus_connection_export_action_group().
+   */
+  void unexport_action_group(guint export_id);
+
+  
+  /** Exports @a menu on @a connection at @a object_path.
+   * 
+   * The implemented D-Bus API should be considered private.
+   * It is subject to change in the future.
+   * 
+   * An object path can only have one action group exported on it. If this
+   * constraint is violated, the export will fail and 0 will be
+   * returned (with @a error set accordingly).
+   * 
+   * You can unexport the menu model using
+   * g_dbus_connection_unexport_menu_model() with the return value of
+   * this function.
+   * 
+   * @newin{2,32}
+   * @param object_path A D-Bus object path.
+   * @param menu A MenuModel.
+   * @return The ID of the export (never zero), or 0 in case of failure.
+   */
+  guint export_menu_model(const Glib::ustring& object_path, const Glib::RefPtr<MenuModel>& menu);
+  
+  /** Reverses the effect of a previous call to
+   * g_dbus_connection_export_menu_model().
+   * 
+   * It is an error to call this function with an ID that wasn't returned
+   * from g_dbus_connection_export_menu_model() or to call it with the
+   * same ID more than once.
+   * 
+   * @newin{2,32}
+   * @param export_id The ID from g_dbus_connection_export_menu_model().
+   */
+  void unexport_menu_model(guint export_id);
+
   //_WRAP_PROPERTY("address", std::string) // write-only construct-only
   //_WRAP_PROPERTY("authentication-observer", Glib::RefPtr<AuthObserver>) // write-only construct-only
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1737,7 +1945,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<CapabilityFlags> property_capabilities() const;
+  Glib::PropertyProxy_ReadOnly< CapabilityFlags > property_capabilities() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -1748,7 +1956,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_closed() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_closed() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -1759,7 +1967,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_exit_on_close() ;
+  Glib::PropertyProxy< bool > property_exit_on_close() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1769,7 +1977,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_exit_on_close() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_exit_on_close() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   //_WRAP_PROPERTY("flags", ConnectionFlags) // write-only construct-only
@@ -1780,7 +1988,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<std::string> property_guid() const;
+  Glib::PropertyProxy_ReadOnly< std::string > property_guid() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -1802,13 +2010,35 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_unique_name() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_unique_name() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%closed(bool remote_peer_vanished, const Glib::Error& error)</tt>
+   *
+   * Emitted when the connection is closed.
+   * 
+   * The cause of this event can be
+   * - 
+   * If g_dbus_connection_close() is called. In this case
+   *  @a remote_peer_vanished is set to <tt>false</tt> and @a error is <tt>0</tt>.
+   * - 
+   * If the remote peer closes the connection. In this case
+   *  @a remote_peer_vanished is set to <tt>true</tt> and @a error is set.
+   * - 
+   * If the remote peer sends invalid or malformed data. In this
+   * case @a remote_peer_vanished is set to <tt>false</tt> and @a error
+   * is set.
+   * 
+   * Upon receiving this signal, you should give up your reference to
+   *  @a connection. You are guaranteed that this signal is emitted only
+   * once.
+   * 
+   * @newin{2,26}
+   * @param remote_peer_vanished <tt>true</tt> if @a connection is closed because the
+   * remote peer closed its end of the connection.
    */
 
   Glib::SignalProxy2< void,bool,const Glib::Error& > signal_closed();

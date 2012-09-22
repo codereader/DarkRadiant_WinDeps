@@ -6,7 +6,8 @@
 #include <gtkmmconfig.h>
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: textbuffer.hg,v 1.20 2006/11/20 09:19:49 murrayc Exp $ */
 
@@ -23,15 +24,16 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 // This is for including the config header before any code (such as
 // the #ifndef GTKMM_DISABLE_DEPRECATED in deprecated classes) is generated:
 
 
-#include <gtkmm/object.h>
+#include <vector>
+
 #include <gtkmm/texttagtable.h>
 #include <gtkmm/textchildanchor.h>
 #include <gtkmm/textmark.h>
@@ -114,8 +116,11 @@ protected:
 public:
   virtual ~TextBuffer();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -191,18 +196,6 @@ public:
    */
   void set_text(const char* text_begin, const char* text_end);
   
-
-  #ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** @deprecated Use set_text()
-   */
-  void assign(const Glib::ustring& text);
-
-  /** @deprecated Use set_text()
-   */
-  void assign(const char* text_begin, const char* text_end);
-  #endif // GTKMM_DISABLE_DEPRECATED
-
 
   //TODO: Make all insert() methods have the same return type:
 
@@ -340,7 +333,7 @@ public:
    * @result Whether text was actually inserted
    */
   iterator insert_with_tags(const iterator& pos, const Glib::ustring& text,
-                            const Glib::ArrayHandle< Glib::RefPtr<Tag> >& tags);
+                            const std::vector< Glib::RefPtr<Tag> >& tags);
 
   /** Inserts text into buffer at @a pos, applying the list of tags to the newly-inserted text.
    * Equivalent to calling insert(), then apply_tag() on the inserted text; This is just a convenience function.
@@ -352,7 +345,7 @@ public:
    * @result Whether text was actually inserted
    */
   iterator insert_with_tags(const iterator& pos, const char* text_begin, const char* text_end,
-                            const Glib::ArrayHandle< Glib::RefPtr<Tag> >& tags);
+                            const std::vector< Glib::RefPtr<Tag> >& tags);
 
   /** Inserts text into buffer at @a pos, applying the list of tags to the newly-inserted text.
    * Equivalent to calling insert(), then apply_tag() on the inserted text; This is just a convenience function.
@@ -363,7 +356,7 @@ public:
    * @result Whether text was actually inserted
    */
   iterator insert_with_tags_by_name(const iterator& pos, const Glib::ustring& text,
-                                    const Glib::StringArrayHandle& tag_names);
+                                    const std::vector<Glib::ustring>& tag_names);
 
 
   /** Equivalent to calling insert(), then apply_tag() on the inserted text; This is just a convenience function.
@@ -375,7 +368,7 @@ public:
    * @result Whether text was actually inserted
    */
   iterator insert_with_tags_by_name(const iterator& pos, const char* text_begin, const char* text_end,
-                                    const Glib::StringArrayHandle& tag_names);
+                                    const std::vector<Glib::ustring>& tag_names);
 
   /* Deletes all text between @a range_begin and @a range_end. The order of range_begin and range_end is not actually relevant.
    * This function actually emits the "delete_range" signal, and the default handler of that signal deletes the text.
@@ -423,25 +416,6 @@ public:
   iterator backspace(const iterator& iter, bool interactive = true, bool default_editable = true);
   
 
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Returns the text in the range [ @a start, @a end). Excludes undisplayed
-   * text (text marked with tags that set the invisibility attribute) if
-   *  @a include_hidden_chars is <tt>false</tt>. Does not include characters
-   * representing embedded images, so byte and character indexes into
-   * the returned string do <em>not</em> correspond to byte
-   * and character indexes into the buffer. Contrast with
-   * get_slice().
-   * @deprecated Use get_text(const iterator& start, const iterator& end, bool include_hidden_chars) const
-   * @param start Start of a range.
-   * @param end End of a range.
-   * @param include_hidden_chars Whether to include invisible text.
-   * @return An allocated UTF-8 string.
-   */
-  Glib::ustring get_text(const iterator& start, const iterator& end, bool include_hidden_chars =  true);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
   /** Returns the text in the range [ @a start, @a end). Excludes undisplayed
    * text (text marked with tags that set the invisibility attribute) if
    *  @a include_hidden_chars is <tt>false</tt>. Does not include characters
@@ -455,14 +429,6 @@ public:
    * @return An allocated UTF-8 string.
    */
   Glib::ustring get_text(const iterator& start, const iterator& end, bool include_hidden_chars =  true) const;
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** @deprecated Use get_text(bool include_hidden_chars) const.
-   */
-  Glib::ustring get_text(bool include_hidden_chars = true);
-#endif // GTKMM_DISABLE_DEPRECATED
-
 
   /** Returns all the text in the buffer. Excludes undisplayed
    * text (text marked with tags that set the invisibility attribute) if
@@ -478,14 +444,6 @@ public:
   Glib::ustring get_text(bool include_hidden_chars = true) const;
 
   
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** @deprecated Use get_slice(const iterator& start, const iterator& end, bool include_hidden_chars) const.
-   */
-  Glib::ustring get_slice(const iterator& start, const iterator& end, bool include_hidden_chars =  true);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
   /** Returns the text in the range [ @a start, @a end). Excludes undisplayed
    * text (text marked with tags that set the invisibility attribute) if
    *  @a include_hidden_chars is <tt>false</tt>. The returned string includes a
@@ -879,6 +837,7 @@ public:
 
 
 //TODO: Use ArrayHandle, or just use guint8* to be more efficient?
+// TODO: Or rather - vector utils.
   // typedef sigc::slot<bool, const Glib::RefPtr<TextBuffer>& /* content_buffer */, iterator& /* iter */, const guint8*  /* data */, gsize /* length */, bool /* create_tags */> SlotDeserialize;
 
 /*
@@ -982,9 +941,9 @@ public:
   bool get_can_create_tags(const Glib::ustring& format) const;
 
 
-  Glib::StringArrayHandle get_serialize_formats() const;
+  std::vector<Glib::ustring> get_serialize_formats() const;
   
-  Glib::StringArrayHandle get_deserialize_formats() const;
+  std::vector<Glib::ustring> get_deserialize_formats() const;
   
 
 /*
@@ -999,7 +958,7 @@ public:
                                                        gsize& length), gtk_text_buffer_serialize)
 
 //TODO: Is the bool superfluous?
-//TODO: Use an ArrayHandle?
+//TODO: Use an ArrayHandle? Or rather - vector utils.
   _WRAP_METHOD(bool deserialize(const Glib::RefPtr<TextBuffer>& content_buffer,
                                                        const Glib::ustring& format,
                                                        const iterator& iter, const guint8* data,
@@ -1007,117 +966,241 @@ public:
 */
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%insert(const TextBuffer::iterator& pos, const Glib::ustring& text, int bytes)</tt>
+   *
+   * The signal_insert_text() signal is emitted to insert text in a Gtk::TextBuffer.
+   * Insertion actually occurs in the default handler.  
+   * 
+   * Note that if your handler runs before the default handler it must not 
+   * invalidate the @a location iter (or has to revalidate it). 
+   * The default signal handler revalidates it to point to the end of the 
+   * inserted text.
+   * 
+   * See also: 
+   * Gtk::TextBuffer::insert(), 
+   * Gtk::TextBuffer::insert_range().
+   * @param location Position to insert @a text in @a textbuffer.
+   * @param text The UTF-8 text to be inserted.
+   * @param len Length of the inserted text in bytes.
    */
 
   Glib::SignalProxy3< void,const TextBuffer::iterator&,const Glib::ustring&,int > signal_insert();
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%insert_pixbuf(const TextBuffer::iterator& pos, const Glib::RefPtr<Gdk::Pixbuf>& pixbuf)</tt>
+   *
+   * The signal_insert_pixbuf() signal is emitted to insert a Gdk::Pixbuf 
+   * in a Gtk::TextBuffer. Insertion actually occurs in the default handler.
+   * 
+   * Note that if your handler runs before the default handler it must not 
+   * invalidate the @a location iter (or has to revalidate it). 
+   * The default signal handler revalidates it to be placed after the 
+   * inserted @a pixbuf.
+   * 
+   * See also: Gtk::TextBuffer::insert_pixbuf().
+   * @param location Position to insert @a pixbuf in @a textbuffer.
+   * @param pixbuf The Gdk::Pixbuf to be inserted.
    */
 
   Glib::SignalProxy2< void,const TextBuffer::iterator&,const Glib::RefPtr<Gdk::Pixbuf>& > signal_insert_pixbuf();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%insert_child_anchor(const TextBuffer::iterator& pos, const Glib::RefPtr<ChildAnchor>& anchor)</tt>
+   *
+   * The signal_insert_child_anchor() signal is emitted to insert a
+   * Gtk::TextChildAnchor in a Gtk::TextBuffer.
+   * Insertion actually occurs in the default handler.
+   * 
+   * Note that if your handler runs before the default handler it must
+   * not invalidate the @a location iter (or has to revalidate it). 
+   * The default signal handler revalidates it to be placed after the 
+   * inserted @a anchor.
+   * 
+   * See also: Gtk::TextBuffer::insert_child_anchor().
+   * @param location Position to insert @a anchor in @a textbuffer.
+   * @param anchor The Gtk::TextChildAnchor to be inserted.
    */
 
   Glib::SignalProxy2< void,const TextBuffer::iterator&,const Glib::RefPtr<ChildAnchor>& > signal_insert_child_anchor();
 
 
-  /** The delete_range signal is emitted to delete a range from
-   * a TextBuffer. Note that your handler must not invalidate the
-   * @a start and @a end iters (or has to revalidate them), if it runs before the
-   * default handler. There is no need to keep the iters valid in handlers
-   * which run after the default handler but
-   * those don't have access to the deleted text.
-   *
-   * @param start the start of the range to be deleted.
-   * @param end the end of the range to be deleted.
-   *
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%erase(const TextBuffer::iterator& start, const TextBuffer::iterator& end)</tt>
+   *
+   * The signal_delete_range() signal is emitted to delete a range 
+   * from a Gtk::TextBuffer. 
+   * 
+   * Note that if your handler runs before the default handler it must not 
+   * invalidate the @a start and @a end iters (or has to revalidate them). 
+   * The default signal handler revalidates the @a start and @a end iters to 
+   * both point point to the location where text was deleted. Handlers
+   * which run after the default handler (see Glib::signal_connect_after())
+   * do not have access to the deleted text.
+   * 
+   * See also: Gtk::TextBuffer::delete().
+   * @param start The start of the range to be deleted.
+   * @param end The end of the range to be deleted.
    */
 
   Glib::SignalProxy2< void,const TextBuffer::iterator&,const TextBuffer::iterator& > signal_erase();
 
-
-  /**
-   * @par Prototype:
+  
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%changed()</tt>
+   *
+   * The signal_changed() signal is emitted when the content of a Gtk::TextBuffer 
+   * has changed.
    */
 
   Glib::SignalProxy0< void > signal_changed();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%modified_changed()</tt>
+   *
+   * The signal_modified_changed() signal is emitted when the modified bit of a 
+   * Gtk::TextBuffer flips.
+   * 
+   * See also:
+   * Gtk::TextBuffer::set_modified().
    */
 
   Glib::SignalProxy0< void > signal_modified_changed();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%mark_set(const TextBuffer::iterator& location, const Glib::RefPtr<TextBuffer::Mark>& mark)</tt>
+   *
+   * The signal_mark_set() signal is emitted as notification
+   * after a Gtk::TextMark is set.
+   * 
+   * See also: 
+   * Gtk::TextBuffer::create_mark(),
+   * Gtk::TextBuffer::move_mark().
+   * @param location The location of @a mark in @a textbuffer.
+   * @param mark The mark that is set.
    */
 
   Glib::SignalProxy2< void,const TextBuffer::iterator&,const Glib::RefPtr<TextBuffer::Mark>& > signal_mark_set();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%mark_deleted(const Glib::RefPtr<TextBuffer::Mark>& mark)</tt>
+   *
+   * The signal_mark_deleted() signal is emitted as notification
+   * after a Gtk::TextMark is deleted. 
+   * 
+   * See also:
+   * Gtk::TextBuffer::delete_mark().
+   * @param mark The mark that was deleted.
    */
 
   Glib::SignalProxy1< void,const Glib::RefPtr<TextBuffer::Mark>& > signal_mark_deleted();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%apply_tag(const Glib::RefPtr<TextBuffer::Tag>& tag, const TextBuffer::iterator& range_begin, const TextBuffer::iterator& range_end)</tt>
+   *
+   * The signal_apply_tag() signal is emitted to apply a tag to a
+   * range of text in a Gtk::TextBuffer. 
+   * Applying actually occurs in the default handler.
+   * 
+   * Note that if your handler runs before the default handler it must not 
+   * invalidate the @a start and @a end iters (or has to revalidate them). 
+   * 
+   * See also: 
+   * Gtk::TextBuffer::apply_tag(),
+   * Gtk::TextBuffer::insert_with_tags(),
+   * Gtk::TextBuffer::insert_range().
+   * @param tag The applied tag.
+   * @param start The start of the range the tag is applied to.
+   * @param end The end of the range the tag is applied to.
    */
 
   Glib::SignalProxy3< void,const Glib::RefPtr<TextBuffer::Tag>&,const TextBuffer::iterator&,const TextBuffer::iterator& > signal_apply_tag();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%remove_tag(const Glib::RefPtr<TextBuffer::Tag>& tag, const TextBuffer::iterator& range_begin, const TextBuffer::iterator& range_end)</tt>
+   *
+   * The signal_remove_tag() signal is emitted to remove all occurrences of @a tag from
+   * a range of text in a Gtk::TextBuffer. 
+   * Removal actually occurs in the default handler.
+   * 
+   * Note that if your handler runs before the default handler it must not 
+   * invalidate the @a start and @a end iters (or has to revalidate them). 
+   * 
+   * See also: 
+   * Gtk::TextBuffer::remove_tag().
+   * @param tag The tag to be removed.
+   * @param start The start of the range the tag is removed from.
+   * @param end The end of the range the tag is removed from.
    */
 
   Glib::SignalProxy3< void,const Glib::RefPtr<TextBuffer::Tag>&,const TextBuffer::iterator&,const TextBuffer::iterator& > signal_remove_tag();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%begin_user_action()</tt>
+   *
+   * The signal_begin_user_action() signal is emitted at the beginning of a single
+   * user-visible operation on a Gtk::TextBuffer.
+   * 
+   * See also: 
+   * Gtk::TextBuffer::begin_user_action(),
+   * Gtk::TextBuffer::insert_interactive(),
+   * Gtk::TextBuffer::insert_range_interactive(),
+   * Gtk::TextBuffer::delete_interactive(),
+   * Gtk::TextBuffer::backspace(),
+   * Gtk::TextBuffer::delete_selection().
    */
 
   Glib::SignalProxy0< void > signal_begin_user_action();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%end_user_action()</tt>
+   *
+   * The signal_end_user_action() signal is emitted at the end of a single
+   * user-visible operation on the Gtk::TextBuffer.
+   * 
+   * See also: 
+   * Gtk::TextBuffer::end_user_action(),
+   * Gtk::TextBuffer::insert_interactive(),
+   * Gtk::TextBuffer::insert_range_interactive(),
+   * Gtk::TextBuffer::delete_interactive(),
+   * Gtk::TextBuffer::backspace(),
+   * Gtk::TextBuffer::delete_selection(),
+   * Gtk::TextBuffer::backspace().
    */
 
   Glib::SignalProxy0< void > signal_end_user_action();
 
 
-  //TODO: Remove no_default_handler when we can break ABI:
- 
-
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%paste_done(const Glib::RefPtr<Gtk::Clipboard>& clipboard)</tt>
+   *
+   * The paste-done signal is emitted after paste operation has been completed.
+   * This is useful to properly scroll the view to the end of the pasted text.
+   * See Gtk::TextBuffer::paste_clipboard() for more details.
+   * 
+   * @newin{2,16}
    */
 
   Glib::SignalProxy1< void,const Glib::RefPtr<Gtk::Clipboard>& > signal_paste_done();
@@ -1141,7 +1224,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_text() ;
+  Glib::PropertyProxy< Glib::ustring > property_text() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1151,7 +1234,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_text() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_text() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1161,7 +1244,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_has_selection() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_has_selection() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -1172,7 +1255,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_cursor_position() const;
+  Glib::PropertyProxy_ReadOnly< int > property_cursor_position() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -1189,18 +1272,32 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_insert().
   virtual void on_insert(const TextBuffer::iterator& pos, const Glib::ustring& text, int bytes);
+  /// This is a default handler for the signal signal_insert_pixbuf().
   virtual void on_insert_pixbuf(const TextBuffer::iterator& pos, const Glib::RefPtr<Gdk::Pixbuf>& pixbuf);
+  /// This is a default handler for the signal signal_insert_child_anchor().
   virtual void on_insert_child_anchor(const TextBuffer::iterator& pos, const Glib::RefPtr<ChildAnchor>& anchor);
+  /// This is a default handler for the signal signal_erase().
   virtual void on_erase(const TextBuffer::iterator& start, const TextBuffer::iterator& end);
+  /// This is a default handler for the signal signal_changed().
   virtual void on_changed();
+  /// This is a default handler for the signal signal_modified_changed().
   virtual void on_modified_changed();
+  /// This is a default handler for the signal signal_mark_set().
   virtual void on_mark_set(const TextBuffer::iterator& location, const Glib::RefPtr<TextBuffer::Mark>& mark);
+  /// This is a default handler for the signal signal_mark_deleted().
   virtual void on_mark_deleted(const Glib::RefPtr<TextBuffer::Mark>& mark);
+  /// This is a default handler for the signal signal_apply_tag().
   virtual void on_apply_tag(const Glib::RefPtr<TextBuffer::Tag>& tag, const TextBuffer::iterator& range_begin, const TextBuffer::iterator& range_end);
+  /// This is a default handler for the signal signal_remove_tag().
   virtual void on_remove_tag(const Glib::RefPtr<TextBuffer::Tag>& tag, const TextBuffer::iterator& range_begin, const TextBuffer::iterator& range_end);
+  /// This is a default handler for the signal signal_begin_user_action().
   virtual void on_begin_user_action();
+  /// This is a default handler for the signal signal_end_user_action().
   virtual void on_end_user_action();
+  /// This is a default handler for the signal signal_paste_done().
+  virtual void on_paste_done(const Glib::RefPtr<Gtk::Clipboard>& clipboard);
 
 
 };

@@ -4,7 +4,8 @@
 #define _GTKMM_PRINTOPERATION_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 2006 The gtkmm Development Team
  *
@@ -19,8 +20,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <glibmm/object.h>
@@ -244,8 +245,11 @@ protected:
 public:
   virtual ~PrintOperation();
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -275,12 +279,13 @@ public:
    * 
    * This page setup will be used by run(),
    * but it can be overridden on a per-page basis by connecting
-   * to the Gtk::PrintOperation::request-page-setup signal.
+   * to the Gtk::PrintOperation::signal_request_page_setup() signal.
    * 
    * @newin{2,10}
    * @param default_page_setup A Gtk::PageSetup, or <tt>0</tt>.
    */
   void set_default_page_setup(const Glib::RefPtr<PageSetup>& default_page_setup);
+
   
   /** Returns the default page setup, see
    * set_default_page_setup().
@@ -288,7 +293,15 @@ public:
    * @newin{2,10}
    * @return The default page setup.
    */
-  Glib::RefPtr<PageSetup> get_default_page_setup() const;
+  Glib::RefPtr<PageSetup> get_default_page_setup();
+  
+  /** Returns the default page setup, see
+   * set_default_page_setup().
+   * 
+   * @newin{2,10}
+   * @return The default page setup.
+   */
+  Glib::RefPtr<const PageSetup> get_default_page_setup() const;
 
   
   /** Sets the print settings for @a op. This is typically used to
@@ -299,6 +312,7 @@ public:
    * @param print_settings Gtk::PrintSettings.
    */
   void set_print_settings(const Glib::RefPtr<PrintSettings>& print_settings);
+
   
   /** Returns the current print settings.
    * 
@@ -309,7 +323,18 @@ public:
    * @newin{2,10}
    * @return The current print settings of @a op.
    */
-  Glib::RefPtr<PrintSettings> get_print_settings() const;
+  Glib::RefPtr<PrintSettings> get_print_settings();
+  
+  /** Returns the current print settings.
+   * 
+   * Note that the return value is <tt>0</tt> until either
+   * set_print_settings() or
+   * run() have been called.
+   * 
+   * @newin{2,10}
+   * @return The current print settings of @a op.
+   */
+  Glib::RefPtr<const PrintSettings> get_print_settings() const;
 
   
   /** Sets the name of the print job. The name is used to identify 
@@ -327,12 +352,12 @@ public:
    * 
    * This <em>must</em> be set to a positive number
    * before the rendering starts. It may be set in a 
-   * Gtk::PrintOperation::begin-print signal hander.
+   * Gtk::PrintOperation::signal_begin_print() signal hander.
    * 
    * Note that the page numbers passed to the 
-   * Gtk::PrintOperation::request-page-setup 
-   * and Gtk::PrintOperation::draw-page signals are 0-based, i.e. if 
-   * the user chooses to print all pages, the last ::draw-page signal 
+   * Gtk::PrintOperation::signal_request_page_setup() 
+   * and Gtk::PrintOperation::signal_draw_page() signals are 0-based, i.e. if 
+   * the user chooses to print all pages, the last signal_draw_page() signal 
    * will be for page @a n_pages - 1.
    * 
    * @newin{2,10}
@@ -427,59 +452,25 @@ public:
    
   PrintOperationResult run(PrintOperationAction action = PRINT_OPERATION_ACTION_PRINT_DIALOG);
 
+  //TODO: parent can be null.
   
   /** Runs the print operation, by first letting the user modify
    * print settings in the print dialog, and then print the document.
    * 
    * Normally that this function does not return until the rendering of all 
    * pages is complete. You can connect to the 
-   * Gtk::PrintOperation::status-changed signal on @a op to obtain some 
+   * Gtk::PrintOperation::signal_status_changed() signal on @a op to obtain some 
    * information about the progress of the print operation. 
    * Furthermore, it may use a recursive mainloop to show the print dialog.
    * 
    * If you call set_allow_async() or set the 
-   * Gtk::PrintOperation:allow-async property the operation will run 
+   * Gtk::PrintOperation::property_allow_async() property the operation will run 
    * asynchronously if this is supported on the platform. The 
-   * Gtk::PrintOperation::done signal will be emitted with the result of the 
+   * Gtk::PrintOperation::signal_done() signal will be emitted with the result of the 
    * operation when the it is done (i.e. when the dialog is canceled, or when 
    * the print succeeds or fails).
-   * |[
-   * if (settings != <tt>0</tt>)
-   * gtk_print_operation_set_print_settings (print, settings);
    * 
-   * if (page_setup != <tt>0</tt>)
-   * gtk_print_operation_set_default_page_setup (print, page_setup);
-   * 
-   * g_signal_connect (print, "begin-print", 
-   * G_CALLBACK (begin_print), &data);
-   * g_signal_connect (print, "draw-page", 
-   * G_CALLBACK (draw_page), &data);
-   * 
-   * res = gtk_print_operation_run (print, 
-   * GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG, 
-   * parent, 
-   * &error);
-   * 
-   * if (res == GTK_PRINT_OPERATION_RESULT_ERROR)
-   * {
-   * error_dialog = gtk_message_dialog_new (GTK_WINDOW (parent),
-   * GTK_DIALOG_DESTROY_WITH_PARENT,
-   * GTK_MESSAGE_ERROR,
-   * GTK_BUTTONS_CLOSE,
-   * "Error printing file:<tt>\\n</tt>%s",
-   * error->message);
-   * g_signal_connect (error_dialog, "response", 
-   * G_CALLBACK (gtk_widget_destroy), <tt>0</tt>);
-   * gtk_widget_show (error_dialog);
-   * g_error_free (error);
-   * }
-   * else if (res == GTK_PRINT_OPERATION_RESULT_APPLY)
-   * {
-   * if (settings != <tt>0</tt>)
-   * g_object_unref (settings);
-   * settings = g_object_ref (gtk_print_operation_get_print_settings (print));
-   * }
-   * ]|
+   * [C example ellipted]
    * 
    * Note that run() can only be called once on a
    * given Gtk::PrintOperation.
@@ -493,10 +484,11 @@ public:
    * the used print settings with get_print_settings() 
    * and store them for reuse with the next print operation. A value of
    * Gtk::PRINT_OPERATION_RESULT_IN_PROGRESS means the operation is running
-   * asynchronously, and will emit the Gtk::PrintOperation::done signal when 
+   * asynchronously, and will emit the Gtk::PrintOperation::signal_done() signal when 
    * done.
    */
   PrintOperationResult run(PrintOperationAction action, Window& parent);
+
   
   /** Returns the status of the print operation. 
    * Also see get_status_string().
@@ -520,8 +512,8 @@ public:
   Glib::ustring get_status_string() const;
   
   /** Cancels a running print operation. This function may
-   * be called from a Gtk::PrintOperation::begin-print, 
-   * Gtk::PrintOperation::paginate or Gtk::PrintOperation::draw-page
+   * be called from a Gtk::PrintOperation::signal_begin_print(), 
+   * Gtk::PrintOperation::signal_paginate() or Gtk::PrintOperation::signal_draw_page()
    * signal handler to stop the currently running print 
    * operation.
    * 
@@ -573,7 +565,7 @@ public:
    */
   void set_support_selection(bool support_selection =  true);
   
-  /** Gets the value of Gtk::PrintOperation::support-selection property.
+  /** Gets the value of Gtk::PrintOperation::property_support_selection() property.
    * 
    * @newin{2,18}
    * @return Whether the application supports print of selection.
@@ -584,14 +576,14 @@ public:
    * 
    * Application has to set number of pages to which the selection
    * will draw by set_n_pages() in a callback of
-   * Gtk::PrintOperation::begin-print.
+   * Gtk::PrintOperation::signal_begin_print().
    * 
    * @newin{2,18}
    * @param has_selection <tt>true</tt> indicates that a selection exists.
    */
   void set_has_selection(bool has_selection =  true);
   
-  /** Gets the value of Gtk::PrintOperation::has-selection property.
+  /** Gets the value of Gtk::PrintOperation::property_has_selection() property.
    * 
    * @newin{2,18}
    * @return Whether there is a selection.
@@ -607,7 +599,7 @@ public:
    */
   void set_embed_page_setup(bool embed =  true);
   
-  /** Gets the value of Gtk::PrintOperation::embed-page-setup property.
+  /** Gets the value of Gtk::PrintOperation::property_embed_page_setup() property.
    * 
    * @newin{2,18}
    * @return Whether page setup selection combos are embedded.
@@ -619,7 +611,7 @@ public:
    * Note that this value is set during print preparation phase
    * (Gtk::PRINT_STATUS_PREPARING), so this function should never be
    * called before the data generation phase (Gtk::PRINT_STATUS_GENERATING_DATA).
-   * You can connect to the Gtk::PrintOperation::status-changed signal
+   * You can connect to the Gtk::PrintOperation::signal_status_changed() signal
    * and call get_n_pages_to_print() when
    * print status is Gtk::PRINT_STATUS_GENERATING_DATA.
    * This is typically used to track the progress of print operation.
@@ -633,73 +625,177 @@ public:
   //TODO: point out in the docs that the PrintOperationResult enum may also indicate
   // that an error occurred, and in that case it is up to him to handle it.
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%done(PrintOperationResult result)</tt>
+   *
+   * Emitted when the print operation run has finished doing
+   * everything required for printing. 
+   * 
+   *  @a result gives you information about what happened during the run. 
+   * If @a result is Gtk::PRINT_OPERATION_RESULT_ERROR then you can call
+   * Gtk::PrintOperation::get_error() for more information.
+   * 
+   * If you enabled print status tracking then 
+   * Gtk::PrintOperation::is_finished() may still return <tt>false</tt> 
+   * after Gtk::PrintOperation::signal_done() was emitted.
+   * 
+   * @newin{2,10}
+   * @param result The result of the print operation.
    */
 
   Glib::SignalProxy1< void,PrintOperationResult > signal_done();
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%begin_print(const Glib::RefPtr<PrintContext>& context)</tt>
+   *
+   * Emitted after the user has finished changing print settings
+   * in the dialog, before the actual rendering starts. 
+   * 
+   * A typical use for signal_begin_print() is to use the parameters from the
+   * Gtk::PrintContext and paginate the document accordingly, and then
+   * set the number of pages with Gtk::PrintOperation::set_n_pages().
+   * 
+   * @newin{2,10}
+   * @param context The Gtk::PrintContext for the current operation.
    */
 
   Glib::SignalProxy1< void,const Glib::RefPtr<PrintContext>& > signal_begin_print();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>bool on_my_%paginate(const Glib::RefPtr<PrintContext>& context)</tt>
+   *
+   * Emitted after the Gtk::PrintOperation::signal_begin_print() signal, but before 
+   * the actual rendering starts. It keeps getting emitted until a connected 
+   * signal handler returns <tt>true</tt>.
+   * 
+   * The signal_paginate() signal is intended to be used for paginating a document
+   * in small chunks, to avoid blocking the user interface for a long
+   * time. The signal handler should update the number of pages using
+   * Gtk::PrintOperation::set_n_pages(), and return <tt>true</tt> if the document
+   * has been completely paginated.
+   * 
+   * If you don't need to do pagination in chunks, you can simply do
+   * it all in the signal_begin_print() handler, and set the number of pages
+   * from there.
+   * 
+   * @newin{2,10}
+   * @param context The Gtk::PrintContext for the current operation.
+   * @return <tt>true</tt> if pagination is complete.
    */
 
   Glib::SignalProxy1< bool,const Glib::RefPtr<PrintContext>& > signal_paginate();
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%request_page_setup(const Glib::RefPtr<PrintContext>& context, int page_no, const Glib::RefPtr<PageSetup>& setup)</tt>
+   *
+   * Emitted once for every page that is printed, to give
+   * the application a chance to modify the page setup. Any changes 
+   * done to @a setup will be in force only for printing this page.
+   * 
+   * @newin{2,10}
+   * @param context The Gtk::PrintContext for the current operation.
+   * @param page_nr The number of the currently printed page (0-based).
+   * @param setup The Gtk::PageSetup.
    */
 
   Glib::SignalProxy3< void,const Glib::RefPtr<PrintContext>&,int,const Glib::RefPtr<PageSetup>& > signal_request_page_setup();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%draw_page(const Glib::RefPtr<PrintContext>& context, int page_nr)</tt>
+   *
+   * Emitted for every page that is printed. The signal handler
+   * must render the @a page_nr's page onto the cairo context obtained
+   * from @a context using Gtk::PrintContext::get_cairo_context().
+   * 
+   * [C example ellipted]
+   * 
+   * Use Gtk::PrintOperation::set_use_full_page() and 
+   * Gtk::PrintOperation::set_unit() before starting the print operation
+   * to set up the transformation of the cairo context according to your
+   * needs.
+   * 
+   * @newin{2,10}
+   * @param context The Gtk::PrintContext for the current operation.
+   * @param page_nr The number of the currently printed page (0-based).
    */
 
   Glib::SignalProxy2< void,const Glib::RefPtr<PrintContext>&,int > signal_draw_page();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%end_print(const Glib::RefPtr<PrintContext>& context)</tt>
+   *
+   * Emitted after all pages have been rendered. 
+   * A handler for this signal can clean up any resources that have
+   * been allocated in the Gtk::PrintOperation::signal_begin_print() handler.
+   * 
+   * @newin{2,10}
+   * @param context The Gtk::PrintContext for the current operation.
    */
 
   Glib::SignalProxy1< void,const Glib::RefPtr<PrintContext>& > signal_end_print();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%status_changed()</tt>
+   *
+   * Emitted at between the various phases of the print operation.
+   * See Gtk::PrintStatus for the phases that are being discriminated.
+   * Use Gtk::PrintOperation::get_status() to find out the current
+   * status.
+   * 
+   * @newin{2,10}
    */
 
   Glib::SignalProxy0< void > signal_status_changed();
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>Widget* on_my_%create_custom_widget()</tt>
+   *
+   * Emitted when displaying the print dialog. If you return a
+   * widget in a handler for this signal it will be added to a custom
+   * tab in the print dialog. You typically return a container widget
+   * with multiple widgets in it.
+   * 
+   * The print dialog owns the returned widget, and its lifetime is not 
+   * controlled by the application. However, the widget is guaranteed 
+   * to stay around until the Gtk::PrintOperation::signal_custom_widget_apply() 
+   * signal is emitted on the operation. Then you can read out any 
+   * information you need from the widgets.
+   * 
+   * @newin{2,10}
+   * @return A custom widget that gets embedded in
+   * the print dialog, or <tt>0</tt>.
    */
 
   Glib::SignalProxy0< Widget* > signal_create_custom_widget();
 
 
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%custom_widget_apply(Widget* widget)</tt>
+   *
+   * Emitted right before Gtk::PrintOperation::signal_begin_print() if you added
+   * a custom widget in the Gtk::PrintOperation::signal_create_custom_widget() handler. 
+   * When you get this signal you should read the information from the 
+   * custom widgets, as the widgets are not guaraneed to be around at a 
+   * later time.
+   * 
+   * @newin{2,10}
+   * @param widget The custom widget added in create-custom-widget.
    */
 
   Glib::SignalProxy1< void,Widget* > signal_custom_widget_apply();
@@ -707,9 +803,32 @@ public:
 
   //TODO: This is causing crashes. Is it still causing crashes? murrayc.
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>bool on_my_%preview(const Glib::RefPtr<PrintOperationPreview>& preview, const Glib::RefPtr<PrintContext>& context, Window* parent)</tt>
+   *
+   * Gets emitted when a preview is requested from the native dialog.
+   * 
+   * The default handler for this signal uses an external viewer 
+   * application to preview.
+   * 
+   * To implement a custom print preview, an application must return
+   * <tt>true</tt> from its handler for this signal. In order to use the
+   * provided @a context for the preview implementation, it must be
+   * given a suitable cairo context with Gtk::PrintContext::set_cairo_context().
+   * 
+   * The custom preview implementation can use 
+   * Gtk::PrintOperationPreview::is_selected() and 
+   * Gtk::PrintOperationPreview::render_page() to find pages which
+   * are selected for print and render them. The preview must be
+   * finished by calling Gtk::PrintOperationPreview::end_preview()
+   * (typically in response to the user clicking a close button).
+   * 
+   * @newin{2,10}
+   * @param preview The Gtk::PrintPreviewOperation for the current operation.
+   * @param context The Gtk::PrintContext that will be used.
+   * @param parent The Gtk::Window to use as window parent, or <tt>0</tt>.
+   * @return <tt>true</tt> if the listener wants to take over control of the preview.
    */
 
   Glib::SignalProxy3< bool,const Glib::RefPtr<PrintOperationPreview>&,const Glib::RefPtr<PrintContext>&,Window* > signal_preview();
@@ -718,12 +837,21 @@ public:
   //TODO: Remove no_default_handler when we can break ABI.
    
 
-  /**
-   * @par Prototype:
-   * <tt>void on_my_%update_custom_widget(Gtk::Widget* widget, const Glib::RefPtr<PageSetup>& setup, const Glib::RefPtr<PrintSettings>& settings)</tt>
+/**
+   * @par Slot Prototype:
+   * <tt>void on_my_%update_custom_widget(Widget* widget, const Glib::RefPtr<PageSetup>& setup, const Glib::RefPtr<PrintSettings>& settings)</tt>
+   *
+   * Emitted after change of selected printer. The actual page setup and
+   * print settings are passed to the custom widget, which can actualize
+   * itself according to this change.
+   * 
+   * @newin{2,18}
+   * @param widget The custom widget added in create-custom-widget.
+   * @param setup Actual page setup.
+   * @param settings Actual print settings.
    */
 
-  Glib::SignalProxy3< void,Gtk::Widget*,const Glib::RefPtr<PageSetup>&,const Glib::RefPtr<PrintSettings>& > signal_update_custom_widget();
+  Glib::SignalProxy3< void,Widget*,const Glib::RefPtr<PageSetup>&,const Glib::RefPtr<PrintSettings>& > signal_update_custom_widget();
 
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -773,7 +901,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_job_name() ;
+  Glib::PropertyProxy< Glib::ustring > property_job_name() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -783,7 +911,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_job_name() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_job_name() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -793,7 +921,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_n_pages() ;
+  Glib::PropertyProxy< int > property_n_pages() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -803,7 +931,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_n_pages() const;
+  Glib::PropertyProxy_ReadOnly< int > property_n_pages() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -813,7 +941,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_current_page() ;
+  Glib::PropertyProxy< int > property_current_page() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -823,7 +951,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_current_page() const;
+  Glib::PropertyProxy_ReadOnly< int > property_current_page() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -833,7 +961,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_use_full_page() ;
+  Glib::PropertyProxy< bool > property_use_full_page() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -843,7 +971,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_use_full_page() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_use_full_page() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -853,7 +981,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_track_print_status() ;
+  Glib::PropertyProxy< bool > property_track_print_status() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -863,7 +991,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_track_print_status() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_track_print_status() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -873,7 +1001,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Unit> property_unit() ;
+  Glib::PropertyProxy< Unit > property_unit() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -883,7 +1011,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Unit> property_unit() const;
+  Glib::PropertyProxy_ReadOnly< Unit > property_unit() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -893,7 +1021,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_show_progress() ;
+  Glib::PropertyProxy< bool > property_show_progress() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -903,7 +1031,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_show_progress() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_show_progress() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -913,7 +1041,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_allow_async() ;
+  Glib::PropertyProxy< bool > property_allow_async() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -923,7 +1051,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_allow_async() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_allow_async() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -933,7 +1061,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<std::string> property_export_filename() ;
+  Glib::PropertyProxy< std::string > property_export_filename() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -943,7 +1071,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<std::string> property_export_filename() const;
+  Glib::PropertyProxy_ReadOnly< std::string > property_export_filename() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -953,7 +1081,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<PrintStatus> property_status() const;
+  Glib::PropertyProxy_ReadOnly< PrintStatus > property_status() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -964,7 +1092,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_status_string() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_status_string() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -975,7 +1103,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_custom_tab_label() ;
+  Glib::PropertyProxy< Glib::ustring > property_custom_tab_label() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -985,7 +1113,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_custom_tab_label() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_custom_tab_label() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -995,7 +1123,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_support_selection() ;
+  Glib::PropertyProxy< bool > property_support_selection() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1005,7 +1133,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_support_selection() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_support_selection() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1015,7 +1143,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_has_selection() ;
+  Glib::PropertyProxy< bool > property_has_selection() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1025,7 +1153,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_has_selection() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_has_selection() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1035,7 +1163,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_embed_page_setup() ;
+  Glib::PropertyProxy< bool > property_embed_page_setup() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1045,7 +1173,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_embed_page_setup() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_embed_page_setup() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -1055,7 +1183,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_n_pages_to_print() const;
+  Glib::PropertyProxy_ReadOnly< int > property_n_pages_to_print() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -1068,15 +1196,25 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_done().
   virtual void on_done(PrintOperationResult result);
+  /// This is a default handler for the signal signal_begin_print().
   virtual void on_begin_print(const Glib::RefPtr<PrintContext>& context);
+  /// This is a default handler for the signal signal_paginate().
   virtual bool on_paginate(const Glib::RefPtr<PrintContext>& context);
+  /// This is a default handler for the signal signal_request_page_setup().
   virtual void on_request_page_setup(const Glib::RefPtr<PrintContext>& context, int page_no, const Glib::RefPtr<PageSetup>& setup);
+  /// This is a default handler for the signal signal_draw_page().
   virtual void on_draw_page(const Glib::RefPtr<PrintContext>& context, int page_nr);
+  /// This is a default handler for the signal signal_end_print().
   virtual void on_end_print(const Glib::RefPtr<PrintContext>& context);
+  /// This is a default handler for the signal signal_status_changed().
   virtual void on_status_changed();
+  /// This is a default handler for the signal signal_create_custom_widget().
   virtual Widget* on_create_custom_widget();
+  /// This is a default handler for the signal signal_custom_widget_apply().
   virtual void on_custom_widget_apply(Widget* widget);
+  /// This is a default handler for the signal signal_preview().
   virtual bool on_preview(const Glib::RefPtr<PrintOperationPreview>& preview, const Glib::RefPtr<PrintContext>& context, Window* parent);
 
 

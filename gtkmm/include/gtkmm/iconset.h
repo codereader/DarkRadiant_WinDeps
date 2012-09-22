@@ -4,7 +4,8 @@
 #define _GTKMM_ICONSET_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: iconset.hg,v 1.3 2006/07/30 20:49:50 murrayc Exp $ */
 
@@ -23,30 +24,23 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library, ) if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library, ) if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-//#include <gtkmm/style.h>
+#include <gtkmm/stylecontext.h>
 #include <gdkmm/pixbuf.h>
 #include <gtkmm/iconsource.h>
 //#include <gtkmm/widget.h>
 #include <gtkmm/stockid.h>
-#include <glibmm/arrayhandle.h>
 
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-extern "C" { typedef struct _GtkIconSet GtkIconSet; }
-#endif
 
 namespace Gtk
 {
 
-class Style;
+class StyleContext;
 class Widget;
 
-//TODO_API: Is _CLASS_BOXEDTYPE the appropriate thing to use here.
-//This seems to be reference-counted, not copied.
 
 /** This manages a set of variants of a particular icon 
  * An IconSet contains variants for different sizes and widget states. 
@@ -54,72 +48,73 @@ class Widget;
  */
 class IconSet
 {
+  //GtkIconSet is registered as a boxed type, but it has ref/unref functions instead of copy/free,
+  //so we use it via RefPtr.
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   typedef IconSet CppObjectType;
   typedef GtkIconSet BaseObjectType;
-
-  static GType get_type() G_GNUC_CONST;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-  IconSet();
+  static Glib::RefPtr<IconSet> create();
 
-  explicit IconSet(GtkIconSet* gobject, bool make_a_copy = true);
+  /** Increment the reference count for this object.
+   * You should never need to do this manually - use the object via a RefPtr instead.
+   */
+  void reference()   const;
 
-  IconSet(const IconSet& other);
-  IconSet& operator=(const IconSet& other);
-
-  ~IconSet();
-
-  void swap(IconSet& other);
-
-  ///Provides access to the underlying C instance.
-  GtkIconSet*       gobj()       { return gobject_; }
+  /** Decrement the reference count for this object.
+   * You should never need to do this manually - use the object via a RefPtr instead.
+   */
+  void unreference() const;
 
   ///Provides access to the underlying C instance.
-  const GtkIconSet* gobj() const { return gobject_; }
+  GtkIconSet*       gobj();
 
-  ///Provides access to the underlying C instance. The caller is responsible for freeing it. Use when directly setting fields in structs.
+  ///Provides access to the underlying C instance.
+  const GtkIconSet* gobj() const;
+
+  ///Provides access to the underlying C instance. The caller is responsible for unrefing it. Use when directly setting fields in structs.
   GtkIconSet* gobj_copy() const;
 
 protected:
-  GtkIconSet* gobject_;
+  // Do not derive this.  Gtk::IconSet can neither be constructed nor deleted.
+  IconSet();
+  void operator delete(void*, size_t);
 
 private:
+  // noncopyable
+  IconSet(const IconSet&);
+  IconSet& operator=(const IconSet&);
 
-  
+
 public:
-  explicit IconSet(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf);
+  //TODO: Documentation
+  static Glib::RefPtr<IconSet> create(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf);
 
   
   /** Copies @a icon_set by value.
    * @return A new Gtk::IconSet identical to the first.
    */
-  IconSet copy() const;
+  Glib::RefPtr<IconSet> copy() const;
 
-  //Note that we use Gtk::StateType here instead of StateType, because there is an Atk::StateType too, and doxygen gets confused.
   
-  /** Renders an icon using Gtk::Style::render_icon(). In most cases,
-   * Gtk::Widget::render_icon() is better, since it automatically provides
+  /** Renders an icon using gtk_render_icon_pixbuf(). In most cases,
+   * Gtk::Widget::render_icon_pixbuf() is better, since it automatically provides
    * most of the arguments from the current widget settings.  This
    * function never returns <tt>0</tt>; if the icon can't be rendered
    * (perhaps because an image file fails to load), a default "missing
    * image" icon will be returned instead.
-   * @param style A Gtk::Style associated with @a widget, or <tt>0</tt>.
-   * @param direction Text direction.
-   * @param state Widget state.
+   * 
+   * @newin{3,0}
+   * @param context A Gtk::StyleContext.
    * @param size Icon size. A size of (GtkIconSize)-1
    * means render at the size of the source and don't scale.
-   * @param widget Widget that will display the icon, or <tt>0</tt>.
-   * The only use that is typically made of this
-   * is to determine the appropriate Gdk::Screen.
-   * @param detail Detail to pass to the theme engine, or <tt>0</tt>.
-   * Note that passing a detail of anything but <tt>0</tt>
-   * will disable caching.
    * @return A Gdk::Pixbuf to be displayed.
    */
-  Glib::RefPtr<Gdk::Pixbuf> render_icon(const Glib::RefPtr<Style>& style, TextDirection direction, Gtk::StateType state, IconSize size, Widget& widget, const Glib::ustring& detail);
-
+  Glib::RefPtr<Gdk::Pixbuf> render_icon_pixbuf(const Glib::RefPtr<StyleContext>& context, IconSize size);
+   //deprecated.
+  
   
   /** Icon sets have a list of Gtk::IconSource, which they use as base
    * icons for rendering icons in different states and sizes. Icons are
@@ -150,18 +145,18 @@ public:
    */
   void add_source(const IconSource& source);
 
-  Glib::ArrayHandle<IconSize> get_sizes() const;
+  std::vector<IconSize> get_sizes() const;
 
-  /** Looks for an icon in the list of default icon factories.
-   * @param stock_id StockID to search for
-   *
-   * For display to the user, you should use Style::lookup_icon_set() on the Style 
-   * for the widget that will display the icon, instead of using this function directly, 
-   * so that themes are taken into account
-   *
-   * @returns an IconSet
+  
+  /** Looks for an icon in the list of default icon factories.  For
+   * display to the user, you should use Gtk::Style::lookup_icon_set() on
+   * the Gtk::Style for the widget that will display the icon, instead of
+   * using this function directly, so that themes are taken into
+   * account.
+   * @param stock_id An icon name.
+   * @return A Gtk::IconSet, or <tt>0</tt>.
    */
-  static IconSet lookup_default(const Gtk::StockID& stock_id);
+  static Glib::RefPtr<IconSet> lookup_default(const Gtk::StockID& stock_id);
 
 
 };
@@ -169,36 +164,18 @@ public:
 } /* namespace Gtk */
 
 
-namespace Gtk
-{
-
-/** @relates Gtk::IconSet
- * @param lhs The left-hand side
- * @param rhs The right-hand side
- */
-inline void swap(IconSet& lhs, IconSet& rhs)
-  { lhs.swap(rhs); }
-
-} // namespace Gtk
-
 namespace Glib
 {
 
-/** A Glib::wrap() method for this object.
- * 
- * @param object The C instance.
- * @param take_copy False if the result should take ownership of the C instance. True if it should take a new copy or ref.
- * @result A C++ instance that wraps this C instance.
- *
- * @relates Gtk::IconSet
- */
-Gtk::IconSet wrap(GtkIconSet* object, bool take_copy = false);
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-template <>
-class Value<Gtk::IconSet> : public Glib::Value_Boxed<Gtk::IconSet>
-{};
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+  /** A Glib::wrap() method for this object.
+   * 
+   * @param object The C instance.
+   * @param take_copy False if the result should take ownership of the C instance. True if it should take a new copy or ref.
+   * @result A C++ instance that wraps this C instance.
+   *
+   * @relates Gtk::IconSet
+   */
+  Glib::RefPtr<Gtk::IconSet> wrap(GtkIconSet* object, bool take_copy = false);
 
 } // namespace Glib
 

@@ -4,7 +4,8 @@
 #define _GTKMM_EVENTBOX_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: eventbox.hg,v 1.2 2003/10/12 09:38:11 murrayc Exp $ */
 
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/bin.h>
@@ -48,7 +49,7 @@ namespace Gtk
  * It will receive any event which is specified
  * with set_events().
  *
- * This widget is generally used to add Gtk::Tooltips, button presses,
+ * This widget is generally used to add Gtk::Tooltip, button presses,
  * and clipping to widgets derived from Gtk::Misc.
  *
  * @ingroup Widgets
@@ -83,8 +84,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -124,12 +129,12 @@ public:
    * window. The default is to use visible windows.
    * 
    * In an invisible window event box, the window that the
-   * event box creates is a Gdk::INPUT_ONLY window, which 
+   * event box creates is a Gdk::INPUT_ONLY window, which
    * means that it is invisible and only serves to receive
    * events.
    * 
    * A visible window event box creates a visible (Gdk::INPUT_OUTPUT)
-   * window that acts as the parent window for all the widgets  
+   * window that acts as the parent window for all the widgets
    * contained in the event box.
    * 
    * You should generally make your event box invisible if
@@ -145,11 +150,11 @@ public:
    * There is one unexpected issue for an invisible event box that has its
    * window below the child. (See set_above_child().)
    * Since the input-only window is not an ancestor window of any windows
-   * that descendent widgets of the event box create, events on these 
+   * that descendent widgets of the event box create, events on these
    * windows aren't propagated up by the windowing system, but only by GTK+.
    * The practical effect of this is if an event isn't in the event
-   * mask for the descendant window (see Gtk::Widget::add_events()),  
-   * it won't be received by the event box. 
+   * mask for the descendant window (see Gtk::Widget::add_events()),
+   * it won't be received by the event box.
    * 
    * This problem doesn't occur for visible event boxes, because in
    * that case, the event box window is actually the ancestor of the
@@ -157,30 +162,30 @@ public:
    * </note>
    * 
    * @newin{2,4}
-   * @param visible_window Boolean value.
+   * @param visible_window <tt>true</tt> to make the event box have a visible window.
    */
   void set_visible_window(bool visible_window =  true);
   
   /** Returns whether the event box window is above or below the
-   * windows of its child. See set_above_child() for
-   * details.
+   * windows of its child. See set_above_child()
+   * for details.
    * 
    * @newin{2,4}
-   * @return <tt>true</tt> if the event box window is above the window
-   * of its child.
+   * @return <tt>true</tt> if the event box window is above the
+   * window of its child.
    */
   bool get_above_child() const;
   
-  /** Set whether the event box window is positioned above the windows of its child,
-   * as opposed to below it. If the window is above, all events inside the
-   * event box will go to the event box. If the window is below, events
-   * in windows of child widgets will first got to that widget, and then
-   * to its parents.
+  /** Set whether the event box window is positioned above the windows
+   * of its child, as opposed to below it. If the window is above, all
+   * events inside the event box will go to the event box. If the window
+   * is below, events in windows of child widgets will first got to that
+   * widget, and then to its parents.
    * 
    * The default is to keep the window below the child.
    * 
    * @newin{2,4}
-   * @param above_child <tt>true</tt> if the event box window is above the windows of its child.
+   * @param above_child <tt>true</tt> if the event box window is above its child.
    */
   void set_above_child(bool above_child =  true);
 
@@ -191,7 +196,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_visible_window() ;
+  Glib::PropertyProxy< bool > property_visible_window() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -201,7 +206,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_visible_window() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_visible_window() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
  
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -211,7 +216,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_above_child() ;
+  Glib::PropertyProxy< bool > property_above_child() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -221,7 +226,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_above_child() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_above_child() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
  
 

@@ -4,7 +4,8 @@
 #define _GTKMM_PANED_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: paned.hg,v 1.6 2006/04/12 11:11:25 murrayc Exp $ */
 
@@ -24,11 +25,12 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/container.h>
+#include <gtkmm/orientable.h>
 #include <gtkmm/enums.h>
 
 
@@ -40,39 +42,27 @@ typedef struct _GtkPanedClass GtkPanedClass;
 
 namespace Gtk
 { class Paned_Class; } // namespace Gtk
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-typedef struct _GtkHPaned GtkHPaned;
-typedef struct _GtkHPanedClass GtkHPanedClass;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-
-namespace Gtk
-{ class HPaned_Class; } // namespace Gtk
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-typedef struct _GtkVPaned GtkVPaned;
-typedef struct _GtkVPanedClass GtkVPanedClass;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-
-namespace Gtk
-{ class VPaned_Class; } // namespace Gtk
 namespace Gtk
 {
 
-//TODO: Inherit/Implement Orientation when we can break ABI.
-
-/** This is the base class for widgets with two panes, arranged either
- * horizontally (Gtk::HPaned) or vertically (Gtk::VPaned).
+/** A widget with two adjustable panes.
  *
+ * Gtk::Paned has two panes, arranged either
+ * horizontally or vertically. The division between
+ * the two panes is adjustable by the user by dragging
+ * a handle.
+
  * Child widgets are added to the panes of the widget with pack1() and pack2().
  * The division beween the two children is set by default from the size
  * requests of the children, but it can be adjusted by the user.
  *
  * A paned widget draws a separator between the two child widgets and a small
  * handle that the user can drag to adjust the division. It does not draw any
- * relief around the children or around the separator. Often, it is useful to
+ * relief around the children or around the separator.  (The space
+ * in which the separator is called the gutter.) Often, it is useful to
  * put each child inside a Gtk::Frame with the shadow type set to Gtk::SHADOW_IN
- * so that the gutter appears as a ridge.
+ * so that the gutter appears as a ridge. No separator is drawn if one of
+ * the children is missing.
  *
  * Each child has two options that can be set - resize and shrink. If resize is
  * true, then when the GtkPaned is resized, that child will expand or shrink
@@ -88,7 +78,9 @@ namespace Gtk
  * @ingroup Containers
  */
 
-class Paned : public Container
+class Paned
+ : public Container,
+   public Orientable
 {
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -117,8 +109,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -144,18 +140,40 @@ private:
 
   
 public:
-  Paned();
 
-  
+  //Note that we try to use the same defaul parameter value as the default property value.
+    explicit Paned(Orientation orientation =  ORIENTATION_HORIZONTAL);
+
+
+  /** Adds a child to the top or left pane with default parameters. This is
+   * equivalent to
+   * <tt>gtk_paned_pack1 (paned, child, <tt>false</tt>, <tt>true</tt>)</tt>.
+   * @param child The child to add.
+   */
   void add1(Widget& child);
   
+  /** Adds a child to the bottom or right pane with default parameters. This
+   * is equivalent to
+   * <tt>gtk_paned_pack2 (paned, child, <tt>true</tt>, <tt>true</tt>)</tt>.
+   * @param child The child to add.
+   */
   void add2(Widget& child);
 
   
+  /** Adds a child to the top or left pane.
+   * @param child The child to add.
+   * @param resize Should this child expand when the paned widget is resized.
+   * @param shrink Can this child be made smaller than its requisition.
+   */
   void pack1(Widget& child, bool resize, bool shrink);
   void pack1(Widget& child, AttachOptions options = Gtk::EXPAND);
 
   
+  /** Adds a child to the bottom or right pane.
+   * @param child The child to add.
+   * @param resize Should this child expand when the paned widget is resized.
+   * @param shrink Can this child be made smaller than its requisition.
+   */
   void pack2(Widget& child, bool resize, bool shrink);
   void pack2(Widget& child, AttachOptions options  = Gtk::EXPAND);
 
@@ -232,7 +250,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<int> property_position() ;
+  Glib::PropertyProxy< int > property_position() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -242,7 +260,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_position() const;
+  Glib::PropertyProxy_ReadOnly< int > property_position() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -252,7 +270,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_position_set() ;
+  Glib::PropertyProxy< bool > property_position_set() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -262,7 +280,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_position_set() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_position_set() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -272,7 +290,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_min_position() const;
+  Glib::PropertyProxy_ReadOnly< int > property_min_position() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -283,149 +301,18 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<int> property_max_position() const;
+  Glib::PropertyProxy_ReadOnly< int > property_max_position() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
 };
 
-/**
- * The Gtk::HPaned widget is a container widget with two children arranged
- * horizontally. The division between the two panes is adjustable by the
- * user by dragging a handle. See Gtk::Paned for details.
- *
- * @ingroup Widgets
- */
-
-class HPaned : public Paned
-{
-  public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  typedef HPaned CppObjectType;
-  typedef HPaned_Class CppClassType;
-  typedef GtkHPaned BaseObjectType;
-  typedef GtkHPanedClass BaseClassType;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-  virtual ~HPaned();
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
-private:
-  friend class HPaned_Class;
-  static CppClassType hpaned_class_;
-
-  // noncopyable
-  HPaned(const HPaned&);
-  HPaned& operator=(const HPaned&);
-
-protected:
-  explicit HPaned(const Glib::ConstructParams& construct_params);
-  explicit HPaned(GtkHPaned* castitem);
-
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  static GType get_type()      G_GNUC_CONST;
-
-
-  static GType get_base_type() G_GNUC_CONST;
-#endif
-
-  ///Provides access to the underlying C GtkObject.
-  GtkHPaned*       gobj()       { return reinterpret_cast<GtkHPaned*>(gobject_); }
-
-  ///Provides access to the underlying C GtkObject.
-  const GtkHPaned* gobj() const { return reinterpret_cast<GtkHPaned*>(gobject_); }
-
-
-public:
-  //C++ methods used to invoke GTK+ virtual functions:
-
-protected:
-  //GTK+ Virtual Functions (override these to change behaviour):
-
-  //Default Signal Handlers::
-
-
-private:
-
-public:
-  HPaned();
-
-
-};
-
-/**
- * The Gtk::VPaned widget is a container widget with two children arranged
- * vertically. The division between the two panes is adjustable by the
- * user by dragging a handle. See Gtk::Paned for details.
- *
- * @ingroup Widgets
- */
-
-class VPaned : public Paned
-{
-  public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  typedef VPaned CppObjectType;
-  typedef VPaned_Class CppClassType;
-  typedef GtkVPaned BaseObjectType;
-  typedef GtkVPanedClass BaseClassType;
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-  virtual ~VPaned();
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-
-private:
-  friend class VPaned_Class;
-  static CppClassType vpaned_class_;
-
-  // noncopyable
-  VPaned(const VPaned&);
-  VPaned& operator=(const VPaned&);
-
-protected:
-  explicit VPaned(const Glib::ConstructParams& construct_params);
-  explicit VPaned(GtkVPaned* castitem);
-
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-  static GType get_type()      G_GNUC_CONST;
-
-
-  static GType get_base_type() G_GNUC_CONST;
-#endif
-
-  ///Provides access to the underlying C GtkObject.
-  GtkVPaned*       gobj()       { return reinterpret_cast<GtkVPaned*>(gobject_); }
-
-  ///Provides access to the underlying C GtkObject.
-  const GtkVPaned* gobj() const { return reinterpret_cast<GtkVPaned*>(gobject_); }
-
-
-public:
-  //C++ methods used to invoke GTK+ virtual functions:
-
-protected:
-  //GTK+ Virtual Functions (override these to change behaviour):
-
-  //Default Signal Handlers::
-
-
-private:
-
-public:
-  VPaned();
-
-
-};
-
 } // namespace Gtk
+
+//Include the deprecated header, 
+//whose classes were previously in this header,
+//to preserve the "API" of the includes.
+#include <gtkmm/hvpaned.h>
 
 
 namespace Glib
@@ -439,34 +326,6 @@ namespace Glib
    * @relates Gtk::Paned
    */
   Gtk::Paned* wrap(GtkPaned* object, bool take_copy = false);
-} //namespace Glib
-
-
-namespace Glib
-{
-  /** A Glib::wrap() method for this object.
-   * 
-   * @param object The C instance.
-   * @param take_copy False if the result should take ownership of the C instance. True if it should take a new copy or ref.
-   * @result A C++ instance that wraps this C instance.
-   *
-   * @relates Gtk::HPaned
-   */
-  Gtk::HPaned* wrap(GtkHPaned* object, bool take_copy = false);
-} //namespace Glib
-
-
-namespace Glib
-{
-  /** A Glib::wrap() method for this object.
-   * 
-   * @param object The C instance.
-   * @param take_copy False if the result should take ownership of the C instance. True if it should take a new copy or ref.
-   * @result A C++ instance that wraps this C instance.
-   *
-   * @relates Gtk::VPaned
-   */
-  Gtk::VPaned* wrap(GtkVPaned* object, bool take_copy = false);
 } //namespace Glib
 
 

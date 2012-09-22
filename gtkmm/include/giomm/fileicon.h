@@ -4,7 +4,8 @@
 #define _GIOMM_FILEICON_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -114,6 +115,16 @@ public:
    * @return A File, or <tt>0</tt>.
    */
   Glib::RefPtr<const File> get_file() const;
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The file containing the icon.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< Glib::RefPtr<File> > property_file() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
 
 
 public:

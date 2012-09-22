@@ -4,7 +4,8 @@
 #define _GTKMM_COLORBUTTON_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: colorbutton.hg,v 1.5 2005/11/30 14:10:49 murrayc Exp $ */
 
@@ -23,12 +24,13 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/button.h>
 #include <gdkmm/color.h>
+#include <gdkmm/rgba.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -41,6 +43,8 @@ namespace Gtk
 { class ColorButton_Class; } // namespace Gtk
 namespace Gtk
 {
+
+//TODO: Derive from (and implement) ColorChooser when we can break ABI.
 
 /** A button to launch a color selection dialog.
  *
@@ -83,8 +87,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -104,6 +112,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_color_set().
   virtual void on_color_set();
 
 
@@ -112,7 +121,7 @@ private:
 public:
 
   /** Creates a new color button.
-   * 
+   *
    * This creates a widget in the form of a small button containing a swatch representing
    * the current selected color. When the button is clicked, a color-selection dialog will
    * open, allowing the user to select a color. The swatch will be updated to reflect the
@@ -122,9 +131,10 @@ public:
    */
   ColorButton();
   
-  
+
+#ifndef GTKMM_DISABLE_DEPRECATED
   /** Creates a new color button with a predefined color.
-   * 
+   *
    * Same as Gtk::ColorButton::ColorButton(). Additionally takes a Gdk::Color and
    * initializes the button with this color. Equivalent to calling set_color(@a color)
    * after the default constructor.
@@ -132,38 +142,94 @@ public:
    * @param color A Gdk::Color to set the current color with.
    *
    * @newin{2,4}
+   * @deprecated "Use the constructor that takes a Gdk::RGBA instead."
    */
     explicit ColorButton(const Gdk::Color& color);
 
+#endif //GTKMM_DISABLE_DEPRECATED
+
+  /** Creates a new color button with a predefined color.
+   *
+   * Same as Gtk::ColorButton::ColorButton(). Additionally takes a Gdk::RGBA and
+   * initializes the button with this color. Equivalent to calling set_rgba(@a color)
+   * after the default constructor.
+   *
+   * @param color A Gdk::RGBA to set the current color with.
+   *
+   * @newin{3,0}
+   */
+    explicit ColorButton(const Gdk::RGBA& rgba);
+
+
+#ifndef GTKMM_DISABLE_DEPRECATED
 
   /** Sets the current color to be @a color.
    * 
    * @newin{2,4}
+   * 
+   * Deprecated: Use Gtk::ColorChooser::set_rgba() instead.
+   * @deprecated Use set_rgba() instead.
    * @param color A Gdk::Color to set the current color with.
    */
   void set_color(const Gdk::Color& color);
-  
-  /** Sets the current opacity to be @a alpha. 
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+  /** Sets the current opacity to be @a alpha.
    * 
    * @newin{2,4}
+   * 
+   * Deprecated: 3.4: Use Gtk::ColorChooser::set_rgba() instead.
+   * @deprecated Use set_rgba() instead.
    * @param alpha An integer between 0 and 65535.
    */
   void set_alpha(guint16 alpha);
-  
-  /** Returns a copy of the the current color.
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+  /** Sets the current color to be @a rgba.
    * 
+   * @newin{3,0}
+   * 
+   * Deprecated: 3.4: Use Gtk::ColorChooser::set_rgba() instead.
+   * @param rgba A Gdk::RGBA to set the current color with.
+   */
+  void set_rgba(const Gdk::RGBA& color);
+
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+  /** Returns a copy of the the current color.
+   *
    * Changes to the return value will have no effect on the Gtk::ColorButton.
    *
    * @return A Gdk::Color representing the current internal color of the Gtk::ColorButton.
    *
    * @newin{2,4}
+   * @deprecated Use get_rgba() instead.
    */
   Gdk::Color get_color() const;
   
+
+#endif //GTKMM_DISABLE_DEPRECATED
+
+  /** Returns a copy of the the current color.
+   *
+   * Changes to the return value will have no effect on the Gtk::ColorButton.
+   *
+   * @return A Gdk::RGBA representing the current internal color of the Gtk::ColorButton.
+   *
+   * @newin{3,0}
+   */
+  Gdk::RGBA get_rgba() const;
   
-  /** Returns the current alpha value. 
+
+  /** Returns the current alpha value.
    * 
    * @newin{2,4}
+   * 
+   * Deprecated: 3.4: Use Gtk::ColorChooser::get_rgba() instead.
    * @return An integer between 0 and 65535.
    */
   guint16 get_alpha() const;
@@ -171,13 +237,17 @@ public:
   /** Sets whether or not the color button should use the alpha channel.
    * 
    * @newin{2,4}
+   * 
+   * Deprecated: 3.4: Use Gtk::ColorChooser::set_use_alpha() instead.
    * @param use_alpha <tt>true</tt> if color button should use alpha channel, <tt>false</tt> if not.
    */
   void set_use_alpha(bool use_alpha =  true);
   
-  /** Does the color selection dialog use the alpha channel?
+  /** Does the color selection dialog use the alpha channel ?
    * 
    * @newin{2,4}
+   * 
+   * Deprecated: 3.4: Use Gtk::ColorChooser::get_use_alpha() instead.
    * @return <tt>true</tt> if the color sample uses alpha channel, <tt>false</tt> if not.
    */
   bool get_use_alpha() const;
@@ -197,23 +267,23 @@ public:
   Glib::ustring get_title() const;
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether or not to give the color an alpha value.
+/** Whether to give the color an alpha value.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_use_alpha() ;
+  Glib::PropertyProxy< bool > property_use_alpha() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** Whether or not to give the color an alpha value.
+/** Whether to give the color an alpha value.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_use_alpha() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_use_alpha() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -223,7 +293,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_title() ;
+  Glib::PropertyProxy< Glib::ustring > property_title() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -233,27 +303,54 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_title() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_title() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
-  #ifdef GLIBMM_PROPERTIES_ENABLED
+  
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
 /** The selected color.
+   * @deprecated Use property_rgba() instead.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Gdk::Color> property_color() ;
+  Glib::PropertyProxy< Gdk::Color > property_color() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The selected color.
+   * @deprecated Use property_rgba() instead.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Gdk::Color> property_color() const;
+  Glib::PropertyProxy_ReadOnly< Gdk::Color > property_color() const;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#endif // GTKMM_DISABLE_DEPRECATED
+
+  #ifdef GLIBMM_PROPERTIES_ENABLED
+/** The selected RGBA color.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy< Gdk::RGBA > property_rgba() ;
+#endif //#GLIBMM_PROPERTIES_ENABLED
+
+#ifdef GLIBMM_PROPERTIES_ENABLED
+/** The selected RGBA color.
+   *
+   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
+   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
+   * the value of the property changes.
+   */
+  Glib::PropertyProxy_ReadOnly< Gdk::RGBA > property_rgba() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -263,7 +360,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<guint16> property_alpha() ;
+  Glib::PropertyProxy< guint16 > property_alpha() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -273,20 +370,29 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<guint16> property_alpha() const;
+  Glib::PropertyProxy_ReadOnly< guint16 > property_alpha() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
+ //Todo: Remove thsi when we remove the "color" property too.
 
-
-  /** The color_set signal is emitted when the user selects a color. When handling this signal,
-   * use get_color() and get_alpha() to find out which color 
-   * was just selected.
-   *
-   * @par Prototype:
+  
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%color_set()</tt>
+   *
+   * The signal_color_set() signal is emitted when the user selects a color.
+   * When handling this signal, use Gtk::ColorButton::get_color() and
+   * Gtk::ColorButton::get_alpha() (or Gtk::ColorButton::get_rgba()) to
+   * find out which color was just selected.
+   * 
+   * Note that this signal is only emitted when the <em>user</em>
+   * changes the color. If you need to react to programmatic color changes
+   * as well, use the notify::color signal.
+   * 
+   * @newin{2,4}
    */
 
   Glib::SignalProxy0< void > signal_color_set();
-                    
+
 
 };
 

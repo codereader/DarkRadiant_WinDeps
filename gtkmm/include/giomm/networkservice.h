@@ -4,7 +4,8 @@
 #define _GIOMM_NETWORKSERVICE_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 // -*- Mode: C++; indent-tabs-mode: nil; c-basic-offset: 2 -*-
 
@@ -156,7 +157,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_domain() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_domain() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -167,7 +168,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_protocol() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_protocol() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -178,7 +179,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_scheme() ;
+  Glib::PropertyProxy< Glib::ustring > property_scheme() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -188,7 +189,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_scheme() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_scheme() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -198,7 +199,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_service() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_service() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

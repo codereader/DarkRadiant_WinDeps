@@ -4,7 +4,8 @@
 #define _GTKMM_FONTBUTTON_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: fontbutton.hg,v 1.5 2006/08/02 14:42:41 jjongsma Exp $ */
 
@@ -23,11 +24,12 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/button.h>
+//TODO: When we can break ABI:    #include <gtkmm/fontchooser.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -53,7 +55,9 @@ namespace Gtk
  * @ingroup Widgets
  */
 
-class FontButton : public Button
+class FontButton
+  : public Button
+  //TODO: When we can break ABI:    public FontChooser
 {
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -82,8 +86,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -103,27 +111,29 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_font_set().
   virtual void on_font_set();
 
 
 private:
 
+  //TODO: When we can break ABI: _IMPLEMENTS_INTERFACE(FontChooser)
 public:
   FontButton();
     explicit FontButton(const Glib::ustring& font_name);
 
   
-  /** Retrieves the title of the font selection dialog.
+  /** Retrieves the title of the font chooser dialog.
    * 
    * @newin{2,4}
    * @return An internal copy of the title string which must not be freed.
    */
   Glib::ustring get_title() const;
   
-  /** Sets the title for the font selection dialog.  
+  /** Sets the title for the font chooser dialog.  
    * 
    * @newin{2,4}
-   * @param title A string containing the font selection dialog title.
+   * @param title A string containing the font chooser dialog title.
    */
   void set_title(const Glib::ustring& title);
   
@@ -170,9 +180,8 @@ public:
   /** Sets or updates the currently-displayed font in font picker dialog.
    * 
    * @newin{2,4}
-   * @param fontname Name of font to display in font selection dialog.
-   * @return Return value of Gtk::FontSelectionDialog::set_font_name() if the
-   * font selection dialog exists, otherwise <tt>false</tt>.
+   * @param fontname Name of font to display in font chooser dialog.
+   * @return <tt>true</tt>.
    */
   bool set_font_name(const Glib::ustring& fontname);
   
@@ -205,23 +214,23 @@ public:
   void set_show_size(bool show_size =  true);
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The title of the font selection dialog.
+/** The title of the font chooser dialog.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_title() ;
+  Glib::PropertyProxy< Glib::ustring > property_title() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The title of the font selection dialog.
+/** The title of the font chooser dialog.
    *
    * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_title() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_title() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -231,7 +240,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Glib::ustring> property_font_name() ;
+  Glib::PropertyProxy< Glib::ustring > property_font_name() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -241,7 +250,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Glib::ustring> property_font_name() const;
+  Glib::PropertyProxy_ReadOnly< Glib::ustring > property_font_name() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -251,7 +260,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_use_font() ;
+  Glib::PropertyProxy< bool > property_use_font() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -261,7 +270,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_use_font() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_use_font() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -271,7 +280,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_use_size() ;
+  Glib::PropertyProxy< bool > property_use_size() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -281,7 +290,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_use_size() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_use_size() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -291,7 +300,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_show_style() ;
+  Glib::PropertyProxy< bool > property_show_style() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -301,7 +310,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_show_style() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_show_style() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -311,7 +320,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_show_size() ;
+  Glib::PropertyProxy< bool > property_show_size() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -321,19 +330,27 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_show_size() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_show_size() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
-  /** The font_set signal is emitted when the user selects a font. When handling this signal,
-   * use get_font_name() to find out which font was just selected.
-   *
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%font_set()</tt>
+   *
+   * The signal_font_set() signal is emitted when the user selects a font. 
+   * When handling this signal, use Gtk::FontButton::get_font_name() 
+   * to find out which font was just selected.
+   * 
+   * Note that this signal is only emitted when the <em>user</em>
+   * changes the font. If you need to react to programmatic font changes
+   * as well, use the notify::font-name signal.
+   * 
+   * @newin{2,4}
    */
 
   Glib::SignalProxy0< void > signal_font_set();
-                                             
+
 
 };
 

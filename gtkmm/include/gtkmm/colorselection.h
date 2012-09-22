@@ -4,7 +4,11 @@
 #define _GTKMM_COLORSELECTION_H
 
 
-#include <glibmm.h>
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: colorselection.hg,v 1.2 2004/02/10 14:50:11 murrayc Exp $ */
 
@@ -21,16 +25,17 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+
+#include <vector>
 
 #include <gtkmm/box.h>
 #include <gtkmm/dialog.h>
 #include <gtkmm/button.h>
 
- 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 typedef struct _GtkColorSelection GtkColorSelection;
 typedef struct _GtkColorSelectionClass GtkColorSelectionClass;
@@ -60,6 +65,7 @@ namespace Gtk
  * Gtk::ColorSelectionDialog.
  *
  * @ingroup Widgets
+ * @deprecated Use ColorButton or ColorChooserDialog instead.
  */
 
 class ColorSelection : public VBox
@@ -91,8 +97,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -112,6 +122,7 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_color_changed().
   virtual void on_color_changed();
 
 
@@ -123,7 +134,8 @@ public:
 
   
   /** Determines whether the colorsel has an opacity control.
-   * @return <tt>true</tt> if the @a colorsel has an opacity control.  <tt>false</tt> if it does't.
+   * @return <tt>true</tt> if the @a colorsel has an opacity control,
+   * <tt>false</tt> if it does't.
    */
   bool get_has_opacity_control() const;
   
@@ -133,7 +145,7 @@ public:
   void set_has_opacity_control(bool has_opacity =  true);
   
   /** Determines whether the color selector has a color palette.
-   * @return <tt>true</tt> if the selector has a palette.  <tt>false</tt> if it hasn't.
+   * @return <tt>true</tt> if the selector has a palette, <tt>false</tt> if it hasn't.
    */
   bool get_has_palette() const;
   
@@ -142,14 +154,25 @@ public:
    */
   void set_has_palette(bool has_palette =  true);
   
-  /** Sets the current color to be @a color.  The first time this is called, it will
-   * also set the original color to be @a color too.
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+  /** Sets the current color to be @a color.
+   * 
+   * The first time this is called, it will also set
+   * the original color to be @a color too.
+   * 
+   * Deprecated: 3.4: Use set_current_rgba() instead.
+   * @deprecated Use set_current_rgba() instead.
    * @param color A Gdk::Color to set the current color with.
    */
   void set_current_color(const Gdk::Color& color);
-  
-  /** Sets the current opacity to be @a alpha.  The first time this is called, it will
-   * also set the original opacity to be @a alpha too.
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+  /** Sets the current opacity to be @a alpha.
+   * 
+   * The first time this is called, it will also set
+   * the original opacity to be @a alpha too.
    * @param alpha An integer between 0 and 65535.
    */
   void set_current_alpha(guint16 alpha);
@@ -160,16 +183,22 @@ public:
    */
   guint16 get_current_alpha() const;
   
-  /** Sets the 'previous' color to be @a color.  This function should be called with
-   * some hesitations, as it might seem confusing to have that color change.
-   * Calling set_current_color() will also set this color the first
-   * time it is called.
+  /** Sets the 'previous' color to be @a color.
+   * 
+   * This function should be called with some hesitations,
+   * as it might seem confusing to have that color change.
+   * Calling set_current_color() will also
+   * set this color the first time it is called.
+   * 
+   * Deprecated: 3.4: Use set_previous_rgba() instead.
    * @param color A Gdk::Color to set the previous color with.
    */
   void set_previous_color(const Gdk::Color& color);
   
-  /** Sets the 'previous' alpha to be @a alpha.  This function should be called with
-   * some hesitations, as it might seem confusing to have that alpha change.
+  /** Sets the 'previous' alpha to be @a alpha.
+   * 
+   * This function should be called with some hesitations,
+   * as it might seem confusing to have that alpha change.
    * @param alpha An integer between 0 and 65535.
    */
   void set_previous_alpha(guint16 alpha);
@@ -179,26 +208,56 @@ public:
    * @return An integer between 0 and 65535.
    */
   guint16 get_previous_alpha() const;
+  
+  
+  Gdk::RGBA get_current_rgba() const;
+  Gdk::RGBA get_previous_rgba() const;
+
+  
+  /** Sets the current color to be @a rgba.
+   * 
+   * The first time this is called, it will also set
+   * the original color to be @a rgba too.
+   * 
+   * @newin{3,0}
+   * @param rgba A Gdk::RGBA to set the current color with.
+   */
+  void set_current_rgba(const Gdk::RGBA& color);  
+  
+  /** Sets the 'previous' color to be @a rgba.
+   * 
+   * This function should be called with some hesitations,
+   * as it might seem confusing to have that color change.
+   * Calling set_current_rgba() will also
+   * set this color the first time it is called.
+   * 
+   * @newin{3,0}
+   * @param rgba A Gdk::RGBA to set the previous color with.
+   */
+  void set_previous_rgba(const Gdk::RGBA& color);    
 
   
   /** Gets the current state of the @a colorsel.
-   * @return <tt>true</tt> if the user is currently dragging a color around, and <tt>false</tt>
-   * if the selection has stopped.
+   * @return <tt>true</tt> if the user is currently dragging
+   * a color around, and <tt>false</tt> if the selection has stopped.
    */
   bool is_adjusting() const;
 
-  static Gdk::ArrayHandle_Color palette_from_string(const Glib::ustring& str);
-  static Glib::ustring palette_to_string(const Gdk::ArrayHandle_Color& colors);
+  static std::vector<Gdk::Color> palette_from_string(const Glib::ustring& str);
+  static Glib::ustring palette_to_string(const std::vector<Gdk::Color>& colors);
 
   typedef sigc::slot<void, const Glib::RefPtr<Gdk::Screen>&,
-                            const Gdk::ArrayHandle_Color&> SlotChangePaletteHook;
+                            const std::vector<Gdk::Color>&> SlotChangePaletteHook;
 
   static SlotChangePaletteHook set_change_palette_hook(const SlotChangePaletteHook& slot);
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%color_changed()</tt>
+   *
+   * This signal is emitted when the color changes in the Gtk::ColorSelection
+   * according to its update policy.
    */
 
   Glib::SignalProxy0< void > signal_color_changed();
@@ -211,7 +270,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_has_palette() ;
+  Glib::PropertyProxy< bool > property_has_palette() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -221,7 +280,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_has_palette() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_has_palette() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -231,7 +290,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_has_opacity_control() ;
+  Glib::PropertyProxy< bool > property_has_opacity_control() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -241,7 +300,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_has_opacity_control() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_has_opacity_control() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -251,7 +310,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<Gdk::Color> property_current_color() ;
+  Glib::PropertyProxy< Gdk::Color > property_current_color() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -261,7 +320,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Gdk::Color> property_current_color() const;
+  Glib::PropertyProxy_ReadOnly< Gdk::Color > property_current_color() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -271,7 +330,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<guint> property_current_alpha() ;
+  Glib::PropertyProxy< guint > property_current_alpha() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -281,7 +340,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<guint> property_current_alpha() const;
+  Glib::PropertyProxy_ReadOnly< guint > property_current_alpha() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -293,6 +352,7 @@ public:
  * @image html colorselectiondialog1.png
  *
  * @ingroup Dialogs
+ * @deprecated Use ColorChooserDialog instead.
  */
 
 class ColorSelectionDialog : public Dialog
@@ -324,8 +384,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -370,35 +434,6 @@ public:
    */
   const ColorSelection* get_color_selection() const;
 
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  //TODO: Remove these in gtkmm 3. They use G_SEAL()ed struct fields.
-
-  /** @deprecated Use get_color_selection() instead.
-   */
-  ColorSelection* get_colorsel();
-
-  /** @deprecated Use get_color_selection() instead.
-   */
-  const ColorSelection* get_colorsel() const;
-
-  /** @deprecated Use Gtk::Dialog::get_widget_for_response() instead.
-   */
-   Button* get_ok_button();
-  const Button* get_ok_button() const;
- 
-  /** @deprecated Use Gtk::Dialog::get_widget_for_response() instead.
-   */
-   Button* get_cancel_button();
-  const Button* get_cancel_button() const;
- 
-  /** @deprecated Use Gtk::Dialog::get_widget_for_response() instead.
-   */
-   Button* get_help_button();
-  const Button* get_help_button() const;
- #endif // GTKMM_DISABLE_DEPRECATED
-
-
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** The color selection embedded in the dialog.
    *
@@ -406,7 +441,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<ColorSelection*> property_color_selection() const;
+  Glib::PropertyProxy_ReadOnly< ColorSelection* > property_color_selection() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -417,7 +452,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Button*> property_ok_button() const;
+  Glib::PropertyProxy_ReadOnly< Button* > property_ok_button() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -428,7 +463,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Button*> property_cancel_button() const;
+  Glib::PropertyProxy_ReadOnly< Button* > property_cancel_button() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -439,7 +474,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<Button*> property_help_button() const;
+  Glib::PropertyProxy_ReadOnly< Button* > property_help_button() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -474,6 +509,9 @@ namespace Glib
    */
   Gtk::ColorSelectionDialog* wrap(GtkColorSelectionDialog* object, bool take_copy = false);
 } //namespace Glib
+
+
+#endif // GTKMM_DISABLE_DEPRECATED
 
 
 #endif /* _GTKMM_COLORSELECTION_H */

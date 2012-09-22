@@ -6,7 +6,8 @@
 #include <gtkmmconfig.h>
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* Copyright (C) 1998-2002 The gtkmm Development Team
  *
@@ -21,18 +22,18 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- // This is for including the config header before any code (such as
+// This is for including the config header before any code (such as
 // the #ifndef GTKMM_DISABLE_DEPRECATED in deprecated classes) is generated:
 
 
+#include <gtkmm/toolshell.h>
 #include <gtkmm/toolitem.h>
 #include <gtkmm/toolbutton.h>
 #include <gtkmm/toggletoolbutton.h>
-#include <glibmm/helperlist.h>
 #include <gtkmm/container.h>
 #include <gtkmm/stockid.h>
 
@@ -55,7 +56,9 @@ namespace Gtk
  * @ingroup Toolbars
  */
 
-class Toolbar : public Container
+class Toolbar
+ : public Container,
+   public ToolShell
 {
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -84,8 +87,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -105,13 +112,17 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_orientation_changed().
   virtual void on_orientation_changed(Orientation orientation);
+  /// This is a default handler for the signal signal_toolbar_style_changed().
   virtual void on_toolbar_style_changed(ToolbarStyle style);
+  /// This is a default handler for the signal signal_popup_context_menu().
   virtual bool on_popup_context_menu(int x, int y, int button_number);
 
 
 private:
 
+  
 public:
   Toolbar();
 
@@ -193,22 +204,7 @@ public:
 
 /* Style methods */
 
-  // TODO: Remove these when we derive from ToolShell, which has the same methods:
-  
-  /** Sets whether a toolbar should appear horizontally or vertically.
-   * 
-   * Deprecated: 2.16: Use Gtk::Orientable::set_orientation() instead.
-   * @param orientation A new Gtk::Orientation.
-   */
-  void set_orientation(Orientation orientation);
-  
-  /** Retrieves the current orientation of the toolbar. See
-   * set_orientation().
-   * 
-   * Deprecated: 2.16: Use Gtk::Orientable::get_orientation() instead.
-   * @return The orientation.
-   */
-  Orientation get_orientation() const;
+   //deprecated
 
   
   /** Alters the view of @a toolbar to display either icons only, text only, or both.
@@ -223,33 +219,6 @@ public:
   ToolbarStyle get_toolbar_style() const;
 
   
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Sets if the tooltips of a toolbar should be active or not.
-   * 
-   * Deprecated: 2.14: The toolkit-wide Gtk::Settings:gtk-enable-tooltips property
-   * is now used instead.
-   * @deprecated Use The toolkit-wide Gtk::Settings::property_gtk_enable_tooltips instead
-   * @param enable Set to <tt>false</tt> to disable the tooltips, or <tt>true</tt> to enable them.
-   */
-  void set_tooltips(bool enable =  true);
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
-#ifndef GTKMM_DISABLE_DEPRECATED
-
-  /** Retrieves whether tooltips are enabled. See
-   * set_tooltips().
-   * 
-   * Deprecated: 2.14: The toolkit-wide Gtk::Settings:gtk-enable-tooltips property
-   * is now used instead.
-   * @deprecated Use The toolkit-wide Gtk::Settings::property_gtk_enable_tooltips instead
-   * @return <tt>true</tt> if tooltips are enabled.
-   */
-  bool get_tooltips() const;
-#endif // GTKMM_DISABLE_DEPRECATED
-
-
   /** Unsets a toolbar style set with set_style(), so that
    * user preferences will be used to determine the toolbar style.
    */
@@ -326,80 +295,54 @@ public:
   void set_drop_highlight_item(ToolItem& tool_item, int index);
   void unset_drop_highlight_item();
 
-  /** Emitted when the orientation of the toolbar changes.
-   *
-   * @param orientation The new Orientation of the toolbar.
-   *
-   * @par Prototype:
+  
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%orientation_changed(Orientation orientation)</tt>
+   *
+   * Emitted when the orientation of the toolbar changes.
+   * @param orientation The new Gtk::Orientation of the toolbar.
    */
 
   Glib::SignalProxy1< void,Orientation > signal_orientation_changed();
 
-
-  /** Emitted when the style of the toolbar changes.
-   *
-   * @param @style The new ToolbarStyle of the toolbar.
-   *
-   * @par Prototype:
+  
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%toolbar_style_changed(ToolbarStyle style)</tt>
+   *
+   * Emitted when the style of the toolbar changes.
+   * @param style The new Gtk::ToolbarStyle of the toolbar.
    */
 
   Glib::SignalProxy1< void,ToolbarStyle > signal_toolbar_style_changed();
 
-
-  /** Emitted when the user right-clicks the toolbar or uses the
-   * keybinding to display a popup menu.
+  
+/**
+   * @par Slot Prototype:
+   * <tt>bool on_my_%popup_context_menu(int x, int y, int button_number)</tt>
    *
+   * Emitted when the user right-clicks the toolbar or uses the
+   * keybinding to display a popup menu.
+   * 
    * Application developers should handle this signal if they want
    * to display a context menu on the toolbar. The context-menu should
    * appear at the coordinates given by @a x and @a y. The mouse button
    * number is given by the @a button parameter. If the menu was popped
    * up using the keybaord, @a button is -1.
-   *
    * @param x The x coordinate of the point where the menu should appear.
    * @param y The y coordinate of the point where the menu should appear.
-   * @param button The mouse button the user pressed, or -1
-   * @resultt true if the signal was handled, false if not.
-   *
-   * @par Prototype:
-   * <tt>bool on_my_%popup_context_menu(int x, int y, int button_number)</tt>
+   * @param button The mouse button the user pressed, or -1.
+   * @return Return <tt>true</tt> if the signal was handled, <tt>false</tt> if not.
    */
 
   Glib::SignalProxy3< bool,int,int,int > signal_popup_context_menu();
 
 
-  #ifndef GTKMM_DISABLE_DEPRECATED
-  //This was called get_tooltips_object() to avoid a clash with get_tooltips(), which just says whether they are enabled.
-  ///@deprecated Use the Gtk::Tooltip API instead.
-  Tooltips* get_tooltips_object() const;
-  #endif //GTKMM_DISABLE_DEPRECATED
-
   //Ignore deprecated GtkToolbarAPI:
-  //Normally we just deprecate it in gtkmm too,
-  //but the GtkToolbar compatibility system is particularly unpleasant, so we just removed it in gtkmm 2.4. murrayc.
   
 
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The orientation of the orientable.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<Orientation> property_orientation() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** The orientation of the orientable.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<Orientation> property_orientation() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
+  //gtkmmproc error: orientation : property defs lookup failed.
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** How to draw the toolbar.
    *
@@ -407,7 +350,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<ToolbarStyle> property_toolbar_style() ;
+  Glib::PropertyProxy< ToolbarStyle > property_toolbar_style() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -417,7 +360,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<ToolbarStyle> property_toolbar_style() const;
+  Glib::PropertyProxy_ReadOnly< ToolbarStyle > property_toolbar_style() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -427,7 +370,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_show_arrow() ;
+  Glib::PropertyProxy< bool > property_show_arrow() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -437,27 +380,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_show_arrow() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** If the tooltips of the toolbar should be active or not.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<bool> property_tooltips() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** If the tooltips of the toolbar should be active or not.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<bool> property_tooltips() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_show_arrow() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -467,7 +390,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<IconSize> property_icon_size() ;
+  Glib::PropertyProxy< IconSize > property_icon_size() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -477,7 +400,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<IconSize> property_icon_size() const;
+  Glib::PropertyProxy_ReadOnly< IconSize > property_icon_size() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
   #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -487,7 +410,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_icon_size_set() ;
+  Glib::PropertyProxy< bool > property_icon_size_set() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -497,7 +420,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_icon_size_set() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_icon_size_set() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

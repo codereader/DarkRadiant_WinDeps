@@ -4,7 +4,8 @@
 #define _GTKMM_MENUSHELL_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: menushell.hg,v 1.9 2006/06/21 20:04:25 murrayc Exp $ */
 
@@ -21,16 +22,15 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gdk/gdkkeysyms.h>
 
 
 #include <gtkmm/container.h>
-#include <gtkmm/menu_elems.h>
-#include <glibmm/helperlist.h>
+#include <gtkmm/menuitem.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 typedef struct _GtkMenuShell GtkMenuShell;
@@ -44,69 +44,13 @@ namespace Gtk
 {
 
 class Menu;
-class MenuShell;
 class Window;
-
-namespace Menu_Helpers
-{
-
-/*********************************************************************
-***** List properties
-*********************************************************************/
-
- 
-class MenuList : public Glib::HelperList< MenuItem, const Element, Glib::List_Cpp_Iterator<GtkMenuItem,MenuItem> >
-{
-public:
-  MenuList();
-  explicit MenuList(GtkMenuShell* gparent);
-  MenuList(const MenuList& src);
-  virtual ~MenuList() {}
-
-  MenuList& operator=(const MenuList& src);
-
-  typedef Glib::HelperList< MenuItem, const Element,  Glib::List_Cpp_Iterator<GtkMenuItem,MenuItem> > type_base;
-
-  GtkMenuShell* gparent();
-  const GtkMenuShell* gparent() const;
-
-  virtual GList*& glist() const;      // front of list
-
-  virtual void erase(iterator start, iterator stop);
-  virtual iterator erase(iterator);  //Implented as custom or by LIST_CONTAINER_REMOVE
-  virtual void remove(const_reference); //Implented as custom or by LIST_CONTAINER_REMOVE
-
-  /// This is order n. (use at own risk)
-  reference operator[](size_type l) const;
-
-public:
-  iterator insert(iterator position, element_type& e); //custom-implemented.
-
-  template <class InputIterator>
-  inline void insert(iterator position, InputIterator first, InputIterator last)
-  {
-    for(;first != last; ++first)
-      position = insert(position, *first);
-  }
-
- inline void push_front(element_type& e)
-    { insert(begin(), e); }
-  inline void push_back(element_type& e)
-    { insert(end(), e); }
-
-
-  virtual void remove(Widget& widget); //custom
-  };
-
-
-} // namespace Menu_Helpers
 
 
 /** The abstract base class for Gtk::Menu and Gtk::MenuBar.
  * It is a container of Gtk::MenuItem objects arranged in a list which can be navigated, selected, and activated by the user to perform application functions.
  * It can have a submenu associated with it, allowing for nested hierarchical menus.
- * You can use append(), prepend() and insert() to add Gtk::MenuItem widgets,
- * but you will probably find it more convenient to use the STL-style items() interface with the Gtk::Menu_Helpers::MenuElem() class.
+ * Use append(), prepend() and insert() to add Gtk::MenuItem widgets.
  * @ingroup Widgets
  * @ingroup Containers
  * @ingroup Menus
@@ -141,8 +85,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -162,8 +110,12 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_deactivate().
   virtual void on_deactivate();
+  /// This is a default handler for the signal signal_selection_done().
   virtual void on_selection_done();
+  /// This is a default handler for the signal signal_move_selected().
+  virtual gboolean on_move_selected(int distance);
 
 
 private:
@@ -172,23 +124,44 @@ private:
 public:
   
 
-  typedef Menu_Helpers::MenuList MenuList;
-  friend class Menu_Helpers::MenuList;
-
-  
+  /** Adds a new Gtk::MenuItem to the end of the menu shell's
+   * item list.
+   * @param child The Gtk::MenuItem to add.
+   */
   void append(MenuItem& menu_item);
   
+  /** Adds a new Gtk::MenuItem to the beginning of the menu shell's
+   * item list.
+   * @param child The Gtk::MenuItem to add.
+   */
   void prepend(MenuItem& menu_item);
   
+  /** Adds a new Gtk::MenuItem to the menu shell's item list
+   * at the position indicated by @a position.
+   * @param child The Gtk::MenuItem to add.
+   * @param position The position in the item list where @a child
+   * is added. Positions are numbered from 0 to n-1.
+   */
   void insert(MenuItem& menu_item, int position);
 
   
+  /** Selects the menu item from the menu shell.
+   * @param menu_item The Gtk::MenuItem to select.
+   */
   void select_item(MenuItem& menu_item);
   
+  /** Deselects the currently selected item from the menu shell,
+   * if any.
+   */
   void deselect();
 
   //TODO: Is force_deactivate = false a good default?
   
+  /** Activates the menu item within the menu shell.
+   * @param menu_item The Gtk::MenuItem to activate.
+   * @param force_deactivate If <tt>true</tt>, force the deactivation of the
+   * menu shell after the menu item is activated.
+   */
   void activate_item(MenuItem& menu_item, bool force_deactivate =  false);
   
   /** Select the first visible or selectable child of the menu shell;
@@ -204,45 +177,80 @@ public:
    */
   void select_first(bool search_sensitive =  true);
   
+  /** Deactivates the menu shell.
+   * 
+   * Typically this results in the menu shell being erased
+   * from the screen.
+   */
   void deactivate();
   
-  /** Cancels the selection within the menu shell.  
+  /** Cancels the selection within the menu shell.
    * 
    * @newin{2,4}
    */
   void cancel();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%deactivate()</tt>
+   *
+   * This signal is emitted when a menu shell is deactivated.
    */
 
   Glib::SignalProxy0< void > signal_deactivate();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%selection_done()</tt>
+   *
+   * This signal is emitted when a selection has been
+   * completed within a menu shell.
    */
 
   Glib::SignalProxy0< void > signal_selection_done();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>gboolean on_my_%move_selected(int distance)</tt>
+   *
+   * The signal_move_selected() signal is emitted to move the selection to
+   * another item.
+   * 
+   * @newin{2,12}
+   * @param distance +1 to move to the next item, -1 to move to the previous.
+   * @return <tt>true</tt> to stop the signal emission, <tt>false</tt> to continue.
    */
 
   Glib::SignalProxy1< gboolean,int > signal_move_selected();
 
 
+  //TODO: Remove no_default_handler when we can break ABI.
+  
+/**
+   * @par Slot Prototype:
+   * <tt>void on_my_%insert(Widget* child, int position)</tt>
+   *
+   * The signal_insert() signal is emitted when a new Gtk::MenuItem is added to
+   * a Gtk::MenuShell.  A separate signal is used instead of
+   * GtkContainer::add because of the need for an additional position
+   * parameter.
+   * 
+   * The inverse of this signal is the GtkContainer::removed signal.
+   * 
+   * @newin{3,2}
+   * @param child The Gtk::MenuItem that is being inserted.
+   * @param position The position at which the insert occurs.
+   */
+
+  Glib::SignalProxy2< void,Widget*,int > signal_insert();
+
+
   //Keybinding signals:
   
   
-  MenuList& items();
-  const MenuList& items() const;
-
   /**
    * Initializes menu accelerators.
    * This method initializes the menu accelerators. Therefore an
@@ -288,19 +296,20 @@ public:
    */
   bool get_take_focus() const;
   
-  /** If @a take_focus is <tt>true</tt> (the default) the menu shell will take the keyboard 
-   * focus so that it will receive all keyboard events which is needed to enable
-   * keyboard navigation in menus.
+  /** If @a take_focus is <tt>true</tt> (the default) the menu shell will take
+   * the keyboard focus so that it will receive all keyboard events
+   * which is needed to enable keyboard navigation in menus.
    * 
    * Setting @a take_focus to <tt>false</tt> is useful only for special applications
    * like virtual keyboard implementations which should not take keyboard
    * focus.
    * 
-   * The @a take_focus state of a menu or menu bar is automatically propagated
-   * to submenus whenever a submenu is popped up, so you don't have to worry
-   * about recursively setting it for your entire menu hierarchy. Only when
-   * programmatically picking a submenu and popping it up manually, the
-   *  @a take_focus property of the submenu needs to be set explicitely.
+   * The @a take_focus state of a menu or menu bar is automatically
+   * propagated to submenus whenever a submenu is popped up, so you
+   * don't have to worry about recursively setting it for your entire
+   * menu hierarchy. Only when programmatically picking a submenu and
+   * popping it up manually, the @a take_focus property of the submenu
+   * needs to be set explicitely.
    * 
    * Note that setting it to <tt>false</tt> has side-effects:
    * 
@@ -315,10 +324,47 @@ public:
    * See also gdk_keyboard_grab()
    * 
    * @newin{2,8}
-   * @param take_focus <tt>true</tt> if the menu shell should take the keyboard focus on popup.
+   * @param take_focus <tt>true</tt> if the menu shell should take the keyboard
+   * focus on popup.
    */
   void set_take_focus(bool take_focus =  true);
-
+  
+  
+  /** Gets the currently selected item.
+   * 
+   * @newin{3,0}
+   * @return The currently selected item.
+   */
+  Widget* get_selected_item();
+  
+  /** Gets the currently selected item.
+   * 
+   * @newin{3,0}
+   * @return The currently selected item.
+   */
+  const Widget* get_selected_item() const;
+  
+  
+  /** Gets the parent menu shell.
+   * 
+   * The parent menu shell of a submenu is the Gtk::Menu or Gtk::MenuBar
+   * from which it was opened up.
+   * 
+   * @newin{3,0}
+   * @return The parent Gtk::MenuShell.
+   */
+  Widget* get_parent_shell();
+  
+  /** Gets the parent menu shell.
+   * 
+   * The parent menu shell of a submenu is the Gtk::Menu or Gtk::MenuBar
+   * from which it was opened up.
+   * 
+   * @newin{3,0}
+   * @return The parent Gtk::MenuShell.
+   */
+  const Widget* get_parent_shell() const;
+  
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** A boolean that determines whether the menu grabs the keyboard focus.
    *
@@ -326,7 +372,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<bool> property_take_focus() ;
+  Glib::PropertyProxy< bool > property_take_focus() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -336,7 +382,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<bool> property_take_focus() const;
+  Glib::PropertyProxy_ReadOnly< bool > property_take_focus() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 
@@ -347,7 +393,6 @@ protected:
 private:
 
 
-  MenuList      items_proxy_;
   Gtk::Window*  accel_window_;
 
 

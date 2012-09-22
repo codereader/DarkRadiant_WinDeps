@@ -4,7 +4,8 @@
 #define _GTKMM_ASSISTANT_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: assistant.hg,v 1.4 2006/06/13 17:16:26 murrayc Exp $ */
 
@@ -23,8 +24,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/window.h>
@@ -53,7 +54,8 @@ enum AssistantPageType
   ASSISTANT_PAGE_INTRO,
   ASSISTANT_PAGE_CONFIRM,
   ASSISTANT_PAGE_SUMMARY,
-  ASSISTANT_PAGE_PROGRESS
+  ASSISTANT_PAGE_PROGRESS,
+  ASSISTANT_PAGE_CUSTOM
 };
 
 } // namespace Gtk
@@ -80,7 +82,7 @@ namespace Gtk
 
 /** A widget used to guide users through multi-step operations.
  *
- * A Gtk::Assistant is a widget used to represent a generally complex 
+ * A Gtk::Assistant is a widget used to represent a generally complex
  * operation split into several steps, guiding the user through its
  * pages and controlling the page flow to collect the necessary data.
  *
@@ -117,8 +119,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -138,9 +144,13 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
+  /// This is a default handler for the signal signal_prepare().
   virtual void on_prepare(Gtk::Widget* page);
+  /// This is a default handler for the signal signal_apply().
   virtual void on_apply();
+  /// This is a default handler for the signal signal_close().
   virtual void on_close();
+  /// This is a default handler for the signal signal_cancel().
   virtual void on_cancel();
 
 
@@ -151,16 +161,44 @@ public:
   Assistant();
 
   
-  /** Returns the page number of the current page
+  /** Navigate to the next page.
+   * 
+   * It is a programming error to call this function when
+   * there is no next page.
+   * 
+   * This function is for use when creating pages of the
+   * Gtk::ASSISTANT_PAGE_CUSTOM type.
+   * 
+   * @newin{3,0}
+   */
+  void next_page();
+  
+  /** Navigate to the previous visited page.
+   * 
+   * It is a programming error to call this function when
+   * no previous page is available.
+   * 
+   * This function is for use when creating pages of the
+   * Gtk::ASSISTANT_PAGE_CUSTOM type.
+   * 
+   * @newin{3,0}
+   */
+  void previous_page();
+
+  
+  /** Returns the page number of the current page.
    * 
    * @newin{2,10}
-   * @return The index (starting from 0) of the current page in
-   * the @a assistant, if the @a assistant has no pages, -1 will be returned.
+   * @return The index (starting from 0) of the current
+   * page in the @a assistant, or -1 if the @a assistant has no pages,
+   * or no current page.
    */
   int get_current_page() const;
   
-  /** Switches the page to @a page_num. Note that this will only be necessary
-   * in custom buttons, as the @a assistant flow can be set with
+  /** Switches the page to @a page_num.
+   * 
+   * Note that this will only be necessary in custom buttons,
+   * as the @a assistant flow can be set with
    * set_forward_page_func().
    * 
    * @newin{2,10}
@@ -181,7 +219,8 @@ public:
   /** Returns the child widget contained in page number @a page_num.
    * 
    * @newin{2,10}
-   * @param page_num The index of a page in the @a assistant, or -1 to get the last page;.
+   * @param page_num The index of a page in the @a assistant,
+   * or -1 to get the last page.
    * @return The child widget, or <tt>0</tt>
    * if @a page_num is out of bounds.
    */
@@ -190,7 +229,8 @@ public:
   /** Returns the child widget contained in page number @a page_num.
    * 
    * @newin{2,10}
-   * @param page_num The index of a page in the @a assistant, or -1 to get the last page;.
+   * @param page_num The index of a page in the @a assistant,
+   * or -1 to get the last page.
    * @return The child widget, or <tt>0</tt>
    * if @a page_num is out of bounds.
    */
@@ -222,13 +262,22 @@ public:
    */
   int insert_page(Widget& page, int position);
   
+  /** Removes the @a page_num's page from @a assistant.
+   * 
+   * @newin{3,2}
+   * @param page_num The index of a page in the @a assistant,
+   * or -1 to remove the last page.
+   */
+  void remove_page(int page_num);
+
   typedef sigc::slot<int, int /* current_page */> SlotForwardPage;
 
   void set_forward_page_func(const SlotForwardPage& slot);
   
 
-  /** Sets the page type for @a page. The page type determines the page
-   * behavior in the @a assistant.
+  /** Sets the page type for @a page.
+   * 
+   * The page type determines the page behavior in the @a assistant.
    * 
    * @newin{2,10}
    * @param page A page of @a assistant.
@@ -244,8 +293,10 @@ public:
    */
   AssistantPageType get_page_type(const Widget& page) const;
   
-  /** Sets a title for @a page. The title is displayed in the header
-   * area of the assistant when @a page is the current page.
+  /** Sets a title for @a page.
+   * 
+   * The title is displayed in the header area of the assistant
+   * when @a page is the current page.
    * 
    * @newin{2,10}
    * @param page A page of @a assistant.
@@ -253,70 +304,122 @@ public:
    */
   void set_page_title(const Widget& page, const Glib::ustring& title);
   
-  /** Gets the title for @a page. 
+  /** Gets the title for @a page.
    * 
    * @newin{2,10}
    * @param page A page of @a assistant.
    * @return The title for @a page.
    */
   Glib::ustring get_page_title(const Widget& page) const;
+
   
-  /** Sets a header image for @a page. This image is displayed in the header
-   * area of the assistant when @a page is the current page.
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+  /** Sets a header image for @a page.
    * 
    * @newin{2,10}
+   * 
+   * Deprecated: 3.2: Since GTK+ 3.2, a header is no longer shown;
+   * add your header decoration to the page content instead.
+   * @deprecated A header is no longer shown. Add your header decoration to the page content instead.
    * @param page A page of @a assistant.
    * @param pixbuf The new header image @a page.
    */
   void set_page_header_image(const Widget& page, const Glib::RefPtr<Gdk::Pixbuf>& pixbuf);
-  
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   /** Gets the header image for @a page.
    * 
    * @newin{2,10}
+   * 
+   * Deprecated: 3.2: Since GTK+ 3.2, a header is no longer shown;
+   * add your header decoration to the page content instead.
+   * @deprecated A header is no longer shown. Add your header decoration to the page content instead.
    * @param page A page of @a assistant.
-   * @return The header image for @a page, or <tt>0</tt>
-   * if there's no header image for the page.
+   * @return The header image for @a page,
+   * or <tt>0</tt> if there's no header image for the page.
    */
   Glib::RefPtr<Gdk::Pixbuf> get_page_header_image(const Widget& page);
-  
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+#ifndef GTKMM_DISABLE_DEPRECATED
+
   /** Gets the header image for @a page.
    * 
    * @newin{2,10}
+   * 
+   * Deprecated: 3.2: Since GTK+ 3.2, a header is no longer shown;
+   * add your header decoration to the page content instead.
+   * @deprecated A header is no longer shown. Aadd your header decoration to the page content instead.
    * @param page A page of @a assistant.
-   * @return The header image for @a page, or <tt>0</tt>
-   * if there's no header image for the page.
+   * @return The header image for @a page,
+   * or <tt>0</tt> if there's no header image for the page.
    */
   Glib::RefPtr<const Gdk::Pixbuf> get_page_header_image(const Widget& page) const;
-  
-  /** Sets a header image for @a page. This image is displayed in the side
-   * area of the assistant when @a page is the current page.
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+  /** Sets a side image for @a page.
+   * 
+   * This image used to be displayed in the side area of the assistant
+   * when @a page is the current page.
    * 
    * @newin{2,10}
+   * 
+   * Deprecated: 3.2: Since GTK+ 3.2, sidebar images are not
+   * shown anymore.
+   * @deprecated Sidebar images are not shown anymore..
    * @param page A page of @a assistant.
-   * @param pixbuf The new header image @a page.
+   * @param pixbuf The new side image @a page.
    */
   void set_page_side_image(const Widget& page, const Glib::RefPtr<Gdk::Pixbuf>& pixbuf);
-  
-  /** Gets the header image for @a page.
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+  /** Gets the side image for @a page.
    * 
    * @newin{2,10}
+   * 
+   * Deprecated: 3.2: Since GTK+ 3.2, sidebar images are not
+   * shown anymore.
+   * @deprecated Sidebar images are not shown anymore..
    * @param page A page of @a assistant.
-   * @return The side image for @a page, or <tt>0</tt>
-   * if there's no side image for the page.
+   * @return The side image for @a page,
+   * or <tt>0</tt> if there's no side image for the page.
    */
   Glib::RefPtr<Gdk::Pixbuf> get_page_side_image(const Widget& page);
-  
-  /** Gets the header image for @a page.
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+#ifndef GTKMM_DISABLE_DEPRECATED
+
+  /** Gets the side image for @a page.
    * 
    * @newin{2,10}
+   * 
+   * Deprecated: 3.2: Since GTK+ 3.2, sidebar images are not
+   * shown anymore.
+   * @deprecated Sidebar images are not shown anymore.
    * @param page A page of @a assistant.
-   * @return The side image for @a page, or <tt>0</tt>
-   * if there's no side image for the page.
+   * @return The side image for @a page,
+   * or <tt>0</tt> if there's no side image for the page.
    */
   Glib::RefPtr<const Gdk::Pixbuf> get_page_side_image(const Widget& page) const;
-  
-  /** Sets whether @a page contents are complete. This will make
-   *  @a assistant update the buttons state to be able to continue the task.
+#endif // GTKMM_DISABLE_DEPRECATED
+
+
+  /** Sets whether @a page contents are complete.
+   * 
+   * This will make @a assistant update the buttons state
+   * to be able to continue the task.
    * 
    * @newin{2,10}
    * @param page A page of @a assistant.
@@ -348,7 +451,7 @@ public:
   
   /** Forces @a assistant to recompute the buttons state.
    * 
-   * GTK+ automatically takes care of this in most situations, 
+   * GTK+ automatically takes care of this in most situations,
    * e.g. when the user goes to a different page, or when the
    * visibility or completeness of a page changes.
    * 
@@ -366,7 +469,7 @@ public:
    * 
    * Use this when the information provided up to the current
    * page is hereafter deemed permanent and cannot be modified
-   * or undone.  For example, showing a progress page to track
+   * or undone. For example, showing a progress page to track
    * a long-running, unreversible operation after the user has
    * clicked apply on a confirmation page.
    * 
@@ -375,33 +478,66 @@ public:
   void commit();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%prepare(Gtk::Widget* page)</tt>
+   *
+   * The signal_prepare() signal is emitted when a new page is set as the
+   * assistant's current page, before making the new page visible.
+   * 
+   * A handler for this signal can do any preparations which are
+   * necessary before showing @a page.
+   * 
+   * @newin{2,10}
+   * @param page The current page.
    */
 
   Glib::SignalProxy1< void,Gtk::Widget* > signal_prepare();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%apply()</tt>
+   *
+   * The signal_apply() signal is emitted when the apply button is clicked.
+   * 
+   * The default behavior of the Gtk::Assistant is to switch to the page
+   * after the current page, unless the current page is the last one.
+   * 
+   * A handler for the signal_apply() signal should carry out the actions for
+   * which the wizard has collected data. If the action takes a long time
+   * to complete, you might consider putting a page of type
+   * Gtk::ASSISTANT_PAGE_PROGRESS after the confirmation page and handle
+   * this operation within the Gtk::Assistant::signal_prepare() signal of the progress
+   * page.
+   * 
+   * @newin{2,10}
    */
 
   Glib::SignalProxy0< void > signal_apply();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%close()</tt>
+   *
+   * The signal_close() signal is emitted either when the close button of
+   * a summary page is clicked, or when the apply button in the last
+   * page in the flow (of type Gtk::ASSISTANT_PAGE_CONFIRM) is clicked.
+   * 
+   * @newin{2,10}
    */
 
   Glib::SignalProxy0< void > signal_close();
 
   
-  /**
-   * @par Prototype:
+/**
+   * @par Slot Prototype:
    * <tt>void on_my_%cancel()</tt>
+   *
+   * The signal_cancel() signal is emitted when then the cancel button is clicked.
+   * 
+   * @newin{2,10}
    */
 
   Glib::SignalProxy0< void > signal_cancel();

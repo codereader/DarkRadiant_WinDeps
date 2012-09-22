@@ -4,7 +4,8 @@
 #define _GTKMM_VIEWPORT_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: viewport.hg,v 1.3 2006/04/12 11:11:25 murrayc Exp $ */
 
@@ -23,11 +24,12 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <gtkmm/bin.h>
+#include <gtkmm/scrollable.h>
 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -39,7 +41,6 @@ typedef struct _GtkViewportClass GtkViewportClass;
 namespace Gtk
 { class Viewport_Class; } // namespace Gtk
 namespace Gtk {
-class Adjustment;
 
 /** An adapter which makes widgets scrollable.
  *
@@ -47,7 +48,9 @@ class Adjustment;
  * @ingroup Containers
  */
 
-class Viewport : public Bin
+class Viewport
+ : public Bin,
+   public Scrollable
 {
   public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -76,8 +79,12 @@ protected:
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 public:
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 
   static GType get_base_type() G_GNUC_CONST;
@@ -97,58 +104,17 @@ protected:
   //GTK+ Virtual Functions (override these to change behaviour):
 
   //Default Signal Handlers::
-  virtual void on_set_scroll_adjustments(Gtk::Adjustment* hadjustment, Gtk::Adjustment* vadjustment);
 
 
 private:
 
+  
 public:
 
-    explicit Viewport(Adjustment& hadjustment, Adjustment& vadjustment);
+    explicit Viewport(const Glib::RefPtr<Adjustment>& hadjustment, const Glib::RefPtr<Adjustment>& vadjustment);
 
 
-  /** Returns the horizontal adjustment of the viewport.
-   * @return The horizontal adjustment of @a viewport.
-   */
-  Gtk::Adjustment* get_hadjustment();
-  
-  /** Returns the horizontal adjustment of the viewport.
-   * @return The horizontal adjustment of @a viewport.
-   */
-  const Gtk::Adjustment* get_hadjustment() const;
-
-  
-  /** Returns the vertical adjustment of the viewport.
-   * @return The vertical adjustment of @a viewport.
-   */
-  Gtk::Adjustment* get_vadjustment();
-  
-  /** Returns the vertical adjustment of the viewport.
-   * @return The vertical adjustment of @a viewport.
-   */
-  const Gtk::Adjustment* get_vadjustment() const;
-
-  
-  /** Sets the horizontal adjustment of the viewport.
-   * @param adjustment A Gtk::Adjustment.
-   */
-  void set_hadjustment(Gtk::Adjustment* adjustment = 0);
-  
-  /** Sets the horizontal adjustment of the viewport.
-   * @param adjustment A Gtk::Adjustment.
-   */
-  void set_hadjustment(Gtk::Adjustment& adjustment);
-
-  
-  /** Sets the vertical adjustment of the viewport.
-   * @param adjustment A Gtk::Adjustment.
-   */
-  void set_vadjustment(Gtk::Adjustment* adjustment = 0);
-  
-  /** Sets the vertical adjustment of the viewport.
-   * @param adjustment A Gtk::Adjustment.
-   */
-  void set_vadjustment(Gtk::Adjustment& adjustment);
+   //deprecated
 
   
   /** Sets the shadow type of the viewport.
@@ -193,55 +159,6 @@ public:
    */
   Glib::RefPtr<const Gdk::Window> get_view_window() const;
 
-  
-  /**
-   * @par Prototype:
-   * <tt>void on_my_%set_scroll_adjustments(Gtk::Adjustment* hadjustment, Gtk::Adjustment* vadjustment)</tt>
-   */
-
-  Glib::SignalProxy2< void,Gtk::Adjustment*,Gtk::Adjustment* > signal_set_scroll_adjustments();
-
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The GtkAdjustment that determines the values of the horizontal position for this viewport.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<Gtk::Adjustment*> property_hadjustment() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** The GtkAdjustment that determines the values of the horizontal position for this viewport.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<Gtk::Adjustment*> property_hadjustment() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-  #ifdef GLIBMM_PROPERTIES_ENABLED
-/** The GtkAdjustment that determines the values of the vertical position for this viewport.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy<Gtk::Adjustment*> property_vadjustment() ;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
-#ifdef GLIBMM_PROPERTIES_ENABLED
-/** The GtkAdjustment that determines the values of the vertical position for this viewport.
-   *
-   * You rarely need to use properties because there are get_ and set_ methods for almost all of them.
-   * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
-   * the value of the property changes.
-   */
-  Glib::PropertyProxy_ReadOnly<Gtk::Adjustment*> property_vadjustment() const;
-#endif //#GLIBMM_PROPERTIES_ENABLED
-
   #ifdef GLIBMM_PROPERTIES_ENABLED
 /** Determines how the shadowed box around the viewport is drawn.
    *
@@ -249,7 +166,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy<ShadowType> property_shadow_type() ;
+  Glib::PropertyProxy< ShadowType > property_shadow_type() ;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 #ifdef GLIBMM_PROPERTIES_ENABLED
@@ -259,7 +176,7 @@ public:
    * @return A PropertyProxy that allows you to get or set the property of the value, or receive notification when
    * the value of the property changes.
    */
-  Glib::PropertyProxy_ReadOnly<ShadowType> property_shadow_type() const;
+  Glib::PropertyProxy_ReadOnly< ShadowType > property_shadow_type() const;
 #endif //#GLIBMM_PROPERTIES_ENABLED
 
 

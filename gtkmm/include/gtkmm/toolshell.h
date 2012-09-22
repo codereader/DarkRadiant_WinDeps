@@ -4,7 +4,8 @@
 #define _GTKMM_TOOLSHELL_H
 
 
-#include <glibmm.h>
+#include <glibmm/ustring.h>
+#include <sigc++/sigc++.h>
 
 /* $Id: editable.hg,v 1.3 2006/05/18 17:53:15 murrayc Exp $ */
 
@@ -21,8 +22,8 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <glibmm/interface.h>
@@ -36,7 +37,6 @@ extern "C"
 typedef struct _GtkToolShellIface GtkToolShellIface;
 }
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 typedef struct _GtkToolShell GtkToolShell;
@@ -74,9 +74,14 @@ private:
   ToolShell(const ToolShell&);
   ToolShell& operator=(const ToolShell&);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 protected:
-  ToolShell(); // you must derive from this class
-
+  /**
+   * You should derive from this class to use it.
+   */
+  ToolShell();
+  
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   /** Called by constructors of derived classes. Provide the result of 
    * the Class init() function to ensure that it is properly 
    * initialized.
@@ -99,8 +104,11 @@ public:
 
   static void add_interface(GType gtype_implementer);
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+  /** Get the GType for this class, for use with the underlying GObject type system.
+   */
   static GType get_type()      G_GNUC_CONST;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   static GType get_base_type() G_GNUC_CONST;
 #endif
 
@@ -133,7 +141,7 @@ public:
   Orientation get_orientation() const;
   
   /** Retrieves whether the tool shell has text, icons, or both. Tool items must
-   * not call this function directly, but rely on gtk_tool_item_get_style()
+   * not call this function directly, but rely on Gtk::ToolItem::get_toolbar_style()
    * instead.
    * 
    * @newin{2,14}
