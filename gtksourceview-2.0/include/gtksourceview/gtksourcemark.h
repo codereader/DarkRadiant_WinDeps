@@ -22,6 +22,7 @@
 #ifndef __GTKSOURCEMARK_H__
 #define __GTKSOURCEMARK_H__
 
+#include <gtksourceview/config.h>
 #include <gtk/gtk.h>
 
 G_BEGIN_DECLS
@@ -54,16 +55,16 @@ struct _GtkSourceMarkClass
 	void (*_gtk_source_reserved2) (void);
 };
 
-GType		 gtk_source_mark_get_type (void) G_GNUC_CONST;
+GTKSOURCEVIEW_DLL_EXPORT	GType		 gtk_source_mark_get_type (void) G_GNUC_CONST;
 
-GtkSourceMark   *gtk_source_mark_new		(const gchar	*name,
+GTKSOURCEVIEW_DLL_EXPORT	GtkSourceMark   *gtk_source_mark_new		(const gchar	*name,
 						 const gchar	*category);
 
-const gchar	*gtk_source_mark_get_category	(GtkSourceMark	*mark);
+GTKSOURCEVIEW_DLL_EXPORT	const gchar	*gtk_source_mark_get_category	(GtkSourceMark	*mark);
 
-GtkSourceMark	*gtk_source_mark_next		(GtkSourceMark	*mark,
+GTKSOURCEVIEW_DLL_EXPORT	GtkSourceMark	*gtk_source_mark_next		(GtkSourceMark	*mark,
 						 const gchar	*category);
-GtkSourceMark	*gtk_source_mark_prev		(GtkSourceMark	*mark,
+GTKSOURCEVIEW_DLL_EXPORT	GtkSourceMark	*gtk_source_mark_prev		(GtkSourceMark	*mark,
 						 const gchar	*category);
 
 G_END_DECLS

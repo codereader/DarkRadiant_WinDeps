@@ -23,6 +23,7 @@
 #ifndef __GTK_SOURCE_MARK_ATTRIBUTES_H__
 #define __GTK_SOURCE_MARK_ATTRIBUTES_H__
 
+#include <gtksourceview/config.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksourcemark.h>
 
@@ -58,40 +59,40 @@ struct _GtkSourceMarkAttributesClass
 	/*< public >*/
 };
 
-GType gtk_source_mark_attributes_get_type (void) G_GNUC_CONST;
+GTKSOURCEVIEW_DLL_EXPORT	GType gtk_source_mark_attributes_get_type (void) G_GNUC_CONST;
 
-GtkSourceMarkAttributes *gtk_source_mark_attributes_new (void);
+GTKSOURCEVIEW_DLL_EXPORT	GtkSourceMarkAttributes *gtk_source_mark_attributes_new (void);
 
-void             gtk_source_mark_attributes_set_background      (GtkSourceMarkAttributes *attributes,
+GTKSOURCEVIEW_DLL_EXPORT	void             gtk_source_mark_attributes_set_background      (GtkSourceMarkAttributes *attributes,
                                                                  const GdkRGBA           *background);
 
-gboolean         gtk_source_mark_attributes_get_background      (GtkSourceMarkAttributes *attributes,
+GTKSOURCEVIEW_DLL_EXPORT	gboolean         gtk_source_mark_attributes_get_background      (GtkSourceMarkAttributes *attributes,
                                                                  GdkRGBA                 *background);
 
-void             gtk_source_mark_attributes_set_stock_id        (GtkSourceMarkAttributes *attributes,
+GTKSOURCEVIEW_DLL_EXPORT	void             gtk_source_mark_attributes_set_stock_id        (GtkSourceMarkAttributes *attributes,
                                                                  const gchar             *stock_id);
-const gchar     *gtk_source_mark_attributes_get_stock_id        (GtkSourceMarkAttributes *attributes);
+GTKSOURCEVIEW_DLL_EXPORT	const gchar     *gtk_source_mark_attributes_get_stock_id        (GtkSourceMarkAttributes *attributes);
 
-void             gtk_source_mark_attributes_set_icon_name       (GtkSourceMarkAttributes *attributes,
+GTKSOURCEVIEW_DLL_EXPORT	void             gtk_source_mark_attributes_set_icon_name       (GtkSourceMarkAttributes *attributes,
                                                                  const gchar             *icon_name);
-const gchar     *gtk_source_mark_attributes_get_icon_name       (GtkSourceMarkAttributes *attributes);
+GTKSOURCEVIEW_DLL_EXPORT	const gchar     *gtk_source_mark_attributes_get_icon_name       (GtkSourceMarkAttributes *attributes);
 
-void             gtk_source_mark_attributes_set_gicon           (GtkSourceMarkAttributes *attributes,
+GTKSOURCEVIEW_DLL_EXPORT	void             gtk_source_mark_attributes_set_gicon           (GtkSourceMarkAttributes *attributes,
                                                                  GIcon                   *gicon);
-GIcon           *gtk_source_mark_attributes_get_gicon           (GtkSourceMarkAttributes *attributes);
+GTKSOURCEVIEW_DLL_EXPORT	GIcon           *gtk_source_mark_attributes_get_gicon           (GtkSourceMarkAttributes *attributes);
 
-void             gtk_source_mark_attributes_set_pixbuf          (GtkSourceMarkAttributes *attributes,
+GTKSOURCEVIEW_DLL_EXPORT	void             gtk_source_mark_attributes_set_pixbuf          (GtkSourceMarkAttributes *attributes,
                                                                  const GdkPixbuf         *pixbuf);
-const GdkPixbuf *gtk_source_mark_attributes_get_pixbuf          (GtkSourceMarkAttributes *attributes);
+GTKSOURCEVIEW_DLL_EXPORT	const GdkPixbuf *gtk_source_mark_attributes_get_pixbuf          (GtkSourceMarkAttributes *attributes);
 
-const GdkPixbuf *gtk_source_mark_attributes_render_icon         (GtkSourceMarkAttributes *attributes,
+GTKSOURCEVIEW_DLL_EXPORT	const GdkPixbuf *gtk_source_mark_attributes_render_icon         (GtkSourceMarkAttributes *attributes,
                                                                  GtkWidget               *widget,
                                                                  gint                   size);
 
-gchar           *gtk_source_mark_attributes_get_tooltip_text    (GtkSourceMarkAttributes *attributes,
+GTKSOURCEVIEW_DLL_EXPORT	gchar           *gtk_source_mark_attributes_get_tooltip_text    (GtkSourceMarkAttributes *attributes,
                                                                  GtkSourceMark           *mark);
 
-gchar           *gtk_source_mark_attributes_get_tooltip_markup  (GtkSourceMarkAttributes *attributes,
+GTKSOURCEVIEW_DLL_EXPORT	gchar           *gtk_source_mark_attributes_get_tooltip_markup  (GtkSourceMarkAttributes *attributes,
                                                                  GtkSourceMark           *mark);
 
 G_END_DECLS

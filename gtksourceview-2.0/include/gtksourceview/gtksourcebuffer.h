@@ -25,6 +25,8 @@
 #ifndef __GTK_SOURCE_BUFFER_H__
 #define __GTK_SOURCE_BUFFER_H__
 
+#include <gtksourceview/config.h>
+
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksourcelanguage.h>
 #include <gtksourceview/gtksourcemark.h>
@@ -85,114 +87,114 @@ struct _GtkSourceBufferClass
 	void (*_gtk_source_reserved3) (void);
 };
 
-GType           	 gtk_source_buffer_get_type 		(void) G_GNUC_CONST;
+GTKSOURCEVIEW_DLL_EXPORT	GType           	 gtk_source_buffer_get_type 		(void) G_GNUC_CONST;
 
 
 /* Constructor */
-GtkSourceBuffer	 	*gtk_source_buffer_new 			(GtkTextTagTable        *table);
-GtkSourceBuffer 	*gtk_source_buffer_new_with_language 	(GtkSourceLanguage      *language);
+GTKSOURCEVIEW_DLL_EXPORT	GtkSourceBuffer	 	*gtk_source_buffer_new 			(GtkTextTagTable        *table);
+GTKSOURCEVIEW_DLL_EXPORT	GtkSourceBuffer 	*gtk_source_buffer_new_with_language 	(GtkSourceLanguage      *language);
 
 /* Properties */
-gboolean		 gtk_source_buffer_get_highlight_syntax	(GtkSourceBuffer        *buffer);
-void			 gtk_source_buffer_set_highlight_syntax	(GtkSourceBuffer        *buffer,
+GTKSOURCEVIEW_DLL_EXPORT	gboolean		 gtk_source_buffer_get_highlight_syntax	(GtkSourceBuffer        *buffer);
+GTKSOURCEVIEW_DLL_EXPORT	void			 gtk_source_buffer_set_highlight_syntax	(GtkSourceBuffer        *buffer,
 								 gboolean                highlight);
 
-gboolean		 gtk_source_buffer_get_highlight_matching_brackets
+GTKSOURCEVIEW_DLL_EXPORT	gboolean		 gtk_source_buffer_get_highlight_matching_brackets
 								(GtkSourceBuffer        *buffer);
-void			 gtk_source_buffer_set_highlight_matching_brackets
+GTKSOURCEVIEW_DLL_EXPORT	void			 gtk_source_buffer_set_highlight_matching_brackets
 								(GtkSourceBuffer        *buffer,
 							       	 gboolean                highlight);
 
-gint			 gtk_source_buffer_get_max_undo_levels	(GtkSourceBuffer        *buffer);
-void			 gtk_source_buffer_set_max_undo_levels	(GtkSourceBuffer        *buffer,
+GTKSOURCEVIEW_DLL_EXPORT	gint			 gtk_source_buffer_get_max_undo_levels	(GtkSourceBuffer        *buffer);
+GTKSOURCEVIEW_DLL_EXPORT	void			 gtk_source_buffer_set_max_undo_levels	(GtkSourceBuffer        *buffer,
 							    	 gint                    max_undo_levels);
 
-GtkSourceLanguage 	*gtk_source_buffer_get_language 	(GtkSourceBuffer        *buffer);
-void			 gtk_source_buffer_set_language 	(GtkSourceBuffer        *buffer,
+GTKSOURCEVIEW_DLL_EXPORT	GtkSourceLanguage 	*gtk_source_buffer_get_language 	(GtkSourceBuffer        *buffer);
+GTKSOURCEVIEW_DLL_EXPORT	void			 gtk_source_buffer_set_language 	(GtkSourceBuffer        *buffer,
 								 GtkSourceLanguage      *language);
 
-gboolean		 gtk_source_buffer_can_undo		(GtkSourceBuffer        *buffer);
-gboolean		 gtk_source_buffer_can_redo		(GtkSourceBuffer        *buffer);
+GTKSOURCEVIEW_DLL_EXPORT	gboolean		 gtk_source_buffer_can_undo		(GtkSourceBuffer        *buffer);
+GTKSOURCEVIEW_DLL_EXPORT	gboolean		 gtk_source_buffer_can_redo		(GtkSourceBuffer        *buffer);
 
-GtkSourceStyleScheme    *gtk_source_buffer_get_style_scheme     (GtkSourceBuffer        *buffer);
-void			 gtk_source_buffer_set_style_scheme     (GtkSourceBuffer        *buffer,
+GTKSOURCEVIEW_DLL_EXPORT	GtkSourceStyleScheme    *gtk_source_buffer_get_style_scheme     (GtkSourceBuffer        *buffer);
+GTKSOURCEVIEW_DLL_EXPORT	void			 gtk_source_buffer_set_style_scheme     (GtkSourceBuffer        *buffer,
 								 GtkSourceStyleScheme   *scheme);
 
 /* Force highlighting */
-void			 gtk_source_buffer_ensure_highlight     (GtkSourceBuffer        *buffer,
+GTKSOURCEVIEW_DLL_EXPORT	void			 gtk_source_buffer_ensure_highlight     (GtkSourceBuffer        *buffer,
 								 const GtkTextIter      *start,
 								 const GtkTextIter      *end);
 
 /* Undo/redo methods */
-void			 gtk_source_buffer_undo			(GtkSourceBuffer        *buffer);
-void			 gtk_source_buffer_redo			(GtkSourceBuffer        *buffer);
+GTKSOURCEVIEW_DLL_EXPORT	void			 gtk_source_buffer_undo			(GtkSourceBuffer        *buffer);
+GTKSOURCEVIEW_DLL_EXPORT	void			 gtk_source_buffer_redo			(GtkSourceBuffer        *buffer);
 
-void			 gtk_source_buffer_begin_not_undoable_action (GtkSourceBuffer   *buffer);
-void			 gtk_source_buffer_end_not_undoable_action   (GtkSourceBuffer   *buffer);
+GTKSOURCEVIEW_DLL_EXPORT	void			 gtk_source_buffer_begin_not_undoable_action (GtkSourceBuffer   *buffer);
+GTKSOURCEVIEW_DLL_EXPORT	void			 gtk_source_buffer_end_not_undoable_action   (GtkSourceBuffer   *buffer);
 
 /* Mark methods */
-GtkSourceMark		*gtk_source_buffer_create_source_mark	(GtkSourceBuffer        *buffer,
+GTKSOURCEVIEW_DLL_EXPORT	GtkSourceMark		*gtk_source_buffer_create_source_mark	(GtkSourceBuffer        *buffer,
 								 const gchar            *name,
 								 const gchar            *category,
 								 const GtkTextIter      *where);
-gboolean		 gtk_source_buffer_forward_iter_to_source_mark
+GTKSOURCEVIEW_DLL_EXPORT	gboolean		 gtk_source_buffer_forward_iter_to_source_mark
 								(GtkSourceBuffer        *buffer,
 								 GtkTextIter            *iter,
 								 const gchar            *category);
-gboolean		 gtk_source_buffer_backward_iter_to_source_mark
+GTKSOURCEVIEW_DLL_EXPORT	gboolean		 gtk_source_buffer_backward_iter_to_source_mark
 								(GtkSourceBuffer        *buffer,
 								 GtkTextIter            *iter,
 								 const gchar            *category);
-GSList			*gtk_source_buffer_get_source_marks_at_iter
+GTKSOURCEVIEW_DLL_EXPORT	GSList			*gtk_source_buffer_get_source_marks_at_iter
 								(GtkSourceBuffer        *buffer,
 								 GtkTextIter            *iter,
 								 const gchar            *category);
-GSList			*gtk_source_buffer_get_source_marks_at_line
+GTKSOURCEVIEW_DLL_EXPORT	GSList			*gtk_source_buffer_get_source_marks_at_line
 								(GtkSourceBuffer        *buffer,
 								 gint 			 line,
 								 const gchar		*category);
-void			 gtk_source_buffer_remove_source_marks	(GtkSourceBuffer        *buffer,
+GTKSOURCEVIEW_DLL_EXPORT	void			 gtk_source_buffer_remove_source_marks	(GtkSourceBuffer        *buffer,
 								 const GtkTextIter      *start,
 								 const GtkTextIter      *end,
 								 const gchar            *category);
 
-gboolean		 gtk_source_buffer_iter_has_context_class
+GTKSOURCEVIEW_DLL_EXPORT	gboolean		 gtk_source_buffer_iter_has_context_class
 								(GtkSourceBuffer	*buffer,
 								 const GtkTextIter	*iter,
 								 const gchar            *context_class);
 
-gchar			**gtk_source_buffer_get_context_classes_at_iter
+GTKSOURCEVIEW_DLL_EXPORT	gchar			**gtk_source_buffer_get_context_classes_at_iter
 								(GtkSourceBuffer	*buffer,
 								 const GtkTextIter	*iter);
 
-gboolean		 gtk_source_buffer_iter_forward_to_context_class_toggle
+GTKSOURCEVIEW_DLL_EXPORT	gboolean		 gtk_source_buffer_iter_forward_to_context_class_toggle
 								(GtkSourceBuffer	*buffer,
 								 GtkTextIter		*iter,
 								 const gchar		*context_class);
 
-gboolean		 gtk_source_buffer_iter_backward_to_context_class_toggle
+GTKSOURCEVIEW_DLL_EXPORT	gboolean		 gtk_source_buffer_iter_backward_to_context_class_toggle
 								(GtkSourceBuffer	*buffer,
 								 GtkTextIter		*iter,
 								 const gchar		*context_class);
 
-GtkSourceUndoManager	*gtk_source_buffer_get_undo_manager	(GtkSourceBuffer	*buffer);
-void			 gtk_source_buffer_set_undo_manager	(GtkSourceBuffer	*buffer,
+GTKSOURCEVIEW_DLL_EXPORT	GtkSourceUndoManager	*gtk_source_buffer_get_undo_manager	(GtkSourceBuffer	*buffer);
+GTKSOURCEVIEW_DLL_EXPORT	void			 gtk_source_buffer_set_undo_manager	(GtkSourceBuffer	*buffer,
 								 GtkSourceUndoManager	*manager);
 
 /* private */
-void			 _gtk_source_buffer_update_highlight	(GtkSourceBuffer        *buffer,
+GTKSOURCEVIEW_DLL_EXPORT	void			 _gtk_source_buffer_update_highlight	(GtkSourceBuffer        *buffer,
 								 const GtkTextIter      *start,
 								 const GtkTextIter      *end,
 								 gboolean                synchronous);
 
-GtkSourceMark		*_gtk_source_buffer_source_mark_next	(GtkSourceBuffer        *buffer,
+GTKSOURCEVIEW_DLL_EXPORT	GtkSourceMark		*_gtk_source_buffer_source_mark_next	(GtkSourceBuffer        *buffer,
 								 GtkSourceMark          *mark,
 								 const gchar            *category);
-GtkSourceMark		*_gtk_source_buffer_source_mark_prev	(GtkSourceBuffer        *buffer,
+GTKSOURCEVIEW_DLL_EXPORT	GtkSourceMark		*_gtk_source_buffer_source_mark_prev	(GtkSourceBuffer        *buffer,
 								 GtkSourceMark          *mark,
 								 const gchar            *category);
 
-GtkTextTag		*_gtk_source_buffer_get_bracket_match_tag (GtkSourceBuffer        *buffer);
+GTKSOURCEVIEW_DLL_EXPORT	GtkTextTag		*_gtk_source_buffer_get_bracket_match_tag (GtkSourceBuffer        *buffer);
 
 G_END_DECLS
 

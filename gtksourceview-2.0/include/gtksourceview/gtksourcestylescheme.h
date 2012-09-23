@@ -22,6 +22,7 @@
 #ifndef __GTK_SOURCE_STYLE_SCHEME_H__
 #define __GTK_SOURCE_STYLE_SCHEME_H__
 
+#include <gtksourceview/config.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksourcestyle.h>
 
@@ -53,20 +54,20 @@ struct _GtkSourceStyleSchemeClass
 	void (*_gtk_source_reserved2) (void);
 };
 
-GType			 gtk_source_style_scheme_get_type	(void) G_GNUC_CONST;
+GTKSOURCEVIEW_DLL_EXPORT	GType			 gtk_source_style_scheme_get_type	(void) G_GNUC_CONST;
 
-GtkSourceStyleScheme	*_gtk_source_style_scheme_new		(const gchar          *id,
+GTKSOURCEVIEW_DLL_EXPORT	GtkSourceStyleScheme	*_gtk_source_style_scheme_new		(const gchar          *id,
 								 const gchar          *name);
 
-const gchar             *gtk_source_style_scheme_get_id         (GtkSourceStyleScheme *scheme);
-const gchar             *gtk_source_style_scheme_get_name       (GtkSourceStyleScheme *scheme);
-const gchar             *gtk_source_style_scheme_get_description(GtkSourceStyleScheme *scheme);
+GTKSOURCEVIEW_DLL_EXPORT	const gchar             *gtk_source_style_scheme_get_id         (GtkSourceStyleScheme *scheme);
+GTKSOURCEVIEW_DLL_EXPORT	const gchar             *gtk_source_style_scheme_get_name       (GtkSourceStyleScheme *scheme);
+GTKSOURCEVIEW_DLL_EXPORT	const gchar             *gtk_source_style_scheme_get_description(GtkSourceStyleScheme *scheme);
 
-const gchar * const *	 gtk_source_style_scheme_get_authors	(GtkSourceStyleScheme *scheme);
+GTKSOURCEVIEW_DLL_EXPORT	const gchar * const *	 gtk_source_style_scheme_get_authors	(GtkSourceStyleScheme *scheme);
 
-const gchar             *gtk_source_style_scheme_get_filename	(GtkSourceStyleScheme *scheme);
+GTKSOURCEVIEW_DLL_EXPORT	const gchar             *gtk_source_style_scheme_get_filename	(GtkSourceStyleScheme *scheme);
 
-GtkSourceStyle		*gtk_source_style_scheme_get_style	(GtkSourceStyleScheme *scheme,
+GTKSOURCEVIEW_DLL_EXPORT	GtkSourceStyle		*gtk_source_style_scheme_get_style	(GtkSourceStyleScheme *scheme,
 								 const gchar          *style_id);
 GtkSourceStyleScheme	*_gtk_source_style_scheme_new_from_file (const gchar          *filename);
 GtkSourceStyleScheme	*_gtk_source_style_scheme_get_default	(void);
