@@ -4,6 +4,12 @@
     <Filter Include="include">
       <UniqueIdentifier>{62e4c445-2ceb-46d9-b5d6-db4e9c6c6e46}</UniqueIdentifier>
     </Filter>
+    <Filter Include="completion-providers">
+      <UniqueIdentifier>{d0ce8bd0-3449-4499-9ff5-f8a098cb574a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="completion-providers\words">
+      <UniqueIdentifier>{b4b859ed-e9c7-4bef-9561-efefc9e184ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\gtksourceview\gtksourcelanguage.c" />
@@ -43,6 +49,21 @@
     <ClCompile Include="..\gtksourceview\gtksourcegutterrenderertext.c" />
     <ClCompile Include="..\gtksourceview\gtksourceview-marshal.c" />
     <ClCompile Include="..\gtksourceview\gtksourceview-typebuiltins.c" />
+    <ClCompile Include="..\gtksourceview\completion-providers\words\gtksourcecompletionwordslibrary.c">
+      <Filter>completion-providers\words</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtksourceview\completion-providers\words\gtksourcecompletionwordsproposal.c">
+      <Filter>completion-providers\words</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtksourceview\completion-providers\words\gtksourcecompletionwordsutils.c">
+      <Filter>completion-providers\words</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtksourceview\completion-providers\words\gtksourcecompletionwords.c">
+      <Filter>completion-providers\words</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gtksourceview\completion-providers\words\gtksourcecompletionwordsbuffer.c">
+      <Filter>completion-providers\words</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksource.h">
@@ -170,6 +191,21 @@
     </ClInclude>
     <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourceview-marshal.h">
       <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\completion-providers\words\gtksourcecompletionwordsbuffer.h">
+      <Filter>completion-providers\words</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\completion-providers\words\gtksourcecompletionwordslibrary.h">
+      <Filter>completion-providers\words</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\completion-providers\words\gtksourcecompletionwordsproposal.h">
+      <Filter>completion-providers\words</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\completion-providers\words\gtksourcecompletionwordsutils.h">
+      <Filter>completion-providers\words</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\completion-providers\words\gtksourcecompletionwords.h">
+      <Filter>completion-providers\words</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -124,6 +124,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\gtksourceview\completion-providers\words\gtksourcecompletionwords.c" />
+    <ClCompile Include="..\gtksourceview\completion-providers\words\gtksourcecompletionwordsbuffer.c" />
+    <ClCompile Include="..\gtksourceview\completion-providers\words\gtksourcecompletionwordslibrary.c" />
+    <ClCompile Include="..\gtksourceview\completion-providers\words\gtksourcecompletionwordsproposal.c" />
+    <ClCompile Include="..\gtksourceview\completion-providers\words\gtksourcecompletionwordsutils.c" />
     <ClCompile Include="..\gtksourceview\gtksourcebuffer.c" />
     <ClCompile Include="..\gtksourceview\gtksourcecompletion.c" />
     <ClCompile Include="..\gtksourceview\gtksourcecompletioncontext.c" />
@@ -163,6 +168,11 @@
     <ClCompile Include="..\gtksourceview\gtktextregion.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\completion-providers\words\gtksourcecompletionwords.h" />
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\completion-providers\words\gtksourcecompletionwordsbuffer.h" />
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\completion-providers\words\gtksourcecompletionwordslibrary.h" />
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\completion-providers\words\gtksourcecompletionwordsproposal.h" />
+    <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\completion-providers\words\gtksourcecompletionwordsutils.h" />
     <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\config.h" />
     <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksource.h" />
     <ClInclude Include="..\..\w32deps\gtksourceview-2.0\include\gtksourceview\gtksourcebuffer.h" />
