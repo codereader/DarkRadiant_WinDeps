@@ -41,13 +41,12 @@
 #include <io.h>
 #endif
 #include <libxml/xmlreader.h>
-#include <glib/gstdio.h>
+#include <glib.h>
 #include "gtksourceview-i18n.h"
 #include "gtksourcebuffer.h"
 #include "gtksourcelanguage.h"
 #include "gtksourcelanguage-private.h"
 #include "gtksourcecontextengine.h"
-#include <glib/gregex.h>
 
 #define PARSER_ERROR (parser_error_quark ())
 #define ATTR_NO_STYLE ""

@@ -23,7 +23,7 @@
 
 #include <glibmm/varianttype.h>
 #include <glibmm/utility.h>
-#include <glib/gvarianttype.h>
+#include <glib.h>
 
 namespace Glib
 {

@@ -105,6 +105,7 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
+      <PreprocessorDefinitions>GDK_WINDOWING_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
