@@ -162,17 +162,22 @@
     <ClInclude Include="..\..\w32deps\libxml2\include\libxml\xpath.h" />
     <ClInclude Include="..\..\w32deps\libxml2\include\libxml\xpathInternals.h" />
     <ClInclude Include="..\..\w32deps\libxml2\include\libxml\xpointer.h" />
-    <ClInclude Include="..\libxml2\acconfig.h" />
+    <ClInclude Include="..\libxml2\buf.h" />
     <ClInclude Include="..\libxml2\config.h" />
     <ClInclude Include="..\libxml2\elfgcchack.h" />
+    <ClInclude Include="..\libxml2\enc.h" />
     <ClInclude Include="..\libxml2\libxml.h" />
+    <ClInclude Include="..\libxml2\save.h" />
+    <ClInclude Include="..\libxml2\timsort.h" />
     <ClInclude Include="..\libxml2\trio.h" />
     <ClInclude Include="..\libxml2\triodef.h" />
     <ClInclude Include="..\libxml2\trionan.h" />
     <ClInclude Include="..\libxml2\triop.h" />
     <ClInclude Include="..\libxml2\triostr.h" />
+    <ClInclude Include="..\libxml2\xzlib.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\libxml2\buf.c" />
     <ClCompile Include="..\libxml2\c14n.c" />
     <ClCompile Include="..\libxml2\catalog.c" />
     <ClCompile Include="..\libxml2\chvalid.c" />
@@ -207,7 +212,6 @@
     <ClCompile Include="..\libxml2\xinclude.c" />
     <ClCompile Include="..\libxml2\xlink.c" />
     <ClCompile Include="..\libxml2\xmlIO.c" />
-    <ClCompile Include="..\libxml2\xmllint.c" />
     <ClCompile Include="..\libxml2\xmlmemory.c" />
     <ClCompile Include="..\libxml2\xmlmodule.c" />
     <ClCompile Include="..\libxml2\xmlreader.c" />
@@ -220,6 +224,7 @@
     <ClCompile Include="..\libxml2\xmlwriter.c" />
     <ClCompile Include="..\libxml2\xpath.c" />
     <ClCompile Include="..\libxml2\xpointer.c" />
+    <ClCompile Include="..\libxml2\xzlib.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

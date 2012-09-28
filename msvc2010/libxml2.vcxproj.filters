@@ -159,7 +159,7 @@
     <ClInclude Include="..\..\w32deps\libxml2\include\libxml\xpointer.h">
       <Filter>include\libxml</Filter>
     </ClInclude>
-    <ClInclude Include="..\libxml2\acconfig.h">
+    <ClInclude Include="..\libxml2\buf.h">
       <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="..\libxml2\config.h">
@@ -168,7 +168,16 @@
     <ClInclude Include="..\libxml2\elfgcchack.h">
       <Filter>Sources</Filter>
     </ClInclude>
+    <ClInclude Include="..\libxml2\enc.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
     <ClInclude Include="..\libxml2\libxml.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libxml2\save.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libxml2\timsort.h">
       <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="..\libxml2\trio.h">
@@ -186,29 +195,11 @@
     <ClInclude Include="..\libxml2\triostr.h">
       <Filter>Sources</Filter>
     </ClInclude>
+    <ClInclude Include="..\libxml2\xzlib.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\libxml2\c14n.c">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libxml2\catalog.c">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libxml2\chvalid.c">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libxml2\debugXML.c">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libxml2\dict.c">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libxml2\DOCBparser.c">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libxml2\encoding.c">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="..\libxml2\entities.c">
       <Filter>Sources</Filter>
     </ClCompile>
@@ -290,9 +281,6 @@
     <ClCompile Include="..\libxml2\xmlIO.c">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="..\libxml2\xmllint.c">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="..\libxml2\xmlmemory.c">
       <Filter>Sources</Filter>
     </ClCompile>
@@ -327,6 +315,33 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\libxml2\xpointer.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libxml2\xzlib.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libxml2\buf.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libxml2\c14n.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libxml2\catalog.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libxml2\chvalid.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libxml2\debugXML.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libxml2\dict.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libxml2\DOCBparser.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libxml2\encoding.c">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
