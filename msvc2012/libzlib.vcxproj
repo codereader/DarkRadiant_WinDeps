@@ -62,7 +62,6 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{6780EE95-8768-4138-A89B-47D3504A6E5D}</ProjectGuid>
-    <VCTargetsPath Condition="'$(VCTargetsPath11)' != '' and '$(VSVersion)' == '' and $(VisualStudioVersion) == ''">$(VCTargetsPath11)</VCTargetsPath>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

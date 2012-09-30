@@ -23,7 +23,6 @@
     <ProjectGuid>{E82F3508-C849-4D33-86AF-13300224A169}</ProjectGuid>
     <RootNamespace>cairo</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <VCTargetsPath Condition="'$(VCTargetsPath11)' != '' and '$(VSVersion)' == '' and $(VisualStudioVersion) == ''">$(VCTargetsPath11)</VCTargetsPath>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

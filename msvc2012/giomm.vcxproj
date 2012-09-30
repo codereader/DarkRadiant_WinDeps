@@ -22,7 +22,6 @@
     <ProjectName>giomm</ProjectName>
     <ProjectGuid>{EE6C0430-C2C9-425C-8EBA-963FAC3E9832}</ProjectGuid>
     <RootNamespace>giomm-2.4</RootNamespace>
-    <VCTargetsPath Condition="'$(VCTargetsPath11)' != '' and '$(VSVersion)' == '' and $(VisualStudioVersion) == ''">$(VCTargetsPath11)</VCTargetsPath>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

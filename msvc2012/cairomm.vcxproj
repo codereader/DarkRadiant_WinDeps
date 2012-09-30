@@ -23,7 +23,6 @@
     <ProjectGuid>{AEE3F01F-E4F1-4B03-9F15-EF102D629983}</ProjectGuid>
     <RootNamespace>glibmm</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <VCTargetsPath Condition="'$(VCTargetsPath11)' != '' and '$(VSVersion)' == '' and $(VisualStudioVersion) == ''">$(VCTargetsPath11)</VCTargetsPath>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

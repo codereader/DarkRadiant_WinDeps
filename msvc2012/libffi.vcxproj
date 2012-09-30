@@ -58,7 +58,6 @@
     <ProjectGuid>{8B7F7E4C-CEFE-4440-8F46-FAEE748BB811}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>libffi</RootNamespace>
-    <VCTargetsPath Condition="'$(VCTargetsPath11)' != '' and '$(VSVersion)' == '' and $(VisualStudioVersion) == ''">$(VCTargetsPath11)</VCTargetsPath>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

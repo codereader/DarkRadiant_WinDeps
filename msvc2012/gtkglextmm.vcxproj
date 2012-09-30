@@ -22,7 +22,6 @@
     <ProjectName>gtkglextmm</ProjectName>
     <ProjectGuid>{F5F6495E-8FCA-4343-B833-9A2037056A05}</ProjectGuid>
     <RootNamespace>libzlib</RootNamespace>
-    <VCTargetsPath Condition="'$(VCTargetsPath11)' != '' and '$(VSVersion)' == '' and $(VisualStudioVersion) == ''">$(VCTargetsPath11)</VCTargetsPath>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

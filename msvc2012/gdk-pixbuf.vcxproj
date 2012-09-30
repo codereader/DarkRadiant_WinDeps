@@ -22,7 +22,6 @@
     <ProjectGuid>{01ADE22D-F6EC-4D09-8FE1-B9A97DEC2BA3}</ProjectGuid>
     <RootNamespace>gdk-pixbuf</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <VCTargetsPath Condition="'$(VCTargetsPath11)' != '' and '$(VSVersion)' == '' and $(VisualStudioVersion) == ''">$(VCTargetsPath11)</VCTargetsPath>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

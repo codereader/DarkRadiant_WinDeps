@@ -22,7 +22,6 @@
     <ProjectName>gdkglext</ProjectName>
     <ProjectGuid>{C001FB56-998C-414A-A87D-BD48043CFD48}</ProjectGuid>
     <RootNamespace>libzlib</RootNamespace>
-    <VCTargetsPath Condition="'$(VCTargetsPath11)' != '' and '$(VSVersion)' == '' and $(VisualStudioVersion) == ''">$(VCTargetsPath11)</VCTargetsPath>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

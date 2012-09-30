@@ -22,7 +22,6 @@
     <ProjectName>libiconv</ProjectName>
     <ProjectGuid>{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}</ProjectGuid>
     <RootNamespace>libiconv</RootNamespace>
-    <VCTargetsPath Condition="'$(VCTargetsPath11)' != '' and '$(VSVersion)' == '' and $(VisualStudioVersion) == ''">$(VCTargetsPath11)</VCTargetsPath>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

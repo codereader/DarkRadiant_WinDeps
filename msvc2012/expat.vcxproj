@@ -22,7 +22,6 @@
     <SccProjectName />
     <SccLocalPath />
     <ProjectGuid>{1BA66698-2B4F-DE32-8950-6AEA21D7B7E6}</ProjectGuid>
-    <VCTargetsPath Condition="'$(VCTargetsPath11)' != '' and '$(VSVersion)' == '' and $(VisualStudioVersion) == ''">$(VCTargetsPath11)</VCTargetsPath>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
