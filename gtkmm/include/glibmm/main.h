@@ -98,7 +98,7 @@ public:
   PollFD(int fd, IOCondition events);
 
   void set_fd(int fd) { gobject_.fd = fd;   }
-  int  get_fd() const { return gobject_.fd; }
+  int  get_fd() const { return static_cast<int>(gobject_.fd); }
 
   void set_events(IOCondition events)   { gobject_.events = events; }
   IOCondition get_events() const        { return static_cast<IOCondition>(gobject_.events); }
