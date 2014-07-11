@@ -52,28 +52,24 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="properties\Common Release.props" />
     <Import Project="properties\Common x86 Settings.props" />
-    <Import Project="properties\gtkmmbase.props" />
     <Import Project="properties\sigc++.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="properties\Common Debug.props" />
     <Import Project="properties\Common x86 Settings.props" />
-    <Import Project="properties\gtkmmbase.props" />
     <Import Project="properties\sigc++.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="properties\Common Release.props" />
     <Import Project="properties\Common x64 Settings.props" />
-    <Import Project="properties\gtkmmbase.props" />
     <Import Project="properties\sigc++.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="properties\Common Debug.props" />
     <Import Project="properties\Common x64 Settings.props" />
-    <Import Project="properties\gtkmmbase.props" />
     <Import Project="properties\sigc++.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
