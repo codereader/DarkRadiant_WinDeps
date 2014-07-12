@@ -18,9 +18,9 @@
 #include <cassert>
 #include <time.h>
 
-#include <boost/detail/win/GetLastError.hpp>
-#include <boost/detail/win/GetCurrentProcess.hpp>
-#include <boost/detail/win/GetProcessTimes.hpp>
+#include <boost/detail/winapi/GetLastError.hpp>
+#include <boost/detail/winapi/GetCurrentProcess.hpp>
+#include <boost/detail/winapi/GetProcessTimes.hpp>
 
 namespace boost
 {
@@ -34,8 +34,9 @@ process_real_cpu_clock::time_point process_real_cpu_clock::now() BOOST_NOEXCEPT
     {
       BOOST_ASSERT(0 && "Boost::Chrono - Internal Error");
     }
+    typedef ratio_divide<giga, ratio<CLOCKS_PER_SEC> >::type R;
     return time_point(
-      duration(c*(1000000000l/CLOCKS_PER_SEC))
+      duration(static_cast<rep>(c)*R::num/R::den)
     );
 }
 
@@ -56,8 +57,9 @@ process_real_cpu_clock::time_point process_real_cpu_clock::now(
     {
       ec.clear();
     }
+    typedef ratio_divide<giga, ratio<CLOCKS_PER_SEC> >::type R;
     return time_point(
-      duration(c*(1000000000l/CLOCKS_PER_SEC))
+      duration(static_cast<rep>(c)*R::num/R::den)
     );
 }
 #endif
@@ -66,10 +68,10 @@ process_user_cpu_clock::time_point process_user_cpu_clock::now() BOOST_NOEXCEPT
 {
 
     //  note that Windows uses 100 nanosecond ticks for FILETIME
-    boost::detail::win32::FILETIME_ creation, exit, user_time, system_time;
+    boost::detail::winapi::FILETIME_ creation, exit, user_time, system_time;
 
-    if ( boost::detail::win32::GetProcessTimes(
-            boost::detail::win32::GetCurrentProcess(), &creation, &exit,
+    if ( boost::detail::winapi::GetProcessTimes(
+            boost::detail::winapi::GetCurrentProcess(), &creation, &exit,
             &system_time, &user_time ) )
     {
         return time_point(duration(
@@ -91,10 +93,10 @@ process_user_cpu_clock::time_point process_user_cpu_clock::now(
 {
 
     //  note that Windows uses 100 nanosecond ticks for FILETIME
-    boost::detail::win32::FILETIME_ creation, exit, user_time, system_time;
+    boost::detail::winapi::FILETIME_ creation, exit, user_time, system_time;
 
-    if ( boost::detail::win32::GetProcessTimes(
-            boost::detail::win32::GetCurrentProcess(), &creation, &exit,
+    if ( boost::detail::winapi::GetProcessTimes(
+            boost::detail::winapi::GetCurrentProcess(), &creation, &exit,
             &system_time, &user_time ) )
     {
         if (!BOOST_CHRONO_IS_THROWS(ec))
@@ -108,7 +110,7 @@ process_user_cpu_clock::time_point process_user_cpu_clock::now(
     }
     else
     {
-        boost::detail::win32::DWORD_ cause = boost::detail::win32::GetLastError();
+        boost::detail::winapi::DWORD_ cause = boost::detail::winapi::GetLastError();
         if (BOOST_CHRONO_IS_THROWS(ec))
         {
             boost::throw_exception(
@@ -131,10 +133,10 @@ process_system_cpu_clock::time_point process_system_cpu_clock::now() BOOST_NOEXC
 {
 
     //  note that Windows uses 100 nanosecond ticks for FILETIME
-    boost::detail::win32::FILETIME_ creation, exit, user_time, system_time;
+    boost::detail::winapi::FILETIME_ creation, exit, user_time, system_time;
 
-    if ( boost::detail::win32::GetProcessTimes(
-            boost::detail::win32::GetCurrentProcess(), &creation, &exit,
+    if ( boost::detail::winapi::GetProcessTimes(
+            boost::detail::winapi::GetCurrentProcess(), &creation, &exit,
             &system_time, &user_time ) )
     {
         return time_point(duration(
@@ -156,10 +158,10 @@ process_system_cpu_clock::time_point process_system_cpu_clock::now(
 {
 
     //  note that Windows uses 100 nanosecond ticks for FILETIME
-    boost::detail::win32::FILETIME_ creation, exit, user_time, system_time;
+    boost::detail::winapi::FILETIME_ creation, exit, user_time, system_time;
 
-    if ( boost::detail::win32::GetProcessTimes(
-            boost::detail::win32::GetCurrentProcess(), &creation, &exit,
+    if ( boost::detail::winapi::GetProcessTimes(
+            boost::detail::winapi::GetCurrentProcess(), &creation, &exit,
             &system_time, &user_time ) )
     {
         if (!BOOST_CHRONO_IS_THROWS(ec))
@@ -173,7 +175,7 @@ process_system_cpu_clock::time_point process_system_cpu_clock::now(
     }
     else
     {
-        boost::detail::win32::DWORD_ cause = boost::detail::win32::GetLastError();
+        boost::detail::winapi::DWORD_ cause = boost::detail::winapi::GetLastError();
         if (BOOST_CHRONO_IS_THROWS(ec))
         {
             boost::throw_exception(
@@ -196,10 +198,10 @@ process_cpu_clock::time_point process_cpu_clock::now()  BOOST_NOEXCEPT
 {
 
     //  note that Windows uses 100 nanosecond ticks for FILETIME
-    boost::detail::win32::FILETIME_ creation, exit, user_time, system_time;
+    boost::detail::winapi::FILETIME_ creation, exit, user_time, system_time;
 
-    if ( boost::detail::win32::GetProcessTimes(
-            boost::detail::win32::GetCurrentProcess(), &creation, &exit,
+    if ( boost::detail::winapi::GetProcessTimes(
+            boost::detail::winapi::GetCurrentProcess(), &creation, &exit,
             &system_time, &user_time ) )
     {
         time_point::rep r(process_real_cpu_clock::now().time_since_epoch().count()
@@ -227,10 +229,10 @@ process_cpu_clock::time_point process_cpu_clock::now(
 {
 
     //  note that Windows uses 100 nanosecond ticks for FILETIME
-    boost::detail::win32::FILETIME_ creation, exit, user_time, system_time;
+    boost::detail::winapi::FILETIME_ creation, exit, user_time, system_time;
 
-    if ( boost::detail::win32::GetProcessTimes(
-            boost::detail::win32::GetCurrentProcess(), &creation, &exit,
+    if ( boost::detail::winapi::GetProcessTimes(
+            boost::detail::winapi::GetCurrentProcess(), &creation, &exit,
             &system_time, &user_time ) )
     {
         if (!BOOST_CHRONO_IS_THROWS(ec))
@@ -250,7 +252,7 @@ process_cpu_clock::time_point process_cpu_clock::now(
     }
     else
     {
-        boost::detail::win32::DWORD_ cause = boost::detail::win32::GetLastError();
+        boost::detail::winapi::DWORD_ cause = boost::detail::winapi::GetLastError();
         if (BOOST_CHRONO_IS_THROWS(ec))
         {
             boost::throw_exception(
