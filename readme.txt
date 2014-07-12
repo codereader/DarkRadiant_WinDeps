@@ -1,12 +1,12 @@
 == Notes about this folder ==
 
-The winbuild folder contains all the sources needed to build the Win32/Win64 dependency binaries, like gtkmm, gtkglextmm, etc. 
+The winbuild folder contains all the sources needed to build the Win32/Win64 dependency binaries.
 
-There is a solution file for VC++ 2010 and another for VC++ 2012 which contains all the projects needed to build the GTK+ stack 
-from scratch, they are called msvc2010/darkradiant_windeps.sln and msvc2012/darkradiant_windeps.sln:
+There is a solution file for VC++ 2012 and another for VC++ 2013 called msvc2012/darkradiant_windeps.sln 
+and msvc2013/darkradiant_windeps.sln, respectively.
 
+	Visual Studio 2013: msvc2013/darkradiant_windeps.sln
 	Visual Studio 2012: msvc2012/darkradiant_windeps.sln
-	Visual Studio 2010: msvc2010/darkradiant_windeps.sln
 
 The solutions work best when the winbuild folder is checked out as subfolder to the trunk/darkradiant working copy, 
 next to your w32deps/w64deps directories, as indicated on the wiki:
@@ -34,19 +34,15 @@ The folder structure should then look like this:
 This way, the VC++ projects place their binaries in the correct location in the w32deps/w64deps folder and you can compile
 DarkRadiant right off the bat.
 
-== Compile Scripts (VC++ 2010) ==
+== Compile Scripts (VC++ 2013) ==
 
-For VC++ 2010 you can use the shell script in the winbuild folder. Open a VC++ 2010 Command Prompt and head to the
+For VC++ 2013 you can use the shell script in the winbuild folder. Open a VC++ 2013 Command Prompt and head to the
 winbuild directory, then call the batch file corresponding to your compiler version.
 
-* build_all.x86.cmd => Compiles the 32 bit GTK stack, including gtksourceviewmm and gtkglextmm (Debug & Release versions).
-* build_all.x64.cmd => Compiles the 64 bit GTK stack, including gtksourceviewmm and gtkglextmm (Debug & Release versions).
-* build_c_libs.x86.cmd => Compiles all 32 bit C-libraries like win_iconv, libxml2, gtkglext and gtksourceview (Debug & Release versions).
-* build_c_libs.x64.cmd => Compiles all 64 bit C-libraries like win_iconv, libxml2, gtkglext and gtksourceview (Debug & Release versions).
+* build_all.x86.cmd => Compiles the 32 bit solution (Debug & Release versions).
+* build_all.x64.cmd => Compiles the 64 bit solution (Debug & Release versions).
 
 The 32 bit shell scripts will place the *.lib and .dll files directly into your w32deps folder, the 64 bit ones put their files into w64deps.
-
-This script can probably be updated to compile the VC++ 2012 solution rather easily, but this isn't done yet.
 
 == The PDB Files ==
 
@@ -59,4 +55,4 @@ compressing it into a .7z archive - which should be uploaded to some FTP and lin
 
 Note: You'll need 7-zip installed on the system for the shell script to work.
 
---greebo (December 2011, some updates September 2012)
+--greebo (December 2011, some updates September 2012, further updates July 2014)
