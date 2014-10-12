@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga 2005-2011. Distributed under the Boost
+// (C) Copyright Ion Gaztanaga 2005-2012. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -11,7 +11,7 @@
 #ifndef BOOST_CONTAINER_DETAIL_NODE_POOL_COMMON_HPP
 #define BOOST_CONTAINER_DETAIL_NODE_POOL_COMMON_HPP
 
-#if (defined _MSC_VER) && (_MSC_VER >= 1200)
+#if defined(_MSC_VER)
 #  pragma once
 #endif
 
@@ -34,7 +34,7 @@ struct node_slist
    typedef slist_hook_t node_t;
 
    typedef typename bi::make_slist
-      <node_t, bi::linear<true>, bi::base_hook<slist_hook_t> >::type node_slist_t;
+      <node_t, bi::linear<true>, bi::cache_last<true>, bi::base_hook<slist_hook_t> >::type node_slist_t;
 };
 
 template<class T>

@@ -18,6 +18,10 @@
 
 #include <boost/geometry/geometries/box.hpp>
 
+#ifdef BOOST_GEOMETRY_TIME_OVERLAY
+#  include <boost/timer.hpp>
+#endif
+
 
 namespace boost { namespace geometry
 {
@@ -130,7 +134,7 @@ struct assign_visitor
             return;
         }
 
-        if (outer.real_area > 0)
+        if (math::larger(outer.real_area, 0))
         {
             if (inner.real_area < 0 || m_check_for_orientation)
             {
@@ -317,13 +321,14 @@ template
 >
 inline void assign_parents(Geometry const& geometry,
             RingCollection const& collection,
-            RingMap& ring_map)
+            RingMap& ring_map,
+            bool check_for_orientation)
 {
     // Call it with an empty geometry
     // (ring_map should be empty for source_id==1)
 
     Geometry empty;
-    assign_parents(geometry, empty, collection, ring_map, true);
+    assign_parents(geometry, empty, collection, ring_map, check_for_orientation);
 }
 
 
