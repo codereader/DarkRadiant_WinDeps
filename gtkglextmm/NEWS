@@ -1,6 +1,0 @@
-Overview of Changes from gtkglextmm 1.0.x to gtkglextmm 1.1.0
-=============================================================
-* Requires gtkmm-2.4
-* Rewritten Gtk::GL::Widget mixin class
-* New Gdk::GL::ext() functions are introduced
-
