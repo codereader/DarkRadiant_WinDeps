@@ -1,0 +1,236 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{338182DC-4F9A-4F5C-92B4-6015874B07BA}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Release.props" />
+    <Import Project="properties\Common x86 Settings.props" />
+    <Import Project="properties\libxml2.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Debug.props" />
+    <Import Project="properties\Common x86 Settings.props" />
+    <Import Project="properties\libxml2.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Release.props" />
+    <Import Project="properties\Common x64 Settings.props" />
+    <Import Project="properties\libxml2.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="properties\Common Debug.props" />
+    <Import Project="properties\Common x64 Settings.props" />
+    <Import Project="properties\libxml2.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <BuildLog />
+    <ClCompile />
+    <Link>
+      <IgnoreSpecificDefaultLibraries>MSVCRT.lib</IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <BuildLog />
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile />
+    <Link />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <BuildLog />
+    <ClCompile>
+      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <BuildLog />
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link />
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\w32deps\libxml2\include\win32config.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\wsockcompat.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\c14n.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\catalog.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\chvalid.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\debugXML.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\dict.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\DOCBparser.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\encoding.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\entities.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\globals.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\hash.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\HTMLparser.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\HTMLtree.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\list.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\nanoftp.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\nanohttp.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\parser.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\parserInternals.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\pattern.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\relaxng.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\SAX.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\SAX2.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\schemasInternals.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\schematron.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\threads.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\tree.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\uri.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\valid.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\xinclude.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\xlink.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\xmlautomata.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\xmlerror.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\xmlexports.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\xmlIO.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\xmlmemory.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\xmlmodule.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\xmlreader.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\xmlregexp.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\xmlsave.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\xmlschemas.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\xmlschemastypes.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\xmlstring.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\xmlunicode.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\xmlversion.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\xmlwriter.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\xpath.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\xpathInternals.h" />
+    <ClInclude Include="..\..\w32deps\libxml2\include\libxml\xpointer.h" />
+    <ClInclude Include="..\libxml2\buf.h" />
+    <ClInclude Include="..\libxml2\config.h" />
+    <ClInclude Include="..\libxml2\elfgcchack.h" />
+    <ClInclude Include="..\libxml2\enc.h" />
+    <ClInclude Include="..\libxml2\libxml.h" />
+    <ClInclude Include="..\libxml2\save.h" />
+    <ClInclude Include="..\libxml2\timsort.h" />
+    <ClInclude Include="..\libxml2\trio.h" />
+    <ClInclude Include="..\libxml2\triodef.h" />
+    <ClInclude Include="..\libxml2\trionan.h" />
+    <ClInclude Include="..\libxml2\triop.h" />
+    <ClInclude Include="..\libxml2\triostr.h" />
+    <ClInclude Include="..\libxml2\xzlib.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libxml2\buf.c" />
+    <ClCompile Include="..\libxml2\c14n.c" />
+    <ClCompile Include="..\libxml2\catalog.c" />
+    <ClCompile Include="..\libxml2\chvalid.c" />
+    <ClCompile Include="..\libxml2\debugXML.c" />
+    <ClCompile Include="..\libxml2\dict.c" />
+    <ClCompile Include="..\libxml2\DOCBparser.c" />
+    <ClCompile Include="..\libxml2\encoding.c" />
+    <ClCompile Include="..\libxml2\entities.c" />
+    <ClCompile Include="..\libxml2\error.c" />
+    <ClCompile Include="..\libxml2\globals.c" />
+    <ClCompile Include="..\libxml2\hash.c" />
+    <ClCompile Include="..\libxml2\HTMLparser.c" />
+    <ClCompile Include="..\libxml2\HTMLtree.c" />
+    <ClCompile Include="..\libxml2\legacy.c" />
+    <ClCompile Include="..\libxml2\list.c" />
+    <ClCompile Include="..\libxml2\nanoftp.c" />
+    <ClCompile Include="..\libxml2\nanohttp.c" />
+    <ClCompile Include="..\libxml2\parser.c" />
+    <ClCompile Include="..\libxml2\parserInternals.c" />
+    <ClCompile Include="..\libxml2\pattern.c" />
+    <ClCompile Include="..\libxml2\relaxng.c" />
+    <ClCompile Include="..\libxml2\SAX.c" />
+    <ClCompile Include="..\libxml2\SAX2.c" />
+    <ClCompile Include="..\libxml2\schematron.c" />
+    <ClCompile Include="..\libxml2\threads.c" />
+    <ClCompile Include="..\libxml2\tree.c" />
+    <ClCompile Include="..\libxml2\trio.c" />
+    <ClCompile Include="..\libxml2\trionan.c" />
+    <ClCompile Include="..\libxml2\triostr.c" />
+    <ClCompile Include="..\libxml2\uri.c" />
+    <ClCompile Include="..\libxml2\valid.c" />
+    <ClCompile Include="..\libxml2\xinclude.c" />
+    <ClCompile Include="..\libxml2\xlink.c" />
+    <ClCompile Include="..\libxml2\xmlIO.c" />
+    <ClCompile Include="..\libxml2\xmlmemory.c" />
+    <ClCompile Include="..\libxml2\xmlmodule.c" />
+    <ClCompile Include="..\libxml2\xmlreader.c" />
+    <ClCompile Include="..\libxml2\xmlregexp.c" />
+    <ClCompile Include="..\libxml2\xmlsave.c" />
+    <ClCompile Include="..\libxml2\xmlschemas.c" />
+    <ClCompile Include="..\libxml2\xmlschemastypes.c" />
+    <ClCompile Include="..\libxml2\xmlstring.c" />
+    <ClCompile Include="..\libxml2\xmlunicode.c" />
+    <ClCompile Include="..\libxml2\xmlwriter.c" />
+    <ClCompile Include="..\libxml2\xpath.c" />
+    <ClCompile Include="..\libxml2\xpointer.c" />
+    <ClCompile Include="..\libxml2\xzlib.c" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
