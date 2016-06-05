@@ -1,6 +1,12 @@
 // Boost.Geometry (aka GGL, Generic Geometry Library)
 
 // Copyright (c) 2009-2012 Barend Gehrels, Amsterdam, the Netherlands.
+// Copyright (c) 2014 Adam Wulkiewicz, Lodz, Poland.
+
+// This file was modified by Oracle on 2016.
+// Modifications copyright (c) 2016, Oracle and/or its affiliates.
+
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
 // (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
@@ -18,8 +24,8 @@
 #include <boost/config.hpp>
 #include <boost/mpl/assert.hpp>
 #include <boost/range.hpp>
-#include <boost/typeof/typeof.hpp>
 
+#include <boost/geometry/algorithms/detail/interior_iterator.hpp>
 
 #include <boost/geometry/core/exterior_ring.hpp>
 #include <boost/geometry/core/interior_rings.hpp>
@@ -65,9 +71,9 @@ struct svg_box
         typedef typename coordinate_type<Box>::type ct;
         ct x = geometry::get<geometry::min_corner, 0>(box);
         ct y = geometry::get<geometry::min_corner, 1>(box);
-        ct width = max BOOST_PREVENT_MACRO_SUBSTITUTION(1,
+        ct width = max BOOST_PREVENT_MACRO_SUBSTITUTION (ct(1),
                     geometry::get<geometry::max_corner, 0>(box) - x);
-        ct height = max BOOST_PREVENT_MACRO_SUBSTITUTION (1,
+        ct height = max BOOST_PREVENT_MACRO_SUBSTITUTION (ct(1),
                     geometry::get<geometry::max_corner, 1>(box) - y);
 
         os << "<rect x=\"" << x << "\" y=\"" << y
@@ -76,6 +82,24 @@ struct svg_box
     }
 };
 
+template <typename Segment>
+struct svg_segment
+{
+    template <typename Char, typename Traits>
+    static inline void apply(std::basic_ostream<Char, Traits>& os,
+        Segment const& segment, std::string const& style, int)
+    {
+        typedef typename coordinate_type<Segment>::type ct;
+        ct x1 = geometry::get<0, 0>(segment);
+        ct y1 = geometry::get<0, 1>(segment);
+        ct x2 = geometry::get<1, 0>(segment);
+        ct y2 = geometry::get<1, 1>(segment);
+        
+        os << "<line x1=\"" << x1 << "\" y1=\"" << y1
+            << "\" x2=\"" << x2 << "\" y2=\"" << y2
+            << "\" style=\"" << style << "\"/>";
+    }
+};
 
 /*!
 \brief Stream ranges as SVG
@@ -135,13 +159,14 @@ struct svg_poly
 
         // Inner rings:
         {
-            typename interior_return_type<Polygon const>::type rings
-                        = interior_rings(polygon);
-            for (BOOST_AUTO_TPL(rit, boost::begin(rings));
-                rit != boost::end(rings); ++rit)
+            typename interior_return_type<Polygon const>::type
+                rings = interior_rings(polygon);
+            for (typename detail::interior_iterator<Polygon const>::type
+                    rit = boost::begin(rings); rit != boost::end(rings); ++rit)
             {
                 first = true;
-                for (BOOST_AUTO_TPL(it, boost::begin(*rit)); it != boost::end(*rit);
+                for (typename detail::interior_ring_iterator<Polygon const>::type
+                        it = boost::begin(*rit); it != boost::end(*rit);
                     ++it, first = false)
                 {
                     os << (first ? "M" : " L") << " "
@@ -201,6 +226,9 @@ struct svg
 
 template <typename Point>
 struct svg<point_tag, Point> : detail::svg::svg_point<Point> {};
+
+template <typename Segment>
+struct svg<segment_tag, Segment> : detail::svg::svg_segment<Segment> {};
 
 template <typename Box>
 struct svg<box_tag, Box> : detail::svg::svg_box<Box> {};
