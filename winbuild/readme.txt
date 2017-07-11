@@ -2,39 +2,26 @@
 
 The winbuild folder contains all the sources needed to build the Win32/Win64 dependency binaries.
 
-There is a solution file for VC++ 2015:
+There is a solution file for VC++ 2017:
 
-	Visual Studio 2015: msvc2015/darkradiant_windeps.sln
+	Visual Studio 2017: msvc/darkradiant_windeps.sln
 
 The solutions work best when the winbuild folder is checked out as subfolder to the trunk/darkradiant working copy, 
 next to your w32deps/w64deps directories, as indicated on the wiki:
 
-1. Get TortoiseSVN and Git
-2. Right-click your C:\Games (or likewise) folder and select SVN Checkout...
-3. Using git, Check out the URL git://github.com/orbweaver/DarkRadiant.git to C:\Games\DarkRadiant
-4. Right-click your C:\Games folder >> SVN Checkout...
-5. Select https://svn.code.sf.net/p/darkradiant/code/trunk/w32deps to C:\Games\DarkRadiant\w32deps (Note: manually type in 
-   this folder, Tortoise will suggest something like C:\Games\w32deps, which is not enough.)
-6. For Win64 targets: Right-click your C:\Games folder >> SVN Checkout...
-7. For Win64 targets: Select https://svn.code.sf.net/p/darkradiant/code/trunk/w64deps to C:\Games\DarkRadiant\w64deps
+1. Get TortoiseGit or GitHub Windows
+2. Right-click your C:\Games (or likewise) folder and select Git Clone...
+3. Enter https://github.com/codereader/DarkRadiant_WinDeps.git and it will suggest to clone it to  
+   C:\Games\DarkRadiant\DarkRadiant_WinDeps, which is ok.
 
-Finally, to check out the winbuild folder:
-8. Right-click your C:\Games folder >> SVN Checkout...
-7. Select https://svn.code.sf.net/p/darkradiant/code/trunk/winbuild to C:\Games\DarkRadiant\winbuild
+The DarkRadiant_WinDeps folder contains three directories: w32deps, w64deps and winbuild.
+The VC++ projects in the winbuild folder will place their binaries in the corresponding location 
+in the w32deps/w64deps folders, which is where you can pick them up and drop them into your
+DarkRadiant folder to compile the editor itself.
 
-The folder structure should then look like this:
+== Compile Scripts (VC++ 2017) ==
 
- C:\Games\DarkRadiant
- C:\Games\DarkRadiant\w32deps
- C:\Games\DarkRadiant\w64deps [optional, for x64 builds only]
- C:\Games\DarkRadiant\winbuild
-
-This way, the VC++ projects place their binaries in the correct location in the w32deps/w64deps folder and you can compile
-DarkRadiant right off the bat.
-
-== Compile Scripts (VC++ 2015) ==
-
-For VC++ 2015 you can use the shell script in the winbuild folder. Open a VC++ 2015 Developer Command Prompt and head to the
+For VC++ 2017 you can use the shell script in the winbuild folder. Open a VC++ 2017 Developer Command Prompt and head to the
 winbuild directory, then call the batch file corresponding to your compiler version.
 
 * build_all.x86.cmd => Compiles the 32 bit solution (Debug & Release versions).
@@ -53,4 +40,4 @@ compressing it into a .7z archive - which should be uploaded to some FTP and lin
 
 Note: You'll need 7-zip installed on the system for the shell script to work.
 
---greebo (December 2011, some updates September 2012, July 2014 and June 2016)
+--greebo (December 2011, some updates September 2012, July 2014, June 2016 and July 2017)

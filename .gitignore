@@ -1,0 +1,7 @@
+*.ilk
+*.exp
+*.obj
+/winbuild/msvc/Win32
+/winbuild/msvc/x64
+/winbuild/msvc/.vs
+*.pdb
