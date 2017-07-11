@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -19,91 +19,66 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\libvorbis\analysis.c" />
-    <ClCompile Include="..\libvorbis\bitrate.c" />
-    <ClCompile Include="..\libvorbis\bitwise.c" />
-    <ClCompile Include="..\libvorbis\block.c" />
-    <ClCompile Include="..\libvorbis\codebook.c" />
-    <ClCompile Include="..\libvorbis\envelope.c" />
-    <ClCompile Include="..\libvorbis\floor0.c" />
-    <ClCompile Include="..\libvorbis\floor1.c" />
-    <ClCompile Include="..\libvorbis\framing.c" />
-    <ClCompile Include="..\libvorbis\info.c" />
-    <ClCompile Include="..\libvorbis\lookup.c" />
-    <ClCompile Include="..\libvorbis\lpc.c" />
-    <ClCompile Include="..\libvorbis\lsp.c" />
-    <ClCompile Include="..\libvorbis\mapping0.c" />
-    <ClCompile Include="..\libvorbis\mdct.c" />
-    <ClCompile Include="..\libvorbis\psy.c" />
-    <ClCompile Include="..\libvorbis\registry.c" />
-    <ClCompile Include="..\libvorbis\res0.c" />
-    <ClCompile Include="..\libvorbis\sharedbook.c" />
-    <ClCompile Include="..\libvorbis\smallft.c" />
-    <ClCompile Include="..\libvorbis\synthesis.c" />
-    <ClCompile Include="..\libvorbis\vorbisenc.c" />
-    <ClCompile Include="..\libvorbis\vorbisfile.c" />
-    <ClCompile Include="..\libvorbis\window.c" />
+    <ClInclude Include="..\..\w32deps\libzlib\include\crc32.h" />
+    <ClInclude Include="..\..\w32deps\libzlib\include\deflate.h" />
+    <ClInclude Include="..\..\w32deps\libzlib\include\gzguts.h" />
+    <ClInclude Include="..\..\w32deps\libzlib\include\inffast.h" />
+    <ClInclude Include="..\..\w32deps\libzlib\include\inffixed.h" />
+    <ClInclude Include="..\..\w32deps\libzlib\include\inflate.h" />
+    <ClInclude Include="..\..\w32deps\libzlib\include\inftrees.h" />
+    <ClInclude Include="..\..\w32deps\libzlib\include\trees.h" />
+    <ClInclude Include="..\..\w32deps\libzlib\include\zconf.h" />
+    <ClInclude Include="..\..\w32deps\libzlib\include\zlib.h" />
+    <ClInclude Include="..\..\w32deps\libzlib\include\zutil.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\libvorbis\backends.h" />
-    <ClInclude Include="..\libvorbis\bitrate.h" />
-    <ClInclude Include="..\libvorbis\books\coupled\res_books_stereo.h" />
-    <ClInclude Include="..\libvorbis\books\floor\floor_books.h" />
-    <ClInclude Include="..\libvorbis\books\uncoupled\res_books_uncoupled.h" />
-    <ClInclude Include="..\libvorbis\codebook.h" />
-    <ClInclude Include="..\libvorbis\codec_internal.h" />
-    <ClInclude Include="..\libvorbis\envelope.h" />
-    <ClInclude Include="..\libvorbis\highlevel.h" />
-    <ClInclude Include="..\libvorbis\lookup.h" />
-    <ClInclude Include="..\libvorbis\lookup_data.h" />
-    <ClInclude Include="..\libvorbis\lpc.h" />
-    <ClInclude Include="..\libvorbis\lsp.h" />
-    <ClInclude Include="..\libvorbis\masking.h" />
-    <ClInclude Include="..\libvorbis\mdct.h" />
-    <ClInclude Include="..\libvorbis\misc.h" />
-    <ClInclude Include="..\libvorbis\modes\floor_all.h" />
-    <ClInclude Include="..\libvorbis\modes\psych_11.h" />
-    <ClInclude Include="..\libvorbis\modes\psych_16.h" />
-    <ClInclude Include="..\libvorbis\modes\psych_44.h" />
-    <ClInclude Include="..\libvorbis\modes\psych_8.h" />
-    <ClInclude Include="..\libvorbis\modes\residue_16.h" />
-    <ClInclude Include="..\libvorbis\modes\residue_44.h" />
-    <ClInclude Include="..\libvorbis\modes\residue_44u.h" />
-    <ClInclude Include="..\libvorbis\modes\residue_8.h" />
-    <ClInclude Include="..\libvorbis\modes\setup_11.h" />
-    <ClInclude Include="..\libvorbis\modes\setup_16.h" />
-    <ClInclude Include="..\libvorbis\modes\setup_22.h" />
-    <ClInclude Include="..\libvorbis\modes\setup_32.h" />
-    <ClInclude Include="..\libvorbis\modes\setup_44.h" />
-    <ClInclude Include="..\libvorbis\modes\setup_44u.h" />
-    <ClInclude Include="..\libvorbis\modes\setup_8.h" />
-    <ClInclude Include="..\libvorbis\modes\setup_X.h" />
-    <ClInclude Include="..\libvorbis\os.h" />
-    <ClInclude Include="..\libvorbis\psy.h" />
-    <ClInclude Include="..\libvorbis\registry.h" />
-    <ClInclude Include="..\libvorbis\scales.h" />
-    <ClInclude Include="..\libvorbis\smallft.h" />
-    <ClInclude Include="..\libvorbis\window.h" />
+    <ClCompile Include="..\libzlib\src\adler32.c" />
+    <ClCompile Include="..\libzlib\src\compress.c" />
+    <ClCompile Include="..\libzlib\src\crc32.c" />
+    <ClCompile Include="..\libzlib\src\deflate.c" />
+    <ClCompile Include="..\libzlib\src\example.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\libzlib\src\gzclose.c" />
+    <ClCompile Include="..\libzlib\src\gzlib.c" />
+    <ClCompile Include="..\libzlib\src\gzread.c" />
+    <ClCompile Include="..\libzlib\src\gzwrite.c" />
+    <ClCompile Include="..\libzlib\src\infback.c" />
+    <ClCompile Include="..\libzlib\src\inffast.c" />
+    <ClCompile Include="..\libzlib\src\inflate.c" />
+    <ClCompile Include="..\libzlib\src\inftrees.c" />
+    <ClCompile Include="..\libzlib\src\minigzip.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\libzlib\src\trees.c" />
+    <ClCompile Include="..\libzlib\src\uncompr.c" />
+    <ClCompile Include="..\libzlib\src\zutil.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{39E0D87F-9C0C-409E-8C6C-32461015C6D8}</ProjectGuid>
+    <ProjectGuid>{6780EE95-8768-4138-A89B-47D3504A6E5D}</ProjectGuid>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -112,25 +87,25 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="properties\Common Release.props" />
     <Import Project="properties\Common x86 Settings.props" />
-    <Import Project="properties\libvorbis.props" />
+    <Import Project="properties\zlib.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="properties\Common Debug.props" />
     <Import Project="properties\Common x86 Settings.props" />
-    <Import Project="properties\libvorbis.props" />
+    <Import Project="properties\zlib.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="properties\Common Release.props" />
     <Import Project="properties\Common x64 Settings.props" />
-    <Import Project="properties\libvorbis.props" />
+    <Import Project="properties\zlib.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="properties\Common Debug.props" />
     <Import Project="properties\Common x64 Settings.props" />
-    <Import Project="properties\libvorbis.props" />
+    <Import Project="properties\zlib.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
@@ -150,9 +125,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <BuildLog />
-    <ClCompile>
-      <AdditionalOptions> /MP %(AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
+    <ClCompile />
     <Link>
       <AdditionalDependencies>libiconv-vc100-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(SolutionDir)\..\..\..\w32deps\libxml2\bin\$(TargetName).dll</OutputFile>
@@ -160,6 +133,7 @@
       <ImportLibrary>$(SolutionDir)\..\..\..\w32deps\libxml2\lib\$(TargetName).lib</ImportLibrary>
       <IgnoreSpecificDefaultLibraries>MSVCRT.lib</IgnoreSpecificDefaultLibraries>
     </Link>
+    <ClCompile />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <BuildLog />
@@ -173,12 +147,11 @@
       <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w64deps\win_iconv\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>$(SolutionDir)\..\..\..\w64deps\libxml2\lib\$(TargetName).lib</ImportLibrary>
     </Link>
+    <ClCompile />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <BuildLog />
-    <ClCompile>
-      <AdditionalOptions> /MP %(AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
+    <ClCompile />
     <Link>
       <AdditionalDependencies>libiconv-vc100.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(SolutionDir)\..\..\..\w32deps\libxml2\bin\$(TargetName).dll</OutputFile>
@@ -187,6 +160,7 @@
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
     </Link>
+    <ClCompile />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <BuildLog />
@@ -200,6 +174,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w64deps\win_iconv\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>$(SolutionDir)\..\..\..\w64deps\libxml2\lib\$(TargetName).lib</ImportLibrary>
     </Link>
+    <ClCompile />
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
