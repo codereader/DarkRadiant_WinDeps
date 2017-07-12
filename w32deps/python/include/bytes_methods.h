@@ -1,8 +1,9 @@
+#ifndef Py_LIMITED_API
 #ifndef Py_BYTES_CTYPE_H
 #define Py_BYTES_CTYPE_H
 
 /*
- * The internal implementation behind PyString (bytes) and PyBytes (buffer)
+ * The internal implementation behind PyBytes (bytes) and PyByteArray (bytearray)
  * methods of the given names, they operate on ASCII byte strings.
  */
 extern PyObject* _Py_bytes_isspace(const char *cptr, Py_ssize_t len);
@@ -16,9 +17,21 @@ extern PyObject* _Py_bytes_istitle(const char *cptr, Py_ssize_t len);
 /* These store their len sized answer in the given preallocated *result arg. */
 extern void _Py_bytes_lower(char *result, const char *cptr, Py_ssize_t len);
 extern void _Py_bytes_upper(char *result, const char *cptr, Py_ssize_t len);
-extern void _Py_bytes_title(char *result, char *s, Py_ssize_t len);
-extern void _Py_bytes_capitalize(char *result, char *s, Py_ssize_t len);
-extern void _Py_bytes_swapcase(char *result, char *s, Py_ssize_t len);
+extern void _Py_bytes_title(char *result, const char *s, Py_ssize_t len);
+extern void _Py_bytes_capitalize(char *result, const char *s, Py_ssize_t len);
+extern void _Py_bytes_swapcase(char *result, const char *s, Py_ssize_t len);
+
+extern PyObject *_Py_bytes_find(const char *str, Py_ssize_t len, PyObject *args);
+extern PyObject *_Py_bytes_index(const char *str, Py_ssize_t len, PyObject *args);
+extern PyObject *_Py_bytes_rfind(const char *str, Py_ssize_t len, PyObject *args);
+extern PyObject *_Py_bytes_rindex(const char *str, Py_ssize_t len, PyObject *args);
+extern PyObject *_Py_bytes_count(const char *str, Py_ssize_t len, PyObject *args);
+extern int _Py_bytes_contains(const char *str, Py_ssize_t len, PyObject *arg);
+extern PyObject *_Py_bytes_startswith(const char *str, Py_ssize_t len, PyObject *args);
+extern PyObject *_Py_bytes_endswith(const char *str, Py_ssize_t len, PyObject *args);
+
+/* The maketrans() static method. */
+extern PyObject* _Py_bytes_maketrans(Py_buffer *frm, Py_buffer *to);
 
 /* Shared __doc__ strings. */
 extern const char _Py_isspace__doc__[];
@@ -33,52 +46,22 @@ extern const char _Py_upper__doc__[];
 extern const char _Py_title__doc__[];
 extern const char _Py_capitalize__doc__[];
 extern const char _Py_swapcase__doc__[];
-
-#define FLAG_LOWER  0x01
-#define FLAG_UPPER  0x02
-#define FLAG_ALPHA  (FLAG_LOWER|FLAG_UPPER)
-#define FLAG_DIGIT  0x04
-#define FLAG_ALNUM  (FLAG_ALPHA|FLAG_DIGIT)
-#define FLAG_SPACE  0x08
-#define FLAG_XDIGIT 0x10
-
-extern const unsigned int _Py_ctype_table[256];
-
-#define ISLOWER(c) (_Py_ctype_table[Py_CHARMASK(c)] & FLAG_LOWER)
-#define ISUPPER(c) (_Py_ctype_table[Py_CHARMASK(c)] & FLAG_UPPER)
-#define ISALPHA(c) (_Py_ctype_table[Py_CHARMASK(c)] & FLAG_ALPHA)
-#define ISDIGIT(c) (_Py_ctype_table[Py_CHARMASK(c)] & FLAG_DIGIT)
-#define ISXDIGIT(c) (_Py_ctype_table[Py_CHARMASK(c)] & FLAG_XDIGIT)
-#define ISALNUM(c) (_Py_ctype_table[Py_CHARMASK(c)] & FLAG_ALNUM)
-#define ISSPACE(c) (_Py_ctype_table[Py_CHARMASK(c)] & FLAG_SPACE)
-
-#undef islower
-#define islower(c) undefined_islower(c)
-#undef isupper
-#define isupper(c) undefined_isupper(c)
-#undef isalpha
-#define isalpha(c) undefined_isalpha(c)
-#undef isdigit
-#define isdigit(c) undefined_isdigit(c)
-#undef isxdigit
-#define isxdigit(c) undefined_isxdigit(c)
-#undef isalnum
-#define isalnum(c) undefined_isalnum(c)
-#undef isspace
-#define isspace(c) undefined_isspace(c)
-
-extern const unsigned char _Py_ctype_tolower[256];
-extern const unsigned char _Py_ctype_toupper[256];
-
-#define TOLOWER(c) (_Py_ctype_tolower[Py_CHARMASK(c)])
-#define TOUPPER(c) (_Py_ctype_toupper[Py_CHARMASK(c)])
-
-#undef tolower
-#define tolower(c) undefined_tolower(c)
-#undef toupper
-#define toupper(c) undefined_toupper(c)
+extern const char _Py_count__doc__[];
+extern const char _Py_find__doc__[];
+extern const char _Py_index__doc__[];
+extern const char _Py_rfind__doc__[];
+extern const char _Py_rindex__doc__[];
+extern const char _Py_startswith__doc__[];
+extern const char _Py_endswith__doc__[];
+extern const char _Py_maketrans__doc__[];
+extern const char _Py_expandtabs__doc__[];
+extern const char _Py_ljust__doc__[];
+extern const char _Py_rjust__doc__[];
+extern const char _Py_center__doc__[];
+extern const char _Py_zfill__doc__[];
 
 /* this is needed because some docs are shared from the .o, not static */
 #define PyDoc_STRVAR_shared(name,str) const char name[] = PyDoc_STR(str)
 
 #endif /* !Py_BYTES_CTYPE_H */
+#endif /* !Py_LIMITED_API */
