@@ -31,12 +31,12 @@ The 32 bit shell scripts will place the *.lib and .dll files directly into your 
 
 == The PDB Files ==
 
-If you're a Windows maintainer and intend to upload a new w32deps/w64deps set to SVN, be sure to save all the .pdbs you are 
+If you're a Windows maintainer and intend to upload a new w32deps/w64deps set for release, be sure to save all the .pdbs you are 
 generating during the build process, these are invaluable when it comes to debug crashdumps sent by users later down the road.
 
-After compiling the winbuild solution, run the compress_w32deps_pdbs.cmd / compress_w64deps_pdbs.cmd files in the winbuild/ root 
-folder, it will change directories to w32deps and w64deps and collect all .pdb files from the respective directories, 
-compressing it into a .7z archive - which should be uploaded to some FTP and linked from the wiki, ideally. 
+After compiling the winbuild solution, run the compress_windeps_pdbs.cmd files in the winbuild/ root folder, 
+it will change directories to w32deps and w64deps and collect all .pdb files from the respective directories, 
+compressing it into a .7z archive - which should be uploaded to some FTP and linked from the wiki, ideally.
 
 Note: You'll need 7-zip installed on the system for the shell script to work.
 
