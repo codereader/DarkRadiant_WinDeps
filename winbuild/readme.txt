@@ -2,9 +2,9 @@
 
 The winbuild folder contains all the sources needed to build the Win32/Win64 dependency binaries.
 
-There is a solution file for VC++ 2017:
+There is a solution file for VC++ 2019:
 
-	Visual Studio 2017: msvc/darkradiant_windeps.sln
+	Visual Studio 2019: msvc/darkradiant_windeps.sln
 
 The solutions work best when the winbuild folder is checked out as subfolder to the trunk/darkradiant working copy, 
 next to your w32deps/w64deps directories, as indicated on the wiki:
@@ -19,9 +19,9 @@ The VC++ projects in the winbuild folder will place their binaries in the corres
 in the w32deps/w64deps folders, which is where you can pick them up and drop them into your
 DarkRadiant folder to compile the editor itself.
 
-== Compile Scripts (VC++ 2017) ==
+== Compile Scripts (VC++ 2019) ==
 
-For VC++ 2017 you can use the shell script in the winbuild folder. Open a VC++ 2017 Developer Command Prompt and head to the
+For VC++ 2019 you can use the shell script in the winbuild folder. Open a VC++ 2019 Developer Command Prompt and head to the
 winbuild directory, then call the batch file corresponding to your compiler version.
 
 * build_all.x86.cmd => Compiles the 32 bit solution (Debug & Release versions).
@@ -40,4 +40,4 @@ compressing it into a .7z archive - which should be uploaded to some FTP and lin
 
 Note: You'll need 7-zip installed on the system for the shell script to work.
 
---greebo (December 2011, some updates September 2012, July 2014, June 2016 and July 2017)
+--greebo (December 2011, some updates September 2012, July 2014, June 2016, July 2017 and November 2019)
