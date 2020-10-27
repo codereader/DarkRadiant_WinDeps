@@ -4,7 +4,7 @@ This is a helper repository containing the headers, libraries and binaries neede
 
 Only DarkRadiant maintainers are supposed to work on this repository, folks trying to compile DarkRadiant from source just download the dependency package from the releases page and extract it to their cloned working copy:
 
-https://github.com/codereader/DarkRadiant/releases/download/2.3.0/windeps.7z  
+https://github.com/codereader/DarkRadiant/releases/download/2.9.0/windeps.7z  
 
 The dependencies package needs to be extracted into the main DarkRadiant
 source directory, i.e. alongside the **include/** and **radiant/** directories.
