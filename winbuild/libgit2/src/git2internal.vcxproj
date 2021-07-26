@@ -1,0 +1,648 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{602A913E-56F8-342B-B18D-60DFD68A02A4}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>git2internal</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">git2internal.dir\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">git2internal.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">git2internal</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">git2internal.dir\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">git2internal.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">git2internal</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">git2internal.dir\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">git2internal.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">git2internal</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">git2internal.dir\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">git2internal.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">git2internal</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Games\DarkRadiant_windeps\winbuild\libgit2\src;$(SolutionDir)..\..\w32deps\libgit2\include;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\pcre;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\http-parser;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CallingConvention>Cdecl</CallingConvention>
+      <ControlFlowGuard>Guard</ControlFlowGuard>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <StringPooling>true</StringPooling>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;HAVE_QSORT_S;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WIN32_WINNT=0x0600;SHA1DC_NO_STANDARD_INCLUDES=1;SHA1DC_CUSTOM_INCLUDE_SHA1_C="common.h";SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C="common.h";CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;HAVE_QSORT_S;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WIN32_WINNT=0x0600;SHA1DC_NO_STANDARD_INCLUDES=1;SHA1DC_CUSTOM_INCLUDE_SHA1_C=\"common.h\";SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C=\"common.h\";CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Games\DarkRadiant_windeps\winbuild\libgit2\src;C:\Games\DarkRadiant_windeps\winbuild\libgit2\include;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\pcre;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\http-parser;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Games\DarkRadiant_windeps\winbuild\libgit2\src;C:\Games\DarkRadiant_windeps\winbuild\libgit2\include;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\pcre;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\http-parser;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /IGNORE:4221</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Games\DarkRadiant_windeps\winbuild\libgit2\src;$(SolutionDir)..\..\w32deps\libgit2\include;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\pcre;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\http-parser;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CallingConvention>Cdecl</CallingConvention>
+      <ControlFlowGuard>Guard</ControlFlowGuard>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <OmitFramePointers>true</OmitFramePointers>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <StringPooling>true</StringPooling>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;HAVE_QSORT_S;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WIN32_WINNT=0x0600;SHA1DC_NO_STANDARD_INCLUDES=1;SHA1DC_CUSTOM_INCLUDE_SHA1_C="common.h";SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C="common.h";CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;HAVE_QSORT_S;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WIN32_WINNT=0x0600;SHA1DC_NO_STANDARD_INCLUDES=1;SHA1DC_CUSTOM_INCLUDE_SHA1_C=\"common.h\";SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C=\"common.h\";CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Games\DarkRadiant_windeps\winbuild\libgit2\src;C:\Games\DarkRadiant_windeps\winbuild\libgit2\include;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\pcre;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\http-parser;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Games\DarkRadiant_windeps\winbuild\libgit2\src;C:\Games\DarkRadiant_windeps\winbuild\libgit2\include;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\pcre;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\http-parser;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /IGNORE:4221</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Games\DarkRadiant_windeps\winbuild\libgit2\src;C:\Games\DarkRadiant_windeps\winbuild\libgit2\include;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\pcre;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\http-parser;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CallingConvention>Cdecl</CallingConvention>
+      <ControlFlowGuard>Guard</ControlFlowGuard>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <OmitFramePointers>true</OmitFramePointers>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <StringPooling>true</StringPooling>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;HAVE_QSORT_S;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WIN32_WINNT=0x0600;SHA1DC_NO_STANDARD_INCLUDES=1;SHA1DC_CUSTOM_INCLUDE_SHA1_C="common.h";SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C="common.h";CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;HAVE_QSORT_S;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WIN32_WINNT=0x0600;SHA1DC_NO_STANDARD_INCLUDES=1;SHA1DC_CUSTOM_INCLUDE_SHA1_C=\"common.h\";SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C=\"common.h\";CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Games\DarkRadiant_windeps\winbuild\libgit2\src;C:\Games\DarkRadiant_windeps\winbuild\libgit2\include;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\pcre;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\http-parser;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Games\DarkRadiant_windeps\winbuild\libgit2\src;C:\Games\DarkRadiant_windeps\winbuild\libgit2\include;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\pcre;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\http-parser;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /IGNORE:4221</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Games\DarkRadiant_windeps\winbuild\libgit2\src;C:\Games\DarkRadiant_windeps\winbuild\libgit2\include;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\pcre;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\http-parser;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CallingConvention>Cdecl</CallingConvention>
+      <ControlFlowGuard>Guard</ControlFlowGuard>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <OmitFramePointers>false</OmitFramePointers>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <StringPooling>true</StringPooling>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;HAVE_QSORT_S;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WIN32_WINNT=0x0600;SHA1DC_NO_STANDARD_INCLUDES=1;SHA1DC_CUSTOM_INCLUDE_SHA1_C="common.h";SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C="common.h";CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;HAVE_QSORT_S;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WIN32_WINNT=0x0600;SHA1DC_NO_STANDARD_INCLUDES=1;SHA1DC_CUSTOM_INCLUDE_SHA1_C=\"common.h\";SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C=\"common.h\";CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Games\DarkRadiant_windeps\winbuild\libgit2\src;C:\Games\DarkRadiant_windeps\winbuild\libgit2\include;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\pcre;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\http-parser;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Games\DarkRadiant_windeps\winbuild\libgit2\src;C:\Games\DarkRadiant_windeps\winbuild\libgit2\include;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\pcre;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\http-parser;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /IGNORE:4221</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\CMakeLists.txt">
+      <StdOutEncoding>UTF-8</StdOutEncoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Games/DarkRadiant_windeps/winbuild/libgit2/src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Games/DarkRadiant_windeps/winbuild/libgit2 -BC:/Games/DarkRadiant_windeps/winbuild/libgit2 --check-stamp-file C:/Games/DarkRadiant_windeps/winbuild/libgit2/src/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindGSSAPI.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindPCRE.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindmbedTLS.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\PkgBuildConfig.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SanitizeBool.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectGSSAPI.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectHTTPSBackend.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectHashes.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\features.h.in;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindOpenSSL.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindPackageMessage.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindZLIB.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\SelectLibraryConfigurations.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Games/DarkRadiant_windeps/winbuild/libgit2/src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Games/DarkRadiant_windeps/winbuild/libgit2 -BC:/Games/DarkRadiant_windeps/winbuild/libgit2 --check-stamp-file C:/Games/DarkRadiant_windeps/winbuild/libgit2/src/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindGSSAPI.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindPCRE.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindmbedTLS.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\PkgBuildConfig.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SanitizeBool.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectGSSAPI.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectHTTPSBackend.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectHashes.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\features.h.in;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindOpenSSL.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindPackageMessage.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindZLIB.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\SelectLibraryConfigurations.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/Games/DarkRadiant_windeps/winbuild/libgit2/src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Games/DarkRadiant_windeps/winbuild/libgit2 -BC:/Games/DarkRadiant_windeps/winbuild/libgit2 --check-stamp-file C:/Games/DarkRadiant_windeps/winbuild/libgit2/src/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindGSSAPI.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindPCRE.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindmbedTLS.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\PkgBuildConfig.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SanitizeBool.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectGSSAPI.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectHTTPSBackend.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectHashes.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\features.h.in;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindOpenSSL.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindPackageMessage.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindZLIB.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\SelectLibraryConfigurations.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/Games/DarkRadiant_windeps/winbuild/libgit2/src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Games/DarkRadiant_windeps/winbuild/libgit2 -BC:/Games/DarkRadiant_windeps/winbuild/libgit2 --check-stamp-file C:/Games/DarkRadiant_windeps/winbuild/libgit2/src/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindGSSAPI.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindPCRE.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindmbedTLS.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\PkgBuildConfig.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SanitizeBool.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectGSSAPI.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectHTTPSBackend.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectHashes.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\features.h.in;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindOpenSSL.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindPackageMessage.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindZLIB.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\SelectLibraryConfigurations.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\hash\sha1\collisiondetect.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\hash\sha1\collisiondetect.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\hash\sha1\sha1dc\sha1.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\hash\sha1\sha1dc\sha1.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\hash\sha1\sha1dc\ubc_check.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\hash\sha1\sha1dc\ubc_check.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\dir.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\dir.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\error.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\error.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\findfile.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\findfile.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\map.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\mingw-compat.h" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\msvc-compat.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\path_w32.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\path_w32.h" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\posix.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\posix_w32.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\precompiled.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">precompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">precompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">precompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">precompiled.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\precompiled.h" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\reparse.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\thread.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\thread.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\utf-conv.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\utf-conv.h" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\version.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\w32_buffer.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\w32_buffer.h" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\w32_common.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\w32_crtdbg_stacktrace.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\w32_crtdbg_stacktrace.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\w32_stack.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\w32_stack.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\w32_util.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\w32_util.h" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\win32\win32-compat.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\alloc.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\alloc.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\allocators\stdalloc.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\allocators\stdalloc.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\allocators\win32_crtdbg.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\allocators\win32_crtdbg.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\annotated_commit.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\annotated_commit.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\apply.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\apply.h" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\array.h" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\assert_safe.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\attr.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\attr.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\attr_file.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\attr_file.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\attrcache.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\attrcache.h" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\bitvec.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\blame.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\blame.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\blame_git.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\blame_git.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\blob.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\blob.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\branch.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\branch.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\buf_text.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\buf_text.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\buffer.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\buffer.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\cache.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\cache.h" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\cc-compat.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\checkout.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\checkout.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\cherrypick.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\clone.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\clone.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\commit.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\commit.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\commit_list.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\commit_list.h" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\common.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\config.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\config.h" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\config_backend.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\config_cache.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\config_entries.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\config_entries.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\config_file.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\config_mem.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\config_parse.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\config_parse.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\config_snapshot.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\crlf.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\date.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\delta.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\delta.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\describe.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\diff.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\diff.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\diff_driver.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\diff_driver.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\diff_file.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\diff_file.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\diff_generate.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\diff_generate.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\diff_parse.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\diff_parse.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\diff_print.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\diff_stats.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\diff_tform.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\diff_tform.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\diff_xdiff.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\diff_xdiff.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\errors.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\errors.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\fetch.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\fetch.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\fetchhead.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\fetchhead.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\filebuf.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\filebuf.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\filter.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\filter.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\futils.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\futils.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\global.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\global.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\graph.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\hash.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\hash.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\hashsig.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\ident.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\idxmap.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\idxmap.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\ignore.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\ignore.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\index.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\index.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\indexer.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\indexer.h" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\integer.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\iterator.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\iterator.h" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\khash.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\mailmap.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\mailmap.h" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\map.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\merge.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\merge.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\merge_driver.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\merge_driver.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\merge_file.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\message.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\message.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\midx.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\midx.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\mwindow.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\mwindow.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\net.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\net.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\netops.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\netops.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\notes.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\notes.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\object.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\object.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\object_api.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\odb.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\odb.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\odb_loose.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\odb_mempack.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\odb_pack.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\offmap.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\offmap.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\oid.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\oid.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\oidarray.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\oidarray.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\oidmap.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\oidmap.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\pack-objects.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\pack-objects.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\pack.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\pack.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\parse.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\parse.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\patch.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\patch.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\patch_generate.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\patch_generate.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\patch_parse.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\patch_parse.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\path.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\path.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\pathspec.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\pathspec.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\pool.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\pool.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\posix.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\posix.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\pqueue.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\pqueue.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\proxy.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\proxy.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\push.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\push.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\reader.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\reader.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\rebase.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\refdb.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\refdb.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\refdb_fs.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\reflog.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\reflog.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\refs.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\refs.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\refspec.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\refspec.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\regexp.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\regexp.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\remote.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\remote.h" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\repo_template.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\repository.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\repository.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\reset.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\revert.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\revparse.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\revwalk.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\revwalk.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\settings.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\signature.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\signature.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\sortedcache.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\sortedcache.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\stash.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\status.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\status.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\strarray.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\stream.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\streams\mbedtls.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\streams\mbedtls.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\streams\openssl.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\streams\openssl.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\streams\registry.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\streams\registry.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\streams\socket.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\streams\socket.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\streams\stransport.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\streams\stransport.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\streams\tls.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\streams\tls.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\strmap.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\strmap.h" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\strnlen.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\submodule.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\submodule.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\sysdir.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\sysdir.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\tag.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\tag.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\thread-utils.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\thread-utils.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\trace.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\trace.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\trailer.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\transaction.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\transaction.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\transport.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\transports\auth.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\transports\auth.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\transports\auth_negotiate.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\transports\auth_negotiate.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\transports\auth_ntlm.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\transports\auth_ntlm.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\transports\credential.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\transports\credential_helpers.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\transports\git.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\transports\http.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\transports\http.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\transports\httpclient.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\transports\httpclient.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\transports\local.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\transports\smart.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\transports\smart.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\transports\smart_pkt.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\transports\smart_protocol.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\transports\ssh.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\transports\ssh.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\transports\winhttp.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\tree-cache.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\tree-cache.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\tree.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\tree.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\tsort.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\userdiff.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\util.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\util.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\varint.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\varint.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\vector.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\vector.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\wildmatch.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\wildmatch.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\worktree.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\worktree.h" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\xdiff\xdiff.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\xdiff\xdiffi.c">
+      <TreatWarningAsError Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</TreatWarningAsError>
+      <TreatWarningAsError Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</TreatWarningAsError>
+      <TreatWarningAsError Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</TreatWarningAsError>
+      <TreatWarningAsError Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</TreatWarningAsError>
+    </ClCompile>
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\xdiff\xdiffi.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\xdiff\xemit.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\xdiff\xemit.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\xdiff\xhistogram.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\xdiff\xinclude.h" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\xdiff\xmacros.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\xdiff\xmerge.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\xdiff\xpatience.c" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\xdiff\xprepare.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\xdiff\xprepare.h" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\xdiff\xtypes.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\xdiff\xutils.c">
+      <TreatWarningAsError Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</TreatWarningAsError>
+      <TreatWarningAsError Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</TreatWarningAsError>
+      <TreatWarningAsError Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</TreatWarningAsError>
+      <TreatWarningAsError Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</TreatWarningAsError>
+    </ClCompile>
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\xdiff\xutils.h" />
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\zstream.c" />
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\zstream.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\ZERO_CHECK.vcxproj">
+      <Project>{29793DA8-0A56-3A66-AB20-AECC68BE70B6}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

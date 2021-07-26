@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\CMakeFiles\594333fa821cc4ab6555f3b8b93409a8\RUN_TESTS_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{4D1B9CA5-DBF0-3299-A8A7-958B7808251C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

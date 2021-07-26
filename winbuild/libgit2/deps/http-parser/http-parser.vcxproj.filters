@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\http-parser\http_parser.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\http-parser\http_parser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\http-parser\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{9C397A0F-D7BB-3710-8921-08DBB20119F9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{03AE70F5-BB56-3604-ABB2-C7DCFC88C757}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
