@@ -1,0 +1,16 @@
+# CMake generation dependency list for this directory.
+C:/Games/DarkRadiant_windeps/winbuild/libgit2/cmake/FindGSSAPI.cmake
+C:/Games/DarkRadiant_windeps/winbuild/libgit2/cmake/FindPCRE.cmake
+C:/Games/DarkRadiant_windeps/winbuild/libgit2/cmake/FindmbedTLS.cmake
+C:/Games/DarkRadiant_windeps/winbuild/libgit2/cmake/PkgBuildConfig.cmake
+C:/Games/DarkRadiant_windeps/winbuild/libgit2/cmake/SanitizeBool.cmake
+C:/Games/DarkRadiant_windeps/winbuild/libgit2/cmake/SelectGSSAPI.cmake
+C:/Games/DarkRadiant_windeps/winbuild/libgit2/cmake/SelectHTTPSBackend.cmake
+C:/Games/DarkRadiant_windeps/winbuild/libgit2/cmake/SelectHashes.cmake
+C:/Games/DarkRadiant_windeps/winbuild/libgit2/src/CMakeLists.txt
+C:/Games/DarkRadiant_windeps/winbuild/libgit2/src/features.h.in
+C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.20/Modules/FindOpenSSL.cmake
+C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.20/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.20/Modules/FindPackageMessage.cmake
+C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.20/Modules/FindZLIB.cmake
+C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.20/Modules/SelectLibraryConfigurations.cmake

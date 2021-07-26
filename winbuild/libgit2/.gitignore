@@ -1,0 +1,15 @@
+build/
+.DS_Store
+*~
+.*.swp
+tags
+CMakeSettings.json
+.vs
+/Debug
+/Release
+/x64
+git2.dir
+git2internal.dir
+http-parser.dir
+pcre.dir
+zlib.dir
