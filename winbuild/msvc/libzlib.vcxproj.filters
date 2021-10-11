@@ -9,37 +9,37 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\w32deps\libzlib\include\crc32.h">
+    <ClInclude Include="..\..\windeps\libzlib\include\crc32.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\libzlib\include\deflate.h">
+    <ClInclude Include="..\..\windeps\libzlib\include\deflate.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\libzlib\include\gzguts.h">
+    <ClInclude Include="..\..\windeps\libzlib\include\gzguts.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\libzlib\include\inffast.h">
+    <ClInclude Include="..\..\windeps\libzlib\include\inffast.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\libzlib\include\inffixed.h">
+    <ClInclude Include="..\..\windeps\libzlib\include\inffixed.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\libzlib\include\inflate.h">
+    <ClInclude Include="..\..\windeps\libzlib\include\inflate.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\libzlib\include\inftrees.h">
+    <ClInclude Include="..\..\windeps\libzlib\include\inftrees.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\libzlib\include\trees.h">
+    <ClInclude Include="..\..\windeps\libzlib\include\trees.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\libzlib\include\zconf.h">
+    <ClInclude Include="..\..\windeps\libzlib\include\zconf.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\libzlib\include\zlib.h">
+    <ClInclude Include="..\..\windeps\libzlib\include\zlib.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\libzlib\include\zutil.h">
+    <ClInclude Include="..\..\windeps\libzlib\include\zutil.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -54,9 +54,6 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\libzlib\src\deflate.c">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libzlib\src\example.c">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\libzlib\src\gzclose.c">
@@ -81,9 +78,6 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\libzlib\src\inftrees.c">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libzlib\src\minigzip.c">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\libzlib\src\trees.c">

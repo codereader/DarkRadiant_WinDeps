@@ -19,29 +19,23 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\w32deps\libzlib\include\crc32.h" />
-    <ClInclude Include="..\..\w32deps\libzlib\include\deflate.h" />
-    <ClInclude Include="..\..\w32deps\libzlib\include\gzguts.h" />
-    <ClInclude Include="..\..\w32deps\libzlib\include\inffast.h" />
-    <ClInclude Include="..\..\w32deps\libzlib\include\inffixed.h" />
-    <ClInclude Include="..\..\w32deps\libzlib\include\inflate.h" />
-    <ClInclude Include="..\..\w32deps\libzlib\include\inftrees.h" />
-    <ClInclude Include="..\..\w32deps\libzlib\include\trees.h" />
-    <ClInclude Include="..\..\w32deps\libzlib\include\zconf.h" />
-    <ClInclude Include="..\..\w32deps\libzlib\include\zlib.h" />
-    <ClInclude Include="..\..\w32deps\libzlib\include\zutil.h" />
+    <ClInclude Include="..\..\windeps\libzlib\include\crc32.h" />
+    <ClInclude Include="..\..\windeps\libzlib\include\deflate.h" />
+    <ClInclude Include="..\..\windeps\libzlib\include\gzguts.h" />
+    <ClInclude Include="..\..\windeps\libzlib\include\inffast.h" />
+    <ClInclude Include="..\..\windeps\libzlib\include\inffixed.h" />
+    <ClInclude Include="..\..\windeps\libzlib\include\inflate.h" />
+    <ClInclude Include="..\..\windeps\libzlib\include\inftrees.h" />
+    <ClInclude Include="..\..\windeps\libzlib\include\trees.h" />
+    <ClInclude Include="..\..\windeps\libzlib\include\zconf.h" />
+    <ClInclude Include="..\..\windeps\libzlib\include\zlib.h" />
+    <ClInclude Include="..\..\windeps\libzlib\include\zutil.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\libzlib\src\adler32.c" />
     <ClCompile Include="..\libzlib\src\compress.c" />
     <ClCompile Include="..\libzlib\src\crc32.c" />
     <ClCompile Include="..\libzlib\src\deflate.c" />
-    <ClCompile Include="..\libzlib\src\example.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\libzlib\src\gzclose.c" />
     <ClCompile Include="..\libzlib\src\gzlib.c" />
     <ClCompile Include="..\libzlib\src\gzread.c" />
@@ -50,12 +44,6 @@
     <ClCompile Include="..\libzlib\src\inffast.c" />
     <ClCompile Include="..\libzlib\src\inflate.c" />
     <ClCompile Include="..\libzlib\src\inftrees.c" />
-    <ClCompile Include="..\libzlib\src\minigzip.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\libzlib\src\trees.c" />
     <ClCompile Include="..\libzlib\src\uncompr.c" />
     <ClCompile Include="..\libzlib\src\zutil.c" />
@@ -129,9 +117,9 @@
     <ClCompile />
     <Link>
       <AdditionalDependencies>libiconv-vc100-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(SolutionDir)\..\..\..\w32deps\libxml2\bin\$(TargetName).dll</OutputFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w32deps\win_iconv\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImportLibrary>$(SolutionDir)\..\..\..\w32deps\libxml2\lib\$(TargetName).lib</ImportLibrary>
+      <OutputFile>$(SolutionDir)\..\..\..\windeps\libxml2\bin\$(TargetName).dll</OutputFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\windeps\win_iconv\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>$(SolutionDir)\..\..\..\windeps\libxml2\lib\$(TargetName).lib</ImportLibrary>
       <IgnoreSpecificDefaultLibraries>MSVCRT.lib</IgnoreSpecificDefaultLibraries>
     </Link>
     <ClCompile />
@@ -155,9 +143,9 @@
     <ClCompile />
     <Link>
       <AdditionalDependencies>libiconv-vc100.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(SolutionDir)\..\..\..\w32deps\libxml2\bin\$(TargetName).dll</OutputFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w32deps\win_iconv\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImportLibrary>$(SolutionDir)\..\..\..\w32deps\libxml2\lib\$(TargetName).lib</ImportLibrary>
+      <OutputFile>$(SolutionDir)\..\..\..\windeps\libxml2\bin\$(TargetName).dll</OutputFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\windeps\win_iconv\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>$(SolutionDir)\..\..\..\windeps\libxml2\lib\$(TargetName).lib</ImportLibrary>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
     </Link>

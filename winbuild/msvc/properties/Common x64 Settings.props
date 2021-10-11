@@ -4,7 +4,7 @@
     <Import Project="Common Settings.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
-    <OutputBase>$(W64DepsDir)</OutputBase>
+    <OutputBase>$(WinDepsDir)</OutputBase>
   </PropertyGroup>
   <PropertyGroup />
   <ItemDefinitionGroup>
