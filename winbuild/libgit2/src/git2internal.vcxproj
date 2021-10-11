@@ -59,13 +59,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">git2internal.dir\Debug\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)..\..\windeps\libgit2\lib</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">git2internal.dir\Debug\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">git2internal</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">libgit2-d</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">git2internal.dir\Release\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)..\..\windeps\libgit2\lib</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">git2internal.dir\Release\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">git2internal</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">libgit2</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">git2internal.dir\MinSizeRel\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">git2internal.dir\MinSizeRel\</IntDir>
@@ -78,7 +78,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Games\DarkRadiant_windeps\winbuild\libgit2\src;$(SolutionDir)..\..\w32deps\libgit2\include;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\pcre;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\http-parser;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\src;$(SolutionDir)..\..\windeps\libgit2\include;$(SolutionDir)\deps\pcre;$(SolutionDir)\deps\http-parser;$(SolutionDir)\deps\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CallingConvention>Cdecl</CallingConvention>
@@ -116,7 +116,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Games\DarkRadiant_windeps\winbuild\libgit2\src;$(SolutionDir)..\..\w32deps\libgit2\include;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\pcre;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\http-parser;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\src;$(SolutionDir)..\..\windeps\libgit2\include;$(SolutionDir)\deps\pcre;$(SolutionDir)\deps\http-parser;$(SolutionDir)\deps\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <CallingConvention>Cdecl</CallingConvention>
       <ControlFlowGuard>Guard</ControlFlowGuard>
@@ -156,7 +156,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Games\DarkRadiant_windeps\winbuild\libgit2\src;C:\Games\DarkRadiant_windeps\winbuild\libgit2\include;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\pcre;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\http-parser;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\src;$(SolutionDir)..\..\windeps\libgit2\include;$(SolutionDir)\deps\pcre;$(SolutionDir)\deps\http-parser;$(SolutionDir)\deps\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <CallingConvention>Cdecl</CallingConvention>
       <ControlFlowGuard>Guard</ControlFlowGuard>
@@ -196,7 +196,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Games\DarkRadiant_windeps\winbuild\libgit2\src;C:\Games\DarkRadiant_windeps\winbuild\libgit2\include;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\pcre;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\http-parser;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\src;$(SolutionDir)..\..\windeps\libgit2\include;$(SolutionDir)\deps\pcre;$(SolutionDir)\deps\http-parser;$(SolutionDir)\deps\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <CallingConvention>Cdecl</CallingConvention>
       <ControlFlowGuard>Guard</ControlFlowGuard>

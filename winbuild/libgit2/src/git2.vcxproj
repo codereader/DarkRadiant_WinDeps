@@ -59,13 +59,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Games\DarkRadiant_windeps\winbuild\libgit2\Debug\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)..\..\windeps\libgit2\bin</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">git2.dir\Debug\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">libgit2-d</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.dll</TargetExt>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Games\DarkRadiant_windeps\winbuild\libgit2\Release\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)..\..\windeps\libgit2\bin</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">git2.dir\Release\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">libgit2</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.dll</TargetExt>
@@ -125,9 +125,9 @@
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
+      <ImportLibrary>C:/Games/DarkRadiant_windeps/winbuild/libgit2/Debug/git2.lib</ImportLibrary>
       <LargeAddressAware>true</LargeAddressAware>
-      <ProgramDataBaseFile>$(OutDir)$(TargetName).pdb</ProgramDataBaseFile>
+      <ProgramDataBaseFile>C:/Games/DarkRadiant_windeps/winbuild/libgit2/Debug/git2.pdb</ProgramDataBaseFile>
       <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <SubSystem>Console</SubSystem>
       <Version>1.1</Version>
@@ -135,13 +135,6 @@
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
     </ProjectReference>
-    <PostBuildEvent>
-      <Command>mkdir $(SolutionDir)..\..\w64deps\libgit2\bin
-mkdir $(SolutionDir)..\..\w64deps\libgit2\lib
-copy /Y $(TargetPath) $(SolutionDir)..\..\w64deps\libgit2\bin
-copy /Y $(OutDir)$(TargetName).pdb $(SolutionDir)..\..\w64deps\libgit2\bin
-copy /Y $(OutDir)$(TargetName).lib $(SolutionDir)..\..\w64deps\libgit2\lib</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -185,13 +178,13 @@ copy /Y $(OutDir)$(TargetName).lib $(SolutionDir)..\..\w64deps\libgit2\lib</Comm
       <AdditionalOptions>%(AdditionalOptions) /GUARD:CF</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
+      <ImportLibrary>C:/Games/DarkRadiant_windeps/winbuild/libgit2/Release/git2.lib</ImportLibrary>
       <LargeAddressAware>true</LargeAddressAware>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <OptimizeReferences>true</OptimizeReferences>
-      <ProgramDataBaseFile>$(OutDir)$(TargetName).pdb</ProgramDataBaseFile>
+      <ProgramDataBaseFile>C:/Games/DarkRadiant_windeps/winbuild/libgit2/Release/git2.pdb</ProgramDataBaseFile>
       <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <SetChecksum>true</SetChecksum>
       <SubSystem>Console</SubSystem>
@@ -200,13 +193,6 @@ copy /Y $(OutDir)$(TargetName).lib $(SolutionDir)..\..\w64deps\libgit2\lib</Comm
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
     </ProjectReference>
-    <PostBuildEvent>
-      <Command>mkdir $(SolutionDir)..\..\w64deps\libgit2\bin
-mkdir $(SolutionDir)..\..\w64deps\libgit2\lib
-copy /Y $(TargetPath) $(SolutionDir)..\..\w64deps\libgit2\bin
-copy /Y $(OutDir)$(TargetName).pdb $(SolutionDir)..\..\w64deps\libgit2\bin
-copy /Y $(OutDir)$(TargetName).lib $(SolutionDir)..\..\w64deps\libgit2\lib</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
     <ClCompile>
@@ -252,11 +238,11 @@ copy /Y $(OutDir)$(TargetName).lib $(SolutionDir)..\..\w64deps\libgit2\lib</Comm
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
+      <ImportLibrary>C:/Games/DarkRadiant_windeps/winbuild/libgit2/MinSizeRel/git2.lib</ImportLibrary>
       <LargeAddressAware>true</LargeAddressAware>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <OptimizeReferences>true</OptimizeReferences>
-      <ProgramDataBaseFile>$(OutDir)$(TargetName).pdb</ProgramDataBaseFile>
+      <ProgramDataBaseFile>C:/Games/DarkRadiant_windeps/winbuild/libgit2/MinSizeRel/git2.pdb</ProgramDataBaseFile>
       <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <SetChecksum>true</SetChecksum>
       <SubSystem>Console</SubSystem>
@@ -265,13 +251,6 @@ copy /Y $(OutDir)$(TargetName).lib $(SolutionDir)..\..\w64deps\libgit2\lib</Comm
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
     </ProjectReference>
-    <PostBuildEvent>
-      <Command>mkdir $(SolutionDir)..\..\w64deps\libgit2\bin
-mkdir $(SolutionDir)..\..\w64deps\libgit2\lib
-copy /Y $(TargetPath) $(SolutionDir)..\..\w64deps\libgit2\bin
-copy /Y $(OutDir)$(TargetName).pdb $(SolutionDir)..\..\w64deps\libgit2\bin
-copy /Y $(OutDir)$(TargetName).lib $(SolutionDir)..\..\w64deps\libgit2\lib</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
     <ClCompile>
@@ -316,11 +295,11 @@ copy /Y $(OutDir)$(TargetName).lib $(SolutionDir)..\..\w64deps\libgit2\lib</Comm
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
+      <ImportLibrary>C:/Games/DarkRadiant_windeps/winbuild/libgit2/RelWithDebInfo/git2.lib</ImportLibrary>
       <LargeAddressAware>true</LargeAddressAware>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <OptimizeReferences>true</OptimizeReferences>
-      <ProgramDataBaseFile>$(OutDir)$(TargetName).pdb</ProgramDataBaseFile>
+      <ProgramDataBaseFile>C:/Games/DarkRadiant_windeps/winbuild/libgit2/RelWithDebInfo/git2.pdb</ProgramDataBaseFile>
       <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <SetChecksum>true</SetChecksum>
       <SubSystem>Console</SubSystem>
@@ -329,13 +308,6 @@ copy /Y $(OutDir)$(TargetName).lib $(SolutionDir)..\..\w64deps\libgit2\lib</Comm
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
     </ProjectReference>
-    <PostBuildEvent>
-      <Command>mkdir $(SolutionDir)..\..\w64deps\libgit2\bin
-mkdir $(SolutionDir)..\..\w64deps\libgit2\lib
-copy /Y $(TargetPath) $(SolutionDir)..\..\w64deps\libgit2\bin
-copy /Y $(OutDir)$(TargetName).pdb $(SolutionDir)..\..\w64deps\libgit2\bin
-copy /Y $(OutDir)$(TargetName).lib $(SolutionDir)..\..\w64deps\libgit2\lib</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <CustomBuild Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\CMakeLists.txt">

@@ -1,5 +1,5 @@
 #include <winver.h>
-#include "../../../../w32deps/libgit2/include/git2/version.h"
+#include "../../../../windeps/libgit2/include/git2/version.h"
 
 #ifndef LIBGIT2_FILENAME
 # ifdef __GNUC__
