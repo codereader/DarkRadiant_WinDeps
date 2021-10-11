@@ -5,3 +5,4 @@
 /winbuild/msvc/x64
 /winbuild/msvc/.vs
 *.pdb
+/winbuild/msvc/*.user
