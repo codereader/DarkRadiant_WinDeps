@@ -27,6 +27,7 @@ Where are all these files from?
 - libzlib - https://zlib.net/
 - Python - https://www.python.org
 - win_iconv - https://github.com/win-iconv/win-iconv
+- wxWidgets - https://wxwidgets.org
 
 Original licences apply.
 
