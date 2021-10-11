@@ -25,6 +25,7 @@ Where are all these files from?
 - libvorbis - https://github.com/xiph/vorbis/
 - libxml2 - http://xmlsoft.org/
 - libzlib - https://zlib.net/
+- Python - https://www.python.org
 - win_iconv - https://github.com/win-iconv/win-iconv
 
 Original licences apply.
