@@ -15,7 +15,7 @@
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <CompileAs>CompileAsC</CompileAs>
       <DisableSpecificWarnings>4996;4127;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>$(W32DepsDir)/libpng/include/;$(W32DepsDir)/libzlib/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(WinDepsDir)/libpng/include/;$(WinDepsDir)/libzlib/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup />
