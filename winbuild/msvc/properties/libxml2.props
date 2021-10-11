@@ -8,7 +8,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(W32DepsDir)win_iconv\include;$(WinDepsDir)libxml2\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(WinDepsDir)win_iconv\include;$(WinDepsDir)libxml2\include;$(WinDepsDir)libzlib\include</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <PreprocessorDefinitions>LIBICONV_PLUG;LIBICONV_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
@@ -17,8 +17,8 @@
     </ClCompile>
     <Link>
       <ImportLibrary>$(OutputBase)/libxml2/lib/$(ProjectName)$(LibSuffix)-vc$(PlatformToolsetVersion).lib</ImportLibrary>
-      <AdditionalDependencies>libiconv$(LibSuffix)-vc$(PlatformToolsetVersion).lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(OutputBase)win_iconv\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libiconv$(LibSuffix)-vc$(PlatformToolsetVersion).lib;libzlib$(LibSuffix)-vc$(PlatformToolsetVersion).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutputBase)win_iconv\lib;$(OutputBase)libzlib\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup />

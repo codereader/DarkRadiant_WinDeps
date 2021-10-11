@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31727.386
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libzlib", "libzlib.vcxproj", "{6780EE95-8768-4138-A89B-47D3504A6E5D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libpng", "libpng.vcxproj", "{D6973076-9317-4EF2-A0B8-B7A18AC0713E}"
@@ -21,6 +23,7 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libxml2", "libxml2.vcxproj", "{338182DC-4F9A-4F5C-92B4-6015874B07BA}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1} = {C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}
+		{6780EE95-8768-4138-A89B-47D3504A6E5D} = {6780EE95-8768-4138-A89B-47D3504A6E5D}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libvorbis", "libvorbis.vcxproj", "{39E0D87F-9C0C-409E-8C6C-32461015C6D8}"
@@ -108,5 +111,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1ABC84C1-B961-4374-A96B-540D3E1FF283}
 	EndGlobalSection
 EndGlobal
