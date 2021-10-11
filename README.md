@@ -10,6 +10,23 @@ The dependencies package needs to be extracted into the main DarkRadiant
 source directory, i.e. alongside the **include/** and **radiant/** directories.
 Just drop the **windeps.7z** in the DarkRadiant folder and use 7-zip's "Extract to here".
 
+## Original Sources
+
+Where are all these files from?
+
+- freetype - https://download.savannah.gnu.org/releases/freetype/
+- FTGL - https://github.com/frankheckenbach/ftgl
+- GLEW - https://github.com/nigels-com/glew
+- libjpeg - https://sourceforge.net/projects/libjpeg/
+- libpng - http://www.libpng.org
+- libsigc++ - https://github.com/libsigcplusplus/libsigcplusplus
+- libvorbis - https://github.com/xiph/vorbis/
+- libxml2 - http://xmlsoft.org/
+- libzlib - https://zlib.net/
+- win_iconv - https://github.com/win-iconv/win-iconv
+
+Original licences apply.
+
 ## Linux / macOS
 
 Linux and Mac users do NOT need anything from this repository, they grab their dependencies from their own package sources.
