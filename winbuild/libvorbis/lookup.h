@@ -5,13 +5,12 @@
  * GOVERNED BY A BSD-STYLE SOURCE LICENSE INCLUDED WITH THIS SOURCE *
  * IN 'COPYING'. PLEASE READ THESE TERMS BEFORE DISTRIBUTING.       *
  *                                                                  *
- * THE OggVorbis SOURCE CODE IS (C) COPYRIGHT 1994-2007             *
- * by the Xiph.Org Foundation http://www.xiph.org/                  *
+ * THE OggVorbis SOURCE CODE IS (C) COPYRIGHT 1994-2009             *
+ * by the Xiph.Org Foundation https://xiph.org/                     *
  *                                                                  *
  ********************************************************************
 
   function: lookup based functions
-  last mod: $Id: lookup.h 13293 2007-07-24 00:09:47Z xiphmont $
 
  ********************************************************************/
 
@@ -27,6 +26,6 @@ extern float vorbis_fromdBlook(float a);
 extern long vorbis_invsqlook_i(long a,long e);
 extern long vorbis_coslook_i(long a);
 extern float vorbis_fromdBlook_i(long a);
-#endif 
+#endif
 
 #endif

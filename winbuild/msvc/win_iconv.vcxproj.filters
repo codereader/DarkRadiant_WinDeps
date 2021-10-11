@@ -6,7 +6,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\w32deps\win_iconv\include\iconv.h">
+    <ClInclude Include="..\..\windeps\win_iconv\include\iconv.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

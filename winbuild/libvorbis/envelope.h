@@ -5,13 +5,12 @@
  * GOVERNED BY A BSD-STYLE SOURCE LICENSE INCLUDED WITH THIS SOURCE *
  * IN 'COPYING'. PLEASE READ THESE TERMS BEFORE DISTRIBUTING.       *
  *                                                                  *
- * THE OggVorbis SOURCE CODE IS (C) COPYRIGHT 1994-2007             *
- * by the Xiph.Org Foundation http://www.xiph.org/                  *
+ * THE OggVorbis SOURCE CODE IS (C) COPYRIGHT 1994-2009             *
+ * by the Xiph.Org Foundation https://xiph.org/                     *
  *                                                                  *
  ********************************************************************
 
  function: PCM data envelope analysis and manipulation
- last mod: $Id: envelope.h 13293 2007-07-24 00:09:47Z xiphmont $
 
  ********************************************************************/
 
@@ -78,4 +77,3 @@ extern int  _ve_envelope_mark(vorbis_dsp_state *v);
 
 
 #endif
-

@@ -6,12 +6,11 @@
  * IN 'COPYING'. PLEASE READ THESE TERMS BEFORE DISTRIBUTING.       *
  *                                                                  *
  * THE OggVorbis SOURCE CODE IS (C) COPYRIGHT 1994-2007             *
- * by the Xiph.Org Foundation http://www.xiph.org/                  *
+ * by the Xiph.Org Foundation https://xiph.org/                     *
  *                                                                  *
  ********************************************************************
 
   function: LPC low level routines
-  last mod: $Id: lpc.h 13293 2007-07-24 00:09:47Z xiphmont $
 
  ********************************************************************/
 
@@ -24,6 +23,6 @@
 extern float vorbis_lpc_from_data(float *data,float *lpc,int n,int m);
 
 extern void vorbis_lpc_predict(float *coeff,float *prime,int m,
-			       float *data,long n);
+                               float *data,long n);
 
 #endif

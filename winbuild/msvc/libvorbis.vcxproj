@@ -52,6 +52,7 @@
     <ClInclude Include="..\libvorbis\books\uncoupled\res_books_uncoupled.h" />
     <ClInclude Include="..\libvorbis\codebook.h" />
     <ClInclude Include="..\libvorbis\codec_internal.h" />
+    <ClInclude Include="..\libvorbis\crctable.h" />
     <ClInclude Include="..\libvorbis\envelope.h" />
     <ClInclude Include="..\libvorbis\highlevel.h" />
     <ClInclude Include="..\libvorbis\lookup.h" />

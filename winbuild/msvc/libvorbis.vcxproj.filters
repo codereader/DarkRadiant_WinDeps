@@ -27,9 +27,6 @@
     <ClCompile Include="..\libvorbis\bitrate.c">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="..\libvorbis\bitwise.c">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="..\libvorbis\block.c">
       <Filter>Sources</Filter>
     </ClCompile>
@@ -43,9 +40,6 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\libvorbis\floor1.c">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\libvorbis\framing.c">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\libvorbis\info.c">
@@ -91,6 +85,12 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="..\libvorbis\window.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libvorbis\bitwise.c">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libvorbis\framing.c">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -211,6 +211,9 @@
     </ClInclude>
     <ClInclude Include="..\libvorbis\books\coupled\res_books_stereo.h">
       <Filter>Sources\books\coupled</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libvorbis\crctable.h">
+      <Filter>Sources</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
