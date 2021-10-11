@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2001-2004 Henry Maddocks <ftgl@opengl.geek.nz>
  * Copyright (c) 2008 Éric Beets <ericbeets@free.fr>
- * Copyright (c) 2008 Sam Hocevar <sam@zoy.org>
+ * Copyright (c) 2008 Sam Hocevar <sam@hocevar.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -48,7 +48,7 @@
 #endif
 
 
-#ifdef WIN32
+#ifdef _WIN32
 
     // Under windows avoid including <windows.h> is overrated.
     // Sure, it can be avoided and "name space pollution" can be
@@ -68,16 +68,12 @@
     #ifndef __gl_h_
         #ifdef SDL_main
             #include "SDL_opengl.h"
-        #elif __APPLE_CC__
+        #elif defined(__APPLE_CC__)
             #include <OpenGL/gl.h>
             #include <OpenGL/glu.h>
         #else
             #include <GL/gl.h>
-            #if defined (__sun__) && !defined (__sparc__)
-                #include <mesa/glu.h>
-            #else
-                #include <GL/glu.h>
-            #endif
+            #include <GL/glu.h>
         #endif
 
     #endif

@@ -2,7 +2,7 @@
  * FTGL - OpenGL font library
  *
  * Copyright (c) 2001-2004 Henry Maddocks <ftgl@opengl.geek.nz>
- * Copyright (c) 2008 Sam Hocevar <sam@zoy.org>
+ * Copyright (c) 2008 Sam Hocevar <sam@hocevar.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -30,6 +30,7 @@
 
 #include "FTInternals.h"
 #include "FTBitmapFontImpl.h"
+#include "FTGL/FTLibrary.h"
 
 
 //
@@ -68,8 +69,13 @@ inline FTPoint FTBitmapFontImpl::RenderI(const T* string, const int len,
                                          FTPoint position, FTPoint spacing,
                                          int renderMode)
 {
-    // Protect GL_BLEND
-    glPushAttrib(GL_COLOR_BUFFER_BIT);
+    bool LegacyOpenGLState = FTLibrary::Instance().GetLegacyOpenGLStateSet();
+    if(LegacyOpenGLState)
+      {
+        // Protect GL_BLEND
+        glPushAttrib(GL_COLOR_BUFFER_BIT);
+        glDisable(GL_BLEND);
+      }
 
     // Protect glPixelStorei() calls (also in FTBitmapGlyphImpl::RenderImpl)
     glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
@@ -77,14 +83,13 @@ inline FTPoint FTBitmapFontImpl::RenderI(const T* string, const int len,
     glPixelStorei(GL_UNPACK_LSB_FIRST, GL_FALSE);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    glDisable(GL_BLEND);
-
     FTPoint tmp = FTFontImpl::Render(string, len,
                                      position, spacing, renderMode);
 
     glPopClientAttrib();
-    glPopAttrib();
 
+    if (LegacyOpenGLState)
+      glPopAttrib();
     return tmp;
 }
 

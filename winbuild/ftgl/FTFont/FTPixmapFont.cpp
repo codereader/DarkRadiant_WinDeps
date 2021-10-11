@@ -2,7 +2,7 @@
  * FTGL - OpenGL font library
  *
  * Copyright (c) 2001-2004 Henry Maddocks <ftgl@opengl.geek.nz>
- * Copyright (c) 2008 Sam Hocevar <sam@zoy.org>
+ * Copyright (c) 2008 Sam Hocevar <sam@hocevar.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -30,6 +30,7 @@
 
 #include "FTInternals.h"
 #include "FTPixmapFontImpl.h"
+#include "FTGL/FTLibrary.h"
 
 
 //
@@ -84,15 +85,36 @@ inline FTPoint FTPixmapFontImpl::RenderI(const T* string, const int len,
                                          FTPoint position, FTPoint spacing,
                                          int renderMode)
 {
-    // Protect GL_TEXTURE_2D and GL_BLEND, glPixelTransferf(), and blending
-    // functions.
-    glPushAttrib(GL_ENABLE_BIT | GL_PIXEL_MODE_BIT | GL_COLOR_BUFFER_BIT);
+    // Protect GL_TEXTURE_2D, glPixelTransferf() and optionally GL_BLEND
+    glPushAttrib(GL_ENABLE_BIT | GL_PIXEL_MODE_BIT | GL_COLOR_BUFFER_BIT
+                  | GL_POLYGON_BIT);
 
     // Protect glPixelStorei() calls (made by FTPixmapGlyphImpl::RenderImpl).
     glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // Needed on OSX
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    if(FTLibrary::Instance().GetLegacyOpenGLStateSet())
+      {
+        glEnable(GL_BLEND);
+        /*
+         * Note: This is the historic legacy behaviour.
+         *
+         * A better blending function (see
+         * https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=742469) is:
+         *
+         *   glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,
+         *                       GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+         *
+         * To use it, set
+         *
+         *   FTLibrary::Instance().LegacyOpenGLState(false);
+         *
+         * and set GL_BLEND and the blending function yourself.
+         */
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      }
 
     glDisable(GL_TEXTURE_2D);
 

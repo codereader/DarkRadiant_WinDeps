@@ -11,7 +11,7 @@
       <PreprocessorDefinitions>_USRDLL;FTGL_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\ftgl;$(W32DepsDir)ftgl\include;$(W32DepsDir)freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\ftgl;$(WinDepsDir)ftgl\include;$(WinDepsDir)freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>freetype$(LibSuffix)-vc$(PlatformToolsetVersion).lib;odbc32.lib;odbccp32.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>

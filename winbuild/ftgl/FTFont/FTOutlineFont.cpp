@@ -2,7 +2,7 @@
  * FTGL - OpenGL font library
  *
  * Copyright (c) 2001-2004 Henry Maddocks <ftgl@opengl.geek.nz>
- * Copyright (c) 2008 Sam Hocevar <sam@zoy.org>
+ * Copyright (c) 2008 Sam Hocevar <sam@hocevar.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -30,6 +30,7 @@
 
 #include "FTInternals.h"
 #include "FTOutlineFontImpl.h"
+#include "FTGL/FTLibrary.h"
 
 
 //
@@ -93,15 +94,34 @@ inline FTPoint FTOutlineFontImpl::RenderI(const T* string, const int len,
                                           FTPoint position, FTPoint spacing,
                                           int renderMode)
 {
-    // Protect GL_TEXTURE_2D, glHint(), GL_LINE_SMOOTH and blending functions
+    // Protect GL_TEXTURE_2D, glHint(), GL_LINE_SMOOTH and optionally GL_BLEND
     glPushAttrib(GL_ENABLE_BIT | GL_HINT_BIT | GL_LINE_BIT
                   | GL_COLOR_BUFFER_BIT);
+
+    if(FTLibrary::Instance().GetLegacyOpenGLStateSet())
+      {
+        glEnable(GL_BLEND);
+        /*
+         * Note: This is the historic legacy behaviour.
+         *
+         * A better blending function (see
+         * https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=742469) is:
+         *
+         *   glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,
+         *                       GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+         *
+         * To use it, set
+         *
+         *   FTLibrary::Instance().LegacyOpenGLState(false);
+         *
+         * and set GL_BLEND and the blending function yourself.
+         */
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      }
 
     glDisable(GL_TEXTURE_2D);
     glEnable(GL_LINE_SMOOTH);
     glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // GL_ONE
 
     FTPoint tmp = FTFontImpl::Render(string, len,
                                      position, spacing, renderMode);

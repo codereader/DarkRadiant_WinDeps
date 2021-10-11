@@ -126,6 +126,18 @@
     <ClCompile Include="..\ftgl\FTLayout\FTSimpleLayout.cpp">
       <Filter>Source Files\FTLayout</Filter>
     </ClCompile>
+    <ClCompile Include="..\ftgl\FTCleanup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ftgl\FTGL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ftgl\FTGlyph\FTTriangleExtractorGlyph.cpp">
+      <Filter>Source Files\FTGlyph</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ftgl\FTFont\FTTriangleExtractorFont.cpp">
+      <Filter>Source Files\FTFont</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\ftgl\FTCharToGlyphIndexMap.h">
@@ -141,9 +153,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\ftgl\FTInternals.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ftgl\FTLibrary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\ftgl\FTList.h">
@@ -164,70 +173,70 @@
     <ClInclude Include="..\ftgl\FTCharmap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\ftgl\include\FTGL\FTBitmapGlyph.h">
+    <ClInclude Include="..\..\windeps\ftgl\include\FTGL\FTBitmapGlyph.h">
       <Filter>Header Files\FTGL</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\ftgl\include\FTGL\FTBuffer.h">
+    <ClInclude Include="..\..\windeps\ftgl\include\FTGL\FTBuffer.h">
       <Filter>Header Files\FTGL</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\ftgl\include\FTGL\FTBufferFont.h">
+    <ClInclude Include="..\..\windeps\ftgl\include\FTGL\FTBufferFont.h">
       <Filter>Header Files\FTGL</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\ftgl\include\FTGL\FTBufferGlyph.h">
+    <ClInclude Include="..\..\windeps\ftgl\include\FTGL\FTBufferGlyph.h">
       <Filter>Header Files\FTGL</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\ftgl\include\FTGL\FTExtrdGlyph.h">
+    <ClInclude Include="..\..\windeps\ftgl\include\FTGL\FTExtrdGlyph.h">
       <Filter>Header Files\FTGL</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\ftgl\include\FTGL\FTFont.h">
+    <ClInclude Include="..\..\windeps\ftgl\include\FTGL\FTFont.h">
       <Filter>Header Files\FTGL</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\ftgl\include\FTGL\ftgl.h">
+    <ClInclude Include="..\..\windeps\ftgl\include\FTGL\ftgl.h">
       <Filter>Header Files\FTGL</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\ftgl\include\FTGL\FTGLBitmapFont.h">
+    <ClInclude Include="..\..\windeps\ftgl\include\FTGL\FTGLBitmapFont.h">
       <Filter>Header Files\FTGL</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\ftgl\include\FTGL\FTGLExtrdFont.h">
+    <ClInclude Include="..\..\windeps\ftgl\include\FTGL\FTGLExtrdFont.h">
       <Filter>Header Files\FTGL</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\ftgl\include\FTGL\FTGLOutlineFont.h">
+    <ClInclude Include="..\..\windeps\ftgl\include\FTGL\FTGLOutlineFont.h">
       <Filter>Header Files\FTGL</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\ftgl\include\FTGL\FTGLPixmapFont.h">
+    <ClInclude Include="..\..\windeps\ftgl\include\FTGL\FTGLPixmapFont.h">
       <Filter>Header Files\FTGL</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\ftgl\include\FTGL\FTGLPolygonFont.h">
+    <ClInclude Include="..\..\windeps\ftgl\include\FTGL\FTGLPolygonFont.h">
       <Filter>Header Files\FTGL</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\ftgl\include\FTGL\FTGLTextureFont.h">
+    <ClInclude Include="..\..\windeps\ftgl\include\FTGL\FTGLTextureFont.h">
       <Filter>Header Files\FTGL</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\ftgl\include\FTGL\FTGlyph.h">
+    <ClInclude Include="..\..\windeps\ftgl\include\FTGL\FTGlyph.h">
       <Filter>Header Files\FTGL</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\ftgl\include\FTGL\FTLayout.h">
+    <ClInclude Include="..\..\windeps\ftgl\include\FTGL\FTLayout.h">
       <Filter>Header Files\FTGL</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\ftgl\include\FTGL\FTOutlineGlyph.h">
+    <ClInclude Include="..\..\windeps\ftgl\include\FTGL\FTOutlineGlyph.h">
       <Filter>Header Files\FTGL</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\ftgl\include\FTGL\FTPixmapGlyph.h">
+    <ClInclude Include="..\..\windeps\ftgl\include\FTGL\FTPixmapGlyph.h">
       <Filter>Header Files\FTGL</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\ftgl\include\FTGL\FTPoint.h">
+    <ClInclude Include="..\..\windeps\ftgl\include\FTGL\FTPoint.h">
       <Filter>Header Files\FTGL</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\ftgl\include\FTGL\FTPolyGlyph.h">
+    <ClInclude Include="..\..\windeps\ftgl\include\FTGL\FTPolyGlyph.h">
       <Filter>Header Files\FTGL</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\ftgl\include\FTGL\FTSimpleLayout.h">
+    <ClInclude Include="..\..\windeps\ftgl\include\FTGL\FTSimpleLayout.h">
       <Filter>Header Files\FTGL</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\ftgl\include\FTGL\FTTextureGlyph.h">
+    <ClInclude Include="..\..\windeps\ftgl\include\FTGL\FTTextureGlyph.h">
       <Filter>Header Files\FTGL</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\ftgl\include\FTGL\FTBBox.h">
+    <ClInclude Include="..\..\windeps\ftgl\include\FTGL\FTBBox.h">
       <Filter>Header Files\FTGL</Filter>
     </ClInclude>
     <ClInclude Include="..\ftgl\FTFont\FTOutlineFontImpl.h">
@@ -283,6 +292,15 @@
     </ClInclude>
     <ClInclude Include="..\ftgl\FTLayout\FTLayoutImpl.h">
       <Filter>Header Files\FTLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ftgl\FTCleanup.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ftgl\FTGlyph\FTTriangleExtractorGlyphImpl.h">
+      <Filter>Source Files\FTGlyph</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ftgl\FTFont\FTTriangleExtractorFontImpl.h">
+      <Filter>Source Files\FTFont</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
