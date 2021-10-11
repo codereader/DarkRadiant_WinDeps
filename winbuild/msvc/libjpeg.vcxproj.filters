@@ -227,40 +227,40 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\w32deps\libjpeg\include\cderror.h">
+    <ClInclude Include="..\..\windeps\libjpeg\include\cderror.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\libjpeg\include\cdjpeg.h">
+    <ClInclude Include="..\..\windeps\libjpeg\include\cdjpeg.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\libjpeg\include\jdct.h">
+    <ClInclude Include="..\..\windeps\libjpeg\include\jdct.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\libjpeg\include\jerror.h">
+    <ClInclude Include="..\..\windeps\libjpeg\include\jerror.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\libjpeg\include\jinclude.h">
+    <ClInclude Include="..\..\windeps\libjpeg\include\jinclude.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\libjpeg\include\jmemsys.h">
+    <ClInclude Include="..\..\windeps\libjpeg\include\jmemsys.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\libjpeg\include\jmorecfg.h">
+    <ClInclude Include="..\..\windeps\libjpeg\include\jmorecfg.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\libjpeg\include\jpegint.h">
+    <ClInclude Include="..\..\windeps\libjpeg\include\jpegint.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\libjpeg\include\jpeglib.h">
+    <ClInclude Include="..\..\windeps\libjpeg\include\jpeglib.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\libjpeg\include\jversion.h">
+    <ClInclude Include="..\..\windeps\libjpeg\include\jversion.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\libjpeg\include\transupp.h">
+    <ClInclude Include="..\..\windeps\libjpeg\include\transupp.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\w32deps\libjpeg\include\jconfig.h">
+    <ClInclude Include="..\..\windeps\libjpeg\include\jconfig.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

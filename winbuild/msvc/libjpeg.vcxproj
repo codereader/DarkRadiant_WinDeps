@@ -134,7 +134,12 @@
     <ClCompile Include="..\libjpeg\rdbmp.c" />
     <ClCompile Include="..\libjpeg\rdcolmap.c" />
     <ClCompile Include="..\libjpeg\rdgif.c" />
-    <ClCompile Include="..\libjpeg\rdjpgcom.c" />
+    <ClCompile Include="..\libjpeg\rdjpgcom.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\libjpeg\rdppm.c" />
     <ClCompile Include="..\libjpeg\rdrle.c" />
     <ClCompile Include="..\libjpeg\rdswitch.c" />
@@ -148,18 +153,18 @@
     <ClCompile Include="..\libjpeg\wrtarga.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\w32deps\libjpeg\include\cderror.h" />
-    <ClInclude Include="..\..\w32deps\libjpeg\include\cdjpeg.h" />
-    <ClInclude Include="..\..\w32deps\libjpeg\include\jconfig.h" />
-    <ClInclude Include="..\..\w32deps\libjpeg\include\jdct.h" />
-    <ClInclude Include="..\..\w32deps\libjpeg\include\jerror.h" />
-    <ClInclude Include="..\..\w32deps\libjpeg\include\jinclude.h" />
-    <ClInclude Include="..\..\w32deps\libjpeg\include\jmemsys.h" />
-    <ClInclude Include="..\..\w32deps\libjpeg\include\jmorecfg.h" />
-    <ClInclude Include="..\..\w32deps\libjpeg\include\jpegint.h" />
-    <ClInclude Include="..\..\w32deps\libjpeg\include\jpeglib.h" />
-    <ClInclude Include="..\..\w32deps\libjpeg\include\jversion.h" />
-    <ClInclude Include="..\..\w32deps\libjpeg\include\transupp.h" />
+    <ClInclude Include="..\..\windeps\libjpeg\include\cderror.h" />
+    <ClInclude Include="..\..\windeps\libjpeg\include\cdjpeg.h" />
+    <ClInclude Include="..\..\windeps\libjpeg\include\jconfig.h" />
+    <ClInclude Include="..\..\windeps\libjpeg\include\jdct.h" />
+    <ClInclude Include="..\..\windeps\libjpeg\include\jerror.h" />
+    <ClInclude Include="..\..\windeps\libjpeg\include\jinclude.h" />
+    <ClInclude Include="..\..\windeps\libjpeg\include\jmemsys.h" />
+    <ClInclude Include="..\..\windeps\libjpeg\include\jmorecfg.h" />
+    <ClInclude Include="..\..\windeps\libjpeg\include\jpegint.h" />
+    <ClInclude Include="..\..\windeps\libjpeg\include\jpeglib.h" />
+    <ClInclude Include="..\..\windeps\libjpeg\include\jversion.h" />
+    <ClInclude Include="..\..\windeps\libjpeg\include\transupp.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{13F034FC-2F0F-474E-B362-1C5750613C52}</ProjectGuid>
@@ -230,9 +235,9 @@
     <ClCompile />
     <Link>
       <AdditionalDependencies>libiconv-vc100-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(SolutionDir)\..\..\..\w32deps\libxml2\bin\$(TargetName).dll</OutputFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w32deps\win_iconv\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImportLibrary>$(SolutionDir)\..\..\..\w32deps\libxml2\lib\$(TargetName).lib</ImportLibrary>
+      <OutputFile>$(SolutionDir)\..\..\..\windeps\libxml2\bin\$(TargetName).dll</OutputFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\windeps\win_iconv\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>$(SolutionDir)\..\..\..\windeps\libxml2\lib\$(TargetName).lib</ImportLibrary>
       <IgnoreSpecificDefaultLibraries>MSVCRT.lib</IgnoreSpecificDefaultLibraries>
     </Link>
     <ClCompile />
@@ -256,9 +261,9 @@
     <ClCompile />
     <Link>
       <AdditionalDependencies>libiconv-vc100.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(SolutionDir)\..\..\..\w32deps\libxml2\bin\$(TargetName).dll</OutputFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\w32deps\win_iconv\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImportLibrary>$(SolutionDir)\..\..\..\w32deps\libxml2\lib\$(TargetName).lib</ImportLibrary>
+      <OutputFile>$(SolutionDir)\..\..\..\windeps\libxml2\bin\$(TargetName).dll</OutputFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\..\..\windeps\win_iconv\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>$(SolutionDir)\..\..\..\windeps\libxml2\lib\$(TargetName).lib</ImportLibrary>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
     </Link>
