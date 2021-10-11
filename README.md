@@ -17,6 +17,8 @@ Where are all these files from?
 - freetype - https://download.savannah.gnu.org/releases/freetype/
 - FTGL - https://github.com/frankheckenbach/ftgl
 - GLEW - https://github.com/nigels-com/glew
+- libeigen - https://gitlab.com/libeigen/eigen
+- libgit2 - https://github.com/libgit2/libgit2
 - libjpeg - https://sourceforge.net/projects/libjpeg/
 - libpng - http://www.libpng.org
 - libsigc++ - https://github.com/libsigcplusplus/libsigcplusplus
