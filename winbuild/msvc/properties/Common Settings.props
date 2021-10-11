@@ -4,6 +4,7 @@
   <PropertyGroup Label="UserMacros">
     <W32DepsDir>$(SolutionDir)../../w32deps/</W32DepsDir>
     <W64DepsDir>$(SolutionDir)../../w64deps/</W64DepsDir>
+    <WinDepsDir>$(SolutionDir)../../windeps/</WinDepsDir>
   </PropertyGroup>
   <PropertyGroup>
     <IntDir>$(SolutionDir)\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
@@ -25,6 +26,9 @@
     </BuildMacro>
     <BuildMacro Include="W64DepsDir">
       <Value>$(W64DepsDir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="WinDepsDir">
+      <Value>$(WinDepsDir)</Value>
     </BuildMacro>
   </ItemGroup>
 </Project>

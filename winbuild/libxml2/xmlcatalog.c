@@ -312,7 +312,8 @@ static void usage(const char *name) {
     /* split into 2 printf's to avoid overly long string (gcc warning) */
     printf("\
 Usage : %s [options] catalogfile entities...\n\
-\tParse the catalog file and query it for the entities\n\
+\tParse the catalog file (void specification possibly expressed as \"\"\n\
+\tappoints the default system one) and query it for the entities\n\
 \t--sgml : handle SGML Super catalogs for --add and --del\n\
 \t--shell : run a shell allowing interactive queries\n\
 \t--create : create a new catalog\n\
@@ -324,7 +325,7 @@ Usage : %s [options] catalogfile entities...\n\
 \t         used with --add or --del, it saves the catalog changes\n\
 \t         and with --sgml it automatically updates the super catalog\n\
 \t--no-super-update: do not update the SGML super catalog\n\
-\t-v --verbose : provide debug informations\n");
+\t-v --verbose : provide debug information\n");
 }
 int main(int argc, char **argv) {
     int i;
@@ -408,11 +409,18 @@ int main(int argc, char **argv) {
 	    continue;
 	} else if (argv[i][0] == '-')
 	    continue;
-	filename = argv[i];
+
+	if (filename == NULL && argv[i][0] == '\0') {
+	    /* Interpret empty-string catalog specification as
+	       a shortcut for a default system catalog. */
+	    xmlInitializeCatalog();
+	} else {
+	    filename = argv[i];
 	    ret = xmlLoadCatalog(argv[i]);
 	    if ((ret < 0) && (create)) {
 		xmlCatalogAdd(BAD_CAST "catalog", BAD_CAST argv[i], NULL);
 	    }
+	}
 	break;
     }
 

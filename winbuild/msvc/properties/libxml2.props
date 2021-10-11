@@ -8,7 +8,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(W32DepsDir)win_iconv\include;$(W32DepsDir)libxml2\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(W32DepsDir)win_iconv\include;$(WinDepsDir)libxml2\include</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <PreprocessorDefinitions>LIBICONV_PLUG;LIBICONV_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
