@@ -2,8 +2,8 @@
 #include <winver.h>
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,2,8,1
- PRODUCTVERSION 2,2,8,1
+ FILEVERSION 2,10,7,1
+ PRODUCTVERSION 2,10,7,1
  FILEFLAGSMASK 0
  FILEFLAGS 0x0L
  FILEOS VOS__WINDOWS32
@@ -16,11 +16,11 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "The libsigc++ development team (see AUTHORS)"
             VALUE "FileDescription", "The Typesafe Callback Framework for C++"
-            VALUE "FileVersion", "2.2.8"
+            VALUE "FileVersion", "2.10.7"
             VALUE "LegalCopyright", "Distribution is under the LGPL (see COPYING)"
             VALUE "OriginalFilename", "sigc-2.0.dll"
             VALUE "ProductName", "libsigc++"
-            VALUE "ProductVersion", "2.2.8"
+            VALUE "ProductVersion", "2.10.7"
         END
     END
     BLOCK "VarFileInfo"

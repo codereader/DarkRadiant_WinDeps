@@ -1,4 +1,3 @@
-// -*- c++ -*-
 /*
  * Copyright 2002, The libsigc++ Development Team
  *
@@ -19,12 +18,11 @@
  */
 
 #include <sigc++/connection.h>
-using namespace std;
 
 namespace sigc {
 
-connection::connection()
-: slot_(0)
+connection::connection() noexcept
+: slot_(nullptr)
 {}
 
 connection::connection(const connection& c)
@@ -54,27 +52,27 @@ connection::~connection()
     slot_->remove_destroy_notify_callback(this);
 }
 
-bool connection::empty() const
+bool connection::empty() const noexcept
 {
   return (!slot_ || slot_->empty());
 }
 
-bool connection::connected() const
+bool connection::connected() const noexcept
 {
   return !empty();
 }
 
-bool connection::blocked() const
+bool connection::blocked() const noexcept
 {
   return (slot_ ? slot_->blocked() : false);
 }
 
-bool connection::block(bool should_block)
+bool connection::block(bool should_block) noexcept
 {
   return (slot_ ? slot_->block(should_block) : false);
 }
 
-bool connection::unblock()
+bool connection::unblock() noexcept
 {
   return (slot_ ? slot_->unblock() : false);
 }
@@ -85,7 +83,7 @@ void connection::disconnect()
     slot_->disconnect(); // This notifies slot_'s parent.
 } 
 
-connection::operator bool()
+connection::operator bool() noexcept
 {
   return !empty();
 }
@@ -103,9 +101,9 @@ void connection::set_slot(slot_base* sl)
 
 void* connection::notify(void* data)
 {
-  connection* self = reinterpret_cast<connection*>(data);
-  self->slot_ = 0;
-  return 0;
+  auto self = reinterpret_cast<connection*>(data);
+  self->slot_ = nullptr;
+  return nullptr;
 }
 
 } /* namespace sigc */

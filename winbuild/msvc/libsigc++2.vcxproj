@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\libsigc++\adaptors\lambda\lambda.cc" />
     <ClCompile Include="..\libsigc++\connection.cc">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDebugDLL</RuntimeLibrary>
@@ -162,67 +163,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\libsigc++\adaptors\lambda\lambda.cc">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <DebugInformationFormat Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </PrecompiledHeader>
-      <DebugInformationFormat Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MultiThreadedDLL</RuntimeLibrary>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </PrecompiledHeader>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MultiThreadedDLL</RuntimeLibrary>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\libsigc++\signal.cc">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <DebugInformationFormat Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </PrecompiledHeader>
-      <DebugInformationFormat Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MultiThreadedDLL</RuntimeLibrary>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </PrecompiledHeader>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MultiThreadedDLL</RuntimeLibrary>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="..\libsigc++\signal_base.cc">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <DebugInformationFormat Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </PrecompiledHeader>
-      <DebugInformationFormat Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MultiThreadedDLL</RuntimeLibrary>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </PrecompiledHeader>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MultiThreadedDLL</RuntimeLibrary>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\libsigc++\functors\slot.cc">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -287,47 +228,39 @@
     <ResourceCompile Include="..\libsigc++\sigc.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\adaptors\adaptors.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\adaptors\adaptor_trait.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\adaptors\bind.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\adaptors\bind_return.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\adaptors\bound_argument.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\adaptors\compose.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\adaptors\deduce_result_type.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\adaptors\exception_catch.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\adaptors\hide.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\adaptors\lambda\base.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\adaptors\lambda\group.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\adaptors\lambda\lambda.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\adaptors\lambda\operator.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\adaptors\lambda\select.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\adaptors\retype.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\adaptors\retype_return.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\bind.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\bind_return.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\class_slot.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\connection.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\functors\functors.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\functors\functor_trait.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\functors\mem_fun.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\functors\ptr_fun.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\functors\slot.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\functors\slot_base.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\hide.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\limit_reference.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\method_slot.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\object.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\object_slot.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\reference_wrapper.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\retype.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\retype_return.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\sigc++.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\signal.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\signal_base.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\slot.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\trackable.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\type_traits.h" />
-    <ClInclude Include="..\..\w32deps\libsigc++\include\sigc++\visit_each.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\adaptors.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\adaptor_trait.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\bind.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\bind_return.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\bound_argument.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\compose.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\deduce_result_type.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\exception_catch.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\hide.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\lambda\base.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\lambda\select.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\retype.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\retype_return.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\track_obj.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\bind.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\bind_return.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\connection.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\functors\functors.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\functors\functor_trait.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\functors\mem_fun.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\functors\ptr_fun.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\functors\slot.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\functors\slot_base.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\limit_reference.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\reference_wrapper.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\retype_return.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\sigc++.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\signal.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\signal_base.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\slot.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\trackable.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\type_traits.h" />
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\visit_each.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
