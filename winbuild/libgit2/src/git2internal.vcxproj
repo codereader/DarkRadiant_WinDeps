@@ -112,6 +112,8 @@
     </Midl>
     <Lib>
       <AdditionalOptions>%(AdditionalOptions) /IGNORE:4221</AdditionalOptions>
+      <AdditionalDependencies>pcre.lib;http-parser.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\deps\pcre\pcre.dir\$(Configuration);..\deps\http-parser\http-parser.dir\$(Configuration)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -151,6 +153,8 @@
     </Midl>
     <Lib>
       <AdditionalOptions>%(AdditionalOptions) /IGNORE:4221</AdditionalOptions>
+      <AdditionalDependencies>pcre.lib;http-parser.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\deps\pcre\pcre.dir\$(Configuration);..\deps\http-parser\http-parser.dir\$(Configuration)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
