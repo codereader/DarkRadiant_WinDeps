@@ -3,17 +3,17 @@
 The winbuild folder contains all the sources needed to build the x64 dependency binaries
 (x86 support has been dropped in October 2021).
 
-There is a solution file for VC++ 2019:
+There is a solution file for VC++ 2022:
 
-	Visual Studio 2019: msvc/darkradiant_windeps.sln
+	Visual Studio 2022: msvc/darkradiant_windeps.sln
 
 The DarkRadiant_WinDeps folder contains two directories: windeps and winbuild.
 The VC++ projects in the winbuild folder will place their binaries in the windeps folder, 
 which you can copy and paste into your DarkRadiant folder to compile the editor.
 
-== Compile Scripts (VC++ 2019) ==
+== Compile Scripts (VC++ 2022) ==
 
-For VC++ 2019 you can use the shell script in the winbuild folder: Open a VC++ 2019 Developer Command Prompt and head to the
+For VC++ 2022 you can use the shell script in the winbuild folder: Open a VC++ 2022 Developer Command Prompt and head to the
 winbuild directory, then call the batch file:
 
 * build_all.x64.cmd => Compiles the 64 bit solution (Debug & Release versions).
