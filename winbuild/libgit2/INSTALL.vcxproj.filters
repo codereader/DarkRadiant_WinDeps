@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <CustomBuild Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\CMakeFiles\82aae87e384212a2665d317802359dba\INSTALL_force.rule">
       <Filter>CMake Rules</Filter>

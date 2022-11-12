@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <PreferredToolArchitecture>x64</PreferredToolArchitecture>
   </PropertyGroup>
@@ -23,8 +23,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{602A913E-56F8-342B-B18D-60DFD68A02A4}</ProjectGuid>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.22000.0</WindowsTargetPlatformVersion>
     <Platform>x64</Platform>
     <ProjectName>git2internal</ProjectName>
     <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
@@ -43,12 +43,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -95,11 +95,11 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <UseFullPaths>false</UseFullPaths>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;HAVE_QSORT_S;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WIN32_WINNT=0x0600;SHA1DC_NO_STANDARD_INCLUDES=1;SHA1DC_CUSTOM_INCLUDE_SHA1_C="common.h";SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C="common.h";CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;_DEBUG;HAVE_QSORT_S;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WIN32_WINNT=0x0600;SHA1DC_NO_STANDARD_INCLUDES=1;SHA1DC_CUSTOM_INCLUDE_SHA1_C="common.h";SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C="common.h";CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;HAVE_QSORT_S;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WIN32_WINNT=0x0600;SHA1DC_NO_STANDARD_INCLUDES=1;SHA1DC_CUSTOM_INCLUDE_SHA1_C=\"common.h\";SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C=\"common.h\";CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;HAVE_QSORT_S;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WIN32_WINNT=0x0600;SHA1DC_NO_STANDARD_INCLUDES=1;SHA1DC_CUSTOM_INCLUDE_SHA1_C=\"common.h\";SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C=\"common.h\";CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\Games\DarkRadiant_windeps\winbuild\libgit2\src;C:\Games\DarkRadiant_windeps\winbuild\libgit2\include;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\pcre;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\http-parser;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
@@ -135,12 +135,12 @@
       <UseFullPaths>false</UseFullPaths>
       <WarningLevel>Level3</WarningLevel>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;HAVE_QSORT_S;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WIN32_WINNT=0x0600;SHA1DC_NO_STANDARD_INCLUDES=1;SHA1DC_CUSTOM_INCLUDE_SHA1_C="common.h";SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C="common.h";CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;HAVE_QSORT_S;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WIN32_WINNT=0x0600;SHA1DC_NO_STANDARD_INCLUDES=1;SHA1DC_CUSTOM_INCLUDE_SHA1_C="common.h";SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C="common.h";CMAKE_INTDIR="Release"</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;HAVE_QSORT_S;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WIN32_WINNT=0x0600;SHA1DC_NO_STANDARD_INCLUDES=1;SHA1DC_CUSTOM_INCLUDE_SHA1_C=\"common.h\";SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C=\"common.h\";CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;HAVE_QSORT_S;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WIN32_WINNT=0x0600;SHA1DC_NO_STANDARD_INCLUDES=1;SHA1DC_CUSTOM_INCLUDE_SHA1_C=\"common.h\";SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C=\"common.h\";CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\Games\DarkRadiant_windeps\winbuild\libgit2\src;C:\Games\DarkRadiant_windeps\winbuild\libgit2\include;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\pcre;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\http-parser;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
@@ -176,13 +176,13 @@
       <UseFullPaths>false</UseFullPaths>
       <WarningLevel>Level3</WarningLevel>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;HAVE_QSORT_S;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WIN32_WINNT=0x0600;SHA1DC_NO_STANDARD_INCLUDES=1;SHA1DC_CUSTOM_INCLUDE_SHA1_C="common.h";SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C="common.h";CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;HAVE_QSORT_S;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WIN32_WINNT=0x0600;SHA1DC_NO_STANDARD_INCLUDES=1;SHA1DC_CUSTOM_INCLUDE_SHA1_C="common.h";SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C="common.h";CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <DebugInformationFormat>
       </DebugInformationFormat>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;HAVE_QSORT_S;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WIN32_WINNT=0x0600;SHA1DC_NO_STANDARD_INCLUDES=1;SHA1DC_CUSTOM_INCLUDE_SHA1_C=\"common.h\";SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C=\"common.h\";CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;HAVE_QSORT_S;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WIN32_WINNT=0x0600;SHA1DC_NO_STANDARD_INCLUDES=1;SHA1DC_CUSTOM_INCLUDE_SHA1_C=\"common.h\";SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C=\"common.h\";CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\Games\DarkRadiant_windeps\winbuild\libgit2\src;C:\Games\DarkRadiant_windeps\winbuild\libgit2\include;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\pcre;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\http-parser;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
@@ -217,11 +217,11 @@
       <UseFullPaths>false</UseFullPaths>
       <WarningLevel>Level3</WarningLevel>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;HAVE_QSORT_S;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WIN32_WINNT=0x0600;SHA1DC_NO_STANDARD_INCLUDES=1;SHA1DC_CUSTOM_INCLUDE_SHA1_C="common.h";SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C="common.h";CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;HAVE_QSORT_S;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WIN32_WINNT=0x0600;SHA1DC_NO_STANDARD_INCLUDES=1;SHA1DC_CUSTOM_INCLUDE_SHA1_C="common.h";SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C="common.h";CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;HAVE_QSORT_S;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WIN32_WINNT=0x0600;SHA1DC_NO_STANDARD_INCLUDES=1;SHA1DC_CUSTOM_INCLUDE_SHA1_C=\"common.h\";SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C=\"common.h\";CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;HAVE_QSORT_S;_FILE_OFFSET_BITS=64;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WIN32_WINNT=0x0600;SHA1DC_NO_STANDARD_INCLUDES=1;SHA1DC_CUSTOM_INCLUDE_SHA1_C=\"common.h\";SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C=\"common.h\";CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\Games\DarkRadiant_windeps\winbuild\libgit2\src;C:\Games\DarkRadiant_windeps\winbuild\libgit2\include;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\pcre;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\http-parser;C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
@@ -238,10 +238,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <CustomBuild Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\CMakeLists.txt">
-      <StdOutEncoding>UTF-8</StdOutEncoding>
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Games/DarkRadiant_windeps/winbuild/libgit2/src/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
-"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Games/DarkRadiant_windeps/winbuild/libgit2 -BC:/Games/DarkRadiant_windeps/winbuild/libgit2 --check-stamp-file C:/Games/DarkRadiant_windeps/winbuild/libgit2/src/CMakeFiles/generate.stamp
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Games/DarkRadiant_windeps/winbuild/libgit2 -BC:/Games/DarkRadiant_windeps/winbuild/libgit2 --check-stamp-file C:/Games/DarkRadiant_windeps/winbuild/libgit2/src/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -249,12 +249,12 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindGSSAPI.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindPCRE.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindmbedTLS.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\PkgBuildConfig.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SanitizeBool.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectGSSAPI.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectHTTPSBackend.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectHashes.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\features.h.in;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindOpenSSL.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindPackageMessage.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindZLIB.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\SelectLibraryConfigurations.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindGSSAPI.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindPCRE.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindmbedTLS.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\PkgBuildConfig.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SanitizeBool.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectGSSAPI.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectHTTPSBackend.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectHashes.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\features.h.in;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeConfigurableFile.in;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CheckFunctionExists.c;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CheckPrototypeDefinition.c.in;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\FindOpenSSL.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\FindPackageMessage.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\FindZLIB.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\SelectLibraryConfigurations.cmake;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Games/DarkRadiant_windeps/winbuild/libgit2/src/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
-"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Games/DarkRadiant_windeps/winbuild/libgit2 -BC:/Games/DarkRadiant_windeps/winbuild/libgit2 --check-stamp-file C:/Games/DarkRadiant_windeps/winbuild/libgit2/src/CMakeFiles/generate.stamp
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Games/DarkRadiant_windeps/winbuild/libgit2 -BC:/Games/DarkRadiant_windeps/winbuild/libgit2 --check-stamp-file C:/Games/DarkRadiant_windeps/winbuild/libgit2/src/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -262,12 +262,12 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindGSSAPI.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindPCRE.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindmbedTLS.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\PkgBuildConfig.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SanitizeBool.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectGSSAPI.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectHTTPSBackend.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectHashes.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\features.h.in;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindOpenSSL.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindPackageMessage.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindZLIB.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\SelectLibraryConfigurations.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindGSSAPI.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindPCRE.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindmbedTLS.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\PkgBuildConfig.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SanitizeBool.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectGSSAPI.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectHTTPSBackend.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectHashes.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\features.h.in;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeConfigurableFile.in;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CheckFunctionExists.c;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CheckPrototypeDefinition.c.in;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\FindOpenSSL.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\FindPackageMessage.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\FindZLIB.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\SelectLibraryConfigurations.cmake;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
       <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/Games/DarkRadiant_windeps/winbuild/libgit2/src/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
-"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Games/DarkRadiant_windeps/winbuild/libgit2 -BC:/Games/DarkRadiant_windeps/winbuild/libgit2 --check-stamp-file C:/Games/DarkRadiant_windeps/winbuild/libgit2/src/CMakeFiles/generate.stamp
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Games/DarkRadiant_windeps/winbuild/libgit2 -BC:/Games/DarkRadiant_windeps/winbuild/libgit2 --check-stamp-file C:/Games/DarkRadiant_windeps/winbuild/libgit2/src/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -275,12 +275,12 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindGSSAPI.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindPCRE.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindmbedTLS.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\PkgBuildConfig.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SanitizeBool.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectGSSAPI.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectHTTPSBackend.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectHashes.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\features.h.in;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindOpenSSL.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindPackageMessage.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindZLIB.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\SelectLibraryConfigurations.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindGSSAPI.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindPCRE.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindmbedTLS.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\PkgBuildConfig.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SanitizeBool.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectGSSAPI.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectHTTPSBackend.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectHashes.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\features.h.in;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeConfigurableFile.in;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CheckFunctionExists.c;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CheckPrototypeDefinition.c.in;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\FindOpenSSL.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\FindPackageMessage.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\FindZLIB.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\SelectLibraryConfigurations.cmake;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
       <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/Games/DarkRadiant_windeps/winbuild/libgit2/src/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
-"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Games/DarkRadiant_windeps/winbuild/libgit2 -BC:/Games/DarkRadiant_windeps/winbuild/libgit2 --check-stamp-file C:/Games/DarkRadiant_windeps/winbuild/libgit2/src/CMakeFiles/generate.stamp
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Games/DarkRadiant_windeps/winbuild/libgit2 -BC:/Games/DarkRadiant_windeps/winbuild/libgit2 --check-stamp-file C:/Games/DarkRadiant_windeps/winbuild/libgit2/src/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -288,7 +288,7 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindGSSAPI.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindPCRE.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindmbedTLS.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\PkgBuildConfig.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SanitizeBool.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectGSSAPI.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectHTTPSBackend.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectHashes.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\features.h.in;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindOpenSSL.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindPackageMessage.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\FindZLIB.cmake;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.20\Modules\SelectLibraryConfigurations.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindGSSAPI.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindPCRE.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\FindmbedTLS.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\PkgBuildConfig.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SanitizeBool.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectGSSAPI.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectHTTPSBackend.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\cmake\SelectHashes.cmake;C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\features.h.in;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeConfigurableFile.in;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CheckFunctionExists.c;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CheckPrototypeDefinition.c.in;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\FindOpenSSL.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\FindPackageMessage.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\FindZLIB.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\SelectLibraryConfigurations.cmake;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
     </CustomBuild>
