@@ -1,5 +1,5 @@
 /*
- * Copyright 2003, The libsigc++ Development Team
+ * Copyright 2003 - 2016, The libsigc++ Development Team
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public
@@ -16,19 +16,19 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
  */
-#ifndef _SIGC_SLOT_BASE_HPP_
-#define _SIGC_SLOT_BASE_HPP_
+#ifndef SIGC_SLOT_BASE_HPP
+#define SIGC_SLOT_BASE_HPP
 
 #include <sigc++config.h>
 #include <sigc++/trackable.h>
-#include <sigc++/functors/functor_trait.h>
 
 namespace sigc
 {
 
-namespace internal {
+namespace internal
+{
 
-typedef void* (*hook)(void*);
+using hook = void* (*)(void*);
 
 /** Internal representation of a slot.
  * Derivations of this class can be considered as a link
@@ -40,20 +40,21 @@ typedef void* (*hook)(void*);
  *
  * The base class slot_rep serves the purpose to
  * - form a common pointer type (slot_rep*),
- * - offer the possibility to create duplicates (dup()),
- * - offer a notification callback (notify()),
+ * - offer the possibility to create duplicates (clone()),
+ * - offer a notification callback (notify_slot_rep_invalidated()),
  * - implement some of slot_base's interface that depends
  *   on the notification callback, i.e.
  *   -# the possibility to set a single parent with a callback
- *      (set_parent()) that is executed from notify(),
+ *      (set_parent()) that is executed from notify_slot_rep_invalidated(),
  *   -# a generic function pointer, call_, that is simply
- *      set to zero in notify() to invalidate the slot.
+ *      set to zero in notify_slot_rep_invalidated() to invalidate the slot.
  *
  * slot_rep inherits trackable so that connection objects can
  * refer to the slot and are notified when the slot is destroyed.
  */
 struct SIGC_API slot_rep : public trackable
 {
+public:
   slot_rep(const slot_rep& src) = delete;
   slot_rep& operator=(const slot_rep& src) = delete;
 
@@ -63,38 +64,13 @@ struct SIGC_API slot_rep : public trackable
   /* NB: Instead of slot_rep we could inherit slot_base from trackable.
    * However, a simple benchmark seems to indicate that this slows
    * down dereferencing of slot list iterators. Martin. */
+  // TODO: Try this now? murrayc.
 
-  /// Callback that invokes the contained functor.
-  /* This can't be a virtual function since number of arguments
-   * must be flexible. We use function pointers to slot_call::call_it()
-   * instead. call_ is set to zero to indicate that the slot is invalid.
-   */
-  hook call_;
+  inline slot_rep(hook call__) noexcept : call_(call__), cleanup_(nullptr), parent_(nullptr) {}
 
-  /// Callback that detaches the slot_rep object from referred trackables and destroys it.
-  /* This could be a replaced by a virtual dtor. However since this struct is
-   * crucual for the efficiency of the whole library we want to avoid this.
-   */
-  hook destroy_;
+  virtual ~slot_rep() {}
 
-  /** Callback that makes a deep copy of the slot_rep object.
-   * @return A deep copy of the slot_rep object.
-   */
-  hook dup_;
-
-  /** Callback of parent_. */
-  hook cleanup_;
-
-  /** Parent object whose callback cleanup_ is executed on notification. */
-  void* parent_;
-
-  inline slot_rep(hook call__, hook destroy__, hook dup__) noexcept
-    : call_(call__), destroy_(destroy__), dup_(dup__), cleanup_(nullptr), parent_(nullptr) {}
-
-  inline ~slot_rep()
-    { destroy(); }
-
-  // only MSVC needs this to guarantee that all new/delete are executed from the DLL module
+// only MSVC needs this to guarantee that all new/delete are executed from the DLL module
 #ifdef SIGC_NEW_DELETE_IN_LIBRARY_ONLY
   void* operator new(size_t size_);
   void operator delete(void* p);
@@ -102,25 +78,32 @@ struct SIGC_API slot_rep : public trackable
 
   /** Destroys the slot_rep object (but doesn't delete it).
    */
-  inline void destroy()
-    { if (destroy_) (*destroy_)(this); }
+  virtual void destroy() = 0;
 
   /** Makes a deep copy of the slot_rep object.
    * @return A deep copy of the slot_rep object.
    */
-  inline slot_rep* dup() const
-    { return reinterpret_cast<slot_rep*>((*dup_)(const_cast<slot_rep*>(this))); }
+  virtual slot_rep* clone() const = 0;
 
   /** Set the parent with a callback.
    * slots have one parent exclusively.
    * @param parent The new parent.
-   * @param cleanup The callback to execute from notify().
+   * @param cleanup The callback to execute from notify_slot_rep_invalidated().
    */
-  inline void set_parent(void* parent, hook cleanup) noexcept
-    {
-      parent_ = parent;
-      cleanup_ = cleanup;
-    }
+  inline void set_parent(notifiable* parent, notifiable::func_destroy_notify cleanup) noexcept
+  {
+    parent_ = parent;
+    cleanup_ = cleanup;
+  }
+
+  /** See set_parent().
+   *
+   */
+  inline void unset_parent() noexcept
+  {
+    parent_ = nullptr;
+    cleanup_ = nullptr;
+  }
 
   /// Invalidates the slot and executes the parent's cleanup callback.
   void disconnect();
@@ -132,11 +115,25 @@ struct SIGC_API slot_rep : public trackable
    * referred object dying.
    * @param data The slot_rep object that is becoming invalid (@p this).
    */
-  static void* notify(void* data);
+  static void notify_slot_rep_invalidated(notifiable* data);
+
+public:
+  /// Callback that invokes the contained functor.
+  /* This can't be a virtual function since number of arguments
+   * must be flexible. We use function pointers to slot_call::call_it()
+   * instead. call_ is set to zero to indicate that the slot is invalid.
+   */
+  hook call_;
+
+  /** Callback of parent_. */
+  notifiable::func_destroy_notify cleanup_;
+
+  /** Parent object whose callback cleanup_ is executed on notification. */
+  notifiable* parent_;
 };
 
 /** Functor used to add a dependency to a trackable.
- * Consequently slot_rep::notify() gets executed when the
+ * Consequently slot_rep::notify_slot_rep_invalidated() gets executed when the
  * trackable is destroyed or overwritten.
  */
 struct SIGC_API slot_do_bind
@@ -147,13 +144,15 @@ struct SIGC_API slot_do_bind
   /** Construct a slot_do_bind functor.
    * @param rep The slot_rep object trackables should notify on destruction.
    */
-  inline slot_do_bind(slot_rep* rep) noexcept : rep_(rep) {}
+  inline explicit slot_do_bind(slot_rep* rep) noexcept : rep_(rep) {}
 
   /** Adds a dependency to @p t.
    * @param t The trackable object to add a callback to.
    */
-  inline void operator()(const trackable* t) const
-    { t->add_destroy_notify_callback(rep_, &slot_rep::notify); }
+  inline void operator()(const trackable& t) const
+  {
+    t.add_destroy_notify_callback(rep_, &slot_rep::notify_slot_rep_invalidated);
+  }
 };
 
 /// Functor used to remove a dependency from a trackable.
@@ -165,17 +164,15 @@ struct SIGC_API slot_do_unbind
   /** Construct a slot_do_unbind functor.
    * @param rep The slot_rep object trackables don't need to notify on destruction any more.
    */
-  inline slot_do_unbind(slot_rep* rep) noexcept : rep_(rep) {}
+  inline explicit slot_do_unbind(slot_rep* rep) noexcept : rep_(rep) {}
 
   /** Removes a dependency from @p t.
    * @param t The trackable object to remove the callback from.
    */
-  inline void operator()(const trackable* t) const
-    { t->remove_destroy_notify_callback(rep_); }
+  inline void operator()(const trackable& t) const { t.remove_destroy_notify_callback(rep_); }
 };
 
-} //namespace internal
-
+} // namespace internal
 
 /** @defgroup slot Slots
  * Slots are type-safe representations of callback methods and functions.
@@ -184,13 +181,14 @@ struct SIGC_API slot_do_unbind
  *
  * @section slots-creating Creating Slots
  *
- * Use the sigc::mem_fun() or sigc::ptr_fun() template functions to get a sigc::slot, like so:
+ * Use the sigc::mem_fun() or sigc::ptr_fun() template functions to get
+ * a @ref sigc::slot<T_return(T_arg...)> "sigc::slot", like so:
  * @code
- * sigc::slot<void, int> sl = sigc::mem_fun(someobj, &SomeClass::somemethod);
+ * sigc::slot<void(int)> sl = sigc::mem_fun(someobj, &SomeClass::somemethod);
  * @endcode
  * or
  * @code
- * sigc::slot<void, int> sl = sigc::ptr_fun(&somefunction);
+ * sigc::slot<void(int)> sl = sigc::ptr_fun(&somefunction);
  * @endcode
  * or, in gtkmm,
  * @code
@@ -211,16 +209,16 @@ struct SIGC_API slot_do_unbind
  * sigc::mem_fun() and sigc::ptr_fun() return functors, but those functors are
  * not slots.
  * @code
- * sigc::slot<void, int> sl = sigc::mem_fun(someobj, &SomeClass::somemethod);
+ * sigc::slot<void(int)> sl = sigc::mem_fun(someobj, &SomeClass::somemethod);
  * @endcode
  * is not equivalent to
  * @code
  * auto sl = sigc::mem_fun(someobj, &SomeClass::somemethod); // Not a slot!
  * @endcode
  *
- * If you don't explicitly use a sigc::slot then the slot could call a method
- * on an instance after it has been destroyed even if the method is in a class
- * that derives from sigc::trackable.
+ * If you don't explicitly use a @ref sigc::slot<T_return(T_arg...)> "sigc::slot"
+ * then the slot could call a method on an instance after it has been destroyed
+ * even if the method is in a class that derives from sigc::trackable.
  *
  * @section slots-with-lambdas C++ Lambdas
  *
@@ -236,33 +234,31 @@ struct SIGC_API slot_do_unbind
  * @endcode
  *
  * If you connect a C++11 lambda expression or a std::function<> instance to
- * a signal or assign it to a slot,
- * - With libsigc++ versions before 2.6, if the return type is not void,
-     you must use the #SIGC_FUNCTORS_DEDUCE_RESULT_TYPE_WITH_DECLTYPE macro,
- * - if your functor contains references to sigc::trackable derived objects,
- *   those objects will not be tracked, unless you also use sigc::track_obj().
+ * a signal or assign it to a slot, if your functor contains references to
+ * sigc::trackable derived objects, those objects will not be tracked,
+ * unless you also use sigc::track_obj().
  *
  * @ingroup sigcfunctors
  */
 
 /** Base type for slots.
- * slot_base integrates most of the interface of the derived
- * sigc::slot templates. slots
+ * %slot_base integrates most of the interface of the derived
+ * @ref sigc::slot<T_return(T_arg...)> "sigc::slot" template. Slots
  * can be connected to signals, be disconnected at some later point
  * (disconnect()) and temporarily be blocked (block(), unblock()).
  * The validity of a slot can be tested with empty().
  *
  * The internal representation of a sigc::internal::slot_rep derived
- * type is built from slot_base's derivations. set_parent() is used to
+ * type is built from %slot_base's derivations. set_parent() is used to
  * register a notification callback that is executed when the slot gets
  * invalid. add_destroy_notify_callback() is used by connection objects
  * to add a notification callback that is executed on destruction.
  *
  * @ingroup slot
  */
-class SIGC_API slot_base : public functor_base
+class SIGC_API slot_base
 {
-  typedef internal::slot_rep rep_type;
+  using rep_type = internal::slot_rep;
 
   // Move operations are not declared noexcept because
   // 1. they may copy instead of move
@@ -299,6 +295,8 @@ public:
    */
   explicit operator bool() const noexcept;
 
+  using func_destroy_notify = notifiable::func_destroy_notify;
+
   /** Sets the parent of this slot.
    * This function is used by signals to register a notification callback.
    * This notification callback is executed when the slot becomes invalid
@@ -306,34 +304,31 @@ public:
    * @param parent The new parent.
    * @param cleanup The notification callback.
    */
-  void set_parent(void* parent, void* (*cleanup)(void*)) const noexcept;
+  void set_parent(notifiable* parent, notifiable::func_destroy_notify cleanup) const noexcept;
 
-  typedef trackable::func_destroy_notify func_destroy_notify;
-  /** Add a callback that is executed (notified) when the slot is detroyed.
+  /** Add a callback that is executed (notified) when the slot is destroyed.
    * This function is used internally by connection objects.
    * @param data Passed into func upon notification.
    * @param func Callback executed upon destruction of the object.
    */
-  void add_destroy_notify_callback(void* data, func_destroy_notify func) const;
+  void add_destroy_notify_callback(notifiable* data, notifiable::func_destroy_notify func) const;
 
   /** Remove a callback previously installed with add_destroy_notify_callback().
    * The callback is not executed.
    * @param data Parameter passed into previous call to add_destroy_notify_callback().
    */
-  void remove_destroy_notify_callback(void* data) const;
+  void remove_destroy_notify_callback(notifiable* data) const;
 
   /** Returns whether the slot is invalid.
    * @return @p true if the slot is invalid (empty).
    */
-  inline bool empty() const noexcept
-    { return (!rep_ || !rep_->call_); }
+  inline bool empty() const noexcept { return (!rep_ || !rep_->call_); }
 
   /** Returns whether the slot is blocked.
    * @return @p true if the slot is blocked.
    */
-  inline bool blocked() const noexcept
-    { return blocked_; }
-    
+  inline bool blocked() const noexcept { return blocked_; }
+
   /** Sets the blocking state.
    * If @e should_block is @p true then the blocking state is set.
    * Subsequent calls to slot::operator()() don't invoke the functor
@@ -354,9 +349,10 @@ public:
    */
   void disconnect();
 
-//The Tru64 and Solaris Forte 5.5 compilers needs this operator=() to be public. I'm not sure why, or why it needs to be protected usually. murrayc.
-//See bug #168265. 
-//protected:
+  // The Tru64 and Solaris Forte 5.5 compilers needs this operator=() to be public. I'm not sure
+  // why, or why it needs to be protected usually. murrayc.
+  // See bug #168265.
+  // protected:
   /** Overrides this slot, making a copy from another slot.
    * @param src The slot from which to make a copy.
    * @return @p this.
@@ -372,7 +368,7 @@ public:
 
 public: // public to avoid template friend declarations
   /** Typed slot_rep object that contains a functor. */
-  mutable rep_type *rep_;
+  mutable rep_type* rep_;
 
   /** Indicates whether the slot is blocked. */
   bool blocked_;
@@ -381,7 +377,6 @@ private:
   void delete_rep_with_check();
 };
 
-} //namespace sigc
+} // namespace sigc
 
-#endif //_SIGC_SLOT_BASE_HPP_
-
+#endif // SIGC_SLOT_BASE_HPP

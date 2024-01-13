@@ -13,137 +13,165 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx</Extensions>
     </Filter>
-    <Filter Include="Header Files\adaptors">
-      <UniqueIdentifier>{9bce0003-49d7-4670-9a0a-3cb53cf63160}</UniqueIdentifier>
+    <Filter Include="Header Files\sigc++">
+      <UniqueIdentifier>{19e1eb2e-b580-40bb-8169-2b21da422b84}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\functors">
-      <UniqueIdentifier>{cc7aeb6f-cd0e-44e3-a955-036ff25e349f}</UniqueIdentifier>
+    <Filter Include="Header Files\sigc++\adapters">
+      <UniqueIdentifier>{8a1c9839-3a17-4f35-bd49-9cf47d8cfd44}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\adaptors\lambda">
-      <UniqueIdentifier>{3abc4d7d-9330-4c49-9eaf-880d0bcff6fd}</UniqueIdentifier>
+    <Filter Include="Header Files\sigc++\functors">
+      <UniqueIdentifier>{6ce0645b-7b9d-4f8b-b1f4-c54d553dc053}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\sigc++\tuple-utils">
+      <UniqueIdentifier>{ce55b1a7-5325-41d8-9bc9-dd1d59a0a955}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\functors">
+      <UniqueIdentifier>{838b4866-fb06-4ace-b7c2-d86b9eebd407}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\bind.h">
+      <Filter>Header Files\sigc++</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\bind_return.h">
+      <Filter>Header Files\sigc++</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\connection.h">
+      <Filter>Header Files\sigc++</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\limit_reference.h">
+      <Filter>Header Files\sigc++</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\member_method_trait.h">
+      <Filter>Header Files\sigc++</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\reference_wrapper.h">
+      <Filter>Header Files\sigc++</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\retype_return.h">
+      <Filter>Header Files\sigc++</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\scoped_connection.h">
+      <Filter>Header Files\sigc++</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\sigc++.h">
+      <Filter>Header Files\sigc++</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\signal.h">
+      <Filter>Header Files\sigc++</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\signal_base.h">
+      <Filter>Header Files\sigc++</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\slot.h">
+      <Filter>Header Files\sigc++</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\trackable.h">
+      <Filter>Header Files\sigc++</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\type_traits.h">
+      <Filter>Header Files\sigc++</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\visit_each.h">
+      <Filter>Header Files\sigc++</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\weak_raw_ptr.h">
+      <Filter>Header Files\sigc++</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\tuple-utils\tuple_cdr.h">
+      <Filter>Header Files\sigc++\tuple-utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\tuple-utils\tuple_end.h">
+      <Filter>Header Files\sigc++\tuple-utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\tuple-utils\tuple_for_each.h">
+      <Filter>Header Files\sigc++\tuple-utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\tuple-utils\tuple_start.h">
+      <Filter>Header Files\sigc++\tuple-utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\tuple-utils\tuple_transform_each.h">
+      <Filter>Header Files\sigc++\tuple-utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\functors\functor_trait.h">
+      <Filter>Header Files\sigc++\functors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\functors\functors.h">
+      <Filter>Header Files\sigc++\functors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\functors\mem_fun.h">
+      <Filter>Header Files\sigc++\functors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\functors\ptr_fun.h">
+      <Filter>Header Files\sigc++\functors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\functors\slot.h">
+      <Filter>Header Files\sigc++\functors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\functors\slot_base.h">
+      <Filter>Header Files\sigc++\functors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\adaptor_base.h">
+      <Filter>Header Files\sigc++\adapters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\adaptor_trait.h">
+      <Filter>Header Files\sigc++\adapters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\adaptors.h">
+      <Filter>Header Files\sigc++\adapters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\adapts.h">
+      <Filter>Header Files\sigc++\adapters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\bind.h">
+      <Filter>Header Files\sigc++\adapters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\bind_return.h">
+      <Filter>Header Files\sigc++\adapters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\bound_argument.h">
+      <Filter>Header Files\sigc++\adapters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\compose.h">
+      <Filter>Header Files\sigc++\adapters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\exception_catch.h">
+      <Filter>Header Files\sigc++\adapters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\hide.h">
+      <Filter>Header Files\sigc++\adapters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\retype.h">
+      <Filter>Header Files\sigc++\adapters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\retype_return.h">
+      <Filter>Header Files\sigc++\adapters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\track_obj.h">
+      <Filter>Header Files\sigc++\adapters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\tuple_visitor_visit_each.h">
+      <Filter>Header Files\sigc++\adapters</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\libsigc++\connection.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\libsigc++\signal_base.cc">
+    <ClCompile Include="..\libsigc++\scoped_connection.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\libsigc++\functors\slot_base.cc">
+    <ClCompile Include="..\libsigc++\signal_base.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\libsigc++\trackable.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\libsigc++\adaptors\lambda\lambda.cc">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\libsigc++\functors\slot_base.cc">
+      <Filter>Source Files\functors</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="..\libsigc++\sigc.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\functors\functors.h">
-      <Filter>Header Files\functors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\functors\mem_fun.h">
-      <Filter>Header Files\functors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\functors\ptr_fun.h">
-      <Filter>Header Files\functors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\functors\slot.h">
-      <Filter>Header Files\functors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\functors\slot_base.h">
-      <Filter>Header Files\functors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\functors\functor_trait.h">
-      <Filter>Header Files\functors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\deduce_result_type.h">
-      <Filter>Header Files\adaptors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\exception_catch.h">
-      <Filter>Header Files\adaptors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\hide.h">
-      <Filter>Header Files\adaptors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\retype.h">
-      <Filter>Header Files\adaptors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\retype_return.h">
-      <Filter>Header Files\adaptors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\adaptor_trait.h">
-      <Filter>Header Files\adaptors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\adaptors.h">
-      <Filter>Header Files\adaptors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\bind.h">
-      <Filter>Header Files\adaptors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\bind_return.h">
-      <Filter>Header Files\adaptors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\bound_argument.h">
-      <Filter>Header Files\adaptors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\compose.h">
-      <Filter>Header Files\adaptors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\lambda\select.h">
-      <Filter>Header Files\adaptors\lambda</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\lambda\base.h">
-      <Filter>Header Files\adaptors\lambda</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\adaptors\track_obj.h">
-      <Filter>Header Files\adaptors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\bind.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\bind_return.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\connection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\limit_reference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\reference_wrapper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\retype_return.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\sigc++.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\signal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\signal_base.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\slot.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\trackable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\type_traits.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windeps\libsigc++\include\sigc++\visit_each.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

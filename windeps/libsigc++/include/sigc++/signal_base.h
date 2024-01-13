@@ -1,5 +1,5 @@
 /*
- * Copyright 2002, The libsigc++ Development Team
+ * Copyright 2002 - 2016, The libsigc++ Development Team
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public
@@ -16,14 +16,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef _SIGC_SIGNAL_BASE_H_
-#define _SIGC_SIGNAL_BASE_H_
+#ifndef SIGC_SIGNAL_BASE_H
+#define SIGC_SIGNAL_BASE_H
 
 #include <cstddef>
 #include <list>
+#include <memory> //For std::shared_ptr<>
 #include <sigc++config.h>
 #include <sigc++/type_traits.h>
-#include <sigc++/trackable.h>
 #include <sigc++/functors/slot.h>
 #include <sigc++/functors/mem_fun.h>
 
@@ -36,20 +36,21 @@ namespace internal
 {
 
 /** Implementation of the signal interface.
- * signal_impl manages a list of slots. When a slot becomes
- * invalid (because some referred object dies), notify() is executed.
- * notify() either calls slots_.erase() directly or defers the execution of
- * erase() to sweep() when the signal is being emitted. sweep() removes all
- * invalid slots from the list.
+ * signal_impl manages a list of slots. When a slot becomes invalid (because some
+ * referred object dies), notify_self_and_iter_of_invalidated_slot() is executed.
+ * notify_self_and_iter_of_invalidated_slot() either calls slots_.erase() directly
+ * or defers the execution of erase() to sweep() when the signal is being emitted.
+ * sweep() removes all invalid slots from the list.
  */
-struct SIGC_API signal_impl
+struct SIGC_API signal_impl : public std::enable_shared_from_this<signal_impl>
 {
-  typedef std::size_t size_type;
-  typedef std::list<slot_base> slot_list;
-  typedef slot_list::iterator       iterator_type;
-  typedef slot_list::const_iterator const_iterator_type;
+  using size_type = std::size_t;
+  using slot_list = std::list<slot_base>;
+  using iterator_type = slot_list::iterator;
+  using const_iterator_type = slot_list::const_iterator;
 
   signal_impl();
+  ~signal_impl();
 
   signal_impl(const signal_impl& src) = delete;
   signal_impl& operator=(const signal_impl& src) = delete;
@@ -57,41 +58,29 @@ struct SIGC_API signal_impl
   signal_impl(signal_impl&& src) = delete;
   signal_impl& operator=(signal_impl&& src) = delete;
 
-  // only MSVC needs this to guarantee that all new/delete are executed from the DLL module
+// only MSVC needs this to guarantee that all new/delete are executed from the DLL module
 #ifdef SIGC_NEW_DELETE_IN_LIBRARY_ONLY
   void* operator new(size_t size_);
   void operator delete(void* p);
 #endif
 
-  /// Increments the reference counter.
-  inline void reference() noexcept
-    { ++ref_count_; }
-
   /// Increments the reference and execution counter.
-  inline void reference_exec() noexcept
-    { ++ref_count_; ++exec_count_; }
-
-  /** Decrements the reference counter.
-   * The object is deleted when the reference counter reaches zero.
-   */
-  inline void unreference()
-    { if (!(--ref_count_)) delete this; }
+  inline void reference_exec() noexcept { ++exec_count_; }
 
   /** Decrements the reference and execution counter.
    * Invokes sweep() if the execution counter reaches zero and the
    * removal of one or more slots has been deferred.
    */
   inline void unreference_exec()
-    {
-      if (!(--ref_count_)) delete this;
-      else if (!(--exec_count_) && deferred_) sweep();
-    }
+  {
+    if (!(--exec_count_) && deferred_)
+      sweep();
+  }
 
   /** Returns whether the list of slots is empty.
    * @return @p true if the list of slots is empty.
    */
-  inline bool empty() const noexcept
-    { return slots_.empty(); }
+  inline bool empty() const noexcept { return slots_.empty(); }
 
   /// Empties the list of slots.
   void clear();
@@ -120,19 +109,35 @@ struct SIGC_API signal_impl
    */
   void block(bool should_block = true) noexcept;
 
-  /** Adds a slot at the bottom of the list of slots.
+  /** Adds a slot at the end of the list of slots.
    * @param slot_ The slot to add to the list of slots.
    * @return An iterator pointing to the new slot in the list.
    */
   iterator_type connect(const slot_base& slot_);
 
-  /** Adds a slot at the bottom of the list of slots.
+  /** Adds a slot at the end of the list of slots.
    * @param slot_ The slot to add to the list of slots.
    * @return An iterator pointing to the new slot in the list.
    *
    * @newin{2,8}
    */
   iterator_type connect(slot_base&& slot_);
+
+  /** Adds a slot at the beginning of the list of slots.
+   * @param slot_ The slot to add to the list of slots.
+   * @return An iterator pointing to the new slot in the list.
+   *
+   * @newin{3,6}
+   */
+  iterator_type connect_first(const slot_base& slot_);
+
+  /** Adds a slot at the beginning of the list of slots.
+   * @param slot_ The slot to add to the list of slots.
+   * @return An iterator pointing to the new slot in the list.
+   *
+   * @newin{3,6}
+   */
+  iterator_type connect_first(slot_base&& slot_);
 
   /** Adds a slot at the given position into the list of slots.
    * @param i An iterator indicating the position where @p slot_ should be inserted.
@@ -150,15 +155,10 @@ struct SIGC_API signal_impl
    */
   iterator_type insert(iterator_type i, slot_base&& slot_);
 
-  /** Removes the slot at the given position from the list of slots.
-   * @param i An iterator pointing to the slot to be removed.
-   * @return An iterator pointing to the slot in the list after the one removed.
-   */
-  iterator_type erase(iterator_type i);
-
   /// Removes invalid slots from the list of slots.
   void sweep();
 
+private:
   /** Callback that is executed when some slot becomes invalid.
    * This callback is registered in every slot when inserted into
    * the list of slots. It is executed when a slot becomes invalid
@@ -167,13 +167,15 @@ struct SIGC_API signal_impl
    * erase() to sweep() when the signal is being emitted.
    * @param d A local structure, created in insert().
    */
-  static void* notify(void* d);
+  static void notify_self_and_iter_of_invalidated_slot(notifiable* d);
 
-  /** Reference counter.
-   * The object is destroyed when @em ref_count_ reaches zero.
-   */
-  short ref_count_;
+  void add_notification_to_iter(const signal_impl::iterator_type& iter);
 
+public:
+  /// The list of slots.
+  std::list<slot_base> slots_;
+
+private:
   /** Execution counter.
    * Indicates whether the signal is being emitted.
    */
@@ -181,68 +183,61 @@ struct SIGC_API signal_impl
 
   /// Indicates whether the execution of sweep() is being deferred.
   bool deferred_;
+};
 
-  /// The list of slots.
-  std::list<slot_base> slots_;
+struct SIGC_API signal_impl_exec_holder
+{
+  /** Increments the execution counter of the parent sigc::signal_impl object.
+   * @param sig The parent sigc::signal_impl object.
+   */
+  inline explicit signal_impl_exec_holder(signal_impl* sig) noexcept : sig_(sig)
+  {
+    sig_->reference_exec();
+  }
+
+  signal_impl_exec_holder(const signal_impl_exec_holder& src) = delete;
+  signal_impl_exec_holder operator=(const signal_impl_exec_holder& src) = delete;
+
+  signal_impl_exec_holder(signal_impl_exec_holder&& src) = delete;
+  signal_impl_exec_holder operator=(signal_impl_exec_holder&& src) = delete;
+
+  /// Decrements the reference and execution counter of the parent sigc::signal_impl object.
+  inline ~signal_impl_exec_holder() { sig_->unreference_exec(); }
+
+protected:
+  /// The parent sigc::signal_impl object.
+  signal_impl* sig_;
 };
 
 /// Exception safe sweeper for cleaning up invalid slots on the slot list.
-struct SIGC_API signal_exec
+struct SIGC_API signal_impl_holder
 {
-  /// The parent sigc::signal_impl object.
-  signal_impl* sig_;
-
   /** Increments the reference and execution counter of the parent sigc::signal_impl object.
    * @param sig The parent sigc::signal_impl object.
    */
-  inline signal_exec(const signal_impl* sig) noexcept
-    : sig_(const_cast<signal_impl*>(sig) )
-    { sig_->reference_exec(); }
-
-  /// Decrements the reference and execution counter of the parent sigc::signal_impl object.
-  inline ~signal_exec()
-    { sig_->unreference_exec(); }
-};
-
-/** Temporary slot list used during signal emission.
- *  Through evolution this class is slightly misnamed.  It is now
- *  an index into the slot_list passed into it.  It simply keeps track
- *  of where the end of this list was at construction, and pretends that's
- *  the end of your list.  This way you may connect during emission without
- *  inadvertently entering an infinite loop, as well as make other
- *  modifications to the slot_list at your own risk.
- */
-struct temp_slot_list
-{
-  typedef signal_impl::slot_list slot_list;
-  typedef signal_impl::iterator_type iterator;
-  typedef signal_impl::const_iterator_type const_iterator;
-
-  temp_slot_list(slot_list &slots) : slots_(slots)
+  inline signal_impl_holder(const std::shared_ptr<signal_impl>& sig) noexcept
+  : sig_(sig), exec_holder_(sig.get())
   {
-    placeholder = slots_.insert(slots_.end(), slot_base());
   }
 
-  ~temp_slot_list()
-  {
-    slots_.erase(placeholder);
-  }
+  signal_impl_holder(const signal_impl_holder& src) = delete;
+  signal_impl_holder operator=(const signal_impl_holder& src) = delete;
 
-  iterator begin() { return slots_.begin(); }
-  iterator end() { return placeholder; }
-  const_iterator begin() const { return slots_.begin(); }
-  const_iterator end() const { return placeholder; }
+  signal_impl_holder(signal_impl_holder&& src) = delete;
+  signal_impl_holder operator=(signal_impl_holder&& src) = delete;
 
-private:
-  slot_list &slots_;
-  slot_list::iterator placeholder;
+protected:
+  /// The parent sigc::signal_impl object.
+  const std::shared_ptr<signal_impl> sig_;
+  signal_impl_exec_holder exec_holder_;
 };
-  
+
 } /* namespace internal */
 
-
 /** @defgroup signal Signals
- * Use sigc::signal::connect() with sigc::mem_fun() and sigc::ptr_fun() to connect a method or function with a signal.
+ * Use @ref sigc::signal_with_accumulator::connect() "sigc::signal::connect()"
+ * or @ref sigc::signal_with_accumulator::connect_first() "sigc::signal::connect_first()"
+ * with sigc::mem_fun() and sigc::ptr_fun() to connect a method or function with a signal.
  *
  * @code
  * signal_clicked.connect( sigc::mem_fun(*this, &MyWindow::on_clicked) );
@@ -254,8 +249,9 @@ private:
  * If the type of your object inherits from sigc::trackable the method is disconnected
  * automatically when your object is destroyed.
  *
- * When signals are copied they share the underlying information,
- * so you can have a protected/private sigc::signal member and a public accessor method.
+ * When signals are copied they share the underlying information, so you can have
+ * a protected/private @ref sigc::signal<T_return(T_arg...)> "sigc::signal"
+ * member and a public accessor method.
  * A sigc::signal is a kind of reference-counting pointer. It's similar to
  * std::shared_ptr<>, although sigc::signal is restricted to holding a pointer to
  * a sigc::internal::signal_impl object that contains the implementation of the signal.
@@ -264,7 +260,7 @@ private:
  * class MyClass
  * {
  * public:
- *   typedef sigc::signal<void> MySignalType;
+ *   using MySignalType = sigc::signal<void()>;
  *   MySignalType get_my_signal() { return m_my_signal; }
  * private:
  *   MySignalType m_my_signal;
@@ -281,37 +277,37 @@ private:
  * if the given functor or closure cannot be invoked with the
  * parameter list of the signal to connect to.
  *
- * Almost any functor with the correct signature can be converted to a sigc::slot
- * and connected to a signal. See @ref slot "Slots" and sigc::signal::connect().
+ * Almost any functor with the correct signature can be converted to
+ * a @ref sigc::slot<T_return(T_arg...)> "sigc::slot"
+ * and connected to a signal. See @ref slot "Slots" and
+ * @ref sigc::signal_with_accumulator::connect() "sigc::signal::connect()".
  */
 
-/** Base class for the sigc::signal# templates.
- * signal_base integrates most of the interface of the derived sigc::signal#
- * templates. The implementation, however, resides in sigc::internal::signal_impl.
- * A sigc::internal::signal_impl object is dynamically allocated from signal_base
+// TODO: When we can break ABI, let signal_base derive from trackable again,
+// as in sigc++2. Otherwise the slot returned from signal::make_slot()
+// is not automatically disconnected when the signal is deleted.
+// And delete trackable_signal_with_accumulator and trackable_signal.
+// https://github.com/libsigcplusplus/libsigcplusplus/issues/80
+
+/** Base class for the @ref sigc::signal<T_return(T_arg...)> "sigc::signal" template.
+ * %signal_base integrates most of the interface of the derived
+ * @ref sigc::signal<T_return(T_arg...)> "sigc::signal" template.
+ * The implementation, however, resides in sigc::internal::signal_impl.
+ * A sigc::internal::signal_impl object is dynamically allocated from %signal_base
  * when first connecting a slot to the signal. This ensures that empty signals
  * don't waste memory.
  *
- * sigc::internal::signal_impl is reference-counted. When a sigc::signal# object
+ * sigc::internal::signal_impl is reference-counted.
+ * When a @ref sigc::signal<T_return(T_arg...)> "sigc::signal" object
  * is copied, the reference count of its sigc::internal::signal_impl object is
- * incremented. Both sigc::signal# objects then refer to the same
- * sigc::internal::signal_impl object.
- *
- * Deleting the signal during emission, e.g. from one of its slots, may result
- * in memory leaks. This drawback is fixed in version 3 of libsigc++.
- * A workaround is to make a copy of the signal during the emission:
- * @code
- * sigc::signal<...> sig2(*p_sig);
- * p_sig->emit();
- * @endcode
- * This is not very costly. A sigc::signal<> is not much more than a pointer to
- * a sigc::internal::signal_impl instance, which is not copied.
+ * incremented. Both @ref sigc::signal<T_return(T_arg...)> "sigc::signal" objects
+ * then refer to the same sigc::internal::signal_impl object.
  *
  * @ingroup signal
  */
-struct SIGC_API signal_base : public trackable
+struct SIGC_API signal_base
 {
-  typedef std::size_t size_type;
+  using size_type = std::size_t;
 
   signal_base() noexcept;
 
@@ -328,8 +324,7 @@ struct SIGC_API signal_base : public trackable
   /** Returns whether the list of slots is empty.
    * @return @p true if the list of slots is empty.
    */
-  inline bool empty() const noexcept
-    { return (!impl_ || impl_->empty()); }
+  inline bool empty() const noexcept { return (!impl_ || impl_->empty()); }
 
   /// Empties the list of slots.
   void clear();
@@ -366,10 +361,10 @@ struct SIGC_API signal_base : public trackable
   void unblock() noexcept;
 
 protected:
-  typedef internal::signal_impl::iterator_type iterator_type;
+  using iterator_type = internal::signal_impl::iterator_type;
 
   /** Adds a slot at the end of the list of slots.
-   * With connect(), slots can also be added during signal emission.
+   * With %connect(), slots can also be added during signal emission.
    * In this case, they won't be executed until the next emission occurs.
    * @param slot_ The slot to add to the list of slots.
    * @return An iterator pointing to the new slot in the list.
@@ -377,7 +372,7 @@ protected:
   iterator_type connect(const slot_base& slot_);
 
   /** Adds a slot at the end of the list of slots.
-   * With connect(), slots can also be added during signal emission.
+   * With %connect(), slots can also be added during signal emission.
    * In this case, they won't be executed until the next emission occurs.
    * @param slot_ The slot to add to the list of slots.
    * @return An iterator pointing to the new slot in the list.
@@ -385,6 +380,26 @@ protected:
    * @newin{2,8}
    */
   iterator_type connect(slot_base&& slot_);
+
+  /** Adds a slot at the beginning of the list of slots.
+   * With %connect_first(), slots can also be added during signal emission.
+   * In this case, they won't be executed until the next emission occurs.
+   * @param slot_ The slot to add to the list of slots.
+   * @return An iterator pointing to the new slot in the list.
+   *
+   * @newin{3,6}
+   */
+  iterator_type connect_first(const slot_base& slot_);
+
+  /** Adds a slot at the beginning of the list of slots.
+   * With %connect_fist(), slots can also be added during signal emission.
+   * In this case, they won't be executed until the next emission occurs.
+   * @param slot_ The slot to add to the list of slots.
+   * @return An iterator pointing to the new slot in the list.
+   *
+   * @newin{3,6}
+   */
+  iterator_type connect_first(slot_base&& slot_);
 
   /** Adds a slot at the given position into the list of slots.
    * Note that this function does not work during signal emission!
@@ -404,22 +419,15 @@ protected:
    */
   iterator_type insert(iterator_type i, slot_base&& slot_);
 
-  /** Removes the slot at the given position from the list of slots.
-   * Note that this function does not work during signal emission!
-   * @param i An iterator pointing to the slot to be removed.
-   * @return An iterator pointing to the slot in the list after the one removed.
-   */
-  iterator_type erase(iterator_type i);
-
   /** Returns the signal_impl object encapsulating the list of slots.
    * @return The signal_impl object encapsulating the list of slots.
    */
-  internal::signal_impl* impl() const;
+  std::shared_ptr<internal::signal_impl> impl() const;
 
   /// The signal_impl object encapsulating the slot list.
-  mutable internal::signal_impl* impl_;
+  mutable std::shared_ptr<internal::signal_impl> impl_;
 };
 
-} //namespace sigc
+} // namespace sigc
 
-#endif /* _SIGC_SIGNAL_BASE_H_ */
+#endif /* SIGC_SIGNAL_BASE_H */

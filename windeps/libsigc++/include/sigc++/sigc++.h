@@ -1,5 +1,5 @@
 /*
- * Copyright 2003, The libsigc++ Development Team
+ * Copyright 2003 - 2016, The libsigc++ Development Team
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public
@@ -24,24 +24,25 @@
  *
  * @section description Description
  *
- * libsigc++ provides a typesafe (at compile time) callback system for standard 
- * C++. It allows you to define signals and to connect those signals to any 
- * callback function, either a global or a member function, regardless of whether 
- * it is static or virtual. It also contains adaptor classes for connection of 
+ * libsigc++ provides a typesafe (at compile time) callback system for standard
+ * C++. It allows you to define signals and to connect those signals to any
+ * callback function, either a global or a member function, regardless of whether
+ * it is static or virtual. It also contains adaptor classes for connection of
  * dissimilar callbacks.
  *
- * For instance, see the @ref signal "Signals", @ref sigcfunctors "Functors", 
+ * For instance, see the @ref signal "Signals", @ref sigcfunctors "Functors",
  * @ref slot "Slots" and @ref adaptors "Adaptors".
  *
- * See also the 
- * <a href="https://developer.gnome.org/libsigc++-tutorial/2.10/">libsigc++ tutorial</a>,
+ * See also the
+ * <a href="https://developer.gnome.org/libsigc++-tutorial/stable/">libsigc++ tutorial</a>,
  * the <a href="https://libsigcplusplus.github.io/libsigcplusplus/">libsigc++ website</a>, and
- * the <a href="https://developer.gnome.org/gtkmm-tutorial/3.24/chapter-signals.html">Signals appendix of the Programming with gtkmm book</a>.
+ * the <a href="https://developer.gnome.org/gtkmm-tutorial/unstable/chapter-signals.html">Signals
+ * appendix of the Programming with gtkmm book</a>.
  *
  * @section features Features
  *
  * - Compile-time typesafe callbacks (also faster than run time checks)
- * - Type-safety violations report the line number correctly with template names 
+ * - Type-safety violations report the line number correctly with template names
  *   (no tracing template failures into headers)
  * - No compiler extensions or meta compilers required
  * - Proper handling of dynamic objects and signals (deleted objects will not
@@ -62,17 +63,17 @@
  *
  * If your source file is @c program.cc, you can compile it with:
  * @code
- * g++ program.cc -o program `pkg-config --cflags --libs sigc++-2.0`
+ * g++ program.cc -o program `pkg-config --cflags --libs sigc++-3.0`
  * @endcode
- * If your version of g++ is not C++11-compliant by default,
- * add the @c -std=c++11 option.
+ * If your version of g++ is not C++17-compliant by default,
+ * add the @c -std=c++17 option.
  *
  * @subsection meson Using Meson
  *
  * If using <a href="https://mesonbuild.com/">Meson</a>, include the following
  * in @c meson.build:
  * @code
- * sigc_dep = dependency('sigc++-2.0')
+ * sigc_dep = dependency('sigc++-3.0')
  * program_name = 'program'
  * cpp_sources = [ 'program.cc' ]
  * executable(program_name,
@@ -88,7 +89,7 @@
  *
  * Alternatively, if using autoconf, use the following in @c configure.ac:
  * @code
- * PKG_CHECK_MODULES([DEPS], [sigc++-2.0])
+ * PKG_CHECK_MODULES([DEPS], [sigc++-3.0])
  * @endcode
  * Then use the generated @c DEPS_CFLAGS and @c DEPS_LIBS variables
  * in the project @c Makefile.am files. For example:
@@ -105,23 +106,18 @@
  * If using CMake, use the following in @c CMakeList.txt:
  * @code
  * include(FindPkgConfig)
- * pkg_check_modules(DEPS REQUIRED sigc++-2.0)
+ * pkg_check_modules(DEPS REQUIRED sigc++-3.0)
  * include_directories(${DEPS_INCLUDE_DIRS})
  * target_link_libraries(yourprogram ${DEPS_LIBRARIES})
  * @endcode
  *
  * Your @c pkg_check_modules() call should also mention any other libraries that
  * you need to use via pkg-config.
- *
- * @section scope Scope of Documentation
- *
- * libsigc++ contains many template functions and template classes/structs,
- * some with many specializations. This reference manual does not show all
- * specializations of those templates that hardly any user will use directly.
  */
 
 #include <sigc++/signal.h>
 #include <sigc++/connection.h>
+#include <sigc++/scoped_connection.h>
 #include <sigc++/trackable.h>
 #include <sigc++/adaptors/adaptors.h>
 #include <sigc++/functors/functors.h>

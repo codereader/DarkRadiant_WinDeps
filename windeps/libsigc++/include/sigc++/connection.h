@@ -1,5 +1,5 @@
 /*
- * Copyright 2002, The libsigc++ Development Team
+ * Copyright 2002 - 2016, The libsigc++ Development Team
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public
@@ -16,24 +16,36 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
  */
-#ifndef _SIGC_CONNECTION_HPP_
-#define _SIGC_CONNECTION_HPP_
+
+#ifndef SIGC_CONNECTION_HPP
+#define SIGC_CONNECTION_HPP
+
 #include <sigc++config.h>
-#include <sigc++/signal.h>
+#include <sigc++/functors/slot_base.h>
+#include <sigc++/weak_raw_ptr.h>
 
-namespace sigc {
+namespace sigc
+{
 
-/** Convinience class for safe disconnection.
- * Iterators must not be used beyond the lifetime of the list
- * they work on. A connection object can be created from a
- * slot list iterator and may safely be used to disconnect
- * the referred slot at any time (disconnect()). If the slot
- * has already been destroyed, disconnect() does nothing. empty() or
+/** Convenience class for safe disconnection.
+ *
+ * This may be used to disconnect the referred slot at any time (disconnect()).
+ * @ref sigc::signal_with_accumulator::connect() "sigc::signal::connect()" and
+ * @ref sigc::signal_with_accumulator::connect_first() "sigc::signal::connect_first()"
+ * return a %sigc::connection.
+ *
+ * @code
+ * sigc::connection conn = sig.connect(sigc::mem_fun(a, &A::foo));
+ * @endcode
+ *
+ * If the slot has already been destroyed, disconnect() does nothing. empty() or
  * operator bool() can be used to test whether the connection is
  * still active. The connection can be blocked (block(), unblock()).
  *
- * This is possible because the connection object gets notified
- * when the referred slot dies (notify()).
+ * sigc::connection doesnʼt disconnect the slot automatically upon destruction.
+ * You do not need to keep the sigc::connection object to retain the connection
+ * of the slot to the signal. See also @ref sigc::scoped_connection, which does
+ * disconnect automatically when the connection object is destroyed or replaced.
  *
  * @ingroup signal
  */
@@ -47,30 +59,15 @@ struct SIGC_API connection
    */
   connection(const connection& c);
 
-  /** Constructs a connection object from a slot list iterator.
-   * @param it The slot list iterator to take the slot from.
-   */
-  template <typename T_slot>
-  connection(const slot_iterator<T_slot>& it) : slot_(&(*it))
-    { if (slot_) slot_->add_destroy_notify_callback(this, &notify); }
-
   /** Constructs a connection object from a slot object.
-   * This is only useful if you create your own slot list.
-   * @param sl The slot to operate on.
+   * @param slot The slot to operate on.
    */
-  explicit connection(slot_base& sl);
+  explicit connection(slot_base& slot);
 
   /** Overrides this connection object copying another one.
-   * @param c The connection object to make a copy from.
+   * @param src The connection object to make a copy from.
    */
-  connection& operator=(const connection& c);
-
-  /** Overrides this connection object with another slot list iterator.
-   * @param it The new slot list iterator to take the slot from.
-   */
-  template <typename T_slot>
-  connection& operator=(const slot_iterator<T_slot>& it)
-    { set_slot(&(*it)); return *this; }
+  connection& operator=(const connection& src);
 
   ~connection();
 
@@ -104,27 +101,20 @@ struct SIGC_API connection
   /// Disconnects the referred slot.
   void disconnect();
 
-  //TODO: When we can break API and ABI, make operator bool() const
   /** Returns whether the connection is still active.
    * @return @p true if the connection is still active.
    */
-  explicit operator bool() noexcept;
-
-  /** Callback that is executed when the referred slot is destroyed.
-   * @param data The connection object notified (@p this).
-   */
-  static void* notify(void* data);
+  explicit operator bool() const noexcept;
 
 private:
-  void set_slot(slot_base* sl);
+  void set_slot(const sigc::internal::weak_raw_ptr<slot_base>& sl);
 
-  /* Referred slot. Set to zero from notify().
-   * A value of zero indicates an "empty" connection.
+  /* Referred slot. Set to nullptr when the referred slot is deleted.
+   * A value of nullptr indicates an "empty" connection.
    */
-  slot_base* slot_;
+  sigc::internal::weak_raw_ptr<slot_base> slot_;
 };
 
 } /* namespace sigc */
 
-
-#endif /* _SIGC_TRACKABLE_HPP_ */
+#endif /* SIGC_CONNECTION_HPP */

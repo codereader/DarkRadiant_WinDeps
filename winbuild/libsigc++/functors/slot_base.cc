@@ -1,5 +1,5 @@
 /*
- * Copyright 2003, The libsigc++ Development Team
+ * Copyright 2003 - 2016, The libsigc++ Development Team
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public
@@ -18,31 +18,17 @@
  */
 
 #include <sigc++/functors/slot_base.h>
+#include <sigc++/weak_raw_ptr.h>
 
 namespace
 {
-// Used by slot_rep::notify() and slot_base::operator=(). They must be
-// notified, if the slot_rep is deleted when they call disconnect().
-struct destroy_notify_struct
-{
-  destroy_notify_struct() noexcept : deleted_(false) { }
-
-  static void* notify(void* data) noexcept
-  {
-    auto self_ = reinterpret_cast<destroy_notify_struct*>(data);
-    self_->deleted_ = true;
-    return nullptr;
-  }
-
-  bool deleted_;
-};
-
 // Used by slot_base::set_parent() when a slot_base without a rep_ is assigned a parent.
 class dummy_slot_rep : public sigc::internal::slot_rep
 {
 public:
-  dummy_slot_rep() : slot_rep(nullptr, nullptr, &clone) {}
-  static void* clone(void*) { return new dummy_slot_rep(); }
+  dummy_slot_rep() : slot_rep(nullptr) {}
+  sigc::internal::slot_rep* clone() const override { return new dummy_slot_rep(); }
+  void destroy() override {}
 };
 } // anonymous namespace
 
@@ -52,18 +38,21 @@ namespace internal
 {
 // only MSVC needs this to guarantee that all new/delete are executed from the DLL module
 #ifdef SIGC_NEW_DELETE_IN_LIBRARY_ONLY
-void* slot_rep::operator new(size_t size_)
+void*
+slot_rep::operator new(size_t size_)
 {
   return malloc(size_);
 }
 
-void slot_rep::operator delete(void* p)
+void
+slot_rep::operator delete(void* p)
 {
   free(p);
 }
 #endif
 
-void slot_rep::disconnect()
+void
+slot_rep::disconnect()
 {
   // Invalidate the slot.
   // _Must_ be done here because parent_ might defer the actual
@@ -76,65 +65,55 @@ void slot_rep::disconnect()
   if (parent_)
   {
     auto data_ = parent_;
-    parent_ = nullptr;  // Just a precaution.
-    (cleanup_)(data_);  // Notify the parent (might lead to destruction of this!).
+    parent_ = nullptr; // Just a precaution.
+    (cleanup_)(data_); // Notify the parent (might lead to destruction of this!).
   }
 }
 
-//static
-void* slot_rep::notify(void* data)
+// static
+void
+slot_rep::notify_slot_rep_invalidated(notifiable* data)
 {
-  auto self_ = reinterpret_cast<slot_rep*>(data);
+  auto self_ = static_cast<slot_rep*>(data);
 
   self_->call_ = nullptr; // Invalidate the slot.
-  
+
   // Make sure we are notified if disconnect() deletes self_, which is trackable.
-  destroy_notify_struct notifier;
-  self_->add_destroy_notify_callback(&notifier, destroy_notify_struct::notify);
+  sigc::internal::weak_raw_ptr<slot_rep> notifier(self_);
   self_->disconnect(); // Disconnect the slot (might lead to deletion of self_!).
-  // If self_ has been deleted, the destructor has called destroy().
-  if (!notifier.deleted_)
+  // If self_ has been deleted, then the weak_raw_ptr will have been invalidated.
+  if (notifier)
   {
-    self_->remove_destroy_notify_callback(&notifier);
-    self_->destroy(); // Detach the stored functor from the other referred trackables and destroy it.
-                      // destroy() might lead to deletion of self_. Bug #564005.
+    // Detach the stored functor from the other referred trackables and destroy it.
+    // destroy() might lead to deletion of self_. Bug #564005.
+    self_->destroy();
   }
-  return nullptr;
 }
 
 } // namespace internal
-  
-slot_base::slot_base() noexcept
-: rep_(nullptr),
-  blocked_(false)
-{}
 
-slot_base::slot_base(rep_type* rep) noexcept
-: rep_(rep),
-  blocked_(false)
-{}
+slot_base::slot_base() noexcept : rep_(nullptr), blocked_(false) {}
 
-slot_base::slot_base(const slot_base& src)
-: rep_(nullptr),
-  blocked_(src.blocked_)
+slot_base::slot_base(rep_type* rep) noexcept : rep_(rep), blocked_(false) {}
+
+slot_base::slot_base(const slot_base& src) : rep_(nullptr), blocked_(src.blocked_)
 {
   if (src.rep_)
   {
-    //Check call_ so we can ignore invalidated slots.
-    //Otherwise, destroyed bound reference parameters (whose destruction caused the slot's invalidation) may be used during dup().
-    //Note: I'd prefer to check somewhere during dup(). murrayc.
+    // Check call_ so we can ignore invalidated slots.
+    // Otherwise, destroyed bound reference parameters (whose destruction caused the slot's
+    // invalidation) may be used during clone().
+    // Note: I'd prefer to check somewhere during clone(). murrayc.
     if (src.rep_->call_)
-      rep_ = src.rep_->dup();
+      rep_ = src.rep_->clone();
     else
     {
-      *this = slot_base(); //Return the default invalid slot.
+      *this = slot_base(); // Return the default invalid slot.
     }
   }
 }
 
-slot_base::slot_base(slot_base&& src)
-: rep_(nullptr),
-  blocked_(src.blocked_)
+slot_base::slot_base(slot_base&& src) : rep_(nullptr), blocked_(src.blocked_)
 {
   if (src.rep_)
   {
@@ -143,13 +122,13 @@ slot_base::slot_base(slot_base&& src)
       // src is connected to a parent, e.g. a sigc::signal.
       // Copy, don't move! See https://bugzilla.gnome.org/show_bug.cgi?id=756484
 
-      //Check call_ so we can ignore invalidated slots.
-      //Otherwise, destroyed bound reference parameters (whose destruction
-      //caused the slot's invalidation) may be used during dup().
+      // Check call_ so we can ignore invalidated slots.
+      // Otherwise, destroyed bound reference parameters (whose destruction
+      // caused the slot's invalidation) may be used during clone().
       if (src.rep_->call_)
-        rep_ = src.rep_->dup();
+        rep_ = src.rep_->clone();
       else
-        blocked_ = false; //Return the default invalid slot.
+        blocked_ = false; // Return the default invalid slot.
     }
     else
     {
@@ -157,7 +136,7 @@ slot_base::slot_base(slot_base&& src)
       src.rep_->notify_callbacks();
       rep_ = src.rep_;
 
-      //Wipe src:
+      // Wipe src:
       src.rep_ = nullptr;
       src.blocked_ = false;
     }
@@ -166,8 +145,7 @@ slot_base::slot_base(slot_base&& src)
 
 slot_base::~slot_base()
 {
-  if (rep_)
-    delete rep_;
+  delete rep_;
 }
 
 slot_base::operator bool() const noexcept
@@ -175,30 +153,30 @@ slot_base::operator bool() const noexcept
   return rep_ != nullptr;
 }
 
-void slot_base::delete_rep_with_check()
+void
+slot_base::delete_rep_with_check()
 {
   if (!rep_)
     return;
 
   // Make sure we are notified if disconnect() deletes rep_, which is trackable.
-  // Compare slot_rep::notify().
-  destroy_notify_struct notifier;
-  rep_->add_destroy_notify_callback(&notifier, destroy_notify_struct::notify);
+  // Compare slot_rep::notify_slot_rep_invalidated().
+  sigc::internal::weak_raw_ptr<rep_type> notifier(rep_);
   rep_->disconnect(); // Disconnect the slot (might lead to deletion of rep_!).
 
   // If rep_ has been deleted, don't try to delete it again.
   // If it has been deleted, this slot_base has probably also been deleted, so
   // don't clear the rep_ pointer. It's the responsibility of the code that
   // deletes rep_ to either clear the rep_ pointer or delete this slot_base.
-  if (!notifier.deleted_)
+  if (notifier)
   {
-    rep_->remove_destroy_notify_callback(&notifier);
     delete rep_; // Detach the stored functor from the other referred trackables and destroy it.
     rep_ = nullptr;
   }
 }
 
-slot_base& slot_base::operator=(const slot_base& src)
+slot_base&
+slot_base::operator=(const slot_base& src)
 {
   if (src.rep_ == rep_)
   {
@@ -213,7 +191,7 @@ slot_base& slot_base::operator=(const slot_base& src)
     return *this;
   }
 
-  auto new_rep_ = src.rep_->dup();
+  auto new_rep_ = src.rep_->clone();
 
   if (rep_) // Silently exchange the slot_rep.
   {
@@ -227,7 +205,8 @@ slot_base& slot_base::operator=(const slot_base& src)
   return *this;
 }
 
-slot_base& slot_base::operator=(slot_base&& src)
+slot_base&
+slot_base::operator=(slot_base&& src)
 {
   if (src.rep_ == rep_)
   {
@@ -247,7 +226,7 @@ slot_base& slot_base::operator=(slot_base&& src)
   {
     // src is connected to a parent, e.g. a sigc::signal.
     // Copy, don't move! See https://bugzilla.gnome.org/show_bug.cgi?id=756484
-    new_rep_ = src.rep_->dup();
+    new_rep_ = src.rep_->clone();
   }
   else
   {
@@ -255,7 +234,7 @@ slot_base& slot_base::operator=(slot_base&& src)
     src.rep_->notify_callbacks();
     new_rep_ = src.rep_;
 
-    //Wipe src:
+    // Wipe src:
     src.rep_ = nullptr;
     src.blocked_ = false;
   }
@@ -269,43 +248,48 @@ slot_base& slot_base::operator=(slot_base&& src)
   return *this;
 }
 
-void slot_base::set_parent(void* parent, void* (*cleanup)(void*)) const noexcept
+void
+slot_base::set_parent(notifiable* parent, notifiable::func_destroy_notify cleanup) const noexcept
 {
   if (!rep_)
     rep_ = new dummy_slot_rep();
   rep_->set_parent(parent, cleanup);
 }
 
-void slot_base::add_destroy_notify_callback(void* data, func_destroy_notify func) const
+void
+slot_base::add_destroy_notify_callback(notifiable* data, func_destroy_notify func) const
 {
   if (rep_)
     rep_->add_destroy_notify_callback(data, func);
 }
 
-void slot_base::remove_destroy_notify_callback(void* data) const
+void
+slot_base::remove_destroy_notify_callback(notifiable* data) const
 {
   if (rep_)
     rep_->remove_destroy_notify_callback(data);
 }
 
-bool slot_base::block(bool should_block) noexcept
+bool
+slot_base::block(bool should_block) noexcept
 {
   bool old = blocked_;
   blocked_ = should_block;
   return old;
 }
 
-bool slot_base::unblock() noexcept
+bool
+slot_base::unblock() noexcept
 {
   return block(false);
 }
 
-void slot_base::disconnect()
+void
+slot_base::disconnect()
 {
   if (rep_)
     rep_->disconnect();
 }
-
 
 /*bool slot_base::empty() const // having this function not inline is killing performance !!!
 {
@@ -317,4 +301,4 @@ void slot_base::disconnect()
   return (rep_ == nullptr);
 }*/
 
-} //namespace sigc
+} // namespace sigc

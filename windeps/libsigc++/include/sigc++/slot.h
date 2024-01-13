@@ -1,4 +1,4 @@
-/* Copyright 2002, The libsigc++ Development Team
+/* Copyright 2002 - 2016, The libsigc++ Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -13,8 +13,8 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef _SIGC_SLOT_H_
-#define _SIGC_SLOT_H_
+#ifndef SIGC_SLOT_H
+#define SIGC_SLOT_H
 
 #include <sigc++/functors/slot.h>
-#endif /* _SIGC_SLOT_H_ */
+#endif /* SIGC_SLOT_H */
