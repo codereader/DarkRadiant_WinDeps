@@ -12,25 +12,21 @@
 #ifdef LIBXML_HTML_ENABLED
 
 #include <string.h> /* for memset() only ! */
-
-#ifdef HAVE_CTYPE_H
 #include <ctype.h>
-#endif
-#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
-#endif
 
 #include <libxml/xmlmemory.h>
 #include <libxml/HTMLparser.h>
 #include <libxml/HTMLtree.h>
 #include <libxml/entities.h>
-#include <libxml/valid.h>
 #include <libxml/xmlerror.h>
 #include <libxml/parserInternals.h>
-#include <libxml/globals.h>
 #include <libxml/uri.h>
 
-#include "buf.h"
+#include "private/buf.h"
+#include "private/error.h"
+#include "private/io.h"
+#include "private/save.h"
 
 /************************************************************************
  *									*
@@ -304,7 +300,7 @@ create:
  * output as <option selected>, as per XSLT 1.0 16.2 "HTML Output Method"
  *
  */
-static const char* htmlBooleanAttrs[] = {
+static const char* const htmlBooleanAttrs[] = {
   "checked", "compact", "declare", "defer", "disabled", "ismap",
   "multiple", "nohref", "noresize", "noshade", "nowrap", "readonly",
   "selected", NULL
@@ -333,11 +329,6 @@ htmlIsBooleanAttr(const xmlChar *name)
 }
 
 #ifdef LIBXML_OUTPUT_ENABLED
-/*
- * private routine exported from xmlIO.c
- */
-xmlOutputBufferPtr
-xmlAllocOutputBufferInternal(xmlCharEncodingHandlerPtr encoder);
 /************************************************************************
  *									*
  *			Output error handlers				*
@@ -422,7 +413,7 @@ htmlBufNodeDumpFormat(xmlBufPtr buf, xmlDocPtr doc, xmlNodePtr cur,
         htmlSaveErrMemory("allocating HTML output buffer");
 	return (-1);
     }
-    memset(outbuf, 0, (size_t) sizeof(xmlOutputBuffer));
+    memset(outbuf, 0, sizeof(xmlOutputBuffer));
     outbuf->buffer = buf;
     outbuf->encoder = NULL;
     outbuf->writecallback = NULL;
@@ -627,8 +618,6 @@ htmlDocDumpMemory(xmlDocPtr cur, xmlChar**mem, int *size) {
  *									*
  ************************************************************************/
 
-void xmlNsListDumpOutput(xmlOutputBufferPtr buf, xmlNsPtr cur);
-
 /**
  * htmlDtdDumpOutput:
  * @buf:  the HTML buffer output
@@ -710,10 +699,15 @@ htmlAttrDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlAttrPtr cur) {
 		while (IS_BLANK_CH(*tmp)) tmp++;
 
 		/*
-		 * the < and > have already been escaped at the entity level
-		 * And doing so here breaks server side includes
+                 * Angle brackets are technically illegal in URIs, but they're
+                 * used in server side includes, for example. Curly brackets
+                 * are illegal as well and often used in templates.
+                 * Don't escape non-whitespace, printable ASCII chars for
+                 * improved interoperability. Only escape space, control
+                 * and non-ASCII chars.
 		 */
-		escaped = xmlURIEscapeStr(tmp, BAD_CAST"@/:=?;#%&,+<>");
+		escaped = xmlURIEscapeStr(tmp,
+                        BAD_CAST "\"#$%&+,/:;<=>?@[\\]^`{|}");
 		if (escaped != NULL) {
 		    xmlBufWriteQuotedString(buf->buffer, escaped);
 		    xmlFree(escaped);
@@ -744,7 +738,7 @@ void
 htmlNodeDumpFormatOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
 	                 xmlNodePtr cur, const char *encoding ATTRIBUTE_UNUSED,
                          int format) {
-    xmlNodePtr root;
+    xmlNodePtr root, parent;
     xmlAttrPtr attr;
     const htmlElemDesc * info;
 
@@ -755,6 +749,7 @@ htmlNodeDumpFormatOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
     }
 
     root = cur;
+    parent = cur->parent;
     while (1) {
         switch (cur->type) {
         case XML_HTML_DOCUMENT_NODE:
@@ -763,12 +758,28 @@ htmlNodeDumpFormatOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
                 htmlDtdDumpOutput(buf, (xmlDocPtr) cur, NULL);
             }
             if (cur->children != NULL) {
-                cur = cur->children;
-                continue;
+                /* Always validate cur->parent when descending. */
+                if (cur->parent == parent) {
+                    parent = cur;
+                    cur = cur->children;
+                    continue;
+                }
+            } else {
+                xmlOutputBufferWriteString(buf, "\n");
             }
             break;
 
         case XML_ELEMENT_NODE:
+            /*
+             * Some users like lxml are known to pass nodes with a corrupted
+             * tree structure. Fall back to a recursive call to handle this
+             * case.
+             */
+            if ((cur->parent != parent) && (cur->children != NULL)) {
+                htmlNodeDumpFormatOutput(buf, doc, cur, encoding, format);
+                break;
+            }
+
             /*
              * Get specific HTML info for that node.
              */
@@ -817,6 +828,7 @@ htmlNodeDumpFormatOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
                     (cur->name != NULL) &&
                     (cur->name[0] != 'p')) /* p, pre, param */
                     xmlOutputBufferWriteString(buf, "\n");
+                parent = cur;
                 cur = cur->children;
                 continue;
             }
@@ -825,9 +837,9 @@ htmlNodeDumpFormatOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
                 (info != NULL) && (!info->isinline)) {
                 if ((cur->next->type != HTML_TEXT_NODE) &&
                     (cur->next->type != HTML_ENTITY_REF_NODE) &&
-                    (cur->parent != NULL) &&
-                    (cur->parent->name != NULL) &&
-                    (cur->parent->name[0] != 'p')) /* p, pre, param */
+                    (parent != NULL) &&
+                    (parent->name != NULL) &&
+                    (parent->name[0] != 'p')) /* p, pre, param */
                     xmlOutputBufferWriteString(buf, "\n");
             }
 
@@ -842,9 +854,9 @@ htmlNodeDumpFormatOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
                 break;
             if (((cur->name == (const xmlChar *)xmlStringText) ||
                  (cur->name != (const xmlChar *)xmlStringTextNoenc)) &&
-                ((cur->parent == NULL) ||
-                 ((xmlStrcasecmp(cur->parent->name, BAD_CAST "script")) &&
-                  (xmlStrcasecmp(cur->parent->name, BAD_CAST "style"))))) {
+                ((parent == NULL) ||
+                 ((xmlStrcasecmp(parent->name, BAD_CAST "script")) &&
+                  (xmlStrcasecmp(parent->name, BAD_CAST "style"))))) {
                 xmlChar *buffer;
 
                 buffer = xmlEncodeEntitiesReentrant(doc, cur->content);
@@ -902,13 +914,9 @@ htmlNodeDumpFormatOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
                 break;
             }
 
-            /*
-             * The parent should never be NULL here but we want to handle
-             * corrupted documents gracefully.
-             */
-            if (cur->parent == NULL)
-                return;
-            cur = cur->parent;
+            cur = parent;
+            /* cur->parent was validated when descending. */
+            parent = cur->parent;
 
             if ((cur->type == XML_HTML_DOCUMENT_NODE) ||
                 (cur->type == XML_DOCUMENT_NODE)) {
@@ -939,9 +947,9 @@ htmlNodeDumpFormatOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
                     (cur->next != NULL)) {
                     if ((cur->next->type != HTML_TEXT_NODE) &&
                         (cur->next->type != HTML_ENTITY_REF_NODE) &&
-                        (cur->parent != NULL) &&
-                        (cur->parent->name != NULL) &&
-                        (cur->parent->name[0] != 'p')) /* p, pre, param */
+                        (parent != NULL) &&
+                        (parent->name != NULL) &&
+                        (parent->name[0] != 'p')) /* p, pre, param */
                         xmlOutputBufferWriteString(buf, "\n");
                 }
             }
@@ -978,7 +986,14 @@ void
 htmlDocContentDumpFormatOutput(xmlOutputBufferPtr buf, xmlDocPtr cur,
 	                       const char *encoding ATTRIBUTE_UNUSED,
                                int format) {
+    int type = 0;
+    if (cur) {
+        type = cur->type;
+        cur->type = XML_HTML_DOCUMENT_NODE;
+    }
     htmlNodeDumpFormatOutput(buf, cur, (xmlNodePtr) cur, NULL, format);
+    if (cur)
+        cur->type = (xmlElementType) type;
 }
 
 /**
@@ -1181,6 +1196,4 @@ htmlSaveFileEnc(const char *filename, xmlDocPtr cur, const char *encoding) {
 
 #endif /* LIBXML_OUTPUT_ENABLED */
 
-#define bottom_HTMLtree
-#include "elfgcchack.h"
 #endif /* LIBXML_HTML_ENABLED */

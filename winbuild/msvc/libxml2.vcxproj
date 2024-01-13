@@ -118,14 +118,11 @@
     <Link />
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\windeps\libxml2\include\win32config.h" />
-    <ClInclude Include="..\..\windeps\libxml2\include\wsockcompat.h" />
     <ClInclude Include="..\..\windeps\libxml2\include\libxml\c14n.h" />
     <ClInclude Include="..\..\windeps\libxml2\include\libxml\catalog.h" />
     <ClInclude Include="..\..\windeps\libxml2\include\libxml\chvalid.h" />
     <ClInclude Include="..\..\windeps\libxml2\include\libxml\debugXML.h" />
     <ClInclude Include="..\..\windeps\libxml2\include\libxml\dict.h" />
-    <ClInclude Include="..\..\windeps\libxml2\include\libxml\DOCBparser.h" />
     <ClInclude Include="..\..\windeps\libxml2\include\libxml\encoding.h" />
     <ClInclude Include="..\..\windeps\libxml2\include\libxml\entities.h" />
     <ClInclude Include="..\..\windeps\libxml2\include\libxml\globals.h" />
@@ -167,19 +164,34 @@
     <ClInclude Include="..\..\windeps\libxml2\include\libxml\xpath.h" />
     <ClInclude Include="..\..\windeps\libxml2\include\libxml\xpathInternals.h" />
     <ClInclude Include="..\..\windeps\libxml2\include\libxml\xpointer.h" />
-    <ClInclude Include="..\libxml2\buf.h" />
+    <ClInclude Include="..\..\windeps\libxml2\include\win32config.h" />
+    <ClInclude Include="..\..\windeps\libxml2\include\wsockcompat.h" />
     <ClInclude Include="..\libxml2\config.h" />
-    <ClInclude Include="..\libxml2\elfgcchack.h" />
-    <ClInclude Include="..\libxml2\enc.h" />
     <ClInclude Include="..\libxml2\libxml.h" />
-    <ClInclude Include="..\libxml2\save.h" />
+    <ClInclude Include="..\libxml2\private\buf.h" />
+    <ClInclude Include="..\libxml2\private\dict.h" />
+    <ClInclude Include="..\libxml2\private\enc.h" />
+    <ClInclude Include="..\libxml2\private\entities.h" />
+    <ClInclude Include="..\libxml2\private\error.h" />
+    <ClInclude Include="..\libxml2\private\globals.h" />
+    <ClInclude Include="..\libxml2\private\html.h" />
+    <ClInclude Include="..\libxml2\private\io.h" />
+    <ClInclude Include="..\libxml2\private\memory.h" />
+    <ClInclude Include="..\libxml2\private\parser.h" />
+    <ClInclude Include="..\libxml2\private\regexp.h" />
+    <ClInclude Include="..\libxml2\private\save.h" />
+    <ClInclude Include="..\libxml2\private\string.h" />
+    <ClInclude Include="..\libxml2\private\threads.h" />
+    <ClInclude Include="..\libxml2\private\tree.h" />
+    <ClInclude Include="..\libxml2\private\xinclude.h" />
+    <ClInclude Include="..\libxml2\private\xpath.h" />
+    <ClInclude Include="..\libxml2\private\xzlib.h" />
     <ClInclude Include="..\libxml2\timsort.h" />
     <ClInclude Include="..\libxml2\trio.h" />
     <ClInclude Include="..\libxml2\triodef.h" />
     <ClInclude Include="..\libxml2\trionan.h" />
     <ClInclude Include="..\libxml2\triop.h" />
     <ClInclude Include="..\libxml2\triostr.h" />
-    <ClInclude Include="..\libxml2\xzlib.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\libxml2\buf.c" />
@@ -188,7 +200,6 @@
     <ClCompile Include="..\libxml2\chvalid.c" />
     <ClCompile Include="..\libxml2\debugXML.c" />
     <ClCompile Include="..\libxml2\dict.c" />
-    <ClCompile Include="..\libxml2\DOCBparser.c" />
     <ClCompile Include="..\libxml2\encoding.c" />
     <ClCompile Include="..\libxml2\entities.c" />
     <ClCompile Include="..\libxml2\error.c" />
