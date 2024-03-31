@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31727.386
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libzlib", "libzlib.vcxproj", "{6780EE95-8768-4138-A89B-47D3504A6E5D}"
 EndProject
@@ -14,19 +14,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libjpeg", "libjpeg.vcxproj"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "freetype", "freetype.vcxproj", "{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libiconv", "win_iconv.vcxproj", "{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libsigc++", "libsigc++2.vcxproj", "{83997EF6-02D6-4CDB-8B3C-DBCA3018CC72}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ftgl", "ftgl.vcxproj", "{406177D1-4C07-3581-8BDC-4AD503ED964F}"
 	ProjectSection(ProjectDependencies) = postProject
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B} = {78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libxml2", "libxml2.vcxproj", "{338182DC-4F9A-4F5C-92B4-6015874B07BA}"
-	ProjectSection(ProjectDependencies) = postProject
-		{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1} = {C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}
-		{6780EE95-8768-4138-A89B-47D3504A6E5D} = {6780EE95-8768-4138-A89B-47D3504A6E5D}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libvorbis", "libvorbis.vcxproj", "{39E0D87F-9C0C-409E-8C6C-32461015C6D8}"
@@ -71,14 +63,6 @@ Global
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Release|Win32.Build.0 = Release Static|Win32
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Release|x64.ActiveCfg = Release Static|x64
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Release|x64.Build.0 = Release Static|x64
-		{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}.Debug|Win32.ActiveCfg = Debug|Win32
-		{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}.Debug|Win32.Build.0 = Debug|Win32
-		{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}.Debug|x64.ActiveCfg = Debug|x64
-		{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}.Debug|x64.Build.0 = Debug|x64
-		{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}.Release|Win32.ActiveCfg = Release|Win32
-		{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}.Release|Win32.Build.0 = Release|Win32
-		{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}.Release|x64.ActiveCfg = Release|x64
-		{C486CD3C-31E0-4438-BCED-B8A26F9ACAE1}.Release|x64.Build.0 = Release|x64
 		{83997EF6-02D6-4CDB-8B3C-DBCA3018CC72}.Debug|Win32.ActiveCfg = Debug|Win32
 		{83997EF6-02D6-4CDB-8B3C-DBCA3018CC72}.Debug|Win32.Build.0 = Debug|Win32
 		{83997EF6-02D6-4CDB-8B3C-DBCA3018CC72}.Debug|x64.ActiveCfg = Debug|x64
@@ -95,14 +79,6 @@ Global
 		{406177D1-4C07-3581-8BDC-4AD503ED964F}.Release|Win32.Build.0 = Release|Win32
 		{406177D1-4C07-3581-8BDC-4AD503ED964F}.Release|x64.ActiveCfg = Release|x64
 		{406177D1-4C07-3581-8BDC-4AD503ED964F}.Release|x64.Build.0 = Release|x64
-		{338182DC-4F9A-4F5C-92B4-6015874B07BA}.Debug|Win32.ActiveCfg = Debug|Win32
-		{338182DC-4F9A-4F5C-92B4-6015874B07BA}.Debug|Win32.Build.0 = Debug|Win32
-		{338182DC-4F9A-4F5C-92B4-6015874B07BA}.Debug|x64.ActiveCfg = Debug|x64
-		{338182DC-4F9A-4F5C-92B4-6015874B07BA}.Debug|x64.Build.0 = Debug|x64
-		{338182DC-4F9A-4F5C-92B4-6015874B07BA}.Release|Win32.ActiveCfg = Release|Win32
-		{338182DC-4F9A-4F5C-92B4-6015874B07BA}.Release|Win32.Build.0 = Release|Win32
-		{338182DC-4F9A-4F5C-92B4-6015874B07BA}.Release|x64.ActiveCfg = Release|x64
-		{338182DC-4F9A-4F5C-92B4-6015874B07BA}.Release|x64.Build.0 = Release|x64
 		{39E0D87F-9C0C-409E-8C6C-32461015C6D8}.Debug|Win32.ActiveCfg = Debug|Win32
 		{39E0D87F-9C0C-409E-8C6C-32461015C6D8}.Debug|Win32.Build.0 = Debug|Win32
 		{39E0D87F-9C0C-409E-8C6C-32461015C6D8}.Debug|x64.ActiveCfg = Debug|x64

@@ -1,8 +1,11 @@
 *.ilk
 *.exp
 *.obj
+*.user
 /winbuild/msvc/Win32
 /winbuild/msvc/x64
 /winbuild/msvc/.vs
 *.pdb
-/winbuild/msvc/*.user
+/windeps.7z
+/windeps.pdbs.7z
+/winbuild/libgit2/CMakeFiles

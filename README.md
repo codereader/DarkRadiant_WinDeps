@@ -23,10 +23,8 @@ Where are all these files from?
 - libpng - http://www.libpng.org
 - libsigc++ - https://github.com/libsigcplusplus/libsigcplusplus
 - libvorbis - https://github.com/xiph/vorbis/
-- libxml2 - http://xmlsoft.org/
 - libzlib - https://zlib.net/
 - Python - https://www.python.org
-- win_iconv - https://github.com/win-iconv/win-iconv
 - wxWidgets - https://wxwidgets.org
 
 Original licences apply.
