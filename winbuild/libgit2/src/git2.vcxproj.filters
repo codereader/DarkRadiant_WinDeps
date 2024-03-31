@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <CustomBuild Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\CMakeLists.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Object Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\pcre\pcre.dir\$(Configuration)\pcre_byte_order.obj">
       <Filter>Object Libraries</Filter>
     </Object>

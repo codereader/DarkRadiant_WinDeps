@@ -311,14 +311,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\zlib\zutil.c" />
     <ClInclude Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\zlib\zutil.h" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\ZERO_CHECK.vcxproj">
-      <Project>{29793DA8-0A56-3A66-AB20-AECC68BE70B6}</Project>
-      <Name>ZERO_CHECK</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

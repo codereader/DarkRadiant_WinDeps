@@ -5,9 +5,11 @@
 - cmake . -DBUILD_CLAR=OFF
 - Open the libgit2.sln Solution File 
 - Remove the libgit2_clar and RUN_TESTS projects
+- Remove the ZERO_BUILD, ALLBUILD or INSTALL projects
 - Move the include/ folder to windeps/windeps/libgit2/include/
 - Change the Project settings in git2internal:
 - => Additional include folders: $(SolutionDir)..\..\windeps\libgit2\include
+- Remove the CMakeLists.txt from all the projects, they would mess with the .vcxproj files
 - Change the output name settings of the git2 project
 - => Release Build output name: libgit2
 - => Debug Build output name: libgit2-d

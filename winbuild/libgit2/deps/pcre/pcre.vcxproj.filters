@@ -74,9 +74,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\deps\pcre\CMakeLists.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="Header Files">
       <UniqueIdentifier>{9C397A0F-D7BB-3710-8921-08DBB20119F9}</UniqueIdentifier>
     </Filter>

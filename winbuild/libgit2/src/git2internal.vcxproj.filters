@@ -974,9 +974,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="C:\Games\DarkRadiant_windeps\winbuild\libgit2\src\CMakeLists.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="src">
       <UniqueIdentifier>{64D9CAF3-8996-32F9-9BD3-2AF03ECB372F}</UniqueIdentifier>
     </Filter>
